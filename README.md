@@ -3,13 +3,13 @@ Utility library for playing Effekseer animations in Slay the Spire
 
 
 
-**Requirements**
+## **Requirements**
 - BaseMod (5.37.1+)
 - ModTheSpire (3.2.2+)
 
 
 
-**How to Use**
+## **How to Use**
 
 To start an animation, call STSEffekseerManager.Play. This should ideally be done in an AbstractGameEffect when it is first created:
 
@@ -35,11 +35,11 @@ To render your animation, call:
 
 
 
-**Notes**
+## **Notes**
 - Currently, this library only works with 64-bit Windows machines
 
 
 
-**Credits**
+## **Credits**
 - Code adapted from https://github.com/SrJohnathan/gdx-effekseer
 - Libraries created from https://github.com/effekseer/EffekseerForMultiLanguages
