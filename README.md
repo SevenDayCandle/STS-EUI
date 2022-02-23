@@ -1,9 +1,13 @@
 # STS-Effekseer
 Utility library for playing Effekseer animations in Slay the Spire
 
+
+
 **Requirements**
 - BaseMod (5.37.1+)
 - ModTheSpire (3.2.2+)
+
+
 
 **How to Use**
 
@@ -29,8 +33,12 @@ To render your animation, call:
         STSEffekseerManager.Render(sb);
     }
 
+
+
 **Notes**
 - Currently, this library only works with 64-bit Windows machines
+
+
 
 **Credits**
 - Code adapted from https://github.com/SrJohnathan/gdx-effekseer
