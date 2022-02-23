@@ -1,0 +1,12 @@
+{
+  "modid": "stseffekseer",
+  "name": "STS-Effekseer",
+  "author_list": ["PinaColada"],
+  "description": "Utility library for rendering Effekseeker effects in Slay the Spire",
+  "credits" : "Code based off of https://github.com/SrJohnathan/gdx-effekseer. \n Uses DLL libraries from https://github.com/effekseer/EffekseerForMultiLanguages",
+  "version": "1.0.0",
+  "sts_version": "12-22-2020",
+  "mts_version": "3.22.0",
+  "dependencies": ["basemod"],
+  "update_json": ""
+}
