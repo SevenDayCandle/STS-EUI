@@ -43,3 +43,5 @@ To render your animation, call:
 ## **Credits**
 - Code adapted from https://github.com/SrJohnathan/gdx-effekseer
 - Libraries created from https://github.com/effekseer/EffekseerForMultiLanguages
+
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
