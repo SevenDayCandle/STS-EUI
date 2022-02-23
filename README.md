@@ -6,7 +6,7 @@ Utility library for playing Effekseer animations in Slay the Spire
 - ModTheSpire (3.2.2+)
 
 **How to Use**
-- To start an animation, call STSEffekseerManager.Play. This should ideally be done in an AbstractGameEffect when it is first created:
+To start an animation, call STSEffekseerManager.Play. This should ideally be done in an AbstractGameEffect when it is first created:
 
         Vector2 position = new Vector2(x,y); // Coordinates to play your effect at
         Vector3 rotation = new Vector3(0,0,0); // How much the animation should be rotated
