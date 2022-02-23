@@ -1,6 +1,7 @@
 import basemod.BaseMod;
 import basemod.interfaces.PostInitializeSubscriber;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
+import org.apache.logging.log4j.LogManager;
 import stseffekseer.STSEffekseerManager;
 
 import java.util.ArrayList;
@@ -21,5 +22,6 @@ public class Initializer implements PostInitializeSubscriber
      public void receivePostInitialize()
      {
          STSEffekseerManager.Initialize();
+         LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
      }
 }
