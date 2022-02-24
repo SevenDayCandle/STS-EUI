@@ -1,6 +1,7 @@
 package stseffekseer;
 
 import com.badlogic.gdx.Gdx;
+import org.apache.commons.lang3.SystemUtils;
 import stseffekseer.swig.EffekseerEffectCore;
 import stseffekseer.swig.EffekseerTextureType;
 
@@ -153,11 +154,12 @@ public class STSEffekSeerUtils {
     }
 
     private static String GetEffekseerPath() {
-        String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-        if (OS.contains("win")) {
+        if (SystemUtils.IS_OS_WINDOWS) {
             return "/" + LIBRARY_NAME + ".dll";
         }
-        //TODO Add files for other OS
+        else if (SystemUtils.IS_OS_LINUX) {
+            return "/" + LIBRARY_NAME + ".so";
+        }
         throw new RuntimeException("Unsupported OS");
     }
 

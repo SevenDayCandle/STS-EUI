@@ -24,6 +24,7 @@ public class STSEffekseerManager {
     protected static EffekseerManagerCore ManagerCore;
     protected static FrameBuffer Buffer;
     protected static float AnimationSpeed = BASE_ANIMATION_SPEED;
+    private static boolean Enabled = false;
 
     public static void Initialize() {
         try {
@@ -32,6 +33,7 @@ public class STSEffekseerManager {
             ManagerCore = new EffekseerManagerCore();
             ManagerCore.Initialize(MAX_SPRITES);
             Buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, false);
+            Enabled = true;
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -43,30 +45,32 @@ public class STSEffekseerManager {
     }
 
     public static Integer Play(String key, Vector2 position, Vector3 rotation) {
-        try {
-            EffekseerEffectCore effect = ParticleEffects.get(key);
-            if (effect == null) {
-                effect = LoadEffect(key);
-                ParticleEffects.put(key, effect);
-            }
-            if (effect != null) {
-                int handle = ManagerCore.Play(effect);
-                ManagerCore.SetEffectPosition(handle, position.x, position.y, 0);
-                if (rotation != null) {
-                    ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
+        if (Enabled) {
+            try {
+                EffekseerEffectCore effect = ParticleEffects.get(key);
+                if (effect == null) {
+                    effect = LoadEffect(key);
+                    ParticleEffects.put(key, effect);
                 }
-                return handle;
+                if (effect != null) {
+                    int handle = ManagerCore.Play(effect);
+                    ManagerCore.SetEffectPosition(handle, position.x, position.y, 0);
+                    if (rotation != null) {
+                        ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
+                    }
+                    return handle;
+                }
             }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return null;
+            catch (Exception e) {
+                e.printStackTrace();
+                return null;
+            }
         }
         return null;
     }
 
     public static boolean Modify(int handle, Vector2 position, Vector3 rotation) {
-        if (ManagerCore.Exists(handle)) {
+        if (Enabled && ManagerCore.Exists(handle)) {
             if (position != null)         {
                 ManagerCore.SetEffectPosition(handle, position.x, position.y, 0);
             }
@@ -79,7 +83,7 @@ public class STSEffekseerManager {
     }
 
     public static boolean Exists(int handle){
-        return ManagerCore.Exists(handle);
+        return Enabled && ManagerCore.Exists(handle);
     }
 
     public static void SetAnimationSpeed(float speed) {
@@ -87,20 +91,24 @@ public class STSEffekseerManager {
     }
 
     public static void Update() {
-        ManagerCore.SetViewProjectionMatrixWithSimpleWindow(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-        ManagerCore.Update(Gdx.graphics.getDeltaTime() * AnimationSpeed);
-        Buffer.begin();
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
-        ManagerCore.DrawBack();
-        ManagerCore.DrawFront();
-        Buffer.end();
+        if (Enabled) {
+            ManagerCore.SetViewProjectionMatrixWithSimpleWindow(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+            ManagerCore.Update(Gdx.graphics.getDeltaTime() * AnimationSpeed);
+            Buffer.begin();
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+            ManagerCore.DrawBack();
+            ManagerCore.DrawFront();
+            Buffer.end();
+        }
     }
 
     public static void Render(SpriteBatch sb) {
-        TextureRegion t = new TextureRegion(Buffer.getColorBufferTexture());
-        sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-        sb.draw(t, 0, 0, 0, 0, Buffer.getWidth(), Buffer.getHeight(), 1f, 1f, 0f);
-        sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        if (Enabled) {
+            TextureRegion t = new TextureRegion(Buffer.getColorBufferTexture());
+            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+            sb.draw(t, 0, 0, 0, 0, Buffer.getWidth(), Buffer.getHeight(), 1f, 1f, 0f);
+            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        }
     }
 
     public static void RenderBrighter(SpriteBatch sb, Color color) {
@@ -128,10 +136,14 @@ public class STSEffekseerManager {
     }
 
     public static void End() {
-        ManagerCore.delete();
-        for (EffekseerEffectCore effect : ParticleEffects.values()) {
-            effect.delete();
+        if (Enabled) {
+            ManagerCore.delete();
+            for (EffekseerEffectCore effect : ParticleEffects.values()) {
+                effect.delete();
+            }
+            EffekseerBackendCore.Terminate();
+            Enabled = false;
         }
-        EffekseerBackendCore.Terminate();
     }
+
 }
