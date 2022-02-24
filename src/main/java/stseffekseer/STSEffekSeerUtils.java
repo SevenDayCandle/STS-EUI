@@ -1,8 +1,8 @@
 package stseffekseer;
 
-import Effekseer.swig.EffekseerEffectCore;
-import Effekseer.swig.EffekseerTextureType;
 import com.badlogic.gdx.Gdx;
+import stseffekseer.swig.EffekseerEffectCore;
+import stseffekseer.swig.EffekseerTextureType;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -13,8 +13,8 @@ import java.util.Locale;
 
 /* Adapted from https://github.com/SrJohnathan/gdx-effekseer */
 
-class STSEffekSeerUtils {
-    public static final float DEFAULT_MAGNIFICATION = 5f;
+public class STSEffekSeerUtils {
+    public static final float DEFAULT_MAGNIFICATION = 50f;
     private static final int MIN_PREFIX_LENGTH = 3;
     private static final String LIBRARY_NAME = "EffekseerNativeForJava";
     private static final String PATH_PREFIX = "STSEffekSeerUtils";
@@ -102,15 +102,6 @@ class STSEffekSeerUtils {
         return effectCore;
     }
 
-    protected static String GetEffekseerPath() {
-        String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
-        if (OS.contains("win")) {
-            return "/" + LIBRARY_NAME + ".dll";
-        }
-        //TODO Add files for other OS
-        throw new RuntimeException("Unsupported OS");
-    }
-
     protected static void LoadLibraryFromJar() throws IOException {
         LoadLibraryFromJar(GetEffekseerPath());
     }
@@ -159,6 +150,15 @@ class STSEffekSeerUtils {
                 temp.deleteOnExit();
             }
         }
+    }
+
+    private static String GetEffekseerPath() {
+        String OS = System.getProperty("os.name", "generic").toLowerCase(Locale.ENGLISH);
+        if (OS.contains("win")) {
+            return "/" + LIBRARY_NAME + ".dll";
+        }
+        //TODO Add files for other OS
+        throw new RuntimeException("Unsupported OS");
     }
 
     private static boolean IsPosixCompliant() {

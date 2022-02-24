@@ -6,7 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
-package Effekseer.swig;
+package stseffekseer.swig;
 
 public final class EffekseerTextureType {
   public final static EffekseerTextureType Color = new EffekseerTextureType("Color");

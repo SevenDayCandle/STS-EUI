@@ -1,9 +1,7 @@
 package stseffekseer;
 
-import Effekseer.swig.EffekseerBackendCore;
-import Effekseer.swig.EffekseerEffectCore;
-import Effekseer.swig.EffekseerManagerCore;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -11,6 +9,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import stseffekseer.swig.EffekseerBackendCore;
+import stseffekseer.swig.EffekseerEffectCore;
+import stseffekseer.swig.EffekseerManagerCore;
 
 import java.util.HashMap;
 
@@ -102,12 +103,35 @@ public class STSEffekseerManager {
         sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
     }
 
+    public static void RenderBrighter(SpriteBatch sb, Color color) {
+        STSRenderUtils.DrawBrighter(sb, color, STSEffekseerManager::Render);
+    }
+
+    public static void RenderBrighter(SpriteBatch sb, Float color) {
+        STSRenderUtils.DrawBrighter(sb, color, STSEffekseerManager::Render);
+    }
+
+    public static void RenderColored(SpriteBatch sb, Color color) {
+        STSRenderUtils.DrawColored(sb, color, STSEffekseerManager::Render);
+    }
+
+    public static void RenderColored(SpriteBatch sb, Float color) {
+        STSRenderUtils.DrawColored(sb, color, STSEffekseerManager::Render);
+    }
+
+    public static void RenderColorized(SpriteBatch sb, Color color) {
+        STSRenderUtils.DrawColorized(sb, color, STSEffekseerManager::Render);
+    }
+
+    public static void RenderColorized(SpriteBatch sb, Float color) {
+        STSRenderUtils.DrawColorized(sb, color, STSEffekseerManager::Render);
+    }
+
     public static void End() {
         ManagerCore.delete();
         for (EffekseerEffectCore effect : ParticleEffects.values()) {
             effect.delete();
         }
         EffekseerBackendCore.Terminate();
-
     }
 }

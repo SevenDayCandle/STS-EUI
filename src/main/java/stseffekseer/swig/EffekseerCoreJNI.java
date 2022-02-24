@@ -6,7 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
-package Effekseer.swig;
+package stseffekseer.swig;
 
 public class EffekseerCoreJNI {
   public final static native long new_EffekseerBackendCore();

@@ -6,7 +6,7 @@
  * the SWIG interface file instead.
  * ----------------------------------------------------------------------------- */
 
-package Effekseer.swig;
+package stseffekseer.swig;
 
 public class EffekseerManagerCore {
   private transient long swigCPtr;
