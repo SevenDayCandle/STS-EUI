@@ -7,8 +7,10 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
+import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.sun.org.apache.xpath.internal.operations.Or;
 import stseffekseer.swig.EffekseerBackendCore;
 import stseffekseer.swig.EffekseerEffectCore;
 import stseffekseer.swig.EffekseerManagerCore;
@@ -20,10 +22,10 @@ import static stseffekseer.STSEffekSeerUtils.LoadEffect;
 public class STSEffekseerManager {
     protected static final float BASE_ANIMATION_SPEED = 60f;
     protected static final int MAX_SPRITES = 3000;
-    protected static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
-    protected static EffekseerManagerCore ManagerCore;
-    protected static FrameBuffer Buffer;
     protected static float AnimationSpeed = BASE_ANIMATION_SPEED;
+    private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
+    private static EffekseerManagerCore ManagerCore;
+    private static FrameBuffer Buffer;
     private static boolean Enabled = false;
 
     /**
@@ -139,10 +141,12 @@ public class STSEffekseerManager {
 
     /**
      Renders the effects captured in the framebuffer written to in Update()
+     Because the OpenGL world space is flip
      */
     public static void Render(SpriteBatch sb) {
         if (Enabled) {
             TextureRegion t = new TextureRegion(Buffer.getColorBufferTexture());
+            t.flip(false, true);
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
             sb.draw(t, 0, 0, 0, 0, Buffer.getWidth(), Buffer.getHeight(), 1f, 1f, 0f);
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
