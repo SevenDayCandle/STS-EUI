@@ -26,6 +26,9 @@ public class STSEffekseerManager {
     protected static float AnimationSpeed = BASE_ANIMATION_SPEED;
     private static boolean Enabled = false;
 
+    /**
+     Attempts to initialize the Effekseer system for the current OS and set up the buffer used for rendering
+     */
     public static void Initialize() {
         try {
             STSEffekSeerUtils.LoadLibraryFromJar();
@@ -41,10 +44,18 @@ public class STSEffekseerManager {
     }
 
     public static Integer Play(String key, Vector2 position) {
-        return Play(key, position, null);
+        return Play(key, position, null, (float[]) null);
     }
 
-    public static Integer Play(String key, Vector2 position, Vector3 rotation) {
+    public static Integer Play(String key, Vector2 position, Vector3 rotation, Color color) {
+        return Play(key, position, rotation, STSEffekSeerUtils.ToEffekseerColor(color));
+    }
+
+    /**
+     Start playing a new effect in Effekseer.
+     Whenever a new effect type is loaded, its files are cached so that future calls to the same effect type do not need to load file data again
+     */
+    public static Integer Play(String key, Vector2 position, Vector3 rotation, float[] color) {
         if (Enabled) {
             try {
                 EffekseerEffectCore effect = ParticleEffects.get(key);
@@ -58,6 +69,9 @@ public class STSEffekseerManager {
                     if (rotation != null) {
                         ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
                     }
+                    if (color != null) {
+                        ManagerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
+                    }
                     return handle;
                 }
             }
@@ -69,7 +83,14 @@ public class STSEffekseerManager {
         return null;
     }
 
-    public static boolean Modify(int handle, Vector2 position, Vector3 rotation) {
+    public static boolean Modify(int handle, Vector2 position, Vector3 rotation, Color color)  {
+        return Modify(handle, position, rotation, STSEffekSeerUtils.ToEffekseerColor(color));
+    }
+
+    /**
+     Edit the attributes of an effect that is currently playing
+     */
+    public static boolean Modify(int handle, Vector2 position, Vector3 rotation, float[] color) {
         if (Enabled && ManagerCore.Exists(handle)) {
             if (position != null)         {
                 ManagerCore.SetEffectPosition(handle, position.x, position.y, 0);
@@ -77,19 +98,33 @@ public class STSEffekseerManager {
             if (rotation != null) {
                 ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
             }
+            if (color != null) {
+                ManagerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
+            }
             return true;
         }
         return false;
     }
 
+    /**
+     Whether the effect with the given handle is currently playing
+     */
     public static boolean Exists(int handle){
         return Enabled && ManagerCore.Exists(handle);
     }
 
+    /**
+     Set the global animation speed for ALL animations
+     */
     public static void SetAnimationSpeed(float speed) {
         AnimationSpeed = Math.max(0, speed);
     }
 
+    /**
+     Advances the animations of all playing animations.
+     Effekseer animations will only appear on the screen if the color/depth bits are clear. Any subsequent Spritebatch rendering calls will render the animations invisible.
+     Thus, we must render the animations into a framebuffer to be rendered later
+     */
     public static void Update() {
         if (Enabled) {
             ManagerCore.SetViewProjectionMatrixWithSimpleWindow(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -102,6 +137,9 @@ public class STSEffekseerManager {
         }
     }
 
+    /**
+     Renders the effects captured in the framebuffer written to in Update()
+     */
     public static void Render(SpriteBatch sb) {
         if (Enabled) {
             TextureRegion t = new TextureRegion(Buffer.getColorBufferTexture());
@@ -111,6 +149,10 @@ public class STSEffekseerManager {
         }
     }
 
+    /**
+     These calls render ALL effects captured in the framebuffer using the same blending method or colorization.
+     If you only want to colorize a particular effect, consider passing it through the Color parameter in Play/Modify instead
+     */
     public static void RenderBrighter(SpriteBatch sb, Color color) {
         STSRenderUtils.DrawBrighter(sb, color, STSEffekseerManager::Render);
     }

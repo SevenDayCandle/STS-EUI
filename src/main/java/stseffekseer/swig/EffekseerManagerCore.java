@@ -84,6 +84,10 @@ public class EffekseerManagerCore {
     EffekseerCoreJNI.EffekseerManagerCore_SetShown(swigCPtr, this, handle, v);
   }
 
+  public void SetAllColor(int handle, float r, float g, float b, float a) {
+    EffekseerCoreJNI.EffekseerManagerCore_SetAllColor(swigCPtr, this, handle, r, g, b, a);
+  }
+
   public void SetEffectPosition(int handle, float x, float y, float z) {
     EffekseerCoreJNI.EffekseerManagerCore_SetEffectPosition(swigCPtr, this, handle, x, y, z);
   }

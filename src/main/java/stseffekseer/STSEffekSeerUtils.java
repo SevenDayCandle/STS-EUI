@@ -1,6 +1,7 @@
 package stseffekseer;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import org.apache.commons.lang3.SystemUtils;
 import stseffekseer.swig.EffekseerEffectCore;
 import stseffekseer.swig.EffekseerTextureType;
@@ -16,10 +17,21 @@ import java.util.Locale;
 
 public class STSEffekSeerUtils {
     public static final float DEFAULT_MAGNIFICATION = 50f;
+    public static final float EFFEKSEER_COLOR_RATE = 255f;
     private static final int MIN_PREFIX_LENGTH = 3;
     private static final String LIBRARY_NAME = "EffekseerNativeForJava";
     private static final String PATH_PREFIX = "STSEffekSeerUtils";
     private static File temporaryDir;
+
+    /* Effekseer color values range from 0-255, whereas LibGDX color values range from 0-1 */
+    public static float[] ToEffekseerColor(Color color) {
+        return color != null ?
+                new float[]{color.r * EFFEKSEER_COLOR_RATE,
+                            color.g * EFFEKSEER_COLOR_RATE,
+                            color.b * EFFEKSEER_COLOR_RATE,
+                            color.a * EFFEKSEER_COLOR_RATE}
+                : null;
+    }
 
     public static EffekseerEffectCore LoadEffect(String effectPath) throws Exception {
         return LoadEffect(effectPath, DEFAULT_MAGNIFICATION);

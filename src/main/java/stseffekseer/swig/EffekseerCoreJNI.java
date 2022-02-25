@@ -48,6 +48,7 @@ public class EffekseerCoreJNI {
   public final static native void EffekseerManagerCore_Stop(long jarg1, EffekseerManagerCore jarg1_, int jarg2);
   public final static native void EffekseerManagerCore_SetPaused(long jarg1, EffekseerManagerCore jarg1_, int jarg2, boolean jarg3);
   public final static native void EffekseerManagerCore_SetShown(long jarg1, EffekseerManagerCore jarg1_, int jarg2, boolean jarg3);
+  public final static native void EffekseerManagerCore_SetAllColor(long jarg1, EffekseerManagerCore jarg1_, int jarg2, float jarg3, float jarg4, float jarg5, float jarg6);
   public final static native void EffekseerManagerCore_SetEffectPosition(long jarg1, EffekseerManagerCore jarg1_, int jarg2, float jarg3, float jarg4, float jarg5);
   public final static native void EffekseerManagerCore_SetEffectRotation(long jarg1, EffekseerManagerCore jarg1_, int jarg2, float jarg3, float jarg4, float jarg5);
   public final static native void EffekseerManagerCore_SetEffectScale(long jarg1, EffekseerManagerCore jarg1_, int jarg2, float jarg3, float jarg4, float jarg5);
