@@ -7,7 +7,7 @@ It also comes with support for colorizing Effekseer animations and images in gen
 - BaseMod (5.37.1+)
 - ModTheSpire (3.2.2+)
 
-
+In addition, this library only works on Windows and Linux machines.
 
 ## **How to Use**
 
@@ -58,10 +58,6 @@ This library also comes with wrappers to expedite rendering images with shader p
         STSRenderUtils.DrawBlended(sb, mode, (spritebatch) -> YourRenderingFunction(spritebatch, ...)); // Use any available mode to render your image
     }
 ```
-
-## **Notes**
-- Currently, this library only works with 64-bit Windows machines
-
 
 
 ## **Credits**
