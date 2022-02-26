@@ -65,7 +65,7 @@ This library also comes with wrappers to expedite rendering images with shader p
 
 
 ## **Credits**
-- Code adapted from https://github.com/SrJohnathan/gdx-effekseer
+- Some code adapted from https://github.com/SrJohnathan/gdx-effekseer, https://github.com/SevenDayCandle/STS-FoolMod, and https://github.com/EatYourBeetS/STS-AnimatorMod
 - DLL Libraries created from https://github.com/effekseer/EffekseerForMultiLanguages
 - Uses functions from https://github.com/tommyettinger/colorful-gdx
 
