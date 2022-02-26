@@ -46,18 +46,18 @@ public class STSEffekseerManager {
     }
 
     public static Integer Play(String key, Vector2 position) {
-        return Play(key, position, null, (float[]) null);
+        return Play(key, position, null, null, (float[]) null);
     }
 
-    public static Integer Play(String key, Vector2 position, Vector3 rotation, Color color) {
-        return Play(key, position, rotation, STSEffekSeerUtils.ToEffekseerColor(color));
+    public static Integer Play(String key, Vector2 position, Vector3 rotation, Vector3 scale, Color color) {
+        return Play(key, position, rotation, scale, STSEffekSeerUtils.ToEffekseerColor(color));
     }
 
     /**
      Start playing a new effect in Effekseer.
      Whenever a new effect type is loaded, its files are cached so that future calls to the same effect type do not need to load file data again
      */
-    public static Integer Play(String key, Vector2 position, Vector3 rotation, float[] color) {
+    public static Integer Play(String key, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
         if (Enabled) {
             try {
                 EffekseerEffectCore effect = ParticleEffects.get(key);
@@ -70,6 +70,9 @@ public class STSEffekseerManager {
                     ManagerCore.SetEffectPosition(handle, position.x, position.y, 0);
                     if (rotation != null) {
                         ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
+                    }
+                    if (scale != null) {
+                        ManagerCore.SetEffectScale(handle, scale.x, scale.y, scale.z);
                     }
                     if (color != null) {
                         ManagerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
@@ -85,20 +88,23 @@ public class STSEffekseerManager {
         return null;
     }
 
-    public static boolean Modify(int handle, Vector2 position, Vector3 rotation, Color color)  {
-        return Modify(handle, position, rotation, STSEffekSeerUtils.ToEffekseerColor(color));
+    public static boolean Modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, Color color)  {
+        return Modify(handle, position, rotation, scale, STSEffekSeerUtils.ToEffekseerColor(color));
     }
 
     /**
      Edit the attributes of an effect that is currently playing
      */
-    public static boolean Modify(int handle, Vector2 position, Vector3 rotation, float[] color) {
+    public static boolean Modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
         if (Enabled && ManagerCore.Exists(handle)) {
             if (position != null)         {
                 ManagerCore.SetEffectPosition(handle, position.x, position.y, 0);
             }
             if (rotation != null) {
                 ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
+            }
+            if (scale != null) {
+                ManagerCore.SetEffectScale(handle, scale.x, scale.y, scale.z);
             }
             if (color != null) {
                 ManagerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
