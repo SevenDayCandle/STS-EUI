@@ -7,10 +7,8 @@ import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
-import com.badlogic.gdx.math.Matrix4;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
-import com.sun.org.apache.xpath.internal.operations.Or;
 import stseffekseer.swig.EffekseerBackendCore;
 import stseffekseer.swig.EffekseerEffectCore;
 import stseffekseer.swig.EffekseerManagerCore;
@@ -18,10 +16,10 @@ import stseffekseer.swig.EffekseerManagerCore;
 import java.util.HashMap;
 
 import static stseffekseer.STSEffekSeerUtils.LoadEffect;
+import static stseffekseer.configuration.STSConfiguration.BASE_SPRITES_DEFAULT;
 
 public class STSEffekseerManager {
-    protected static final float BASE_ANIMATION_SPEED = 60f;
-    protected static final int MAX_SPRITES = 3000;
+    public static final float BASE_ANIMATION_SPEED = 60f;
     protected static float AnimationSpeed = BASE_ANIMATION_SPEED;
     private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
     private static EffekseerManagerCore ManagerCore;
@@ -36,7 +34,7 @@ public class STSEffekseerManager {
             STSEffekSeerUtils.LoadLibraryFromJar();
             EffekseerBackendCore.InitializeAsOpenGL();
             ManagerCore = new EffekseerManagerCore();
-            ManagerCore.Initialize(MAX_SPRITES);
+            ManagerCore.Initialize(BASE_SPRITES_DEFAULT);
             Buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, false);
             Enabled = true;
         }
@@ -187,15 +185,26 @@ public class STSEffekseerManager {
         STSRenderUtils.DrawColorized(sb, color, STSEffekseerManager::Render);
     }
 
+    public static void Reset() {
+        Clear();
+        ManagerCore = new EffekseerManagerCore();
+        ManagerCore.Initialize(BASE_SPRITES_DEFAULT);
+    }
+
     public static void End() {
         if (Enabled) {
-            ManagerCore.delete();
-            for (EffekseerEffectCore effect : ParticleEffects.values()) {
-                effect.delete();
-            }
+            Clear();
             EffekseerBackendCore.Terminate();
             Enabled = false;
         }
+    }
+
+    private static void Clear() {
+        ManagerCore.delete();
+        for (EffekseerEffectCore effect : ParticleEffects.values()) {
+            effect.delete();
+        }
+        ParticleEffects.clear();
     }
 
 }
