@@ -11,6 +11,10 @@ In addition, this library only works on Windows and Linux machines.
 
 ## **How to Use**
 
+**Setting up your animations**
+
+This library reads Effekseer animations exported with the .efk format. In Effekseer 1.62, you can create .efk files by using the Files -> Export -> Default Format command. Any images or subfolders that the effect needs to load must be in the same folder as your .efk file.
+
 **Animations**
 
 To start an animation, call STSEffekseerManager.Play. This should ideally be done in an AbstractGameEffect when it is first created:
