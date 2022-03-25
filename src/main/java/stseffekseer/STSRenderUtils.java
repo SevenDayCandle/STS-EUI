@@ -36,7 +36,6 @@ public class STSRenderUtils
 
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
-    protected static final String SHADER_RAINBOW_FRAGMENT = "shaders/rainbowFragment.glsl";
     protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
     protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
 
@@ -44,7 +43,6 @@ public class STSRenderUtils
     protected static ShaderProgram BrighterShader;
     protected static ShaderProgram ColorizeShader;
     protected static ShaderProgram GrayscaleShader;
-    protected static ShaderProgram RainbowShader;
     protected static ShaderProgram SepiaShader;
 
     protected static ShaderProgram GetBlurShader() {
@@ -75,13 +73,6 @@ public class STSRenderUtils
         return GrayscaleShader;
     }
 
-    protected static ShaderProgram GetRainbowShader() {
-        if (RainbowShader == null) {
-            RainbowShader = InitializeShader(SHADER_VERTEX, SHADER_RAINBOW_FRAGMENT);
-        }
-        return RainbowShader;
-    }
-
     public static ShaderProgram GetSepiaShader() {
         if (SepiaShader == null) {
             SepiaShader = InitializeShader(SHADER_VERTEX, SHADER_SEPIA_FRAGMENT);
@@ -108,22 +99,6 @@ public class STSRenderUtils
         bs.setUniformf("u_resolution", resolution);
         bs.setUniform2fv("u_dir", new float[] {xDir, yDir}, 0, 2);
         sb.setShader(bs);
-        drawFunc.Invoke(sb);
-        sb.setShader(defaultShader);
-    }
-
-    public static void DrawRainbow(SpriteBatch sb, DrawFunction drawFunc) {
-        DrawRainbow(sb, 0, 1, 1, 0.5f, drawFunc);
-    }
-
-    public static void DrawRainbow(SpriteBatch sb, float xOffset, float saturation, float brightness, float opacity, DrawFunction drawFunc) {
-        ShaderProgram defaultShader = sb.getShader();
-        ShaderProgram rs = GetRainbowShader();
-        rs.setUniformf("u_offset", xOffset);
-        rs.setUniformf("u_saturation", saturation);
-        rs.setUniformf("u_brightness", brightness);
-        rs.setUniformf("u_opacity", opacity);
-        sb.setShader(rs);
         drawFunc.Invoke(sb);
         sb.setShader(defaultShader);
     }
