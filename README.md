@@ -2,6 +2,7 @@
 STS-Effekseer is a utility library for playing Effekseer animations in Slay the Spire.
 It also comes with support for colorizing Effekseer animations and images in general with the colorful-gdx library, which offers a greater degree of freedom with color manipulation.
 
+You can find Effekseer, along with some sample animations, at https://effekseer.github.io/en/.
 
 ## **Requirements**
 - BaseMod (5.37.1+)
