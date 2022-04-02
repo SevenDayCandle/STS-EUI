@@ -3,21 +3,26 @@ import basemod.interfaces.*;
 import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.GameDictionary;
+import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import extendedui.JavaUtils;
+import extendedui.ui.tooltips.EUITooltip;
 import org.apache.logging.log4j.LogManager;
-import stseffekseer.EUI;
-import stseffekseer.EUIRM;
-import stseffekseer.JavaUtils;
-import stseffekseer.STSEffekseerManager;
-import stseffekseer.configuration.EUIConfiguration;
-import stseffekseer.utilities.EUIFontHelper;
+import extendedui.EUI;
+import extendedui.EUIRM;
+import extendedui.STSEffekseerManager;
+import extendedui.configuration.EUIConfiguration;
+import extendedui.utilities.EUIFontHelper;
 
-import static stseffekseer.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
-import static stseffekseer.configuration.EUIConfiguration.RequiresReload;
+import java.lang.reflect.Field;
+
+import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
+import static extendedui.configuration.EUIConfiguration.RequiresReload;
 
 @SpireInitializer
-public class Initializer implements PostInitializeSubscriber, EditStringsSubscriber, StartGameSubscriber, OnStartBattleSubscriber
+public class Initializer implements PostInitializeSubscriber, EditStringsSubscriber, EditCardsSubscriber, StartGameSubscriber, OnStartBattleSubscriber
 {
     //Used by @SpireInitializer
     public static void initialize()
@@ -30,6 +35,11 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
         BaseMod.subscribe(this);
     }
 
+    @Override
+    public void receiveEditCards()
+    {
+        EUIRM.Initialize();
+    }
 
     @Override
     public void receivePostInitialize()
@@ -47,14 +57,13 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
         this.loadLangStrings("eng");
         this.loadLangStrings(language);
         EUIFontHelper.Initialize();
-        EUIRM.Initialize();
     }
 
     private void loadLangStrings(String language)
     {
         try
         {
-            BaseMod.loadCustomStringsFile(UIStrings.class, "localization/" + language + "/ui.json");
+            BaseMod.loadCustomStringsFile(UIStrings.class, "localization/extendedui/" + language + "/UIStrings.json");
         }
         catch (GdxRuntimeException var4)
         {

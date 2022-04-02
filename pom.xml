@@ -1,13 +1,13 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0">
     <modelVersion>4.0.0</modelVersion>
 
-    <groupId>stseffekseer</groupId>
-    <artifactId>stseffekseer</artifactId>
+    <groupId>extendedui</groupId>
+    <artifactId>extendedui</artifactId>
     <version>v1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>STS-Effekseer</name>
-    <description>Utility library for rendering Effekseeker effects in Slay the Spire</description>
+    <name>ExtendedUI</name>
+    <description>Utility library for creating UI elements and rendering, as well as a card pool screen and a card filters screen</description>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -57,7 +57,7 @@
     </dependencies>
 
     <build>
-        <finalName>STSEffekseer</finalName>
+        <finalName>ExtendedUI</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -97,7 +97,7 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
-                                <copy file="target/STSEffekseer.jar" tofile="D:\Program Files\Steam\steamapps\common\SlayTheSpire\mods\STSEffekseer.jar"/>
+                                <copy file="target/ExtendedUI.jar" tofile="D:\Program Files\Steam\steamapps\common\SlayTheSpire\mods\ExtendedUI.jar"/>
                             </target>
                         </configuration>
                         <goals>

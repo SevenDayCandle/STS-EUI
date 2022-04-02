@@ -1,0 +1,38 @@
+{
+  "extendedui:config":
+  {
+	"TEXT": [
+	  "Flush Effects when Starting a Run",
+	  "Flush Effects when Entering a New Room",
+	  "Maximum Particles",
+	  "Reset Hidden Tooltips"
+	]
+  },
+  "extendedui:hotkeys":
+  {
+	"TEXT": [
+	  "Cycle Previews",
+	  "Toggle Filters"
+	]
+  },
+  "extendedui:ui":
+  {
+	"TEXT": [
+	  "Item(s)",
+	  "Keywords",
+	  "Amount",
+	  "Origin",
+	  "Color",
+	  "Results",
+	  "Show Colorless",
+	  "Type to Search",
+	  "Card Pool",
+	  "View all cards available in this run",
+	  "Filters",
+	  "Any",
+	  "No cards match the current filters.",
+	  "{0} to cycle",
+	  "Base Game"
+	]
+  }
+}
