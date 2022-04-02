@@ -64,7 +64,7 @@ public class CardLibraryScreenPatches
 
         @SpirePostfixPatch
         public static void Postfix(CardLibraryScreen screen, ColorTabBar tabBar, ColorTabBar.CurrentTab newSelection) {
-            EUI.CardFilters.Initialize(__ -> EUI.CustomHeader.UpdateForFilters(), EUI.CustomHeader.originalGroup);
+            EUI.CardFilters.Initialize(__ -> EUI.CustomHeader.UpdateForFilters(), EUI.CustomHeader.originalGroup, newSelection == ColorTabBarFix.Enums.MOD ? ColorTabBarFix.Fields.getModTab().color : AbstractCard.CardColor.COLORLESS);
             EUI.CustomHeader.UpdateForFilters();
             if (openButton == null) {
                 openButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))

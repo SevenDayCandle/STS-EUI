@@ -2,6 +2,7 @@ package extendedui.ui.panelitems;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
@@ -23,7 +24,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     protected void onClick() {
         super.onClick();
 
-        EUI.CardsScreen.Open(GetAllCards());
+        EUI.CardsScreen.Open(AbstractDungeon.player, GetAllCards());
     }
 
     protected CardGroup GetAllCards() {

@@ -6,12 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
+        <module name="extendedui" />
         <module name="STS-Effekseeker" />
-        <module name="stseffekseer" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
       <module name="STS-Effekseeker" target="1.8" />
+      <module name="stseffekseer" target="1.8" />
     </bytecodeTargetLevel>
   </component>
 </project>

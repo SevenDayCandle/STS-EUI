@@ -238,7 +238,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetCanAutosizeButton(true)
                 .SetItems(Loader.MODINFOS);
 
-        CostDropdown = new GUI_Dropdown<CostFilter>(new AdvancedHitbox(hb.x + OriginsDropdown.hb.width + SPACING * 3, hb.y + SPACING * 3, Scale(240), Scale(48)), c -> c.name)
+        CostDropdown = new GUI_Dropdown<CostFilter>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(240), Scale(48)), c -> c.name)
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
                 })
@@ -263,7 +263,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetCanAutosizeButton(true)
                 .SetItems(CostFilter.values());
 
-        RaritiesDropdown = new GUI_Dropdown<AbstractCard.CardRarity>(new AdvancedHitbox(hb.x + CostDropdown.hb.width + SPACING * 3, hb.y + SPACING * 3, Scale(240), Scale(48))
+        RaritiesDropdown = new GUI_Dropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(240), Scale(48))
                 ,item -> StringUtils.capitalize(item.toString().toLowerCase()))
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
@@ -289,7 +289,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetCanAutosizeButton(true)
                 .SetItems(AbstractCard.CardRarity.values());
 
-        TypesDropdown = new GUI_Dropdown<AbstractCard.CardType>(new AdvancedHitbox(hb.x + RaritiesDropdown.hb.width + SPACING * 3, hb.y + SPACING * 3, Scale(240), Scale(48))
+        TypesDropdown = new GUI_Dropdown<AbstractCard.CardType>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(240), Scale(48))
                 , EUIGameUtils::TextForType)
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
@@ -315,7 +315,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetCanAutosizeButton(true)
                 .SetItems(AbstractCard.CardType.values());
 
-        ColorsDropdown = new GUI_Dropdown<AbstractCard.CardColor>(new AdvancedHitbox(hb.x + TypesDropdown.hb.width + SPACING * 3, hb.y + SPACING * 3, Scale(240), Scale(48))
+        ColorsDropdown = new GUI_Dropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(240), Scale(48))
                 ,item -> StringUtils.capitalize(item.toString().toLowerCase()))
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
@@ -360,11 +360,13 @@ public class CardKeywordFilters extends GUI_Base
                 .SetAlignment(0.5f, 0.0f, false);
     }
 
-    public CardKeywordFilters Initialize(ActionT1<CardKeywordButton> onClick, ArrayList<AbstractCard> cards) {
+    public CardKeywordFilters Initialize(ActionT1<CardKeywordButton> onClick, ArrayList<AbstractCard> cards, AbstractCard.CardColor color) {
         Clear(false, true);
         CurrentFilterCounts.clear();
         FilterButtons.clear();
         currentTotal = 0;
+
+        CustomModule = EUI.GetCustomCardFilter(color);
 
         HashSet<ModInfo> availableMods = new HashSet<>();
         HashSet<Integer> availableCosts = new HashSet<>();
@@ -687,6 +689,10 @@ public class CardKeywordFilters extends GUI_Base
         if (onClick != null) {
             onClick.Invoke(button);
         }
+    }
+
+    public float GetScrollDelta() {
+        return scrollDelta;
     }
 
     protected boolean ShouldShowScrollbar()

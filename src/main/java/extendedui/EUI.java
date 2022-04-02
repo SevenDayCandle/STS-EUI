@@ -4,6 +4,8 @@ import basemod.BaseMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.Hitbox;
@@ -11,15 +13,14 @@ import com.megacrit.cardcrawl.localization.Keyword;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.GUI_Base;
-import extendedui.ui.cardFilter.CardKeywordFilters;
-import extendedui.ui.cardFilter.CardPoolScreen;
-import extendedui.ui.cardFilter.CustomCardLibSortHeader;
+import extendedui.ui.cardFilter.*;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.ui.tooltips.EUITooltip;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -27,16 +28,16 @@ public class EUI
 {
     public static final ArrayList<GUI_Base> BattleSubscribers = new ArrayList<>();
     public static final ArrayList<GUI_Base> Subscribers = new ArrayList<>();
-    protected static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> preRenderList = new ConcurrentLinkedQueue<>();
-    protected static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> postRenderList = new ConcurrentLinkedQueue<>();
-    protected static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> priorityPostRenderList = new ConcurrentLinkedQueue<>();
-    protected static float delta = 0;
-    protected static float timer = 0;
-    protected static float dropdownX = 0;
-    protected static float dropdownY = 0;
-    protected static boolean isDragging;
-    protected static Hitbox lastHovered;
-    protected static Hitbox lastHoveredTemp;
+    private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> preRenderList = new ConcurrentLinkedQueue<>();
+    private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> postRenderList = new ConcurrentLinkedQueue<>();
+    private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> priorityPostRenderList = new ConcurrentLinkedQueue<>();
+    private static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customFilters = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customPoolModules = new HashMap<>();
+    private static float delta = 0;
+    private static float timer = 0;
+    private static boolean isDragging;
+    private static Hitbox lastHovered;
+    private static Hitbox lastHoveredTemp;
     protected static GUI_Base activeElement;
 
     public static AbstractScreen CurrentScreen;
@@ -140,6 +141,30 @@ public class EUI
 
     public static void AddSubscriber(GUI_Base element) {
         Subscribers.add(element);
+    }
+
+    public static void SetCustomCardFilter(AbstractCard.CardColor cardColor, CustomCardFilterModule element) {
+        customFilters.put(cardColor, element);
+    }
+
+    public static void SetCustomCardPoolModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
+        customPoolModules.put(cardColor, element);
+    }
+
+    public static CustomCardFilterModule GetCustomCardFilter(AbstractPlayer player) {
+        return player != null ? GetCustomCardFilter(player.getCardColor()) : null;
+    }
+
+    public static CustomCardFilterModule GetCustomCardFilter(AbstractCard.CardColor cardColor) {
+        return customFilters.get(cardColor);
+    }
+
+    public static CustomCardPoolModule GetCustomCardPoolModule(AbstractPlayer player) {
+        return player != null ? GetCustomCardPoolModule(player.getCardColor()) : null;
+    }
+
+    public static CustomCardPoolModule GetCustomCardPoolModule(AbstractCard.CardColor cardColor) {
+        return customPoolModules.get(cardColor);
     }
 
     private static void RenderImpl(SpriteBatch sb, Iterator<ActionT1<SpriteBatch>> i)
