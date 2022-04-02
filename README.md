@@ -1,6 +1,8 @@
 # STS-Effekseer
 STS-Effekseer is a utility library for playing Effekseer animations in Slay the Spire.
-It also comes with support for colorizing Effekseer animations and images in general with the colorful-gdx library, which offers a greater degree of freedom with color manipulation.
+It also comes with the following features:
+- Support for colorizing Effekseer animations and images in general with the colorful-gdx library, which offers a greater degree of freedom with color manipulation.
+- Support for resizing image with Scalr, which can be used to create high-quality thumbnails (Note: This functionality should ideally only be used for exporting textures in different sizes that lack mipmaps, as Scalr resizing can be very expensive to run).
 
 You can find Effekseer, along with some sample animations, at https://effekseer.github.io/en/.
 
@@ -68,6 +70,6 @@ This library also comes with wrappers to expedite rendering images with shader p
 ## **Credits**
 - Some code adapted from https://github.com/SrJohnathan/gdx-effekseer, https://github.com/SevenDayCandle/STS-FoolMod, and https://github.com/EatYourBeetS/STS-AnimatorMod
 - DLL Libraries created from https://github.com/effekseer/EffekseerForMultiLanguages
-- Uses functions from https://github.com/tommyettinger/colorful-gdx
+- Uses functions from https://github.com/tommyettinger/colorful-gdx and https://github.com/rkalla/imgscalr/
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
