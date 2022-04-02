@@ -16,7 +16,7 @@ import stseffekseer.swig.EffekseerManagerCore;
 import java.util.HashMap;
 
 import static stseffekseer.STSEffekSeerUtils.LoadEffect;
-import static stseffekseer.configuration.STSConfiguration.BASE_SPRITES_DEFAULT;
+import static stseffekseer.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
 
 public class STSEffekseerManager {
     public static final float BASE_ANIMATION_SPEED = 60f;
@@ -162,27 +162,27 @@ public class STSEffekseerManager {
      If you only want to colorize a particular effect, consider passing it through the Color parameter in Play/Modify instead
      */
     public static void RenderBrighter(SpriteBatch sb, Color color) {
-        STSRenderUtils.DrawBrighter(sb, color, STSEffekseerManager::Render);
+        EUIRenderHelpers.DrawBrighter(sb, color, STSEffekseerManager::Render);
     }
 
     public static void RenderBrighter(SpriteBatch sb, Float color) {
-        STSRenderUtils.DrawBrighter(sb, color, STSEffekseerManager::Render);
+        EUIRenderHelpers.DrawBrighter(sb, color, STSEffekseerManager::Render);
     }
 
     public static void RenderColored(SpriteBatch sb, Color color) {
-        STSRenderUtils.DrawColored(sb, color, STSEffekseerManager::Render);
+        EUIRenderHelpers.DrawColored(sb, color, STSEffekseerManager::Render);
     }
 
     public static void RenderColored(SpriteBatch sb, Float color) {
-        STSRenderUtils.DrawColored(sb, color, STSEffekseerManager::Render);
+        EUIRenderHelpers.DrawColored(sb, color, STSEffekseerManager::Render);
     }
 
     public static void RenderColorized(SpriteBatch sb, Color color) {
-        STSRenderUtils.DrawColorized(sb, color, STSEffekseerManager::Render);
+        EUIRenderHelpers.DrawColorized(sb, color, STSEffekseerManager::Render);
     }
 
     public static void RenderColorized(SpriteBatch sb, Float color) {
-        STSRenderUtils.DrawColorized(sb, color, STSEffekseerManager::Render);
+        EUIRenderHelpers.DrawColorized(sb, color, STSEffekseerManager::Render);
     }
 
     public static void Reset() {
