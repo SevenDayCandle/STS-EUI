@@ -1,4 +1,4 @@
-# STS-Extended UI
+# STS Compendium Filters
 
 This mod (formerly known as STS-Effekseer) adds the following features:
 
