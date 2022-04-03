@@ -7,7 +7,7 @@ This mod (formerly known as STS-Effekseer) adds the following features:
 
 Both the card pool and the card filters components come with hooks that allow modders to render custom components within those screens. The card filter also allows modders to define their own custom filters for their custom cards.
 
-It also comes with the following features:
+This mod also comes with the following features:
 - Support for playing Effekseer animations in Slay the Spire.
 - Support for colorizing Effekseer animations and images in general with the colorful-gdx library, which offers a greater degree of freedom with color manipulation.
 - Support for resizing image with Scalr, which can be used to create high-quality thumbnails (Note: This functionality should ideally only be used for exporting textures in different sizes that lack mipmaps, as Scalr resizing can be very expensive to run).
