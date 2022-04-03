@@ -102,6 +102,15 @@ public class CardKeywordFilters extends GUI_Base
     protected boolean isAccessedFromCardPool;
     private boolean shouldSortByCount;
 
+    public static void ToggleFilters() {
+        if (EUI.CardFilters.isActive) {
+            EUI.CardFilters.Close();
+        }
+        else {
+            EUI.CardFilters.Open();
+        }
+    }
+
     public static ArrayList<EUITooltip> GetAllTooltips(AbstractCard c) {
         ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
         TooltipCard eC = JavaUtils.SafeCast(c, TooltipCard.class);
@@ -172,7 +181,7 @@ public class CardKeywordFilters extends GUI_Base
                     }
 
                     //Module check
-                    if (CustomModule != null && CustomModule.IsCardValid(c)) {
+                    if (CustomModule != null && !CustomModule.IsCardValid(c)) {
                         return false;
                     }
 

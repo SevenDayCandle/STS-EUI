@@ -12,6 +12,7 @@ public class EUIHotkeys
     public static final HashMap<Integer, Integer> EQUIVALENT_KEYS = new HashMap<>();
 
     private static final String KEYMAP_CYCLE = EUIConfiguration.GetFullKey("Cycle");
+    private static final String KEYMAP_OPEN_CARD_POOL = EUIConfiguration.GetFullKey("OpenCardPool");
     private static final String KEYMAP_TOGGLE_FILTERS = EUIConfiguration.GetFullKey("ToggleFilters");
 
     static {
@@ -24,23 +25,27 @@ public class EUIHotkeys
     }
 
     public static InputAction cycle;
+    public static InputAction openCardPool;
     public static InputAction toggleFilters;
 
     public static void load()
     {
         cycle = new InputAction(InputActionSet.prefs.getInteger(KEYMAP_CYCLE, Input.Keys.CONTROL_LEFT));
+        openCardPool = new InputAction(InputActionSet.prefs.getInteger(KEYMAP_OPEN_CARD_POOL, Input.Keys.P));
         toggleFilters = new InputAction(InputActionSet.prefs.getInteger(KEYMAP_TOGGLE_FILTERS, Input.Keys.N));
     }
 
     public static void save()
     {
         InputActionSet.prefs.putInteger(KEYMAP_CYCLE, cycle.getKey());
+        InputActionSet.prefs.putInteger(KEYMAP_OPEN_CARD_POOL, openCardPool.getKey());
         InputActionSet.prefs.putInteger(KEYMAP_TOGGLE_FILTERS, toggleFilters.getKey());
     }
 
     public static void resetToDefaults()
     {
         cycle.remap(Input.Keys.CONTROL_LEFT);
+        openCardPool.remap(Input.Keys.P);
         toggleFilters.remap(Input.Keys.N);
     }
 }

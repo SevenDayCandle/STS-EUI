@@ -30,6 +30,7 @@ public class HotkeyPatches
         {
             if (!Settings.isControllerMode) {
                 elements.add(new RemapInputElement(__instance, EUIRM.Strings.Hotkey_Cycle, EUIHotkeys.cycle));
+                elements.add(new RemapInputElement(__instance, EUIRM.Strings.Hotkey_OpenCardPool, EUIHotkeys.openCardPool));
                 elements.add(new RemapInputElement(__instance, EUIRM.Strings.Hotkey_Toggle, EUIHotkeys.toggleFilters));
             }
         }

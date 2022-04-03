@@ -13,6 +13,8 @@ import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
 import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.JavaUtils;
+import extendedui.configuration.EUIHotkeys;
+import extendedui.ui.cardFilter.CardKeywordFilters;
 import extendedui.ui.controls.GUI_Button;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.utilities.FieldInfo;
@@ -70,14 +72,7 @@ public class CardLibraryScreenPatches
                 openButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
                         .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
                         .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.95f).SetText(EUIRM.Strings.UI_Filters)
-                        .SetOnClick(() -> {
-                            if (EUI.CardFilters.isActive) {
-                                EUI.CardFilters.Close();
-                            }
-                            else {
-                                EUI.CardFilters.Open();
-                            }
-                        })
+                        .SetOnClick(CardKeywordFilters::ToggleFilters)
                         .SetColor(Color.GRAY);
             }
         }
@@ -97,6 +92,9 @@ public class CardLibraryScreenPatches
             if (EUI.CardFilters.TryUpdate())
             {
                 _grabbedScreen.Set(__instance, false);
+            }
+            if (EUIHotkeys.toggleFilters.isJustPressed()) {
+                CardKeywordFilters.ToggleFilters();
             }
         }
     }

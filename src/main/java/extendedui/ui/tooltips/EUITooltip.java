@@ -75,7 +75,7 @@ public class EUITooltip
     public String id;
     public String title;
     public ColoredString subText;
-    public String description;
+    public String description; // TODO allow for multiple descriptions
     public float iconMulti_W = 1;
     public float iconMulti_H = 1;
     public boolean canRender = true;

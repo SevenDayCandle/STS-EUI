@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
+import extendedui.utilities.TupleT2;
 import org.imgscalr.Scalr;
 import extendedui.interfaces.DrawFunction;
 import extendedui.interfaces.delegates.FuncT1;
@@ -208,98 +209,6 @@ public class EUIRenderHelpers
         font.getData().setScale(1);
     }
 
-    public static BitmapFont GetLargeAttributeFont(TooltipCard card)
-    {
-        BitmapFont result;
-        if (card.isPopup)
-        {
-            result = EUIFontHelper.CardIconFont_VeryLarge;
-            result.getData().setScale(card.drawScale * 0.5f);
-        }
-        else
-        {
-            result = EUIFontHelper.CardIconFont_Large;
-            result.getData().setScale(card.drawScale);
-        }
-
-        return result;
-    }
-
-    public static BitmapFont GetSmallAttributeFont(TooltipCard card)
-    {
-        BitmapFont result;
-        if (card.isPopup)
-        {
-            result = EUIFontHelper.CardIconFont_Large;
-            result.getData().setScale(card.drawScale * 0.45f);
-        }
-        else
-        {
-            result = EUIFontHelper.CardIconFont_Small;
-            result.getData().setScale(card.drawScale * 0.9f);
-        }
-
-        return result;
-    }
-
-    public static BitmapFont GetSmallTextFont(TooltipCard card, String text)
-    {
-        float scaleModifier = 0.8f;
-        int length = text.length();
-        if (length > 20)
-        {
-            scaleModifier -= 0.02f * (length - 20);
-            if (scaleModifier < 0.5f)
-            {
-                scaleModifier = 0.5f;
-            }
-        }
-
-        BitmapFont result;
-        if (card.isPopup)
-        {
-            result = EUIFontHelper.CardTitleFont_Large;
-            result.getData().setScale(card.drawScale * scaleModifier * 0.5f);
-        }
-        else
-        {
-            // NOTE: this was FontHelper.cardTitleFont_small
-            result = EUIFontHelper.CardTitleFont_Small;
-            result.getData().setScale(card.drawScale * scaleModifier);
-        }
-
-        return result;
-    }
-
-    public static BitmapFont GetSmallTextFont_Legacy(TooltipCard card, String text)
-    {
-        float scaleModifier = 0.8f;
-        int length = text.length();
-        if (length > 20)
-        {
-            scaleModifier -= 0.02f * (length - 20);
-            if (scaleModifier < 0.5f)
-            {
-                scaleModifier = 0.5f;
-            }
-        }
-
-        BitmapFont result;
-        if (card.isPopup)
-        {
-            result = FontHelper.SCP_cardTitleFont_small;
-            result.getData().setScale(card.drawScale * scaleModifier * 0.5f);
-        }
-        else
-        {
-            // NOTE: this was FontHelper.cardTitleFont_small
-            result = EUIFontHelper.CardTitleFont_Small;
-            result.getData().setScale(card.drawScale * scaleModifier);
-        }
-
-        return result;
-    }
-
     public static BitmapFont GetDescriptionFont(TooltipCard card, float scaleModifier)
     {
         BitmapFont result;
@@ -330,23 +239,6 @@ public class EUIRenderHelpers
         {
             result = EUIFontHelper.CardTitleFont_Normal;
             result.getData().setScale(card.drawScale * scale);
-        }
-
-        return result;
-    }
-
-    public static BitmapFont GetEnergyFont(TooltipCard card)
-    {
-        BitmapFont result;
-        if (card.isPopup)
-        {
-            result = FontHelper.SCP_cardEnergyFont;
-            result.getData().setScale(card.drawScale * 0.5f);
-        }
-        else
-        {
-            result = FontHelper.cardEnergyFont_L;
-            result.getData().setScale(card.drawScale);
         }
 
         return result;
@@ -691,14 +583,14 @@ public class EUIRenderHelpers
         return font;
     }
 
-    public static void WriteSmartText(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, Color baseColor)
+    public static TupleT2<Float, Float> WriteSmartText(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, Color baseColor)
     {
-        WriteSmartText(sb, font, text, x, y, lineWidth, font.getLineHeight() * Settings.scale, baseColor);
+        return WriteSmartText(sb, font, text, x, y, lineWidth, font.getLineHeight() * Settings.scale, baseColor);
     }
 
-    public static void WriteSmartText(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor)
+    public static TupleT2<Float, Float> WriteSmartText(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor)
     {
-        if (text != null)
+        if (text != null && !text.isEmpty())
         {
             builder.setLength(0);
             layout.setText(font, " ");
@@ -744,29 +636,34 @@ public class EUIRenderHelpers
                         if (curWidth + CARD_ENERGY_IMG_WIDTH > lineWidth)
                         {
                             curHeight -= lineSpacing;
-                            if (backgroundColor != null) {
-                                sb.setColor(backgroundColor);
-                                sb.draw(EUIRM.Images.Base_Badge.Texture(), x - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale,
-                                        orbWidth / 2f, orbHeight / 2f,
-                                        orbWidth, orbHeight, scaleX, scaleY, 0f,
-                                        icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
-                                        icon.getRegionHeight(), false, false);
+                            if (sb != null) {
+                                if (backgroundColor != null) {
+                                    sb.setColor(backgroundColor);
+                                    sb.draw(EUIRM.Images.Base_Badge.Texture(), x - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale,
+                                            orbWidth / 2f, orbHeight / 2f,
+                                            orbWidth, orbHeight, scaleX, scaleY, 0f,
+                                            icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
+                                            icon.getRegionHeight(), false, false);
+                                }
+                                sb.setColor(baseColor);
+                                sb.draw(icon, x - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
                             }
-                            sb.setColor(baseColor);
-                            sb.draw(icon, x - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
                             curWidth = CARD_ENERGY_IMG_WIDTH + spaceWidth;
                         }
                         else
                         {
-                            if (backgroundColor != null) {
-                                sb.setColor(backgroundColor);
-                                sb.draw(EUIRM.Images.Base_Badge.Texture(), x + curWidth - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale,
-                                        orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f,
-                                        icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
-                                        icon.getRegionHeight(), false, false);
+                            if (sb != null) {
+                                if (backgroundColor != null) {
+                                    sb.setColor(backgroundColor);
+                                    sb.draw(EUIRM.Images.Base_Badge.Texture(), x + curWidth - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale,
+                                            orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f,
+                                            icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
+                                            icon.getRegionHeight(), false, false);
+                                }
+                                sb.setColor(baseColor);
+                                sb.draw(icon, x + curWidth - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
                             }
-                            sb.setColor(baseColor);
-                            sb.draw(icon, x + curWidth - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
+
                             curWidth += CARD_ENERGY_IMG_WIDTH + spaceWidth;
                         }
                     }
@@ -818,12 +715,16 @@ public class EUIRenderHelpers
                         if (curWidth + layout.width > lineWidth)
                         {
                             curHeight -= lineSpacing;
-                            font.draw(sb, word, x, y + curHeight);
+                            if (sb != null) {
+                                font.draw(sb, word, x, y + curHeight);
+                            }
                             curWidth = layout.width + spaceWidth;
                         }
                         else
                         {
-                            font.draw(sb, word, x + curWidth, y + curHeight);
+                            if (sb != null) {
+                                font.draw(sb, word, x + curWidth, y + curHeight);
+                            }
                             curWidth += layout.width + spaceWidth;
                         }
                     }
@@ -835,7 +736,9 @@ public class EUIRenderHelpers
             }
 
             layout.setText(font, text);
+            return new TupleT2<>(curWidth, curHeight);
         }
+        return new TupleT2<>(0f, 0f);
     }
 
     public static float GetSmartHeight(BitmapFont font, String text, float lineWidth)
@@ -843,106 +746,21 @@ public class EUIRenderHelpers
         return GetSmartHeight(font, text, lineWidth, font.getLineHeight());
     }
 
-    //TODO: Combine with WriteSmartText
     public static float GetSmartHeight(BitmapFont font, String text, float lineWidth, float lineSpacing)
     {
-        if (text == null || text.isEmpty())
-        {
-            return 0;
-        }
-
-        builder.setLength(0);
-        layout.setText(font, " ");
-
-        float curWidth = 0f;
-        float curHeight = 0f;
-        float spaceWidth = layout.width;
-
-        final FuncT3<Boolean, String, Integer, Character> compare = (s, i, c) -> c == ((i < s.length()) ? s.charAt(i) : null);
-        final FuncT1<String, StringBuilder> build = (stringBuilder) ->
-        {
-            String result = stringBuilder.toString();
-            stringBuilder.setLength(0);
-            return result;
-        };
-
-        boolean foundIcon = false;
-
-        for (int i = 0; i < text.length(); i++)
-        {
-            char c = text.charAt(i);
-            if ('N' == c && compare.Invoke(text, i + 1, 'L'))
-            {
-                curWidth = 0f;
-                curHeight -= lineSpacing;
-                i += 1;
-            }
-            else if ('T' == c && compare.Invoke(text, i + 1, 'A') && compare.Invoke(text, i + 2, 'B'))
-            {
-                curWidth += spaceWidth * 5.0F;
-                i += 2;
-            }
-            else if ('[' == c)
-            {
-                foundIcon = true;
-            }
-            else if (foundIcon && ']' == c)
-            {
-                foundIcon = false;
-                TextureRegion icon = GetSmallIcon(build.Invoke(builder));
-                if (icon != null)
-                {
-                    if (curWidth + CARD_ENERGY_IMG_WIDTH > lineWidth)
-                    {
-                        curHeight -= lineSpacing;
-                        curWidth = CARD_ENERGY_IMG_WIDTH + spaceWidth;
-                    }
-                    else
-                    {
-                        curWidth += CARD_ENERGY_IMG_WIDTH + spaceWidth;
-                    }
-                }
-            }
-            else if ('#' == c)
-            {
-                if (text.length() > i + 1)
-                {
-                    i += 1;
-                }
-            }
-            else if ('^' == c || ' ' == c || text.length() == (i + 1))
-            {
-                if (c != '^' && c != ' ')
-                {
-                    builder.append(c);
-                }
-
-                final String word = build.Invoke(builder);
-                if (word != null && word.length() > 0)
-                {
-                    layout.setText(font, word);
-                    if (curWidth + layout.width > lineWidth)
-                    {
-                        curHeight -= lineSpacing;
-                        curWidth = layout.width + spaceWidth;
-                    }
-                    else
-                    {
-                        curWidth += layout.width + spaceWidth;
-                    }
-                }
-            }
-            else
-            {
-                builder.append(c);
-            }
-        }
-
-        layout.setText(font, text);
-        return curHeight;
+        return WriteSmartText(null, font, text, 0, 0, lineWidth, lineSpacing * Settings.scale, Color.WHITE).V2;
     }
 
-    // TODO Use the Affinity values for fetching icons instead of hardcoded values
+    public static float GetSmartWidth(BitmapFont font, String text, float lineSpacing)
+    {
+        return GetSmartWidth(font, text, Integer.MAX_VALUE, lineSpacing);
+    }
+
+    public static float GetSmartWidth(BitmapFont font, String text, float lineWidth, float lineSpacing)
+    {
+        return WriteSmartText(null, font, text, 0, 0, lineWidth, lineSpacing * Settings.scale, Color.WHITE).V1;
+    }
+
     public static TextureRegion GetSmallIcon(String id)
     {
         switch (id)

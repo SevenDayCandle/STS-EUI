@@ -98,6 +98,7 @@
                         <configuration>
                             <target>
                                 <copy file="target/ExtendedUI.jar" tofile="D:\Program Files\Steam\steamapps\common\SlayTheSpire\mods\ExtendedUI.jar"/>
+                                <copy file="target/ExtendedUI.jar" tofile="D:\Program Files\Steam\steamapps\common\SlayTheSpire\mymod\content\ExtendedUI.jar"/>
                             </target>
                         </configuration>
                         <goals>

@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
+import extendedui.configuration.EUIHotkeys;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.GUI_Button;
 import extendedui.ui.controls.GUI_CardGrid;
@@ -56,14 +57,7 @@ public class CardPoolScreen extends AbstractScreen
         openButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
                 .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
                 .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.95f).SetText(EUIRM.Strings.UI_Filters)
-                .SetOnClick(() -> {
-                    if (EUI.CardFilters.isActive) {
-                        EUI.CardFilters.Close();
-                    }
-                    else {
-                        EUI.CardFilters.Open();
-                    }
-                })
+                .SetOnClick(CardKeywordFilters::ToggleFilters)
                 .SetColor(Color.GRAY);
     }
 
@@ -116,6 +110,9 @@ public class CardPoolScreen extends AbstractScreen
         }
         if (CustomModule != null) {
             CustomModule.TryUpdate();
+        }
+        if (EUIHotkeys.toggleFilters.isJustPressed()) {
+            CardKeywordFilters.ToggleFilters();
         }
     }
 

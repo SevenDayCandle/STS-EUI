@@ -6,6 +6,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
+import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.delegates.FuncT0;
 import extendedui.ui.tooltips.EUITooltip;
 
@@ -47,8 +48,12 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     public void update() {
         super.update();
         if (this.tooltip != null && getHitbox().hovered) {
+            tooltip.title = EUIRM.Strings.UI_ViewCardPool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")";
             tooltip.description = GetFullDescription();
             EUITooltip.QueueTooltip(tooltip);
+        }
+        if (EUIHotkeys.openCardPool.isJustPressed() && EUI.CurrentScreen != EUI.CardsScreen) {
+            EUI.CardsScreen.Open(AbstractDungeon.player, GetAllCards());
         }
     }
 

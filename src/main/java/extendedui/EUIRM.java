@@ -84,8 +84,8 @@ public class EUIRM
     }
 
     public static class Images {
-        public final TextureCache Base_Badge                  = new TextureCache("images/extendedui/ui/Base_Badge.png");
-        public final TextureCache Base_Border                 = new TextureCache("images/extendedui/ui/Base_Border.png");
+        public final TextureCache Base_Badge                  = new TextureCache("images/extendedui/tooltip/Base_Badge.png");
+        public final TextureCache Base_Border                 = new TextureCache("images/extendedui/tooltip/Base_Border.png");
         public final TextureCache Border                      = new TextureCache("images/extendedui/ui/Border.png");
         public final TextureCache CardPool                    = new TextureCache("images/extendedui/ui/CardPool.png");
         public final TextureCache Divider                     = new TextureCache("images/extendedui/ui/Divider.png");
@@ -118,7 +118,8 @@ public class EUIRM
         public final String Config_FlushOnRoomStart = StringsConfig.TEXT[1];
 
         public final String Hotkey_Cycle = StringsHotkeys.TEXT[0];
-        public final String Hotkey_Toggle = StringsHotkeys.TEXT[1];
+        public final String Hotkey_OpenCardPool = StringsHotkeys.TEXT[1];
+        public final String Hotkey_Toggle = StringsHotkeys.TEXT[2];
 
         public final String UI_ItemsSelected = StringsUI.TEXT[0];
         public final String UI_Keywords = StringsUI.TEXT[1];
