@@ -443,7 +443,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
 
     @Override
     public void Update() {
-        this.hb.update();
+        super.Update();
         this.button.Update();
         this.header.TryUpdate();
         if ((this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0) {

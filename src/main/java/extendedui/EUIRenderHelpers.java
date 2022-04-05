@@ -748,7 +748,7 @@ public class EUIRenderHelpers
 
     public static float GetSmartHeight(BitmapFont font, String text, float lineWidth, float lineSpacing)
     {
-        return WriteSmartText(null, font, text, 0, 0, lineWidth, lineSpacing * Settings.scale, Color.WHITE).V2;
+        return WriteSmartText(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).V2;
     }
 
     public static float GetSmartWidth(BitmapFont font, String text, float lineSpacing)
@@ -758,7 +758,7 @@ public class EUIRenderHelpers
 
     public static float GetSmartWidth(BitmapFont font, String text, float lineWidth, float lineSpacing)
     {
-        return WriteSmartText(null, font, text, 0, 0, lineWidth, lineSpacing * Settings.scale, Color.WHITE).V1;
+        return WriteSmartText(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).V1;
     }
 
     public static TextureRegion GetSmallIcon(String id)
@@ -815,7 +815,7 @@ public class EUIRenderHelpers
 
     public static float GetTooltipHeight(EUITooltip tip)
     {
-        return -GetSmartHeight(FontHelper.tipBodyFont, tip.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
+        return -GetSmartHeight(FontHelper.tipBodyFont, tip.Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
     }
 
     public static float CalculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY)
@@ -863,7 +863,7 @@ public class EUIRenderHelpers
         final int h = texture.getHeight();
         final int w = texture.getWidth();
         final int section = h / 2;
-        return new TextureAtlas.AtlasRegion(texture, (w / 2) - (section / 2), 0, section, section);
+        return new TextureAtlas.AtlasRegion(texture, (w - section) / 2, 0, section, section);
     }
 
     public enum BlendingMode {

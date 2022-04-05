@@ -40,7 +40,6 @@
     </orderEntry>
     <orderEntry type="library" name="Maven: com.github.tommyettinger:colorful:0.7.0" level="project" />
     <orderEntry type="library" name="Maven: com.badlogicgames.gdx:gdx:1.9.13" level="project" />
-    <orderEntry type="library" name="Maven: org.imgscalr:imgscalr-lib:4.2" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

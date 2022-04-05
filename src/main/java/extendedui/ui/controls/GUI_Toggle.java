@@ -153,7 +153,7 @@ public class GUI_Toggle extends GUI_Hoverable
     @Override
     public void Update()
     {
-        hb.update();
+        super.Update();
 
         if (!interactable)
         {

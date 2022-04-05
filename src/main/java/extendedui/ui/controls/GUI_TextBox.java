@@ -119,12 +119,6 @@ public class GUI_TextBox extends GUI_Hoverable
     }
 
     @Override
-    public void Update()
-    {
-        hb.update();
-    }
-
-    @Override
     public void Render(SpriteBatch sb)
     {
         image.Render(sb, hb);

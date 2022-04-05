@@ -54,7 +54,7 @@ public class GUI_VerticalScrollBar extends GUI_Hoverable
     {
         cursorDrawPosition = MathHelper.scrollSnapLerpSpeed(cursorDrawPosition, FromPercentage(currentScrollPercent));
 
-        hb.update();
+        super.Update();
 
         if (isDragging)
         {

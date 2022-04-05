@@ -149,12 +149,6 @@ public class GUI_Label extends GUI_Hoverable
     }
 
     @Override
-    public void Update()
-    {
-        hb.update();
-    }
-
-    @Override
     public void Render(SpriteBatch sb)
     {
         Render(sb, hb);

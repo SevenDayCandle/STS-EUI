@@ -235,7 +235,7 @@ public class GUI_Button extends GUI_Hoverable
             return;
         }
 
-        this.hb.update();
+        super.Update();
 
         if (IsInteractable() && EUI.TryHover(hb))
         {

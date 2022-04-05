@@ -32,7 +32,7 @@ public abstract class TooltipPotion extends AbstractPotion implements TooltipPro
 
     protected void initializeTips(AbstractPlayer.PlayerClass playerClass) {
         pclTips.clear();
-        pclTips.add(new EUITooltip(name, description, playerClass));
+        pclTips.add(new EUITooltip(name, playerClass, DESCRIPTIONS));
         EUIGameUtils.ScanForTips(description, pclTips);
     }
 

@@ -48,8 +48,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     public void update() {
         super.update();
         if (this.tooltip != null && getHitbox().hovered) {
-            tooltip.title = EUIRM.Strings.UI_ViewCardPool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")";
-            tooltip.description = GetFullDescription();
+            tooltip.SetText(EUIRM.Strings.UI_ViewCardPool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")", GetFullDescription());
             EUITooltip.QueueTooltip(tooltip);
         }
         if (EUIHotkeys.openCardPool.isJustPressed() && EUI.CurrentScreen != EUI.CardsScreen) {

@@ -12,6 +12,7 @@ import extendedui.ui.tooltips.EUITooltip;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO add multi description support
 public abstract class TooltipRelic extends CustomRelic implements TooltipProvider {
 
     public ArrayList<EUITooltip> tips;
@@ -37,7 +38,7 @@ public abstract class TooltipRelic extends CustomRelic implements TooltipProvide
     public final void updateDescription(AbstractPlayer.PlayerClass c)
     {
         this.description = getUpdatedDescription();
-        this.mainTooltip.description = description;
+        this.mainTooltip.SetDescriptions(description);
     }
 
     @Override
@@ -52,7 +53,7 @@ public abstract class TooltipRelic extends CustomRelic implements TooltipProvide
             tips.clear();
         }
 
-        mainTooltip = new EUITooltip(name, description, this.playerClass);
+        mainTooltip = new EUITooltip(name, this.playerClass, description);
         tips.add(mainTooltip);
         EUIGameUtils.ScanForTips(description, tips);
     }

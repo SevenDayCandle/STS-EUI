@@ -50,7 +50,7 @@ public abstract class TooltipBlight extends AbstractBlight implements TooltipPro
             initializeTips();
         }
         if (tips.size() > 0) {
-            tips.get(0).description = description;
+            tips.get(0).SetDescriptions(description);
         }
     }
 

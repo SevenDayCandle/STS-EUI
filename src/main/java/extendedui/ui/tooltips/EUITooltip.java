@@ -23,15 +23,16 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import org.apache.commons.lang3.StringUtils;
 import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.FieldInfo;
 import extendedui.utilities.Mathf;
 import extendedui.utilities.abstracts.*;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -70,32 +71,44 @@ public class EUITooltip
     private static AbstractCreature creature;
     private static Vector2 genericTipPos = new Vector2(0, 0);
 
-    public TextureRegion icon;
+    public ArrayList<String> descriptions = new ArrayList<>();
+    public Boolean hideDescription = null;
     public Color backgroundColor;
+    public ColoredString modName;
+    public ColoredString subHeader;
+    public ColoredString subText;
     public String id;
     public String title;
-    public ColoredString subText;
-    public String description; // TODO allow for multiple descriptions
-    public float iconMulti_W = 1;
-    public float iconMulti_H = 1;
+    public TextureRegion icon;
     public boolean canRender = true;
-    public Boolean hideDescription = null;
+    public float iconMulti_H = 1;
+    public float iconMulti_W = 1;
+    protected int currentDesc;
 
-    public EUITooltip(String title, String description)
+    public EUITooltip(String title, String... descriptions)
     {
-        this.title = title;
-        this.description = description;
+        this(title, Arrays.asList(descriptions));
     }
 
-    public EUITooltip(String title, String description, AbstractPlayer.PlayerClass playerClass)
+    public EUITooltip(String title, List<String> descriptions)
     {
         this.title = title;
-        this.description = description;
+        this.descriptions.addAll(descriptions);
+    }
+
+    public EUITooltip(String title, AbstractPlayer.PlayerClass playerClass, String... descriptions) {
+        this(title, playerClass, Arrays.asList(descriptions));
+    }
+
+    public EUITooltip(String title, AbstractPlayer.PlayerClass playerClass, List<String> descriptions)
+    {
+        this.title = title;
+        this.descriptions.addAll(descriptions);
 
         if (WhatMod.enabled && playerClass != null) {
-            String modName = WhatMod.findModName(playerClass.getClass());
-            if (modName != null) {
-                description = FontHelper.colorString(modName, "p") + " NL " + description;
+            String foundName = WhatMod.findModName(playerClass.getClass());
+            if (foundName != null) {
+                modName = new ColoredString(foundName, Settings.PURPLE_COLOR);
             }
         }
     }
@@ -103,7 +116,7 @@ public class EUITooltip
     public EUITooltip(Keyword keyword)
     {
         this.title = keyword.PROPER_NAME;
-        this.description = keyword.DESCRIPTION;
+        this.descriptions.add(keyword.DESCRIPTION);
     }
 
     public static void RegisterID(String id, EUITooltip tooltip)
@@ -319,7 +332,7 @@ public class EUITooltip
             float size = 0;
             for (EUITooltip tip : tooltips)
             {
-                if (tip.hideDescription || StringUtils.isEmpty(tip.description))
+                if (tip.hideDescription || StringUtils.isEmpty(tip.Description()))
                 {
                     if (!inHand)
                     {
@@ -348,7 +361,7 @@ public class EUITooltip
         for (int i = 0; i < tooltips.size(); i++)
         {
             EUITooltip tip = tooltips.get(i);
-            if (inHand && (tip.hideDescription || StringUtils.isEmpty(tip.description)))
+            if (inHand && (tip.hideDescription || StringUtils.isEmpty(tip.Description())))
             {
                 continue;
             }
@@ -632,6 +645,13 @@ public class EUITooltip
 
     public float Render(SpriteBatch sb, float x, float y, int index)
     {
+        if (EUIHotkeys.cycle.isJustPressed()) {
+            CycleDescription();
+        }
+        if (descriptions.size() > 1 && (subText == null || subText.text.isEmpty())) {
+            UpdateCycleText();
+        }
+
         if (hideDescription == null)
         {
             JavaUtils.LogWarning(this, "hideDescription was null, why?");
@@ -641,8 +661,10 @@ public class EUITooltip
 
         BitmapFont descriptionFont = card == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
 
-        final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-        final float h = (hideDescription || StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-textHeight - 7f * Settings.scale);
+        final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+        final float modTextHeight = (modName != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
+        final float subHeaderTextHeight = (subHeader != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
+        final float h = (hideDescription || StringUtils.isEmpty(Description())) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
 
         sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
         sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, BOX_W, BOX_EDGE_H);
@@ -657,14 +679,14 @@ public class EUITooltip
         {
             // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
             renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, 28 * iconMulti_W, 28 * iconMulti_H);
-            FontHelper.renderFontLeftTopAligned(sb, FontHelper.tipHeaderFont, JavaUtils.Capitalize(title), x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+            FontHelper.renderFontLeftTopAligned(sb, FontHelper.tipHeaderFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
         else
         {
-            FontHelper.renderFontLeftTopAligned(sb, FontHelper.tipHeaderFont, JavaUtils.Capitalize(title), x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+            FontHelper.renderFontLeftTopAligned(sb, FontHelper.tipHeaderFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
 
-        if (!StringUtils.isEmpty(description))
+        if (!StringUtils.isEmpty(Description()))
         {
             if (card != null && StringUtils.isNotEmpty(id) && !inHand && index >= 0)
             {
@@ -675,9 +697,19 @@ public class EUITooltip
                 FontHelper.renderFontRightTopAligned(sb, descriptionFont, subText.text, x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, subText.color);
             }
 
+            float yOff = y + BODY_OFFSET_Y;
+            if (modName != null) {
+                FontHelper.renderFontLeftTopAligned(sb, descriptionFont, modName.text, x + TEXT_OFFSET_X, yOff, modName.color);
+                yOff += modTextHeight;
+            }
+            if (subHeader != null) {
+                FontHelper.renderFontLeftTopAligned(sb, descriptionFont, subHeader.text, x + TEXT_OFFSET_X, yOff, subHeader.color);
+                yOff += subHeaderTextHeight;
+            }
+
             if (!hideDescription)
             {
-                EUIRenderHelpers.WriteSmartText(sb, descriptionFont, description, x + TEXT_OFFSET_X, y + BODY_OFFSET_Y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+                EUIRenderHelpers.WriteSmartText(sb, descriptionFont, Description(), x + TEXT_OFFSET_X, yOff, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
             }
         }
 
@@ -736,15 +768,19 @@ public class EUITooltip
         return this;
     }
 
-    public EUITooltip SetText(String title, String description)
+    public EUITooltip SetText(String title, String... description) {
+        return SetText(title, Arrays.asList(description));
+    }
+
+    public EUITooltip SetText(String title, List<String> description)
     {
         if (title != null)
         {
-            this.title = title;
+            SetTitle(title);
         }
-        if (description != null)
+        if (description != null && description.size() > 0)
         {
-            this.description = description;
+            SetDescriptions(description);
         }
 
         return this;
@@ -753,6 +789,44 @@ public class EUITooltip
     public EUITooltip ShowText(boolean value)
     {
         this.canRender = value;
+
+        return this;
+    }
+
+    public EUITooltip SetTitle(String title)
+    {
+        this.title = title;
+
+        return this;
+    }
+
+    public EUITooltip SetDescription(String description) {
+        return SetDescription(description, 0);
+    }
+
+    public EUITooltip SetDescription(String description, int index)
+    {
+        if (this.descriptions.size() <= index) {
+            this.descriptions.add(description);
+        }
+        else {
+            this.descriptions.set(index, description);
+        }
+
+        return this;
+    }
+
+    public EUITooltip SetDescriptions(String... descriptions)
+    {
+        return SetDescriptions(Arrays.asList(descriptions));
+    }
+
+    public EUITooltip SetDescriptions(List<String> descriptions)
+    {
+        this.descriptions.clear();
+        this.descriptions.addAll(descriptions);
+        currentDesc = 0;
+        UpdateCycleText();
 
         return this;
     }
@@ -773,9 +847,36 @@ public class EUITooltip
                 region.getRegionHeight(), false, false);
     }
 
+    public String Description()
+    {
+        return currentDesc < descriptions.size() ? descriptions.get(currentDesc) : "";
+    }
+
     public String GetTitleOrIcon()
     {
         return (id != null) ? "[" + id + "]" : title;
+    }
+
+    public String CycleDescription() {
+        return SetIndex((currentDesc + 1) % descriptions.size());
+    }
+
+    public String SetIndex(int index) {
+        if (descriptions.size() < 1) {
+            return "";
+        }
+        currentDesc = Mathf.Clamp(index, 0, descriptions.size() - 1);
+        UpdateCycleText();
+        return Description();
+    }
+
+    protected void UpdateCycleText() {
+        if (descriptions.size() > 1) {
+            if (subText == null) {
+                subText = new ColoredString("", Settings.PURPLE_COLOR);
+            }
+            subText.SetText(EUIRM.Strings.KeyToCycle(EUIHotkeys.cycle.getKeyString()) + " (" + (currentDesc + 1) + "/" + descriptions.size() + ")");
+        }
     }
 
     @Override

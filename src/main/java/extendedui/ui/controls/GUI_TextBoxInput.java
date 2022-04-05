@@ -81,7 +81,7 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
     @Override
     public void Update()
     {
-        hb.update();
+        super.Update();
         if (EUIInputManager.LeftClick.IsJustReleased()) {
             if (!isEditing && (hb.hovered || hb.clicked)) {
                 Start();

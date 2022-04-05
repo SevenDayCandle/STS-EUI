@@ -24,18 +24,12 @@ public abstract class GUI_Hoverable extends GUI_Base
         return isActive;
     }
 
-    public boolean TryUpdate()
+    public void Update()
     {
-        if (isActive)
-        {
-            this.hb.update();
-            Update();
-            if (this.hb.hovered && tooltip != null && tooltip.canRender) {
-                EUITooltip.QueueTooltip(tooltip);
-            }
+        this.hb.update();
+        if (this.hb.hovered && tooltip != null && tooltip.canRender) {
+            EUITooltip.QueueTooltip(tooltip);
         }
-
-        return isActive;
     }
 
     public GUI_Hoverable SetHitbox(AdvancedHitbox hb) {

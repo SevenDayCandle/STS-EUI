@@ -211,10 +211,7 @@ public class GUI_Image extends GUI_Hoverable
     @Override
     public void Update()
     {
-        if (hb != null)
-        {
-            hb.update();
-        }
+        super.Update();
 
         if (targetColor != null && baseTransitionTime > 0) {
             transitionTime -= Gdx.graphics.getRawDeltaTime();

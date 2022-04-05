@@ -45,6 +45,10 @@ public class EUI
     public static CardKeywordFilters CardFilters;
     public static CustomCardLibSortHeader CustomHeader;
 
+    public static boolean IsLoaded() {
+        return CardsScreen != null; // This will be null before the UI has loaded
+    }
+
     public static void Initialize()
     {
         CardsScreen = new CardPoolScreen();
