@@ -2,6 +2,7 @@ package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import extendedui.EUI;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
@@ -57,6 +58,20 @@ public class GUI_ContextMenu<T> extends GUI_Dropdown<T>
 
     @Override
     protected void RenderArrows(SpriteBatch sb) {
+    }
+
+    @Override
+    public void Render(SpriteBatch sb) {
+
+        this.hb.render(sb);
+        this.button.TryRender(sb);
+        this.header.TryRender(sb);
+        if ((this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0) {
+            this.clearButton.Render(sb);
+        }
+        if (this.rows.size() > 0) {
+            EUI.AddPriorityPostRender(this::RenderRowContent);
+        }
     }
 
 }

@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
 import extendedui.EUIRM;
+import extendedui.EUIRenderHelpers;
 import extendedui.JavaUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
@@ -26,6 +27,7 @@ import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.Mathf;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -385,7 +387,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     private float CalculateRowWidth() {
         float w = 0;
         for (DropdownRow<T> row : rows) {
-            w = Math.max(w, FontHelper.getSmartWidth(this.font, row.label.text, 3.4028235E38F, 3.4028235E38F) + ICON_WIDTH);
+            w = Math.max(w, EUIRenderHelpers.GetSmartWidth(this.font, row.label.text, 3.4028235E38F, 3.4028235E38F) + ICON_WIDTH);
         }
         return w;
     }
@@ -660,7 +662,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     public void updateForSelection(boolean shouldInvoke) {
         int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
         if (isMultiSelect) {
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems()) : currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected;
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems()) : makeMultiSelectString();
         }
         else if (currentIndices.size() > 0) {
             this.topVisibleRowIndex = Math.min(temp, this.rows.size() - this.visibleRowCount());
@@ -679,6 +681,16 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     public float scrollPercentForTopVisibleRowIndex(int topIndex) {
         int maxRow = this.rows.size() - this.visibleRowCount();
         return (float)topIndex / (float)maxRow;
+    }
+
+    public String makeMultiSelectString() {
+        return makeMultiSelectString(labelFunction);
+    }
+
+    public String makeMultiSelectString(FuncT1<String, T> optionFunc) {
+        String prospective = StringUtils.join(JavaUtils.Map(GetCurrentItems(), optionFunc), ", ");
+        float width = button.isSmartText ? EUIRenderHelpers.GetSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
+        return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected : prospective;
     }
 
     boolean shouldShowSlider() {
@@ -727,7 +739,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         }
 
         public DropdownRow<T> UpdateAlignment() {
-            this.label.SetAlignment(dr.isOptionSmartText ? 1f : 0.5f, (dr.isMultiSelect ? 0.22f : 0.1f) * (dr.isOptionSmartText ? 0.65f : 1f), dr.isOptionSmartText);
+            this.label.SetAlignment(dr.isOptionSmartText ? 1f : 0.5f, (dr.isMultiSelect ? 0.22f : 0.1f) * (dr.isOptionSmartText ? 0.8f : 1f), dr.isOptionSmartText);
             return this;
         }
 

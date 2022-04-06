@@ -12,7 +12,6 @@ import extendedui.ui.tooltips.EUITooltip;
 import java.util.ArrayList;
 import java.util.List;
 
-// TODO add multi description support
 public abstract class TooltipRelic extends CustomRelic implements TooltipProvider {
 
     public ArrayList<EUITooltip> tips;

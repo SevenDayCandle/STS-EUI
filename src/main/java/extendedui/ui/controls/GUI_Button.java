@@ -283,9 +283,9 @@ public class GUI_Button extends GUI_Hoverable
             font.getData().setScale(fontScale);
             final Color color = interactable ? textColor : TEXT_DISABLED_COLOR;
             if (isSmartText) {
-                EUIRenderHelpers.WriteSmartText(sb, font, text, hb.x + (hb.width * 0.5f), hb.y + (hb.height * 0.5f), hb.width, font.getLineHeight(), color);
+                EUIRenderHelpers.WriteSmartText(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color);
             }
-            else if (FontHelper.getSmartWidth(font, text, 9999f, 0f) > (hb.width * 0.7))
+            else if (FontHelper.getSmartWidth(font, text, Integer.MAX_VALUE, 0f) > (hb.width * 0.7))
             {
                 EUIRenderHelpers.WriteCentered(sb, font, text, hb, color, 0.8f);
             }

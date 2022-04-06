@@ -29,15 +29,10 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     }
 
     protected CardGroup GetAllCards() {
-        if (cardGroup == null) {
-            cardGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        }
-        if (EUIGameUtils.GetTotalCardsInPlay() != cardGroup.size()) {
-            cardGroup.clear();
-            for (CardGroup cg: EUIGameUtils.GetSourceCardPools()) {
-                for (AbstractCard c : cg.group) {
-                    cardGroup.addToTop(c);
-                }
+        cardGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+        for (CardGroup cg: EUIGameUtils.GetSourceCardPools()) {
+            for (AbstractCard c : cg.group) {
+                cardGroup.addToTop(c);
             }
         }
 

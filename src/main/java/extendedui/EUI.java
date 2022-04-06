@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.localization.Keyword;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.AbstractScreen;
@@ -26,6 +27,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EUI
 {
+    private static final String ENERGY_STRING = "[E]";
+
     public static final ArrayList<GUI_Base> BattleSubscribers = new ArrayList<>();
     public static final ArrayList<GUI_Base> Subscribers = new ArrayList<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> preRenderList = new ConcurrentLinkedQueue<>();
@@ -62,8 +65,13 @@ public class EUI
 
             EUITooltip tooltip = EUITooltip.FindByID(title);
             if (tooltip == null) {
-                String newTitle = JavaUtils.Capitalize(title.substring(title.indexOf(":") + 1));
-                tooltip = new EUITooltip(newTitle, description);
+                if (ENERGY_STRING.equals(s)) {
+                    tooltip = new EUITooltip(TipHelper.TEXT[0], GameDictionary.TEXT[0]);
+                }
+                else {
+                    String newTitle = JavaUtils.Capitalize(title.substring(title.indexOf(":") + 1));
+                    tooltip = new EUITooltip(newTitle, description);
+                }
                 EUITooltip.RegisterID(title, tooltip);
             }
             EUITooltip.RegisterName(s, tooltip);
@@ -298,5 +306,26 @@ public class EUI
     public static void AddPriorityPostRender(ActionT1<SpriteBatch> toRender)
     {
         priorityPostRenderList.add(toRender);
+    }
+
+    public static void UpdateEnergyTooltip(AbstractCard.CardColor cardColor) {
+        EUITooltip tooltip = EUITooltip.FindByID(ENERGY_STRING);
+        if (tooltip != null) {
+            switch (cardColor) {
+                case RED:
+                    tooltip.icon = AbstractCard.orb_red;
+                case GREEN:
+                    tooltip.icon = AbstractCard.orb_green;
+                case BLUE:
+                    tooltip.icon = AbstractCard.orb_blue;
+                case PURPLE:
+                    tooltip.icon = AbstractCard.orb_purple;
+                default:
+                    tooltip.icon = BaseMod.getCardEnergyOrbAtlasRegion(cardColor);
+                    if (tooltip.icon == null) {
+                        tooltip.icon = AbstractCard.orb_red;
+                    }
+            }
+        }
     }
 }

@@ -751,6 +751,11 @@ public class EUIRenderHelpers
         return WriteSmartText(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).V2;
     }
 
+    public static float GetSmartWidth(BitmapFont font, String text)
+    {
+        return GetSmartWidth(font, text, Integer.MAX_VALUE, font.getLineHeight());
+    }
+
     public static float GetSmartWidth(BitmapFont font, String text, float lineSpacing)
     {
         return GetSmartWidth(font, text, Integer.MAX_VALUE, lineSpacing);

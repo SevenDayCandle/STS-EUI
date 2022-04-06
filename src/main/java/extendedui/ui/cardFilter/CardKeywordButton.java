@@ -10,6 +10,7 @@ import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.controls.GUI_Button;
+import extendedui.ui.controls.GUI_Image;
 import extendedui.ui.controls.GUI_Label;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
@@ -18,6 +19,7 @@ import extendedui.utilities.EUIFontHelper;
 
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
+import static extendedui.EUIRenderHelpers.CARD_ENERGY_IMG_WIDTH;
 
 public class CardKeywordButton extends GUI_Hoverable
 {
@@ -29,15 +31,17 @@ public class CardKeywordButton extends GUI_Hoverable
     public final EUITooltip Tooltip;
     public final float baseCountOffset = -0.17f;
     public final float baseImageOffsetX = -0.27f;
-    public final float baseImageOffsetY = 0.45f;
+    public final float baseImageOffsetY = -0.2f;
     public final float baseTextOffsetX = -0.10f;
     public final float baseTextOffsetY = 0f;
     public int CardCount = -1;
 
     public GUI_Button background_button;
-    public GUI_Label tooltip_text;
     public GUI_Label title_text;
     public GUI_Label count_text;
+
+    protected float offX;
+    protected float offY;
 
     public CardKeywordButton(AdvancedHitbox hb, EUITooltip tooltip)
     {
@@ -67,11 +71,6 @@ public class CardKeywordButton extends GUI_Hoverable
                     }
                 });
 
-        tooltip_text = new GUI_Label(EUIFontHelper.CardTooltipFont,
-                new RelativeHitbox(hb, 1.2f, 1, baseImageOffsetX, baseImageOffsetY))
-                .SetAlignment(0.5f, 0.5f, true) // 0.1f
-                .SetText(Tooltip.icon != null ? "[" + Tooltip.id + "]" : "");
-
         title_text = new GUI_Label(EUIFontHelper.CardTooltipFont,
         new RelativeHitbox(hb, 0.5f, 1, baseTextOffsetX, baseTextOffsetY))
                 .SetFont(EUIFontHelper.CardTooltipFont, 0.8f)
@@ -89,12 +88,11 @@ public class CardKeywordButton extends GUI_Hoverable
 
     public CardKeywordButton SetIndex(int index)
     {
-        float x = (index % CardKeywordFilters.ROW_SIZE) * 1.06f;
-        float y = -(Math.floorDiv(index,CardKeywordFilters.ROW_SIZE)) * 0.85f;
-        RelativeHitbox.SetPercentageOffset(background_button.hb, x, y);
-        RelativeHitbox.SetPercentageOffset(tooltip_text.hb, x + baseImageOffsetX, y + baseImageOffsetY);
-        RelativeHitbox.SetPercentageOffset(title_text.hb, x + baseTextOffsetX, y + baseTextOffsetY);
-        RelativeHitbox.SetPercentageOffset(count_text.hb, x + baseCountOffset, y);
+        offX = (index % CardKeywordFilters.ROW_SIZE) * 1.06f;
+        offY = -(Math.floorDiv(index,CardKeywordFilters.ROW_SIZE)) * 0.85f;
+        RelativeHitbox.SetPercentageOffset(background_button.hb, offX, offY);
+        RelativeHitbox.SetPercentageOffset(title_text.hb, offX + baseTextOffsetX, offY + baseTextOffsetY);
+        RelativeHitbox.SetPercentageOffset(count_text.hb, offX + baseCountOffset, offY);
 
 
         return this;
@@ -105,7 +103,6 @@ public class CardKeywordButton extends GUI_Hoverable
         this.CardCount = count;
         count_text.SetText(count).SetColor(count > 0 ? Settings.GOLD_COLOR : Color.DARK_GRAY);
         title_text.SetColor(CardKeywordFilters.CurrentFilters.contains(Tooltip) ? PANEL_COLOR : count > 0 ? Color.WHITE : Color.DARK_GRAY);
-        tooltip_text.SetColor(CardCount == 0 ? Color.DARK_GRAY : Color.WHITE);
         background_button.SetColor(CardKeywordFilters.CurrentFilters.contains(Tooltip) ? ACTIVE_COLOR : PANEL_COLOR).SetInteractable(count != 0);
 
         return this;
@@ -121,7 +118,6 @@ public class CardKeywordButton extends GUI_Hoverable
     public void Update()
     {
         background_button.SetInteractable(CardCount != 0).Update();
-        tooltip_text.SetColor(CardCount == 0 ? Color.DARK_GRAY : Color.WHITE).Update();
         title_text.Update();
         count_text.Update();
     }
@@ -131,20 +127,15 @@ public class CardKeywordButton extends GUI_Hoverable
     {
         background_button.Render(sb);
 
-        //if (Tooltip.icon != null) {
-            //final float orbWidth = Tooltip.icon.getRegionWidth();
-            //final float orbHeight = Tooltip.icon.getRegionHeight();
-            //final float scaleX = 26.0F * Settings.scale / orbWidth;
-            //final float scaleY = 26.0F * Settings.scale / orbHeight;
-            //sb.setColor(Color.WHITE.cpy());
-            //sb.draw(Tooltip.icon, background_button.hb.x + 30f * Settings.scale, background_button.hb.y, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
-        //}
-        if (CardCount != 0) {
-            tooltip_text.Render(sb);
+        if (Tooltip.icon != null) {
+            if (CardCount != 0) {
+                RenderTooltipImage(sb);
+            }
+            else {
+                EUIRenderHelpers.DrawGrayscale(sb, this::RenderTooltipImage);
+            }
         }
-        else {
-            EUIRenderHelpers.DrawGrayscale(sb, tooltip_text::Render);
-        }
+
 
         title_text.Render(sb);
         if (CardCount >= 0) {
@@ -165,5 +156,16 @@ public class CardKeywordButton extends GUI_Hoverable
 
             EUITooltip.QueueTooltip(Tooltip, actualMX + 20 * Settings.scale, actualMY + 20 * Settings.scale);
         }
+    }
+
+    private void RenderTooltipImage(SpriteBatch sb) {
+        Tooltip.renderTipEnergy(sb, Tooltip.icon,
+                hb.x + (offX + baseImageOffsetX) * hb.width,
+                hb.y + (offY + baseImageOffsetY) * hb.height,
+                28 * Tooltip.iconMulti_W,
+                28 * Tooltip.iconMulti_H,
+                CARD_ENERGY_IMG_WIDTH / Tooltip.icon.getRegionWidth(),
+                CARD_ENERGY_IMG_WIDTH / Tooltip.icon.getRegionHeight(),
+                CardCount == 0 ? Color.DARK_GRAY : Color.WHITE);
     }
 }

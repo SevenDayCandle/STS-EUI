@@ -69,14 +69,6 @@ public class EUIGameUtils {
         result.add(AbstractDungeon.srcCurseCardPool);
         return result;
     }
-    public static int GetTotalCardsInPlay()
-    {
-        return AbstractDungeon.colorlessCardPool.size()
-                + AbstractDungeon.commonCardPool.size()
-                + AbstractDungeon.uncommonCardPool.size()
-                + AbstractDungeon.rareCardPool.size()
-                + AbstractDungeon.curseCardPool.size();
-    }
 
     public static ModInfo GetModInfo(Object o) {
         return GetModInfo(o.getClass());

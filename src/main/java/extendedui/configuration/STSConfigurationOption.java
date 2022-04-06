@@ -12,10 +12,11 @@ public class STSConfigurationOption<T>
     public final String Key;
     protected SpireConfig Config;
     protected T Value;
+    protected final T DefaultValue;
 
     public STSConfigurationOption(String Key, T defaultValue) {
         this.Key = Key;
-        Value = defaultValue;
+        DefaultValue = Value = defaultValue;
     }
 
     public STSConfigurationOption<T> AddConfig(SpireConfig Config) {
@@ -61,12 +62,12 @@ public class STSConfigurationOption<T>
             {
                 return (T) method.invoke(raw);
             }
-            catch (IllegalAccessException | InvocationTargetException e)
+            catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e)
             {
                 e.printStackTrace();
             }
         }
-        return null;
+        return DefaultValue;
     };
 
     protected String Serialize() {

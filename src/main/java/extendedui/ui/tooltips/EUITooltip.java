@@ -831,7 +831,11 @@ public class EUITooltip
         return this;
     }
 
-    public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height)
+    public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height) {
+        renderTipEnergy(sb, region, x, y, width, height, Settings.scale, Settings.scale, Color.WHITE);
+    }
+
+    public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height, float scaleX, float scaleY, Color renderColor)
     {
         if (backgroundColor != null) {
             sb.setColor(backgroundColor);
@@ -840,7 +844,7 @@ public class EUITooltip
                     region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
                     region.getRegionHeight(), false, false);
         }
-        sb.setColor(Color.WHITE);
+        sb.setColor(renderColor);
         sb.draw(region.getTexture(), x, y, 0f, 0f,
                 width, height, Settings.scale, Settings.scale, 0f,
                 region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
