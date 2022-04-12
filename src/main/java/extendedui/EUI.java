@@ -2,11 +2,13 @@ package extendedui;
 
 import basemod.BaseMod;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
@@ -15,7 +17,9 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.GUI_Base;
 import extendedui.ui.cardFilter.*;
+import extendedui.ui.controls.GUI_Button;
 import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.ui.tooltips.EUITooltip;
 
@@ -47,6 +51,7 @@ public class EUI
     public static CardPoolScreen CardsScreen;
     public static CardKeywordFilters CardFilters;
     public static CustomCardLibSortHeader CustomHeader;
+    public static GUI_Button OpenCardFiltersButton;
 
     public static boolean IsLoaded() {
         return CardsScreen != null; // This will be null before the UI has loaded
@@ -76,6 +81,12 @@ public class EUI
             }
             EUITooltip.RegisterName(s, tooltip);
         }
+
+        OpenCardFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
+            .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
+            .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.1f).SetText(EUIRM.Strings.UI_Filters)
+            .SetOnClick(CardKeywordFilters::ToggleFilters)
+            .SetColor(Color.GRAY);
     }
 
     public static void Dispose()

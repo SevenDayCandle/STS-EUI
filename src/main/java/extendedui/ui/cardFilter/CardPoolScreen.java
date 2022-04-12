@@ -26,7 +26,6 @@ public class CardPoolScreen extends AbstractScreen
 {
     public static CustomCardPoolModule CustomModule;
 
-    private final GUI_Button openButton;
     private final GUI_Toggle upgradeToggle;
     private final GUI_Toggle colorlessToggle;
     public GUI_CardGrid cardGrid;
@@ -53,12 +52,6 @@ public class CardPoolScreen extends AbstractScreen
                     EUI.CardFilters.ColorsDropdown.ToggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
                     EUI.CardFilters.ColorsDropdown.ToggleSelection(AbstractCard.CardColor.CURSE, val, true);
                 });
-
-        openButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
-                .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
-                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.95f).SetText(EUIRM.Strings.UI_Filters)
-                .SetOnClick(CardKeywordFilters::ToggleFilters)
-                .SetColor(Color.GRAY);
     }
 
     public void Open(AbstractPlayer player, CardGroup cards)
@@ -104,15 +97,11 @@ public class CardPoolScreen extends AbstractScreen
         upgradeToggle.SetToggle(SingleCardViewPopup.isViewingUpgrade).Update();
         colorlessToggle.Update();
         EUI.CustomHeader.update();
-        EUI.CardFilters.TryUpdate();
-        if (!EUI.CardFilters.isActive) {
-            openButton.TryUpdate();
+        if (!EUI.CardFilters.TryUpdate()) {
+            EUI.OpenCardFiltersButton.TryUpdate();
         }
         if (CustomModule != null) {
             CustomModule.TryUpdate();
-        }
-        if (EUIHotkeys.toggleFilters.isJustPressed()) {
-            CardKeywordFilters.ToggleFilters();
         }
     }
 
@@ -123,9 +112,8 @@ public class CardPoolScreen extends AbstractScreen
         upgradeToggle.Render(sb);
         colorlessToggle.Render(sb);
         EUI.CustomHeader.render(sb);
-        EUI.CardFilters.TryRender(sb);
-        if (!EUI.CardFilters.isActive) {
-            openButton.TryRender(sb);
+        if (!EUI.CardFilters.TryRender(sb)) {
+            EUI.OpenCardFiltersButton.TryRender(sb);
         }
         if (CustomModule != null) {
             CustomModule.TryRender(sb);

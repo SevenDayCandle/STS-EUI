@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
@@ -39,7 +40,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     private static final float BORDER_SIZE = Settings.scale * 10.0F;
     private static final float BOX_EDGE_H = 32.0F * Settings.scale;
     private static final float BOX_BODY_H = 64.0F * Settings.scale;
-    private static final float ICON_WIDTH = 72.0F * Settings.scale;
+    private static final float ICON_WIDTH = 84.0F * Settings.scale;
     private static final float SCROLLBAR_WIDTH = 24.0F * Settings.scale;
     private static final float SCROLLBAR_PADDING = 8.0F * Settings.scale;
     private static final float TOGGLE_OFFSET = 5f;
@@ -718,6 +719,22 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         else {
             this.clearButton.hb.translate(hb.x + hb.width, hb.y);
         }
+    }
+
+    public GUI_Dropdown<T> MakeCopy() {
+        return MakeCopy(new AdvancedHitbox(hb));
+    }
+
+    public GUI_Dropdown<T> MakeCopy(AdvancedHitbox hb) {
+        return new GUI_Dropdown<T>(hb, this.labelFunction, GetAllItems(), this.font, this.maxRows, this.canAutosizeButton)
+                .SetHeader(this.font, this.fontScale, this.header.textColor, this.header.text, this.header.smartText)
+                .SetLabelFunctionForButton(this.labelFunctionButton, this.colorFunctionButton, this.button.isSmartText)
+                .SetLabelFunctionForOption(this.labelFunction, this.isOptionSmartText)
+                .SetCanAutosize(this.canAutosizeButton, this.canAutosizeRows)
+                .SetClearButtonOptions(this.showClearForSingle, this.shouldPositionClearAtTop)
+                .SetIsMultiSelect(this.isMultiSelect)
+                .SetOnChange(this.onChange)
+                .SetOnOpenOrClose(this.onOpenOrClose);
     }
 
     protected static class DropdownRow<T> {

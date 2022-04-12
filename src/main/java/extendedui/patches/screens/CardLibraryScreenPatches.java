@@ -26,7 +26,6 @@ public class CardLibraryScreenPatches
     private static final FieldInfo<AbstractCard> hoveredCards = JavaUtils.GetField("hoveredCard", CardLibraryScreen.class);
     private static final FieldInfo<ColorTabBar> _colorBar = JavaUtils.GetField("colorBar", CardLibraryScreen.class);
     private static final FieldInfo<ArrayList<ColorTabBarFix.ModColorTab>> _tabs = JavaUtils.GetField("modTabs", ColorTabBarFix.Fields.class);
-    private static GUI_Button openButton;
     @SpirePatch(clz = CardLibraryScreen.class, method = "open")
     public static class CardLibraryScreen_Open
     {
@@ -68,13 +67,6 @@ public class CardLibraryScreenPatches
         public static void Postfix(CardLibraryScreen screen, ColorTabBar tabBar, ColorTabBar.CurrentTab newSelection) {
             EUI.CardFilters.Initialize(__ -> EUI.CustomHeader.UpdateForFilters(), EUI.CustomHeader.originalGroup, newSelection == ColorTabBarFix.Enums.MOD ? ColorTabBarFix.Fields.getModTab().color : AbstractCard.CardColor.COLORLESS);
             EUI.CustomHeader.UpdateForFilters();
-            if (openButton == null) {
-                openButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
-                        .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
-                        .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.95f).SetText(EUIRM.Strings.UI_Filters)
-                        .SetOnClick(CardKeywordFilters::ToggleFilters)
-                        .SetColor(Color.GRAY);
-            }
         }
     }
 
@@ -86,15 +78,12 @@ public class CardLibraryScreenPatches
         @SpirePrefixPatch
         public static void Prefix(CardLibraryScreen __instance)
         {
-            if (!EUI.CardFilters.isActive && openButton != null && !IsAnimator(__instance)) {
-                openButton.TryUpdate();
+            if (!EUI.CardFilters.isActive && EUI.OpenCardFiltersButton != null && !IsAnimator(__instance)) {
+                EUI.OpenCardFiltersButton.TryUpdate();
             }
             if (EUI.CardFilters.TryUpdate())
             {
                 _grabbedScreen.Set(__instance, false);
-            }
-            if (EUIHotkeys.toggleFilters.isJustPressed()) {
-                CardKeywordFilters.ToggleFilters();
             }
         }
     }
@@ -119,8 +108,8 @@ public class CardLibraryScreenPatches
         public static void Postfix(CardLibraryScreen __instance, SpriteBatch sb)
         {
             // The Animator has its own card filters so it is given priority to prevent overlap
-            if (!EUI.CardFilters.isActive && openButton != null && !IsAnimator(__instance)) {
-                openButton.TryRender(sb);
+            if (!EUI.CardFilters.isActive && EUI.OpenCardFiltersButton != null && !IsAnimator(__instance)) {
+                EUI.OpenCardFiltersButton.TryRender(sb);
             }
         }
     }

@@ -80,6 +80,8 @@ public class EUITooltip
     public String id;
     public String title;
     public TextureRegion icon;
+    public boolean canHighlight = true;
+    public boolean canFilter = true;
     public boolean canRender = true;
     public float iconMulti_H = 1;
     public float iconMulti_W = 1;

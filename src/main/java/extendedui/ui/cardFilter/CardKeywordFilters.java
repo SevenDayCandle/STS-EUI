@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
+import extendedui.configuration.EUIHotkeys;
 import org.apache.commons.lang3.StringUtils;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
@@ -237,13 +238,13 @@ public class CardKeywordFilters extends GUI_Base
         hb = new AdvancedHitbox(DRAW_START_X, DRAW_START_Y, Scale(180), Scale(70)).SetIsPopupCompatible(true);
         closeButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
                 .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
-                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.95f).SetText(CombatRewardScreen.TEXT[6])
+                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.1f).SetText(CombatRewardScreen.TEXT[6])
                 .SetOnClick(this::Close)
                 .SetColor(Color.GRAY);
         clearButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).SetIsPopupCompatible(true))
                 .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
                 .SetColor(Color.FIREBRICK)
-                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.86f).SetText("Clear")
+                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.19f).SetText("Clear")
                 .SetOnClick(() -> this.Clear(true, isAccessedFromCardPool));
         this.scrollBar = new GUI_VerticalScrollBar(new AdvancedHitbox(ScreenW(0.03f), ScreenH(0.7f)))
                 .SetOnScroll(this::OnScroll);
@@ -576,6 +577,15 @@ public class CardKeywordFilters extends GUI_Base
                 index += 1;
             }
         }
+    }
+
+    @Override
+    public boolean TryUpdate() {
+        super.TryUpdate();
+        if (EUIHotkeys.toggleFilters.isJustPressed()) {
+            CardKeywordFilters.ToggleFilters();
+        }
+        return isActive;
     }
 
     @Override

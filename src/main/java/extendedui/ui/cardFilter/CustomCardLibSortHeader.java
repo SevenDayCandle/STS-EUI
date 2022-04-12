@@ -5,6 +5,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.screens.MasterDeckSortHeader;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import extendedui.EUI;
@@ -176,6 +177,10 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
     @Override
     public void render(SpriteBatch sb) {
         super.render(sb);
+    }
+
+    public ArrayList<AbstractCard> GetVisibleCards() {
+        return this.group != null ? this.group.group : new ArrayList<>();
     }
 
     public void UpdateForFilters() {

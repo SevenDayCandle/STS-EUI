@@ -14,13 +14,12 @@ import extendedui.ui.hitboxes.AdvancedHitbox;
 public class GUI_Label extends GUI_Hoverable
 {
     public String text;
-
-    protected Color textColor;
+    public boolean smartText;
+    public Color textColor;
     protected BitmapFont font;
     private float fontScale;
     private float verticalRatio;
     private float horizontalRatio;
-    private boolean smartText;
     private boolean smartPadEnd;
     private boolean useEYB;
 

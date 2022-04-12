@@ -42,33 +42,7 @@ public class EUIFontHelper
         generators.clear();
         data.xChars = new char[]{'动'};
         data.capChars = new char[]{'动'};
-
-        Predicate<Settings.GameLanguage> checkLanguage = (lang) -> Settings.language == lang;
-
-        if (checkLanguage.test(Settings.GameLanguage.ZHS))
-        {
-            fontFile = Gdx.files.internal("font/zhs/NotoSansMonoCJKsc-Regular.otf");
-        }
-        else if (checkLanguage.test(Settings.GameLanguage.ZHT))
-        {
-            fontFile = Gdx.files.internal("font/zht/NotoSansCJKtc-Regular.otf");
-        }
-        else if (checkLanguage.test(Settings.GameLanguage.JPN))
-        {
-            fontFile = Gdx.files.internal("font/jpn/NotoSansCJKjp-Regular.otf");
-        }
-        else if (checkLanguage.test(Settings.GameLanguage.KOR))
-        {
-            fontFile = Gdx.files.internal("font/kor/GyeonggiCheonnyeonBatangBold.ttf");
-        }
-        else if (checkLanguage.test(Settings.GameLanguage.RUS))
-        {
-            fontFile = Gdx.files.internal("font/rus/FiraSansExtraCondensed-Regular.ttf");
-        }
-        else
-        {
-            fontFile = Gdx.files.internal("font/Kreon-Regular.ttf");
-        }
+        fontFile = GetFontFileForLanguage(Settings.language);
 
         param.hinting = FreeTypeFontGenerator.Hinting.Slight;
         param.kerning = true;
@@ -215,5 +189,28 @@ public class EUIFontHelper
         }
 
         return font;
+    }
+
+    private static FileHandle GetFontFileForLanguage(Settings.GameLanguage language) {
+        switch (language) {
+            case JPN:
+                return Gdx.files.internal("font/jpn/NotoSansCJKjp-Regular.otf");
+            case KOR:
+                return Gdx.files.internal("font/kor/GyeonggiCheonnyeonBatangBold.ttf");
+            case ZHS:
+                return Gdx.files.internal("font/zhs/NotoSansMonoCJKsc-Regular.otf");
+            case ZHT:
+                return Gdx.files.internal("font/zht/NotoSansCJKtc-Regular.otf");
+            case RUS:
+                return Gdx.files.internal("font/rus/FiraSansExtraCondensed-Regular.ttf");
+            default:
+                return Gdx.files.internal("font/Kreon-Regular.ttf");
+        }
+    }
+
+    public static BitmapFont CreateFontForLanguage(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
+        FileHandle file = GetFontFileForLanguage(language);
+        BitmapFont preppedFont = PrepFont(GetGenerator(file), size, isLinearFiltering);
+        return PrepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
     }
 }
