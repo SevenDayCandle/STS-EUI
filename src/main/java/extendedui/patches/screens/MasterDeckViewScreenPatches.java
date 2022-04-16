@@ -40,12 +40,12 @@ public class MasterDeckViewScreenPatches
         {
             GetFakeMasterDeck();
             EUI.CardFilters.Initialize(__ -> {
-                UpdateForFilters(__instance);
+                UpdateForFilters();
                 if (CardPoolScreen.CustomModule != null) {
                     CardPoolScreen.CustomModule.Open(fakeMasterDeck.group);
                 }
-            }, fakeMasterDeck.group, AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : AbstractCard.CardColor.COLORLESS);
-            UpdateForFilters(__instance);
+            }, fakeMasterDeck.group, AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : AbstractCard.CardColor.COLORLESS, false);
+            UpdateForFilters();
         }
     }
 
@@ -173,9 +173,9 @@ public class MasterDeckViewScreenPatches
         return fakeMasterDeck;
     }
 
-    public static void UpdateForFilters(MasterDeckViewScreen instance) {
+    public static void UpdateForFilters() {
         if (CardKeywordFilters.AreFiltersEmpty()) {
-            fakeMasterDeck.group = AbstractDungeon.player.masterDeck.group;
+            GetFakeMasterDeck();
         }
         else {
             ArrayList<AbstractCard> tempGroup = CardKeywordFilters.ApplyFilters(AbstractDungeon.player.masterDeck.group);

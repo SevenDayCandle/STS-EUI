@@ -74,7 +74,7 @@ public class CardPoolScreen extends AbstractScreen
             if (CustomModule != null) {
                 CustomModule.Open(EUI.CustomHeader.group.group);
             }
-        }, EUI.CustomHeader.originalGroup, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS);
+        }, EUI.CustomHeader.originalGroup, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
         EUI.CustomHeader.UpdateForFilters();
 
         if (EUIGameUtils.InGame())

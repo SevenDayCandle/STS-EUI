@@ -1,11 +1,16 @@
 package extendedui.ui.controls;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.JavaUtils;
+import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;

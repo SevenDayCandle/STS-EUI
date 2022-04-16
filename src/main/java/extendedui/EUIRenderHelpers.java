@@ -5,6 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.*;
 import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.Vector2;
 import com.github.tommyettinger.colorful.Shaders;
@@ -15,9 +16,9 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.utilities.TupleT2;
 import org.imgscalr.Scalr;
-import extendedui.interfaces.DrawFunction;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.delegates.FuncT3;
 import extendedui.ui.controls.GUI_Image;
@@ -66,18 +67,23 @@ public class EUIRenderHelpers
     protected static ShaderProgram ColorizeShader;
     protected static ShaderProgram GrayscaleShader;
     protected static ShaderProgram SepiaShader;
+    private static FrameBuffer MaskBuffer;
 
-    public static void DrawBlended(SpriteBatch sb, BlendingMode mode, DrawFunction drawFunc) {
+    public static void InitializeBuffers() {
+        MaskBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false);
+    }
+
+    public static void DrawBlended(SpriteBatch sb, BlendingMode mode, ActionT1<SpriteBatch> drawFunc) {
         sb.setBlendFunction(mode.srcFunc,mode.dstFunc);
         drawFunc.Invoke(sb);
         sb.setBlendFunction(770,771);
     }
 
-    public static void DrawBlur(SpriteBatch sb, DrawFunction drawFunc) {
+    public static void DrawBlur(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawBlur(sb, 2, 1, 1, 1, drawFunc);
     }
 
-    public static void DrawBlur(SpriteBatch sb, float radius, float resolution, float xDir, float yDir, DrawFunction drawFunc) {
+    public static void DrawBlur(SpriteBatch sb, float radius, float resolution, float xDir, float yDir, ActionT1<SpriteBatch> drawFunc) {
         ShaderProgram defaultShader = sb.getShader();
         ShaderProgram bs = GetBlurShader();
         bs.setUniformf("u_radius", radius);
@@ -88,59 +94,59 @@ public class EUIRenderHelpers
         sb.setShader(defaultShader);
     }
 
-    public static void DrawBrighter(SpriteBatch sb, Color color, DrawFunction drawFunc) {
+    public static void DrawBrighter(SpriteBatch sb, Color color, ActionT1<SpriteBatch> drawFunc) {
         DrawColoredWithShader(sb, GetBrightShader(), ColorTools.fromColor(color), drawFunc);
     }
 
-    public static void DrawBrighter(SpriteBatch sb, float color, DrawFunction drawFunc) {
+    public static void DrawBrighter(SpriteBatch sb, float color, ActionT1<SpriteBatch> drawFunc) {
         DrawColoredWithShader(sb, GetBrightShader(), color, drawFunc);
     }
 
-    public static void DrawColored(SpriteBatch sb, Color color, DrawFunction drawFunc) {
+    public static void DrawColored(SpriteBatch sb, Color color, ActionT1<SpriteBatch> drawFunc) {
         sb.setColor(color);
         drawFunc.Invoke(sb);
         sb.setColor(Color.WHITE);
     }
 
-    public static void DrawColored(SpriteBatch sb, float color, DrawFunction drawFunc) {
+    public static void DrawColored(SpriteBatch sb, float color, ActionT1<SpriteBatch> drawFunc) {
         sb.setColor(color);
         drawFunc.Invoke(sb);
         sb.setColor(Color.WHITE);
     }
 
-    public static void DrawColoredWithShader(SpriteBatch sb, ShaderProgram shader, float colorfulColor, DrawFunction drawFunc) {
+    public static void DrawColoredWithShader(SpriteBatch sb, ShaderProgram shader, float colorfulColor, ActionT1<SpriteBatch> drawFunc) {
         DrawWithShader(sb, shader, (s) -> DrawColored(s, colorfulColor, drawFunc));
     }
 
-    public static void DrawColorized(SpriteBatch sb, Color color, DrawFunction drawFunc) {
+    public static void DrawColorized(SpriteBatch sb, Color color, ActionT1<SpriteBatch> drawFunc) {
         DrawColoredWithShader(sb, GetColorizeShader(), ColorTools.fromColor(color), drawFunc);
     }
 
-    public static void DrawColorized(SpriteBatch sb, float color, DrawFunction drawFunc) {
+    public static void DrawColorized(SpriteBatch sb, float color, ActionT1<SpriteBatch> drawFunc) {
         DrawColoredWithShader(sb, GetColorizeShader(), color, drawFunc);
     }
 
-    public static void DrawGlowing(SpriteBatch sb, DrawFunction drawFunc) {
+    public static void DrawGlowing(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawBlended(sb, BlendingMode.Glowing, drawFunc);
     }
 
-    public static void DrawGrayscale(SpriteBatch sb, DrawFunction drawFunc) {
+    public static void DrawGrayscale(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawWithShader(sb, GetGrayscaleShader(), drawFunc);
     }
 
-    public static void DrawOverlay(SpriteBatch sb, DrawFunction drawFunc) {
+    public static void DrawOverlay(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawBlended(sb, BlendingMode.Overlay, drawFunc);
     }
 
-    public static void DrawScreen(SpriteBatch sb, DrawFunction drawFunc) {
+    public static void DrawScreen(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawBlended(sb, BlendingMode.Screen, drawFunc);
     }
 
-    public static void DrawSepia(SpriteBatch sb, DrawFunction drawFunc) {
+    public static void DrawSepia(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawWithShader(sb, GetSepiaShader(), drawFunc);
     }
 
-    public static void DrawWithShader(SpriteBatch sb, ShaderProgram shader, DrawFunction drawFunc) {
+    public static void DrawWithShader(SpriteBatch sb, ShaderProgram shader, ActionT1<SpriteBatch> drawFunc) {
         ShaderProgram defaultShader = sb.getShader();
         sb.setShader(shader);
         drawFunc.Invoke(sb);
@@ -242,6 +248,26 @@ public class EUIRenderHelpers
         }
 
         return result;
+    }
+
+    public static void DrawWithMask(SpriteBatch sb, ActionT1<SpriteBatch> maskFunc, ActionT1<SpriteBatch> drawFunc) {
+        sb.end();
+
+        MaskBuffer.begin();
+        Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
+        Gdx.gl.glColorMask(false, false, false, true);
+        sb.begin();
+        DrawBlended(sb, BlendingMode.Mask, maskFunc);
+        Gdx.gl20.glColorMask(true, true, true, true);
+        DrawBlended(sb, BlendingMode.MaskBlend, drawFunc);
+        sb.end();
+        MaskBuffer.end();
+
+        sb.begin();
+        TextureRegion t = new TextureRegion(MaskBuffer.getColorBufferTexture());
+        t.flip(false, true);
+        sb.draw(t, 0, 0, 0, 0, MaskBuffer.getWidth(), MaskBuffer.getHeight(), 1f, 1f, 0f);
     }
 
     public static void DrawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, TextureAtlas.AtlasRegion img, float drawX, float drawY)
@@ -875,7 +901,9 @@ public class EUIRenderHelpers
         Normal(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA),
         Glowing(GL20.GL_SRC_ALPHA, GL20.GL_ONE),
         Overlay(GL20.GL_DST_COLOR, GL20.GL_ONE),
-        Screen(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_COLOR);
+        Screen(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_COLOR),
+        Mask(GL20.GL_ONE, GL20.GL_ZERO),
+        MaskBlend(GL20.GL_DST_ALPHA, GL20.GL_ZERO);
 
         public final int srcFunc;
         public final int dstFunc;

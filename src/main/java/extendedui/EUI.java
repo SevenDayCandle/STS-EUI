@@ -84,7 +84,7 @@ public class EUI
 
         OpenCardFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
             .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
-            .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.1f).SetText(EUIRM.Strings.UI_Filters)
+            .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(EUIRM.Strings.UI_Filters)
             .SetOnClick(CardKeywordFilters::ToggleFilters)
             .SetColor(Color.GRAY);
     }

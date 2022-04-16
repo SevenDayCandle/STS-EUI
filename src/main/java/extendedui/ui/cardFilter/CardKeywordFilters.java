@@ -238,13 +238,13 @@ public class CardKeywordFilters extends GUI_Base
         hb = new AdvancedHitbox(DRAW_START_X, DRAW_START_Y, Scale(180), Scale(70)).SetIsPopupCompatible(true);
         closeButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
                 .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
-                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.1f).SetText(CombatRewardScreen.TEXT[6])
+                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(CombatRewardScreen.TEXT[6])
                 .SetOnClick(this::Close)
                 .SetColor(Color.GRAY);
         clearButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).SetIsPopupCompatible(true))
                 .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
                 .SetColor(Color.FIREBRICK)
-                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.19f).SetText("Clear")
+                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.13f).SetText("Clear")
                 .SetOnClick(() -> this.Clear(true, isAccessedFromCardPool));
         this.scrollBar = new GUI_VerticalScrollBar(new AdvancedHitbox(ScreenW(0.03f), ScreenH(0.7f)))
                 .SetOnScroll(this::OnScroll);
@@ -277,7 +277,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetCanAutosizeButton(true)
                 .SetItems(Loader.MODINFOS);
 
-        CostDropdown = new GUI_Dropdown<CostFilter>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(240), Scale(48)), c -> c.name)
+        CostDropdown = new GUI_Dropdown<CostFilter>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(160), Scale(48)), c -> c.name)
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
                 })
@@ -302,7 +302,7 @@ public class CardKeywordFilters extends GUI_Base
                 }, null, false)
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[3])
                 .SetIsMultiSelect(true)
-                .SetCanAutosizeButton(true)
+                .SetCanAutosize(false, false)
                 .SetItems(CostFilter.values());
 
         RaritiesDropdown = new GUI_Dropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(240), Scale(48))
@@ -411,7 +411,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetAlignment(0.5f, 0.0f, false);
     }
 
-    public CardKeywordFilters Initialize(ActionT1<CardKeywordButton> onClick, ArrayList<AbstractCard> cards, AbstractCard.CardColor color)
+    public CardKeywordFilters Initialize(ActionT1<CardKeywordButton> onClick, ArrayList<AbstractCard> cards, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
     {
         Clear(false, true);
         CurrentFilterCounts.clear();
@@ -481,7 +481,6 @@ public class CardKeywordFilters extends GUI_Base
         ArrayList<AbstractCard.CardColor> colorsItems = new ArrayList<>(availableColors);
         colorsItems.sort((a, b) -> a == AbstractCard.CardColor.COLORLESS ? -1 : a == AbstractCard.CardColor.CURSE ? -2 : StringUtils.compare(a.name(), b.name()));
         ColorsDropdown.SetItems(colorsItems);
-        isAccessedFromCardPool = colorsItems.size() > 1;
         if (isAccessedFromCardPool)
         {
             ColorsDropdown.SetSelection(JavaUtils.Filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE), true);

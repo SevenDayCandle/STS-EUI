@@ -19,7 +19,7 @@ import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.FieldInfo;
 
-public class GUI_Dialog extends GUI_Hoverable
+public abstract class GUI_Dialog<T> extends GUI_Hoverable
 {
     private final static FieldInfo<String[]> _text = JavaUtils.GetField("TEXT", ConfirmPopup.class);
 
@@ -28,7 +28,7 @@ public class GUI_Dialog extends GUI_Hoverable
     protected GUI_Button cancel;
     protected GUI_Label header;
     protected GUI_Label description;
-    protected ActionT1<Boolean> onComplete;
+    protected ActionT1<T> onComplete;
 
     public GUI_Dialog(String headerText)
     {
@@ -53,54 +53,54 @@ public class GUI_Dialog extends GUI_Hoverable
                 .SetSmartText(true, false)
                 .SetText(descriptionText);
         this.confirm = new GUI_Button(ImageMaster.OPTION_YES,
-                new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.1f, hb.height * 0.1f, false))
+                new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.1f, hb.height * 0.05f, false))
                 .SetFont(FontHelper.cardTitleFont, 1f)
                 .SetText(_text.Get(null)[2])
                 .SetOnClick(() -> {
                     if (onComplete != null) {
-                        onComplete.Invoke(true);
+                        onComplete.Invoke(GetConfirmValue());
                     }
                 });
         this.cancel = new GUI_Button(ImageMaster.OPTION_NO,
-                new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.9f, hb.height * 0.1f, false))
+                new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.9f, hb.height * 0.05f, false))
                 .SetFont(FontHelper.cardTitleFont, 1f)
                 .SetText(_text.Get(null)[3])
                 .SetOnClick(() -> {
                     if (onComplete != null) {
-                        onComplete.Invoke(false);
+                        onComplete.Invoke(GetCancelValue());
                     }
                 });
     }
 
-    public GUI_Dialog SetDescription(BitmapFont font, float fontScale, Color textColor, String text) {
-        return this.SetDescription(font, fontScale, textColor, text, false);
+    public GUI_Dialog<T> SetDescriptionProperties(BitmapFont font, float fontScale, Color textColor) {
+        return this.SetDescriptionProperties(font, fontScale, textColor, false);
     }
 
-    public GUI_Dialog SetDescription(BitmapFont font, float fontScale, Color textColor, String text, boolean smartText) {
-        this.description.SetFont(font, fontScale).SetColor(textColor).SetText(text).SetSmartText(smartText);
+    public GUI_Dialog<T> SetDescriptionProperties(BitmapFont font, float fontScale, Color textColor, boolean smartText) {
+        this.description.SetFont(font, fontScale).SetColor(textColor).SetSmartText(smartText);
         return this;
     }
 
-    public GUI_Dialog SetDescriptionText(String text) {
+    public GUI_Dialog<T> SetDescriptionText(String text) {
         description.SetText(text);
         return this;
     }
 
-    public GUI_Dialog SetHeader(BitmapFont font, float fontScale, Color textColor, String text) {
-        return this.SetHeader(font, fontScale, textColor, text, false);
+    public GUI_Dialog<T> SetHeaderProperties(BitmapFont font, float fontScale, Color textColor) {
+        return this.SetHeaderProperties(font, fontScale, textColor, false);
     }
 
-    public GUI_Dialog SetHeader(BitmapFont font, float fontScale, Color textColor, String text, boolean smartText) {
-        this.header.SetFont(font, fontScale).SetColor(textColor).SetText(text).SetSmartText(smartText);
+    public GUI_Dialog<T> SetHeaderProperties(BitmapFont font, float fontScale, Color textColor, boolean smartText) {
+        this.header.SetFont(font, fontScale).SetColor(textColor).SetSmartText(smartText);
         return this;
     }
 
-    public GUI_Dialog SetHeaderText(String text) {
+    public GUI_Dialog<T> SetHeaderText(String text) {
         header.SetText(text);
         return this;
     }
 
-    public GUI_Dialog SetOnComplete(ActionT1<Boolean> onComplete) {
+    public GUI_Dialog<T> SetOnComplete(ActionT1<T> onComplete) {
         this.onComplete = onComplete;
         return this;
     }
@@ -117,14 +117,14 @@ public class GUI_Dialog extends GUI_Hoverable
         if (CInputActionSet.proceed.isJustPressed()) {
             CInputActionSet.proceed.unpress();
             if (onComplete != null) {
-                onComplete.Invoke(true);
+                onComplete.Invoke(GetConfirmValue());
             }
         }
 
         if (CInputActionSet.cancel.isJustPressed()) {
             CInputActionSet.cancel.unpress();
             if (onComplete != null) {
-                onComplete.Invoke(false);
+                onComplete.Invoke(GetCancelValue());
             }
         }
     }
@@ -147,4 +147,7 @@ public class GUI_Dialog extends GUI_Hoverable
             sb.draw(CInputActionSet.cancel.getKeyImg(), this.cancel.hb.cX, this.cancel.hb.cY - 32.0F, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);
         }
     }
+
+    public abstract T GetConfirmValue();
+    public abstract T GetCancelValue();
 }

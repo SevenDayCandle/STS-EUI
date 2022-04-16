@@ -1,5 +1,6 @@
 package extendedui.utilities.abstracts;
 
+import basemod.abstracts.CustomCard;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.DamageInfo;
@@ -25,10 +26,6 @@ public abstract class TooltipCard extends AbstractCard implements TooltipProvide
 
     public TooltipCard(String id, String name, String deprecatedJokeUrl, String imgUrl, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target) {
         super(id, name, imgUrl, cost, rawDescription, type, color, rarity, target);
-    }
-
-    public TooltipCard(String id, String name, String imgUrl, int cost, String rawDescription, CardType type, CardColor color, CardRarity rarity, CardTarget target, DamageInfo.DamageType dType) {
-        super(id, name, imgUrl, cost, rawDescription, type, color, rarity, target, dType);
     }
 
     @Override

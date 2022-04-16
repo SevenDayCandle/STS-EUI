@@ -7,12 +7,9 @@ import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import extendedui.JavaUtils;
+import extendedui.*;
 import extendedui.ui.tooltips.EUITooltip;
 import org.apache.logging.log4j.LogManager;
-import extendedui.EUI;
-import extendedui.EUIRM;
-import extendedui.STSEffekseerManager;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.utilities.EUIFontHelper;
 
@@ -46,6 +43,7 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     {
         EUIConfiguration.Load();
         EUI.Initialize();
+        EUIRenderHelpers.InitializeBuffers();
         STSEffekseerManager.Initialize();
         LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
     }
