@@ -21,6 +21,31 @@ public class JavaUtils
     private static final StringBuilder sb1 = new StringBuilder();
     private static final StringBuilder sb2 = new StringBuilder();
 
+    public static <T> boolean All(Iterable<T> list, Predicate<T> predicate)
+    {
+        for (T t : list)
+        {
+            if (!predicate.test(t))
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    public static <T> boolean Any(Iterable<T> list, Predicate<T> predicate)
+    {
+        for (T t : list)
+        {
+            if (predicate.test(t))
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public static String Capitalize(String text)
     {
@@ -294,10 +319,35 @@ public class JavaUtils
         }
     }
 
+    public static <T> float Sum(Iterable<T> list, FuncT1<Float, T> predicate)
+    {
+        float sum = 0;
+        if (list == null) {
+            return sum;
+        }
+        for (T t : list)
+        {
+            sum += predicate.Invoke(t);
+        }
+        return sum;
+    }
+
+    public static <T> int SumInt(Iterable<T> list, FuncT1<Integer, T> predicate)
+    {
+        int sum = 0;
+        if (list == null) {
+            return sum;
+        }
+        for (T t : list)
+        {
+            sum += predicate.Invoke(t);
+        }
+        return sum;
+    }
+
     public static <T> T SafeCast(Object o, Class<T> type)
     {
         return type.isInstance(o) ? (T)o : null;
     }
-
 
 }

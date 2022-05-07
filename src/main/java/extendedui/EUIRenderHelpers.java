@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.utilities.TupleT2;
 import org.imgscalr.Scalr;
 import extendedui.interfaces.delegates.FuncT1;
@@ -26,7 +27,6 @@ import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.AdvancedTexture;
 import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.abstracts.TooltipCard;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -215,10 +215,10 @@ public class EUIRenderHelpers
         font.getData().setScale(1);
     }
 
-    public static BitmapFont GetDescriptionFont(TooltipCard card, float scaleModifier)
+    public static BitmapFont GetDescriptionFont(AbstractCard card, float scaleModifier)
     {
         BitmapFont result;
-        if (card.isPopup)
+        if (card instanceof TooltipProvider && ((TooltipProvider) card).IsPopup())
         {
             result = EUIFontHelper.CardDescriptionFont_Large;
             result.getData().setScale(card.drawScale * scaleModifier * 0.5f);
@@ -232,11 +232,11 @@ public class EUIRenderHelpers
         return result;
     }
 
-    public static BitmapFont GetTitleFont(TooltipCard card)
+    public static BitmapFont GetTitleFont(AbstractCard card)
     {
         BitmapFont result;
         final float scale = 1 / (Math.max(14f, card.name.length()) / 14f);
-        if (card.isPopup)
+        if (card instanceof TooltipProvider && ((TooltipProvider) card).IsPopup())
         {
             result = EUIFontHelper.CardTitleFont_Large;
             result.getData().setScale(card.drawScale * 0.5f * scale);

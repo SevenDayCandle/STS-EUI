@@ -8,7 +8,6 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
@@ -21,7 +20,7 @@ import extendedui.JavaUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CardObject;
-import extendedui.interfaces.markers.TooltipObject;
+import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
@@ -816,8 +815,8 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         }
 
         private void addTooltip() {
-            if (item instanceof TooltipObject) {
-                EUITooltip.QueueTooltip(((TooltipObject) item).GetTooltip());
+            if (item instanceof TooltipProvider) {
+                EUITooltip.QueueTooltips(((TooltipProvider) item).GetTips());
             }
             else if (item instanceof CardObject) {
                 AbstractCard card = ((CardObject) item).GetCard();

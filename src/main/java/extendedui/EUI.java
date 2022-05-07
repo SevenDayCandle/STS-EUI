@@ -5,6 +5,9 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.mod.stslib.StSLib;
+import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
+import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -63,7 +66,16 @@ public class EUI
         CardFilters = new CardKeywordFilters();
         CustomHeader = new CustomCardLibSortHeader(null);
         BaseMod.addTopPanelItem(new CardPoolPanelItem());
+        RegisterKeywords();
 
+        OpenCardFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
+            .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
+            .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(EUIRM.Strings.UI_Filters)
+            .SetOnClick(CardKeywordFilters::ToggleFilters)
+            .SetColor(Color.GRAY);
+    }
+
+    public static void RegisterKeywords() {
         for (String s : GameDictionary.parentWord.keySet()) {
             final String title = GameDictionary.parentWord.get(s);
             final String description = GameDictionary.keywords.get(s);
@@ -76,17 +88,36 @@ public class EUI
                 else {
                     String newTitle = JavaUtils.Capitalize(title.substring(title.indexOf(":") + 1));
                     tooltip = new EUITooltip(newTitle, description);
+
+                    // Add CommonKeywordIcon pictures to keywords
+                    if (title.equals(GameDictionary.INNATE.NAMES[0])) {
+                        tooltip.SetIcon(StSLib.BADGE_INNATE);
+                    }
+                    else if (title.equals(GameDictionary.ETHEREAL.NAMES[0]))
+                    {
+                        tooltip.SetIcon(StSLib.BADGE_ETHEREAL);
+                    }
+                    else if (title.equals(GameDictionary.RETAIN.NAMES[0]))
+                    {
+                        tooltip.SetIcon(StSLib.BADGE_RETAIN);
+                    }
+                    else if (title.equals(GameDictionary.EXHAUST.NAMES[0]))
+                    {
+                        tooltip.SetIcon(StSLib.BADGE_EXHAUST);
+                    }
+                    else {
+                        // Add Custom Icons
+                        AbstractCustomIcon icon = CustomIconHelper.getIcon(newTitle);
+                        if (icon != null) {
+                            tooltip.SetIcon(icon.region);
+                        }
+                    }
                 }
+
                 EUITooltip.RegisterID(title, tooltip);
             }
             EUITooltip.RegisterName(s, tooltip);
         }
-
-        OpenCardFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
-            .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
-            .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(EUIRM.Strings.UI_Filters)
-            .SetOnClick(CardKeywordFilters::ToggleFilters)
-            .SetColor(Color.GRAY);
     }
 
     public static void Dispose()

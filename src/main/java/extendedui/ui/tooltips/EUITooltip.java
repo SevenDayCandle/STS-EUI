@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
+import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -20,6 +21,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
@@ -211,6 +213,20 @@ public class EUITooltip
         }
     }
 
+    public static void QueueTooltips(Collection<EUITooltip> tips)
+    {
+        float estHeight = JavaUtils.Sum(tips, EUITooltip::Height);
+        float x = InputHelper.mX;
+        float y = InputHelper.mY;
+        x += (x < Settings.WIDTH * 0.75f) ? (Settings.scale * 40f) : -(BOX_W + (Settings.scale * 40f));
+        y += (y < Settings.HEIGHT * 0.9f) ? (Settings.scale * 40f) : -(Settings.scale * 50f);
+        if (y - estHeight < 0) {
+            y += estHeight;
+        }
+
+        QueueTooltips(tips, x, y);
+    }
+
     public static void QueueTooltips(Collection<EUITooltip> tips, float x, float y)
     {
         if (TryRender())
@@ -231,7 +247,7 @@ public class EUITooltip
         }
     }
 
-    public static void QueueTooltips(TooltipCard source)
+    public static <T extends AbstractCard & TooltipProvider> void QueueTooltips(T source)
     {
         if (TryRender())
         {
@@ -240,16 +256,16 @@ public class EUITooltip
         }
     }
 
-    public static void QueueTooltips(TooltipPotion source)
+    public static <T extends AbstractPotion & TooltipProvider> void QueueTooltips(T source)
     {
         if (TryRender())
         {
-            provider = source;
+            provider = (TooltipProvider) source;
             EUI.AddPriorityPostRender(EUITooltip::RenderFromPotion);
         }
     }
 
-    public static void QueueTooltips(TooltipRelic source)
+    public static <T extends AbstractRelic & TooltipProvider> void QueueTooltips(T source)
     {
         if (TryRender())
         {
@@ -258,7 +274,7 @@ public class EUITooltip
         }
     }
 
-    public static void QueueTooltips(TooltipBlight source)
+    public static <T extends AbstractBlight & TooltipProvider> void QueueTooltips(T source)
     {
         if (TryRender())
         {
@@ -269,18 +285,20 @@ public class EUITooltip
 
     public static void RenderFromCard(SpriteBatch sb)
     {
-        TooltipCard card = JavaUtils.SafeCast(provider, TooltipCard.class);
+        AbstractCard card = JavaUtils.SafeCast(provider, AbstractCard.class);
         if (card == null)
         {
             return;
         }
 
+        List<EUITooltip> pTips = provider.GetTips();
+
         int totalHidden = 0;
         inHand = AbstractDungeon.player != null && AbstractDungeon.player.hand.contains(card);
         tooltips.clear();
-        card.GenerateDynamicTooltips(tooltips);
+        provider.GenerateDynamicTooltips(tooltips);
 
-        for (EUITooltip tip : card.GetTips())
+        for (EUITooltip tip : pTips)
         {
             if (tip.canRender && !tooltips.contains(tip))
             {
@@ -313,7 +331,7 @@ public class EUITooltip
 
         float x;
         float y;
-        if (card.isPopup)
+        if (provider.IsPopup())
         {
             x = 0.78f * Settings.WIDTH;
             y = 0.85f * Settings.HEIGHT;
@@ -371,20 +389,21 @@ public class EUITooltip
             y -= tip.Render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
         }
 
-        EUICardPreview preview = card.GetPreview();
+        EUICardPreview preview = provider.GetPreview();
         if (preview != null)
         {
-            preview.Render(sb, card, card.upgraded || EUIGameUtils.CanShowUpgrades(false));
+            preview.Render(sb, card, card.upgraded || EUIGameUtils.CanShowUpgrades(false), provider.IsPopup());
         }
     }
 
     public static void RenderFromPotion(SpriteBatch sb)
     {
-        TooltipPotion potion = JavaUtils.SafeCast(provider, TooltipPotion.class);
+        AbstractPotion potion = JavaUtils.SafeCast(provider, AbstractPotion.class);
         if (potion == null)
         {
             return;
         }
+        List<EUITooltip> pTips = provider.GetTips();
 
         float x;
         float y;
@@ -419,9 +438,9 @@ public class EUITooltip
             y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        for (int i = 0; i < potion.pclTips.size(); i++)
+        for (int i = 0; i < pTips.size(); i++)
         {
-            EUITooltip tip = potion.pclTips.get(i);
+            EUITooltip tip = pTips.get(i);
             if (tip.hideDescription == null)
             {
                 tip.hideDescription = !StringUtils.isEmpty(tip.id) && EUIConfiguration.HideTipDescription(tip.id);
@@ -437,11 +456,13 @@ public class EUITooltip
 
     public static void RenderFromRelic(SpriteBatch sb)
     {
-        TooltipRelic relic = JavaUtils.SafeCast(provider, TooltipRelic.class);
+        AbstractRelic relic = JavaUtils.SafeCast(provider, AbstractRelic.class);
         if (relic == null)
         {
             return;
         }
+
+        List<EUITooltip> pTips = provider.GetTips();
 
         float x;
         float y;
@@ -455,7 +476,7 @@ public class EUITooltip
             x = 180 * Settings.scale;
             y = 0.7f * Settings.HEIGHT;
         }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && relic.tips.size() > 2 && !AbstractDungeon.player.hasRelic(relic.relicId))
+        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && pTips.size() > 2 && !AbstractDungeon.player.hasRelic(relic.relicId))
         {
             x = InputHelper.mX + (60 * Settings.scale);
             y = InputHelper.mY + (180 * Settings.scale);
@@ -476,9 +497,9 @@ public class EUITooltip
             y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        for (int i = 0; i < relic.tips.size(); i++)
+        for (int i = 0; i < pTips.size(); i++)
         {
-            EUITooltip tip = relic.tips.get(i);
+            EUITooltip tip = pTips.get(i);
             if (tip.hideDescription == null)
             {
                 tip.hideDescription = !StringUtils.isEmpty(tip.id) && EUIConfiguration.HideTipDescription(tip.id);
@@ -493,11 +514,13 @@ public class EUITooltip
 
     public static void RenderFromBlight(SpriteBatch sb)
     {
-        TooltipBlight blight = JavaUtils.SafeCast(provider, TooltipBlight.class);
+        AbstractBlight blight = JavaUtils.SafeCast(provider, AbstractBlight.class);
         if (blight == null)
         {
             return;
         }
+
+        List<EUITooltip> pTips = provider.GetTips();
 
         float x;
         float y;
@@ -511,7 +534,7 @@ public class EUITooltip
             x = 180 * Settings.scale;
             y = 0.7f * Settings.HEIGHT;
         }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && blight.tips.size() > 2 && !AbstractDungeon.player.hasBlight(blight.blightID))
+        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && pTips.size() > 2 && !AbstractDungeon.player.hasBlight(blight.blightID))
         {
             x = InputHelper.mX + (60 * Settings.scale);
             y = InputHelper.mY + (180 * Settings.scale);
@@ -532,9 +555,9 @@ public class EUITooltip
             y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        for (int i = 0; i < blight.tips.size(); i++)
+        for (int i = 0; i < pTips.size(); i++)
         {
-            EUITooltip tip = blight.tips.get(i);
+            EUITooltip tip = pTips.get(i);
             if (tip.hideDescription == null)
             {
                 tip.hideDescription = !StringUtils.isEmpty(tip.id) && EUIConfiguration.HideTipDescription(tip.id);
@@ -640,9 +663,25 @@ public class EUITooltip
         }
     }
 
+    public boolean HideDescription() {
+        if (hideDescription == null)
+        {
+            hideDescription = !StringUtils.isEmpty(id) && EUIConfiguration.HideTipDescription(id);
+        }
+        return hideDescription;
+    }
+
     public boolean Is(EUITooltip tooltip)
     {
         return tooltip != null && id.equals(tooltip.id);
+    }
+
+    public float Height() {
+        BitmapFont descriptionFont = provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
+        final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+        final float modTextHeight = (modName != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
+        final float subHeaderTextHeight = (subHeader != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
+        return (HideDescription() || StringUtils.isEmpty(Description())) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
     }
 
     public float Render(SpriteBatch sb, float x, float y, int index)
@@ -654,19 +693,12 @@ public class EUITooltip
             UpdateCycleText();
         }
 
-        if (hideDescription == null)
-        {
-            JavaUtils.LogWarning(this, "hideDescription was null, why?");
-            hideDescription = !StringUtils.isEmpty(id) && EUIConfiguration.HideTipDescription(id);
-        }
-        TooltipCard card = JavaUtils.SafeCast(provider, TooltipCard.class);
-
-        BitmapFont descriptionFont = card == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
+        BitmapFont descriptionFont = provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
 
         final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
         final float modTextHeight = (modName != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
         final float subHeaderTextHeight = (subHeader != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-        final float h = (hideDescription || StringUtils.isEmpty(Description())) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
+        final float h = (HideDescription() || StringUtils.isEmpty(Description())) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
 
         sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
         sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, BOX_W, BOX_EDGE_H);
@@ -690,7 +722,7 @@ public class EUITooltip
 
         if (!StringUtils.isEmpty(Description()))
         {
-            if (card != null && StringUtils.isNotEmpty(id) && !inHand && index >= 0)
+            if (provider != null && StringUtils.isNotEmpty(id) && !inHand && index >= 0)
             {
                 FontHelper.renderFontRightTopAligned(sb, descriptionFont, "Alt+" + (index + 1), x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, Settings.PURPLE_COLOR);
             }
@@ -709,7 +741,7 @@ public class EUITooltip
                 yOff += subHeaderTextHeight;
             }
 
-            if (!hideDescription)
+            if (!HideDescription())
             {
                 EUIRenderHelpers.WriteSmartText(sb, descriptionFont, Description(), x + TEXT_OFFSET_X, yOff, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
             }
@@ -788,6 +820,13 @@ public class EUITooltip
         return this;
     }
 
+    public EUITooltip CanHighlight(boolean value)
+    {
+        this.canHighlight = value;
+
+        return this;
+    }
+
     public EUITooltip ShowText(boolean value)
     {
         this.canRender = value;
@@ -853,6 +892,12 @@ public class EUITooltip
                 region.getRegionHeight(), false, false);
     }
 
+    public void CycleDescription() {
+        if (descriptions.size() > 1) {
+            SetIndex((currentDesc + 1) % descriptions.size());
+        }
+    }
+
     public String Description()
     {
         return currentDesc < descriptions.size() ? descriptions.get(currentDesc) : "";
@@ -861,10 +906,6 @@ public class EUITooltip
     public String GetTitleOrIcon()
     {
         return (id != null) ? "[" + id + "]" : title;
-    }
-
-    public String CycleDescription() {
-        return SetIndex((currentDesc + 1) % descriptions.size());
     }
 
     public String SetIndex(int index) {

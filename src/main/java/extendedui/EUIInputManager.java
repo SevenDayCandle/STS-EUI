@@ -120,4 +120,12 @@ public class EUIInputManager
             }
         }
     }
+
+    public static void UnpressLeft() {
+        LeftClick = KeyState.Released;
+    }
+
+    public static void UnpressRight() {
+        RightClick = KeyState.Released;
+    }
 }

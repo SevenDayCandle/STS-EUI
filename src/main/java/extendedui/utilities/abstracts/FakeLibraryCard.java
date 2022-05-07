@@ -10,7 +10,7 @@ import extendedui.EUIRM;
 import extendedui.ui.hitboxes.FakeHitbox;
 import extendedui.utilities.EUIFontHelper;
 
-public class FakeLibraryCard extends TooltipCard
+public class FakeLibraryCard extends AbstractCard
 {
     @Override
     public void upgrade()
@@ -51,14 +51,6 @@ public class FakeLibraryCard extends TooltipCard
     @Override
     public AbstractCard makeCopy() {
         return new FakeLibraryCard();
-    }
-
-    @Override
-    public void update()
-    {
-        super.update();
-        this.hovered = false;
-        this.renderTip = false;
     }
 
     @Override

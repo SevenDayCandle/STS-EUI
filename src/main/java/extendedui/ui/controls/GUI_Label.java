@@ -144,7 +144,7 @@ public class GUI_Label extends GUI_Hoverable
     }
 
     public float GetAutoWidth() {
-        return FontHelper.getSmartWidth(font, text, Settings.WIDTH, 0f);
+        return EUIRenderHelpers.GetSmartWidth(font, text, Settings.WIDTH, 0f);
     }
 
     @Override

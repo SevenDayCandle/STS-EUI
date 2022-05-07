@@ -51,11 +51,11 @@ public class STSConfigurationOption<T>
     }
 
     protected T ParseValue(String raw) {
-        Class<?> valueClass = Value.getClass();
         Method method = null;
         try {
+            Class<?> valueClass = Value.getClass();
             method = valueClass.getMethod("valueOf", String.class);
-        } catch (NoSuchMethodException | SecurityException ignored) {
+        } catch (NullPointerException | NoSuchMethodException | SecurityException ignored) {
         }
         if (method != null) {
             try

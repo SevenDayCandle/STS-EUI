@@ -10,13 +10,12 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.configuration.EUIHotkeys;
-import extendedui.utilities.abstracts.FakeAbstractCard;
-import extendedui.utilities.abstracts.TooltipCard;
+import extendedui.interfaces.markers.TooltipProvider;
 
 public class EUICardPreview
 {
-    public TooltipCard defaultPreview;
-    public TooltipCard upgradedPreview;
+    public AbstractCard defaultPreview;
+    public AbstractCard upgradedPreview;
     public boolean isMultiPreview;
 
     public static EUICardPreview GeneratePreviewCard(AbstractCard card) {
@@ -24,33 +23,37 @@ public class EUICardPreview
     }
 
     public static EUICardPreview GeneratePreviewCard(AbstractCard card, boolean upgrade) {
-        return (card instanceof TooltipCard) ? new EUICardPreview((TooltipCard) card, upgrade) : new EUICardPreview(new FakeAbstractCard(card), upgrade);
+        return new EUICardPreview(card, upgrade);
     }
 
-    public EUICardPreview(TooltipCard card, boolean upgrade)
+    public EUICardPreview(AbstractCard card, boolean upgrade)
     {
         this.defaultPreview = card;
-        this.defaultPreview.isPreview = true;
+        if (defaultPreview instanceof TooltipProvider) {
+            ((TooltipProvider) this.defaultPreview).SetIsPreview(true);
+        }
 
         if (upgrade)
         {
-            this.upgradedPreview = (TooltipCard) defaultPreview.makeStatEquivalentCopy();
-            this.upgradedPreview.isPreview = true;
+            this.upgradedPreview = defaultPreview.makeStatEquivalentCopy();
             this.upgradedPreview.upgrade();
             this.upgradedPreview.displayUpgrades();
+            if (upgradedPreview instanceof TooltipProvider) {
+                ((TooltipProvider) this.upgradedPreview).SetIsPreview(true);
+            }
         }
     }
 
-    public TooltipCard GetPreview(boolean upgraded)
+    public AbstractCard GetPreview(boolean upgraded)
     {
         return upgraded && upgradedPreview != null ? upgradedPreview : defaultPreview;
     }
 
-    public void Render(SpriteBatch sb, TooltipCard card, boolean upgraded)
+    public void Render(SpriteBatch sb, AbstractCard card, boolean upgraded, boolean isPopup)
     {
-        TooltipCard preview = GetPreview(upgraded);
+        AbstractCard preview = GetPreview(upgraded);
 
-        if (card.isPopup)
+        if (isPopup)
         {
             preview.current_x = (float) Settings.WIDTH * 0.2f - 10f * Settings.scale;
             preview.current_y = (float) Settings.HEIGHT * 0.25f;

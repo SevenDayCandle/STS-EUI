@@ -8,6 +8,31 @@
 	  "Reset Hidden Tooltips"
 	]
   },
+  "extendedui:grammar":
+  {
+	"TEXT": [
+	  "{0} {1}",
+	  "{0} {1}",
+	  "{0} {1}",
+	  "{0} {1}",
+	  "{0} {1}",
+	  "{0} {1} {2}",
+	  "{0} {1} {2}",
+	  "{0} {1} {2}",
+	  "{0} {1} {2}",
+	  "{0} {1} {2} {3}",
+	  "{0} {1} {2} {3}",
+	  "{0} {1} {2} {3} {4}",
+	  "{0} and {1}",
+	  "{0} or {1}",
+	  "Not {0}"
+	],
+	"EXTRA_TEXT":
+	[
+	  "{0}s",
+	  "{0}(s)"
+	]
+  },
   "extendedui:hotkeys":
   {
 	"TEXT": [
@@ -33,7 +58,8 @@
 	  "Any",
 	  "No cards match the current filters.",
 	  "{0} to cycle",
-	  "Base Game"
+	  "Base Game",
+	  "Sort by {0}"
 	]
   }
 }

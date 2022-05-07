@@ -25,6 +25,7 @@ public class CardKeywordButton extends GUI_Hoverable
 {
     public static final float ICON_SIZE = Scale(40);
     private static final Color ACTIVE_COLOR = new Color(0.76f, 0.76f, 0.76f, 1f);
+    private static final Color NEGATE_COLOR = new Color(0.62f, 0.32f, 0.28f, 1f);
     private static final Color PANEL_COLOR = new Color(0.3f, 0.3f, 0.3f, 1f);
     private ActionT1<CardKeywordButton> onClick;
 
@@ -50,7 +51,9 @@ public class CardKeywordButton extends GUI_Hoverable
         Tooltip = tooltip;
 
         background_button = new GUI_Button(EUIRM.Images.Panel_Rounded_Half_H.Texture(), new RelativeHitbox(hb, 1, 1, 0.5f, 0).SetIsPopupCompatible(true))
-        .SetColor(CardKeywordFilters.CurrentFilters.contains(Tooltip) ? ACTIVE_COLOR : PANEL_COLOR)
+                .SetClickDelay(0.01f)
+        .SetColor(CardKeywordFilters.CurrentFilters.contains(Tooltip) ? ACTIVE_COLOR
+                : CardKeywordFilters.CurrentNegateFilters.contains(Tooltip) ? NEGATE_COLOR : PANEL_COLOR)
         .SetText("")
                 .SetOnClick(button -> {
                     if (CardKeywordFilters.CurrentFilters.contains(Tooltip))
@@ -61,9 +64,29 @@ public class CardKeywordButton extends GUI_Hoverable
                     }
                     else
                     {
+                        //CardKeywordFilters.CurrentNegateFilters.remove(Tooltip);
                         CardKeywordFilters.CurrentFilters.add(Tooltip);
                         background_button.SetColor(ACTIVE_COLOR);
-                        title_text.SetColor(PANEL_COLOR);
+                        title_text.SetColor(Color.DARK_GRAY);
+                    }
+
+                    if (this.onClick != null) {
+                        this.onClick.Invoke(this);
+                    }
+                })
+                .SetOnRightClick(button -> {
+                    if (CardKeywordFilters.CurrentNegateFilters.contains(Tooltip))
+                    {
+                        CardKeywordFilters.CurrentNegateFilters.remove(Tooltip);
+                        background_button.SetColor(PANEL_COLOR);
+                        title_text.SetColor(Color.WHITE);
+                    }
+                    else
+                    {
+                        //CardKeywordFilters.CurrentFilters.remove(Tooltip);
+                        CardKeywordFilters.CurrentNegateFilters.add(Tooltip);
+                        background_button.SetColor(NEGATE_COLOR);
+                        title_text.SetColor(Color.WHITE);
                     }
 
                     if (this.onClick != null) {
@@ -74,7 +97,7 @@ public class CardKeywordButton extends GUI_Hoverable
         title_text = new GUI_Label(EUIFontHelper.CardTooltipFont,
         new RelativeHitbox(hb, 0.5f, 1, baseTextOffsetX, baseTextOffsetY))
                 .SetFont(EUIFontHelper.CardTooltipFont, 0.8f)
-                .SetColor(CardKeywordFilters.CurrentFilters.contains(Tooltip) ? PANEL_COLOR : Color.WHITE)
+                .SetColor(CardKeywordFilters.CurrentFilters.contains(Tooltip) ? Color.DARK_GRAY : Color.WHITE)
         .SetAlignment(0.5f, 0.49f) // 0.1f
         .SetText(Tooltip.title);
 
@@ -83,7 +106,7 @@ public class CardKeywordButton extends GUI_Hoverable
                 .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
                 .SetAlignment(0.5f, 0.51f) // 0.1f
                 .SetColor(Settings.GOLD_COLOR)
-                .SetText(CardCount);
+                .SetText(CardKeywordFilters.CurrentNegateFilters.contains(Tooltip) ? "X" : CardCount);
     }
 
     public CardKeywordButton SetIndex(int index)
@@ -101,9 +124,15 @@ public class CardKeywordButton extends GUI_Hoverable
     public CardKeywordButton SetCardCount(int count)
     {
         this.CardCount = count;
-        count_text.SetText(count).SetColor(count > 0 ? Settings.GOLD_COLOR : Color.DARK_GRAY);
-        title_text.SetColor(CardKeywordFilters.CurrentFilters.contains(Tooltip) ? PANEL_COLOR : count > 0 ? Color.WHITE : Color.DARK_GRAY);
-        background_button.SetColor(CardKeywordFilters.CurrentFilters.contains(Tooltip) ? ACTIVE_COLOR : PANEL_COLOR).SetInteractable(count != 0);
+        boolean isNegate = CardKeywordFilters.CurrentNegateFilters.contains(Tooltip);
+        boolean isContains = CardKeywordFilters.CurrentFilters.contains(Tooltip);
+        count_text
+                .SetText(isNegate ? "X" : count).SetColor(count > 0 ? Settings.GOLD_COLOR : Color.DARK_GRAY);
+        title_text.SetColor((!isContains && count > 0) || isNegate ? Color.WHITE : Color.DARK_GRAY);
+        background_button
+                .SetColor(isContains ? ACTIVE_COLOR
+                        : isNegate ? NEGATE_COLOR : PANEL_COLOR)
+                .SetInteractable(count != 0 || isNegate);
 
         return this;
     }
@@ -117,7 +146,7 @@ public class CardKeywordButton extends GUI_Hoverable
     @Override
     public void Update()
     {
-        background_button.SetInteractable(CardCount != 0).Update();
+        background_button.Update();
         title_text.Update();
         count_text.Update();
     }
@@ -128,7 +157,7 @@ public class CardKeywordButton extends GUI_Hoverable
         background_button.Render(sb);
 
         if (Tooltip.icon != null) {
-            if (CardCount != 0) {
+            if (CardCount != 0 || CardKeywordFilters.CurrentNegateFilters.contains(Tooltip)) {
                 RenderTooltipImage(sb);
             }
             else {

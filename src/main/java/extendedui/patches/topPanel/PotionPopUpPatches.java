@@ -5,11 +5,11 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
+import extendedui.interfaces.markers.TooltipProvider;
 import javassist.CtBehavior;
 import extendedui.JavaUtils;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.FieldInfo;
-import extendedui.utilities.abstracts.TooltipPotion;
 
 public class PotionPopUpPatches {
     protected static final FieldInfo<AbstractPotion> _potion = JavaUtils.GetField("potion", PotionPopUp.class);
@@ -23,7 +23,7 @@ public class PotionPopUpPatches {
         @SpireInsertPatch(locator = Locator.class)
         public static SpireReturn<Void> Insert(PotionPopUp __instance)
         {
-            TooltipPotion p = JavaUtils.SafeCast(_potion.Get(__instance), TooltipPotion.class);
+            TooltipProvider p = JavaUtils.SafeCast(_potion.Get(__instance), TooltipProvider.class);
             if (p != null) {
                 EUITooltip.QueueTooltips(p.GetTips(), _x.Get(__instance) + 180.0F * Settings.scale, _y.Get(__instance)  + 70.0F * Settings.scale);
                 return SpireReturn.Return(null);

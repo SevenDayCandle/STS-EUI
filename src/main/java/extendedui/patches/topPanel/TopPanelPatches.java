@@ -6,10 +6,10 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.ui.panels.TopPanel;
+import extendedui.interfaces.markers.TooltipProvider;
 import javassist.CtBehavior;
 import extendedui.JavaUtils;
 import extendedui.ui.tooltips.EUITooltip;
-import extendedui.utilities.abstracts.TooltipPotion;
 
 import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 
@@ -39,9 +39,8 @@ public class TopPanelPatches {
         @SpireInsertPatch(locator = Locator.class, localvars = {"p"})
         public static SpireReturn<Void> Insert(TopPanel __instance, AbstractPotion p)
         {
-            TooltipPotion po = JavaUtils.SafeCast(p, TooltipPotion.class);
-            if (po != null) {
-                EUITooltip.QueueTooltips(po);
+            if (p instanceof TooltipProvider) {
+                EUITooltip.QueueTooltips((AbstractPotion & TooltipProvider) p);
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();

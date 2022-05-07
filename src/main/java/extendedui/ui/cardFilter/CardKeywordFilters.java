@@ -1,5 +1,7 @@
 package extendedui.ui.cardFilter;
 
+import basemod.abstracts.CustomCard;
+import basemod.helpers.TooltipInfo;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
@@ -7,6 +9,7 @@ import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
@@ -14,6 +17,7 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import extendedui.configuration.EUIHotkeys;
+import extendedui.interfaces.markers.TooltipProvider;
 import org.apache.commons.lang3.StringUtils;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
@@ -28,7 +32,6 @@ import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.Mathf;
 import extendedui.utilities.abstracts.FakeLibraryCard;
-import extendedui.utilities.abstracts.TooltipCard;
 
 import java.util.*;
 
@@ -59,7 +62,7 @@ public class CardKeywordFilters extends GUI_Base
     private static final float SCROLL_BAR_THRESHOLD = 500f * Settings.scale;
     public static final float SPACING = Settings.scale * 22.5f;
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
-    public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.78f;
+    public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.75f;
     public static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
     public static final float PAD_Y = Scale(10);
 
@@ -67,6 +70,7 @@ public class CardKeywordFilters extends GUI_Base
     public static final HashSet<AbstractCard.CardColor> CurrentColors = new HashSet<>();
     public static final HashSet<ModInfo> CurrentOrigins = new HashSet<>();
     public static final HashSet<EUITooltip> CurrentFilters = new HashSet<>();
+    public static final HashSet<EUITooltip> CurrentNegateFilters = new HashSet<>();
     public static final HashSet<CostFilter> CurrentCosts = new HashSet<>();
     public static final HashSet<AbstractCard.CardRarity> CurrentRarities = new HashSet<>();
     public static final HashSet<AbstractCard.CardType> CurrentTypes = new HashSet<>();
@@ -97,12 +101,15 @@ public class CardKeywordFilters extends GUI_Base
     public final GUI_Label currentTotalHeaderLabel;
     public final GUI_Label currentTotalLabel;
     public final GUI_Label keywordsSectionLabel;
+    public final GUI_Toggle sortTypeToggle;
+    public final GUI_Toggle sortDirectionToggle;
     public final AdvancedHitbox hb;
     public boolean draggingScreen;
     public boolean autoShowScrollbar;
 
     protected boolean isAccessedFromCardPool;
     private boolean shouldSortByCount;
+    private boolean sortDesc;
 
     public static void ToggleFilters()
     {
@@ -119,11 +126,11 @@ public class CardKeywordFilters extends GUI_Base
     public static ArrayList<EUITooltip> GetAllTooltips(AbstractCard c)
     {
         ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
-        TooltipCard eC = JavaUtils.SafeCast(c, TooltipCard.class);
+        TooltipProvider eC = JavaUtils.SafeCast(c, TooltipProvider.class);
         if (eC != null)
         {
             eC.GenerateDynamicTooltips(dynamicTooltips);
-            for (EUITooltip tip : eC.tooltips)
+            for (EUITooltip tip : eC.GetTips())
             {
                 if (!dynamicTooltips.contains(tip))
                 {
@@ -133,12 +140,53 @@ public class CardKeywordFilters extends GUI_Base
         }
         else
         {
+            if (c.isInnate) {
+                EUITooltip tip = EUITooltip.FindByID(GameDictionary.EXHAUST.NAMES[0]);
+                if (tip != null)
+                {
+                    dynamicTooltips.add(tip);
+                }
+            }
+            if (c.isEthereal) {
+                EUITooltip tip = EUITooltip.FindByID(GameDictionary.ETHEREAL.NAMES[0]);
+                if (tip != null)
+                {
+                    dynamicTooltips.add(tip);
+                }
+            }
+            if (c.selfRetain) {
+                EUITooltip tip = EUITooltip.FindByID(GameDictionary.RETAIN.NAMES[0]);
+                if (tip != null)
+                {
+                    dynamicTooltips.add(tip);
+                }
+            }
+            if (c.exhaust) {
+                EUITooltip tip = EUITooltip.FindByID(GameDictionary.EXHAUST.NAMES[0]);
+                if (tip != null)
+                {
+                    dynamicTooltips.add(tip);
+                }
+            }
             for (String sk : c.keywords)
             {
                 EUITooltip tip = EUITooltip.FindByName(sk);
                 if (tip != null && !dynamicTooltips.contains(tip))
                 {
                     dynamicTooltips.add(tip);
+                }
+            }
+            if (c instanceof CustomCard) {
+                List<TooltipInfo> infos = ((CustomCard) c).getCustomTooltips();
+                ModInfo mi = EUIGameUtils.GetModInfo(c);
+                if (infos != null && mi != null) {
+                    for (TooltipInfo info : infos) {
+                        EUITooltip tip = EUITooltip.FindByName(mi.ID.toLowerCase() + ":" + info.title);
+                        if (tip != null && !dynamicTooltips.contains(tip))
+                        {
+                            dynamicTooltips.add(tip);
+                        }
+                    }
                 }
             }
         }
@@ -190,6 +238,12 @@ public class CardKeywordFilters extends GUI_Base
                 return false;
             }
 
+            //Negate Tooltips check
+            if (!CurrentNegateFilters.isEmpty() && (JavaUtils.Any(GetAllTooltips(c), CurrentNegateFilters::contains)))
+            {
+                return false;
+            }
+
             //Rarities check
             if (!CurrentRarities.isEmpty() && !CurrentRarities.contains(c.rarity))
             {
@@ -229,7 +283,7 @@ public class CardKeywordFilters extends GUI_Base
 
     public static boolean AreFiltersEmpty()
     {
-        return CurrentColors.isEmpty() && CurrentOrigins.isEmpty() && CurrentFilters.isEmpty() && CurrentCosts.isEmpty() && CurrentRarities.isEmpty() && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.IsEmpty());
+        return CurrentColors.isEmpty() && CurrentOrigins.isEmpty() && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty() && CurrentCosts.isEmpty() && CurrentRarities.isEmpty() && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.IsEmpty());
     }
 
     public CardKeywordFilters()
@@ -270,7 +324,7 @@ public class CardKeywordFilters extends GUI_Base
                     {
                         return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
                     }
-                    return StringUtils.join(JavaUtils.Map(items, item -> item == null ? "--" : item.Name), ", ");
+                    return StringUtils.join(JavaUtils.Map(items, item -> item == null ? EUIRM.Strings.UI_BaseGame : item.Name), ", ");
                 }, null, false)
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Origins)
                 .SetIsMultiSelect(true)
@@ -409,6 +463,24 @@ public class CardKeywordFilters extends GUI_Base
                 .SetText("")
                 .SetColor(Settings.BLUE_TEXT_COLOR)
                 .SetAlignment(0.5f, 0.0f, false);
+
+        sortTypeToggle = new GUI_Toggle( new AdvancedHitbox(keywordsSectionLabel.hb.x + SPACING * 2, keywordsSectionLabel.hb.y, Scale(170), Scale(32)).SetIsPopupCompatible(true))
+                .SetBackground(EUIRM.Images.RectangularButton.Texture(), Color.DARK_GRAY)
+                .SetTickImage(null, null, 10)
+                .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.7f)
+                .SetText(EUIRM.Strings.UI_SortByCount)
+                .SetOnToggle(val -> {
+                    shouldSortByCount = val;
+                    RefreshButtonOrder();
+                });
+
+        sortDirectionToggle = new GUI_Toggle( new AdvancedHitbox(sortTypeToggle.hb.x + SPACING, keywordsSectionLabel.hb.y, Scale(48), Scale(48)).SetIsPopupCompatible(true))
+                .SetTickImage(new GUI_Image(EUIRM.Images.Arrow.Texture()), new GUI_Image(EUIRM.Images.Arrow.Texture()).SetRotation(180f), 32)
+                .SetText("")
+                .SetOnToggle(val -> {
+                    sortDesc = val;
+                    RefreshButtonOrder();
+                });
     }
 
     public CardKeywordFilters Initialize(ActionT1<CardKeywordButton> onClick, ArrayList<AbstractCard> cards, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
@@ -514,6 +586,7 @@ public class CardKeywordFilters extends GUI_Base
         }
         CurrentOrigins.clear();
         CurrentFilters.clear();
+        CurrentNegateFilters.clear();
         CurrentCosts.clear();
         CurrentRarities.clear();
         CurrentTypes.clear();
@@ -565,7 +638,8 @@ public class CardKeywordFilters extends GUI_Base
 
     public void RefreshButtonOrder()
     {
-        FilterButtons.sort((a, b) -> shouldSortByCount ? a.CardCount - b.CardCount : StringUtils.compare(a.Tooltip.title, b.Tooltip.title));
+        sortTypeToggle.SetText(EUIRM.Strings.SortBy(shouldSortByCount ? EUIRM.Strings.UI_Amount : CardLibSortHeader.TEXT[2]));
+        FilterButtons.sort((a, b) -> (shouldSortByCount ? a.CardCount - b.CardCount : StringUtils.compare(a.Tooltip.title, b.Tooltip.title)) * (sortDesc ? -1 : 1));
 
         int index = 0;
         for (CardKeywordButton c : FilterButtons)
@@ -591,11 +665,13 @@ public class CardKeywordFilters extends GUI_Base
     public void Update()
     {
         hb.y = DRAW_START_Y + scrollDelta;
-        OriginsDropdown.SetPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 3);
-        CostDropdown.SetPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 3);
-        RaritiesDropdown.SetPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 3);
-        TypesDropdown.SetPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 3);
-        keywordsSectionLabel.SetPosition(hb.x - SPACING, DRAW_START_Y + scrollDelta + SPACING * 2).Update();
+        OriginsDropdown.SetPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 6);
+        CostDropdown.SetPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 6);
+        RaritiesDropdown.SetPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 6);
+        TypesDropdown.SetPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 6);
+        keywordsSectionLabel.SetPosition(hb.x - SPACING, DRAW_START_Y + scrollDelta + SPACING * 3).Update();
+        sortTypeToggle.SetPosition(keywordsSectionLabel.hb.x + SPACING * 10, DRAW_START_Y + scrollDelta + SPACING * 3).TryUpdate();
+        sortDirectionToggle.SetPosition(sortTypeToggle.hb.x + SPACING * 7, DRAW_START_Y + scrollDelta + SPACING * 3).TryUpdate();
         currentTotalHeaderLabel.Update();
         currentTotalLabel.Update();
         hb.update();
@@ -650,6 +726,9 @@ public class CardKeywordFilters extends GUI_Base
         keywordsSectionLabel.Render(sb);
         currentTotalHeaderLabel.Render(sb);
         currentTotalLabel.Render(sb);
+        sortTypeToggle.TryRender(sb);
+        sortDirectionToggle.TryRender(sb);
+
         for (CardKeywordButton c : FilterButtons)
         {
             c.TryRender(sb);
@@ -679,6 +758,8 @@ public class CardKeywordFilters extends GUI_Base
         {
             if (closeButton.hb.hovered
                     || clearButton.hb.hovered
+                    || sortTypeToggle.hb.hovered
+                    || sortDirectionToggle.hb.hovered
                     || OriginsDropdown.AreAnyItemsHovered()
                     || CostDropdown.AreAnyItemsHovered()
                     || RaritiesDropdown.AreAnyItemsHovered()

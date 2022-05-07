@@ -19,7 +19,7 @@ import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
 import static extendedui.configuration.EUIConfiguration.RequiresReload;
 
 @SpireInitializer
-public class Initializer implements PostInitializeSubscriber, EditStringsSubscriber, EditCardsSubscriber, StartGameSubscriber, OnStartBattleSubscriber
+public class Initializer implements PostInitializeSubscriber, EditStringsSubscriber, EditCardsSubscriber, StartGameSubscriber, OnStartBattleSubscriber, PostUpdateSubscriber
 {
     //Used by @SpireInitializer
     public static void initialize()
@@ -90,5 +90,11 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
             STSEffekseerManager.Reset();
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager");
         }
+    }
+
+    @Override
+    public void receivePostUpdate()
+    {
+        EUIInputManager.PostUpdate();
     }
 }
