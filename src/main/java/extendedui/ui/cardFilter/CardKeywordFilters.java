@@ -16,6 +16,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
+import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.TooltipProvider;
 import org.apache.commons.lang3.StringUtils;
@@ -31,7 +32,7 @@ import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.Mathf;
-import extendedui.utilities.abstracts.FakeLibraryCard;
+import extendedui.utilities.FakeLibraryCard;
 
 import java.util.*;
 
@@ -62,9 +63,9 @@ public class CardKeywordFilters extends GUI_Base
     private static final float SCROLL_BAR_THRESHOLD = 500f * Settings.scale;
     public static final float SPACING = Settings.scale * 22.5f;
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
-    public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.75f;
+    public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.87f;
     public static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
-    public static final float PAD_Y = Scale(10);
+    public static final float PAD_Y = Scale(45);
 
     public static final int ROW_SIZE = 8;
     public static final HashSet<AbstractCard.CardColor> CurrentColors = new HashSet<>();
@@ -74,6 +75,7 @@ public class CardKeywordFilters extends GUI_Base
     public static final HashSet<CostFilter> CurrentCosts = new HashSet<>();
     public static final HashSet<AbstractCard.CardRarity> CurrentRarities = new HashSet<>();
     public static final HashSet<AbstractCard.CardType> CurrentTypes = new HashSet<>();
+    public static String CurrentName;
     public static CustomCardFilterModule CustomModule;
     protected final HashMap<EUITooltip, Integer> CurrentFilterCounts = new HashMap<>();
     protected final ArrayList<CardKeywordButton> FilterButtons = new ArrayList<>();
@@ -95,6 +97,7 @@ public class CardKeywordFilters extends GUI_Base
     public final GUI_Dropdown<AbstractCard.CardRarity> RaritiesDropdown;
     public final GUI_Dropdown<AbstractCard.CardType> TypesDropdown;
     public final GUI_Dropdown<AbstractCard.CardColor> ColorsDropdown;
+    public final GUI_TextBoxInput NameInput;
     public final GUI_Button closeButton;
     public final GUI_Button clearButton;
     public final GUI_VerticalScrollBar scrollBar;
@@ -196,6 +199,13 @@ public class CardKeywordFilters extends GUI_Base
     public static ArrayList<AbstractCard> ApplyFilters(ArrayList<AbstractCard> input)
     {
         return JavaUtils.Filter(input, c -> {
+            //Name check
+            if (CurrentName != null && !CurrentName.isEmpty()) {
+                if (c.name == null || !c.name.toLowerCase().contains(CurrentName.toLowerCase())) {
+                    return false;
+                }
+            }
+
             //Colors check
             if (!CurrentColors.isEmpty())
             {
@@ -283,7 +293,7 @@ public class CardKeywordFilters extends GUI_Base
 
     public static boolean AreFiltersEmpty()
     {
-        return CurrentColors.isEmpty() && CurrentOrigins.isEmpty() && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty() && CurrentCosts.isEmpty() && CurrentRarities.isEmpty() && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.IsEmpty());
+        return (CurrentName == null || CurrentName.isEmpty()) && CurrentColors.isEmpty() && CurrentOrigins.isEmpty() && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty() && CurrentCosts.isEmpty() && CurrentRarities.isEmpty() && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.IsEmpty());
     }
 
     public CardKeywordFilters()
@@ -303,7 +313,7 @@ public class CardKeywordFilters extends GUI_Base
         this.scrollBar = new GUI_VerticalScrollBar(new AdvancedHitbox(ScreenW(0.03f), ScreenH(0.7f)))
                 .SetOnScroll(this::OnScroll);
 
-        OriginsDropdown = new GUI_Dropdown<ModInfo>(new AdvancedHitbox(hb.x - SPACING * 3, hb.y + SPACING * 3, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
+        OriginsDropdown = new GUI_Dropdown<ModInfo>(new AdvancedHitbox(0, 0, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
                 })
@@ -331,7 +341,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetCanAutosizeButton(true)
                 .SetItems(Loader.MODINFOS);
 
-        CostDropdown = new GUI_Dropdown<CostFilter>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(160), Scale(48)), c -> c.name)
+        CostDropdown = new GUI_Dropdown<CostFilter>(new AdvancedHitbox(0, 0, Scale(160), Scale(48)), c -> c.name)
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
                 })
@@ -359,7 +369,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetCanAutosize(false, false)
                 .SetItems(CostFilter.values());
 
-        RaritiesDropdown = new GUI_Dropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(240), Scale(48))
+        RaritiesDropdown = new GUI_Dropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , item -> StringUtils.capitalize(item.toString().toLowerCase()))
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
@@ -388,7 +398,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetCanAutosizeButton(true)
                 .SetItems(AbstractCard.CardRarity.values());
 
-        TypesDropdown = new GUI_Dropdown<AbstractCard.CardType>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(240), Scale(48))
+        TypesDropdown = new GUI_Dropdown<AbstractCard.CardType>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , EUIGameUtils::TextForType)
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
@@ -417,7 +427,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetCanAutosizeButton(true)
                 .SetItems(AbstractCard.CardType.values());
 
-        ColorsDropdown = new GUI_Dropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, hb.y + SPACING * 3, Scale(240), Scale(48))
+        ColorsDropdown = new GUI_Dropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , item -> StringUtils.capitalize(item.toString().toLowerCase()))
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
@@ -444,9 +454,24 @@ public class CardKeywordFilters extends GUI_Base
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Colors)
                 .SetIsMultiSelect(true)
                 .SetCanAutosizeButton(true);
+        NameInput = (GUI_TextBoxInput) new GUI_TextBoxInput(EUIRM.Images.RectangularButton.Texture(),
+                new AdvancedHitbox(0, 0, Scale(240), Scale(40)).SetIsPopupCompatible(true))
+                .SetOnComplete(s -> {
+                    CurrentName = s;
+                    if (onClick != null)
+                    {
+                        onClick.Invoke(null);
+                    }
+                })
+                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
+                .SetHeaderSpacing(1f)
+                .SetColors(Color.GRAY, Settings.CREAM_COLOR)
+                .SetAlignment(0.5f, 0.1f)
+                .SetFont(EUIFontHelper.CardTitleFont_Small, 0.8f)
+                .SetBackgroundTexture(EUIRM.Images.RectangularButton.Texture());
 
         keywordsSectionLabel = new GUI_Label(EUIFontHelper.CardTitleFont_Small,
-                new AdvancedHitbox(TypesDropdown.hb.x + TypesDropdown.hb.width + SPACING * 4, hb.y + SPACING * 6.1f, Scale(48), Scale(48)))
+                new AdvancedHitbox(0, 0, Scale(48), Scale(48)))
                 .SetFont(EUIFontHelper.CardTitleFont_Small, 0.8f)
                 .SetText(EUIRM.Strings.UI_Keywords)
                 .SetColor(Settings.GOLD_COLOR)
@@ -464,7 +489,7 @@ public class CardKeywordFilters extends GUI_Base
                 .SetColor(Settings.BLUE_TEXT_COLOR)
                 .SetAlignment(0.5f, 0.0f, false);
 
-        sortTypeToggle = new GUI_Toggle( new AdvancedHitbox(keywordsSectionLabel.hb.x + SPACING * 2, keywordsSectionLabel.hb.y, Scale(170), Scale(32)).SetIsPopupCompatible(true))
+        sortTypeToggle = new GUI_Toggle( new AdvancedHitbox(0, 0, Scale(170), Scale(32)).SetIsPopupCompatible(true))
                 .SetBackground(EUIRM.Images.RectangularButton.Texture(), Color.DARK_GRAY)
                 .SetTickImage(null, null, 10)
                 .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.7f)
@@ -474,7 +499,7 @@ public class CardKeywordFilters extends GUI_Base
                     RefreshButtonOrder();
                 });
 
-        sortDirectionToggle = new GUI_Toggle( new AdvancedHitbox(sortTypeToggle.hb.x + SPACING, keywordsSectionLabel.hb.y, Scale(48), Scale(48)).SetIsPopupCompatible(true))
+        sortDirectionToggle = new GUI_Toggle( new AdvancedHitbox(0, 0, Scale(48), Scale(48)).SetIsPopupCompatible(true))
                 .SetTickImage(new GUI_Image(EUIRM.Images.Arrow.Texture()), new GUI_Image(EUIRM.Images.Arrow.Texture()).SetRotation(180f), 32)
                 .SetText("")
                 .SetOnToggle(val -> {
@@ -590,10 +615,12 @@ public class CardKeywordFilters extends GUI_Base
         CurrentCosts.clear();
         CurrentRarities.clear();
         CurrentTypes.clear();
+        CurrentName = null;
         CostDropdown.SetSelectionIndices(null, false);
         OriginsDropdown.SetSelectionIndices(null, false);
         TypesDropdown.SetSelectionIndices(null, false);
         RaritiesDropdown.SetSelectionIndices(null, false);
+        NameInput.SetText("");
         if (CustomModule != null)
         {
             CustomModule.Reset();
@@ -664,14 +691,15 @@ public class CardKeywordFilters extends GUI_Base
     @Override
     public void Update()
     {
-        hb.y = DRAW_START_Y + scrollDelta;
-        OriginsDropdown.SetPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 6);
-        CostDropdown.SetPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 6);
-        RaritiesDropdown.SetPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 6);
-        TypesDropdown.SetPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta + SPACING * 6);
-        keywordsSectionLabel.SetPosition(hb.x - SPACING, DRAW_START_Y + scrollDelta + SPACING * 3).Update();
-        sortTypeToggle.SetPosition(keywordsSectionLabel.hb.x + SPACING * 10, DRAW_START_Y + scrollDelta + SPACING * 3).TryUpdate();
-        sortDirectionToggle.SetPosition(sortTypeToggle.hb.x + SPACING * 7, DRAW_START_Y + scrollDelta + SPACING * 3).TryUpdate();
+        hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
+        OriginsDropdown.SetPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta);
+        CostDropdown.SetPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta);
+        RaritiesDropdown.SetPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta);
+        TypesDropdown.SetPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta);
+        NameInput.SetPosition(hb.x + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3);
+        keywordsSectionLabel.SetPosition(hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 7).Update();
+        sortTypeToggle.SetPosition(keywordsSectionLabel.hb.x + SPACING * 10, DRAW_START_Y + scrollDelta - SPACING * 7).TryUpdate();
+        sortDirectionToggle.SetPosition(sortTypeToggle.hb.x + SPACING * 7, DRAW_START_Y + scrollDelta - SPACING * 7).TryUpdate();
         currentTotalHeaderLabel.Update();
         currentTotalLabel.Update();
         hb.update();
@@ -707,6 +735,7 @@ public class CardKeywordFilters extends GUI_Base
         CostDropdown.TryUpdate();
         RaritiesDropdown.TryUpdate();
         TypesDropdown.TryUpdate();
+        NameInput.TryUpdate();
 
         if (CustomModule != null)
         {
@@ -737,6 +766,7 @@ public class CardKeywordFilters extends GUI_Base
         CostDropdown.TryRender(sb);
         RaritiesDropdown.TryRender(sb);
         TypesDropdown.TryRender(sb);
+        NameInput.TryRender(sb);
 
         if (CustomModule != null)
         {
@@ -764,6 +794,7 @@ public class CardKeywordFilters extends GUI_Base
                     || CostDropdown.AreAnyItemsHovered()
                     || RaritiesDropdown.AreAnyItemsHovered()
                     || TypesDropdown.AreAnyItemsHovered()
+                    || NameInput.hb.hovered
                     || (CustomModule != null && CustomModule.IsHovered()))
             {
                 return;
@@ -844,11 +875,13 @@ public class CardKeywordFilters extends GUI_Base
     {
         filterSizeCache = FilterButtons.size();
         upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
+        lowerScrollBound = -Settings.DEFAULT_SCROLL_LIMIT;
 
-        if (filterSizeCache > ROW_SIZE * 2)
+        if (filterSizeCache > ROW_SIZE)
         {
-            int offset = ((filterSizeCache / ROW_SIZE) - ((filterSizeCache % ROW_SIZE > 0) ? 1 : 2));
-            upperScrollBound += PAD_Y * offset;
+            int offset = (filterSizeCache - 1) / ROW_SIZE;
+            upperScrollBound += PAD_Y * (offset + 2);
+            lowerScrollBound -= PAD_Y * (offset - 1);
         }
     }
 

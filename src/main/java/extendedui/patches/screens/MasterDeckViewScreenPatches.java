@@ -1,28 +1,18 @@
 package extendedui.patches.screens;
 
-import basemod.patches.com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar.ColorTabBarFix;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
-import com.megacrit.cardcrawl.cutscenes.Cutscene;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.screens.MasterDeckSortHeader;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
-import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
-import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
-import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
 import extendedui.EUI;
-import extendedui.JavaUtils;
 import extendedui.ui.cardFilter.CardKeywordFilters;
 import extendedui.ui.cardFilter.CardPoolScreen;
-import extendedui.utilities.FieldInfo;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
-import javassist.expr.MethodCall;
 
 import java.util.ArrayList;
 

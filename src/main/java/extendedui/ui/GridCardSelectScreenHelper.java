@@ -8,12 +8,13 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
 import extendedui.JavaUtils;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.ui.controls.GUI_TextBox;
 import extendedui.ui.hitboxes.AdvancedHitbox;
-import extendedui.utilities.FieldInfo;
+import extendedui.utilities.ClassUtils;
 import extendedui.utilities.GenericCondition;
 
 import java.util.ArrayList;
@@ -22,16 +23,6 @@ import java.util.ArrayList;
 
 public class GridCardSelectScreenHelper
 {
-    private static final FieldInfo<Float> _drawStartX = JavaUtils.GetField("drawStartX", GridCardSelectScreen.class);
-    private static final FieldInfo<Float> _padX = JavaUtils.GetField("padX", GridCardSelectScreen.class);
-    private static final FieldInfo<Float> _padY = JavaUtils.GetField("padY", GridCardSelectScreen.class);
-    private static final FieldInfo<Float> _drawStartY = JavaUtils.GetField("drawStartY", GridCardSelectScreen.class);
-    private static final FieldInfo<Float> _currentDiffY = JavaUtils.GetField("currentDiffY", GridCardSelectScreen.class);
-    private static final FieldInfo<AbstractCard> _hoveredCard = JavaUtils.GetField("hoveredCard", GridCardSelectScreen.class);
-    private static final FieldInfo<CardGroup> _targetGroup = JavaUtils.GetField("targetGroup", GridCardSelectScreen.class);
-    private static final FieldInfo<Integer> _prevDeckSize = JavaUtils.GetField("prevDeckSize", GridCardSelectScreen.class);
-    private static final FieldInfo<Float> _scrollUpperBound = JavaUtils.GetField("scrollUpperBound", GridCardSelectScreen.class);
-
     private static final CardGroup mergedGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
     private static final ArrayList<CardGroup> cardGroups = new ArrayList<>();
     private static final GUI_TextBox dynamicLabel = new GUI_TextBox(ImageMaster.WHITE_SQUARE_IMG,
@@ -93,7 +84,7 @@ public class GridCardSelectScreenHelper
         {
             if (cardGroups.size() == 1)
             {
-                _targetGroup.Set(selectScreen, cardGroups.get(0));
+                ClassUtils.SetField(selectScreen, "targetGroup", cardGroups.get(0));
                 Clear(false);
             }
 
@@ -114,13 +105,13 @@ public class GridCardSelectScreenHelper
 
         float lineNum = 0;
 
-        float drawStartX = _drawStartX.Get(selectScreen);
-        float drawStartY = _drawStartY.Get(selectScreen);
-        float padX = _padX.Get(selectScreen);
-        float padY = _padY.Get(selectScreen);
-        float currentDiffY = _currentDiffY.Get(selectScreen);
+        float drawStartX = ClassUtils.GetField(selectScreen, "drawStartX");
+        float drawStartY = ClassUtils.GetField(selectScreen, "drawStartY");
+        float padX = ClassUtils.GetField(selectScreen, "padX");
+        float padY = ClassUtils.GetField(selectScreen, "padY");
+        float currentDiffY = ClassUtils.GetField(selectScreen, "currentDiffY");
 
-        _hoveredCard.Set(selectScreen, null);
+        ClassUtils.SetField(selectScreen, "hoveredCard", null);
 
         for (CardGroup cardGroup : cardGroups)
         {
@@ -144,7 +135,7 @@ public class GridCardSelectScreenHelper
 
                 if (card.hb.hovered)
                 {
-                    _hoveredCard.Set(selectScreen, card);
+                    ClassUtils.SetField(selectScreen, "hoveredCard", card);
                 }
             }
 
@@ -161,7 +152,8 @@ public class GridCardSelectScreenHelper
             return false;
         }
 
-        CardGroup targetCardGroup = _targetGroup.Get(instance);
+        float padY = ClassUtils.GetField(instance, "padY");
+        CardGroup targetCardGroup = ClassUtils.GetField(instance, "targetGroup");
 
         float scrollTmp = (mergedGroup.size() + 2.6f * cardGroups.size()) / 5f - 2;
         if (targetCardGroup.size() % 5 != 0)
@@ -169,8 +161,8 @@ public class GridCardSelectScreenHelper
             scrollTmp += 1;
         }
 
-        _scrollUpperBound.Set(instance, Settings.DEFAULT_SCROLL_LIMIT + scrollTmp * _padY.Get(instance));
-        _prevDeckSize.Set(instance, targetCardGroup.size());
+        ClassUtils.SetField(instance, "scrollUpperBound", Settings.DEFAULT_SCROLL_LIMIT + scrollTmp * padY);
+        ClassUtils.SetField(instance, "prevDeckSize", targetCardGroup.size());
 
         return true;
     }

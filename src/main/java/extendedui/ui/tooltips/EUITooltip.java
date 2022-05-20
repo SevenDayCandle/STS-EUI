@@ -1,5 +1,6 @@
 package extendedui.ui.tooltips;
 
+import basemod.ReflectionHacks;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
+import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -29,11 +31,10 @@ import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.utilities.ClassUtils;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.FieldInfo;
 import extendedui.utilities.Mathf;
-import extendedui.utilities.abstracts.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -58,15 +59,7 @@ public class EUITooltip
     public static final float TIP_DESC_LINE_SPACING = 26f * Settings.scale;
     public static final float POWER_ICON_OFFSET_X = 40f * Settings.scale;
 
-    private final static ArrayList EMPTY_LIST = new ArrayList();
-
-    private final static FieldInfo<String> _body = JavaUtils.GetField("BODY", TipHelper.class);
-    private final static FieldInfo<String> _header = JavaUtils.GetField("HEADER", TipHelper.class);
-    private final static FieldInfo<ArrayList> _card = JavaUtils.GetField("card", TipHelper.class);
-    private final static FieldInfo<ArrayList> _keywords = JavaUtils.GetField("KEYWORDS", TipHelper.class);
-    private final static FieldInfo<ArrayList> _powerTips = JavaUtils.GetField("POWER_TIPS", TipHelper.class);
-    private final static FieldInfo<Boolean> _renderedTipsThisFrame = JavaUtils.GetField("renderedTipThisFrame", TipHelper.class);
-
+    private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
     private static boolean inHand;
     private static TooltipProvider provider;
@@ -163,21 +156,21 @@ public class EUITooltip
 
     public static boolean CanRenderTooltips()
     {
-        return !_renderedTipsThisFrame.Get(null);
+        return !ClassUtils.GetFieldStatic(TipHelper.class, "renderedTipThisFrame", Boolean.class);
     }
 
     public static void CanRenderTooltips(boolean canRender)
     {
-        _renderedTipsThisFrame.Set(null, !canRender);
+        ReflectionHacks.setPrivateStatic(TipHelper.class, "renderedTipThisFrame", !canRender);
 
         if (!canRender)
         {
             tooltips.clear();
-            _body.Set(null, null);
-            _header.Set(null, null);
-            _card.Set(null, null);
-            _keywords.Set(null, EMPTY_LIST);
-            _powerTips.Set(null, EMPTY_LIST);
+            ReflectionHacks.setPrivateStatic(TipHelper.class, "BODY", null);
+            ReflectionHacks.setPrivateStatic(TipHelper.class, "HEADER", null);
+            ReflectionHacks.setPrivateStatic(TipHelper.class, "card", null);
+            ReflectionHacks.setPrivateStatic(TipHelper.class, "KEYWORDS", EMPTY_LIST);
+            ReflectionHacks.setPrivateStatic(TipHelper.class, "POWER_TIPS", EMPTY_LIST);
             provider = null;
         }
     }
@@ -570,6 +563,7 @@ public class EUITooltip
         }
     }
 
+    // TODO rework
     public static void RenderFromCreature(SpriteBatch sb)
     {
         if (creature == null)
@@ -584,8 +578,12 @@ public class EUITooltip
         tooltips.clear();
         for (AbstractPower p : creature.powers)
         {
-            if (!RenderablePower.CanRenderFromCreature(p))
+            if (p instanceof InvisiblePower)
             {
+                continue;
+            }
+            else if (p instanceof TooltipProvider) {
+                tooltips.add(((TooltipProvider) p).GetTooltip());
                 continue;
             }
 
@@ -593,10 +591,6 @@ public class EUITooltip
             if (p.region48 != null)
             {
                 tip.icon = p.region48;
-            }
-            else if (p instanceof RenderablePower)
-            {
-                tip.icon = ((RenderablePower) p).powerIcon;
             }
 
             if (tip.icon == null && p.img != null)
@@ -678,10 +672,11 @@ public class EUITooltip
 
     public float Height() {
         BitmapFont descriptionFont = provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
-        final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+        String desc = Description();
+        final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
         final float modTextHeight = (modName != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
         final float subHeaderTextHeight = (subHeader != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-        return (HideDescription() || StringUtils.isEmpty(Description())) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
+        return (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
     }
 
     public float Render(SpriteBatch sb, float x, float y, int index)
@@ -694,11 +689,12 @@ public class EUITooltip
         }
 
         BitmapFont descriptionFont = provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
+        String desc = Description();
 
-        final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+        final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
         final float modTextHeight = (modName != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
         final float subHeaderTextHeight = (subHeader != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-        final float h = (HideDescription() || StringUtils.isEmpty(Description())) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
+        final float h = (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
 
         sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
         sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, BOX_W, BOX_EDGE_H);
@@ -720,7 +716,7 @@ public class EUITooltip
             FontHelper.renderFontLeftTopAligned(sb, FontHelper.tipHeaderFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
 
-        if (!StringUtils.isEmpty(Description()))
+        if (!StringUtils.isEmpty(desc))
         {
             if (provider != null && StringUtils.isNotEmpty(id) && !inHand && index >= 0)
             {
@@ -743,7 +739,7 @@ public class EUITooltip
 
             if (!HideDescription())
             {
-                EUIRenderHelpers.WriteSmartText(sb, descriptionFont, Description(), x + TEXT_OFFSET_X, yOff, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+                EUIRenderHelpers.WriteSmartText(sb, descriptionFont, desc, x + TEXT_OFFSET_X, yOff, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
             }
         }
 

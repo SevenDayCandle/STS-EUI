@@ -7,7 +7,11 @@ import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
+import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
@@ -15,18 +19,22 @@ import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
 
 public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
+    protected static final float BASE_TIMER = 1f;
+    protected boolean showLine;
     protected boolean isEditing;
     protected ActionT1<String> onUpdate;
     protected ActionT1<String> onComplete;
     protected Color originalTextColor;
     protected Color editTextColor;
     protected GUI_Label header;
-    private String originalValue;
+    protected String originalValue;
+    protected float blinkTimer;
+    protected float headerSpacing = 0.6f;
 
     public GUI_TextBoxInput(Texture backgroundTexture, AdvancedHitbox hb) {
         super(backgroundTexture, hb);
         this.header = new GUI_Label(EUIFontHelper.CardTitleFont_Small,
-                new AdvancedHitbox(hb.x, hb.y + hb.height * 0.6f, hb.width, hb.height)).SetAlignment(0.5f,0.0f,false);
+                new AdvancedHitbox(hb.x, hb.y + hb.height * headerSpacing, hb.width, hb.height)).SetAlignment(0.5f,0.0f,false);
         this.header.SetActive(false);
         editTextColor = EUIColors.Green(1).cpy();
         originalTextColor = this.label.textColor.cpy();
@@ -38,7 +46,12 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
 
     public GUI_TextBoxInput SetHeader(BitmapFont font, float fontScale, Color textColor, String text, boolean smartText) {
         this.header.SetFont(font, fontScale).SetColor(textColor).SetText(text).SetSmartText(smartText).SetActive(true);
+        return this;
+    }
 
+    public GUI_TextBoxInput SetHeaderSpacing(float headerSpacing) {
+        this.headerSpacing = headerSpacing;
+        this.header.hb.move(hb.cX, hb.cY + hb.height * headerSpacing);
         return this;
     }
 
@@ -77,6 +90,14 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
         return this;
     }
 
+    @Override
+    public GUI_TextBox SetPosition(float x, float y)
+    {
+        this.hb.move(x, y);
+        this.header.hb.move(x, y + hb.height * headerSpacing);
+
+        return this;
+    }
 
     @Override
     public void Update()
@@ -90,9 +111,17 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
                 End(true);
             }
         }
-        else if (isEditing && Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            End(false);
+        else if (isEditing) {
+            blinkTimer -= Gdx.graphics.getRawDeltaTime();
+            if (blinkTimer < 0) {
+                blinkTimer = BASE_TIMER;
+                showLine = !showLine;
+            }
+           if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+                End(false);
+            }
         }
+
         header.TryUpdate();
     }
 
@@ -100,7 +129,11 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
     public void Render(SpriteBatch sb)
     {
         super.Render(sb);
+        float cur_x = FontHelper.layout.width;
         header.TryRender(sb);
+        if (showLine) {
+            EUI.AddPriorityPostRender(s -> FontHelper.renderFontLeft(sb, label.font, "|", hb.x + cur_x + hb.width * label.horizontalRatio, hb.y + hb.height / 2, Color.WHITE));
+        }
     }
 
     @Override
@@ -141,6 +174,7 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
 
     public void End(boolean commit) {
         isEditing = false;
+        showLine = false;
         TextInput.stopTextReceiver(this);
         label.SetColor(originalTextColor);
         if (commit) {

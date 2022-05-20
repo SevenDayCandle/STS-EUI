@@ -1,28 +1,24 @@
 package extendedui.ui.controls;
 
+import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.screens.options.ConfirmPopup;
-import extendedui.EUIRM;
 import extendedui.JavaUtils;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.ui.GUI_Base;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
-import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.FieldInfo;
 
 public abstract class GUI_Dialog<T> extends GUI_Hoverable
 {
-    private final static FieldInfo<String[]> _text = JavaUtils.GetField("TEXT", ConfirmPopup.class);
-
+    protected final static String[] TEXT = CardCrawlGame.languagePack.getUIString("ConfirmPopup").TEXT;
     protected Color screenColor = new Color(0.0F, 0.0F, 0.0F, 0.5F);
     protected GUI_Button confirm;
     protected GUI_Button cancel;
@@ -55,7 +51,7 @@ public abstract class GUI_Dialog<T> extends GUI_Hoverable
         this.confirm = new GUI_Button(ImageMaster.OPTION_YES,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.1f, hb.height * 0.05f, false))
                 .SetFont(FontHelper.cardTitleFont, 1f)
-                .SetText(_text.Get(null)[2])
+                .SetText(TEXT[2])
                 .SetOnClick(() -> {
                     if (onComplete != null) {
                         onComplete.Invoke(GetConfirmValue());
@@ -64,7 +60,7 @@ public abstract class GUI_Dialog<T> extends GUI_Hoverable
         this.cancel = new GUI_Button(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.9f, hb.height * 0.05f, false))
                 .SetFont(FontHelper.cardTitleFont, 1f)
-                .SetText(_text.Get(null)[3])
+                .SetText(TEXT[3])
                 .SetOnClick(() -> {
                     if (onComplete != null) {
                         onComplete.Invoke(GetCancelValue());

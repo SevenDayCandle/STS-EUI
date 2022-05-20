@@ -5,13 +5,12 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
-import com.megacrit.cardcrawl.screens.MasterDeckSortHeader;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.utilities.CardAmountComparator;
-import extendedui.utilities.abstracts.FakeLibraryCard;
+import extendedui.utilities.FakeLibraryCard;
 
 import java.util.ArrayList;
 

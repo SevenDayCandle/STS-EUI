@@ -6,9 +6,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import extendedui.interfaces.delegates.FuncT1;
-import extendedui.utilities.FieldInfo;
 
-import java.lang.reflect.Field;
 import java.util.*;
 import java.util.function.Predicate;
 
@@ -150,20 +148,6 @@ public class JavaUtils
         return sb1.toString();
     }
 
-    public static <T> FieldInfo<T> GetField(String fieldName, Class<?> type) throws RuntimeException
-    {
-        try
-        {
-            final Field field = type.getDeclaredField(fieldName);
-            field.setAccessible(true);
-            return new FieldInfo<>(field);
-        }
-        catch (NoSuchFieldException e)
-        {
-            throw new RuntimeException(e);
-        }
-    }
-
     public static Logger GetLogger(Object source)
     {
         if (source == null)
@@ -173,6 +157,8 @@ public class JavaUtils
 
         return LogManager.getLogger((source instanceof Class) ? ((Class)source).getName() : source.getClass().getName());
     }
+
+
 
     public static <T> String JoinStrings(String delimiter, Collection<T> values)
     {

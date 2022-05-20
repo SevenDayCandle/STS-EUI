@@ -819,14 +819,20 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
                 EUITooltip.QueueTooltips(((TooltipProvider) item).GetTips());
             }
             else if (item instanceof CardObject) {
-                AbstractCard card = ((CardObject) item).GetCard();
-                card.current_x = card.target_x = card.hb.x = InputHelper.mX + PREVIEW_OFFSET_X;
-                card.current_y = card.target_y = card.hb.y = InputHelper.mY;
-                card.update();
-                card.updateHoverLogic();
-                card.drawScale = card.targetDrawScale = 0.75f;
-                EUI.AddPriorityPostRender(card::render);
+                RenderCard(((CardObject) item).GetCard());
             }
+            else if (item instanceof AbstractCard) {
+                RenderCard((AbstractCard) item);
+            }
+        }
+
+        private void RenderCard(AbstractCard card) {
+            card.current_x = card.target_x = card.hb.x = InputHelper.mX + PREVIEW_OFFSET_X;
+            card.current_y = card.target_y = card.hb.y = InputHelper.mY;
+            card.update();
+            card.updateHoverLogic();
+            card.drawScale = card.targetDrawScale = 0.75f;
+            EUI.AddPriorityPostRender(card::render);
         }
     }
 }

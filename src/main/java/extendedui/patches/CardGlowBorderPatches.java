@@ -1,23 +1,16 @@
 package extendedui.patches;
 
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.CardGlowBorder;
 import extendedui.JavaUtils;
-import extendedui.utilities.FieldInfo;
+import extendedui.utilities.ClassUtils;
 
 public class CardGlowBorderPatches
 {
-    protected static final FieldInfo<AbstractCard> _card = JavaUtils.GetField("card", CardGlowBorder.class);
-    protected static final FieldInfo<TextureAtlas.AtlasRegion> _img = JavaUtils.GetField("img", CardGlowBorder.class);
-    protected static final FieldInfo<Float> _scale = JavaUtils.GetField("scale", CardGlowBorder.class);
-    protected static final FieldInfo<Color> _color = JavaUtils.GetField("color", AbstractGameEffect.class);
-
     public static Color overrideColor;
 
     @SpirePatch(clz = CardGlowBorder.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {AbstractCard.class, Color.class})
@@ -28,7 +21,7 @@ public class CardGlowBorderPatches
         {
             if (overrideColor != null)
             {
-                Color color = _color.Get(__instance);
+                Color color = ClassUtils.GetField(__instance, "color");
                 if (color != null)
                 {
                     color.r = overrideColor.r;
@@ -45,7 +38,7 @@ public class CardGlowBorderPatches
         @SpirePrefixPatch
         public static void Method(CardGlowBorder __instance)
         {
-            AbstractCard card = _card.Get(__instance);
+            AbstractCard card = ClassUtils.GetField(__instance, "card");
             if (card.transparency < 0.9f)
             {
                 __instance.duration = 0f;

@@ -609,6 +609,10 @@ public class EUIRenderHelpers
         return font;
     }
 
+    public static boolean IsCharAt(String s, int i, char c) {
+        return i < s.length() && c == s.charAt(i);
+    }
+
     public static TupleT2<Float, Float> WriteSmartText(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, Color baseColor)
     {
         return WriteSmartText(sb, font, text, x, y, lineWidth, font.getLineHeight() * Settings.scale, baseColor);
@@ -625,7 +629,6 @@ public class EUIRenderHelpers
             float curHeight = 0f;
             float spaceWidth = layout.width;
 
-            final FuncT3<Boolean, String, Integer, Character> compare = (s, i, c) -> c == ((i < s.length()) ? s.charAt(i) : null);
             final FuncT1<String, StringBuilder> build = (stringBuilder) ->
             {
                 String result = stringBuilder.toString();
@@ -633,13 +636,25 @@ public class EUIRenderHelpers
                 return result;
             };
 
-            Color overrideColor = null;
+            Color blockColor = null;
+            Color wordColor = null;
             boolean foundIcon = false;
+            boolean foundCustomColor = false;
 
             for (int i = 0; i < text.length(); i++)
             {
                 char c = text.charAt(i);
-                if (foundIcon)
+                if (foundCustomColor) {
+                    if (Character.isLetterOrDigit(c))
+                    {
+                        builder.append(c);
+                        continue;
+                    }
+                    foundCustomColor = false;
+                    String colorString = build.Invoke(builder);
+                    blockColor = GetColor(colorString, baseColor);
+                }
+                else if (foundIcon)
                 {
                     if (']' != c)
                     {
@@ -694,13 +709,13 @@ public class EUIRenderHelpers
                         }
                     }
                 }
-                else if ('N' == c && compare.Invoke(text, i + 1, 'L'))
+                else if ('N' == c && IsCharAt(text, i + 1, 'L'))
                 {
                     curWidth = 0f;
                     curHeight -= lineSpacing;
                     i += 1;
                 }
-                else if ('T' == c && compare.Invoke(text, i + 1, 'A') && compare.Invoke(text, i + 2, 'B'))
+                else if ('T' == c && IsCharAt(text, i + 1, 'A') && IsCharAt(text, i + 2, 'B'))
                 {
                     curWidth += spaceWidth * 5.0F;
                     i += 2;
@@ -709,11 +724,23 @@ public class EUIRenderHelpers
                 {
                     foundIcon = true;
                 }
+                else if ('{' == c)
+                {
+                    blockColor = Settings.GOLD_COLOR;
+                    if (IsCharAt(text, i + 1, '#')) {
+                        foundCustomColor = true;
+                        i += 1;
+                    }
+                }
+                else if ('}' == c)
+                {
+                    blockColor = null;
+                }
                 else if ('#' == c)
                 {
                     if (text.length() > i + 1)
                     {
-                        overrideColor = GetColor(text.charAt(i + 1), baseColor);
+                        wordColor = GetColor(text.charAt(i + 1), baseColor);
                         i += 1;
                     }
                 }
@@ -727,10 +754,14 @@ public class EUIRenderHelpers
                     final String word = build.Invoke(builder);
                     if (word != null && word.length() > 0)
                     {
-                        if (overrideColor != null)
+                        if (wordColor != null)
                         {
-                            font.setColor(overrideColor);
-                            overrideColor = null;
+                            font.setColor(wordColor);
+                            wordColor = null;
+                        }
+                        else if (blockColor != null)
+                        {
+                            font.setColor(blockColor);
                         }
                         else
                         {
@@ -816,6 +847,22 @@ public class EUIRenderHelpers
     private static Color GetTooltipBackgroundColor(String id) {
         EUITooltip tooltip = EUITooltip.FindByID(id);
         return (tooltip != null) ? tooltip.backgroundColor : null;
+    }
+
+    // Possible color formats:
+    // #c: Single color
+    // #AABBCCDD: RGBA
+    private static Color GetColor(String s, Color baseColor) {
+        if (s.length() == 1) {
+            return GetColor(s.charAt(0), baseColor);
+        }
+        try {
+            return Color.valueOf(s);
+        }
+        catch (NumberFormatException e) {
+            JavaUtils.LogWarning(EUIRenderHelpers.class, "Invalid color: #" + s);
+            return baseColor.cpy();
+        }
     }
 
     private static Color GetColor(Character c, Color baseColor)

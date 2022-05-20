@@ -10,9 +10,10 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.configuration.EUIHotkeys;
+import extendedui.interfaces.markers.CardObject;
 import extendedui.interfaces.markers.TooltipProvider;
 
-public class EUICardPreview
+public class EUICardPreview implements CardObject
 {
     public AbstractCard defaultPreview;
     public AbstractCard upgradedPreview;
@@ -42,6 +43,12 @@ public class EUICardPreview
                 ((TooltipProvider) this.upgradedPreview).SetIsPreview(true);
             }
         }
+    }
+
+    @Override
+    public AbstractCard GetCard()
+    {
+        return defaultPreview;
     }
 
     public AbstractCard GetPreview(boolean upgraded)

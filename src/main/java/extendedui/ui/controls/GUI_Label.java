@@ -1,5 +1,6 @@
 package extendedui.ui.controls;
 
+import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -16,12 +17,11 @@ public class GUI_Label extends GUI_Hoverable
     public String text;
     public boolean smartText;
     public Color textColor;
+    public float verticalRatio;
+    public float horizontalRatio;
+    public float fontScale;
     protected BitmapFont font;
-    private float fontScale;
-    private float verticalRatio;
-    private float horizontalRatio;
     private boolean smartPadEnd;
-    private boolean useEYB;
 
     public GUI_Label(BitmapFont font)
     {
@@ -122,13 +122,8 @@ public class GUI_Label extends GUI_Hoverable
     }
 
     public GUI_Label SetSmartText(boolean smartText, boolean smartPadEnd) {
-        return SetSmartText(smartText, smartPadEnd, false);
-    }
-
-    public GUI_Label SetSmartText(boolean smartText, boolean smartPadEnd, boolean useEYB) {
         this.smartText = smartText;
         this.smartPadEnd = smartPadEnd;
-        this.useEYB = useEYB;
         return this;
     }
 

@@ -1,7 +1,7 @@
 package extendedui.patches.screens;
 
+import basemod.ReflectionHacks;
 import basemod.patches.com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar.ColorTabBarFix;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -11,21 +11,13 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
 import extendedui.EUI;
-import extendedui.EUIRM;
 import extendedui.JavaUtils;
-import extendedui.configuration.EUIHotkeys;
-import extendedui.ui.cardFilter.CardKeywordFilters;
-import extendedui.ui.controls.GUI_Button;
-import extendedui.ui.hitboxes.DraggableHitbox;
-import extendedui.utilities.FieldInfo;
+import extendedui.utilities.ClassUtils;
 
 import java.util.ArrayList;
 
 public class CardLibraryScreenPatches
 {
-    private static final FieldInfo<AbstractCard> hoveredCards = JavaUtils.GetField("hoveredCard", CardLibraryScreen.class);
-    private static final FieldInfo<ColorTabBar> _colorBar = JavaUtils.GetField("colorBar", CardLibraryScreen.class);
-    private static final FieldInfo<ArrayList<ColorTabBarFix.ModColorTab>> _tabs = JavaUtils.GetField("modTabs", ColorTabBarFix.Fields.class);
     @SpirePatch(clz = CardLibraryScreen.class, method = "open")
     public static class CardLibraryScreen_Open
     {
@@ -33,11 +25,11 @@ public class CardLibraryScreenPatches
         @SpirePrefixPatch
         public static void Prefix(CardLibraryScreen screen)
         {
-            ColorTabBar tabBar = _colorBar.Get(screen);
-            int size = _tabs.Get(null).size();
+            ColorTabBar tabBar = ClassUtils.GetField(screen, "colorBar");
+            ArrayList<ColorTabBarFix.ModColorTab> tabs = ReflectionHacks.getPrivateStatic(ColorTabBarFix.Fields.class, "modTabs");
             if (tabBar.curTab != ColorTabBarFix.Enums.MOD)
             {
-                screen.didChangeTab(tabBar, tabBar.curTab = (size > 0 ? ColorTabBarFix.Enums.MOD : ColorTabBar.CurrentTab.COLORLESS));
+                screen.didChangeTab(tabBar, tabBar.curTab = (tabs.size() > 0 ? ColorTabBarFix.Enums.MOD : ColorTabBar.CurrentTab.COLORLESS));
             }
         }
     }
@@ -45,22 +37,20 @@ public class CardLibraryScreenPatches
     @SpirePatch(clz = CardLibraryScreen.class, method = "didChangeTab", paramtypez = {ColorTabBar.class, ColorTabBar.CurrentTab.class})
     public static class CardLibraryScreen_DidChangeTab
     {
-        private static final FieldInfo<CardLibSortHeader> _sortHeader = JavaUtils.GetField("sortHeader", CardLibraryScreen.class);
         private static CardLibSortHeader defaultHeader;
 
         @SpireInsertPatch(rloc = 0)
         public static void Insert(CardLibraryScreen screen, ColorTabBar tabBar, ColorTabBar.CurrentTab newSelection)
         {
-            if (!IsAnimator(screen)) {
-                Hitbox upgradeHitbox = tabBar.viewUpgradeHb;
-                upgradeHitbox.width = 260 * Settings.scale;
-                if (_sortHeader.Get(screen) != EUI.CustomHeader)
-                {
-                    _sortHeader.Set(screen, EUI.CustomHeader);
-                }
+            Hitbox upgradeHitbox = tabBar.viewUpgradeHb;
+            upgradeHitbox.width = 260 * Settings.scale;
 
-                EUI.CustomHeader.SetupButtons();
+            if (ClassUtils.GetField(screen, "sortHeader") != EUI.CustomHeader)
+            {
+                ClassUtils.SetField(screen, "sortHeader", EUI.CustomHeader);
             }
+
+            EUI.CustomHeader.SetupButtons();
         }
 
         @SpirePostfixPatch
@@ -73,17 +63,16 @@ public class CardLibraryScreenPatches
     @SpirePatch(clz= CardLibraryScreen.class, method="update")
     public static class CardLibraryScreen_Update
     {
-        private static FieldInfo<Boolean> _grabbedScreen = JavaUtils.GetField("grabbedScreen", CardLibraryScreen.class);
 
         @SpirePrefixPatch
         public static void Prefix(CardLibraryScreen __instance)
         {
-            if (!EUI.CardFilters.isActive && EUI.OpenCardFiltersButton != null && !IsAnimator(__instance)) {
+            if (!EUI.CardFilters.isActive && EUI.OpenCardFiltersButton != null) {
                 EUI.OpenCardFiltersButton.TryUpdate();
             }
             if (EUI.CardFilters.TryUpdate())
             {
-                _grabbedScreen.Set(__instance, false);
+                ClassUtils.SetField(__instance, "grabbedScreen", false);
             }
         }
     }
@@ -107,18 +96,9 @@ public class CardLibraryScreenPatches
         @SpirePrefixPatch
         public static void Postfix(CardLibraryScreen __instance, SpriteBatch sb)
         {
-            // The Animator has its own card filters so it is given priority to prevent overlap
-            if (!EUI.CardFilters.isActive && EUI.OpenCardFiltersButton != null && !IsAnimator(__instance)) {
+            if (!EUI.CardFilters.isActive && EUI.OpenCardFiltersButton != null) {
                 EUI.OpenCardFiltersButton.TryRender(sb);
             }
         }
-    }
-
-    protected static boolean IsAnimator(CardLibraryScreen screen) {
-        ColorTabBar tabBar = _colorBar.Get(screen);
-        int size = _tabs.Get(null).size();
-        return tabBar != null && size > 0
-                && tabBar.curTab == ColorTabBarFix.Enums.MOD
-                && "THE_ANIMATOR".equals(ColorTabBarFix.Fields.getModTab().color.name());
     }
 }
