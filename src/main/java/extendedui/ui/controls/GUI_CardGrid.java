@@ -12,8 +12,8 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
-import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.delegates.ActionT2;
+import eatyourbeets.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT2;
 import extendedui.ui.GUI_Base;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 

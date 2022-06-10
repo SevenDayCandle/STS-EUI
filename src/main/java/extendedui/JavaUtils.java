@@ -5,10 +5,12 @@ import com.megacrit.cardcrawl.helpers.TipHelper;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import extendedui.interfaces.delegates.FuncT1;
+import eatyourbeets.interfaces.delegates.FuncT1;
 
+import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.zip.GZIPOutputStream;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
@@ -148,6 +150,22 @@ public class JavaUtils
         return sb1.toString();
     }
 
+    public static <T> T Deserialize(String s, Class<T> tokenClass) {
+        return GsonReader.fromJson(s, tokenClass);
+    }
+
+    public static <T> T Deserialize(String s, Type token) {
+        return GsonReader.fromJson(s, token);
+    }
+
+    public static String Serialize(Object o) {
+        return GsonReader.toJson(o);
+    }
+
+    public static String Serialize(Object o, Type token) {
+        return GsonReader.toJson(o, token);
+    }
+
     public static Logger GetLogger(Object source)
     {
         if (source == null)
@@ -157,7 +175,6 @@ public class JavaUtils
 
         return LogManager.getLogger((source instanceof Class) ? ((Class)source).getName() : source.getClass().getName());
     }
-
 
 
     public static <T> String JoinStrings(String delimiter, Collection<T> values)

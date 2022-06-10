@@ -5,12 +5,15 @@ import com.badlogic.gdx.math.Vector2;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import eatyourbeets.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT2;
 import extendedui.EUI;
 import extendedui.JavaUtils;
 
 public class DraggableHitbox extends AdvancedHitbox
 {
     protected Vector2 dragStart = null;
+    protected ActionT1<DraggableHitbox> onDragFinish;
 
     public boolean canDrag;
     public float min_y;
@@ -66,6 +69,11 @@ public class DraggableHitbox extends AdvancedHitbox
         return this;
     }
 
+    public DraggableHitbox SetOnDragFinish(ActionT1<DraggableHitbox> onDragFinish) {
+        this.onDragFinish = onDragFinish;
+        return this;
+    }
+
     @Override
     public void update()
     {
@@ -111,6 +119,10 @@ public class DraggableHitbox extends AdvancedHitbox
 
                 JavaUtils.LogInfo(this, "x  = {0}({1}%) , y  = {2}({3}%)", x, xPercentage, y, yPercentage);
                 JavaUtils.LogInfo(this, "cX = {0}({1}%) , cY = {2}({3}%)", cX, cxPercentage, cY, cyPercentage);
+            }
+
+            if (onDragFinish != null) {
+                onDragFinish.Invoke(this);
             }
 
             dragStart = null;

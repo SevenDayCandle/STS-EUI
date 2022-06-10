@@ -27,6 +27,8 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
+import eatyourbeets.interfaces.delegates.FuncT0;
+import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
@@ -43,6 +45,7 @@ public class EUITooltip
 {
     protected static final HashMap<String, EUITooltip> RegisteredIDs = new HashMap<>();
     protected static final HashMap<String, EUITooltip> RegisteredNames = new HashMap<>();
+    protected static final HashSet<EUITooltip> IconUpdatingList = new HashSet<>();
 
     public static final Color BASE_COLOR = new Color(1f, 0.9725f, 0.8745f, 1f);
     public static final float CARD_TIP_PAD = 12f * Settings.scale;
@@ -81,6 +84,7 @@ public class EUITooltip
     public float iconMulti_H = 1;
     public float iconMulti_W = 1;
     protected int currentDesc;
+    protected FuncT0<TextureRegion> iconFunc;
 
     public EUITooltip(String title, String... descriptions)
     {
@@ -172,6 +176,12 @@ public class EUITooltip
             ReflectionHacks.setPrivateStatic(TipHelper.class, "KEYWORDS", EMPTY_LIST);
             ReflectionHacks.setPrivateStatic(TipHelper.class, "POWER_TIPS", EMPTY_LIST);
             provider = null;
+        }
+    }
+
+    public static void UpdateTooltipIcons() {
+        for (EUITooltip tip : IconUpdatingList) {
+            tip.icon = tip.iconFunc.Invoke();
         }
     }
 
@@ -794,6 +804,13 @@ public class EUITooltip
     public EUITooltip SetIcon(Texture texture, int div)
     {
         this.icon = EUIRenderHelpers.GetCroppedRegion(texture, div);
+
+        return this;
+    }
+
+    public EUITooltip SetIconFunc(FuncT0<TextureRegion> iconFunc) {
+        this.iconFunc = iconFunc;
+        IconUpdatingList.add(this);
 
         return this;
     }

@@ -46,7 +46,7 @@
         <dependency>
             <groupId>com.github.tommyettinger</groupId>
             <artifactId>colorful</artifactId>
-            <version>0.7.0</version>
+            <version>0.8.1</version>
         </dependency>
         <dependency>
             <groupId>org.imgscalr</groupId>

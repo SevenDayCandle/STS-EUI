@@ -7,7 +7,7 @@ import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIHotkeys;
-import extendedui.interfaces.delegates.FuncT0;
+import eatyourbeets.interfaces.delegates.FuncT0;
 import extendedui.ui.tooltips.EUITooltip;
 
 public class CardPoolPanelItem extends PCLTopPanelItem

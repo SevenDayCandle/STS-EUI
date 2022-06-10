@@ -81,6 +81,7 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager. Particles: " + BASE_SPRITES_DEFAULT);
             RequiresReload = false;
         }
+        EUITooltip.UpdateTooltipIcons();
     }
 
     @Override

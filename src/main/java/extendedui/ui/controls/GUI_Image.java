@@ -322,4 +322,15 @@ public class GUI_Image extends GUI_Hoverable
     public void RenderBicubic(SpriteBatch sb, float x, float y, float width, float height) {
 
     }
+
+    public boolean TryRenderCentered(SpriteBatch sb)
+    {
+        if (isActive)
+        {
+            this.hb.render(sb);
+            RenderCentered(sb);
+        }
+
+        return isActive;
+    }
 }

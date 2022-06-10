@@ -36,8 +36,8 @@ public class EUIConfiguration
     private static final String FLUSH_ON_ROOM_START = GetFullKey("FlushOnRoomStart");
     private static final String HIDE_TIP_DESCRIPTION = GetFullKey("HideTipDescription");
 
-    public static STSConfigurationOption<Boolean> FlushOnGameStart = new STSConfigurationOption<Boolean>(FLUSH_ON_GAME_START, false);
-    public static STSConfigurationOption<Boolean> FlushOnRoomStart = new STSConfigurationOption<Boolean>(FLUSH_ON_ROOM_START, false);
+    public static STSConfigItem<Boolean> FlushOnGameStart = new STSConfigItem<Boolean>(FLUSH_ON_GAME_START, false);
+    public static STSConfigItem<Boolean> FlushOnRoomStart = new STSConfigItem<Boolean>(FLUSH_ON_ROOM_START, false);
     //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
 
     private static HashSet<String> tips = null;
@@ -75,7 +75,7 @@ public class EUIConfiguration
         }
     }
 
-    protected static int AddToggle(ModPanel panel, STSConfigurationOption<Boolean> option, String label, int ypos) {
+    protected static int AddToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {
         panel.addUIElement(new ModLabeledToggleButton(label, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), FontHelper.charDescFont, option.Get(), panel, (__) -> {
         }, (c) -> {
             option.Set(c.enabled, true);
@@ -83,7 +83,7 @@ public class EUIConfiguration
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }
 
-    protected static int AddSlider(ModPanel panel, STSConfigurationOption<Integer> option, String label, int ypos, int min, int max) {
+    protected static int AddSlider(ModPanel panel, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
         panel.addUIElement(new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.Get(), "%d", panel, (c) -> {
             option.Set(MathUtils.round(c.getValue()), true);
             RequiresReload = true;

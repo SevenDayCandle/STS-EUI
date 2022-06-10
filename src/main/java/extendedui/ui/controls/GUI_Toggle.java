@@ -13,7 +13,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
 import extendedui.EUIRenderHelpers;
-import extendedui.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 

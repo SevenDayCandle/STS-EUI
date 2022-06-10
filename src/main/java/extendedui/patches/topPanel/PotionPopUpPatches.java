@@ -21,7 +21,7 @@ public class PotionPopUpPatches {
         {
             TooltipProvider p = JavaUtils.SafeCast(ClassUtils.GetField(__instance, "x"), TooltipProvider.class);
             if (p != null) {
-                EUITooltip.QueueTooltips(p.GetTips(), ClassUtils.GetField(__instance, "x", Float.class) + 180.0F * Settings.scale, ClassUtils.GetField(__instance, "y", Float.class)  + 70.0F * Settings.scale);
+                EUITooltip.QueueTooltips(p.GetTips(), ClassUtils.GetFieldAsType(__instance, "x", Float.class) + 180.0F * Settings.scale, ClassUtils.GetFieldAsType(__instance, "y", Float.class)  + 70.0F * Settings.scale);
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();

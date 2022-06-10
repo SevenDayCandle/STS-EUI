@@ -2,7 +2,7 @@ package extendedui.utilities;
 
 import basemod.ReflectionHacks;
 import extendedui.JavaUtils;
-import extendedui.interfaces.delegates.FuncT1;
+import eatyourbeets.interfaces.delegates.FuncT1;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -17,7 +17,7 @@ public class ClassUtils
     }
 
     // Enforces type of the field without using a variable declaration
-    public static <T> T GetField(Object o, String fieldName, Class<T> type)
+    public static <T> T GetFieldAsType(Object o, String fieldName, Class<T> type)
     {
         return GetField(o, fieldName);
     }
@@ -25,6 +25,16 @@ public class ClassUtils
     public static <T> T GetField(Object o, String fieldName)
     {
         return ReflectionHacks.getPrivate(o, o.getClass(), fieldName);
+    }
+
+    public static <T> T GetFieldInheritedAsType(Object o, String fieldName, Class<T> type)
+    {
+        return ReflectionHacks.getPrivateInherited(o, o.getClass(), fieldName);
+    }
+
+    public static <T> T GetFieldInherited(Object o, String fieldName)
+    {
+        return ReflectionHacks.getPrivateInherited(o, o.getClass(), fieldName);
     }
 
     // Enforces type of the field without using a variable declaration

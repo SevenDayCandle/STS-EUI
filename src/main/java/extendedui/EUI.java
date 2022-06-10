@@ -4,6 +4,7 @@ import basemod.BaseMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.mod.stslib.StSLib;
 import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
@@ -12,11 +13,11 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
-import com.megacrit.cardcrawl.localization.Keyword;
-import extendedui.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.GUI_Base;
 import extendedui.ui.cardFilter.*;
@@ -26,7 +27,6 @@ import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.ui.tooltips.EUITooltip;
 
-import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -84,6 +84,7 @@ public class EUI
             if (tooltip == null) {
                 if (ENERGY_STRING.equals(s)) {
                     tooltip = new EUITooltip(TipHelper.TEXT[0], GameDictionary.TEXT[0]);
+                    tooltip.SetIconFunc(EUI::GetEnergyIcon);
                 }
                 else {
                     String newTitle = JavaUtils.Capitalize(title.substring(title.indexOf(":") + 1));
@@ -350,24 +351,24 @@ public class EUI
         priorityPostRenderList.add(toRender);
     }
 
-    public static void UpdateEnergyTooltip(AbstractCard.CardColor cardColor) {
-        EUITooltip tooltip = EUITooltip.FindByID(ENERGY_STRING);
-        if (tooltip != null) {
-            switch (cardColor) {
-                case RED:
-                    tooltip.icon = AbstractCard.orb_red;
-                case GREEN:
-                    tooltip.icon = AbstractCard.orb_green;
-                case BLUE:
-                    tooltip.icon = AbstractCard.orb_blue;
-                case PURPLE:
-                    tooltip.icon = AbstractCard.orb_purple;
-                default:
-                    tooltip.icon = BaseMod.getCardEnergyOrbAtlasRegion(cardColor);
-                    if (tooltip.icon == null) {
-                        tooltip.icon = AbstractCard.orb_red;
-                    }
-            }
+    public static TextureRegion GetEnergyIcon() {
+        AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : CardKeywordFilters.ActingColor;
+        if (color == null) {
+            return AbstractCard.orb_red;
+        }
+        switch (color) {
+            case RED:
+            case COLORLESS:
+            case CURSE:
+                return AbstractCard.orb_red;
+            case GREEN:
+                return AbstractCard.orb_green;
+            case BLUE:
+                return AbstractCard.orb_blue;
+            case PURPLE:
+                return AbstractCard.orb_purple;
+            default:
+                return BaseMod.getCardEnergyOrbAtlasRegion(color);
         }
     }
 }

@@ -5,10 +5,8 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import extendedui.interfaces.delegates.FuncT2;
-import extendedui.interfaces.delegates.FuncT3;
+import eatyourbeets.interfaces.delegates.FuncT2;
 import extendedui.ui.TextureCache;
-import javassist.compiler.JvstCodeGen;
 
 import java.util.HashMap;
 import java.util.List;
@@ -186,39 +184,44 @@ public class EUIRM
             return JavaUtils.Format(StringsGrammar.TEXT[6], num, noun, place);
         }
 
-        // e.g. English: Discard Two Cards, Spanish: Descarta cartas rojas
+        // e.g. English: Discard Red Cards, Spanish: Descarta cartas rojas
         public final String VerbAdjNoun(Object verb, Object adj, Object noun) {
             return JavaUtils.Format(StringsGrammar.TEXT[7], verb, adj, noun);
         }
 
+        // e.g. English: Discard Two Cards, Spanish: Descarta dos cartas
+        public final String VerbNumNoun(Object verb, Object num, Object noun) {
+            return JavaUtils.Format(StringsGrammar.TEXT[8], verb, num, noun);
+        }
+
         // e.g. English: Discard the Cards Recklessly -> 0 1 2, Spanish: Descarta imprudentemente las cartas -> 0 2 1
         public final String VerbNounAdv(Object verb, Object adj, Object noun) {
-            return JavaUtils.Format(StringsGrammar.TEXT[8], verb, adj, noun);
+            return JavaUtils.Format(StringsGrammar.TEXT[9], verb, adj, noun);
         }
 
         // e.g. English: Two Red Cards In Hand, Spanish: Dos cartas rojas en la mano
         public final String NumAdjNounPlace(Object num, Object adj, Object noun, Object place) {
-            return JavaUtils.Format(StringsGrammar.TEXT[9], num, adj, noun, place);
+            return JavaUtils.Format(StringsGrammar.TEXT[10], num, adj, noun, place);
         }
 
         // e.g. English: Discard Two Cards In Hand, Spanish: Descarta dos cartas en la mano
         public final String VerbNumNounPlace(Object num, Object adj, Object noun, Object place) {
-            return JavaUtils.Format(StringsGrammar.TEXT[10], num, adj, noun, place);
+            return JavaUtils.Format(StringsGrammar.TEXT[11], num, adj, noun, place);
         }
 
         // e.g. English: Discard Two Red Cards In Hand, Spanish: Descarta dos cartas rojas en la mano
         public final String VerbNumAdjNounPlace(Object verb, Object num, Object adj, Object noun, Object place) {
-            return JavaUtils.Format(StringsGrammar.TEXT[11], verb, num, adj, noun, place);
+            return JavaUtils.Format(StringsGrammar.TEXT[12], verb, num, adj, noun, place);
         }
 
         // e.g. English: O1 and O2, Spanish: O1 y O2
-        public final String And(Object obj1, Object obj2) {return JavaUtils.Format(StringsGrammar.TEXT[12], obj1, obj2);}
+        public final String And(Object obj1, Object obj2) {return JavaUtils.Format(StringsGrammar.TEXT[13], obj1, obj2);}
 
         // e.g. English: O1 or O2, Spanish: O1 o O2
-        public final String Or(Object obj1, Object obj2) {return JavaUtils.Format(StringsGrammar.TEXT[13], obj1, obj2);}
+        public final String Or(Object obj1, Object obj2) {return JavaUtils.Format(StringsGrammar.TEXT[14], obj1, obj2);}
 
         // e.g. English: Not O1, Spanish: No 01
-        public final String Not(Object obj1) {return JavaUtils.Format(StringsGrammar.TEXT[14], obj1);}
+        public final String Not(Object obj1) {return JavaUtils.Format(StringsGrammar.TEXT[15], obj1);}
 
         // e.g. English: Card -> Cards, Spanish: Carta -> Cartas
         public final String Plural(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[0], obj);}

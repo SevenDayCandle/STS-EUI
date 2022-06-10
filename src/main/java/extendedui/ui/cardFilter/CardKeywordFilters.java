@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
+import extendedui.utilities.Mathf;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.TooltipProvider;
 import org.apache.commons.lang3.StringUtils;
@@ -24,14 +25,13 @@ import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.JavaUtils;
-import extendedui.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.GUI_Base;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.Mathf;
 import extendedui.utilities.FakeLibraryCard;
 
 import java.util.*;
@@ -77,6 +77,7 @@ public class CardKeywordFilters extends GUI_Base
     public static final HashSet<AbstractCard.CardType> CurrentTypes = new HashSet<>();
     public static String CurrentName;
     public static CustomCardFilterModule CustomModule;
+    public static AbstractCard.CardColor ActingColor;
     protected final HashMap<EUITooltip, Integer> CurrentFilterCounts = new HashMap<>();
     protected final ArrayList<CardKeywordButton> FilterButtons = new ArrayList<>();
     protected int currentTotal;
@@ -515,8 +516,9 @@ public class CardKeywordFilters extends GUI_Base
         FilterButtons.clear();
         currentTotal = 0;
 
+        ActingColor = color;
+        EUITooltip.UpdateTooltipIcons();
         CustomModule = EUI.GetCustomCardFilter(color);
-        EUI.UpdateEnergyTooltip(color);
 
         HashSet<ModInfo> availableMods = new HashSet<>();
         HashSet<Integer> availableCosts = new HashSet<>();

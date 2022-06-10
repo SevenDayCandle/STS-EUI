@@ -6,7 +6,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import extendedui.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 

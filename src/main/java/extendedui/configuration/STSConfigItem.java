@@ -2,24 +2,23 @@ package extendedui.configuration;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
-public class STSConfigurationOption<T>
+public class STSConfigItem<T>
 {
     public final String Key;
     protected SpireConfig Config;
     protected T Value;
     protected final T DefaultValue;
 
-    public STSConfigurationOption(String Key, T defaultValue) {
+    public STSConfigItem(String Key, T defaultValue) {
         this.Key = Key;
         DefaultValue = Value = defaultValue;
     }
 
-    public STSConfigurationOption<T> AddConfig(SpireConfig Config) {
+    public final STSConfigItem<T> AddConfig(SpireConfig Config) {
         this.Config = Config;
         if (this.Config.has(this.Key)) {
             this.Value = ParseValue(this.Config.getString(this.Key));
@@ -27,22 +26,22 @@ public class STSConfigurationOption<T>
         return this;
     }
 
-    public T Get() {
+    public final T Get() {
         return Value;
     }
 
-    public T Set(T Value) {
+    public final T Set(T Value) {
         return Set(Value, true);
     }
 
-    public T Set(T Value, boolean save) {
+    public final T Set(T Value, boolean save) {
         this.Value = Value;
-        this.Config.setString(this.Key, Value.toString());
+        this.Config.setString(this.Key, Serialize());
         Save();
         return Value;
     }
 
-    protected void Save() {
+    protected final void Save() {
         try {
             this.Config.save();
         } catch (Exception e) {
@@ -51,21 +50,12 @@ public class STSConfigurationOption<T>
     }
 
     protected T ParseValue(String raw) {
-        Method method = null;
         try {
             Class<?> valueClass = Value.getClass();
-            method = valueClass.getMethod("valueOf", String.class);
-        } catch (NullPointerException | NoSuchMethodException | SecurityException ignored) {
-        }
-        if (method != null) {
-            try
-            {
-                return (T) method.invoke(raw);
-            }
-            catch (IllegalAccessException | InvocationTargetException | IllegalArgumentException e)
-            {
-                e.printStackTrace();
-            }
+            Method method = valueClass.getMethod("valueOf", String.class);
+            return (T) method.invoke(raw);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         return DefaultValue;
     };

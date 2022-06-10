@@ -1,6 +1,5 @@
 package extendedui.ui.controls;
 
-import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -9,9 +8,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
-import com.megacrit.cardcrawl.screens.options.ConfirmPopup;
-import extendedui.JavaUtils;
-import extendedui.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;

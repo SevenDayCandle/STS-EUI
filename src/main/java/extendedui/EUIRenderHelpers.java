@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.github.tommyettinger.colorful.Shaders;
 import com.github.tommyettinger.colorful.rgb.ColorTools;
@@ -16,12 +17,11 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
-import extendedui.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.utilities.TupleT2;
 import org.imgscalr.Scalr;
-import extendedui.interfaces.delegates.FuncT1;
-import extendedui.interfaces.delegates.FuncT3;
+import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.ui.controls.GUI_Image;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.AdvancedTexture;
@@ -927,6 +927,16 @@ public class EUIRenderHelpers
         }
 
         return maxOffset;
+    }
+
+    public static float LerpScale(float initial, float target) {
+        if (initial > target) {
+            initial = MathUtils.lerp(initial, 1.0F, Gdx.graphics.getDeltaTime() * 10.0F);
+            if (initial - target < 0.05F) {
+                initial = target;
+            }
+        }
+        return initial;
     }
 
     public static TextureRegion GetCroppedRegion(Texture texture, int div)

@@ -1,4 +1,4 @@
-package extendedui.interfaces.delegates;
+package eatyourbeets.interfaces.delegates;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 

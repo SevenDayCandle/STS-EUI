@@ -1,18 +1,10 @@
 package extendedui.ui.controls;
 
-import basemod.interfaces.TextReceiver;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.Loader;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
-import extendedui.EUIRM;
-import extendedui.JavaUtils;
-import extendedui.interfaces.delegates.FuncT1;
+import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
-import extendedui.utilities.EUIFontHelper;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
