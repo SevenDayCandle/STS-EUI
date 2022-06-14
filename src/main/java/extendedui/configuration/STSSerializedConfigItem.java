@@ -16,7 +16,7 @@ public class STSSerializedConfigItem<T> extends STSConfigItem<T>
 
     protected T ParseValue(String raw) {
         try {
-            return JavaUtils.Deserialize(raw, TOKEN.getType());
+            return (T) JavaUtils.Deserialize(raw, DefaultValue.getClass());
         }
         catch (Exception e) {
             JavaUtils.LogError(this, "Failed to load preference for " + Key + ", value was: " + raw);
