@@ -77,7 +77,6 @@ public class CardKeywordFilters extends GUI_Base
     public static final HashSet<AbstractCard.CardType> CurrentTypes = new HashSet<>();
     public static String CurrentName;
     public static CustomCardFilterModule CustomModule;
-    public static AbstractCard.CardColor ActingColor;
     protected final HashMap<EUITooltip, Integer> CurrentFilterCounts = new HashMap<>();
     protected final ArrayList<CardKeywordButton> FilterButtons = new ArrayList<>();
     protected int currentTotal;
@@ -516,7 +515,7 @@ public class CardKeywordFilters extends GUI_Base
         FilterButtons.clear();
         currentTotal = 0;
 
-        ActingColor = color;
+        EUI.ActingColor = color;
         EUITooltip.UpdateTooltipIcons();
         CustomModule = EUI.GetCustomCardFilter(color);
 

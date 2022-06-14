@@ -1,6 +1,7 @@
 package extendedui.configuration;
 
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import extendedui.JavaUtils;
 
 import java.lang.reflect.Method;
 
@@ -51,10 +52,11 @@ public class STSConfigItem<T>
 
     protected T ParseValue(String raw) {
         try {
-            Class<?> valueClass = Value.getClass();
+            Class<?> valueClass = DefaultValue.getClass();
             Method method = valueClass.getMethod("valueOf", String.class);
             return (T) method.invoke(raw);
         } catch (Exception e) {
+            JavaUtils.LogError(this, "Failed to load preference for " + Key + ", value was: " + raw);
             e.printStackTrace();
         }
         return DefaultValue;

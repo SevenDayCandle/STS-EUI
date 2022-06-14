@@ -49,7 +49,7 @@ public class EUI
     private static Hitbox lastHovered;
     private static Hitbox lastHoveredTemp;
     protected static GUI_Base activeElement;
-
+    public static AbstractCard.CardColor ActingColor;
     public static AbstractScreen CurrentScreen;
     public static CardPoolScreen CardsScreen;
     public static CardKeywordFilters CardFilters;
@@ -352,7 +352,7 @@ public class EUI
     }
 
     public static TextureRegion GetEnergyIcon() {
-        AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : CardKeywordFilters.ActingColor;
+        AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : ActingColor;
         if (color == null) {
             return AbstractCard.orb_red;
         }

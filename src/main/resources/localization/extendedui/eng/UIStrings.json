@@ -5,7 +5,8 @@
 	  "Flush Effects when Starting a Run",
 	  "Flush Effects when Entering a New Room",
 	  "Maximum Particles",
-	  "Reset Hidden Tooltips"
+	  "Reset Hidden Tooltips",
+	  "Use Vanilla Card Library Screen"
 	]
   },
   "extendedui:grammar":
