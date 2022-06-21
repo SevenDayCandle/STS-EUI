@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
+import com.megacrit.cardcrawl.core.Settings;
 import extendedui.swig.EffekseerBackendCore;
 import extendedui.swig.EffekseerEffectCore;
 import extendedui.swig.EffekseerManagerCore;
@@ -43,6 +44,13 @@ public class STSEffekseerManager {
         }
     }
 
+    /**
+     Effects can only play if the manager is loaded and if in-game effects are enabled
+     */
+    public static boolean CanPlay() {
+        return Enabled && !Settings.DISABLE_EFFECTS;
+    }
+
     public static Integer Play(String key, Vector2 position) {
         return Play(key, position, null, null, (float[]) null);
     }
@@ -56,7 +64,7 @@ public class STSEffekseerManager {
      Whenever a new effect type is loaded, its files are cached so that future calls to the same effect type do not need to load file data again
      */
     public static Integer Play(String key, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
-        if (Enabled) {
+        if (CanPlay()) {
             try {
                 EffekseerEffectCore effect = ParticleEffects.get(key);
                 if (effect == null) {
@@ -132,7 +140,7 @@ public class STSEffekseerManager {
      Thus, we must render the animations into a framebuffer to be rendered later
      */
     public static void Update() {
-        if (Enabled) {
+        if (CanPlay()) {
             ManagerCore.SetViewProjectionMatrixWithSimpleWindow(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
             ManagerCore.Update(Gdx.graphics.getDeltaTime() * AnimationSpeed);
             Buffer.begin();
@@ -148,7 +156,7 @@ public class STSEffekseerManager {
      Because the OpenGL world space is flip
      */
     public static void Render(SpriteBatch sb) {
-        if (Enabled) {
+        if (CanPlay()) {
             TextureRegion t = new TextureRegion(Buffer.getColorBufferTexture());
             t.flip(false, true);
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);

@@ -17,6 +17,7 @@ import extendedui.configuration.EUIHotkeys;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.GUI_Button;
 import extendedui.ui.controls.GUI_CardGrid;
+import extendedui.ui.controls.GUI_StaticCardGrid;
 import extendedui.ui.controls.GUI_Toggle;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.DraggableHitbox;
@@ -32,7 +33,7 @@ public class CardPoolScreen extends AbstractScreen
 
     public CardPoolScreen()
     {
-        cardGrid = new GUI_CardGrid()
+        cardGrid = new GUI_StaticCardGrid()
                 .ShowScrollbar(true)
                 .CanRenderUpgrades(true);
 

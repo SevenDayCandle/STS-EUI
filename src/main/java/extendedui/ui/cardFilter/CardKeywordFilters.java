@@ -36,7 +36,7 @@ import extendedui.utilities.FakeLibraryCard;
 
 import java.util.*;
 
-public class CardKeywordFilters extends GUI_Base
+public class CardKeywordFilters extends GUI_Canvas
 {
     public enum CostFilter
     {
@@ -60,13 +60,11 @@ public class CardKeywordFilters extends GUI_Base
     }
 
     private static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
-    private static final float SCROLL_BAR_THRESHOLD = 500f * Settings.scale;
     public static final float SPACING = Settings.scale * 22.5f;
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
     public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.87f;
     public static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
     public static final float PAD_Y = Scale(45);
-
     public static final int ROW_SIZE = 8;
     public static final HashSet<AbstractCard.CardColor> CurrentColors = new HashSet<>();
     public static final HashSet<ModInfo> CurrentOrigins = new HashSet<>();
@@ -83,15 +81,8 @@ public class CardKeywordFilters extends GUI_Base
     protected ArrayList<AbstractCard> referenceCards;
     protected ActionT1<CardKeywordButton> onClick;
 
-
-    protected boolean canDragScreen = false;
     protected boolean invalidated;
     protected float draw_x;
-    protected float lowerScrollBound = -Settings.DEFAULT_SCROLL_LIMIT;
-    protected float upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
-    protected float scrollStart;
-    protected float scrollDelta;
-    protected int filterSizeCache;
     public final GUI_Dropdown<ModInfo> OriginsDropdown;
     public final GUI_Dropdown<CostFilter> CostDropdown;
     public final GUI_Dropdown<AbstractCard.CardRarity> RaritiesDropdown;
@@ -100,15 +91,12 @@ public class CardKeywordFilters extends GUI_Base
     public final GUI_TextBoxInput NameInput;
     public final GUI_Button closeButton;
     public final GUI_Button clearButton;
-    public final GUI_VerticalScrollBar scrollBar;
     public final GUI_Label currentTotalHeaderLabel;
     public final GUI_Label currentTotalLabel;
     public final GUI_Label keywordsSectionLabel;
     public final GUI_Toggle sortTypeToggle;
     public final GUI_Toggle sortDirectionToggle;
     public final AdvancedHitbox hb;
-    public boolean draggingScreen;
-    public boolean autoShowScrollbar;
 
     protected boolean isAccessedFromCardPool;
     private boolean shouldSortByCount;
@@ -298,6 +286,7 @@ public class CardKeywordFilters extends GUI_Base
 
     public CardKeywordFilters()
     {
+        super(ROW_SIZE, PAD_Y);
         isActive = false;
         hb = new AdvancedHitbox(DRAW_START_X, DRAW_START_Y, Scale(180), Scale(70)).SetIsPopupCompatible(true);
         closeButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
@@ -310,8 +299,6 @@ public class CardKeywordFilters extends GUI_Base
                 .SetColor(Color.FIREBRICK)
                 .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.13f).SetText("Clear")
                 .SetOnClick(() -> this.Clear(true, isAccessedFromCardPool));
-        this.scrollBar = new GUI_VerticalScrollBar(new AdvancedHitbox(ScreenW(0.03f), ScreenH(0.7f)))
-                .SetOnScroll(this::OnScroll);
 
         OriginsDropdown = new GUI_Dropdown<ModInfo>(new AdvancedHitbox(0, 0, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
                 .SetOnOpenOrClose(isOpen -> {
@@ -692,6 +679,7 @@ public class CardKeywordFilters extends GUI_Base
     @Override
     public void Update()
     {
+        super.Update();
         hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
         OriginsDropdown.SetPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta);
         CostDropdown.SetPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta);
@@ -719,16 +707,6 @@ public class CardKeywordFilters extends GUI_Base
                 c.TryUpdate();
             }
 
-            if (ShouldShowScrollbar())
-            {
-                scrollBar.Update();
-                UpdateScrolling(scrollBar.isDragging);
-            }
-            else
-            {
-                UpdateScrolling(false);
-            }
-
             UpdateInput();
         }
 
@@ -747,6 +725,7 @@ public class CardKeywordFilters extends GUI_Base
     @Override
     public void Render(SpriteBatch sb)
     {
+        super.Render(sb);
         sb.setColor(FADE_COLOR);
         sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float) Settings.WIDTH, (float) Settings.HEIGHT);
         sb.setColor(Color.WHITE);
@@ -772,14 +751,6 @@ public class CardKeywordFilters extends GUI_Base
         if (CustomModule != null)
         {
             CustomModule.TryRender(sb);
-        }
-    }
-
-    protected void OnScroll(float newPercent)
-    {
-        if (!EUI.DoesActiveElementExist())
-        {
-            scrollDelta = MathHelper.valueFromPercentBetween(lowerScrollBound, upperScrollBound, newPercent);
         }
     }
 
@@ -821,71 +792,6 @@ public class CardKeywordFilters extends GUI_Base
         }
     }
 
-    protected void UpdateScrolling(boolean isDraggingScrollBar)
-    {
-        if (!isDraggingScrollBar)
-        {
-            if (draggingScreen)
-            {
-                if (InputHelper.isMouseDown && EUI.TryDragging())
-                {
-                    scrollDelta = InputHelper.mY - scrollStart;
-                }
-                else
-                {
-                    draggingScreen = false;
-                }
-            }
-            else
-            {
-                if (InputHelper.scrolledDown)
-                {
-                    scrollDelta += Settings.SCROLL_SPEED;
-                }
-                else if (InputHelper.scrolledUp)
-                {
-                    scrollDelta -= Settings.SCROLL_SPEED;
-                }
-
-                if (canDragScreen && InputHelper.justClickedLeft && EUI.TryDragging())
-                {
-                    draggingScreen = true;
-                    scrollStart = InputHelper.mY - scrollDelta;
-                }
-            }
-        }
-
-        if (filterSizeCache != FilterButtons.size())
-        {
-            RefreshOffset();
-        }
-
-        if (scrollDelta < lowerScrollBound)
-        {
-            scrollDelta = MathHelper.scrollSnapLerpSpeed(scrollDelta, lowerScrollBound);
-        }
-        else if (scrollDelta > upperScrollBound)
-        {
-            scrollDelta = MathHelper.scrollSnapLerpSpeed(scrollDelta, upperScrollBound);
-        }
-
-        scrollBar.Scroll(MathHelper.percentFromValueBetween(lowerScrollBound, upperScrollBound, scrollDelta), false);
-    }
-
-    public void RefreshOffset()
-    {
-        filterSizeCache = FilterButtons.size();
-        upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
-        lowerScrollBound = -Settings.DEFAULT_SCROLL_LIMIT;
-
-        if (filterSizeCache > ROW_SIZE)
-        {
-            int offset = (filterSizeCache - 1) / ROW_SIZE;
-            upperScrollBound += PAD_Y * (offset + 2);
-            lowerScrollBound -= PAD_Y * (offset - 1);
-        }
-    }
-
     public void Invoke(CardKeywordButton button)
     {
         if (onClick != null)
@@ -894,13 +800,9 @@ public class CardKeywordFilters extends GUI_Base
         }
     }
 
-    public float GetScrollDelta()
+    @Override
+    public int CurrentSize()
     {
-        return scrollDelta;
-    }
-
-    protected boolean ShouldShowScrollbar()
-    {
-        return autoShowScrollbar && upperScrollBound > SCROLL_BAR_THRESHOLD;
+        return FilterButtons.size();
     }
 }

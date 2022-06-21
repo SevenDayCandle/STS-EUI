@@ -309,6 +309,48 @@ public class GUI_Button extends GUI_Hoverable
         this.hb.render(sb);
     }
 
+    public void RenderCentered(SpriteBatch sb)
+    {
+        this.buttonColor.a = this.textColor.a = currentAlpha;
+        if (currentAlpha <= 0)
+        {
+            return;
+        }
+
+        final boolean interactable = IsInteractable();
+        if (StringUtils.isNotEmpty(text) && showText)
+        {
+            this.RenderButtonCentered(sb, interactable, buttonColor);
+
+            font.getData().setScale(fontScale);
+            final Color color = interactable ? textColor : TEXT_DISABLED_COLOR;
+            if (isSmartText) {
+                EUIRenderHelpers.WriteSmartText(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color);
+            }
+            else if (FontHelper.getSmartWidth(font, text, Integer.MAX_VALUE, 0f) > (hb.width * 0.7))
+            {
+                EUIRenderHelpers.WriteCentered(sb, font, text, hb, color, 0.8f);
+            }
+            else
+            {
+                EUIRenderHelpers.WriteCentered(sb, font, text, hb, color);
+            }
+            EUIRenderHelpers.ResetFont(font);
+        }
+        else
+        {
+            if (interactable) {
+                this.RenderButtonCentered(sb, interactable, buttonColor);
+            }
+            else {
+                EUIRenderHelpers.DrawGrayscale(sb, (s) -> this.RenderButtonCentered(s, interactable, buttonColor));
+            }
+
+        }
+
+        this.hb.render(sb);
+    }
+
     protected void RenderButton(SpriteBatch sb, boolean interactable, Color color)
     {
         background.SetColor(color).Render(sb, hb);
@@ -327,6 +369,26 @@ public class GUI_Button extends GUI_Hoverable
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
     }
+
+    protected void RenderButtonCentered(SpriteBatch sb, boolean interactable, Color color)
+    {
+        background.SetColor(color).RenderCentered(sb, hb);
+
+        if (border != null)
+        {
+            border.RenderCentered(sb);
+        }
+
+        if (interactable && this.hb.hovered && !this.hb.clickStarted)
+        {
+            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
+
+            background.SetColor(HOVER_BLEND_COLOR).RenderCentered(sb, hb);
+
+            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+        }
+    }
+
 
     protected void OnJustHovered()
     {
@@ -359,5 +421,16 @@ public class GUI_Button extends GUI_Hoverable
         {
             this.onRightClick.Complete(this);
         }
+    }
+
+    public boolean TryRenderCentered(SpriteBatch sb)
+    {
+        if (isActive)
+        {
+            this.hb.render(sb);
+            RenderCentered(sb);
+        }
+
+        return isActive;
     }
 }

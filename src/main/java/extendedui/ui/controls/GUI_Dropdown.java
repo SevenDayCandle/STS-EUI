@@ -439,8 +439,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
 
     protected void OnScroll(float newPercent)
     {
-        int approximateRow = (int) (newPercent * (this.rows.size() - this.visibleRowCount()));
-        this.topVisibleRowIndex = Mathf.Clamp(approximateRow, 0, this.rows.size() - this.visibleRowCount());
+        this.topVisibleRowIndex = (int) Mathf.Clamp(newPercent * (this.rows.size() - this.visibleRowCount()), 0, this.rows.size() - this.visibleRowCount());
     }
 
     @Override

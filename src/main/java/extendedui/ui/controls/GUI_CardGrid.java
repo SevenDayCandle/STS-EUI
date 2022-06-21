@@ -19,37 +19,26 @@ import extendedui.ui.hitboxes.AdvancedHitbox;
 
 import java.util.Collection;
 
-public class GUI_CardGrid extends GUI_Base
+public class GUI_CardGrid extends GUI_Canvas
 {
-    private static final float DRAW_START_X = (Settings.WIDTH - (5f * AbstractCard.IMG_WIDTH * 0.75f) - (4f * Settings.CARD_VIEW_PAD_X) + AbstractCard.IMG_WIDTH * 0.75f);
-    private static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
-    private static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
-    private static final float PAD_Y = AbstractCard.IMG_HEIGHT * 0.75f + Settings.CARD_VIEW_PAD_Y;
-    private static final float SCROLL_BAR_THRESHOLD = 500f * Settings.scale;
+    protected static final float DRAW_START_X = (Settings.WIDTH - (5f * AbstractCard.IMG_WIDTH * 0.75f) - (4f * Settings.CARD_VIEW_PAD_X) + AbstractCard.IMG_WIDTH * 0.75f);
+    protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
+    protected static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
+    protected static final float PAD_Y = AbstractCard.IMG_HEIGHT * 0.75f + Settings.CARD_VIEW_PAD_Y;
     public static final int ROW_SIZE = 5;
 
-    public final GUI_VerticalScrollBar scrollBar;
-    public CardGroup cards;
-    public boolean autoShowScrollbar;
-    public boolean canRenderUpgrades = false;
-    public boolean draggingScreen;
-    public boolean shouldEnlargeHovered = true;
+    protected ActionT1<AbstractCard> onCardClick;
+    protected ActionT1<AbstractCard> onCardHovered;
+    protected ActionT1<AbstractCard> onCardRightClick;
+    protected ActionT2<SpriteBatch, AbstractCard> onCardRender;
+    protected float draw_x;
     public AbstractCard hoveredCard = null;
+    public CardGroup cards;
     public String message = null;
+    public boolean canRenderUpgrades = false;
+    public boolean shouldEnlargeHovered = true;
     public float pad_x = PAD_X;
     public float pad_y = PAD_Y;
-
-    protected ActionT1<AbstractCard> onCardClick;
-    protected ActionT1<AbstractCard> onCardRightClick;
-    protected ActionT1<AbstractCard> onCardHovered;
-    protected ActionT2<SpriteBatch, AbstractCard> onCardRender;
-    protected boolean canDragScreen = true;
-    protected float draw_x;
-    protected float lowerScrollBound = -Settings.DEFAULT_SCROLL_LIMIT;
-    protected float upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
-    protected float scrollStart;
-    protected float scrollDelta;
-    protected int deckSizeCache;
 
     public GUI_CardGrid()
     {
@@ -63,9 +52,8 @@ public class GUI_CardGrid extends GUI_Base
 
     public GUI_CardGrid(float horizontalAlignment, boolean autoShowScrollbar)
     {
+        super(ROW_SIZE, PAD_Y);
         this.cards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        this.scrollBar = new GUI_VerticalScrollBar(new AdvancedHitbox(ScreenW(0.03f), ScreenH(0.7f)))
-                .SetOnScroll(this::OnScroll);
         this.autoShowScrollbar = autoShowScrollbar;
 
         SetHorizontalAlignment(horizontalAlignment);
@@ -160,7 +148,7 @@ public class GUI_CardGrid extends GUI_Base
 
     public void Clear()
     {
-        this.deckSizeCache = 0;
+        this.sizeCache = 0;
         this.hoveredCard = null;
         this.scrollDelta = 0f;
         this.scrollStart = 0f;
@@ -169,7 +157,7 @@ public class GUI_CardGrid extends GUI_Base
         // Unlink the cards from any outside card group given to it
         this.cards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
 
-        RefreshDeckSize();
+        RefreshOffset();
     }
 
     public GUI_CardGrid SetCardGroup(CardGroup cardGroup) {
@@ -207,18 +195,9 @@ public class GUI_CardGrid extends GUI_Base
     @Override
     public void Render(SpriteBatch sb)
     {
-        if (ShouldShowScrollbar())
-        {
-            scrollBar.Render(sb);
-        }
+        super.Render(sb);
 
-        for (AbstractCard card : cards.group)
-        {
-            if (card != hoveredCard)
-            {
-                RenderCard(sb, card);
-            }
-        }
+        RenderCards(sb);
 
         if (hoveredCard != null)
         {
@@ -233,18 +212,20 @@ public class GUI_CardGrid extends GUI_Base
         }
     }
 
+    protected void RenderCards(SpriteBatch sb) {
+        for (AbstractCard card : cards.group)
+        {
+            if (card != hoveredCard)
+            {
+                RenderCard(sb, card);
+            }
+        }
+    }
+
     @Override
     public void Update()
     {
-        if (ShouldShowScrollbar())
-        {
-            scrollBar.Update();
-            UpdateScrolling(scrollBar.isDragging);
-        }
-        else
-        {
-            UpdateScrolling(false);
-        }
+        super.Update();
 
         UpdateCards();
 
@@ -319,76 +300,22 @@ public class GUI_CardGrid extends GUI_Base
         }
     }
 
-    protected void UpdateScrolling(boolean isDraggingScrollBar)
+    @Override
+    public void RefreshOffset()
     {
-        if (!isDraggingScrollBar)
-        {
-            if (draggingScreen)
-            {
-                if (InputHelper.isMouseDown && EUI.TryDragging())
-                {
-                    scrollDelta = InputHelper.mY - scrollStart;
-                }
-                else
-                {
-                    draggingScreen = false;
-                }
-            }
-            else
-            {
-                if (InputHelper.scrolledDown)
-                {
-                    scrollDelta += Settings.SCROLL_SPEED;
-                }
-                else if (InputHelper.scrolledUp)
-                {
-                    scrollDelta -= Settings.SCROLL_SPEED;
-                }
-
-                if (canDragScreen && InputHelper.justClickedLeft && EUI.TryDragging())
-                {
-                    draggingScreen = true;
-                    scrollStart = InputHelper.mY - scrollDelta;
-                }
-            }
-        }
-
-        if (deckSizeCache != cards.size())
-        {
-            RefreshDeckSize();
-        }
-
-        if (scrollDelta < lowerScrollBound)
-        {
-            scrollDelta = MathHelper.scrollSnapLerpSpeed(scrollDelta, lowerScrollBound);
-        }
-        else if (scrollDelta > upperScrollBound)
-        {
-            scrollDelta = MathHelper.scrollSnapLerpSpeed(scrollDelta, upperScrollBound);
-        }
-
-        scrollBar.Scroll(MathHelper.percentFromValueBetween(lowerScrollBound, upperScrollBound, scrollDelta), false);
-    }
-
-    public void RefreshDeckSize()
-    {
-        deckSizeCache = cards.size();
+        sizeCache = CurrentSize();
         upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
 
-        if (deckSizeCache > 10)
+        if (sizeCache > rowSize * 2)
         {
-            int offset = ((deckSizeCache / ROW_SIZE) - ((deckSizeCache % ROW_SIZE > 0) ? 1 : 2));
-            upperScrollBound += PAD_Y * offset;
+            int offset = ((sizeCache / rowSize) - ((sizeCache % rowSize > 0) ? 1 : 2));
+            upperScrollBound += yPadding * offset;
         }
     }
 
-    protected void OnScroll(float newPercent)
+    @Override
+    public int CurrentSize()
     {
-        scrollDelta = MathHelper.valueFromPercentBetween(lowerScrollBound, upperScrollBound, newPercent);
-    }
-
-    protected boolean ShouldShowScrollbar()
-    {
-        return autoShowScrollbar && upperScrollBound > SCROLL_BAR_THRESHOLD;
+        return cards.size();
     }
 }
