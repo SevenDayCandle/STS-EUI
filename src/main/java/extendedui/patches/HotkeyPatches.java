@@ -6,9 +6,9 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.screens.options.InputSettingsScreen;
 import com.megacrit.cardcrawl.screens.options.RemapInputElement;
-import javassist.CtBehavior;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIHotkeys;
+import javassist.CtBehavior;
 
 import java.util.ArrayList;
 

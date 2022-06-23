@@ -28,7 +28,6 @@ import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import eatyourbeets.interfaces.delegates.FuncT0;
-import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
@@ -67,7 +66,7 @@ public class EUITooltip
     private static boolean inHand;
     private static TooltipProvider provider;
     private static AbstractCreature creature;
-    private static Vector2 genericTipPos = new Vector2(0, 0);
+    private static final Vector2 genericTipPos = new Vector2(0, 0);
 
     public ArrayList<String> descriptions = new ArrayList<>();
     public Boolean hideDescription = null;

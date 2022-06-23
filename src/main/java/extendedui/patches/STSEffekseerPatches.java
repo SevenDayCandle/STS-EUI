@@ -4,8 +4,8 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import org.apache.logging.log4j.LogManager;
 import extendedui.STSEffekseerManager;
+import org.apache.logging.log4j.LogManager;
 
 public class STSEffekseerPatches {
     @SpirePatch(clz = CardCrawlGame.class, method = "render")

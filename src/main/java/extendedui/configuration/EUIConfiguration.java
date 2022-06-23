@@ -1,6 +1,9 @@
 package extendedui.configuration;
 
-import basemod.*;
+import basemod.BaseMod;
+import basemod.ModLabeledToggleButton;
+import basemod.ModMinMaxSlider;
+import basemod.ModPanel;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.Settings;

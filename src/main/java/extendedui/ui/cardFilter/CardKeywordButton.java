@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
-import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.controls.GUI_Button;
 import extendedui.ui.controls.GUI_Label;
@@ -78,15 +78,14 @@ public class CardKeywordButton extends GUI_Hoverable
                     {
                         CardKeywordFilters.CurrentNegateFilters.remove(Tooltip);
                         background_button.SetColor(PANEL_COLOR);
-                        title_text.SetColor(Color.WHITE);
                     }
                     else
                     {
                         //CardKeywordFilters.CurrentFilters.remove(Tooltip);
                         CardKeywordFilters.CurrentNegateFilters.add(Tooltip);
                         background_button.SetColor(NEGATE_COLOR);
-                        title_text.SetColor(Color.WHITE);
                     }
+                    title_text.SetColor(Color.WHITE);
 
                     if (this.onClick != null) {
                         this.onClick.Invoke(this);

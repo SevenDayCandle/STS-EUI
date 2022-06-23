@@ -3,11 +3,11 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import eatyourbeets.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.JavaUtils;
-import eatyourbeets.interfaces.delegates.ActionT1;
-import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 

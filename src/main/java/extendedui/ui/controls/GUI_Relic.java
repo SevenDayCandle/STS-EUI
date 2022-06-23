@@ -7,7 +7,7 @@ import extendedui.ui.hitboxes.AdvancedHitbox;
 
 public class GUI_Relic extends GUI_Image
 {
-    private AbstractRelic relic;
+    private final AbstractRelic relic;
 
     public GUI_Relic(AbstractRelic relic, AdvancedHitbox hb)
     {

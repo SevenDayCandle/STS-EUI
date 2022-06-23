@@ -1,9 +1,9 @@
 package extendedui.utilities;
 
-import extendedui.JavaUtils;
 import eatyourbeets.interfaces.delegates.FuncT0;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import eatyourbeets.interfaces.delegates.FuncT2;
+import extendedui.JavaUtils;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 

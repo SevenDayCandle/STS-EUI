@@ -2,8 +2,8 @@ package extendedui.utilities;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.megacrit.cardcrawl.core.Settings;
-import org.lwjgl.util.vector.Vector4f;
 import extendedui.JavaUtils;
+import org.lwjgl.util.vector.Vector4f;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 

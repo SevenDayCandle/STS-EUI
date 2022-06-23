@@ -18,15 +18,15 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import eatyourbeets.interfaces.delegates.ActionT1;
-import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.utilities.TupleT2;
-import org.imgscalr.Scalr;
 import eatyourbeets.interfaces.delegates.FuncT1;
+import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.GUI_Image;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.AdvancedTexture;
 import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.TupleT2;
+import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;

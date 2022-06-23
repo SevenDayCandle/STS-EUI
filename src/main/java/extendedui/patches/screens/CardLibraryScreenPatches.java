@@ -11,7 +11,6 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
 import extendedui.EUI;
-import extendedui.JavaUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.utilities.ClassUtils;
 

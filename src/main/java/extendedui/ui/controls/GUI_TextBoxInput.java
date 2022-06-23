@@ -8,15 +8,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
-import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.Mathf;
 
 public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
     protected boolean isEditing;

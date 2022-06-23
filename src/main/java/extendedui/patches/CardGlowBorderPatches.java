@@ -6,7 +6,6 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.vfx.cardManip.CardGlowBorder;
-import extendedui.JavaUtils;
 import extendedui.utilities.ClassUtils;
 
 public class CardGlowBorderPatches

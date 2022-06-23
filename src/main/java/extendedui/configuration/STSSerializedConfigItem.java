@@ -1,6 +1,5 @@
 package extendedui.configuration;
 
-import com.badlogic.gdx.utils.Base64Coder;
 import com.google.gson.reflect.TypeToken;
 import extendedui.JavaUtils;
 
@@ -23,9 +22,9 @@ public class STSSerializedConfigItem<T> extends STSConfigItem<T>
             e.printStackTrace();
         }
         return DefaultValue;
-    };
+    }
 
     protected String Serialize() {
         return JavaUtils.Serialize(Value);
-    };
+    }
 }

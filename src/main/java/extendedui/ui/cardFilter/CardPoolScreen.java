@@ -10,18 +10,14 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
-import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
-import extendedui.configuration.EUIHotkeys;
 import extendedui.ui.AbstractScreen;
-import extendedui.ui.controls.GUI_Button;
 import extendedui.ui.controls.GUI_CardGrid;
 import extendedui.ui.controls.GUI_StaticCardGrid;
 import extendedui.ui.controls.GUI_Toggle;
 import extendedui.ui.hitboxes.AdvancedHitbox;
-import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.utilities.EUIFontHelper;
 
 public class CardPoolScreen extends AbstractScreen

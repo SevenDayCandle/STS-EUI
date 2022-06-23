@@ -1,14 +1,19 @@
 package extendedui.configuration;
 
+import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import extendedui.JavaUtils;
+import extendedui.utilities.ClassUtils;
 
 import java.lang.reflect.Method;
+import java.util.HashMap;
 
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
 public class STSConfigItem<T>
 {
+    protected static final HashMap<Class<?>,Method> METHOD_HASH_MAP = new HashMap<>();
+
     public final String Key;
     protected SpireConfig Config;
     protected T Value;
@@ -52,17 +57,25 @@ public class STSConfigItem<T>
 
     protected T ParseValue(String raw) {
         try {
-            Class<?> valueClass = DefaultValue.getClass();
-            Method method = valueClass.getMethod("valueOf", String.class);
-            return (T) method.invoke(raw);
+            return (T) GetMethod().invoke(null, raw);
         } catch (Exception e) {
             JavaUtils.LogError(this, "Failed to load preference for " + Key + ", value was: " + raw);
             e.printStackTrace();
         }
         return DefaultValue;
-    };
+    }
 
     protected String Serialize() {
         return Value.toString();
-    };
+    }
+
+    protected Method GetMethod() throws Exception {
+        Class<?> valueClass = DefaultValue.getClass();
+        if (METHOD_HASH_MAP.containsKey(valueClass)) {
+            return METHOD_HASH_MAP.get(valueClass);
+        }
+        Method method = valueClass.getMethod("valueOf", String.class);
+        METHOD_HASH_MAP.put(valueClass, method);
+        return method;
+    }
 }

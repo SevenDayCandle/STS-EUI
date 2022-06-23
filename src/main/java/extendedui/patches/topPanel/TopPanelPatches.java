@@ -7,9 +7,8 @@ import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import extendedui.interfaces.markers.TooltipProvider;
-import javassist.CtBehavior;
-import extendedui.JavaUtils;
 import extendedui.ui.tooltips.EUITooltip;
+import javassist.CtBehavior;
 
 import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 

@@ -1,9 +1,9 @@
 package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.Texture;
-import org.apache.commons.lang3.math.NumberUtils;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
+import org.apache.commons.lang3.math.NumberUtils;
 
 public class GUI_TextBoxNumericalInput extends GUI_TextBoxInput {
 

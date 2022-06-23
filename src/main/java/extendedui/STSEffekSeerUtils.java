@@ -2,9 +2,9 @@ package extendedui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import org.apache.commons.lang3.SystemUtils;
 import extendedui.swig.EffekseerEffectCore;
 import extendedui.swig.EffekseerTextureType;
+import org.apache.commons.lang3.SystemUtils;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -32,11 +32,13 @@ public class STSEffekSeerUtils {
                 : null;
     }
 
-    public static EffekseerEffectCore LoadEffect(String effectPath) throws Exception {
+    public static EffekseerEffectCore LoadEffect(String effectPath)
+    {
         return LoadEffect(effectPath, DEFAULT_MAGNIFICATION);
     }
 
-    public static EffekseerEffectCore LoadEffect(String effectPath, float magnification) throws Exception {
+    public static EffekseerEffectCore LoadEffect(String effectPath, float magnification)
+    {
         com.badlogic.gdx.files.FileHandle handle = Gdx.files.internal(effectPath);
         EffekseerEffectCore effectCore = new EffekseerEffectCore();
 

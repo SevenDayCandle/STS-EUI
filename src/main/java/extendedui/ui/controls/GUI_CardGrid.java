@@ -9,10 +9,10 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
-import extendedui.EUI;
-import extendedui.EUIInputManager;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.ActionT2;
+import extendedui.EUI;
+import extendedui.EUIInputManager;
 import extendedui.interfaces.markers.CacheableCard;
 
 import java.util.Collection;

@@ -2,9 +2,9 @@ package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import extendedui.EUI;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
+import extendedui.EUI;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
 import java.util.ArrayList;

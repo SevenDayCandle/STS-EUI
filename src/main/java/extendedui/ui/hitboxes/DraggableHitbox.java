@@ -6,7 +6,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import eatyourbeets.interfaces.delegates.ActionT1;
-import eatyourbeets.interfaces.delegates.ActionT2;
 import extendedui.EUI;
 import extendedui.JavaUtils;
 

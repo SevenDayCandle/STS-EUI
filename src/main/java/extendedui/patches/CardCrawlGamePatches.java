@@ -8,9 +8,9 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.DrawMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import extendedui.EUI;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
-import extendedui.EUI;
 
 public class CardCrawlGamePatches
 {

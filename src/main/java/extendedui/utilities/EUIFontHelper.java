@@ -10,7 +10,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 
 import java.util.HashMap;
-import java.util.function.Predicate;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 

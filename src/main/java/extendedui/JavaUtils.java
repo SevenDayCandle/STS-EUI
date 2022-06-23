@@ -1,16 +1,18 @@
 package extendedui;
 
 import com.google.gson.Gson;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.TipHelper;
+import eatyourbeets.interfaces.delegates.FuncT1;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import eatyourbeets.interfaces.delegates.FuncT1;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.StringJoiner;
 import java.util.function.Predicate;
-import java.util.zip.GZIPOutputStream;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
@@ -223,7 +225,7 @@ public class JavaUtils
             {
                 if (s_index > 0)
                 {
-                    sb1.append(sb2.toString());
+                    sb1.append(sb2);
                     sb2.setLength(0);
                     s_index = 0;
                 }
@@ -277,6 +279,20 @@ public class JavaUtils
     public static void LogInfo(Object source, String format, Object... values)
     {
         GetLogger(source).info(Format(format, values));
+    }
+
+    public static void LogInfoIfDebug(Object source, Object message)
+    {
+        if (Settings.isDebug) {
+            LogInfo(source, message);
+        }
+    }
+
+    public static void LogInfoIfDebug(Object source, String format, Object... values)
+    {
+        if (Settings.isDebug) {
+            LogInfo(source, format, values);
+        }
     }
 
     public static void LogWarning(Object source, Object message)

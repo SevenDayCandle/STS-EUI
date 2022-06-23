@@ -4,11 +4,11 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
+import extendedui.JavaUtils;
 import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.ClassUtils;
 import javassist.CtBehavior;
-import extendedui.JavaUtils;
-import extendedui.ui.tooltips.EUITooltip;
 
 public class PotionPopUpPatches {
 

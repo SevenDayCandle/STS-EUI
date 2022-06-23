@@ -8,8 +8,6 @@ import extendedui.EUI;
 import extendedui.ui.GUI_Base;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
-import java.util.ArrayList;
-
 public abstract class GUI_Canvas extends GUI_Base
 {
     private static final float SCROLL_BAR_THRESHOLD = 500f * Settings.scale;

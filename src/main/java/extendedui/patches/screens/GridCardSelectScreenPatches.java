@@ -4,8 +4,8 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
-import javassist.CtBehavior;
 import extendedui.ui.GridCardSelectScreenHelper;
+import javassist.CtBehavior;
 
 public class GridCardSelectScreenPatches {
 

@@ -11,28 +11,26 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
-import extendedui.utilities.Mathf;
-import extendedui.configuration.EUIHotkeys;
-import extendedui.interfaces.markers.TooltipProvider;
-import org.apache.commons.lang3.StringUtils;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.JavaUtils;
-import eatyourbeets.interfaces.delegates.ActionT1;
-import extendedui.ui.GUI_Base;
+import extendedui.configuration.EUIHotkeys;
+import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.FakeLibraryCard;
+import extendedui.utilities.Mathf;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
@@ -780,7 +778,6 @@ public class CardKeywordFilters extends GUI_Canvas
                     return;
                 }
             }
-            JavaUtils.LogInfo(this, "Closing");
             Close();
             InputHelper.justClickedLeft = false;
         }
