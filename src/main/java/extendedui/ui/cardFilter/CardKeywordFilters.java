@@ -34,7 +34,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-public class CardKeywordFilters extends GUI_Canvas
+public class CardKeywordFilters extends GUI_CanvasGrid
 {
     public enum CostFilter
     {

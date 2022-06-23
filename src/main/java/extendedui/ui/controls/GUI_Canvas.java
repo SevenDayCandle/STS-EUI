@@ -17,20 +17,21 @@ public abstract class GUI_Canvas extends GUI_Base
     protected float scrollDelta;
     protected float scrollStart;
     protected float upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
-    protected float yPadding;
-    protected int rowSize = 5;
-    protected int sizeCache;
     public boolean autoShowScrollbar;
     public boolean draggingScreen;
     public boolean instantSnap;
     public final GUI_VerticalScrollBar scrollBar;
 
 
-    public GUI_Canvas(int rowSize, float yPadding) {
-        this.rowSize = Math.max(1, rowSize);
-        this.yPadding = yPadding;
+    public GUI_Canvas() {
         this.scrollBar = new GUI_VerticalScrollBar(new AdvancedHitbox(ScreenW(0.03f), ScreenH(0.7f)))
                 .SetOnScroll(this::OnScroll);
+    }
+
+    public GUI_Canvas SetScrollBounds(float lowerScrollBound, float upperScrollBound) {
+        this.lowerScrollBound = lowerScrollBound;
+        this.upperScrollBound = Math.max(lowerScrollBound, upperScrollBound);
+        return this;
     }
 
     @Override
@@ -92,11 +93,6 @@ public abstract class GUI_Canvas extends GUI_Base
             }
         }
 
-        if (sizeCache != CurrentSize())
-        {
-            RefreshOffset();
-        }
-
         if (scrollDelta < lowerScrollBound)
         {
             scrollDelta = instantSnap ? lowerScrollBound : MathHelper.scrollSnapLerpSpeed(scrollDelta, lowerScrollBound);
@@ -107,20 +103,6 @@ public abstract class GUI_Canvas extends GUI_Base
         }
 
         scrollBar.Scroll(MathHelper.percentFromValueBetween(lowerScrollBound, upperScrollBound, scrollDelta), false);
-    }
-
-    public void RefreshOffset()
-    {
-        sizeCache = CurrentSize();
-        upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
-        lowerScrollBound = -Settings.DEFAULT_SCROLL_LIMIT;
-
-        if (sizeCache > rowSize)
-        {
-            int offset = (sizeCache - 1) / rowSize;
-            upperScrollBound += yPadding * (offset + 2);
-            lowerScrollBound -= yPadding * (offset - 1);
-        }
     }
 
     public float GetScrollDelta()
@@ -140,6 +122,4 @@ public abstract class GUI_Canvas extends GUI_Base
     {
         return autoShowScrollbar && upperScrollBound > SCROLL_BAR_THRESHOLD;
     }
-
-    abstract public int CurrentSize();
 }

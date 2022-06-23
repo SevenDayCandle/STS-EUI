@@ -190,7 +190,8 @@ public class JavaUtils
         return sj.toString();
     }
 
-    public static <T> String JoinStrings(String delimiter, T[] values)
+    @SafeVarargs
+    public static <T> String JoinStrings(String delimiter, T... values)
     {
         final StringJoiner sj = new StringJoiner(delimiter);
         for (T value : values)

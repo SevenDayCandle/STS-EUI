@@ -18,7 +18,7 @@ import extendedui.interfaces.markers.CacheableCard;
 import java.util.Collection;
 
 // TODO controller support
-public class GUI_CardGrid extends GUI_Canvas
+public class GUI_CardGrid extends GUI_CanvasGrid
 {
     protected static final float CARD_SCALE = 0.75f;
     protected static final float DRAW_START_X = (Settings.WIDTH - (5f * AbstractCard.IMG_WIDTH * 0.75f) - (4f * Settings.CARD_VIEW_PAD_X) + AbstractCard.IMG_WIDTH * 0.75f);

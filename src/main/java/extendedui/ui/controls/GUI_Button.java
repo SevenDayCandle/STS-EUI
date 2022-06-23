@@ -109,6 +109,13 @@ public class GUI_Button extends GUI_Hoverable
         return this;
     }
 
+    public GUI_Button SetButtonScale(float scaleX, float scaleY)
+    {
+        this.background.SetScale(scaleX, scaleY);
+
+        return this;
+    }
+
     public GUI_Button SetDimensions(float width, float height)
     {
         this.hb.resize(width, height);

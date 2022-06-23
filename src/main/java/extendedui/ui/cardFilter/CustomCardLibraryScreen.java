@@ -31,7 +31,8 @@ import java.util.HashMap;
 
 public class CustomCardLibraryScreen extends AbstractScreen
 {
-    protected static final float ICON_SIZE = 40f * Settings.scale;
+    protected static final float ICON_SIZE = Scale(40);
+    protected static final float COLOR_BUTTON_SIZE = Scale(51);
     public static final int VISIBLE_BUTTONS = 14;
 
     public static CustomCardPoolModule CustomModule;
@@ -174,7 +175,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
     public void Render(SpriteBatch sb)
     {
         for (GUI_Button b : colorButtons) {
-            b.TryRender(sb);
+            b.TryRenderCentered(sb);
         }
         upButton.TryRenderCentered(sb);
         downButton.TryRenderCentered(sb);
@@ -199,7 +200,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
 
         for (int i = 0; i < colorButtons.size(); i++) {
             if (i >= topButtonIndex && i < lastButtonIndex) {
-                colorButtons.get(i).SetPosition(Scale(120), Settings.HEIGHT * 0.92f - (i - topButtonIndex) * Scale(48)).SetActive(true);
+                colorButtons.get(i).SetPosition(Scale(160), Settings.HEIGHT * 0.92f - (i - topButtonIndex) * COLOR_BUTTON_SIZE).SetActive(true);
             }
             else {
                 colorButtons.get(i).SetActive(false);
@@ -211,10 +212,11 @@ public class CustomCardLibraryScreen extends AbstractScreen
     }
 
     protected GUI_Button MakeColorButton(AbstractCard.CardColor co) {
-        return new GUI_Button(ImageMaster.COLOR_TAB_BAR, new AdvancedHitbox(235.0F, 102.0F))
+        return new GUI_Button(ImageMaster.COLOR_TAB_BAR, new AdvancedHitbox(Scale(200), COLOR_BUTTON_SIZE))
                 .SetOnClick(__ -> SetActiveColor(co))
                 .SetText(GetColorName(co))
-                .SetFont(FontHelper.buttonLabelFont, 0.85f)
+                .SetFont(FontHelper.buttonLabelFont, 0.8f)
+                .SetButtonScale(1f, 1.2f)
                 .SetColor(GetColorColor(co));
     }
 
