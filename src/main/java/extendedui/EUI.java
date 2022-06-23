@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.GUI_Base;
@@ -42,6 +43,7 @@ public class EUI
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> postRenderList = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> priorityPostRenderList = new ConcurrentLinkedQueue<>();
     private static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customFilters = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customLibraryModules = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customPoolModules = new HashMap<>();
     private static float delta = 0;
     private static float timer = 0;
@@ -51,9 +53,10 @@ public class EUI
     protected static GUI_Base activeElement;
     public static AbstractCard.CardColor ActingColor;
     public static AbstractScreen CurrentScreen;
-    public static CardPoolScreen CardsScreen;
     public static CardKeywordFilters CardFilters;
+    public static CardPoolScreen CardsScreen;
     public static CustomCardLibSortHeader CustomHeader;
+    public static CustomCardLibraryScreen CustomLibraryScreen;
     public static GUI_Button OpenCardFiltersButton;
 
     public static boolean IsLoaded() {
@@ -65,6 +68,7 @@ public class EUI
         CardsScreen = new CardPoolScreen();
         CardFilters = new CardKeywordFilters();
         CustomHeader = new CustomCardLibSortHeader(null);
+        CustomLibraryScreen = new CustomCardLibraryScreen();
         BaseMod.addTopPanelItem(new CardPoolPanelItem());
         RegisterKeywords();
 
@@ -202,6 +206,10 @@ public class EUI
         customFilters.put(cardColor, element);
     }
 
+    public static void SetCustomCardLibraryModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
+        customLibraryModules.put(cardColor, element);
+    }
+
     public static void SetCustomCardPoolModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
         customPoolModules.put(cardColor, element);
     }
@@ -214,12 +222,21 @@ public class EUI
         return customFilters.get(cardColor);
     }
 
+    public static CustomCardPoolModule GetCustomCardLibraryModule(AbstractCard.CardColor cardColor) {
+        return customLibraryModules.get(cardColor);
+    }
+
     public static CustomCardPoolModule GetCustomCardPoolModule(AbstractPlayer player) {
         return player != null ? GetCustomCardPoolModule(player.getCardColor()) : null;
     }
 
     public static CustomCardPoolModule GetCustomCardPoolModule(AbstractCard.CardColor cardColor) {
         return customPoolModules.get(cardColor);
+    }
+
+    public static void ToggleViewUpgrades(boolean value)
+    {
+        SingleCardViewPopup.isViewingUpgrade = value;
     }
 
     private static void RenderImpl(SpriteBatch sb, Iterator<ActionT1<SpriteBatch>> i)

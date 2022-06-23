@@ -33,7 +33,7 @@ public class EUIRM
     }
 
     public static Texture GetTexture(String path, boolean useMipMap, boolean refresh) {
-        Texture texture = (Texture)internalTextures.get(path);
+        Texture texture = internalTextures.get(path);
         if (texture == null || refresh) {
             texture = LoadTextureImpl(Gdx.files.internal(path), useMipMap);
             internalTextures.put(path, texture);
@@ -51,7 +51,7 @@ public class EUIRM
     }
 
     public static Texture GetLocalTexture(String path, boolean useMipMap, boolean refresh) {
-        Texture texture = (Texture)localTextures.get(path);
+        Texture texture = localTextures.get(path);
         if (texture == null || refresh) {
             texture = LoadTextureImpl(Gdx.files.local(path), useMipMap);
             localTextures.put(path, texture);
@@ -118,8 +118,10 @@ public class EUIRM
         private final UIStrings StringsHotkeys = GetUIStrings("hotkeys");
         private final UIStrings StringsUI = GetUIStrings("ui");
 
-        public final String Config_FlushOnGameStart = StringsConfig.TEXT[0];
-        public final String Config_FlushOnRoomStart = StringsConfig.TEXT[1];
+        public final String Config_UseVanillaCompendium = StringsConfig.TEXT[0];
+        public final String Config_DisableEffekseer = StringsConfig.TEXT[1];
+        public final String Config_FlushOnGameStart = StringsConfig.TEXT[2];
+        public final String Config_FlushOnRoomStart = StringsConfig.TEXT[3];
 
         public final String Hotkey_Cycle = StringsHotkeys.TEXT[0];
         public final String Hotkey_OpenCardPool = StringsHotkeys.TEXT[1];
@@ -254,7 +256,7 @@ public class EUIRM
             }
             StringJoiner sj = new StringJoiner(", ");
 
-            int i = 0;
+            int i;
             for (i = 0; i < values.size() - 1; i++) {
                 sj.add(values.get(i));
             }
@@ -271,7 +273,7 @@ public class EUIRM
             StringJoiner sj = new StringJoiner(", ");
             int var4 = values.length;
 
-            int i = 0;
+            int i;
             for (i = 0; i < values.length - 1; i++) {
                 sj.add(values[i]);
             }

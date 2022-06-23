@@ -6,7 +6,6 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
@@ -14,13 +13,14 @@ import extendedui.EUI;
 import extendedui.EUIInputManager;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.ActionT2;
-import extendedui.ui.GUI_Base;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.interfaces.markers.CacheableCard;
 
 import java.util.Collection;
 
+// TODO controller support
 public class GUI_CardGrid extends GUI_Canvas
 {
+    protected static final float CARD_SCALE = 0.75f;
     protected static final float DRAW_START_X = (Settings.WIDTH - (5f * AbstractCard.IMG_WIDTH * 0.75f) - (4f * Settings.CARD_VIEW_PAD_X) + AbstractCard.IMG_WIDTH * 0.75f);
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
     protected static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
@@ -32,13 +32,18 @@ public class GUI_CardGrid extends GUI_Canvas
     protected ActionT1<AbstractCard> onCardRightClick;
     protected ActionT2<SpriteBatch, AbstractCard> onCardRender;
     protected float draw_x;
+    protected float draw_top_y = DRAW_START_Y;
+    protected int hoveredIndex;
     public AbstractCard hoveredCard = null;
     public CardGroup cards;
+    protected CardGroup upgradeCards;
     public String message = null;
     public boolean canRenderUpgrades = false;
     public boolean shouldEnlargeHovered = true;
     public float pad_x = PAD_X;
     public float pad_y = PAD_Y;
+    public float target_scale = CARD_SCALE;
+    public float starting_scale = target_scale;
 
     public GUI_CardGrid()
     {
@@ -54,6 +59,7 @@ public class GUI_CardGrid extends GUI_Canvas
     {
         super(ROW_SIZE, PAD_Y);
         this.cards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+        this.upgradeCards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
         this.autoShowScrollbar = autoShowScrollbar;
 
         SetHorizontalAlignment(horizontalAlignment);
@@ -146,22 +152,44 @@ public class GUI_CardGrid extends GUI_Canvas
         return this;
     }
 
+    public GUI_CardGrid SetVerticalStart(float posY) {
+        this.draw_top_y = posY;
+
+        return this;
+    }
+
+    public GUI_CardGrid SetCardScale(float startingScale, float targetScale) {
+        this.starting_scale = startingScale;
+        this.target_scale = targetScale;
+
+        return this;
+    }
+
     public void Clear()
     {
         this.sizeCache = 0;
         this.hoveredCard = null;
+        this.hoveredIndex = 0;
         this.scrollDelta = 0f;
         this.scrollStart = 0f;
         this.draggingScreen = false;
         this.message = null;
         // Unlink the cards from any outside card group given to it
         this.cards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+        this.upgradeCards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+
 
         RefreshOffset();
     }
 
     public GUI_CardGrid SetCardGroup(CardGroup cardGroup) {
+        this.upgradeCards.clear();
         this.cards = cardGroup;
+        for (AbstractCard c : cardGroup.group) {
+            c.drawScale = starting_scale;
+            c.targetDrawScale = target_scale;
+            AddUpgrade(c);
+        }
         return this;
     }
 
@@ -177,7 +205,8 @@ public class GUI_CardGrid extends GUI_Canvas
 
     public GUI_CardGrid AddCard(AbstractCard card)
     {
-        card.targetDrawScale = card.drawScale = 0.75f;
+        card.drawScale = starting_scale;
+        card.targetDrawScale = target_scale;
         card.setAngle(0, true);
         card.lighten(true);
         cards.addToTop(card);
@@ -192,6 +221,21 @@ public class GUI_CardGrid extends GUI_Canvas
         return this;
     }
 
+    protected void AddUpgrade(AbstractCard card) {
+        if (canRenderUpgrades) {
+            AbstractCard copy;
+            if (card instanceof CacheableCard) {
+                copy = ((CacheableCard) card).GetCachedUpgrade();
+            }
+            else {
+                copy = card.makeSameInstanceOf();
+                copy.upgrade();
+                copy.displayUpgrades();
+            }
+            upgradeCards.addToTop(copy);
+        }
+    }
+
     @Override
     public void Render(SpriteBatch sb)
     {
@@ -202,7 +246,7 @@ public class GUI_CardGrid extends GUI_Canvas
         if (hoveredCard != null)
         {
             hoveredCard.renderHoverShadow(sb);
-            RenderCard(sb, hoveredCard);
+            RenderCard(sb, hoveredCard, hoveredIndex);
             hoveredCard.renderCardTip(sb);
         }
 
@@ -213,11 +257,12 @@ public class GUI_CardGrid extends GUI_Canvas
     }
 
     protected void RenderCards(SpriteBatch sb) {
-        for (AbstractCard card : cards.group)
+        for (int i = 0; i < cards.group.size(); i++)
         {
+            AbstractCard card = cards.group.get(i);
             if (card != hoveredCard)
             {
-                RenderCard(sb, card);
+                RenderCard(sb, card, i);
             }
         }
     }
@@ -260,10 +305,11 @@ public class GUI_CardGrid extends GUI_Canvas
 
         int row = 0;
         int column = 0;
-        for (AbstractCard card : cards.group)
+        for (int i = 0; i < cards.group.size(); i++)
         {
+            AbstractCard card = cards.group.get(i);
             card.target_x = (DRAW_START_X * draw_x) + (column * PAD_X);
-            card.target_y = DRAW_START_Y + scrollDelta - (row * pad_y);
+            card.target_y = draw_top_y + scrollDelta - (row * pad_y);
             card.fadingOut = false;
             card.update();
             card.updateHoverLogic();
@@ -271,8 +317,9 @@ public class GUI_CardGrid extends GUI_Canvas
             if (card.hb.hovered)
             {
                 hoveredCard = card;
+                hoveredIndex = i;
                 if (!shouldEnlargeHovered) {
-                    card.drawScale = card.targetDrawScale = 0.8f;
+                    card.drawScale = card.targetDrawScale = target_scale;
                 }
             }
 
@@ -285,10 +332,16 @@ public class GUI_CardGrid extends GUI_Canvas
         }
     }
 
-    protected void RenderCard(SpriteBatch sb, AbstractCard card)
+    protected void RenderCard(SpriteBatch sb, AbstractCard card, int index)
     {
-        if (canRenderUpgrades && SingleCardViewPopup.isViewingUpgrade) {
-            card.renderInLibrary(sb);
+        // renderInLibrary continually creates copies of upgraded cards -_-
+        // So we use a cache of the upgraded cards to show in compendium screens
+        if (canRenderUpgrades && SingleCardViewPopup.isViewingUpgrade && index < upgradeCards.size()) {
+            AbstractCard upgrade = upgradeCards.group.get(index);
+            upgrade.current_x = card.current_x;
+            upgrade.current_y = card.current_y;
+            upgrade.drawScale = card.drawScale;
+            upgrade.render(sb);
         }
         else {
             card.render(sb);
@@ -317,5 +370,9 @@ public class GUI_CardGrid extends GUI_Canvas
     public int CurrentSize()
     {
         return cards.size();
+    }
+
+    public void MoveToTop() {
+        scrollBar.Scroll(0, true);
     }
 }

@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
@@ -35,14 +36,15 @@ public class CardPoolScreen extends AbstractScreen
     {
         cardGrid = new GUI_StaticCardGrid()
                 .ShowScrollbar(true)
-                .CanRenderUpgrades(true);
+                .CanRenderUpgrades(true)
+                .SetOnCardRightClick(c -> CardCrawlGame.cardPopup.open(c, cardGrid.cards));
 
         upgradeToggle = new GUI_Toggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .SetBackground(EUIRM.Images.Panel.Texture(), Color.DARK_GRAY)
                 .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.8f)
                 .SetFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
                 .SetText(SingleCardViewPopup.TEXT[6])
-                .SetOnToggle(CardPoolScreen::ToggleViewUpgrades);
+                .SetOnToggle(EUI::ToggleViewUpgrades);
 
         colorlessToggle = new GUI_Toggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .SetBackground(EUIRM.Images.Panel.Texture(), Color.DARK_GRAY)
@@ -119,10 +121,5 @@ public class CardPoolScreen extends AbstractScreen
         if (CustomModule != null) {
             CustomModule.TryRender(sb);
         }
-    }
-
-    private static void ToggleViewUpgrades(boolean value)
-    {
-        SingleCardViewPopup.isViewingUpgrade = value;
     }
 }

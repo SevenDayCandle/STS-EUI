@@ -205,4 +205,11 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             EUI.CardFilters.Refresh(this.group.group);
         }
     }
+
+    public float GetCenterY() {
+        if (buttons.length > 0) {
+            return buttons[0].hb.cY;
+        }
+        return Settings.HEIGHT * 0.75f;
+    }
 }

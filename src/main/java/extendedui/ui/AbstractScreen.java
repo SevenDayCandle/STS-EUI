@@ -7,6 +7,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
@@ -18,6 +19,10 @@ public abstract class AbstractScreen extends GUI_Base
 {
     @SpireEnum
     public static AbstractDungeon.CurrentScreen EUI_SCREEN;
+    @SpireEnum
+    public static MainMenuScreen.CurScreen EUI_MENU;
+
+    protected static MainMenuScreen.CurScreen PreviousMainScreen;
 
     public boolean CanOpen()
     {
@@ -50,6 +55,10 @@ public abstract class AbstractScreen extends GUI_Base
             AbstractDungeon.overlayMenu.cancelButton.hide();
             AbstractDungeon.overlayMenu.showBlackScreen(0.7f);
         }
+        else if (CardCrawlGame.mainMenuScreen != null) {
+            PreviousMainScreen = CardCrawlGame.mainMenuScreen.screen;
+            CardCrawlGame.mainMenuScreen.screen = EUI_MENU;
+        }
 
         CardCrawlGame.sound.play("DECK_OPEN");
     }
@@ -71,6 +80,9 @@ public abstract class AbstractScreen extends GUI_Base
         if (AbstractDungeon.player == null || !EUIGameUtils.InGame())
         {
             AbstractDungeon.isScreenUp = !IsNullOrNone(previous);
+            if (CardCrawlGame.mainMenuScreen != null) {
+                CardCrawlGame.mainMenuScreen.screen = PreviousMainScreen;
+            }
             return;
         }
 

@@ -12,25 +12,47 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
 import extendedui.EUI;
 import extendedui.JavaUtils;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.utilities.ClassUtils;
 
 import java.util.ArrayList;
 
 public class CardLibraryScreenPatches
 {
+    @SpirePatch(
+            clz = CardLibraryScreen.class,
+            method = "initialize"
+    )
+    public static class CardLibraryScreen_Initialize {
+        @SpirePostfixPatch
+        public static void Postfix(CardLibraryScreen screen)
+        {
+            // Must perform initialization right after card library groups are first initialized
+            EUI.CustomLibraryScreen.Initialize(screen);
+        }
+    }
+
     @SpirePatch(clz = CardLibraryScreen.class, method = "open")
     public static class CardLibraryScreen_Open
     {
 
         @SpirePrefixPatch
-        public static void Prefix(CardLibraryScreen screen)
+        public static SpireReturn<Void> Prefix(CardLibraryScreen screen)
         {
+            // Redirect to the custom library screen if enabled
+            if (!EUIConfiguration.UseVanillaCompendium.Get()) {
+                EUI.CustomLibraryScreen.Open();
+                return SpireReturn.Return();
+            }
+
             ColorTabBar tabBar = ClassUtils.GetField(screen, "colorBar");
             ArrayList<ColorTabBarFix.ModColorTab> tabs = ReflectionHacks.getPrivateStatic(ColorTabBarFix.Fields.class, "modTabs");
             if (tabBar.curTab != ColorTabBarFix.Enums.MOD)
             {
                 screen.didChangeTab(tabBar, tabBar.curTab = (tabs.size() > 0 ? ColorTabBarFix.Enums.MOD : ColorTabBar.CurrentTab.COLORLESS));
             }
+
+            return SpireReturn.Continue();
         }
     }
 

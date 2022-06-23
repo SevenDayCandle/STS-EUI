@@ -32,12 +32,16 @@ public class EUIConfiguration
         return PREFIX + "_" + base;
     }
 
+    private static final String USE_VANILLA_COMPENDIUM = GetFullKey("UseVanillaCompendium");
+    private static final String DISABLE_EFFEKSEER = GetFullKey("DisableEffekseer");
     private static final String FLUSH_ON_GAME_START = GetFullKey("FlushOnGameStart");
     private static final String FLUSH_ON_ROOM_START = GetFullKey("FlushOnRoomStart");
     private static final String HIDE_TIP_DESCRIPTION = GetFullKey("HideTipDescription");
 
-    public static STSConfigItem<Boolean> FlushOnGameStart = new STSConfigItem<Boolean>(FLUSH_ON_GAME_START, false);
-    public static STSConfigItem<Boolean> FlushOnRoomStart = new STSConfigItem<Boolean>(FLUSH_ON_ROOM_START, false);
+    public static STSConfigItem<Boolean> UseVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
+    public static STSConfigItem<Boolean> DisableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
+    public static STSConfigItem<Boolean> FlushOnGameStart = new STSConfigItem<>(FLUSH_ON_GAME_START, false);
+    public static STSConfigItem<Boolean> FlushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
     //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
 
     private static HashSet<String> tips = null;
@@ -47,12 +51,16 @@ public class EUIConfiguration
         {
             config = new SpireConfig(PREFIX, PREFIX);
             final ModPanel panel = new ModPanel();
+            UseVanillaCompendium.AddConfig(config);
+            DisableEffekseer.AddConfig(config);
             FlushOnGameStart.AddConfig(config);
             FlushOnRoomStart.AddConfig(config);
             //MaxParticles.AddConfig(config);
 
             int yPos = BASE_OPTION_OFFSET_Y;
 
+            yPos = AddToggle(panel, UseVanillaCompendium, EUIRM.Strings.Config_UseVanillaCompendium, yPos);
+            yPos = AddToggle(panel, DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer, yPos);
             yPos = AddToggle(panel, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart, yPos);
             yPos = AddToggle(panel, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart, yPos);
             //yPos = AddSlider(panel, MaxParticles, s.TEXT[2], yPos, BASE_SPRITES_MIN, BASE_SPRITES_MAX);
@@ -77,9 +85,7 @@ public class EUIConfiguration
 
     protected static int AddToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {
         panel.addUIElement(new ModLabeledToggleButton(label, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), FontHelper.charDescFont, option.Get(), panel, (__) -> {
-        }, (c) -> {
-            option.Set(c.enabled, true);
-        }));
+        }, (c) -> option.Set(c.enabled, true)));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }
 

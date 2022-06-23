@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.megacrit.cardcrawl.core.Settings;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.swig.EffekseerBackendCore;
 import extendedui.swig.EffekseerEffectCore;
 import extendedui.swig.EffekseerManagerCore;
@@ -48,7 +49,7 @@ public class STSEffekseerManager {
      Effects can only play if the manager is loaded and if in-game effects are enabled
      */
     public static boolean CanPlay() {
-        return Enabled && !Settings.DISABLE_EFFECTS;
+        return Enabled && !Settings.DISABLE_EFFECTS && !EUIConfiguration.DisableEffekseer.Get();
     }
 
     public static Integer Play(String key, Vector2 position) {

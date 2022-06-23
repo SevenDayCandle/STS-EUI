@@ -2,11 +2,11 @@
   "extendedui:config":
   {
 	"TEXT": [
-	  "Flush Effects when Starting a Run",
-	  "Flush Effects when Entering a New Room",
-	  "Maximum Particles",
-	  "Reset Hidden Tooltips",
-	  "Use Vanilla Card Library Screen"
+	  "Use Vanilla Card Library Screen",
+	  "Disable Effekseer Effects",
+	  "Flush Effekseer Effect Cache when Starting a Run",
+	  "Flush Effekseer Effect Cache when Entering a New Room",
+	  "Reset Hidden Tooltips"
 	]
   },
   "extendedui:grammar":

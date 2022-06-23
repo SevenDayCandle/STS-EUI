@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
@@ -15,10 +16,9 @@ import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.Mathf;
 
 public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
-    protected static final float BASE_TIMER = 1f;
-    protected boolean showLine;
     protected boolean isEditing;
     protected ActionT1<String> onUpdate;
     protected ActionT1<String> onComplete;
@@ -26,7 +26,6 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
     protected Color editTextColor;
     protected GUI_Label header;
     protected String originalValue;
-    protected float blinkTimer;
     protected float headerSpacing = 0.6f;
 
     public GUI_TextBoxInput(Texture backgroundTexture, AdvancedHitbox hb) {
@@ -109,15 +108,8 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
                 End(true);
             }
         }
-        else if (isEditing) {
-            blinkTimer -= Gdx.graphics.getRawDeltaTime();
-            if (blinkTimer < 0) {
-                blinkTimer = BASE_TIMER;
-                showLine = !showLine;
-            }
-           if (Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-                End(false);
-            }
+        else if (isEditing && Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
+            End(false);
         }
 
         header.TryUpdate();
@@ -129,8 +121,9 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
         super.Render(sb);
         float cur_x = FontHelper.layout.width;
         header.TryRender(sb);
-        if (showLine) {
-            EUI.AddPriorityPostRender(s -> FontHelper.renderFontLeft(sb, label.font, "|", hb.x + cur_x + hb.width * label.horizontalRatio, hb.y + hb.height / 2, Color.WHITE));
+        if (isEditing) {
+            EUI.AddPriorityPostRender(s ->
+                    FontHelper.renderFontLeft(sb, label.font, "_", hb.x + cur_x + hb.width * label.horizontalRatio, hb.y + hb.height / 2, EUIColors.White(0.5f + EUI.Time_Cos(0.5f, 4f))));
         }
     }
 
@@ -172,7 +165,6 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
 
     public void End(boolean commit) {
         isEditing = false;
-        showLine = false;
         TextInput.stopTextReceiver(this);
         label.SetColor(originalTextColor);
         if (commit) {
