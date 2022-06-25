@@ -143,6 +143,7 @@ public class EUIRM
         public final String UI_KeyToCycle = StringsUI.TEXT[13];
         public final String UI_BaseGame = StringsUI.TEXT[14];
         public final String UI_SortByCount = StringsUI.TEXT[15];
+        public final String UI_NameSearch = StringsUI.TEXT[16];
 
         public final String KeyToCycle(String keyName) {
             return JavaUtils.Format(UI_KeyToCycle, keyName);

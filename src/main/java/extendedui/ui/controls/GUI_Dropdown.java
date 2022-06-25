@@ -33,17 +33,18 @@ import java.util.*;
 
 public class GUI_Dropdown<T> extends GUI_Hoverable
 {
-    private static final int DEFAULT_MAX_ROWS = 15;
-    private static final float ARROW_ICON_W = 30.0F * Settings.scale;
-    private static final float ARROW_ICON_H = 30.0F * Settings.scale;
-    private static final float BORDER_SIZE = Settings.scale * 10.0F;
-    private static final float BOX_EDGE_H = 32.0F * Settings.scale;
-    private static final float BOX_BODY_H = 64.0F * Settings.scale;
-    private static final float ICON_WIDTH = 84.0F * Settings.scale;
-    private static final float SCROLLBAR_WIDTH = 24.0F * Settings.scale;
-    private static final float SCROLLBAR_PADDING = 8.0F * Settings.scale;
-    private static final float TOGGLE_OFFSET = 5f;
-    private static final float PREVIEW_OFFSET_X = AbstractCard.IMG_WIDTH * 0.6f;
+    protected static final int DEFAULT_MAX_ROWS = 15;
+    protected static final float ROW_WIDTH_MULT = 3.4028235E38F;
+    protected static final float ARROW_ICON_W = 30.0F * Settings.scale;
+    protected static final float ARROW_ICON_H = 30.0F * Settings.scale;
+    protected static final float BORDER_SIZE = Settings.scale * 10.0F;
+    protected static final float BOX_EDGE_H = 32.0F * Settings.scale;
+    protected static final float BOX_BODY_H = 64.0F * Settings.scale;
+    protected static final float ICON_WIDTH = 84.0F * Settings.scale;
+    protected static final float SCROLLBAR_WIDTH = 24.0F * Settings.scale;
+    protected static final float SCROLLBAR_PADDING = 8.0F * Settings.scale;
+    protected static final float TOGGLE_OFFSET = 5f;
+    protected static final float PREVIEW_OFFSET_X = AbstractCard.IMG_WIDTH * 0.6f;
 
     protected ActionT1<Boolean> onOpenOrClose;
     protected ActionT1<List<T>> onChange;
@@ -99,10 +100,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
 
         this.rowHeight = CalculateRowHeight();
         for (int i = 0; i < options.size(); i++) {
-            rows.add(new DropdownRow<>(this,
-                    new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0, false)
-                    .SetIsPopupCompatible(true)
-                    .SetParentElement(this), options.get(i), labelFunction, font, fontScale, i).UpdateAlignment());
+            rows.add(MakeRow(options, i));
         }
         this.scrollBar = new GUI_VerticalScrollBar(
                 new AdvancedHitbox(hb.x + hb.width - SCROLLBAR_PADDING, hb.y + CalculateScrollbarOffset(), SCROLLBAR_WIDTH,rowHeight * this.visibleRowCount())
@@ -191,14 +189,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     public GUI_Dropdown<T> AddItems(List<T> options) {
         int initialSize = rows.size();
         for (int i = 0; i < options.size(); i++) {
-            rows.add(new DropdownRow<T>(
-                    this,
-                    new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0, false)
-                            .SetIsPopupCompatible(true)
-                            .SetParentElement(this)
-                    , options.get(i), labelFunction, font, fontScale, i + initialSize)
-                    .SetLabelFunction(labelFunction, isOptionSmartText)
-                    .UpdateAlignment());
+            rows.add(MakeRow(options, i, initialSize));
         }
         Autosize();
 
@@ -213,14 +204,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         this.currentIndices.clear();
         this.rows.clear();
         for (int i = 0; i < options.size(); i++) {
-            rows.add(new DropdownRow<T>(
-                    this,
-                    new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0, false)
-                    .SetIsPopupCompatible(true)
-                    .SetParentElement(this)
-                    , options.get(i), labelFunction, font, fontScale, i)
-                            .SetLabelFunction(labelFunction, isOptionSmartText)
-                    .UpdateAlignment());
+            rows.add(MakeRow(options, i));
         }
         Autosize();
 
@@ -353,6 +337,21 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         return this;
     }
 
+    public DropdownRow<T> MakeRow(List<T> options, int index) {
+        return MakeRow(options, index, 0);
+    }
+
+    public DropdownRow<T> MakeRow(List<T> options, int index, int offset) {
+        return new DropdownRow<T>(
+                this,
+                new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0, false)
+                        .SetIsPopupCompatible(true)
+                        .SetParentElement(this)
+                , options.get(index), labelFunction, font, fontScale, index + offset)
+                .SetLabelFunction(labelFunction, isOptionSmartText)
+                .UpdateAlignment();
+    }
+
     public void Autosize() {
 
         this.rowWidth = CalculateRowWidth();
@@ -387,7 +386,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     private float CalculateRowWidth() {
         float w = 0;
         for (DropdownRow<T> row : rows) {
-            w = Math.max(w, EUIRenderHelpers.GetSmartWidth(this.font, row.label.text, 3.4028235E38F, 3.4028235E38F) + ICON_WIDTH);
+            w = Math.max(w, EUIRenderHelpers.GetSmartWidth(this.font, row.GetTextForWidth(), ROW_WIDTH_MULT, ROW_WIDTH_MULT) + ICON_WIDTH);
         }
         return w;
     }
@@ -692,7 +691,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected : prospective;
     }
 
-    boolean shouldShowSlider() {
+    protected boolean shouldShowSlider() {
         return this.rows.size() > this.maxRows;
     }
 
@@ -736,15 +735,15 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     }
 
     protected static class DropdownRow<T> {
-        GUI_Dropdown<T> dr;
-        T item;
-        AdvancedHitbox hb;
-        GUI_Image checkbox;
-        GUI_Label label;
-        int index;
-        boolean isSelected;
+        public final GUI_Dropdown<T> dr;
+        public T item;
+        public AdvancedHitbox hb;
+        public GUI_Image checkbox;
+        public GUI_Label label;
+        public int index;
+        public boolean isSelected;
 
-        DropdownRow(GUI_Dropdown<T> dr, AdvancedHitbox hb, T item, FuncT1<String, T> labelFunction, BitmapFont font, float fontScale, int index) {
+        public DropdownRow(GUI_Dropdown<T> dr, AdvancedHitbox hb, T item, FuncT1<String, T> labelFunction, BitmapFont font, float fontScale, int index) {
             this.dr = dr;
             this.hb = new RelativeHitbox(hb, 1f, 1f, 0f, 0f).SetIsPopupCompatible(true).SetParentElement(dr);
             this.item = item;
@@ -768,13 +767,18 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
             return this.label.text;
         }
 
+        public String GetTextForWidth() {
+            return this.label.text;
+        }
+
         public void move(float x, float y) {
             this.hb.translate(x,y);
             this.checkbox.hb.translate(x,y - TOGGLE_OFFSET);
         }
 
-        private boolean update(boolean isInRange, boolean isSelected) {
+        public boolean update(boolean isInRange, boolean isSelected) {
             this.hb.update();
+            this.label.Update();
             this.isSelected = isSelected;
             if (!isInRange) {
                 return false;
@@ -805,7 +809,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
             return false;
         }
 
-        private void renderRow(SpriteBatch sb) {
+        public void renderRow(SpriteBatch sb) {
             this.hb.render(sb);
             this.label.TryRender(sb);
             if (dr.isMultiSelect) {
@@ -813,7 +817,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
             }
         }
 
-        private void addTooltip() {
+        protected void addTooltip() {
             if (item instanceof TooltipProvider) {
                 EUITooltip.QueueTooltips(((TooltipProvider) item).GetTips());
             }

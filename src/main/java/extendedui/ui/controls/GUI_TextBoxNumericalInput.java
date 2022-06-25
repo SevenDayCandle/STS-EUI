@@ -1,8 +1,12 @@
 package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import eatyourbeets.interfaces.delegates.ActionT1;
+import extendedui.EUI;
 import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.utilities.EUIColors;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class GUI_TextBoxNumericalInput extends GUI_TextBoxInput {
@@ -35,6 +39,11 @@ public class GUI_TextBoxNumericalInput extends GUI_TextBoxInput {
         if (!NumberUtils.isCreatable(label.text)) {
             label.text = "";
         }
+    }
+
+    @Override
+    protected void RenderUnderscore(SpriteBatch sb, float cur_x) {
+        // Do not render
     }
 
     @Override

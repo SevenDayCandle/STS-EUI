@@ -17,14 +17,14 @@ import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
 
 public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
-    protected boolean isEditing;
-    protected ActionT1<String> onUpdate;
     protected ActionT1<String> onComplete;
-    protected Color originalTextColor;
+    protected ActionT1<String> onUpdate;
     protected Color editTextColor;
-    protected GUI_Label header;
+    protected Color originalTextColor;
     protected String originalValue;
+    protected boolean isEditing;
     protected float headerSpacing = 0.6f;
+    public GUI_Label header;
 
     public GUI_TextBoxInput(Texture backgroundTexture, AdvancedHitbox hb) {
         super(backgroundTexture, hb);
@@ -94,6 +94,13 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
         return this;
     }
 
+    public void SetTextAndCommit(String text) {
+        this.label.SetText(text);
+        if (onComplete != null) {
+            onComplete.Invoke(text);
+        }
+    }
+
     @Override
     public void Update()
     {
@@ -119,6 +126,10 @@ public class GUI_TextBoxInput extends GUI_TextBox implements TextReceiver {
         super.Render(sb);
         float cur_x = FontHelper.layout.width;
         header.TryRender(sb);
+        RenderUnderscore(sb, cur_x);
+    }
+
+    protected void RenderUnderscore(SpriteBatch sb, float cur_x) {
         if (isEditing) {
             EUI.AddPriorityPostRender(s ->
                     FontHelper.renderFontLeft(sb, label.font, "_", hb.x + cur_x + hb.width * label.horizontalRatio, hb.y + hb.height / 2, EUIColors.White(0.5f + EUI.Time_Cos(0.5f, 4f))));

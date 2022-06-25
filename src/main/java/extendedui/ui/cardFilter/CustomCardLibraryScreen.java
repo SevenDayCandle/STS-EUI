@@ -14,16 +14,17 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
+import com.megacrit.cardcrawl.screens.custom.CustomModeScreen;
+import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUI;
+import extendedui.EUIRM;
 import extendedui.JavaUtils;
 import extendedui.ui.AbstractScreen;
-import extendedui.ui.controls.GUI_Button;
-import extendedui.ui.controls.GUI_CardGrid;
-import extendedui.ui.controls.GUI_StaticCardGrid;
-import extendedui.ui.controls.GUI_Toggle;
+import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.utilities.ClassUtils;
+import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -35,19 +36,20 @@ public class CustomCardLibraryScreen extends AbstractScreen
     protected static final float COLOR_BUTTON_SIZE = Scale(51);
     public static final int VISIBLE_BUTTONS = 14;
 
-    public static CustomCardPoolModule CustomModule;
+    public final ArrayList<GUI_Button> colorButtons = new ArrayList<>();
+    public final GUI_Button downButton;
+    public final GUI_Button upButton;
+    public final GUI_CardGrid cardGrid;
+    public final GUI_TextBoxInput quickSearch;
+    public final GUI_Toggle upgradeToggle;
+    public final MenuCancelButton button;
+    protected float barY;
+    protected int topButtonIndex;
+    protected static boolean Initialized;
     public static AbstractCard.CardColor CurrentColor = AbstractCard.CardColor.COLORLESS;
+    public static CustomCardPoolModule CustomModule;
     public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
     public static final HashMap<AbstractCard.CardColor, String> CustomColorNames = new HashMap<>();
-    protected static boolean Initialized;
-    protected final GUI_Button upButton;
-    protected final GUI_Button downButton;
-    protected final MenuCancelButton button;
-    protected final GUI_CardGrid cardGrid;
-    protected final ArrayList<GUI_Button> colorButtons = new ArrayList<>();
-    protected final GUI_Toggle upgradeToggle;
-    protected int topButtonIndex;
-    protected float barY;
 
     public CustomCardLibraryScreen() {
         final float y = Settings.HEIGHT * 0.92f - (VISIBLE_BUTTONS + 1) * Scale(48);
@@ -72,6 +74,17 @@ public class CustomCardLibraryScreen extends AbstractScreen
                 .SetOnClick(__ -> SetTopButtonIndex(topButtonIndex + 1))
                 .SetText(null);
         downButton.background.SetRotation(-90);
+
+        quickSearch = (GUI_TextBoxInput) new GUI_TextBoxInput(EUIRM.Images.RectangularButton.Texture(),
+                new AdvancedHitbox(Settings.WIDTH * 0.35f, Settings.HEIGHT * 0.93f, Scale(280), Scale(48)))
+                .SetOnComplete((v) -> EUI.CardFilters.NameInput.SetTextAndCommit(v))
+                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.7f, Settings.GOLD_COLOR, EUIRM.Strings.UI_NameSearch)
+                .SetColors(Color.GRAY, Settings.CREAM_COLOR)
+                .SetAlignment(0.5f, 0.1f)
+                .SetFont(EUIFontHelper.CardTitleFont_Small, 0.7f)
+                .SetBackgroundTexture(EUIRM.Images.RectangularButton.Texture())
+                .SetText("");
+        quickSearch.header.SetAlignment(0f, -0.57f);
     }
 
     public void Initialize(CardLibraryScreen screen) {
@@ -129,6 +142,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
         EUI.CustomHeader.setGroup(cards);
         EUI.CardFilters.Initialize(__ -> {
             cardGrid.MoveToTop();
+            quickSearch.SetText(CardKeywordFilters.CurrentName);
             EUI.CustomHeader.UpdateForFilters();
             if (CustomModule != null) {
                 CustomModule.Open(EUI.CustomHeader.group.group);
@@ -156,6 +170,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
             EUI.CustomHeader.update();
             barY = EUI.CustomHeader.GetCenterY();
             upgradeToggle.SetPosition(upgradeToggle.hb.cX, barY).SetToggle(SingleCardViewPopup.isViewingUpgrade).Update();
+            quickSearch.TryUpdate();
             cardGrid.TryUpdate();
             if (CustomModule != null) {
                 CustomModule.TryUpdate();
@@ -183,6 +198,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
         sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, barY - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
         sb.setColor(Color.WHITE);
         upgradeToggle.Render(sb);
+        quickSearch.TryRender(sb);
         EUI.CustomHeader.render(sb);
         cardGrid.TryRender(sb);
         if (!EUI.CardFilters.TryRender(sb)) {

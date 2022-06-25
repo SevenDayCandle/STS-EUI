@@ -17,7 +17,7 @@ public abstract class GUI_Canvas extends GUI_Base
     protected float scrollDelta;
     protected float scrollStart;
     protected float upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
-    public boolean autoShowScrollbar;
+    public boolean autoShowScrollbar = true;
     public boolean draggingScreen;
     public boolean instantSnap;
     public final GUI_VerticalScrollBar scrollBar;

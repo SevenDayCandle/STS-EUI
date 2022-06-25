@@ -61,7 +61,8 @@
 	  "No cards match the current filters.",
 	  "{0} to cycle",
 	  "Base Game",
-	  "Sort by {0}"
+	  "Sort by {0}",
+	  "Name Search"
 	]
   }
 }

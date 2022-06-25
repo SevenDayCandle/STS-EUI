@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
+import extendedui.JavaUtils;
 import extendedui.ui.controls.GUI_Button;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
@@ -31,12 +32,16 @@ public abstract class AbstractScreen extends GUI_Base
 
     protected void Open()
     {
-        EUI.CurrentScreen = this;
+
+        if (AbstractDungeon.screen != EUI_SCREEN) {
+            AbstractDungeon.previousScreen = AbstractDungeon.screen;
+            AbstractDungeon.screen = EUI_SCREEN;
+        }
+
         Settings.hideTopBar = true;
         Settings.hideRelics = true;
+        EUI.CurrentScreen = this;
 
-        AbstractDungeon.previousScreen = AbstractDungeon.screen;
-        AbstractDungeon.screen = EUI_SCREEN;
         AbstractDungeon.isScreenUp = true;
 
         if (EUIGameUtils.InBattle())
@@ -55,12 +60,11 @@ public abstract class AbstractScreen extends GUI_Base
             AbstractDungeon.overlayMenu.cancelButton.hide();
             AbstractDungeon.overlayMenu.showBlackScreen(0.7f);
         }
-        else if (CardCrawlGame.mainMenuScreen != null) {
+        else if (CardCrawlGame.mainMenuScreen != null && CardCrawlGame.mainMenuScreen.screen != EUI_MENU) {
             PreviousMainScreen = CardCrawlGame.mainMenuScreen.screen;
             CardCrawlGame.mainMenuScreen.screen = EUI_MENU;
         }
 
-        CardCrawlGame.sound.play("DECK_OPEN");
     }
 
     public void Dispose()
