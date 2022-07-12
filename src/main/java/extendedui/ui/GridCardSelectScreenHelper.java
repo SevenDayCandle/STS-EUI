@@ -8,8 +8,10 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
-import eatyourbeets.interfaces.delegates.FuncT1;
+import eatyourbeets.interfaces.delegates.*;
 import extendedui.ui.controls.GUI_TextBox;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.utilities.ClassUtils;
@@ -30,6 +32,7 @@ public class GridCardSelectScreenHelper
             .SetFont(FontHelper.cardDescFont_N, 1f);
     private static GenericCondition<ArrayList<AbstractCard>> condition;
     private static FuncT1<String, ArrayList<AbstractCard>> dynamicString;
+    private static ActionT3<CardGroup, ArrayList<AbstractCard>, AbstractCard> onClickCard;
     private static boolean enabled = false;
 
     public static void Clear(boolean clearFunctions)
@@ -39,6 +42,7 @@ public class GridCardSelectScreenHelper
         if (clearFunctions) {
             condition = null;
             dynamicString = null;
+            onClickCard = null;
         }
     }
 
@@ -54,6 +58,10 @@ public class GridCardSelectScreenHelper
                     .Autosize(1f, null)
                     .SetPosition((Settings.WIDTH / 2.0F) - dynamicLabel.hb.width / 8, 96.0F * Settings.scale);
         }
+    }
+
+    public static void SetOnClickCard(ActionT3<CardGroup, ArrayList<AbstractCard>, AbstractCard> newOnClickCard) {
+        onClickCard = newOnClickCard;
     }
 
     public static void AddGroup(CardGroup cardGroup)
@@ -165,15 +173,21 @@ public class GridCardSelectScreenHelper
         return true;
     }
 
+    public static void InvokeOnClick(GridCardSelectScreen selectScreen){
+        if (onClickCard != null) {
+            onClickCard.Invoke(mergedGroup, AbstractDungeon.gridSelectScreen.selectedCards, ClassUtils.GetField(selectScreen, "hoveredCard"));
+        }
+    }
+
     public static void UpdateDynamicString() {
         if (dynamicString != null) {
-            dynamicLabel.SetText(dynamicString.Invoke(AbstractDungeon.gridSelectScreen.selectedCards));
+            dynamicLabel.SetText(dynamicString.Invoke(AbstractDungeon.gridSelectScreen.selectedCards)).Autosize(1f, null);
         }
     }
 
     public static void RenderDynamicString(SpriteBatch sb) {
         if (dynamicString != null) {
-            dynamicLabel.SetText(dynamicString.Invoke(AbstractDungeon.gridSelectScreen.selectedCards));
+            //dynamicLabel.SetText(dynamicString.Invoke(AbstractDungeon.gridSelectScreen.selectedCards));
             dynamicLabel.Render(sb);
         }
     }

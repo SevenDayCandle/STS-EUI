@@ -307,7 +307,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     }
 
 
-    public GUI_Dropdown<T> SetSelection(List<T> selection, boolean shouldInvoke) {
+    public GUI_Dropdown<T> SetSelection(Collection<T> selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
             for (int i = 0; i < rows.size(); i++) {

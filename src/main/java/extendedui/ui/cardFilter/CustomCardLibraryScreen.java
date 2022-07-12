@@ -136,7 +136,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
 
     public void SetActiveColor(AbstractCard.CardColor color) {
         CardGroup cards = CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED));
-        CurrentColor = color;
+        EUI.ActingColor = CurrentColor = color;
         cardGrid.Clear();
         cardGrid.SetCardGroup(cards);
         EUI.CustomHeader.setGroup(cards);

@@ -2,10 +2,13 @@ package extendedui.patches.screens;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
 import com.megacrit.cardcrawl.ui.buttons.GridSelectConfirmButton;
 import extendedui.ui.GridCardSelectScreenHelper;
 import javassist.CtBehavior;
+
+import java.util.ArrayList;
 
 public class GridCardSelectScreenPatches {
 
@@ -78,6 +81,24 @@ public class GridCardSelectScreenPatches {
                 Matcher finalMatcher = new Matcher.MethodCallMatcher(GridSelectConfirmButton.class, "update");
                 int[] found = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
                 return new int[]{found[found.length - 1]};
+            }
+        }
+
+        @SpireInsertPatch(
+                locator = Locator2.class
+        )
+        public static void Insert3(GridCardSelectScreen __instance) {
+            GridCardSelectScreenHelper.InvokeOnClick(__instance);
+        }
+
+        private static class Locator2 extends SpireInsertLocator {
+            private Locator2() {
+            }
+
+            public int[] Locate(CtBehavior ctMethodToPatch) throws Exception {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(ArrayList.class, "contains");
+                int[] found = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
+                return new int[]{found[0] - 1};
             }
         }
 
