@@ -147,7 +147,7 @@ public class EUI
 
     public static void Update()
     {
-        if (CurrentScreen != null)
+        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && CurrentScreen != null)
         {
             CurrentScreen.Update();
         }
@@ -173,7 +173,7 @@ public class EUI
 
     public static void Render(SpriteBatch sb)
     {
-        if (CurrentScreen != null)
+        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && CurrentScreen != null)
         {
             CurrentScreen.Render(sb);
         }

@@ -1,6 +1,7 @@
 package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -8,19 +9,22 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.ui.MultiPageFtue;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 
+import static extendedui.EUIRenderHelpers.DARKENED_SCREEN;
+
 public abstract class GUI_Dialog<T> extends GUI_Hoverable
 {
     protected final static String[] TEXT = CardCrawlGame.languagePack.getUIString("ConfirmPopup").TEXT;
-    protected Color screenColor = new Color(0.0F, 0.0F, 0.0F, 0.5F);
     protected GUI_Button confirm;
     protected GUI_Button cancel;
     protected GUI_Label header;
     protected GUI_Label description;
+    protected GUI_Image backgroundImage;
     protected ActionT1<T> onComplete;
 
     public GUI_Dialog(String headerText)
@@ -30,12 +34,13 @@ public abstract class GUI_Dialog<T> extends GUI_Hoverable
 
     public GUI_Dialog(String headerText, String descriptionText)
     {
-        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 180.0F, Settings.OPTION_Y - 207.0F, 360.0F, 414.0F), headerText, descriptionText);
+        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 180.0F, Settings.OPTION_Y - 207.0F, 360.0F, 414.0F), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
     }
 
-    public GUI_Dialog(AdvancedHitbox hb, String headerText, String descriptionText)
+    public GUI_Dialog(AdvancedHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)
     {
         super(hb);
+        this.backgroundImage = new GUI_Image(backgroundTexture, hb);
         this.header = new GUI_Label(FontHelper.buttonLabelFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.9f, false))
                 .SetAlignment(0.5f,0.5f,false)
@@ -45,7 +50,12 @@ public abstract class GUI_Dialog<T> extends GUI_Hoverable
                 .SetAlignment(0.5f,0.5f,true)
                 .SetSmartText(true, false)
                 .SetText(descriptionText);
-        this.confirm = new GUI_Button(ImageMaster.OPTION_YES,
+        this.confirm = GetConfirmButton();
+        this.cancel = GetCancelButton();
+    }
+
+    protected GUI_Button GetConfirmButton() {
+        return new GUI_Button(ImageMaster.OPTION_YES,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.1f, hb.height * 0.05f, false))
                 .SetFont(FontHelper.cardTitleFont, 1f)
                 .SetText(TEXT[2])
@@ -54,7 +64,10 @@ public abstract class GUI_Dialog<T> extends GUI_Hoverable
                         onComplete.Invoke(GetConfirmValue());
                     }
                 });
-        this.cancel = new GUI_Button(ImageMaster.OPTION_NO,
+    }
+
+    protected GUI_Button GetCancelButton() {
+        return new GUI_Button(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.9f, hb.height * 0.05f, false))
                 .SetFont(FontHelper.cardTitleFont, 1f)
                 .SetText(TEXT[3])
@@ -85,6 +98,16 @@ public abstract class GUI_Dialog<T> extends GUI_Hoverable
 
     public GUI_Dialog<T> SetHeaderProperties(BitmapFont font, float fontScale, Color textColor, boolean smartText) {
         this.header.SetFont(font, fontScale).SetColor(textColor).SetSmartText(smartText);
+        return this;
+    }
+
+    public GUI_Dialog<T> SetCancelText(String text) {
+        confirm.SetText(text);
+        return this;
+    }
+
+    public GUI_Dialog<T> SetConfirmText(String text) {
+        cancel.SetText(text);
         return this;
     }
 
@@ -125,10 +148,10 @@ public abstract class GUI_Dialog<T> extends GUI_Hoverable
     @Override
     public void Render(SpriteBatch sb)
     {
-        sb.setColor(this.screenColor);
+        sb.setColor(DARKENED_SCREEN);
         sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float) Settings.WIDTH, (float)Settings.HEIGHT);
         sb.setColor(Color.WHITE);
-        sb.draw(ImageMaster.OPTION_CONFIRM, hb.x, hb.y, hb.width / 2, hb.height / 2, hb.width, hb.height, Settings.scale, Settings.scale, 0.0F, 0, 0, 360, 414, false, false);
+        this.backgroundImage.TryRender(sb);
 
         this.header.TryRender(sb);
         this.description.TryRender(sb);

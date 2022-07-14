@@ -30,7 +30,7 @@ public class GUI_Button extends GUI_Hoverable
     public float clickDelay = 0f;
     public float targetAlpha = 1f;
     public float currentAlpha = 1f;
-    public boolean interactable;
+    public boolean interactable = true;
     public boolean isSmartText;
     public boolean showText = true;
     public GenericCallback<GUI_Button> onLeftClick;
@@ -55,7 +55,6 @@ public class GUI_Button extends GUI_Hoverable
     {
         super(hitbox);
         this.background = EUIRenderHelpers.ForTexture(buttonTexture);
-        this.interactable = true;
         this.text = "";
         this.font = FontHelper.buttonLabelFont;
         this.fontScale = 1f;

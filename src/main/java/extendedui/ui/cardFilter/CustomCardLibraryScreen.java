@@ -142,7 +142,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
         EUI.CustomHeader.setGroup(cards);
         EUI.CardFilters.Initialize(__ -> {
             cardGrid.MoveToTop();
-            quickSearch.SetText(CardKeywordFilters.CurrentName);
+            quickSearch.SetText(CardKeywordFilters.CurrentName != null ? CardKeywordFilters.CurrentName : "");
             EUI.CustomHeader.UpdateForFilters();
             if (CustomModule != null) {
                 CustomModule.Open(EUI.CustomHeader.group.group);

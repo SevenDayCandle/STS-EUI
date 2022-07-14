@@ -33,7 +33,8 @@ public class CardPoolScreen extends AbstractScreen
         cardGrid = new GUI_StaticCardGrid()
                 .ShowScrollbar(true)
                 .CanRenderUpgrades(true)
-                .SetOnCardRightClick(c -> CardCrawlGame.cardPopup.open(c, cardGrid.cards));
+                .SetOnCardRightClick(c -> CardCrawlGame.cardPopup.open(c, cardGrid.cards))
+                .SetVerticalStart(Settings.HEIGHT * 0.66f);
 
         upgradeToggle = new GUI_Toggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .SetBackground(EUIRM.Images.Panel.Texture(), Color.DARK_GRAY)
@@ -55,7 +56,7 @@ public class CardPoolScreen extends AbstractScreen
 
     public void Open(AbstractPlayer player, CardGroup cards)
     {
-        super.Open();
+        super.Open(false, true);
 
         cardGrid.Clear();
         colorlessToggle.SetToggle(false);
@@ -87,6 +88,15 @@ public class CardPoolScreen extends AbstractScreen
             CustomModule.Open(cardGrid.cards.group);
         }
 
+    }
+
+    @Override
+    public void Reopen()
+    {
+        if (EUIGameUtils.InGame())
+        {
+            AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
+        }
     }
 
     @Override

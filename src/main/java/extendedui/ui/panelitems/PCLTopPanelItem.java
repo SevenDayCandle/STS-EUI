@@ -1,6 +1,7 @@
 package extendedui.ui.panelitems;
 
 import basemod.TopPanelItem;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import extendedui.EUIRM;
 import extendedui.ui.TextureCache;
 import extendedui.ui.tooltips.EUITooltip;
@@ -41,9 +42,12 @@ public abstract class PCLTopPanelItem extends TopPanelItem
 
     @Override
     public void update() {
-        super.update();
-        if (this.tooltip != null && getHitbox().hovered) {
-            EUITooltip.QueueTooltip(tooltip);
+        // Do not allow top panel item to be clicked on while a FTUE is active, just like the other top panel items
+        if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.FTUE) {
+            super.update();
+            if (this.tooltip != null && getHitbox().hovered) {
+                EUITooltip.QueueTooltip(tooltip);
+            }
         }
     }
 }

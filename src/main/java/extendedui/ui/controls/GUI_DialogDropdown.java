@@ -1,8 +1,10 @@
 package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
@@ -20,12 +22,12 @@ public class GUI_DialogDropdown<T> extends GUI_Dialog<ArrayList<T>>
 
     public GUI_DialogDropdown(String headerText, String descriptionText)
     {
-        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 180.0F, Settings.OPTION_Y - 207.0F, 360.0F, 414.0F), headerText, descriptionText);
+        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 180.0F, Settings.OPTION_Y - 207.0F, 360.0F, 414.0F), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
     }
 
-    public GUI_DialogDropdown(AdvancedHitbox hb, String headerText, String descriptionText)
+    public GUI_DialogDropdown(AdvancedHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)
     {
-        super(hb, headerText, descriptionText);
+        super(hb, backgroundTexture, headerText, descriptionText);
         this.dropdown = new GUI_Dropdown<T>(new AdvancedHitbox(hb.x + hb.width / 4, hb.y + hb.height / 4, hb.width / 2, Scale(48)))
                 .SetCanAutosize(false, true);
     }

@@ -103,6 +103,7 @@ public class EUIRM
         public final TextureCache Panel                       = new TextureCache("images/extendedui/ui/Panel.png");
         public final TextureCache Panel_Elliptical            = new TextureCache("images/extendedui/ui/Panel_Elliptical.png");
         public final TextureCache Panel_Elliptical_Half_H     = new TextureCache("images/extendedui/ui/Panel_Elliptical_Half_H.png");
+        public final TextureCache Panel_Large                 = new TextureCache("images/extendedui/ui/Panel_Large.png");
         public final TextureCache Panel_Rounded               = new TextureCache("images/extendedui/ui/Panel_Rounded.png");
         public final TextureCache Panel_Rounded_Half_H        = new TextureCache("images/extendedui/ui/Panel_Rounded_Half_H.png");
         public final TextureCache Plus                        = new TextureCache("images/extendedui/ui/Plus.png");

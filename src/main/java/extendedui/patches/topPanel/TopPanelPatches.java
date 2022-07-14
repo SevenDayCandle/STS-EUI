@@ -21,7 +21,25 @@ public class TopPanelPatches {
         public static SpireReturn Method(TopPanel __instance)
         {
             // To simulate AbstractDungeon.screen == CurrentScreen.NO_INTERACT
-            if (AbstractDungeon.screen == EUI_SCREEN || Settings.hideTopBar)
+            if (AbstractDungeon.screen == EUI_SCREEN && Settings.hideTopBar)
+            {
+                return SpireReturn.Return(null);
+            }
+            else
+            {
+                return SpireReturn.Continue();
+            }
+        }
+    }
+
+    @SpirePatch(clz= TopPanel.class, method="updateRelics")
+    public static class TopPanelPatches_UpdateRelics
+    {
+        @SpirePrefixPatch
+        public static SpireReturn Method(TopPanel __instance)
+        {
+            // To simulate AbstractDungeon.screen == CurrentScreen.NO_INTERACT
+            if (AbstractDungeon.screen == EUI_SCREEN && Settings.hideRelics)
             {
                 return SpireReturn.Return(null);
             }

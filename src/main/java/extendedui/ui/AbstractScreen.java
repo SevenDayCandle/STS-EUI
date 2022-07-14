@@ -30,7 +30,11 @@ public abstract class AbstractScreen extends GUI_Base
         return IsNullOrNone(AbstractDungeon.previousScreen) && !CardCrawlGame.isPopupOpen;
     }
 
-    protected void Open()
+    protected void Open() {
+        Open(true, true);
+    }
+
+    protected void Open(boolean hideTopBar, boolean hideRelics)
     {
 
         if (AbstractDungeon.screen != EUI_SCREEN) {
@@ -38,8 +42,8 @@ public abstract class AbstractScreen extends GUI_Base
             AbstractDungeon.screen = EUI_SCREEN;
         }
 
-        Settings.hideTopBar = true;
-        Settings.hideRelics = true;
+        Settings.hideTopBar = hideTopBar;
+        Settings.hideRelics = hideRelics;
         EUI.CurrentScreen = this;
 
         AbstractDungeon.isScreenUp = true;
@@ -64,6 +68,10 @@ public abstract class AbstractScreen extends GUI_Base
             PreviousMainScreen = CardCrawlGame.mainMenuScreen.screen;
             CardCrawlGame.mainMenuScreen.screen = EUI_MENU;
         }
+
+    }
+
+    public void Reopen() {
 
     }
 
@@ -103,17 +111,18 @@ public abstract class AbstractScreen extends GUI_Base
             }
         }
 
-        AbstractDungeon.overlayMenu.cancelButton.hide();
-
-        if (EUIGameUtils.InBattle())
-        {
-            AbstractDungeon.overlayMenu.showCombatPanels();
+        if (previous != AbstractDungeon.CurrentScreen.SETTINGS && previous != AbstractDungeon.CurrentScreen.INPUT_SETTINGS) {
+            AbstractDungeon.overlayMenu.cancelButton.hide();
+            if (EUIGameUtils.InBattle())
+            {
+                AbstractDungeon.overlayMenu.showCombatPanels();
+            }
         }
+
     }
 
     public void Update()
     {
-
     }
 
     public void Render(SpriteBatch sb)

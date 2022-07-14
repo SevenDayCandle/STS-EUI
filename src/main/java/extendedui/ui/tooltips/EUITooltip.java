@@ -90,7 +90,7 @@ public class EUITooltip
         this(title, Arrays.asList(descriptions));
     }
 
-    public EUITooltip(String title, List<String> descriptions)
+    public EUITooltip(String title, Collection<String> descriptions)
     {
         this.title = title;
         this.descriptions.addAll(descriptions);
@@ -100,7 +100,7 @@ public class EUITooltip
         this(title, playerClass, Arrays.asList(descriptions));
     }
 
-    public EUITooltip(String title, AbstractPlayer.PlayerClass playerClass, List<String> descriptions)
+    public EUITooltip(String title, AbstractPlayer.PlayerClass playerClass, Collection<String> descriptions)
     {
         this.title = title;
         this.descriptions.addAll(descriptions);

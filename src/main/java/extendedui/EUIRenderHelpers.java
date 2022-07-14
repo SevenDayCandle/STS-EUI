@@ -40,6 +40,7 @@ import java.util.ArrayList;
 
 public class EUIRenderHelpers
 {
+    public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.5F);
     public static final float CARD_ENERGY_IMG_WIDTH = 26.0F * Settings.scale;
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
