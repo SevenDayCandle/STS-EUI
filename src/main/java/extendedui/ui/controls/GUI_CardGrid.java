@@ -16,6 +16,7 @@ import extendedui.EUIInputManager;
 import extendedui.interfaces.markers.CacheableCard;
 
 import java.util.Collection;
+import java.util.HashMap;
 
 // TODO controller support
 public class GUI_CardGrid extends GUI_CanvasGrid
@@ -31,12 +32,12 @@ public class GUI_CardGrid extends GUI_CanvasGrid
     protected ActionT1<AbstractCard> onCardHovered;
     protected ActionT1<AbstractCard> onCardRightClick;
     protected ActionT2<SpriteBatch, AbstractCard> onCardRender;
-    protected float draw_x;
+    protected HashMap<AbstractCard, AbstractCard> upgradeCards;
     protected float draw_top_y = DRAW_START_Y;
+    protected float draw_x;
     protected int hoveredIndex;
     public AbstractCard hoveredCard = null;
     public CardGroup cards;
-    protected CardGroup upgradeCards;
     public String message = null;
     public boolean canRenderUpgrades = false;
     public boolean shouldEnlargeHovered = true;
@@ -59,7 +60,7 @@ public class GUI_CardGrid extends GUI_CanvasGrid
     {
         super(ROW_SIZE, PAD_Y);
         this.cards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        this.upgradeCards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+        this.upgradeCards = new HashMap<>();
         this.autoShowScrollbar = autoShowScrollbar;
 
         SetHorizontalAlignment(horizontalAlignment);
@@ -176,7 +177,7 @@ public class GUI_CardGrid extends GUI_CanvasGrid
         this.message = null;
         // Unlink the cards from any outside card group given to it
         this.cards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        this.upgradeCards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+        this.upgradeCards.clear();
 
 
         RefreshOffset();
@@ -232,7 +233,7 @@ public class GUI_CardGrid extends GUI_CanvasGrid
                 copy.upgrade();
                 copy.displayUpgrades();
             }
-            upgradeCards.addToTop(copy);
+            upgradeCards.put(card, copy);
         }
     }
 
@@ -246,7 +247,7 @@ public class GUI_CardGrid extends GUI_CanvasGrid
         if (hoveredCard != null)
         {
             hoveredCard.renderHoverShadow(sb);
-            RenderCard(sb, hoveredCard, hoveredIndex);
+            RenderCard(sb, hoveredCard);
             hoveredCard.renderCardTip(sb);
         }
 
@@ -262,7 +263,7 @@ public class GUI_CardGrid extends GUI_CanvasGrid
             AbstractCard card = cards.group.get(i);
             if (card != hoveredCard)
             {
-                RenderCard(sb, card, i);
+                RenderCard(sb, card);
             }
         }
     }
@@ -332,16 +333,18 @@ public class GUI_CardGrid extends GUI_CanvasGrid
         }
     }
 
-    protected void RenderCard(SpriteBatch sb, AbstractCard card, int index)
+    protected void RenderCard(SpriteBatch sb, AbstractCard card)
     {
         // renderInLibrary continually creates copies of upgraded cards -_-
         // So we use a cache of the upgraded cards to show in compendium screens
-        if (canRenderUpgrades && SingleCardViewPopup.isViewingUpgrade && index < upgradeCards.size()) {
-            AbstractCard upgrade = upgradeCards.group.get(index);
-            upgrade.current_x = card.current_x;
-            upgrade.current_y = card.current_y;
-            upgrade.drawScale = card.drawScale;
-            upgrade.render(sb);
+        if (canRenderUpgrades && SingleCardViewPopup.isViewingUpgrade) {
+            AbstractCard upgrade = upgradeCards.get(card);
+            if (upgrade != null) {
+                upgrade.current_x = card.current_x;
+                upgrade.current_y = card.current_y;
+                upgrade.drawScale = card.drawScale;
+                upgrade.render(sb);
+            }
         }
         else {
             card.render(sb);

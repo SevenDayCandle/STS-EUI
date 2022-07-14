@@ -67,7 +67,7 @@ public class GUI_StaticCardGrid extends GUI_CardGrid
             AbstractCard card = cards.group.get(i);
             if (card != hoveredCard)
             {
-                RenderCard(sb, card, i);
+                RenderCard(sb, card);
             }
         }
     }
