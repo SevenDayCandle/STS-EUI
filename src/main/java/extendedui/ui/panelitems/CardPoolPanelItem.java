@@ -1,5 +1,6 @@
 package extendedui.ui.panelitems;
 
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -17,7 +18,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     protected CardGroup cardGroup;
 
     public CardPoolPanelItem() {
-        super(EUIRM.Images.CardPool, ID);
+        super(Loader.isModLoaded("PrideMod") ? EUIRM.Images.CardPool_Pride : EUIRM.Images.CardPool, ID);
         SetTooltip(new EUITooltip(EUIRM.Strings.UI_ViewCardPool, EUIRM.Strings.UI_ViewCardPoolDescription));
     }
 

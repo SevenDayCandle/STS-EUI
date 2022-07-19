@@ -91,6 +91,7 @@ public class EUIRM
         public final TextureCache Arrow                       = new TextureCache("images/extendedui/ui/Arrow.png");
         public final TextureCache Border                      = new TextureCache("images/extendedui/ui/Border.png");
         public final TextureCache CardPool                    = new TextureCache("images/extendedui/ui/CardPool.png");
+        public final TextureCache CardPool_Pride              = new TextureCache("images/extendedui/ui/CardPool2.png");
         public final TextureCache Divider                     = new TextureCache("images/extendedui/ui/Divider.png");
         public final TextureCache Draggable                   = new TextureCache("images/extendedui/ui/Draggable.png");
         public final TextureCache FullSquare                  = new TextureCache("images/extendedui/ui/FullSquare.png");
