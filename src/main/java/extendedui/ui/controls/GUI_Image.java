@@ -18,6 +18,7 @@ public class GUI_Image extends GUI_Hoverable
     public AdvancedTexture foreground;
     public Texture texture;
     public EUIRenderHelpers.BlendingMode blendingMode = EUIRenderHelpers.BlendingMode.Normal;
+    public EUIRenderHelpers.ShaderMode shaderMode = EUIRenderHelpers.ShaderMode.Normal;
     public Color color;
     public Color sourceColor;
     public Color targetColor;
@@ -30,7 +31,6 @@ public class GUI_Image extends GUI_Hoverable
     public int srcHeight;
     public boolean flipX;
     public boolean flipY;
-    public boolean grayscale;
 
     public GUI_Image(Texture texture)
     {
@@ -139,6 +139,11 @@ public class GUI_Image extends GUI_Hoverable
         return this;
     }
 
+    public GUI_Image SetShaderMode(EUIRenderHelpers.ShaderMode shaderMode) {
+        this.shaderMode = shaderMode;
+        return this;
+    }
+
     public GUI_Image SetColor(float r, float g, float b, float a)
     {
         this.color = new Color(r, g, b, a);
@@ -201,13 +206,6 @@ public class GUI_Image extends GUI_Hoverable
         return this;
     }
 
-    public GUI_Image SetGrayscale(boolean grayscale)
-    {
-        this.grayscale = grayscale;
-
-        return this;
-    }
-
     @Override
     public void Update()
     {
@@ -237,12 +235,7 @@ public class GUI_Image extends GUI_Hoverable
 
     public void Render(SpriteBatch sb, float x, float y, float width, float height)
     {
-        if (grayscale) {
-            EUIRenderHelpers.DrawGrayscale(sb, (s) -> RenderImpl(s, x, y, width, height));
-        }
-        else {
-            RenderImpl(sb, x, y, width, height);
-        }
+        EUIRenderHelpers.DrawWithShader(sb, shaderMode, (s) -> RenderImpl(s, x, y, width, height));
     }
 
     protected void RenderImpl(SpriteBatch sb, float x, float y, float width, float height) {
@@ -285,12 +278,7 @@ public class GUI_Image extends GUI_Hoverable
     }
 
     public void RenderCentered(SpriteBatch sb, float x, float y, float width, float height) {
-        if (grayscale) {
-            EUIRenderHelpers.DrawGrayscale(sb, (s) -> RenderCenteredImpl(s, x, y, width, height));
-        }
-        else {
-            RenderCenteredImpl(sb, x, y, width, height);
-        }
+        EUIRenderHelpers.DrawWithShader(sb, shaderMode, (s) -> RenderCenteredImpl(s, x, y, width, height));
     }
 
     protected void RenderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height)

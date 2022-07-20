@@ -7,6 +7,7 @@ import extendedui.EUIGameUtils;
 public abstract class GUI_Base
 {
     public static final Color HOVER_BLEND_COLOR = new Color(1f, 1f, 1f, 0.3f);
+    public static final Color HOVER_BLEND_COLOR_HIGH = new Color(1f, 1f, 1f, 0.8f);
     public static final Color TEXT_DISABLED_COLOR = new Color(0.6f, 0.6f, 0.6f, 1f);
 
     public boolean isActive = true;

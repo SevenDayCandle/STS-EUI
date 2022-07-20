@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import eatyourbeets.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.FuncT0;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.GUI_Image;
@@ -115,6 +116,15 @@ public class EUIRenderHelpers
         sb.setColor(Color.WHITE);
     }
 
+    public static void DrawColoredWithShader(SpriteBatch sb, ShaderMode mode, float colorfulColor, ActionT1<SpriteBatch> drawFunc) {
+        if (mode.shaderFunc == null) {
+            DrawColored(sb, colorfulColor, drawFunc);
+        }
+        else {
+            DrawColoredWithShader(sb, mode.shaderFunc.Invoke(), colorfulColor, drawFunc);
+        }
+    }
+
     public static void DrawColoredWithShader(SpriteBatch sb, ShaderProgram shader, float colorfulColor, ActionT1<SpriteBatch> drawFunc) {
         DrawWithShader(sb, shader, (s) -> DrawColored(s, colorfulColor, drawFunc));
     }
@@ -147,6 +157,15 @@ public class EUIRenderHelpers
         DrawWithShader(sb, GetSepiaShader(), drawFunc);
     }
 
+    public static void DrawWithShader(SpriteBatch sb, ShaderMode mode, ActionT1<SpriteBatch> drawFunc) {
+        if (mode.shaderFunc == null) {
+            drawFunc.Invoke(sb);
+        }
+        else {
+            DrawWithShader(sb, mode.shaderFunc.Invoke(), drawFunc);
+        }
+    }
+
     public static void DrawWithShader(SpriteBatch sb, ShaderProgram shader, ActionT1<SpriteBatch> drawFunc) {
         ShaderProgram defaultShader = sb.getShader();
         sb.setShader(shader);
@@ -154,6 +173,7 @@ public class EUIRenderHelpers
         sb.setShader(defaultShader);
     }
 
+    // Not public because blur needs parameters to use properly
     protected static ShaderProgram GetBlurShader() {
         if (BlurShader == null) {
             BlurShader = InitializeShader(SHADER_VERTEX, SHADER_BLUR_FRAGMENT);
@@ -969,6 +989,20 @@ public class EUIRenderHelpers
         BlendingMode(int srcFunc, int dstFunc) {
             this.srcFunc = srcFunc;
             this.dstFunc = dstFunc;
+        }
+    }
+
+    public enum ShaderMode {
+        Normal(null),
+        Grayscale(EUIRenderHelpers::GetGrayscaleShader),
+        Sepia(EUIRenderHelpers::GetSepiaShader),
+        Bright(EUIRenderHelpers::GetBrightShader),
+        Colorize(EUIRenderHelpers::GetColorizeShader);
+
+        public final FuncT0<ShaderProgram> shaderFunc;
+
+        ShaderMode(FuncT0<ShaderProgram> shaderFunc) {
+            this.shaderFunc = shaderFunc;
         }
     }
 }

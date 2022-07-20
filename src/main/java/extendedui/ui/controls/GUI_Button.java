@@ -193,6 +193,11 @@ public class GUI_Button extends GUI_Hoverable
         return this;
     }
 
+    public GUI_Button SetShaderMode(EUIRenderHelpers.ShaderMode shaderMode) {
+        this.background.SetShaderMode(shaderMode);
+        return this;
+    }
+
     public GUI_Button SetTextColor(Color textColor)
     {
         this.textColor = textColor.cpy();
@@ -370,7 +375,7 @@ public class GUI_Button extends GUI_Hoverable
         {
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
-            background.SetColor(HOVER_BLEND_COLOR).Render(sb, hb);
+            background.SetColor(background.shaderMode == EUIRenderHelpers.ShaderMode.Colorize ? HOVER_BLEND_COLOR_HIGH : HOVER_BLEND_COLOR).Render(sb, hb);
 
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
@@ -389,7 +394,7 @@ public class GUI_Button extends GUI_Hoverable
         {
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
-            background.SetColor(HOVER_BLEND_COLOR).RenderCentered(sb, hb);
+            background.SetColor(background.shaderMode == EUIRenderHelpers.ShaderMode.Colorize ? HOVER_BLEND_COLOR_HIGH : HOVER_BLEND_COLOR).RenderCentered(sb, hb);
 
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
