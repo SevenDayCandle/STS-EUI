@@ -45,9 +45,26 @@ public abstract class GUI_Hoverable extends GUI_Base
         return this;
     }
 
+    // Center the hitbox on the specified coordinates
     public GUI_Hoverable SetPosition(float cX, float cY)
     {
         this.hb.move(cX, cY);
+
+        return this;
+    }
+
+    // The hitbox's center will move towards the designated position
+    public GUI_Hoverable SetTargetPosition(float cX, float cY)
+    {
+        this.hb.SetTargetPosition(cX, cY);
+
+        return this;
+    }
+
+    // Move the hitbox's bottom-left corner to the specified coordinates
+    public GUI_Hoverable Translate(float x, float y)
+    {
+        this.hb.translate(x, y);
 
         return this;
     }

@@ -179,7 +179,7 @@ public class JavaUtils
     }
 
 
-    public static <T> String JoinStrings(String delimiter, Collection<T> values)
+    public static <T> String JoinStrings(String delimiter, Iterable<T> values)
     {
         final StringJoiner sj = new StringJoiner(delimiter);
         for (T value : values)
@@ -197,6 +197,39 @@ public class JavaUtils
         for (T value : values)
         {
             sj.add(String.valueOf(value));
+        }
+
+        return sj.toString();
+    }
+
+    public static <T> String JoinTrueStrings(String delimiter, Iterable<T> values)
+    {
+        final StringJoiner sj = new StringJoiner(delimiter);
+        for (T value : values)
+        {
+            if (value != null) {
+                String valString = String.valueOf(value);
+                if (!valString.isEmpty()) {
+                    sj.add(String.valueOf(value));
+                }
+            }
+        }
+
+        return sj.toString();
+    }
+
+    @SafeVarargs
+    public static <T> String JoinTrueStrings(String delimiter, T... values)
+    {
+        final StringJoiner sj = new StringJoiner(delimiter);
+        for (T value : values)
+        {
+            if (value != null) {
+                String valString = String.valueOf(value);
+                if (!valString.isEmpty()) {
+                    sj.add(String.valueOf(value));
+                }
+            }
         }
 
         return sj.toString();
