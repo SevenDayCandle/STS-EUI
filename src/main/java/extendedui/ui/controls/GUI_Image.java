@@ -233,9 +233,17 @@ public class GUI_Image extends GUI_Hoverable
         Render(sb, hb.x, hb.y, hb.width, hb.height);
     }
 
-    public void Render(SpriteBatch sb, float x, float y, float width, float height)
+    public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb)
     {
-        EUIRenderHelpers.DrawWithShader(sb, shaderMode, (s) -> RenderImpl(s, x, y, width, height));
+        Render(sb, mode, hb.x, hb.y, hb.width, hb.height);
+    }
+
+    public void Render(SpriteBatch sb, float x, float y, float width, float height) {
+        Render(sb, shaderMode, x, y, width, height);
+    }
+
+    public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
+        mode.Draw(sb, (s) -> RenderImpl(s, x, y, width, height));
     }
 
     protected void RenderImpl(SpriteBatch sb, float x, float y, float width, float height) {
@@ -277,8 +285,17 @@ public class GUI_Image extends GUI_Hoverable
         RenderCentered(sb, hb.x, hb.y, hb.width, hb.height);
     }
 
+    public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb)
+    {
+        RenderCentered(sb, mode, hb.x, hb.y, hb.width, hb.height);
+    }
+
     public void RenderCentered(SpriteBatch sb, float x, float y, float width, float height) {
-        EUIRenderHelpers.DrawWithShader(sb, shaderMode, (s) -> RenderCenteredImpl(s, x, y, width, height));
+        RenderCentered(sb, shaderMode, x, y, width, height);
+    }
+
+    public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
+        mode.Draw(sb, (s) -> RenderCenteredImpl(s, x, y, width, height));
     }
 
     protected void RenderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height)

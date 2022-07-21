@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import eatyourbeets.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT2;
 import eatyourbeets.interfaces.delegates.FuncT0;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.TooltipProvider;
@@ -42,6 +43,9 @@ import java.util.ArrayList;
 public class EUIRenderHelpers
 {
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.5F);
+    public static final Color ORANGE_TEXT_COLOR = new Color(1.0F, 0.5F, 0.25F, 1F);
+    public static final Color INDIGO_TEXT_COLOR = new Color(0.65F, 0.37F, 1.F, 1F);
+    public static final Color PINK_TEXT_COLOR = new Color(1.0F, 0.37F, 0.65F, 1F);
     public static final float CARD_ENERGY_IMG_WIDTH = 26.0F * Settings.scale;
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
@@ -104,6 +108,10 @@ public class EUIRenderHelpers
         DrawColoredWithShader(sb, GetBrightShader(), color, drawFunc);
     }
 
+    public static void DrawBrighter(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
+        DrawWithShader(sb, GetBrightShader(), drawFunc);
+    }
+
     public static void DrawColored(SpriteBatch sb, Color color, ActionT1<SpriteBatch> drawFunc) {
         sb.setColor(color);
         drawFunc.Invoke(sb);
@@ -116,15 +124,6 @@ public class EUIRenderHelpers
         sb.setColor(Color.WHITE);
     }
 
-    public static void DrawColoredWithShader(SpriteBatch sb, ShaderMode mode, float colorfulColor, ActionT1<SpriteBatch> drawFunc) {
-        if (mode.shaderFunc == null) {
-            DrawColored(sb, colorfulColor, drawFunc);
-        }
-        else {
-            DrawColoredWithShader(sb, mode.shaderFunc.Invoke(), colorfulColor, drawFunc);
-        }
-    }
-
     public static void DrawColoredWithShader(SpriteBatch sb, ShaderProgram shader, float colorfulColor, ActionT1<SpriteBatch> drawFunc) {
         DrawWithShader(sb, shader, (s) -> DrawColored(s, colorfulColor, drawFunc));
     }
@@ -135,6 +134,10 @@ public class EUIRenderHelpers
 
     public static void DrawColorized(SpriteBatch sb, float color, ActionT1<SpriteBatch> drawFunc) {
         DrawColoredWithShader(sb, GetColorizeShader(), color, drawFunc);
+    }
+
+    public static void DrawColorized(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
+        DrawWithShader(sb, GetColorizeShader(), drawFunc);
     }
 
     public static void DrawGlowing(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
@@ -155,15 +158,6 @@ public class EUIRenderHelpers
 
     public static void DrawSepia(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawWithShader(sb, GetSepiaShader(), drawFunc);
-    }
-
-    public static void DrawWithShader(SpriteBatch sb, ShaderMode mode, ActionT1<SpriteBatch> drawFunc) {
-        if (mode.shaderFunc == null) {
-            drawFunc.Invoke(sb);
-        }
-        else {
-            DrawWithShader(sb, mode.shaderFunc.Invoke(), drawFunc);
-        }
     }
 
     public static void DrawWithShader(SpriteBatch sb, ShaderProgram shader, ActionT1<SpriteBatch> drawFunc) {
@@ -904,6 +898,14 @@ public class EUIRenderHelpers
                 return Settings.RED_TEXT_COLOR.cpy();
             case 'y':
                 return Settings.GOLD_COLOR.cpy();
+            case 'o':
+                return ORANGE_TEXT_COLOR.cpy();
+            case 'i':
+                return INDIGO_TEXT_COLOR.cpy();
+            case 'k':
+                return PINK_TEXT_COLOR.cpy();
+            case 'l':
+                return Color.LIME.cpy();
             case '#':
                 return baseColor.cpy();
             default:
@@ -993,16 +995,28 @@ public class EUIRenderHelpers
     }
 
     public enum ShaderMode {
-        Normal(null),
-        Grayscale(EUIRenderHelpers::GetGrayscaleShader),
-        Sepia(EUIRenderHelpers::GetSepiaShader),
-        Bright(EUIRenderHelpers::GetBrightShader),
-        Colorize(EUIRenderHelpers::GetColorizeShader);
+        Normal,
+        Grayscale,
+        Sepia,
+        Bright,
+        Colorize;
 
-        public final FuncT0<ShaderProgram> shaderFunc;
-
-        ShaderMode(FuncT0<ShaderProgram> shaderFunc) {
-            this.shaderFunc = shaderFunc;
+        public void Draw(SpriteBatch sb, ActionT1<SpriteBatch> drawImpl) {
+            switch (this) {
+                case Grayscale:
+                    EUIRenderHelpers.DrawGrayscale(sb, drawImpl);
+                    return;
+                case Sepia:
+                    EUIRenderHelpers.DrawSepia(sb, drawImpl);
+                    return;
+                case Bright:
+                    EUIRenderHelpers.DrawBrighter(sb, drawImpl);
+                    return;
+                case Colorize:
+                    EUIRenderHelpers.DrawColorized(sb, drawImpl);
+                    return;
+            }
+            drawImpl.Invoke(sb);
         }
     }
 }

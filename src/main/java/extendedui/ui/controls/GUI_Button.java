@@ -375,7 +375,7 @@ public class GUI_Button extends GUI_Hoverable
         {
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
-            background.SetColor(background.shaderMode == EUIRenderHelpers.ShaderMode.Colorize ? HOVER_BLEND_COLOR_HIGH : HOVER_BLEND_COLOR).Render(sb, hb);
+            background.SetColor(HOVER_BLEND_COLOR).Render(sb, EUIRenderHelpers.ShaderMode.Bright, hb);
 
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
@@ -394,7 +394,7 @@ public class GUI_Button extends GUI_Hoverable
         {
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
 
-            background.SetColor(background.shaderMode == EUIRenderHelpers.ShaderMode.Colorize ? HOVER_BLEND_COLOR_HIGH : HOVER_BLEND_COLOR).RenderCentered(sb, hb);
+            background.SetColor(HOVER_BLEND_COLOR).RenderCentered(sb, EUIRenderHelpers.ShaderMode.Bright, hb);
 
             sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
         }
