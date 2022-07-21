@@ -61,6 +61,17 @@ public class GUI_Button extends GUI_Hoverable
         SetColor(Color.WHITE);
     }
 
+    public GUI_Button SetAlpha(float currentAlpha, float targetAlpha) {
+        this.currentAlpha = currentAlpha;
+        this.targetAlpha = targetAlpha;
+        return this;
+    }
+
+    public GUI_Button SetAlpha(float targetAlpha) {
+        this.targetAlpha = targetAlpha;
+        return this;
+    }
+
     public GUI_Button SetBackground(Texture borderTexture)
     {
         this.background = EUIRenderHelpers.ForTexture(borderTexture);
