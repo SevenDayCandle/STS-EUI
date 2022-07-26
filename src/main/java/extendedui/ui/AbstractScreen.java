@@ -38,7 +38,15 @@ public abstract class AbstractScreen extends GUI_Base
     {
 
         if (AbstractDungeon.screen != EUI_SCREEN) {
-            AbstractDungeon.previousScreen = AbstractDungeon.screen;
+
+            // These screens should not be recorded as the previous screen
+            if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.SETTINGS
+                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.INPUT_SETTINGS
+                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP
+                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MASTER_DECK_VIEW) {
+                AbstractDungeon.previousScreen = AbstractDungeon.screen;
+            }
+
             AbstractDungeon.screen = EUI_SCREEN;
         }
 
@@ -111,12 +119,10 @@ public abstract class AbstractScreen extends GUI_Base
             }
         }
 
-        if (previous != AbstractDungeon.CurrentScreen.SETTINGS && previous != AbstractDungeon.CurrentScreen.INPUT_SETTINGS) {
-            AbstractDungeon.overlayMenu.cancelButton.hide();
-            if (EUIGameUtils.InBattle())
-            {
-                AbstractDungeon.overlayMenu.showCombatPanels();
-            }
+        AbstractDungeon.overlayMenu.cancelButton.hide();
+        if (EUIGameUtils.InBattle())
+        {
+            AbstractDungeon.overlayMenu.showCombatPanels();
         }
 
     }

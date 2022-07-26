@@ -40,7 +40,6 @@ public class GUI_Button extends GUI_Hoverable
     public Color buttonColor;
     public Color disabledButtonColor;
 
-    protected boolean darkenNonInteractableButton;
     protected BitmapFont font;
     protected GUI_Label label;
     protected float fontScale;
