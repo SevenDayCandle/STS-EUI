@@ -33,7 +33,10 @@ public class CardPoolScreen extends AbstractScreen
         cardGrid = new GUI_StaticCardGrid()
                 .ShowScrollbar(true)
                 .CanRenderUpgrades(true)
-                .SetOnCardRightClick(c -> CardCrawlGame.cardPopup.open(c, cardGrid.cards))
+                .SetOnCardRightClick(c -> {
+                    c.unhover();
+                    CardCrawlGame.cardPopup.open(c, cardGrid.cards);
+                })
                 .SetVerticalStart(Settings.HEIGHT * 0.66f);
 
         upgradeToggle = new GUI_Toggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
@@ -102,15 +105,15 @@ public class CardPoolScreen extends AbstractScreen
     @Override
     public void Update()
     {
-        cardGrid.TryUpdate();
-        upgradeToggle.SetToggle(SingleCardViewPopup.isViewingUpgrade).Update();
-        colorlessToggle.Update();
-        EUI.CustomHeader.update();
-        if (!EUI.CardFilters.TryUpdate()) {
+        if (!EUI.CardFilters.TryUpdate() && !CardCrawlGame.isPopupOpen) {
+            cardGrid.TryUpdate();
+            upgradeToggle.SetToggle(SingleCardViewPopup.isViewingUpgrade).Update();
+            colorlessToggle.Update();
+            EUI.CustomHeader.update();
             EUI.OpenCardFiltersButton.TryUpdate();
-        }
-        if (CustomModule != null) {
-            CustomModule.TryUpdate();
+            if (CustomModule != null) {
+                CustomModule.TryUpdate();
+            }
         }
     }
 

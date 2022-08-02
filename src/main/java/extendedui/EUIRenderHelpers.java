@@ -49,6 +49,7 @@ public class EUIRenderHelpers
     public static final float CARD_ENERGY_IMG_WIDTH = 26.0F * Settings.scale;
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
+    protected static final String SHADER_INVERT_FRAGMENT = "shaders/invertFragment.glsl";
     protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
     protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
     private static final StringBuilder builder = new StringBuilder();
@@ -72,6 +73,7 @@ public class EUIRenderHelpers
     protected static ShaderProgram BrighterShader;
     protected static ShaderProgram ColorizeShader;
     protected static ShaderProgram GrayscaleShader;
+    protected static ShaderProgram InvertShader;
     protected static ShaderProgram SepiaShader;
     private static FrameBuffer MaskBuffer;
 
@@ -148,6 +150,10 @@ public class EUIRenderHelpers
         DrawWithShader(sb, GetGrayscaleShader(), drawFunc);
     }
 
+    public static void DrawInverted(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
+        DrawWithShader(sb, GetInvertShader(), drawFunc);
+    }
+
     public static void DrawOverlay(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawBlended(sb, BlendingMode.Overlay, drawFunc);
     }
@@ -194,6 +200,13 @@ public class EUIRenderHelpers
             GrayscaleShader = InitializeShader(SHADER_VERTEX, SHADER_GRAYSCALE_FRAGMENT);
         }
         return GrayscaleShader;
+    }
+
+    public static ShaderProgram GetInvertShader() {
+        if (InvertShader == null) {
+            InvertShader = InitializeShader(SHADER_VERTEX, SHADER_INVERT_FRAGMENT);
+        }
+        return InvertShader;
     }
 
     public static Pixmap GetPixmapFromBufferedImage(BufferedImage image) {
@@ -997,6 +1010,7 @@ public class EUIRenderHelpers
     public enum ShaderMode {
         Normal,
         Grayscale,
+        Invert,
         Sepia,
         Bright,
         Colorize;
@@ -1005,6 +1019,9 @@ public class EUIRenderHelpers
             switch (this) {
                 case Grayscale:
                     EUIRenderHelpers.DrawGrayscale(sb, drawImpl);
+                    return;
+                case Invert:
+                    EUIRenderHelpers.DrawInverted(sb, drawImpl);
                     return;
                 case Sepia:
                     EUIRenderHelpers.DrawSepia(sb, drawImpl);

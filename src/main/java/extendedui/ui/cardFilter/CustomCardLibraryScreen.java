@@ -59,7 +59,10 @@ public class CustomCardLibraryScreen extends AbstractScreen
                 .CanRenderUpgrades(true)
                 .SetVerticalStart(Settings.HEIGHT * 0.65f)
                 .SetCardScale(0.6f, 0.75f);
-        cardGrid.SetOnCardRightClick(c -> CardCrawlGame.cardPopup.open(c, cardGrid.cards));
+        cardGrid.SetOnCardRightClick(c -> {
+            c.unhover();
+            CardCrawlGame.cardPopup.open(c, cardGrid.cards);
+        });
         upgradeToggle = new GUI_Toggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .SetPosition(1450.0F * Settings.xScale, Settings.HEIGHT * 0.8f)
                 .SetFont(FontHelper.topPanelInfoFont, 1f)
@@ -160,7 +163,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
     @Override
     public void Update()
     {
-        if (!EUI.CardFilters.TryUpdate()) {
+        if (!EUI.CardFilters.TryUpdate() && !CardCrawlGame.isPopupOpen) {
             EUI.OpenCardFiltersButton.TryUpdate();
             for (GUI_Button b : colorButtons) {
                 b.TryUpdate();
