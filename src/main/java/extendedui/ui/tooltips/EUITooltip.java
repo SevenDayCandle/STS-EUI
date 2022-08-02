@@ -32,6 +32,7 @@ import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.patches.EUIKeyword;
 import extendedui.utilities.ClassUtils;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIFontHelper;
@@ -75,6 +76,9 @@ public class EUITooltip
     public ColoredString subHeader;
     public ColoredString subText;
     public String id;
+    public String past;
+    public String plural;
+    public String present;
     public String title;
     public TextureRegion icon;
     public boolean canHighlight = true;
@@ -117,6 +121,15 @@ public class EUITooltip
     {
         this.title = keyword.PROPER_NAME;
         this.descriptions.add(keyword.DESCRIPTION);
+    }
+
+    public EUITooltip(EUIKeyword keyword)
+    {
+        this.title = keyword.PROPER_NAME;
+        this.descriptions.add(keyword.DESCRIPTION);
+        this.past = keyword.PAST;
+        this.plural = keyword.PLURAL;
+        this.present = keyword.PRESENT;
     }
 
     public static void RegisterID(String id, EUITooltip tooltip)
@@ -918,6 +931,27 @@ public class EUITooltip
     public String GetTitleOrIcon()
     {
         return (id != null) ? "[" + id + "]" : title;
+    }
+
+    public String Past() {
+        if (past == null) {
+            past = EUIRM.Strings.Past(title);
+        }
+        return past;
+    }
+
+    public String Plural() {
+        if (plural == null) {
+            plural = EUIRM.Strings.Plural(title);
+        }
+        return plural;
+    }
+
+    public String Present() {
+        if (present == null) {
+            present = EUIRM.Strings.Present(title);
+        }
+        return present;
     }
 
     public String SetIndex(int index) {

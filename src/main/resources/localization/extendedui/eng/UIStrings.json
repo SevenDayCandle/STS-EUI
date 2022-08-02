@@ -32,7 +32,10 @@
 	"EXTRA_TEXT":
 	[
 	  "{0}s",
-	  "{0}(s)"
+	  "{0}es",
+	  "{0}(s)",
+	  "{0}ed",
+	  "{0}ing"
 	]
   },
   "extendedui:hotkeys":

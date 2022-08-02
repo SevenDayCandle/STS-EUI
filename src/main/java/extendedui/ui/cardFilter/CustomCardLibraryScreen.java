@@ -270,7 +270,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
             case COLORLESS:
                 return CardLibraryScreen.TEXT[4];
             default:
-                return CustomColorNames.getOrDefault(co, JavaUtils.Capitalize(co.toString()));
+                return CustomColorNames.getOrDefault(co, JavaUtils.Capitalize(String.valueOf(co)));
         }
     }
 }

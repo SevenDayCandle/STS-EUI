@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import eatyourbeets.interfaces.delegates.FuncT2;
 import extendedui.ui.TextureCache;
@@ -229,13 +230,18 @@ public class EUIRM
         public final String Not(Object obj1) {return JavaUtils.Format(StringsGrammar.TEXT[15], obj1);}
 
         // e.g. English: Card -> Cards, Spanish: Carta -> Cartas
-        public final String Plural(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[0], obj);}
+        public final String Plural(Object obj) {
+            String base = String.valueOf(obj);
+            return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[base.toLowerCase().endsWith(GetLanguagePlural()) ? 1 : 0], obj);
+        }
 
         // e.g. English: Card -> Card(s)
-        public final String PluralC(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[1], obj);}
+        public final String PluralC(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[2], obj);}
 
         // e.g. English: Discard -> Discarded, Spanish: Descarta -> Descartada
-        public final String Past(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[2], obj);}
+        public final String Past(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[3], obj);}
+
+        public final String Present(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[4], obj);}
 
         public final String JoinWithAnd(List<String> values) {
             return JoinWith(this::And, values);
@@ -282,6 +288,11 @@ public class EUIRM
             }
 
             return strFunc.Invoke(sj.toString(), values[i]);
+        }
+
+        // TODO do language specific checks
+        private String GetLanguagePlural() {
+            return "s";
         }
     }
 }

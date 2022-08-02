@@ -1,0 +1,40 @@
+{
+  "Channel": {
+	"PAST": "Channeled",
+	"PRESENT": "Channels"
+  },
+  "Curse": {
+	"PLURAL": "Curses"
+  },
+  "Exhaust": {
+	"PAST": "Exhausted",
+	"PRESENT": "Exhausts"
+  },
+  "Evoke": {
+	"PAST": "Evoked",
+	"PRESENT": "Evokes"
+  },
+  "Purge": {
+	"PAST": "Purged",
+	"PRESENT": "Purges"
+  },
+  "Retain": {
+	"PAST": "Retained",
+	"PRESENT": "Retains"
+  },
+  "Scry": {
+	"PAST": "Scried",
+	"PRESENT": "Scries"
+  },
+  "Status": {
+	"PLURAL": "Statuses"
+  },
+  "Transform": {
+	"PAST": "Transformed",
+	"PRESENT": "Transforms"
+  },
+  "Upgrade": {
+	"PAST": "Upgraded",
+	"PRESENT": "Upgrades"
+  }
+}

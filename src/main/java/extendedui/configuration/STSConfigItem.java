@@ -66,7 +66,7 @@ public class STSConfigItem<T>
     }
 
     protected String Serialize() {
-        return Value.toString();
+        return String.valueOf(Value);
     }
 
     protected Method GetMethod() throws Exception {

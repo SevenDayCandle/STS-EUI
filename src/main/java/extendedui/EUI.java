@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.evacipated.cardcrawl.mod.stslib.StSLib;
 import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
 import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
@@ -19,6 +20,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import eatyourbeets.interfaces.delegates.ActionT1;
+import extendedui.patches.EUIKeyword;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.GUI_Base;
 import extendedui.ui.cardFilter.*;
@@ -31,6 +33,7 @@ import extendedui.ui.tooltips.EUITooltip;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EUI
@@ -63,14 +66,14 @@ public class EUI
         return CardsScreen != null; // This will be null before the UI has loaded
     }
 
-    public static void Initialize()
+    public static void Initialize(Map<String, EUIKeyword> keywords)
     {
         CardsScreen = new CardPoolScreen();
         CardFilters = new CardKeywordFilters();
         CustomHeader = new CustomCardLibSortHeader(null);
         CustomLibraryScreen = new CustomCardLibraryScreen();
         BaseMod.addTopPanelItem(new CardPoolPanelItem());
-        RegisterKeywords();
+        RegisterKeywords(keywords);
 
         OpenCardFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
             .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
@@ -79,7 +82,7 @@ public class EUI
             .SetColor(Color.GRAY);
     }
 
-    public static void RegisterKeywords() {
+    public static void RegisterKeywords(Map<String, EUIKeyword> keywords) {
         for (String s : GameDictionary.parentWord.keySet()) {
             final String title = GameDictionary.parentWord.get(s);
             final String description = GameDictionary.keywords.get(s);
@@ -93,6 +96,14 @@ public class EUI
                 else {
                     String newTitle = JavaUtils.Capitalize(title.substring(title.indexOf(":") + 1));
                     tooltip = new EUITooltip(newTitle, description);
+
+                    // Add grammar
+                    EUIKeyword grammar = keywords.get(newTitle);
+                    if (grammar != null) {
+                        tooltip.past = grammar.PAST;
+                        tooltip.plural = grammar.PLURAL;
+                        tooltip.present = grammar.PRESENT;
+                    }
 
                     // Add CommonKeywordIcon pictures to keywords
                     if (title.equals(GameDictionary.INNATE.NAMES[0])) {
