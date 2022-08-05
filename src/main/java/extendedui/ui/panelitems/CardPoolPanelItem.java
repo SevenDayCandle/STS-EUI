@@ -61,6 +61,6 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     {
         String base = EUIRM.Strings.UI_ViewCardPoolDescription;
         String addendum = additionalTextFunc != null ? additionalTextFunc.Invoke() : null;
-        return addendum != null ? base + " NL  NL " + addendum : base;
+        return addendum != null ? base + " || " + addendum : base;
     }
 }

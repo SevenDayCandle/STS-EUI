@@ -232,16 +232,16 @@ public class EUIRM
         // e.g. English: Card -> Cards, Spanish: Carta -> Cartas
         public final String Plural(Object obj) {
             String base = String.valueOf(obj);
-            return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[base.toLowerCase().endsWith(GetLanguagePlural()) ? 1 : 0], obj);
+            return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[0], obj);
         }
 
         // e.g. English: Card -> Card(s)
-        public final String PluralC(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[2], obj);}
+        public final String PluralC(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[1], obj);}
 
         // e.g. English: Discard -> Discarded, Spanish: Descarta -> Descartada
-        public final String Past(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[3], obj);}
+        public final String Past(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[2], obj);}
 
-        public final String Present(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[4], obj);}
+        public final String Present(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[3], obj);}
 
         public final String JoinWithAnd(List<String> values) {
             return JoinWith(this::And, values);
@@ -288,11 +288,6 @@ public class EUIRM
             }
 
             return strFunc.Invoke(sj.toString(), values[i]);
-        }
-
-        // TODO do language specific checks
-        private String GetLanguagePlural() {
-            return "s";
         }
     }
 }

@@ -10,6 +10,7 @@ import extendedui.EUIRenderHelpers;
 import extendedui.JavaUtils;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.text.EUISmartText;
 
 public class GUI_Label extends GUI_Hoverable
 {
@@ -134,11 +135,11 @@ public class GUI_Label extends GUI_Hoverable
     }
 
     public float GetAutoHeight() {
-        return EUIRenderHelpers.GetSmartHeight(font, text, Settings.WIDTH);
+        return EUISmartText.GetSmartHeight(font, text, Settings.WIDTH);
     }
 
     public float GetAutoWidth() {
-        return EUIRenderHelpers.GetSmartWidth(font, text, Settings.WIDTH, 0f);
+        return EUISmartText.GetSmartWidth(font, text, Settings.WIDTH, 0f);
     }
 
     @Override
@@ -156,7 +157,7 @@ public class GUI_Label extends GUI_Hoverable
         if (smartText)
         {
             final float step = hb.width * horizontalRatio;
-            EUIRenderHelpers.WriteSmartText(sb, font, text, hb.x + step, hb.y + (hb.height * verticalRatio),
+            EUISmartText.Write(sb, font, text, hb.x + step, hb.y + (hb.height * verticalRatio),
             smartPadEnd ? hb.width - (step * 2) : hb.width, font.getLineHeight(), textColor);
         }
         else if (horizontalRatio < 0.5f)

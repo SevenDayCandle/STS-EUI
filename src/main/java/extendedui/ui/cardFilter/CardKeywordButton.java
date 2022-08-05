@@ -18,7 +18,7 @@ import extendedui.utilities.EUIFontHelper;
 
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
-import static extendedui.EUIRenderHelpers.CARD_ENERGY_IMG_WIDTH;
+import static extendedui.text.EUISmartText.CARD_ENERGY_IMG_WIDTH;
 
 public class CardKeywordButton extends GUI_Hoverable
 {

@@ -6,7 +6,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.evacipated.cardcrawl.mod.stslib.StSLib;
 import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
 import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
@@ -18,6 +17,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.patches.EUIKeyword;
@@ -30,6 +30,7 @@ import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.ui.tooltips.EUITooltip;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -38,7 +39,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EUI
 {
-    private static final String ENERGY_STRING = "[E]";
+    private static final String[] ENERGY_STRINGS = {"[E]", "[R]", "[G]", "[B]", "[W]"};
 
     public static final ArrayList<GUI_Base> BattleSubscribers = new ArrayList<>();
     public static final ArrayList<GUI_Base> Subscribers = new ArrayList<>();
@@ -66,14 +67,13 @@ public class EUI
         return CardsScreen != null; // This will be null before the UI has loaded
     }
 
-    public static void Initialize(Map<String, EUIKeyword> keywords)
+    public static void Initialize()
     {
         CardsScreen = new CardPoolScreen();
         CardFilters = new CardKeywordFilters();
         CustomHeader = new CustomCardLibSortHeader(null);
         CustomLibraryScreen = new CustomCardLibraryScreen();
         BaseMod.addTopPanelItem(new CardPoolPanelItem());
-        RegisterKeywords(keywords);
 
         OpenCardFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
             .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
@@ -82,58 +82,94 @@ public class EUI
             .SetColor(Color.GRAY);
     }
 
-    public static void RegisterKeywords(Map<String, EUIKeyword> keywords) {
-        for (String s : GameDictionary.parentWord.keySet()) {
-            final String title = GameDictionary.parentWord.get(s);
-            final String description = GameDictionary.keywords.get(s);
-
-            EUITooltip tooltip = EUITooltip.FindByID(title);
-            if (tooltip == null) {
-                if (ENERGY_STRING.equals(s)) {
-                    tooltip = new EUITooltip(TipHelper.TEXT[0], GameDictionary.TEXT[0]);
-                    tooltip.SetIconFunc(EUI::GetEnergyIcon);
-                }
-                else {
-                    String newTitle = JavaUtils.Capitalize(title.substring(title.indexOf(":") + 1));
-                    tooltip = new EUITooltip(newTitle, description);
-
-                    // Add grammar
-                    EUIKeyword grammar = keywords.get(newTitle);
-                    if (grammar != null) {
-                        tooltip.past = grammar.PAST;
-                        tooltip.plural = grammar.PLURAL;
-                        tooltip.present = grammar.PRESENT;
-                    }
-
-                    // Add CommonKeywordIcon pictures to keywords
-                    if (title.equals(GameDictionary.INNATE.NAMES[0])) {
-                        tooltip.SetIcon(StSLib.BADGE_INNATE);
-                    }
-                    else if (title.equals(GameDictionary.ETHEREAL.NAMES[0]))
-                    {
-                        tooltip.SetIcon(StSLib.BADGE_ETHEREAL);
-                    }
-                    else if (title.equals(GameDictionary.RETAIN.NAMES[0]))
-                    {
-                        tooltip.SetIcon(StSLib.BADGE_RETAIN);
-                    }
-                    else if (title.equals(GameDictionary.EXHAUST.NAMES[0]))
-                    {
-                        tooltip.SetIcon(StSLib.BADGE_EXHAUST);
-                    }
-                    else {
-                        // Add Custom Icons
-                        AbstractCustomIcon icon = CustomIconHelper.getIcon(newTitle);
-                        if (icon != null) {
-                            tooltip.SetIcon(icon.region);
-                        }
-                    }
-                }
-
-                EUITooltip.RegisterID(title, tooltip);
+    /* Add grammar rules to existing tooltips */
+    public static void RegisterGrammar(Map<String, EUIKeyword> keywords) {
+        for (Map.Entry<String, EUIKeyword> entry : keywords.entrySet()) {
+            EUIKeyword grammar = entry.getValue();
+            EUITooltip existing = EUITooltip.FindByID(entry.getKey());
+            if (existing != null) {
+                existing.past = grammar.PAST;
+                existing.plural = grammar.PLURAL;
+                existing.present = grammar.PRESENT;
             }
-            EUITooltip.RegisterName(s, tooltip);
         }
+    }
+
+    // Add CommonKeywordIcon pictures to keywords
+    public static void RegisterKeywordIcons() {
+        for (EUITooltip tooltip : JavaUtils.Map(EUITooltip.GetEntries(), Map.Entry::getValue)) {
+            String title = tooltip.title;
+            // Add CommonKeywordIcon pictures to keywords
+            if (title.equals(GameDictionary.INNATE.NAMES[0])) {
+                tooltip.SetIcon(StSLib.BADGE_INNATE);
+            }
+            else if (title.equals(GameDictionary.ETHEREAL.NAMES[0]))
+            {
+                tooltip.SetIcon(StSLib.BADGE_ETHEREAL);
+            }
+            else if (title.equals(GameDictionary.RETAIN.NAMES[0]))
+            {
+                tooltip.SetIcon(StSLib.BADGE_RETAIN);
+            }
+            else if (title.equals(GameDictionary.EXHAUST.NAMES[0]))
+            {
+                tooltip.SetIcon(StSLib.BADGE_EXHAUST);
+            }
+            else {
+                // Add Custom Icons
+                AbstractCustomIcon icon = CustomIconHelper.getIcon(title);
+                if (icon != null) {
+                    tooltip.SetIcon(icon.region);
+                }
+            }
+        }
+    }
+
+    /* Create EUITooltips for all basegame keywords
+    *  For basegame keywords, we use the properly capitalized version of its key as its ID and the first name value as its name
+    *  Modded keywords are added via BasemodPatches
+    * */
+    public static void RegisterBasegameKeywords() {
+
+        // Energy tooltips are not present in GameDictionary
+        TryRegisterTooltip(ENERGY_STRINGS[0], GameDictionary.TEXT[0], ENERGY_STRINGS).SetIconFunc(EUI::GetEnergyIcon);
+
+        // Read directly from fields to obtain the actual IDs to use, which are language-invariant
+        for (Field field : GameDictionary.class.getDeclaredFields())
+        {
+            if (field.getType() == com.megacrit.cardcrawl.localization.Keyword.class)
+            {
+                try
+                {
+                    final com.megacrit.cardcrawl.localization.Keyword k = (Keyword) field.get(null);
+                    String id = JavaUtils.Capitalize(field.getName());
+                    TryRegisterTooltip(JavaUtils.Capitalize(id), k.DESCRIPTION, k.NAMES);
+                }
+                catch (IllegalAccessException ex)
+                {
+                    ex.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static EUITooltip TryRegisterTooltip(String id, String description, String[] names) {
+        return TryRegisterTooltip(id, names[0], description, names);
+    }
+
+    /* Register a tooltip with the given parameters. If grammar exists, its contents will be merged with this tooltip
+     * */
+    public static EUITooltip TryRegisterTooltip(String id, String title, String description, String[] names) {
+        EUITooltip tooltip = EUITooltip.FindByID(id);
+        if (tooltip == null) {
+            String newTitle = JavaUtils.Capitalize(title);
+            tooltip = new EUITooltip(newTitle, description);
+            EUITooltip.RegisterID(id, tooltip);
+            for (String subName : names) {
+                EUITooltip.RegisterName(subName, tooltip);
+            }
+        }
+        return tooltip;
     }
 
     public static void Dispose()

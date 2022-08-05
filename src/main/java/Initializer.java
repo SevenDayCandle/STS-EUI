@@ -3,10 +3,10 @@ import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.utils.GdxRuntimeException;
-import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.localization.KeywordStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import extendedui.*;
@@ -24,10 +24,12 @@ import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
 import static extendedui.configuration.EUIConfiguration.RequiresReload;
 
 @SpireInitializer
-public class Initializer implements PostInitializeSubscriber, EditStringsSubscriber, EditCardsSubscriber, StartGameSubscriber, OnStartBattleSubscriber, PostUpdateSubscriber
+public class Initializer implements PostInitializeSubscriber, EditStringsSubscriber, EditKeywordsSubscriber, EditCardsSubscriber, StartGameSubscriber, OnStartBattleSubscriber, PostUpdateSubscriber
 {
     public static final String PATH = "localization/extendedui/";
-    public static final String JSON_KEYWORDS = "/Keywords.json";
+    public static final String JSON_KEYWORD_EXTENSION = "/KeywordExtensions.json";
+    public static final String JSON_KEYWORD = "/KeywordStrings.json";
+    public static final String JSON_UI = "/UIStrings.json";
 
     //Used by @SpireInitializer
     public static void initialize()
@@ -47,37 +49,66 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     }
 
     @Override
-    public void receivePostInitialize()
+    public void receiveEditKeywords()
     {
-        EUIConfiguration.Load();
-        EUI.Initialize(loadCustomKeywords("eng"));
-        EUIRenderHelpers.InitializeBuffers();
-        STSEffekseerManager.Initialize();
-        LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
+        EUI.RegisterBasegameKeywords();
+        String language = Settings.language.name().toLowerCase();
+        this.loadKeywordStrings("eng");
+        this.loadKeywordStrings(language);
     }
 
     @Override
     public void receiveEditStrings()
     {
         String language = Settings.language.name().toLowerCase();
-        this.loadLangStrings("eng");
-        this.loadLangStrings(language);
+        this.loadUIStrings("eng");
+        this.loadUIStrings(language);
         EUIFontHelper.Initialize();
     }
 
-    private Map<String, EUIKeyword> loadCustomKeywords(String language) {
-        FileHandle handle = Gdx.files.internal(PATH + language + JSON_KEYWORDS);
+    @Override
+    public void receivePostInitialize()
+    {
+        EUIConfiguration.Load();
+        EUI.Initialize();
+        EUI.RegisterGrammar(loadKeywords("eng", JSON_KEYWORD_EXTENSION));
+        EUI.RegisterKeywordIcons();
+        EUIRenderHelpers.InitializeBuffers();
+        STSEffekseerManager.Initialize();
+        LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
+    }
+
+    private Map<String, EUIKeyword> loadKeywords(String language, String path) {
+        FileHandle handle = Gdx.files.internal(PATH + language + path);
         if (handle.exists()) {
             return JavaUtils.Deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
         }
         return new HashMap<>();
     }
 
-    private void loadLangStrings(String language)
+    private void loadKeywordStrings(String language)
+    {
+        FileHandle handle = Gdx.files.internal(PATH + language + JSON_KEYWORD);
+        if (handle.exists()) {
+            Map<String, EUIKeyword> keywords = JavaUtils.Deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
+            // Find standard tooltips. These tooltips only appear in the filters screen
+            for (Map.Entry<String, EUIKeyword> pair : keywords.entrySet()) {
+                EUIKeyword keyword = pair.getValue();
+                EUITooltip tooltip = new EUITooltip(keyword).CanHighlight(false).ShowText(false);
+                EUITooltip.RegisterID(pair.getKey(), tooltip);
+                for (String name : keyword.NAMES)
+                {
+                    EUITooltip.RegisterName(name, tooltip);
+                }
+            }
+        }
+    }
+
+    private void loadUIStrings(String language)
     {
         try
         {
-            BaseMod.loadCustomStringsFile(UIStrings.class, PATH + language + "/UIStrings.json");
+            BaseMod.loadCustomStringsFile(UIStrings.class, PATH + language + JSON_UI);
         }
         catch (GdxRuntimeException var4)
         {

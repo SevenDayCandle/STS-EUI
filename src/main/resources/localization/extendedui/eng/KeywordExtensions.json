@@ -4,7 +4,7 @@
 	"PRESENT": "Channels"
   },
   "Curse": {
-	"PLURAL": "Curses"
+	"PLURAL": "${0}@>1:Curses@:Curse$"
   },
   "Exhaust": {
 	"PAST": "Exhausted",
@@ -13,6 +13,11 @@
   "Evoke": {
 	"PAST": "Evoked",
 	"PRESENT": "Evokes"
+  },
+  "Fetch":
+  {
+	"PAST": "Fetched",
+	"PRESENT": "Fetches"
   },
   "Purge": {
 	"PAST": "Purged",
@@ -27,7 +32,7 @@
 	"PRESENT": "Scries"
   },
   "Status": {
-	"PLURAL": "Statuses"
+	"PLURAL": "${0}@>1:Statuses@:Status$"
   },
   "Transform": {
 	"PAST": "Transformed",

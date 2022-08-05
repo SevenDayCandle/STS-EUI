@@ -1,0 +1,47 @@
+{
+  "Attack":
+  {
+	"DESCRIPTION": "Attacks deal direct damage to opponents.",
+	"NAMES": ["attack", "attacks"],
+	"PRESENT": "attacking",
+	"PROPER_NAME": "Attack",
+	"PLURAL": "${0}@>1:Attacks@:Attack$"
+  },
+  "Discard":
+  {
+	"DESCRIPTION": "Move cards to your discard pile.",
+	"NAMES": ["discard", "discarded"],
+	"PAST": "discarded",
+	"PRESENT": "discards",
+	"PROPER_NAME": "Discard"
+  },
+  "Draw":
+  {
+	"DESCRIPTION": "Move cards to your hand.",
+	"NAMES": ["draw", "draw"],
+	"PAST": "drawn",
+	"PRESENT": "draws",
+	"PROPER_NAME": "Draw"
+  },
+  "Orb":
+  {
+	"DESCRIPTION": "An #yOrb's passive effect is triggered every turn.",
+	"NAMES": ["orb", "orbs"],
+	"PROPER_NAME": "Orb",
+	"PLURAL": "${0}@>1:Orbs@:Orb$"
+  },
+  "Power":
+  {
+	"DESCRIPTION": "Powers continually affect you until removed.",
+	"NAMES": ["power", "powers"],
+	"PROPER_NAME": "Power",
+	"PLURAL": "${0}@>1:Powers@:Power$"
+  },
+  "Skill":
+  {
+	"DESCRIPTION": "Skills do not do direct damage to opponents.",
+	"NAMES": ["skill", "skills"],
+	"PROPER_NAME": "Skill",
+	"PLURAL": "${0}@>1:Skills@:Skill$"
+  }
+}

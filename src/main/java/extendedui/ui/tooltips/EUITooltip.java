@@ -33,10 +33,8 @@ import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.patches.EUIKeyword;
-import extendedui.utilities.ClassUtils;
-import extendedui.utilities.ColoredString;
-import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.Mathf;
+import extendedui.text.EUISmartText;
+import extendedui.utilities.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -84,6 +82,7 @@ public class EUITooltip
     public boolean canHighlight = true;
     public boolean canFilter = true;
     public boolean canRender = true;
+    public boolean useLogic = false;
     public float iconMulti_H = 1;
     public float iconMulti_W = 1;
     protected int currentDesc;
@@ -128,8 +127,12 @@ public class EUITooltip
         this.title = keyword.PROPER_NAME;
         this.descriptions.add(keyword.DESCRIPTION);
         this.past = keyword.PAST;
-        this.plural = keyword.PLURAL;
         this.present = keyword.PRESENT;
+        this.plural = keyword.PLURAL;
+        // If the plural starts with $, use logic mode
+        if (keyword.PLURAL != null && !keyword.PLURAL.isEmpty() && keyword.PLURAL.charAt(0) == '$') {
+            this.useLogic = true;
+        }
     }
 
     public static void RegisterID(String id, EUITooltip tooltip)
@@ -695,9 +698,9 @@ public class EUITooltip
     public float Height() {
         BitmapFont descriptionFont = provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
         String desc = Description();
-        final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-        final float modTextHeight = (modName != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
-        final float subHeaderTextHeight = (subHeader != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
+        final float textHeight = EUISmartText.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+        final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
+        final float subHeaderTextHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
         return (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
     }
 
@@ -713,9 +716,9 @@ public class EUITooltip
         BitmapFont descriptionFont = provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
         String desc = Description();
 
-        final float textHeight = EUIRenderHelpers.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-        final float modTextHeight = (modName != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
-        final float subHeaderTextHeight = (subHeader != null) ? EUIRenderHelpers.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
+        final float textHeight = EUISmartText.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+        final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
+        final float subHeaderTextHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
         final float h = (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
 
         sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
@@ -761,7 +764,7 @@ public class EUITooltip
 
             if (!HideDescription())
             {
-                EUIRenderHelpers.WriteSmartText(sb, descriptionFont, desc, x + TEXT_OFFSET_X, yOff, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+                EUISmartText.Write(sb, descriptionFont, desc, x + TEXT_OFFSET_X, yOff, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
             }
         }
 
@@ -848,6 +851,13 @@ public class EUITooltip
     public EUITooltip CanHighlight(boolean value)
     {
         this.canHighlight = value;
+
+        return this;
+    }
+
+    public EUITooltip CanFilter(boolean value)
+    {
+        this.canFilter = value;
 
         return this;
     }
@@ -945,6 +955,13 @@ public class EUITooltip
             plural = EUIRM.Strings.Plural(title);
         }
         return plural;
+    }
+
+    public String ParsePlural(int amount) {
+        if (plural == null) {
+            plural = EUIRM.Strings.Plural(title);
+        }
+        return useLogic ? EUISmartText.ParseLogicString(JavaUtils.Format(plural.substring(1), amount)) : plural;
     }
 
     public String Present() {

@@ -13,21 +13,15 @@ import com.github.tommyettinger.colorful.Shaders;
 import com.github.tommyettinger.colorful.rgb.ColorTools;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import eatyourbeets.interfaces.delegates.ActionT1;
-import eatyourbeets.interfaces.delegates.ActionT2;
-import eatyourbeets.interfaces.delegates.FuncT0;
-import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.text.EUISmartText;
 import extendedui.ui.controls.GUI_Image;
 import extendedui.ui.tooltips.EUITooltip;
-import extendedui.utilities.AdvancedTexture;
-import extendedui.utilities.EUIColors;
-import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.TupleT2;
+import extendedui.utilities.*;
 import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
@@ -43,17 +37,11 @@ import java.util.ArrayList;
 public class EUIRenderHelpers
 {
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.5F);
-    public static final Color ORANGE_TEXT_COLOR = new Color(1.0F, 0.5F, 0.25F, 1F);
-    public static final Color INDIGO_TEXT_COLOR = new Color(0.65F, 0.37F, 1.F, 1F);
-    public static final Color PINK_TEXT_COLOR = new Color(1.0F, 0.37F, 0.65F, 1F);
-    public static final float CARD_ENERGY_IMG_WIDTH = 26.0F * Settings.scale;
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
     protected static final String SHADER_INVERT_FRAGMENT = "shaders/invertFragment.glsl";
     protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
     protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
-    private static final StringBuilder builder = new StringBuilder();
-    private static final GlyphLayout layout = new GlyphLayout();
 
     //copied from TipHelper
     private static final float CARD_TIP_PAD = 12.0F * Settings.scale;
@@ -641,295 +629,9 @@ public class EUIRenderHelpers
         return i < s.length() && c == s.charAt(i);
     }
 
-    public static TupleT2<Float, Float> WriteSmartText(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, Color baseColor)
-    {
-        return WriteSmartText(sb, font, text, x, y, lineWidth, font.getLineHeight() * Settings.scale, baseColor);
-    }
-
-    public static TupleT2<Float, Float> WriteSmartText(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor)
-    {
-        if (text != null && !text.isEmpty())
-        {
-            builder.setLength(0);
-            layout.setText(font, " ");
-
-            float curWidth = 0f;
-            float curHeight = 0f;
-            float spaceWidth = layout.width;
-
-            final FuncT1<String, StringBuilder> build = (stringBuilder) ->
-            {
-                String result = stringBuilder.toString();
-                stringBuilder.setLength(0);
-                return result;
-            };
-
-            Color blockColor = null;
-            Color wordColor = null;
-            boolean foundIcon = false;
-            boolean foundCustomColor = false;
-
-            for (int i = 0; i < text.length(); i++)
-            {
-                char c = text.charAt(i);
-                if (foundCustomColor) {
-                    if (Character.isLetterOrDigit(c))
-                    {
-                        builder.append(c);
-                        continue;
-                    }
-                    foundCustomColor = false;
-                    String colorString = build.Invoke(builder);
-                    blockColor = GetColor(colorString, baseColor);
-                }
-                else if (foundIcon)
-                {
-                    if (']' != c)
-                    {
-                        builder.append(c);
-                        continue;
-                    }
-
-                    foundIcon = false;
-                    String iconID = build.Invoke(builder);
-                    Color backgroundColor = GetTooltipBackgroundColor(iconID);
-                    TextureRegion icon = GetSmallIcon(iconID);
-                    if (icon != null)
-                    {
-                        final float orbWidth = icon.getRegionWidth();
-                        final float orbHeight = icon.getRegionHeight();
-                        final float scaleX = CARD_ENERGY_IMG_WIDTH / orbWidth;
-                        final float scaleY = CARD_ENERGY_IMG_WIDTH / orbHeight;
-
-                        //sb.setColor(1f, 1f, 1f, baseColor.a);
-                        if (curWidth + CARD_ENERGY_IMG_WIDTH > lineWidth)
-                        {
-                            curHeight -= lineSpacing;
-                            if (sb != null) {
-                                if (backgroundColor != null) {
-                                    sb.setColor(backgroundColor);
-                                    sb.draw(EUIRM.Images.Base_Badge.Texture(), x - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale,
-                                            orbWidth / 2f, orbHeight / 2f,
-                                            orbWidth, orbHeight, scaleX, scaleY, 0f,
-                                            icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
-                                            icon.getRegionHeight(), false, false);
-                                }
-                                sb.setColor(baseColor);
-                                sb.draw(icon, x - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
-                            }
-                            curWidth = CARD_ENERGY_IMG_WIDTH + spaceWidth;
-                        }
-                        else
-                        {
-                            if (sb != null) {
-                                if (backgroundColor != null) {
-                                    sb.setColor(backgroundColor);
-                                    sb.draw(EUIRM.Images.Base_Badge.Texture(), x + curWidth - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale,
-                                            orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f,
-                                            icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
-                                            icon.getRegionHeight(), false, false);
-                                }
-                                sb.setColor(baseColor);
-                                sb.draw(icon, x + curWidth - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
-                            }
-
-                            curWidth += CARD_ENERGY_IMG_WIDTH + spaceWidth;
-                        }
-                    }
-                }
-                else if ('N' == c && IsCharAt(text, i + 1, 'L'))
-                {
-                    curWidth = 0f;
-                    curHeight -= lineSpacing;
-                    i += 1;
-                }
-                else if ('T' == c && IsCharAt(text, i + 1, 'A') && IsCharAt(text, i + 2, 'B'))
-                {
-                    curWidth += spaceWidth * 5.0F;
-                    i += 2;
-                }
-                else if ('[' == c)
-                {
-                    foundIcon = true;
-                }
-                else if ('{' == c)
-                {
-                    blockColor = Settings.GOLD_COLOR;
-                    if (IsCharAt(text, i + 1, '#')) {
-                        foundCustomColor = true;
-                        i += 1;
-                    }
-                }
-                else if ('}' == c)
-                {
-                    blockColor = null;
-                }
-                else if ('#' == c)
-                {
-                    if (text.length() > i + 1)
-                    {
-                        wordColor = GetColor(text.charAt(i + 1), baseColor);
-                        i += 1;
-                    }
-                }
-                else if ('^' == c || ' ' == c || text.length() == (i + 1))
-                {
-                    if (c != ' ' && c != '^')
-                    {
-                        builder.append(c);
-                    }
-
-                    final String word = build.Invoke(builder);
-                    if (word != null && word.length() > 0)
-                    {
-                        if (wordColor != null)
-                        {
-                            font.setColor(wordColor);
-                            wordColor = null;
-                        }
-                        else if (blockColor != null)
-                        {
-                            font.setColor(blockColor);
-                        }
-                        else
-                        {
-                            font.setColor(baseColor);
-                        }
-
-                        layout.setText(font, word);
-                        if (curWidth + layout.width > lineWidth)
-                        {
-                            curHeight -= lineSpacing;
-                            if (sb != null) {
-                                font.draw(sb, word, x, y + curHeight);
-                            }
-                            curWidth = layout.width + spaceWidth;
-                        }
-                        else
-                        {
-                            if (sb != null) {
-                                font.draw(sb, word, x + curWidth, y + curHeight);
-                            }
-                            curWidth += layout.width + spaceWidth;
-                        }
-                    }
-                }
-                else
-                {
-                    builder.append(c);
-                }
-            }
-
-            layout.setText(font, text);
-            return new TupleT2<>(curWidth, curHeight);
-        }
-        return new TupleT2<>(0f, 0f);
-    }
-
-    public static float GetSmartHeight(BitmapFont font, String text, float lineWidth)
-    {
-        return GetSmartHeight(font, text, lineWidth, font.getLineHeight());
-    }
-
-    public static float GetSmartHeight(BitmapFont font, String text, float lineWidth, float lineSpacing)
-    {
-        return WriteSmartText(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).V2;
-    }
-
-    public static float GetSmartWidth(BitmapFont font, String text)
-    {
-        return GetSmartWidth(font, text, Integer.MAX_VALUE, font.getLineHeight());
-    }
-
-    public static float GetSmartWidth(BitmapFont font, String text, float lineSpacing)
-    {
-        return GetSmartWidth(font, text, Integer.MAX_VALUE, lineSpacing);
-    }
-
-    public static float GetSmartWidth(BitmapFont font, String text, float lineWidth, float lineSpacing)
-    {
-        return WriteSmartText(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).V1;
-    }
-
-    public static TextureRegion GetSmallIcon(String id)
-    {
-        switch (id)
-        {
-            case "E":
-                return AbstractDungeon.player != null ? AbstractDungeon.player.getOrb() : AbstractCard.orb_blue;
-            case "CARD":
-                return AbstractCard.orb_card;
-            case "POTION":
-                return AbstractCard.orb_potion;
-            case "RELIC":
-                return AbstractCard.orb_relic;
-            case "SPECIAL":
-                return AbstractCard.orb_special;
-
-            default:
-                EUITooltip tooltip = EUITooltip.FindByID(id);
-                return (tooltip != null) ? tooltip.icon : null;
-        }
-    }
-
-    private static Color GetTooltipBackgroundColor(String id) {
-        EUITooltip tooltip = EUITooltip.FindByID(id);
-        return (tooltip != null) ? tooltip.backgroundColor : null;
-    }
-
-    // Possible color formats:
-    // #c: Single color
-    // #AABBCCDD: RGBA
-    private static Color GetColor(String s, Color baseColor) {
-        if (s.length() == 1) {
-            return GetColor(s.charAt(0), baseColor);
-        }
-        try {
-            return Color.valueOf(s);
-        }
-        catch (NumberFormatException e) {
-            JavaUtils.LogWarning(EUIRenderHelpers.class, "Invalid color: #" + s);
-            return baseColor.cpy();
-        }
-    }
-
-    private static Color GetColor(Character c, Color baseColor)
-    {
-        switch (c)
-        {
-            case 'c':
-                return Settings.CREAM_COLOR.cpy();
-            case 'e':
-                return Color.GRAY.cpy();
-            case 'b':
-                return Settings.BLUE_TEXT_COLOR.cpy();
-            case 'g':
-                return Settings.GREEN_TEXT_COLOR.cpy();
-            case 'p':
-                return Settings.PURPLE_COLOR.cpy();
-            case 'r':
-                return Settings.RED_TEXT_COLOR.cpy();
-            case 'y':
-                return Settings.GOLD_COLOR.cpy();
-            case 'o':
-                return ORANGE_TEXT_COLOR.cpy();
-            case 'i':
-                return INDIGO_TEXT_COLOR.cpy();
-            case 'k':
-                return PINK_TEXT_COLOR.cpy();
-            case 'l':
-                return Color.LIME.cpy();
-            case '#':
-                return baseColor.cpy();
-            default:
-                JavaUtils.LogWarning(EUIRenderHelpers.class, "Unknown color: #" + c);
-                return baseColor.cpy();
-        }
-    }
-
     public static float GetTooltipHeight(EUITooltip tip)
     {
-        return -GetSmartHeight(FontHelper.tipBodyFont, tip.Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
+        return -EUISmartText.GetSmartHeight(FontHelper.tipBodyFont, tip.Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
     }
 
     public static float CalculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY)

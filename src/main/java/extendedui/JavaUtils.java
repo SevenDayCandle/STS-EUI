@@ -372,6 +372,12 @@ public class JavaUtils
         }
     }
 
+    public static String PopBuilder(StringBuilder stringBuilder) {
+        String result = stringBuilder.toString();
+        stringBuilder.setLength(0);
+        return result;
+    }
+
     public static <T> float Sum(Iterable<T> list, FuncT1<Float, T> predicate)
     {
         float sum = 0;

@@ -519,7 +519,9 @@ public class CardKeywordFilters extends GUI_CanvasGrid
             {
                 for (EUITooltip tooltip : GetAllTooltips(card))
                 {
-                    CurrentFilterCounts.merge(tooltip, 1, Integer::sum);
+                    if (tooltip.canFilter) {
+                        CurrentFilterCounts.merge(tooltip, 1, Integer::sum);
+                    }
                 }
 
                 availableMods.add(EUIGameUtils.GetModInfo(card));
