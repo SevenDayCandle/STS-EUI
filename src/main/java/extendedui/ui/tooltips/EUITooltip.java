@@ -59,12 +59,17 @@ public class EUITooltip
     public static final float BODY_TEXT_WIDTH = 320f * Settings.scale;
     public static final float TIP_DESC_LINE_SPACING = 26f * Settings.scale;
     public static final float POWER_ICON_OFFSET_X = 40f * Settings.scale;
+    public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
+    public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
+    public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
 
     private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
     private static boolean inHand;
     private static TooltipProvider provider;
+    private static TooltipProvider lastProvider;
     private static AbstractCreature creature;
+    private static AbstractCreature lastHoveredCreature;
     private static final Vector2 genericTipPos = new Vector2(0, 0);
 
     public ArrayList<String> descriptions = new ArrayList<>();
@@ -190,7 +195,9 @@ public class EUITooltip
             ReflectionHacks.setPrivateStatic(TipHelper.class, "card", null);
             ReflectionHacks.setPrivateStatic(TipHelper.class, "KEYWORDS", EMPTY_LIST);
             ReflectionHacks.setPrivateStatic(TipHelper.class, "POWER_TIPS", EMPTY_LIST);
+            lastHoveredCreature = null;
             provider = null;
+            lastProvider = null;
         }
     }
 
@@ -309,18 +316,20 @@ public class EUITooltip
             return;
         }
 
-        List<EUITooltip> pTips = provider.GetTips();
-
-        int totalHidden = 0;
         inHand = AbstractDungeon.player != null && AbstractDungeon.player.hand.contains(card);
-        tooltips.clear();
-        provider.GenerateDynamicTooltips(tooltips);
 
-        for (EUITooltip tip : pTips)
-        {
-            if (tip.canRender && !tooltips.contains(tip))
+        if (lastProvider != provider) {
+            lastProvider = provider;
+            List<EUITooltip> pTips = provider.GetTips();
+            lastHoveredCreature = null;
+            tooltips.clear();
+            provider.GenerateDynamicTooltips(tooltips);
+            for (EUITooltip tip : pTips)
             {
-                tooltips.add(tip);
+                if (tip.canRender && !tooltips.contains(tip))
+                {
+                    tooltips.add(tip);
+                }
             }
         }
 
@@ -596,34 +605,35 @@ public class EUITooltip
             return;
         }
 
-        final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
-        final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
-        final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
-
-        tooltips.clear();
-        for (AbstractPower p : creature.powers)
-        {
-            if (p instanceof InvisiblePower)
+        if (lastHoveredCreature != creature) {
+            lastHoveredCreature = creature;
+            lastProvider = null;
+            tooltips.clear();
+            for (AbstractPower p : creature.powers)
             {
-                continue;
-            }
-            else if (p instanceof TooltipProvider) {
-                tooltips.add(((TooltipProvider) p).GetTooltip());
-                continue;
-            }
+                if (p instanceof InvisiblePower)
+                {
+                    continue;
+                }
+                else if (p instanceof TooltipProvider) {
+                    tooltips.add(((TooltipProvider) p).GetTooltip());
+                    continue;
+                }
 
-            final EUITooltip tip = new EUITooltip(p.name, p.description);
-            if (p.region48 != null)
-            {
-                tip.icon = p.region48;
-            }
+                // Replace vanilla newlines with EUI newlines
+                final EUITooltip tip = new EUITooltip(p.name, p.description != null ? p.description.replace(" NL ", " | ") : p.description);
+                if (p.region48 != null)
+                {
+                    tip.icon = p.region48;
+                }
 
-            if (tip.icon == null && p.img != null)
-            {
-                tip.SetIcon(p.img, 6);
-            }
+                if (tip.icon == null && p.img != null)
+                {
+                    tip.SetIcon(p.img, 6);
+                }
 
-            tooltips.add(tip);
+                tooltips.add(tip);
+            }
         }
 
         float x;

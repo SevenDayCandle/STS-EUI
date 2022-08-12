@@ -6,11 +6,13 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.ui.FtueTip;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.EUIRM;
 import extendedui.ui.controls.GUI_Tutorial;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
 import java.util.Arrays;
+import java.util.Collection;
 
 public class FakeFtue extends FtueTip {
 

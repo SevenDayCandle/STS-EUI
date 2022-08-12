@@ -78,14 +78,19 @@ public class GUI_Tutorial extends GUI_Hoverable
                 .SetOnClick(() -> {
                     ChangePage(page <= 0 ? descriptions.size() - 1 : page - 1);
                 });
+
+        this.next.SetActive(this.descriptions.size() > 1);
+        this.prev.SetActive(this.descriptions.size() > 1);
     }
 
-    public GUI_Tutorial SetPostRenders(ActionT1<SpriteBatch>... postRenders) {
+    @SafeVarargs
+    public final GUI_Tutorial SetPostRenders(ActionT1<SpriteBatch>... postRenders) {
         return SetPostRenders(Arrays.asList(postRenders));
     }
 
     public GUI_Tutorial SetPostRenders(Collection<ActionT1<SpriteBatch>> postRenders) {
         this.postRenders.addAll(postRenders);
+        renderFunction = page < postRenders.size() ? this.postRenders.get(page) : null;
         return this;
     }
 

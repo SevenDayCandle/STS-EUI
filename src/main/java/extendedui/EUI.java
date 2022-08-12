@@ -29,6 +29,7 @@ import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.ui.tooltips.EUITooltip;
+import org.apache.commons.lang3.StringUtils;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -132,7 +133,8 @@ public class EUI
     public static void RegisterBasegameKeywords() {
 
         // Energy tooltips are not present in GameDictionary
-        TryRegisterTooltip(ENERGY_STRINGS[0], GameDictionary.TEXT[0], ENERGY_STRINGS).SetIconFunc(EUI::GetEnergyIcon);
+        EUITooltip energyTooltip = TryRegisterTooltip("E", TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).SetIconFunc(EUI::GetEnergyIcon);
+        EUITooltip.RegisterName(StringUtils.lowerCase(TipHelper.TEXT[0]), energyTooltip);
 
         // Read directly from fields to obtain the actual IDs to use, which are language-invariant
         for (Field field : GameDictionary.class.getDeclaredFields())
