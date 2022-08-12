@@ -19,7 +19,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
     public CardPoolPanelItem() {
         super(Loader.isModLoaded("PrideMod") ? EUIRM.Images.CardPool_Pride : EUIRM.Images.CardPool, ID);
-        SetTooltip(new EUITooltip(EUIRM.Strings.UI_ViewCardPool, EUIRM.Strings.UI_ViewCardPoolDescription));
+        SetTooltip(new EUITooltip(EUIRM.Strings.UICardPool_ViewCardPool, EUIRM.Strings.UICardPool_ViewCardPoolDescription));
     }
 
     @Override
@@ -44,7 +44,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     public void update() {
         super.update();
         if (this.tooltip != null && getHitbox().hovered) {
-            tooltip.SetText(EUIRM.Strings.UI_ViewCardPool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")", GetFullDescription());
+            tooltip.SetText(EUIRM.Strings.UICardPool_ViewCardPool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")", GetFullDescription());
             EUITooltip.QueueTooltip(tooltip);
         }
         if (EUIHotkeys.openCardPool.isJustPressed() && EUI.CurrentScreen != EUI.CardsScreen) {
@@ -59,7 +59,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
     public String GetFullDescription()
     {
-        String base = EUIRM.Strings.UI_ViewCardPoolDescription;
+        String base = EUIRM.Strings.UICardPool_ViewCardPoolDescription;
         String addendum = additionalTextFunc != null ? additionalTextFunc.Invoke() : null;
         return addendum != null ? base + " || " + addendum : base;
     }

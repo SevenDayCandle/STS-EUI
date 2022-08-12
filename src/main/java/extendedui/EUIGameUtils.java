@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
 import extendedui.ui.tooltips.EUITooltip;
 
 import java.net.URL;
@@ -161,6 +162,32 @@ public class EUIGameUtils {
     public static float ScreenH(float value)
     {
         return Settings.HEIGHT * value;
+    }
+
+    public static String TextForRarity(AbstractCard.CardRarity type) {
+        switch (type)
+        {
+            case BASIC:
+                return EUIRM.Strings.UI_Basic; // STS calls this rarity "Starter" but this keyword is used by Animator/Clown Emporium
+
+            case COMMON:
+                return RunHistoryScreen.TEXT[12];
+
+            case UNCOMMON:
+                return RunHistoryScreen.TEXT[13];
+
+            case RARE:
+                return RunHistoryScreen.TEXT[14];
+
+            case SPECIAL:
+                return RunHistoryScreen.TEXT[15];
+
+            case CURSE:
+                return RunHistoryScreen.TEXT[16];
+
+            default:
+                return AbstractCard.TEXT[5];
+        }
     }
 
     public static String TextForType(AbstractCard.CardType type) {

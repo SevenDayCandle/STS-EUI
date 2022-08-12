@@ -20,9 +20,13 @@ public class FakeFtue extends FtueTip {
     protected static final float HEIGHT = Settings.scale * 500;
     protected GUI_Tutorial tutorial;
 
-    public FakeFtue(String title, String... descriptions) {
-        tutorial = new GUI_Tutorial(new AdvancedHitbox(Settings.WIDTH / 2.0F - WIDTH / 2, Settings.HEIGHT / 2.0F - HEIGHT / 2, WIDTH, HEIGHT), EUIRM.Images.Panel_Large.Texture(), title, Arrays.asList(descriptions));
+    public FakeFtue(GUI_Tutorial tutorial) {
+        this.tutorial = tutorial;
         OpenScreen();
+    }
+
+    public FakeFtue(String title, String... descriptions) {
+        this(new GUI_Tutorial(new AdvancedHitbox(Settings.WIDTH / 2.0F - WIDTH / 2, Settings.HEIGHT / 2.0F - HEIGHT / 2, WIDTH, HEIGHT), EUIRM.Images.Panel_Large.Texture(), title, Arrays.asList(descriptions)));
     }
 
     public void OpenScreen() {

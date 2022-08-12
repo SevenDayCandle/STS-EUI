@@ -355,7 +355,7 @@ public class CardKeywordFilters extends GUI_CanvasGrid
                 .SetItems(CostFilter.values());
 
         RaritiesDropdown = new GUI_Dropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
-                , item -> StringUtils.capitalize(item.toString().toLowerCase()))
+                , EUIGameUtils::TextForRarity)
                 .SetOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
                 })
@@ -376,7 +376,7 @@ public class CardKeywordFilters extends GUI_CanvasGrid
                     {
                         return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
                     }
-                    return StringUtils.join(JavaUtils.Map(items, item -> StringUtils.capitalize(item.toString().toLowerCase())), ", ");
+                    return JavaUtils.JoinStrings(", ", JavaUtils.Map(items, EUIGameUtils::TextForRarity));
                 }, null, false)
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
                 .SetIsMultiSelect(true)
@@ -405,7 +405,7 @@ public class CardKeywordFilters extends GUI_CanvasGrid
                     {
                         return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
                     }
-                    return StringUtils.join(JavaUtils.Map(items, EUIGameUtils::TextForType), ", ");
+                    return JavaUtils.JoinStrings(", ", JavaUtils.Map(items, EUIGameUtils::TextForType));
                 }, null, false)
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[1])
                 .SetIsMultiSelect(true)
@@ -478,7 +478,7 @@ public class CardKeywordFilters extends GUI_CanvasGrid
                 .SetBackground(EUIRM.Images.RectangularButton.Texture(), Color.DARK_GRAY)
                 .SetTickImage(null, null, 10)
                 .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.7f)
-                .SetText(EUIRM.Strings.UI_SortByCount)
+                .SetText(EUIRM.Strings.Misc_SortByCount)
                 .SetOnToggle(val -> {
                     shouldSortByCount = val;
                     RefreshButtonOrder();

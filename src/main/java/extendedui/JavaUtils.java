@@ -9,9 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.StringJoiner;
+import java.util.*;
 import java.util.function.Predicate;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
@@ -332,6 +330,113 @@ public class JavaUtils
     public static void LogWarning(Object source, Object message)
     {
         GetLogger(source).warn(message);
+    }
+
+    public static <T, N extends Comparable<N>> N Max(T[] list, FuncT1<N, T> getProperty)
+    {
+        N best = null;
+        for (T t : list)
+        {
+            if (t != null) {
+                N prop = getProperty.Invoke(t);
+                if (prop != null && (best == null || prop.compareTo(best) > 0))
+                {
+                    best = prop;
+                }
+            }
+        }
+
+        return best;
+    }
+
+
+    public static <T, N extends Comparable<N>> N Max(Iterable<T> list, FuncT1<N, T> getProperty)
+    {
+        N best = null;
+        for (T t : list)
+        {
+            if (t != null) {
+                N prop = getProperty.Invoke(t);
+                if (prop != null && (best == null || prop.compareTo(best) > 0))
+                {
+                    best = prop;
+                }
+            }
+        }
+
+        return best;
+    }
+
+    public static <T, N extends Comparable<N>> T FindMin(Iterable<T> list, FuncT1<N, T> getProperty)
+    {
+        N best = null;
+        T result = null;
+        for (T t : list)
+        {
+            if (t != null) {
+                N prop = getProperty.Invoke(t);
+                if (prop != null && (best == null || prop.compareTo(best) < 0))
+                {
+                    best = prop;
+                    result = t;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static <T, N extends Comparable<N>> T FindMin(T[] list, FuncT1<N, T> getProperty)
+    {
+        N best = null;
+        T result = null;
+        for (T t : list)
+        {
+            if (t != null) {
+                N prop = getProperty.Invoke(t);
+                if (prop != null && (best == null || prop.compareTo(best) < 0))
+                {
+                    best = prop;
+                    result = t;
+                }
+            }
+        }
+
+        return result;
+    }
+
+    public static <T, N extends Comparable<N>> N Min(T[] list, FuncT1<N, T> getProperty)
+    {
+        N best = null;
+        for (T t : list)
+        {
+            if (t != null) {
+                N prop = getProperty.Invoke(t);
+                if (prop != null && (best == null || prop.compareTo(best) < 0))
+                {
+                    best = prop;
+                }
+            }
+        }
+
+        return best;
+    }
+
+    public static <T, N extends Comparable<N>> N Min(Iterable<T> list, FuncT1<N, T> getProperty)
+    {
+        N best = null;
+        for (T t : list)
+        {
+            if (t != null) {
+                N prop = getProperty.Invoke(t);
+                if (prop != null && (best == null || prop.compareTo(best) < 0))
+                {
+                    best = prop;
+                }
+            }
+        }
+
+        return best;
     }
 
     public static <T, N> ArrayList<N> Map(T[] list, FuncT1<N, T> predicate)

@@ -45,7 +45,23 @@
 	  "Toggle Filters"
 	]
   },
-  "extendedui:ui":
+  "extendedui:misc":
+  {
+	"TEXT": [
+	  "{0} to cycle",
+	  "Type to Search",
+	  "Sort by {0}"
+	]
+  },
+  "extendedui:ui_cardpool":
+  {
+	"TEXT": [
+	  "Card Pool",
+	  "View all cards available in this run",
+	  "Show Colorless"
+	]
+  },
+  "extendedui:ui_filters":
   {
 	"TEXT": [
 	  "Item(s)",
@@ -54,17 +70,12 @@
 	  "Origin",
 	  "Color",
 	  "Results",
-	  "Show Colorless",
-	  "Type to Search",
-	  "Card Pool",
-	  "View all cards available in this run",
 	  "Filters",
 	  "Any",
 	  "No cards match the current filters.",
-	  "{0} to cycle",
 	  "Base Game",
-	  "Sort by {0}",
-	  "Name Search"
+	  "Name Search",
+	  "Basic"
 	]
   }
 }

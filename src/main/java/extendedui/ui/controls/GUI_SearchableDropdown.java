@@ -83,7 +83,7 @@ public class GUI_SearchableDropdown<T> extends GUI_Dropdown<T>
         super.Render(sb);
         this.searchInput.TryRender(sb);
         if (isOpen && searchInput.text.isEmpty()) {
-            EUIRenderHelpers.WriteCentered(sb, font, EUIRM.Strings.UI_TypeToSearch, hb, Color.GRAY);
+            EUIRenderHelpers.WriteCentered(sb, font, EUIRM.Strings.Misc_TypeToSearch, hb, Color.GRAY);
         }
     }
 

@@ -50,7 +50,7 @@ public class CardPoolScreen extends AbstractScreen
                 .SetBackground(EUIRM.Images.Panel.Texture(), Color.DARK_GRAY)
                 .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
                 .SetFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
-                .SetText(EUIRM.Strings.UI_ShowColorless)
+                .SetText(EUIRM.Strings.UICardPool_ShowColorless)
                 .SetOnToggle(val -> {
                     EUI.CardFilters.ColorsDropdown.ToggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
                     EUI.CardFilters.ColorsDropdown.ToggleSelection(AbstractCard.CardColor.CURSE, val, true);

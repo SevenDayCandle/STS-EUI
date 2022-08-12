@@ -13,7 +13,7 @@ public abstract class PCLTopPanelItem extends TopPanelItem
     public GenericCallback<PCLTopPanelItem> onLeftClick;
     public GenericCallback<PCLTopPanelItem> onRightClick;
     public EUITooltip tooltip;
-    private boolean rightClickable;
+    private boolean rightClickable = true;
 
 
     public static String CreateFullID(Class<? extends PCLTopPanelItem> type)

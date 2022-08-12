@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import eatyourbeets.interfaces.delegates.FuncT2;
 import extendedui.ui.TextureCache;
@@ -119,7 +118,9 @@ public class EUIRM
         private final UIStrings StringsConfig = GetUIStrings("config");
         private final UIStrings StringsGrammar = GetUIStrings("grammar");
         private final UIStrings StringsHotkeys = GetUIStrings("hotkeys");
-        private final UIStrings StringsUI = GetUIStrings("ui");
+        private final UIStrings StringsMisc = GetUIStrings("misc");
+        private final UIStrings StringsUICardPool = GetUIStrings("ui_cardpool");
+        private final UIStrings StringsUIFilter = GetUIStrings("ui_filters");
 
         public final String Config_UseVanillaCompendium = StringsConfig.TEXT[0];
         public final String Config_DisableEffekseer = StringsConfig.TEXT[1];
@@ -130,29 +131,32 @@ public class EUIRM
         public final String Hotkey_OpenCardPool = StringsHotkeys.TEXT[1];
         public final String Hotkey_Toggle = StringsHotkeys.TEXT[2];
 
-        public final String UI_ItemsSelected = StringsUI.TEXT[0];
-        public final String UI_Keywords = StringsUI.TEXT[1];
-        public final String UI_Amount = StringsUI.TEXT[2];
-        public final String UI_Origins = StringsUI.TEXT[3];
-        public final String UI_Colors = StringsUI.TEXT[4];
-        public final String UI_Total = StringsUI.TEXT[5];
-        public final String UI_ShowColorless = StringsUI.TEXT[6];
-        public final String UI_TypeToSearch = StringsUI.TEXT[7];
-        public final String UI_ViewCardPool = StringsUI.TEXT[8];
-        public final String UI_ViewCardPoolDescription = StringsUI.TEXT[9];
-        public final String UI_Filters = StringsUI.TEXT[10];
-        public final String UI_Any = StringsUI.TEXT[11];
-        public final String UI_NoMatch = StringsUI.TEXT[12];
-        public final String UI_KeyToCycle = StringsUI.TEXT[13];
-        public final String UI_BaseGame = StringsUI.TEXT[14];
-        public final String UI_SortByCount = StringsUI.TEXT[15];
-        public final String UI_NameSearch = StringsUI.TEXT[16];
+        public final String Misc_KeyToCycle = StringsMisc.TEXT[0];
+        public final String Misc_TypeToSearch = StringsMisc.TEXT[1];
+        public final String Misc_SortByCount = StringsMisc.TEXT[2];
+
+        public final String UICardPool_ViewCardPool = StringsUICardPool.TEXT[0];
+        public final String UICardPool_ViewCardPoolDescription = StringsUICardPool.TEXT[1];
+        public final String UICardPool_ShowColorless = StringsUICardPool.TEXT[2];
+
+        public final String UI_ItemsSelected = StringsUIFilter.TEXT[0];
+        public final String UI_Keywords = StringsUIFilter.TEXT[1];
+        public final String UI_Amount = StringsUIFilter.TEXT[2];
+        public final String UI_Origins = StringsUIFilter.TEXT[3];
+        public final String UI_Colors = StringsUIFilter.TEXT[4];
+        public final String UI_Total = StringsUIFilter.TEXT[5];
+        public final String UI_Filters = StringsUIFilter.TEXT[6];
+        public final String UI_Any = StringsUIFilter.TEXT[7];
+        public final String UI_NoMatch = StringsUIFilter.TEXT[8];
+        public final String UI_BaseGame = StringsUIFilter.TEXT[9];
+        public final String UI_NameSearch = StringsUIFilter.TEXT[10];
+        public final String UI_Basic = StringsUIFilter.TEXT[11];
 
         public final String KeyToCycle(String keyName) {
-            return JavaUtils.Format(UI_KeyToCycle, keyName);
+            return JavaUtils.Format(Misc_KeyToCycle, keyName);
         }
         public final String SortBy(String item) {
-            return JavaUtils.Format(UI_SortByCount, item);
+            return JavaUtils.Format(Misc_SortByCount, item);
         }
 
         // e.g. English: Red Card -> 0 1, Spanish: Carta roja -> 1 0

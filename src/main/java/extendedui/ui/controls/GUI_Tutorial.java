@@ -10,6 +10,8 @@ import com.megacrit.cardcrawl.ui.FtueTip;
 import com.megacrit.cardcrawl.ui.MultiPageFtue;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.EUIRM;
+import extendedui.JavaUtils;
+import extendedui.text.EUISmartText;
 import extendedui.ui.GUI_Hoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
