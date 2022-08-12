@@ -548,9 +548,11 @@ public class CardKeywordFilters extends GUI_CanvasGrid
         OriginsDropdown.SetItems(modInfos);
 
         ArrayList<AbstractCard.CardRarity> rarityItems = new ArrayList<>(availableRarities);
+        rarityItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
         RaritiesDropdown.SetItems(rarityItems);
 
         ArrayList<AbstractCard.CardType> typesItems = new ArrayList<>(availableTypes);
+        typesItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
         TypesDropdown.SetItems(typesItems);
 
         ArrayList<CostFilter> costItems = new ArrayList<>();
