@@ -217,6 +217,11 @@ public class EUI
 
     public static void PreRender(SpriteBatch sb)
     {
+        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && CurrentScreen != null)
+        {
+            CurrentScreen.PreRender(sb);
+        }
+
         RenderImpl(sb, preRenderList.iterator());
     }
 
@@ -231,6 +236,7 @@ public class EUI
             s.TryRender(sb);
         }
 
+        // Battle subscribers are rendered in the energy panel patch
     }
 
     public static void PostRender(SpriteBatch sb)

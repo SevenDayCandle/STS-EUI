@@ -131,6 +131,11 @@ public abstract class AbstractScreen extends GUI_Base
     {
     }
 
+    public void PreRender(SpriteBatch sb)
+    {
+
+    }
+
     public void Render(SpriteBatch sb)
     {
 

@@ -5,6 +5,7 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.DrawMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -14,16 +15,6 @@ import javassist.CtBehavior;
 
 public class CardCrawlGamePatches
 {
-    @SpirePatch(clz = AbstractPlayer.class, method = "renderPlayerBattleUi", paramtypez = {SpriteBatch.class})
-    public static class AbstractPlayer_PreRender
-    {
-        @SpirePrefixPatch
-        public static void Insert(AbstractPlayer __instance, SpriteBatch sb)
-        {
-            EUI.PreRender(sb);
-        }
-    }
-
     @SpirePatch(clz = CardCrawlGame.class, method = "render")
     public static class CardCrawlGame_Render
     {
@@ -49,7 +40,6 @@ public class CardCrawlGamePatches
         @SpireInsertPatch(locator = Locator.class, localvars = {"sb"})
         public static void Insert(CardCrawlGame __instance, SpriteBatch sb)
         {
-            //TODO make a generic overlay property for UI
             EUI.CardFilters.TryRender(sb);
             EUI.PostRender(sb);
             EUI.PriorityPostRender(sb);
