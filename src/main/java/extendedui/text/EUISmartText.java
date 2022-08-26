@@ -179,6 +179,10 @@ public class EUISmartText
                         break;
                     // End Color Block
                     case '}':
+                        String o = JavaUtils.PopBuilder(builder);
+                        if (!o.isEmpty()) {
+                            WriteWord(sb, o, x, y, lineWidth, lineSpacing);
+                        }
                         blockColor = null;
                         break;
                     // Newline
