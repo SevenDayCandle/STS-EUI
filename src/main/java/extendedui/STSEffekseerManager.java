@@ -63,6 +63,7 @@ public class STSEffekseerManager {
     /**
      Start playing a new effect in Effekseer.
      Whenever a new effect type is loaded, its files are cached so that future calls to the same effect type do not need to load file data again
+     Note that rotations are in radians
      */
     public static Integer Play(String key, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
         if (CanPlay()) {
@@ -126,6 +127,24 @@ public class STSEffekseerManager {
      */
     public static boolean Exists(int handle){
         return Enabled && ManagerCore.Exists(handle);
+    }
+
+    /**
+     Force an animation to stop playing
+     */
+    public static void Stop(int handle){
+        if (Enabled) {
+            ManagerCore.Stop(handle);
+        }
+    }
+
+    /**
+     Force an animation to stop playing
+     */
+    public static void StopAll(){
+        if (Enabled) {
+            ManagerCore.StopAllEffects();
+        }
     }
 
     /**
