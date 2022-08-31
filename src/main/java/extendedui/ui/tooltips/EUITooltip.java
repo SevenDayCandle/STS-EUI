@@ -465,19 +465,7 @@ public class EUITooltip
             y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        for (int i = 0; i < pTips.size(); i++)
-        {
-            EUITooltip tip = pTips.get(i);
-            if (tip.hideDescription == null)
-            {
-                tip.hideDescription = !StringUtils.isEmpty(tip.id) && EUIConfiguration.HideTipDescription(tip.id);
-            }
-
-            if (!tip.hideDescription)
-            {
-                y -= tip.Render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
-            }
-        }
+        RenderTipsImpl(sb, pTips, x, y);
     }
 
 
@@ -524,19 +512,7 @@ public class EUITooltip
             y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        for (int i = 0; i < pTips.size(); i++)
-        {
-            EUITooltip tip = pTips.get(i);
-            if (tip.hideDescription == null)
-            {
-                tip.hideDescription = !StringUtils.isEmpty(tip.id) && EUIConfiguration.HideTipDescription(tip.id);
-            }
-
-            if (!tip.hideDescription)
-            {
-                y -= tip.Render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
-            }
-        }
+        RenderTipsImpl(sb, pTips, x, y);
     }
 
     public static void RenderFromBlight(SpriteBatch sb)
@@ -582,19 +558,7 @@ public class EUITooltip
             y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        for (int i = 0; i < pTips.size(); i++)
-        {
-            EUITooltip tip = pTips.get(i);
-            if (tip.hideDescription == null)
-            {
-                tip.hideDescription = !StringUtils.isEmpty(tip.id) && EUIConfiguration.HideTipDescription(tip.id);
-            }
-
-            if (!tip.hideDescription)
-            {
-                y -= tip.Render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
-            }
-        }
+        RenderTipsImpl(sb, pTips, x, y);
     }
 
     // TODO rework
@@ -675,17 +639,20 @@ public class EUITooltip
 
     public static void RenderGeneric(SpriteBatch sb)
     {
-        float x = genericTipPos.x;
-        float y = genericTipPos.y;
-        for (int i = 0; i < tooltips.size(); i++)
+        RenderTipsImpl(sb, tooltips, genericTipPos.x, genericTipPos.y);
+    }
+
+    protected static void RenderTipsImpl(SpriteBatch sb, List<EUITooltip> tips, float x, float y)
+    {
+        for (int i = 0; i < tips.size(); i++)
         {
-            final EUITooltip tip = tooltips.get(i);
+            final EUITooltip tip = tips.get(i);
             if (tip.hideDescription == null)
             {
                 tip.hideDescription = !StringUtils.isEmpty(tip.id) && EUIConfiguration.HideTipDescription(tip.id);
             }
 
-            if (!tip.hideDescription)
+            if (!tip.hideDescription && tip.canRender)
             {
                 y -= tip.Render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
             }
