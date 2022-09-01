@@ -34,6 +34,7 @@ public class GUI_Button extends GUI_Hoverable
     public boolean interactable = true;
     public boolean isSmartText;
     public boolean showText = true;
+    public boolean smartTextResize;
     public GenericCallback<GUI_Button> onLeftClick;
     public GenericCallback<GUI_Button> onRightClick;
     public String text;
@@ -115,6 +116,14 @@ public class GUI_Button extends GUI_Hoverable
     public GUI_Button SetSmartText(boolean isSmartText)
     {
         this.isSmartText = isSmartText;
+
+        return this;
+    }
+
+    public GUI_Button SetSmartText(boolean isSmartText, boolean smartTextResize)
+    {
+        this.isSmartText = isSmartText;
+        this.smartTextResize = smartTextResize;
 
         return this;
     }
@@ -347,7 +356,7 @@ public class GUI_Button extends GUI_Hoverable
             font.getData().setScale(fontScale);
             final Color color = interactable ? textColor : TEXT_DISABLED_COLOR;
             if (isSmartText) {
-                EUISmartText.Write(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color);
+                EUISmartText.Write(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color, smartTextResize);
             }
             else if (FontHelper.getSmartWidth(font, text, Integer.MAX_VALUE, 0f) > (hb.width * 0.7))
             {

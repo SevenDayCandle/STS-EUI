@@ -110,6 +110,10 @@ public abstract class GUI_Canvas extends GUI_Base
         return scrollDelta;
     }
 
+    public void MoveToTop() {
+        scrollBar.Scroll(0, true);
+    }
+
     protected void OnScroll(float newPercent)
     {
         if (!EUI.DoesActiveElementExist())

@@ -8,8 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import eatyourbeets.interfaces.delegates.ActionT1;
-import eatyourbeets.interfaces.delegates.FuncT3;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.JavaUtils;
@@ -33,22 +31,38 @@ public class EUISmartText
     private static Color wordColor;
     private static Color mainColor = Color.WHITE;
     private static BitmapFont currentFont;
+    private static float currentFontScale;
     private static float spaceWidth;
     private static float curWidth;
     private static float curHeight;
     private static int index;
 
+    private static boolean GetAndMove()
+    {
+        if (index < currentText.length())
+        {
+            currentChar = currentText.charAt(index);
+            index++;
+            return true;
+        }
+        return false;
+    }
+
     // Possible color formats:
     // #c: Single color
     // #AABBCCDD: RGBA
-    private static Color GetColor(String s) {
-        if (s.length() == 1) {
+    private static Color GetColor(String s)
+    {
+        if (s.length() == 1)
+        {
             return GetColor(s.charAt(0));
         }
-        try {
+        try
+        {
             return Color.valueOf(s);
         }
-        catch (NumberFormatException e) {
+        catch (NumberFormatException e)
+        {
             JavaUtils.LogWarning(EUIRenderHelpers.class, "Invalid color: #" + s);
             return mainColor;
         }
@@ -93,7 +107,7 @@ public class EUISmartText
         switch (id)
         {
             case "E":
-                return AbstractDungeon.player != null ? AbstractDungeon.player.getOrb() : AbstractCard.orb_blue;
+                return AbstractDungeon.player != null ? AbstractDungeon.player.getOrb() : AbstractCard.orb_red;
             case "CARD":
                 return AbstractCard.orb_card;
             case "POTION":
@@ -134,9 +148,144 @@ public class EUISmartText
         return Write(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).V1;
     }
 
-    private static Color GetTooltipBackgroundColor(String id) {
+    private static Color GetTooltipBackgroundColor(String id)
+    {
         EUITooltip tooltip = EUITooltip.FindByID(id);
         return (tooltip != null) ? tooltip.backgroundColor : null;
+    }
+
+    private static boolean HasNext(int offset, char target)
+    {
+        offset += index;
+        if (offset < currentText.length())
+        {
+            return currentText.charAt(offset) == target;
+        }
+        return false;
+    }
+
+    private static boolean HasWhitespace(int offset)
+    {
+        offset += index;
+        if (offset < currentText.length())
+        {
+            return Character.isWhitespace(currentText.charAt(offset));
+        }
+        return false;
+    }
+
+    private static void ObtainBlockColor()
+    {
+        if (GetAndMove() && currentChar == '#')
+        {
+            StringBuilder subBuilder = new StringBuilder();
+            while (GetAndMove() && currentChar != ':')
+            {
+                subBuilder.append(currentChar);
+            }
+            blockColor = GetColor(JavaUtils.PopBuilder(subBuilder));
+        }
+        else if (currentChar != null)
+        {
+            blockColor = Settings.GOLD_COLOR;
+            builder.append(currentChar);
+        }
+    }
+
+    private static void ObtainWordColor()
+    {
+        if (GetAndMove())
+        {
+            wordColor = GetColor(currentChar);
+        }
+    }
+
+    /* Interprets the string as a logic statement and returns the subset that matches the evaluated value
+     *
+     * A: Integer value to be evaluated.
+     * @B=: Defines a condition block. Conditions start with @ and end with =. Subsequent text will be returned if the condition B is satisfied
+     *
+     *
+     * Example: A@>1:times@:time
+     * */
+    public static String ParseLogicString(String input)
+    {
+        int evaluated = 0;
+        ArrayList<LogicBlock> conditions = new ArrayList<>();
+        StringBuilder buffer = new StringBuilder();
+        LogicBlock currentBlock = null;
+        LogicCondition current = null;
+
+        for (int i = 0; i < input.length(); i++)
+        {
+            char c = input.charAt(i);
+
+            switch (c)
+            {
+                // < > signals start of condition. If there already was one, add it to the block and make a new one
+                case '<':
+                case '>':
+                case '%':
+                case '&':
+                case '!':
+                case '?':
+                    if (currentBlock == null)
+                    {
+                        currentBlock = new LogicBlock();
+                    }
+                    else
+                    {
+                        String condOutput = JavaUtils.PopBuilder(buffer);
+                        current.value = StringUtils.isNumeric(condOutput) ? Integer.parseInt(condOutput) : evaluated;
+                        currentBlock.conditions.add(current);
+                    }
+                    current = new LogicCondition(LogicComparison.TypeFor(c));
+                    break;
+                // : signals end of condition definition. An empty condition means that this block always returns
+                case ':':
+                    if (currentBlock == null)
+                    {
+                        currentBlock = new LogicBlock();
+                    }
+                    if (current == null)
+                    {
+                        current = new LogicCondition(LogicComparison.True);
+                    }
+                    String condOutput = JavaUtils.PopBuilder(buffer);
+                    current.value = StringUtils.isNumeric(condOutput) ? Integer.parseInt(condOutput) : evaluated;
+                    currentBlock.conditions.add(current);
+                    break;
+                // @ $ signals end of block. If there was no conditionBlock, this goes into evaluated
+                case '$':
+                case '@':
+                    String output = JavaUtils.PopBuilder(buffer);
+                    if (currentBlock != null)
+                    {
+                        currentBlock.text = output;
+                        conditions.add(currentBlock);
+                        currentBlock = null;
+                        current = null;
+                    }
+                    else if (StringUtils.isNumeric(output))
+                    {
+                        evaluated = Integer.parseInt(output);
+                    }
+                    break;
+                default:
+                    buffer.append(c);
+            }
+        }
+
+        // Return the first block that passes
+        for (LogicBlock block : conditions)
+        {
+            if (block.Evaluate(evaluated))
+            {
+                return block.text;
+            }
+        }
+
+        return "";
     }
 
     public static TupleT2<Float, Float> Write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, Color baseColor)
@@ -144,26 +293,41 @@ public class EUISmartText
         return Write(sb, font, text, x, y, lineWidth, font.getLineHeight() * Settings.scale, baseColor);
     }
 
-    public static TupleT2<Float, Float> Write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor) {
+    public static TupleT2<Float, Float> Write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor)
+    {
+        return Write(sb, font, text, x, y, lineWidth, lineSpacing, baseColor, false);
+    }
+
+    public static TupleT2<Float, Float> Write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor, boolean applyFontScaling)
+    {
         index = 0;
-        if (text != null) {
+        if (text != null)
+        {
             builder.setLength(0);
             curWidth = 0f;
             curHeight = 0f;
             mainColor = baseColor;
             currentText = text;
 
-            if (currentFont != font) {
+            final float fontScale = font.getScaleX();
+            if (currentFont != font || currentFontScale != fontScale)
+            {
+                currentFontScale = fontScale;
                 currentFont = font;
                 layout.setText(font, " ");
                 spaceWidth = layout.width;
             }
 
-            while (GetAndMove()) {
-                switch (currentChar) {
+            final float sizeMultiplier = applyFontScaling ? (0.667f + (currentFont.getScaleX() / 3f)) : 1;
+            final float imgSize = sizeMultiplier * CARD_ENERGY_IMG_WIDTH;
+
+            while (GetAndMove())
+            {
+                switch (currentChar)
+                {
                     // Symbol
                     case '[':
-                        WriteToken(sb, x, y, lineWidth, lineSpacing);
+                        WriteToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize);
                         break;
                     // Color
                     case '#':
@@ -180,7 +344,8 @@ public class EUISmartText
                     // End Color Block
                     case '}':
                         String o = JavaUtils.PopBuilder(builder);
-                        if (!o.isEmpty()) {
+                        if (!o.isEmpty())
+                        {
                             WriteWord(sb, o, x, y, lineWidth, lineSpacing);
                         }
                         blockColor = null;
@@ -194,19 +359,29 @@ public class EUISmartText
                         WriteTab(lineSpacing);
                         break;
                     default:
-                        if (Character.isWhitespace(currentChar)) {
+                        if (Character.isWhitespace(currentChar))
+                        {
                             String output = JavaUtils.PopBuilder(builder);
-                            if (!output.isEmpty()) {
+                            if (!output.isEmpty())
+                            {
                                 WriteWord(sb, output, x, y, lineWidth, lineSpacing);
                             }
+                            // Base game newlines
+                            if (HasNext(1, 'N') && HasNext(2, 'L') && HasWhitespace(3))
+                            {
+                                WriteNewline(lineSpacing);
+                                index += 3;
+                            }
                         }
-                        else {
+                        else
+                        {
                             builder.append(currentChar);
                         }
                 }
             }
             String output = JavaUtils.PopBuilder(builder);
-            if (!output.isEmpty()) {
+            if (!output.isEmpty())
+            {
                 WriteWord(sb, output, x, y, lineWidth, lineSpacing);
             }
 
@@ -215,61 +390,40 @@ public class EUISmartText
         return new TupleT2<>(0f, 0f);
     }
 
-    private static boolean GetAndMove() {
-        if (index < currentText.length()) {
-            currentChar = currentText.charAt(index);
-            index++;
-            return true;
-        }
-        return false;
-    }
-
-    private static void ObtainWordColor() {
-        if (GetAndMove()) {
-            wordColor = GetColor(currentChar);
-        }
-    }
-
-    private static void ObtainBlockColor() {
-        if (GetAndMove() && currentChar == '#') {
-            StringBuilder subBuilder = new StringBuilder();
-            while (GetAndMove() && currentChar != ':') {
-                subBuilder.append(currentChar);
-            }
-            blockColor = GetColor(JavaUtils.PopBuilder(subBuilder));
-        }
-        else if (currentChar != null) {
-            blockColor = Settings.GOLD_COLOR;
-            builder.append(currentChar);
-        }
-    }
-
-    private static void WriteLogic(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing) {
+    private static void WriteLogic(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing)
+    {
         StringBuilder subBuilder = new StringBuilder();
-        while (GetAndMove()) {
+        while (GetAndMove())
+        {
             subBuilder.append(currentChar);
-            if (currentChar == '$') {
+            if (currentChar == '$')
+            {
                 break;
             }
         }
         String output = ParseLogicString(JavaUtils.PopBuilder(subBuilder));
-        if (output != null && !output.isEmpty()) {
+        if (output != null && !output.isEmpty())
+        {
             WriteWord(sb, output, x, y, lineWidth, lineSpacing);
         }
     }
 
-    private static void WriteNewline(float lineSpacing) {
+    private static void WriteNewline(float lineSpacing)
+    {
         curWidth = 0f;
         curHeight -= lineSpacing;
     }
 
-    private static void WriteTab(float spaceWidth) {
+    private static void WriteTab(float spaceWidth)
+    {
         curWidth += spaceWidth * 5.0f;
     }
 
-    private static void WriteToken(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing) {
+    private static void WriteToken(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing, float iconScaling, float imageSize)
+    {
         StringBuilder subBuilder = new StringBuilder();
-        while (GetAndMove() && currentChar != ']') {
+        while (GetAndMove() && currentChar != ']')
+        {
             subBuilder.append(currentChar);
         }
 
@@ -280,17 +434,19 @@ public class EUISmartText
         {
             final float orbWidth = icon.getRegionWidth();
             final float orbHeight = icon.getRegionHeight();
-            final float scaleX = CARD_ENERGY_IMG_WIDTH / orbWidth;
-            final float scaleY = CARD_ENERGY_IMG_WIDTH / orbHeight;
+            final float scaleX = imageSize / orbWidth;
+            final float scaleY = imageSize / orbHeight;
 
             //sb.setColor(1f, 1f, 1f, baseColor.a);
-            if (curWidth + CARD_ENERGY_IMG_WIDTH > lineWidth)
+            if (curWidth + imageSize > lineWidth)
             {
                 curHeight -= lineSpacing;
-                if (sb != null) {
-                    if (backgroundColor != null) {
+                if (sb != null)
+                {
+                    if (backgroundColor != null)
+                    {
                         sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.Images.Base_Badge.Texture(), x - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale,
+                        sb.draw(EUIRM.Images.Base_Badge.Texture(), x - orbWidth / 2f + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * orbHeight / 2f - 8f * Settings.scale,
                                 orbWidth / 2f, orbHeight / 2f,
                                 orbWidth, orbHeight, scaleX, scaleY, 0f,
                                 icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
@@ -299,14 +455,16 @@ public class EUISmartText
                     sb.setColor(mainColor);
                     sb.draw(icon, x - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
                 }
-                curWidth = CARD_ENERGY_IMG_WIDTH + spaceWidth;
+                curWidth = imageSize + spaceWidth;
             }
             else
             {
-                if (sb != null) {
-                    if (backgroundColor != null) {
+                if (sb != null)
+                {
+                    if (backgroundColor != null)
+                    {
                         sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.Images.Base_Badge.Texture(), x + curWidth - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale,
+                        sb.draw(EUIRM.Images.Base_Badge.Texture(), x + curWidth - orbWidth / 2f + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * orbHeight / 2f - 8f * Settings.scale,
                                 orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f,
                                 icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
                                 icon.getRegionHeight(), false, false);
@@ -315,12 +473,13 @@ public class EUISmartText
                     sb.draw(icon, x + curWidth - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
                 }
 
-                curWidth += CARD_ENERGY_IMG_WIDTH + spaceWidth;
+                curWidth += imageSize + spaceWidth;
             }
         }
     }
 
-    private static void WriteWord(SpriteBatch sb, String word, float x, float y, float lineWidth, float lineSpacing) {
+    private static void WriteWord(SpriteBatch sb, String word, float x, float y, float lineWidth, float lineSpacing)
+    {
         if (wordColor != null)
         {
             currentFont.setColor(wordColor);
@@ -339,140 +498,19 @@ public class EUISmartText
         if (curWidth + layout.width > lineWidth)
         {
             curHeight -= lineSpacing;
-            if (sb != null) {
+            if (sb != null)
+            {
                 currentFont.draw(sb, word, x, y + curHeight);
             }
             curWidth = layout.width + spaceWidth;
         }
         else
         {
-            if (sb != null) {
+            if (sb != null)
+            {
                 currentFont.draw(sb, word, x + curWidth, y + curHeight);
             }
             curWidth += layout.width + spaceWidth;
-        }
-    }
-
-    /* Interprets the string as a logic statement and returns the subset that matches the evaluated value
-    *
-    * A: Integer value to be evaluated.
-    * @B=: Defines a condition block. Conditions start with @ and end with =. Subsequent text will be returned if the condition B is satisfied
-    *
-    *
-    * Example: A@>1:times@:time
-    * */
-    public static String ParseLogicString(String input) {
-        int evaluated = 0;
-        ArrayList<LogicBlock> conditions = new ArrayList<>();
-        StringBuilder buffer = new StringBuilder();
-        LogicBlock currentBlock = null;
-        LogicCondition current = null;
-
-        for (int i = 0; i < input.length(); i++) {
-            char c = input.charAt(i);
-
-            switch (c) {
-                // < > signals start of condition. If there already was one, add it to the block and make a new one
-                case '<':
-                case '>':
-                case '%':
-                case '&':
-                case '!':
-                case '?':
-                    if (currentBlock == null) {
-                        currentBlock = new LogicBlock();
-                    }
-                    else {
-                        String condOutput = JavaUtils.PopBuilder(buffer);
-                        current.value = StringUtils.isNumeric(condOutput) ? Integer.parseInt(condOutput) : evaluated;
-                        currentBlock.conditions.add(current);
-                    }
-                    current = new LogicCondition(LogicComparison.TypeFor(c));
-                    break;
-                // : signals end of condition definition. An empty condition means that this block always returns
-                case ':':
-                    if (currentBlock == null) {
-                        currentBlock = new LogicBlock();
-                    }
-                    if (current == null) {
-                        current = new LogicCondition(LogicComparison.True);
-                    }
-                    String condOutput = JavaUtils.PopBuilder(buffer);
-                    current.value = StringUtils.isNumeric(condOutput) ? Integer.parseInt(condOutput) : evaluated;
-                    currentBlock.conditions.add(current);
-                    break;
-                // @ $ signals end of block. If there was no conditionBlock, this goes into evaluated
-                case '$':
-                case '@':
-                    String output = JavaUtils.PopBuilder(buffer);
-                    if (currentBlock != null) {
-                        currentBlock.text = output;
-                        conditions.add(currentBlock);
-                        currentBlock = null;
-                        current = null;
-                    }
-                    else if (StringUtils.isNumeric(output)) {
-                        evaluated = Integer.parseInt(output);
-                    }
-                    break;
-                default:
-                    buffer.append(c);
-            }
-        }
-
-        // Return the first block that passes
-        for (LogicBlock block : conditions) {
-            if (block.Evaluate(evaluated)) {
-                return block.text;
-            }
-        }
-
-        return "";
-    }
-
-    public static class LogicBlock
-    {
-        final public ArrayList<LogicCondition> conditions;
-        public String text;
-
-        public LogicBlock() {
-            conditions = new ArrayList<>();
-        }
-
-        public boolean Evaluate(int input) {
-            return JavaUtils.Any(conditions, block -> block.Evaluate(input));
-        }
-    }
-
-    public static class LogicCondition
-    {
-        public int value = 0;
-        public LogicComparison type;
-
-        public LogicCondition(LogicComparison type) {
-            this.type = type;
-        }
-
-        public boolean Evaluate(int input) {
-            switch (type) {
-                case Greater:
-                    return input > value;
-                case Less:
-                    return input < value;
-                case Modulo:
-                    return input % value == 0;
-                case EndsWith:
-                    int denominator = 10;
-                    while (denominator < value) {
-                        denominator *= 10;
-                    }
-                    return input % denominator == value;
-                case Unequal:
-                    return input != value;
-                case Equal:
-                    return input == value;
-            }
-            return true;
         }
     }
 
@@ -486,8 +524,10 @@ public class EUISmartText
         Equal,
         True;
 
-        public static LogicComparison TypeFor(char c) {
-            switch (c) {
+        public static LogicComparison TypeFor(char c)
+        {
+            switch (c)
+            {
                 case '>':
                     return LogicComparison.Greater;
                 case '<':
@@ -502,6 +542,58 @@ public class EUISmartText
                     return LogicComparison.Equal;
             }
             return LogicComparison.True;
+        }
+    }
+
+    public static class LogicBlock
+    {
+        final public ArrayList<LogicCondition> conditions;
+        public String text;
+
+        public LogicBlock()
+        {
+            conditions = new ArrayList<>();
+        }
+
+        public boolean Evaluate(int input)
+        {
+            return JavaUtils.Any(conditions, block -> block.Evaluate(input));
+        }
+    }
+
+    public static class LogicCondition
+    {
+        public int value = 0;
+        public LogicComparison type;
+
+        public LogicCondition(LogicComparison type)
+        {
+            this.type = type;
+        }
+
+        public boolean Evaluate(int input)
+        {
+            switch (type)
+            {
+                case Greater:
+                    return input > value;
+                case Less:
+                    return input < value;
+                case Modulo:
+                    return input % value == 0;
+                case EndsWith:
+                    int denominator = 10;
+                    while (denominator < value)
+                    {
+                        denominator *= 10;
+                    }
+                    return input % denominator == value;
+                case Unequal:
+                    return input != value;
+                case Equal:
+                    return input == value;
+            }
+            return true;
         }
     }
 }

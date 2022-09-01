@@ -18,7 +18,7 @@ import extendedui.interfaces.markers.CacheableCard;
 import java.util.Collection;
 import java.util.HashMap;
 
-// TODO controller support
+// TODO controller/keyboard support
 public class GUI_CardGrid extends GUI_CanvasGrid
 {
     protected static final float CARD_SCALE = 0.75f;
@@ -194,7 +194,7 @@ public class GUI_CardGrid extends GUI_CanvasGrid
         return this;
     }
 
-    public GUI_CardGrid AddCards(Collection<AbstractCard> cards)
+    public GUI_CardGrid AddCards(Iterable<AbstractCard> cards)
     {
         for (AbstractCard card : cards)
         {
@@ -325,7 +325,7 @@ public class GUI_CardGrid extends GUI_CanvasGrid
             }
 
             column += 1;
-            if (column >= ROW_SIZE)
+            if (column >= rowSize)
             {
                 column = 0;
                 row += 1;
@@ -373,9 +373,5 @@ public class GUI_CardGrid extends GUI_CanvasGrid
     public int CurrentSize()
     {
         return cards.size();
-    }
-
-    public void MoveToTop() {
-        scrollBar.Scroll(0, true);
     }
 }

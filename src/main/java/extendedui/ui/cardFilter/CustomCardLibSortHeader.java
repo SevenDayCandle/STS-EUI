@@ -184,17 +184,17 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
 
     public void UpdateForFilters() {
         if (this.group != null) {
-            if (CardKeywordFilters.AreFiltersEmpty()) {
+            if (EUI.CardFilters.AreFiltersEmpty()) {
                 this.group.group = originalGroup;
             }
             else {
-                ArrayList<AbstractCard> tempGroup = CardKeywordFilters.ApplyFilters(originalGroup);
+                ArrayList<AbstractCard> tempGroup = EUI.CardFilters.ApplyFilters(originalGroup);
                 if (tempGroup.size() > 0) {
                     this.group.group = tempGroup;
                 }
-                else if (!CardKeywordFilters.AreFiltersEmpty()) {
+                else if (!EUI.CardFilters.AreFiltersEmpty()) {
                     CardKeywordFilters.CurrentFilters.clear();
-                    tempGroup = CardKeywordFilters.ApplyFilters(originalGroup);
+                    tempGroup = EUI.CardFilters.ApplyFilters(originalGroup);
                     this.group.group = tempGroup.size() > 0 ? tempGroup : GetFakeGroup();
                 }
                 else {

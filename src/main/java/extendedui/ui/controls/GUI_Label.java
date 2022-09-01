@@ -16,6 +16,7 @@ public class GUI_Label extends GUI_Hoverable
 {
     public String text;
     public boolean smartText;
+    public boolean smartTextResize;
     public Color textColor;
     public float verticalRatio;
     public float horizontalRatio;
@@ -127,6 +128,13 @@ public class GUI_Label extends GUI_Hoverable
         return this;
     }
 
+    public GUI_Label SetSmartText(boolean smartText, boolean smartPadEnd, boolean smartTextResize) {
+        this.smartText = smartText;
+        this.smartPadEnd = smartPadEnd;
+        this.smartTextResize = smartTextResize;
+        return this;
+    }
+
     public GUI_Label SetColor(Color textColor)
     {
         this.textColor = textColor.cpy();
@@ -158,7 +166,7 @@ public class GUI_Label extends GUI_Hoverable
         {
             final float step = hb.width * horizontalRatio;
             EUISmartText.Write(sb, font, text, hb.x + step, hb.y + (hb.height * verticalRatio),
-            smartPadEnd ? hb.width - (step * 2) : hb.width, font.getLineHeight(), textColor);
+            smartPadEnd ? hb.width - (step * 2) : hb.width, font.getLineHeight(), textColor, smartTextResize);
         }
         else if (horizontalRatio < 0.5f)
         {

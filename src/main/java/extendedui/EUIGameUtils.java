@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
@@ -25,6 +26,12 @@ import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 
 public class EUIGameUtils {
     private static final HashMap<CodeSource, ModInfo> ModInfoMapping = new HashMap<>();
+    private static final HashMap<String, AbstractCard.CardColor> RelicColors = new HashMap<>();
+
+    public static void AddRelicColor(AbstractRelic relic, AbstractCard.CardColor color)
+    {
+        RelicColors.put(relic.relicId, color);
+    }
 
     public static boolean CanShowUpgrades(boolean isLibrary)
     {
@@ -95,6 +102,10 @@ public class EUIGameUtils {
         }
 
         return null;
+    }
+
+    public static AbstractCard.CardColor GetRelicColor(String relicID) {
+        return RelicColors.getOrDefault(relicID, AbstractCard.CardColor.COLORLESS);
     }
 
     public static boolean InBattle() {

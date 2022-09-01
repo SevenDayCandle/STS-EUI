@@ -164,17 +164,17 @@ public class MasterDeckViewScreenPatches
     }
 
     public static void UpdateForFilters() {
-        if (CardKeywordFilters.AreFiltersEmpty()) {
+        if (EUI.CardFilters.AreFiltersEmpty()) {
             GetFakeMasterDeck();
         }
         else {
-            ArrayList<AbstractCard> tempGroup = CardKeywordFilters.ApplyFilters(AbstractDungeon.player.masterDeck.group);
+            ArrayList<AbstractCard> tempGroup = EUI.CardFilters.ApplyFilters(AbstractDungeon.player.masterDeck.group);
             if (tempGroup.size() > 0) {
                 fakeMasterDeck.group = tempGroup;
             }
-            else if (!CardKeywordFilters.AreFiltersEmpty()) {
+            else if (!EUI.CardFilters.AreFiltersEmpty()) {
                 CardKeywordFilters.CurrentFilters.clear();
-                tempGroup = CardKeywordFilters.ApplyFilters(AbstractDungeon.player.masterDeck.group);
+                tempGroup = EUI.CardFilters.ApplyFilters(AbstractDungeon.player.masterDeck.group);
                 fakeMasterDeck.group = tempGroup.size() > 0 ? tempGroup : GetFakeGroup();
             }
             else {

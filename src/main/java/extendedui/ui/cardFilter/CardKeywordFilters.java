@@ -57,7 +57,7 @@ public class CardKeywordFilters extends GUI_CanvasGrid
         }
     }
 
-    private static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
+    protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
     public static final float SPACING = Settings.scale * 22.5f;
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
     public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.87f;
@@ -112,7 +112,7 @@ public class CardKeywordFilters extends GUI_CanvasGrid
         }
     }
 
-    public static ArrayList<EUITooltip> GetAllTooltips(AbstractCard c)
+    public ArrayList<EUITooltip> GetAllTooltips(AbstractCard c)
     {
         ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
         TooltipProvider eC = JavaUtils.SafeCast(c, TooltipProvider.class);
@@ -182,7 +182,7 @@ public class CardKeywordFilters extends GUI_CanvasGrid
         return dynamicTooltips;
     }
 
-    public static ArrayList<AbstractCard> ApplyFilters(ArrayList<AbstractCard> input)
+    public ArrayList<AbstractCard> ApplyFilters(ArrayList<AbstractCard> input)
     {
         return JavaUtils.Filter(input, c -> {
             //Name check
@@ -277,7 +277,7 @@ public class CardKeywordFilters extends GUI_CanvasGrid
         });
     }
 
-    public static boolean AreFiltersEmpty()
+    public boolean AreFiltersEmpty()
     {
         return (CurrentName == null || CurrentName.isEmpty()) && CurrentColors.isEmpty() && CurrentOrigins.isEmpty() && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty() && CurrentCosts.isEmpty() && CurrentRarities.isEmpty() && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.IsEmpty());
     }
@@ -805,5 +805,10 @@ public class CardKeywordFilters extends GUI_CanvasGrid
     public int CurrentSize()
     {
         return FilterButtons.size();
+    }
+
+    public int GetReferenceCount()
+    {
+        return (referenceCards.size() == 1 && referenceCards.get(0) instanceof FakeLibraryCard) ? 0 : referenceCards.size();
     }
 }
