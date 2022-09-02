@@ -193,7 +193,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
                     this.group.group = tempGroup;
                 }
                 else if (!EUI.CardFilters.AreFiltersEmpty()) {
-                    CardKeywordFilters.CurrentFilters.clear();
+                    EUI.CardFilters.CurrentFilters.clear();
                     tempGroup = EUI.CardFilters.ApplyFilters(originalGroup);
                     this.group.group = tempGroup.size() > 0 ? tempGroup : GetFakeGroup();
                 }

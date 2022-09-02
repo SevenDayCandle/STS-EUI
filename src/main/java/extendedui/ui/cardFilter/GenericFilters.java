@@ -2,7 +2,6 @@ package extendedui.ui.cardFilter;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -13,17 +12,13 @@ import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.EUI;
-import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.FakeLibraryCard;
-import extendedui.utilities.Mathf;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -34,17 +29,19 @@ import java.util.Map;
 public abstract class GenericFilters<T> extends GUI_CanvasGrid
 {
     protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
-    public static final float SPACING = Settings.scale * 22.5f;
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
     public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.87f;
     public static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
     public static final float PAD_Y = Scale(45);
+    public static final float SPACING = Settings.scale * 22.5f;
     public static final int ROW_SIZE = 8;
-    protected int currentTotal;
-    protected ActionT1<CardKeywordButton> onClick;
+
     protected final HashMap<EUITooltip, Integer> CurrentFilterCounts = new HashMap<>();
-    protected final ArrayList<CardKeywordButton> FilterButtons = new ArrayList<>();
+    protected final ArrayList<FilterKeywordButton> FilterButtons = new ArrayList<>();
     protected final AdvancedHitbox hb;
+    protected int currentTotal;
+    protected ActionT1<FilterKeywordButton> onClick;
+    protected ArrayList<T> referenceItems;
     public final GUI_Button closeButton;
     public final GUI_Button clearButton;
     public final GUI_Label currentTotalHeaderLabel;
@@ -52,8 +49,8 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
     public final GUI_Label keywordsSectionLabel;
     public final GUI_Toggle sortTypeToggle;
     public final GUI_Toggle sortDirectionToggle;
-    protected ArrayList<T> referenceItems;
-
+    public final HashSet<EUITooltip> CurrentFilters = new HashSet<>();
+    public final HashSet<EUITooltip> CurrentNegateFilters = new HashSet<>();
     protected float draw_x;
     protected boolean invalidated;
     protected boolean isAccessedFromCardPool;
@@ -114,7 +111,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
                 });
     }
 
-    public GenericFilters<T> Initialize(ActionT1<CardKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    public final GenericFilters<T> Initialize(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
     {
         Clear(false, true);
         CurrentFilterCounts.clear();
@@ -132,20 +129,20 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
         for (Map.Entry<EUITooltip, Integer> filter : CurrentFilterCounts.entrySet())
         {
             int cardCount = filter.getValue();
-            FilterButtons.add(new CardKeywordButton(hb, filter.getKey()).SetOnClick(onClick).SetCardCount(cardCount));
+            FilterButtons.add(new FilterKeywordButton(this, filter.getKey()).SetOnClick(onClick).SetCardCount(cardCount));
         }
         currentTotalLabel.SetText(currentTotal);
 
         return this;
     }
 
-    public void Open()
+    public final void Open()
     {
         CardCrawlGame.isPopupOpen = true;
         SetActive(true);
     }
 
-    public void Close()
+    public final void Close()
     {
         closeButton.hb.hovered = false;
         closeButton.hb.clicked = false;
@@ -155,7 +152,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
         SetActive(false);
     }
 
-    public void Clear(boolean shouldInvoke, boolean shouldClearColors)
+    public final void Clear(boolean shouldInvoke, boolean shouldClearColors)
     {
         ClearImpl(shouldInvoke, shouldClearColors);
         if (shouldInvoke && onClick != null)
@@ -164,13 +161,13 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
         }
     }
 
-    public void Refresh(ArrayList<T> items)
+    public final void Refresh(ArrayList<T> items)
     {
         referenceItems = items;
         invalidated = true;
     }
 
-    public void RefreshButtons()
+    public final void RefreshButtons()
     {
         CurrentFilterCounts.clear();
         currentTotal = 0;
@@ -186,7 +183,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
                 }
             }
         }
-        for (CardKeywordButton c : FilterButtons)
+        for (FilterKeywordButton c : FilterButtons)
         {
             c.SetCardCount(CurrentFilterCounts.getOrDefault(c.Tooltip, 0));
         }
@@ -196,13 +193,13 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
         RefreshButtonOrder();
     }
 
-    public void RefreshButtonOrder()
+    public final void RefreshButtonOrder()
     {
         sortTypeToggle.SetText(EUIRM.Strings.SortBy(shouldSortByCount ? EUIRM.Strings.UI_Amount : CardLibSortHeader.TEXT[2]));
         FilterButtons.sort((a, b) -> (shouldSortByCount ? a.CardCount - b.CardCount : StringUtils.compare(a.Tooltip.title, b.Tooltip.title)) * (sortDesc ? -1 : 1));
 
         int index = 0;
-        for (CardKeywordButton c : FilterButtons)
+        for (FilterKeywordButton c : FilterButtons)
         {
             if (c.isActive)
             {
@@ -213,7 +210,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
     }
 
     @Override
-    public boolean TryUpdate() {
+    public final boolean TryUpdate() {
         super.TryUpdate();
         if (EUIHotkeys.toggleFilters.isJustPressed()) {
             CardKeywordFilters.ToggleFilters();
@@ -222,7 +219,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
     }
 
     @Override
-    public void Update()
+    public final void Update()
     {
         super.Update();
         hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
@@ -242,7 +239,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
 
         if (!EUI.DoesActiveElementExist())
         {
-            for (CardKeywordButton c : FilterButtons)
+            for (FilterKeywordButton c : FilterButtons)
             {
                 c.TryUpdate();
             }
@@ -254,7 +251,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public final void Render(SpriteBatch sb)
     {
         super.Render(sb);
         sb.setColor(FADE_COLOR);
@@ -269,7 +266,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
         sortTypeToggle.TryRender(sb);
         sortDirectionToggle.TryRender(sb);
 
-        for (CardKeywordButton c : FilterButtons)
+        for (FilterKeywordButton c : FilterButtons)
         {
             c.TryRender(sb);
         }
@@ -289,7 +286,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
             {
                 return;
             }
-            for (CardKeywordButton c : FilterButtons)
+            for (FilterKeywordButton c : FilterButtons)
             {
                 if (c.background_button.hb.hovered)
                 {
@@ -309,7 +306,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
         }
     }
 
-    public void Invoke(CardKeywordButton button)
+    public void Invoke(FilterKeywordButton button)
     {
         if (onClick != null)
         {
@@ -335,5 +332,5 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
     abstract public void UpdateImpl();
     abstract public ArrayList<EUITooltip> GetAllTooltips(T c);
     abstract public ArrayList<AbstractCard> ApplyFilters(ArrayList<T> input);
-    abstract protected void InitializeImpl(ActionT1<CardKeywordButton> onClick, ArrayList<T> cards, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
+    abstract protected void InitializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<T> cards, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
 }
