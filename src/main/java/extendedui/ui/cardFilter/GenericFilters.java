@@ -11,8 +11,10 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import eatyourbeets.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.EUI;
 import extendedui.EUIRM;
+import extendedui.JavaUtils;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.AdvancedHitbox;
@@ -21,10 +23,7 @@ import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
+import java.util.*;
 
 public abstract class GenericFilters<T> extends GUI_CanvasGrid
 {
@@ -213,7 +212,7 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
     public final boolean TryUpdate() {
         super.TryUpdate();
         if (EUIHotkeys.toggleFilters.isJustPressed()) {
-            CardKeywordFilters.ToggleFilters();
+            ToggleFilters();
         }
         return isActive;
     }
@@ -325,12 +324,60 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
         return referenceItems.size();
     }
 
+    // Shorthand function to be fed to all dropdown filters
+    protected void UpdateActive(boolean whatever) {CardCrawlGame.isPopupOpen = this.isActive;}
+
+    // Shorthand function to be fed to all dropdown filters
+    protected <K> void OnFilterChanged(HashSet<K> set, List<K> items)
+    {
+        set.clear();
+        set.addAll(items);
+        if (onClick != null)
+        {
+            onClick.Invoke(null);
+        }
+    }
+
+    // Shorthand function to be fed to all dropdown filters
+    protected <K> String FilterNameFunction(List<K> items, FuncT1<String, K> originalFunction)
+    {
+        if (items.size() == 0)
+        {
+            return EUIRM.Strings.UI_Any;
+        }
+        if (items.size() > 1)
+        {
+            return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
+        }
+        return StringUtils.join(JavaUtils.Map(items, originalFunction), ", ");
+    }
+
+    // Shorthand function to be fed to all dropdown filters
+    protected <K> boolean EvaluateItem(HashSet<K> set, FuncT1<Boolean, K> evalFunc)
+    {
+        boolean passes = true;
+        if (!set.isEmpty())
+        {
+            passes = false;
+            for (K opt : set)
+            {
+                if (evalFunc.Invoke(opt))
+                {
+                    passes = true;
+                    break;
+                }
+            }
+        }
+        return passes;
+    }
+
     abstract public boolean AreFiltersEmpty();
     abstract public boolean IsHoveredImpl();
     abstract public void ClearImpl(boolean shouldInvoke, boolean shouldClearColors);
     abstract public void RenderImpl(SpriteBatch sb);
+    abstract public void ToggleFilters();
     abstract public void UpdateImpl();
     abstract public ArrayList<EUITooltip> GetAllTooltips(T c);
-    abstract public ArrayList<AbstractCard> ApplyFilters(ArrayList<T> input);
-    abstract protected void InitializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<T> cards, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
+    abstract public ArrayList<T> ApplyFilters(ArrayList<T> input);
+    abstract protected void InitializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
 }

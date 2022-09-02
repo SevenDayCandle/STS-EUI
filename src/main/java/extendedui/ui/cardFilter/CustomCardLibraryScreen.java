@@ -204,11 +204,11 @@ public class CustomCardLibraryScreen extends AbstractScreen
         quickSearch.TryRender(sb);
         EUI.CustomHeader.render(sb);
         cardGrid.TryRender(sb);
-        if (!EUI.CardFilters.TryRender(sb)) {
-            EUI.OpenCardFiltersButton.TryRender(sb);
-        }
         if (CustomModule != null) {
             CustomModule.TryRender(sb);
+        }
+        if (!EUI.CardFilters.isActive) {
+            EUI.OpenCardFiltersButton.TryRender(sb);
         }
         button.render(sb);
     }

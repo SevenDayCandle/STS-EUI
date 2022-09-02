@@ -1,6 +1,7 @@
 package extendedui.ui.controls;
 
 import basemod.BaseMod;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -22,16 +23,16 @@ import java.util.ArrayList;
 // TODO controller/keyboard support
 public class GUI_RelicGrid extends GUI_CanvasGrid
 {
-    protected static final float DRAW_START_X = (Settings.WIDTH - (5f * AbstractRelic.PAD_X * 0.75f) - (4f * Settings.CARD_VIEW_PAD_X) + AbstractRelic.PAD_X * 0.75f);
+    protected static final float PAD = Scale(80);
+    protected static final float DRAW_START_X = Settings.WIDTH - (3f * Scale(AbstractRelic.RAW_W)) - (4f * PAD);
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
-    protected static final float PAD = Scale(AbstractRelic.RAW_W) * 0.75f + AbstractRelic.PAD_X;
     public static final int ROW_SIZE = 10;
 
     protected ActionT1<AbstractRelic> onRelicClick;
     protected ActionT1<AbstractRelic> onRelicHovered;
     protected ActionT1<AbstractRelic> onRelicRightClick;
     protected ActionT2<SpriteBatch, AbstractRelic> onRelicRender;
-    protected float draw_x;
+    protected float draw_x = DRAW_START_X;
     protected float draw_top_y = DRAW_START_Y;
     protected int hoveredIndex;
     public boolean shouldEnlargeHovered = true;
@@ -58,6 +59,8 @@ public class GUI_RelicGrid extends GUI_CanvasGrid
         super(ROW_SIZE, PAD);
         this.autoShowScrollbar = autoShowScrollbar;
         this.relicGroup = new ArrayList<>();
+
+        SetHorizontalAlignment(horizontalAlignment);
     }
 
     public GUI_RelicGrid AddPadX(float padX)
@@ -70,6 +73,27 @@ public class GUI_RelicGrid extends GUI_CanvasGrid
     public GUI_RelicGrid AddPadY(float padY)
     {
         this.pad_y += padY;
+
+        return this;
+    }
+
+    public GUI_RelicGrid SetOnRelicHover(ActionT1<AbstractRelic> onRelicHovered)
+    {
+        this.onRelicHovered = onRelicHovered;
+
+        return this;
+    }
+
+    public GUI_RelicGrid SetOnRelicClick(ActionT1<AbstractRelic> onRelicClick)
+    {
+        this.onRelicClick = onRelicClick;
+
+        return this;
+    }
+
+    public GUI_RelicGrid SetOnRelicRightClick(ActionT1<AbstractRelic> onRelicRightClick)
+    {
+        this.onRelicRightClick = onRelicRightClick;
 
         return this;
     }
@@ -184,22 +208,29 @@ public class GUI_RelicGrid extends GUI_CanvasGrid
             RelicInfo relic = relicGroup.get(i);
             relic.relic.targetX = (DRAW_START_X * draw_x) + (column * PAD);
             relic.relic.targetY = draw_top_y + scrollDelta - (row * pad_y);
-            relic.relic.update();
-
-            if (relic.relic.hb.hovered)
-            {
-                hoveredRelic = relic;
-                hoveredIndex = i;
-                if (!shouldEnlargeHovered) {
-                    relic.relic.scale = target_scale;
-                }
-            }
+            UpdateHoverLogic(relic, i);
 
             column += 1;
             if (column >= rowSize)
             {
                 column = 0;
                 row += 1;
+            }
+        }
+    }
+
+    protected void UpdateHoverLogic(RelicInfo relic, int i)
+    {
+        relic.relic.update();
+        relic.relic.hb.update();
+        relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
+
+        if (relic.relic.hb.hovered)
+        {
+            hoveredRelic = relic;
+            hoveredIndex = i;
+            if (!shouldEnlargeHovered) {
+                relic.relic.scale = target_scale;
             }
         }
     }
@@ -225,8 +256,7 @@ public class GUI_RelicGrid extends GUI_CanvasGrid
     protected void RenderRelics(SpriteBatch sb) {
         for (int i = 0; i < relicGroup.size(); i++)
         {
-            RelicInfo relic = relicGroup.get(i);
-            RenderRelic(sb, relic);
+            RenderRelic(sb, relicGroup.get(i));
         }
     }
 
@@ -254,7 +284,23 @@ public class GUI_RelicGrid extends GUI_CanvasGrid
         }
         else
         {
-            relic.relic.render(sb,false, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR);
+            switch (relic.relicColor)
+            {
+                case RED:
+                    relic.relic.render(sb, false, Settings.RED_RELIC_COLOR);
+                    break;
+                case GREEN:
+                    relic.relic.render(sb, false, Settings.GREEN_RELIC_COLOR);
+                    break;
+                case BLUE:
+                    relic.relic.render(sb, false, Settings.BLUE_RELIC_COLOR);
+                    break;
+                case PURPLE:
+                    relic.relic.render(sb, false, Settings.PURPLE_RELIC_COLOR);
+                    break;
+                default:
+                    relic.relic.render(sb, false, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR);
+            }
         }
 
         if (onRelicRender != null)
@@ -282,7 +328,7 @@ public class GUI_RelicGrid extends GUI_CanvasGrid
         return relicGroup.size();
     }
 
-    protected static class RelicInfo
+    public static class RelicInfo
     {
         public final AbstractRelic relic;
         public final AbstractCard.CardColor relicColor;

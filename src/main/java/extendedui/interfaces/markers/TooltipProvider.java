@@ -12,6 +12,9 @@ public interface TooltipProvider {
         List<EUITooltip> tooltips = GetTips();
         return tooltips != null && tooltips.size() > 0 ? GetTips().get(0) : null;
     }
+    default List<EUITooltip> GetTipsForFilters() {
+        return GetTips();
+    }
     default EUICardPreview GetPreview() {return null;}
     default boolean IsPopup() {return false;}
     default void GenerateDynamicTooltips(ArrayList<EUITooltip> dynamicTooltips) {}

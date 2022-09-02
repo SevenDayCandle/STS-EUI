@@ -47,9 +47,12 @@ public class EUI
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> preRenderList = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> postRenderList = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> priorityPostRenderList = new ConcurrentLinkedQueue<>();
-    private static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customFilters = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customLibraryModules = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customPoolModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customCardFilters = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardLibraryModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardPoolModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomRelicFilterModule> customRelicFilters = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicLibraryModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicPoolModules = new HashMap<>();
     private static float delta = 0;
     private static float timer = 0;
     private static boolean isDragging;
@@ -63,6 +66,10 @@ public class EUI
     public static CustomCardLibSortHeader CustomHeader;
     public static CustomCardLibraryScreen CustomLibraryScreen;
     public static GUI_Button OpenCardFiltersButton;
+    public static GUI_Button OpenRelicFiltersButton;
+    public static RelicKeywordFilters RelicFilters;
+    public static RelicPoolScreen RelicScreen;
+    public static RelicSortHeader RelicHeader;
 
     public static boolean IsLoaded() {
         return CardsScreen != null; // This will be null before the UI has loaded
@@ -74,13 +81,22 @@ public class EUI
         CardFilters = new CardKeywordFilters();
         CustomHeader = new CustomCardLibSortHeader(null);
         CustomLibraryScreen = new CustomCardLibraryScreen();
+        RelicFilters = new RelicKeywordFilters();
+        RelicHeader = new RelicSortHeader(null);
+        RelicScreen = new RelicPoolScreen();
+
         BaseMod.addTopPanelItem(new CardPoolPanelItem());
 
         OpenCardFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
             .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
             .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(EUIRM.Strings.UI_Filters)
-            .SetOnClick(CardKeywordFilters::ToggleFilters)
+            .SetOnClick(() -> EUI.CardFilters.ToggleFilters())
             .SetColor(Color.GRAY);
+        OpenRelicFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
+                .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
+                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(EUIRM.Strings.UI_Filters)
+                .SetOnClick(() -> EUI.RelicFilters.ToggleFilters())
+                .SetColor(Color.GRAY);
     }
 
     /* Add grammar rules to existing tooltips */
@@ -258,15 +274,27 @@ public class EUI
     }
 
     public static void SetCustomCardFilter(AbstractCard.CardColor cardColor, CustomCardFilterModule element) {
-        customFilters.put(cardColor, element);
+        customCardFilters.put(cardColor, element);
     }
 
     public static void SetCustomCardLibraryModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
-        customLibraryModules.put(cardColor, element);
+        customCardLibraryModules.put(cardColor, element);
     }
 
     public static void SetCustomCardPoolModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
-        customPoolModules.put(cardColor, element);
+        customCardPoolModules.put(cardColor, element);
+    }
+
+    public static void SetCustomRelicFilter(AbstractCard.CardColor cardColor, CustomRelicFilterModule element) {
+        customRelicFilters.put(cardColor, element);
+    }
+
+    public static void SetCustomRelicLibraryModule(AbstractCard.CardColor cardColor, CustomRelicPoolModule element) {
+        customRelicLibraryModules.put(cardColor, element);
+    }
+
+    public static void SetCustomRelicPoolModule(AbstractCard.CardColor cardColor, CustomRelicPoolModule element) {
+        customRelicPoolModules.put(cardColor, element);
     }
 
     public static CustomCardFilterModule GetCustomCardFilter(AbstractPlayer player) {
@@ -274,11 +302,11 @@ public class EUI
     }
 
     public static CustomCardFilterModule GetCustomCardFilter(AbstractCard.CardColor cardColor) {
-        return customFilters.get(cardColor);
+        return customCardFilters.get(cardColor);
     }
 
     public static CustomCardPoolModule GetCustomCardLibraryModule(AbstractCard.CardColor cardColor) {
-        return customLibraryModules.get(cardColor);
+        return customCardLibraryModules.get(cardColor);
     }
 
     public static CustomCardPoolModule GetCustomCardPoolModule(AbstractPlayer player) {
@@ -286,8 +314,29 @@ public class EUI
     }
 
     public static CustomCardPoolModule GetCustomCardPoolModule(AbstractCard.CardColor cardColor) {
-        return customPoolModules.get(cardColor);
+        return customCardPoolModules.get(cardColor);
     }
+
+    public static CustomRelicFilterModule GetCustomRelicFilter(AbstractPlayer player) {
+        return player != null ? GetCustomRelicFilter(player.getCardColor()) : null;
+    }
+
+    public static CustomRelicFilterModule GetCustomRelicFilter(AbstractCard.CardColor cardColor) {
+        return customRelicFilters.get(cardColor);
+    }
+
+    public static CustomRelicPoolModule GetCustomRelicLibraryModule(AbstractCard.CardColor cardColor) {
+        return customRelicLibraryModules.get(cardColor);
+    }
+
+    public static CustomRelicPoolModule GetCustomRelicPoolModule(AbstractPlayer player) {
+        return player != null ? GetCustomRelicPoolModule(player.getCardColor()) : null;
+    }
+
+    public static CustomRelicPoolModule GetCustomRelicPoolModule(AbstractCard.CardColor cardColor) {
+        return customRelicPoolModules.get(cardColor);
+    }
+
 
     public static void ToggleViewUpgrades(boolean value)
     {

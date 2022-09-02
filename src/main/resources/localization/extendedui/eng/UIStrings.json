@@ -53,11 +53,13 @@
 	  "Sort by {0}"
 	]
   },
-  "extendedui:ui_cardpool":
+  "extendedui:ui_pool":
   {
 	"TEXT": [
+	  "Run Compendium",
+	  "View all cards or relics available in this run",
 	  "Card Pool",
-	  "View all cards available in this run",
+	  "Relic Pool",
 	  "Show Colorless"
 	]
   },
@@ -75,7 +77,9 @@
 	  "No cards match the current filters.",
 	  "Base Game",
 	  "Name Search",
-	  "Basic"
+	  "Basic",
+	  "Seen",
+	  "Unseen"
 	]
   }
 }

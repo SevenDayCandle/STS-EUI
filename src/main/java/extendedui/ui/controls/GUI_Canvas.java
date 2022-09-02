@@ -34,6 +34,13 @@ public abstract class GUI_Canvas extends GUI_Base
         return this;
     }
 
+    public GUI_Canvas ShowScrollbar(boolean showScrollbar)
+    {
+        this.autoShowScrollbar = showScrollbar;
+
+        return this;
+    }
+
     @Override
     public void Update()
     {

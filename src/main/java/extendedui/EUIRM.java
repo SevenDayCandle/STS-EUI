@@ -119,7 +119,7 @@ public class EUIRM
         private final UIStrings StringsGrammar = GetUIStrings("grammar");
         private final UIStrings StringsHotkeys = GetUIStrings("hotkeys");
         private final UIStrings StringsMisc = GetUIStrings("misc");
-        private final UIStrings StringsUICardPool = GetUIStrings("ui_cardpool");
+        private final UIStrings StringsUIPool = GetUIStrings("ui_pool");
         private final UIStrings StringsUIFilter = GetUIStrings("ui_filters");
 
         public final String Config_UseVanillaCompendium = StringsConfig.TEXT[0];
@@ -135,9 +135,11 @@ public class EUIRM
         public final String Misc_TypeToSearch = StringsMisc.TEXT[1];
         public final String Misc_SortByCount = StringsMisc.TEXT[2];
 
-        public final String UICardPool_ViewCardPool = StringsUICardPool.TEXT[0];
-        public final String UICardPool_ViewCardPoolDescription = StringsUICardPool.TEXT[1];
-        public final String UICardPool_ShowColorless = StringsUICardPool.TEXT[2];
+        public final String UIPool_ViewPool = StringsUIPool.TEXT[0];
+        public final String UIPool_ViewPoolDescription = StringsUIPool.TEXT[1];
+        public final String UIPool_ViewCardPool = StringsUIPool.TEXT[2];
+        public final String UIPool_ViewRelicPool = StringsUIPool.TEXT[3];
+        public final String UICardPool_ShowColorless = StringsUIPool.TEXT[4];
 
         public final String UI_ItemsSelected = StringsUIFilter.TEXT[0];
         public final String UI_Keywords = StringsUIFilter.TEXT[1];
@@ -151,6 +153,8 @@ public class EUIRM
         public final String UI_BaseGame = StringsUIFilter.TEXT[9];
         public final String UI_NameSearch = StringsUIFilter.TEXT[10];
         public final String UI_Basic = StringsUIFilter.TEXT[11];
+        public final String UI_Seen = StringsUIFilter.TEXT[12];
+        public final String UI_Unseen = StringsUIFilter.TEXT[13];
 
         public final String KeyToCycle(String keyName) {
             return JavaUtils.Format(Misc_KeyToCycle, keyName);

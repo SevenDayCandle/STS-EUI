@@ -65,73 +65,23 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     public final GUI_TextBoxInput NameInput;
     public String CurrentName;
 
-    public static void ToggleFilters()
-    {
-        if (EUI.CardFilters.isActive)
-        {
-            EUI.CardFilters.Close();
-        }
-        else
-        {
-            EUI.CardFilters.Open();
-        }
-    }
-
     public CardKeywordFilters()
     {
         super();
 
         OriginsDropdown = new GUI_Dropdown<ModInfo>(new AdvancedHitbox(0, 0, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
-                .SetOnOpenOrClose(isOpen -> {
-                    CardCrawlGame.isPopupOpen = this.isActive;
-                })
-                .SetOnChange(costs -> {
-                    CurrentOrigins.clear();
-                    CurrentOrigins.addAll(costs);
-                    if (onClick != null)
-                    {
-                        onClick.Invoke(null);
-                    }
-                })
-                .SetLabelFunctionForButton(items -> {
-                    if (items.size() == 0)
-                    {
-                        return EUIRM.Strings.UI_Any;
-                    }
-                    if (items.size() > 1)
-                    {
-                        return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
-                    }
-                    return StringUtils.join(JavaUtils.Map(items, item -> item == null ? EUIRM.Strings.UI_BaseGame : item.Name), ", ");
-                }, null, false)
+                .SetOnOpenOrClose(this::UpdateActive)
+                .SetOnChange(costs -> this.OnFilterChanged(CurrentOrigins, costs))
+                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Origins)
                 .SetIsMultiSelect(true)
                 .SetCanAutosizeButton(true)
                 .SetItems(Loader.MODINFOS);
 
         CostDropdown = new GUI_Dropdown<CostFilter>(new AdvancedHitbox(0, 0, Scale(160), Scale(48)), c -> c.name)
-                .SetOnOpenOrClose(isOpen -> {
-                    CardCrawlGame.isPopupOpen = this.isActive;
-                })
-                .SetOnChange(costs -> {
-                    CurrentCosts.clear();
-                    CurrentCosts.addAll(costs);
-                    if (onClick != null)
-                    {
-                        onClick.Invoke(null);
-                    }
-                })
-                .SetLabelFunctionForButton(items -> {
-                    if (items.size() == 0)
-                    {
-                        return EUIRM.Strings.UI_Any;
-                    }
-                    if (items.size() > 1)
-                    {
-                        return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
-                    }
-                    return StringUtils.join(JavaUtils.Map(items, item -> item.name), ", ");
-                }, null, false)
+                .SetOnOpenOrClose(this::UpdateActive)
+                .SetOnChange(costs -> this.OnFilterChanged(CurrentCosts, costs))
+                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[3])
                 .SetIsMultiSelect(true)
                 .SetCanAutosize(false, false)
@@ -139,28 +89,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
 
         RaritiesDropdown = new GUI_Dropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , EUIGameUtils::TextForRarity)
-                .SetOnOpenOrClose(isOpen -> {
-                    CardCrawlGame.isPopupOpen = this.isActive;
-                })
-                .SetOnChange(costs -> {
-                    CurrentRarities.clear();
-                    CurrentRarities.addAll(costs);
-                    if (onClick != null)
-                    {
-                        onClick.Invoke(null);
-                    }
-                })
-                .SetLabelFunctionForButton(items -> {
-                    if (items.size() == 0)
-                    {
-                        return EUIRM.Strings.UI_Any;
-                    }
-                    if (items.size() > 1)
-                    {
-                        return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
-                    }
-                    return JavaUtils.JoinStrings(", ", JavaUtils.Map(items, EUIGameUtils::TextForRarity));
-                }, null, false)
+                .SetOnOpenOrClose(this::UpdateActive)
+                .SetOnChange(costs -> this.OnFilterChanged(CurrentRarities, costs))
+                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
                 .SetIsMultiSelect(true)
                 .SetCanAutosizeButton(true)
@@ -168,28 +99,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
 
         TypesDropdown = new GUI_Dropdown<AbstractCard.CardType>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , EUIGameUtils::TextForType)
-                .SetOnOpenOrClose(isOpen -> {
-                    CardCrawlGame.isPopupOpen = this.isActive;
-                })
-                .SetOnChange(costs -> {
-                    CurrentTypes.clear();
-                    CurrentTypes.addAll(costs);
-                    if (onClick != null)
-                    {
-                        onClick.Invoke(null);
-                    }
-                })
-                .SetLabelFunctionForButton(items -> {
-                    if (items.size() == 0)
-                    {
-                        return EUIRM.Strings.UI_Any;
-                    }
-                    if (items.size() > 1)
-                    {
-                        return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
-                    }
-                    return JavaUtils.JoinStrings(", ", JavaUtils.Map(items, EUIGameUtils::TextForType));
-                }, null, false)
+                .SetOnOpenOrClose(this::UpdateActive)
+                .SetOnChange(costs -> this.OnFilterChanged(CurrentTypes, costs))
+                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[1])
                 .SetIsMultiSelect(true)
                 .SetCanAutosizeButton(true)
@@ -197,28 +109,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
 
         ColorsDropdown = new GUI_Dropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , item -> StringUtils.capitalize(item.toString().toLowerCase()))
-                .SetOnOpenOrClose(isOpen -> {
-                    CardCrawlGame.isPopupOpen = this.isActive;
-                })
-                .SetOnChange(colors -> {
-                    CurrentColors.clear();
-                    CurrentColors.addAll(colors);
-                    if (onClick != null)
-                    {
-                        onClick.Invoke(null);
-                    }
-                })
-                .SetLabelFunctionForButton(items -> {
-                    if (items.size() == 0)
-                    {
-                        return EUIRM.Strings.UI_Any;
-                    }
-                    if (items.size() > 1)
-                    {
-                        return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
-                    }
-                    return StringUtils.join(JavaUtils.Map(items, item -> StringUtils.capitalize(item.toString().toLowerCase())), ", ");
-                }, null, false)
+                .SetOnOpenOrClose(this::UpdateActive)
+                .SetOnChange(costs -> this.OnFilterChanged(CurrentColors, costs))
+                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Colors)
                 .SetIsMultiSelect(true)
                 .SetCanAutosizeButton(true);
@@ -252,7 +145,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     }
 
     @Override
-    protected void InitializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<AbstractCard> cards, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    protected void InitializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<AbstractCard> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
     {
         CustomModule = EUI.GetCustomCardFilter(color);
 
@@ -389,7 +282,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         if (eC != null)
         {
             eC.GenerateDynamicTooltips(dynamicTooltips);
-            for (EUITooltip tip : eC.GetTips())
+            for (EUITooltip tip : eC.GetTipsForFilters())
             {
                 if (!dynamicTooltips.contains(tip))
                 {
@@ -463,39 +356,15 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
             }
 
             //Colors check
-            if (!CurrentColors.isEmpty())
+            if (!CurrentColors.isEmpty() && !CurrentColors.contains(c.color))
             {
-                boolean passes = false;
-                for (AbstractCard.CardColor co : CurrentColors)
-                {
-                    if (co == c.color)
-                    {
-                        passes = true;
-                        break;
-                    }
-                }
-                if (!passes)
-                {
-                    return false;
-                }
+                return false;
             }
 
             //Origin check
-            if (!CurrentOrigins.isEmpty())
+            if (!EvaluateItem(CurrentOrigins, (opt) -> EUIGameUtils.IsObjectFromMod(c, opt)))
             {
-                boolean passes = false;
-                for (ModInfo of : CurrentOrigins)
-                {
-                    if (EUIGameUtils.IsObjectFromMod(c, of))
-                    {
-                        passes = true;
-                        break;
-                    }
-                }
-                if (!passes)
-                {
-                    return false;
-                }
+                return false;
             }
 
             //Tooltips check
@@ -545,5 +414,17 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
 
             return true;
         });
+    }
+
+    public void ToggleFilters()
+    {
+        if (isActive)
+        {
+            Close();
+        }
+        else
+        {
+            Open();
+        }
     }
 }

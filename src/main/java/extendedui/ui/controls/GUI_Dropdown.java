@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
+import eatyourbeets.interfaces.delegates.FuncT2;
 import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.JavaUtils;
@@ -50,11 +51,12 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     protected ActionT1<List<T>> onChange;
     protected BitmapFont font;
     protected FuncT1<Color, List<T>> colorFunctionButton;
-    protected FuncT1<String, List<T>> labelFunctionButton;
+    protected FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton;
     protected FuncT1<String, T> labelFunction;
     protected GUI_Label header;
     protected GUI_VerticalScrollBar scrollBar;
     protected boolean isOpen;
+    protected boolean justOpened;
     protected boolean rowsHaveBeenPositioned;
     protected boolean shouldSnapCursorToSelectedIndex;
     protected boolean isOptionSmartText;
@@ -215,12 +217,12 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         return SetItems(new ArrayList<>(options));
     }
 
-    public GUI_Dropdown<T> SetLabelFunctionForButton(FuncT1<String, List<T>> labelFunctionButton, FuncT1<Color, List<T>> colorFunctionButton, boolean isSmartText) {
+    public GUI_Dropdown<T> SetLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, FuncT1<Color, List<T>> colorFunctionButton, boolean isSmartText) {
         this.button.SetSmartText(isSmartText);
         this.labelFunctionButton = labelFunctionButton;
         this.colorFunctionButton = colorFunctionButton;
         if (labelFunctionButton != null) {
-            this.button.SetText(labelFunctionButton.Invoke(GetCurrentItems()));
+            this.button.SetText(labelFunctionButton.Invoke(GetCurrentItems(), labelFunction));
         }
         if (colorFunctionButton != null) {
             this.button.SetTextColor(colorFunctionButton.Invoke(GetCurrentItems()));
@@ -414,6 +416,11 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         return items;
     }
 
+    public FuncT1<String, T> GetOptionLabelFunction()
+    {
+        return labelFunction;
+    }
+
     public int GetCurrentIndex() {
         return currentIndices.isEmpty() || currentIndices.first() >= this.rows.size() ? 0 : currentIndices.first();
     }
@@ -428,6 +435,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
             EUI.TryToggleActiveElement(this, true);
             CardCrawlGame.isPopupOpen = true;
             this.isOpen = true;
+            this.justOpened = true;
             this.updateNonMouseStartPosition();
         }
 
@@ -439,6 +447,23 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     protected void OnScroll(float newPercent)
     {
         this.topVisibleRowIndex = (int) Mathf.Clamp(newPercent * (this.rows.size() - this.visibleRowCount()), 0, this.rows.size() - this.visibleRowCount());
+    }
+
+    public void RefreshText()
+    {
+        if (labelFunction != null)
+        {
+            for (DropdownRow<T> row : rows)
+            {
+                row.RefreshText(labelFunction);
+            }
+        }
+        if (labelFunctionButton != null) {
+            this.button.SetText(labelFunctionButton.Invoke(GetCurrentItems(), labelFunction));
+        }
+        if (colorFunctionButton != null) {
+            this.button.SetTextColor(colorFunctionButton.Invoke(GetCurrentItems()));
+        }
     }
 
     @Override
@@ -484,7 +509,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
                     this.scrollBar.Scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
                 }
 
-                boolean shouldCloseMenu = InputHelper.justClickedLeft && !isHoveringOver || InputHelper.pressedEscape || CInputActionSet.cancel.isJustPressed();
+                boolean shouldCloseMenu = (!justOpened && InputHelper.justClickedLeft && !isHoveringOver) || InputHelper.pressedEscape || CInputActionSet.cancel.isJustPressed();
                 if (shouldCloseMenu) {
                     if (Settings.isControllerMode) {
                         CInputActionSet.cancel.unpress();
@@ -494,6 +519,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
                     OpenOrCloseMenu();
                 }
         }
+        justOpened = false;
 
     }
 
@@ -507,7 +533,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         }
     }
 
-    private void updateNonMouseInput() {
+    protected void updateNonMouseInput() {
         if (this.isUsingNonMouseControl()) {
             if (this.shouldSnapCursorToSelectedIndex && this.rowsHaveBeenPositioned) {
                 CInputHelper.setCursor((this.rows.get(GetCurrentIndex())).hb);
@@ -660,11 +686,11 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     public void updateForSelection(boolean shouldInvoke) {
         int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
         if (isMultiSelect) {
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems()) : makeMultiSelectString();
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems(), labelFunction) : makeMultiSelectString();
         }
         else if (currentIndices.size() > 0) {
             this.topVisibleRowIndex = Math.min(temp, this.rows.size() - this.visibleRowCount());
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems()) : rows.get(temp).label.text;
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems(), labelFunction) : rows.get(temp).label.text;
             if (colorFunctionButton != null) {
                 this.button.SetTextColor(colorFunctionButton.Invoke(GetCurrentItems()));
             }
@@ -759,8 +785,13 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
 
         public DropdownRow<T> SetLabelFunction(FuncT1<String, T> labelFunction, boolean isSmartText) {
             this.label.SetSmartText(isSmartText);
-            this.label.SetText(labelFunction.Invoke(item));
+            RefreshText(labelFunction);
             return this;
+        }
+
+        public void RefreshText(FuncT1<String, T> labelFunction)
+        {
+            this.label.SetText(labelFunction.Invoke(item));
         }
 
         public String GetText() {

@@ -30,6 +30,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
     private SortHeaderButton lastUsedButton;
     private boolean isAscending;
 
+    // The fake group tells players that nothing can be found. It also prevents crashing from empty cardGroups without the need for patching
     public static ArrayList<AbstractCard> GetFakeGroup() {
         if (fakeLibraryCard == null) {
             fakeLibraryCard = new FakeLibraryCard();
@@ -191,11 +192,6 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
                 ArrayList<AbstractCard> tempGroup = EUI.CardFilters.ApplyFilters(originalGroup);
                 if (tempGroup.size() > 0) {
                     this.group.group = tempGroup;
-                }
-                else if (!EUI.CardFilters.AreFiltersEmpty()) {
-                    EUI.CardFilters.CurrentFilters.clear();
-                    tempGroup = EUI.CardFilters.ApplyFilters(originalGroup);
-                    this.group.group = tempGroup.size() > 0 ? tempGroup : GetFakeGroup();
                 }
                 else {
                     this.group.group = GetFakeGroup();

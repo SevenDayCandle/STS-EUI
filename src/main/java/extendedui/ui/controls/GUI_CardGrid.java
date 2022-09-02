@@ -22,7 +22,7 @@ import java.util.HashMap;
 public class GUI_CardGrid extends GUI_CanvasGrid
 {
     protected static final float CARD_SCALE = 0.75f;
-    protected static final float DRAW_START_X = (Settings.WIDTH - (5f * AbstractCard.IMG_WIDTH * 0.75f) - (4f * Settings.CARD_VIEW_PAD_X) + AbstractCard.IMG_WIDTH * 0.75f);
+    protected static final float DRAW_START_X = Settings.WIDTH - (3f * AbstractCard.IMG_WIDTH) - (4f * Settings.CARD_VIEW_PAD_X);
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
     protected static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
     protected static final float PAD_Y = AbstractCard.IMG_HEIGHT * 0.75f + Settings.CARD_VIEW_PAD_Y;

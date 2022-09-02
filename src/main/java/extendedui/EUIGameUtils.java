@@ -8,9 +8,12 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
 import extendedui.ui.tooltips.EUITooltip;
 
@@ -58,13 +61,13 @@ public class EUIGameUtils {
         return GetModInfo(o) == mod;
     }
 
-    public static ArrayList<CardGroup> GetCardPools() {
-        ArrayList<CardGroup> result = new ArrayList<>();
-        result.add(AbstractDungeon.colorlessCardPool);
-        result.add(AbstractDungeon.commonCardPool);
-        result.add(AbstractDungeon.uncommonCardPool);
-        result.add(AbstractDungeon.rareCardPool);
-        result.add(AbstractDungeon.curseCardPool);
+    public static ArrayList<String> GetAllRelicIDs() {
+        ArrayList<String> result = new ArrayList<>();
+        result.addAll(AbstractDungeon.commonRelicPool);
+        result.addAll(AbstractDungeon.uncommonRelicPool);
+        result.addAll(AbstractDungeon.rareRelicPool);
+        result.addAll(AbstractDungeon.shopRelicPool);
+        result.addAll(AbstractDungeon.bossRelicPool);
         return result;
     }
 
@@ -198,6 +201,38 @@ public class EUIGameUtils {
 
             default:
                 return AbstractCard.TEXT[5];
+        }
+    }
+
+    public static String TextForRelicTier(AbstractRelic.RelicTier type) {
+        switch (type)
+        {
+            case STARTER:
+                return SingleRelicViewPopup.TEXT[6];
+
+            case COMMON:
+                return SingleRelicViewPopup.TEXT[1];
+
+            case UNCOMMON:
+                return SingleRelicViewPopup.TEXT[7];
+
+            case RARE:
+                return SingleRelicViewPopup.TEXT[3];
+
+            case SPECIAL:
+                return SingleRelicViewPopup.TEXT[5];
+
+            case BOSS:
+                return SingleRelicViewPopup.TEXT[0];
+
+            case SHOP:
+                return SingleRelicViewPopup.TEXT[4];
+
+            case DEPRECATED:
+                return SingleRelicViewPopup.TEXT[2];
+
+            default:
+                return SingleRelicViewPopup.TEXT[9];
         }
     }
 

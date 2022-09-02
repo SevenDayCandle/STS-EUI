@@ -40,6 +40,7 @@ public class CardCrawlGamePatches
         @SpireInsertPatch(locator = Locator.class, localvars = {"sb"})
         public static void Insert(CardCrawlGame __instance, SpriteBatch sb)
         {
+            EUI.RelicFilters.TryRender(sb);
             EUI.CardFilters.TryRender(sb);
             EUI.PostRender(sb);
             EUI.PriorityPostRender(sb);

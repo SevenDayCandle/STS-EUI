@@ -8,16 +8,19 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.ui.AbstractScreen;
+import extendedui.ui.controls.GUI_Button;
 import extendedui.ui.controls.GUI_CardGrid;
 import extendedui.ui.controls.GUI_StaticCardGrid;
 import extendedui.ui.controls.GUI_Toggle;
 import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
 
 public class CardPoolScreen extends AbstractScreen
@@ -26,6 +29,7 @@ public class CardPoolScreen extends AbstractScreen
 
     private final GUI_Toggle upgradeToggle;
     private final GUI_Toggle colorlessToggle;
+    private final GUI_Button swapScreen;
     public GUI_CardGrid cardGrid;
 
     public CardPoolScreen()
@@ -55,6 +59,15 @@ public class CardPoolScreen extends AbstractScreen
                     EUI.CardFilters.ColorsDropdown.ToggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
                     EUI.CardFilters.ColorsDropdown.ToggleSelection(AbstractCard.CardColor.CURSE, val, true);
                 });
+
+        this.swapScreen = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(),
+                new AdvancedHitbox(Scale(210), Scale(43)))
+                .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
+                .SetFont(FontHelper.buttonLabelFont, 0.8f)
+                .SetColor(Color.GRAY)
+                .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.GRAY)
+                .SetOnClick(() -> EUI.RelicScreen.Open(AbstractDungeon.player, CardPoolPanelItem.GetAllRelics()))
+                .SetText(EUIRM.Strings.UIPool_ViewRelicPool);
     }
 
     public void Open(AbstractPlayer player, CardGroup cards)
@@ -109,6 +122,7 @@ public class CardPoolScreen extends AbstractScreen
             cardGrid.TryUpdate();
             upgradeToggle.SetToggle(SingleCardViewPopup.isViewingUpgrade).Update();
             colorlessToggle.Update();
+            swapScreen.Update();
             EUI.CustomHeader.update();
             EUI.OpenCardFiltersButton.TryUpdate();
             if (CustomModule != null) {
@@ -123,8 +137,9 @@ public class CardPoolScreen extends AbstractScreen
         cardGrid.TryRender(sb);
         upgradeToggle.Render(sb);
         colorlessToggle.Render(sb);
+        swapScreen.Render(sb);
         EUI.CustomHeader.render(sb);
-        if (!EUI.CardFilters.TryRender(sb)) {
+        if (!EUI.CardFilters.isActive) {
             EUI.OpenCardFiltersButton.TryRender(sb);
         }
         if (CustomModule != null) {

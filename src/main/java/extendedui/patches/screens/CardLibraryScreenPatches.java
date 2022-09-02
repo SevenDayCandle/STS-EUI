@@ -104,7 +104,7 @@ public class CardLibraryScreenPatches
         @SpirePrefixPatch
         public static SpireReturn<AbstractCard> Prefix(CardLibraryScreen __instance)
         {
-            if (EUI.CardFilters.TryUpdate()) {
+            if (EUI.CardFilters.isActive) {
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();

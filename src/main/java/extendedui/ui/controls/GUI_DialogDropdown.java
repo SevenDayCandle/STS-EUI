@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import eatyourbeets.interfaces.delegates.FuncT1;
+import eatyourbeets.interfaces.delegates.FuncT2;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
 import java.util.ArrayList;
@@ -55,7 +56,7 @@ public class GUI_DialogDropdown<T> extends GUI_Dialog<ArrayList<T>>
         return this;
     }
 
-    public GUI_DialogDropdown<T> SetLabelFunctionForButton(FuncT1<String, List<T>> labelFunctionButton, FuncT1<Color, List<T>> colorFunctionButton, boolean isSmartText) {
+    public GUI_DialogDropdown<T> SetLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, FuncT1<Color, List<T>> colorFunctionButton, boolean isSmartText) {
         this.dropdown.SetLabelFunctionForButton(labelFunctionButton, colorFunctionButton, isSmartText);
         return this;
     }

@@ -11,6 +11,8 @@ import org.apache.logging.log4j.Logger;
 import java.lang.reflect.Type;
 import java.util.*;
 import java.util.function.Predicate;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
@@ -78,6 +80,24 @@ public class JavaUtils
         }
 
         return res;
+    }
+
+    @SafeVarargs
+    public static <T> ArrayList<T> Flatten(Collection<T>... lists)
+    {
+        return Stream.of(lists)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toCollection(ArrayList::new));
+    }
+
+    public static <T> ArrayList<T> FlattenList(Collection<? extends Collection<T>> lists)
+    {
+        ArrayList<T> t = new ArrayList<>();
+        for (Collection<T> list : lists)
+        {
+            t.addAll(list);
+        }
+        return t;
     }
 
     // Simple string Formatting in which integers inside curly braces are replaced by args[B].
@@ -459,6 +479,42 @@ public class JavaUtils
             for (T t : list)
             {
                 res.add(predicate.Invoke(t));
+            }
+        }
+
+        return res;
+    }
+
+    public static <T, N> ArrayList<N> MapAsNonnull(T[] list, FuncT1<N, T> predicate)
+    {
+        final ArrayList<N> res = new ArrayList<>();
+        if (list != null)
+        {
+            for (T t : list)
+            {
+                N n = predicate.Invoke(t);
+                if (n != null)
+                {
+                    res.add(predicate.Invoke(t));
+                }
+            }
+        }
+
+        return res;
+    }
+
+    public static <T, N> ArrayList<N> MapAsNonnull(Iterable<T> list, FuncT1<N, T> predicate)
+    {
+        final ArrayList<N> res = new ArrayList<>();
+        if (list != null)
+        {
+            for (T t : list)
+            {
+                N n = predicate.Invoke(t);
+                if (n != null)
+                {
+                    res.add(predicate.Invoke(t));
+                }
             }
         }
 

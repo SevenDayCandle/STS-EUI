@@ -105,11 +105,11 @@ public class GUI_SearchableDropdown<T> extends GUI_Dropdown<T>
     public void updateForSelection(boolean shouldInvoke) {
         int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
         if (isMultiSelect) {
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems()) : currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected;
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems(), labelFunction) : currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected;
         }
         else if (currentIndices.size() > 0) {
             this.topVisibleRowIndex = Math.min(temp, this.originalRows.size() - this.visibleRowCount());
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems()) : originalRows.get(temp).label.text;
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems(), labelFunction) : originalRows.get(temp).label.text;
             if (colorFunctionButton != null) {
                 this.button.SetTextColor(colorFunctionButton.Invoke(GetCurrentItems()));
             }

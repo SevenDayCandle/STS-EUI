@@ -57,7 +57,7 @@ public class MasterDeckViewScreenPatches
         @SpirePrefixPatch
         public static void Prefix(MasterDeckViewScreen __instance, SpriteBatch sb)
         {
-            if (!EUI.CardFilters.TryRender(sb)) {
+            if (!EUI.CardFilters.isActive) {
                 EUI.OpenCardFiltersButton.TryRender(sb);
             }
         }
