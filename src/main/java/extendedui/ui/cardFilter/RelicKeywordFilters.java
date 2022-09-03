@@ -89,7 +89,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
                 .SetItems(AbstractRelic.RelicTier.values());
 
         ColorsDropdown = new GUI_Dropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
-                , item -> JavaUtils.Capitalize(item.toString().toLowerCase()))
+                , EUIGameUtils::GetColorName)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentColors, costs))
                 .SetLabelFunctionForButton(this::FilterNameFunction, null, false)

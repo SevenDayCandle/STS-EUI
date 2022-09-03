@@ -20,7 +20,7 @@ import java.util.ArrayList;
 public class RelicSortHeader extends GUI_Base implements SortHeaderButtonListener
 {
     public static RelicSortHeader Instance;
-    public static final float START_X = ScreenW(0.5f) - CardLibSortHeader.SPACE_X * 1.4f;
+    public static final float START_X = ScreenW(0.5f) - CardLibSortHeader.SPACE_X * 1.45f;
 
     private SortHeaderButton lastUsedButton;
     protected boolean isAscending;

@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.screens.custom.CustomModeScreen;
 import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUI;
+import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.JavaUtils;
 import extendedui.ui.AbstractScreen;
@@ -49,7 +50,6 @@ public class CustomCardLibraryScreen extends AbstractScreen
     public static AbstractCard.CardColor CurrentColor = AbstractCard.CardColor.COLORLESS;
     public static CustomCardPoolModule CustomModule;
     public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
-    public static final HashMap<AbstractCard.CardColor, String> CustomColorNames = new HashMap<>();
 
     public CustomCardLibraryScreen() {
         final float y = Settings.HEIGHT * 0.92f - (VISIBLE_BUTTONS + 1) * Scale(48);
@@ -100,11 +100,6 @@ public class CustomCardLibraryScreen extends AbstractScreen
             CardLists.put(AbstractCard.CardColor.CURSE, ClassUtils.GetField(screen, "curseCards"));
             CardLists.put(AbstractCard.CardColor.COLORLESS, ClassUtils.GetField(screen, "colorlessCards"));
             CardLists.putAll(EverythingFix.Fields.cardGroupMap);
-
-            // Save custom mod color names
-            for (AbstractPlayer p : CardCrawlGame.characterManager.getAllCharacters()) {
-                CustomColorNames.put(p.getCardColor(), p.getLocalizedCharacterName());
-            }
 
             // Add custom buttons. Base game colors come first.
             colorButtons.add(MakeColorButton(AbstractCard.CardColor.COLORLESS));
@@ -233,7 +228,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
     protected GUI_Button MakeColorButton(AbstractCard.CardColor co) {
         return new GUI_Button(ImageMaster.COLOR_TAB_BAR, new AdvancedHitbox(Scale(200), COLOR_BUTTON_SIZE))
                 .SetOnClick(__ -> SetActiveColor(co))
-                .SetText(GetColorName(co))
+                .SetText(EUIGameUtils.GetColorName(co))
                 .SetFont(FontHelper.buttonLabelFont, 0.8f)
                 .SetButtonScale(1f, 1.2f)
                 .SetColor(GetColorColor(co));
@@ -255,25 +250,6 @@ public class CustomCardLibraryScreen extends AbstractScreen
                 return new Color(0.18F, 0.18F, 0.16F, 1.0F);
             default:
                 return BaseMod.getTrailVfxColor(co);
-        }
-    }
-
-    public static String GetColorName(AbstractCard.CardColor co) {
-        switch (co) {
-            case RED:
-                return CardLibraryScreen.TEXT[1];
-            case GREEN:
-                return CardLibraryScreen.TEXT[2];
-            case BLUE:
-                return CardLibraryScreen.TEXT[3];
-            case PURPLE:
-                return CardLibraryScreen.TEXT[8];
-            case CURSE:
-                return CardLibraryScreen.TEXT[5];
-            case COLORLESS:
-                return CardLibraryScreen.TEXT[4];
-            default:
-                return CustomColorNames.getOrDefault(co, JavaUtils.Capitalize(String.valueOf(co)));
         }
     }
 }

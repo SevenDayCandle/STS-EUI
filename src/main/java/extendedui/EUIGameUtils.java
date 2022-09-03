@@ -14,6 +14,7 @@ import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
+import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
 import extendedui.ui.tooltips.EUITooltip;
 
@@ -30,6 +31,7 @@ import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 public class EUIGameUtils {
     private static final HashMap<CodeSource, ModInfo> ModInfoMapping = new HashMap<>();
     private static final HashMap<String, AbstractCard.CardColor> RelicColors = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, String> CustomColorNames = new HashMap<>();
 
     public static void AddRelicColor(AbstractRelic relic, AbstractCard.CardColor color)
     {
@@ -105,6 +107,25 @@ public class EUIGameUtils {
         }
 
         return null;
+    }
+
+    public static String GetColorName(AbstractCard.CardColor co) {
+        switch (co) {
+            case RED:
+                return CardLibraryScreen.TEXT[1];
+            case GREEN:
+                return CardLibraryScreen.TEXT[2];
+            case BLUE:
+                return CardLibraryScreen.TEXT[3];
+            case PURPLE:
+                return CardLibraryScreen.TEXT[8];
+            case CURSE:
+                return CardLibraryScreen.TEXT[5];
+            case COLORLESS:
+                return CardLibraryScreen.TEXT[4];
+            default:
+                return CustomColorNames.getOrDefault(co, JavaUtils.Capitalize(String.valueOf(co)));
+        }
     }
 
     public static AbstractCard.CardColor GetRelicColor(String relicID) {

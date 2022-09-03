@@ -77,6 +77,11 @@ public class EUI
 
     public static void Initialize()
     {
+        // Save custom mod color names
+        for (AbstractPlayer p : CardCrawlGame.characterManager.getAllCharacters()) {
+            EUIGameUtils.CustomColorNames.put(p.getCardColor(), p.getLocalizedCharacterName());
+        }
+
         CardsScreen = new CardPoolScreen();
         CardFilters = new CardKeywordFilters();
         CustomHeader = new CustomCardLibSortHeader(null);
