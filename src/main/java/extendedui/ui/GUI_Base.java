@@ -1,10 +1,13 @@
 package extendedui.ui;
 
+import basemod.IUIElement;
+import basemod.ModPanel;
+import basemod.ModToggleButton;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import extendedui.EUIGameUtils;
 
-public abstract class GUI_Base
+public abstract class GUI_Base implements IUIElement
 {
     public static final Color HOVER_BLEND_COLOR = new Color(1f, 1f, 1f, 0.3f);
     public static final Color TEXT_DISABLED_COLOR = new Color(0.6f, 0.6f, 0.6f, 1f);
@@ -39,6 +42,24 @@ public abstract class GUI_Base
         this.isActive = active;
 
         return this;
+    }
+
+    public void update()
+    {
+        TryUpdate();
+    }
+
+    public void render(SpriteBatch sb)
+    {
+        TryRender(sb);
+    }
+
+    public int renderLayer() {
+        return 1;
+    }
+
+    public int updateOrder() {
+        return 1;
     }
 
     public static float Scale(float value)

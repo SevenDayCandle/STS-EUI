@@ -80,4 +80,24 @@ public abstract class GUI_Hoverable extends GUI_Base
 
         return this;
     }
+
+    public void set(float xPos, float yPos) {
+        Translate(xPos, yPos);
+    }
+
+    public void setX(float xPos) {
+        Translate(xPos, hb.y);
+    }
+
+    public void setY(float yPos) {
+        Translate(hb.x, yPos);
+    }
+
+    public float getX() {
+        return hb.x;
+    }
+
+    public float getY() {
+        return hb.y;
+    }
 }

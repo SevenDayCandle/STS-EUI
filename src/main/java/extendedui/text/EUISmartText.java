@@ -51,7 +51,7 @@ public class EUISmartText
     // Possible color formats:
     // #c: Single color
     // #AABBCCDD: RGBA
-    private static Color GetColor(String s)
+    public static Color GetColor(String s)
     {
         if (s.length() == 1)
         {
@@ -68,7 +68,7 @@ public class EUISmartText
         }
     }
 
-    private static Color GetColor(Character c)
+    public static Color GetColor(Character c)
     {
         switch (c)
         {
