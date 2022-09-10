@@ -1,5 +1,6 @@
 package extendedui.ui.settings;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -16,6 +17,7 @@ import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.markers.ModSettingsProvider;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.TextureCache;
+import extendedui.ui.controls.GUI_Button;
 import extendedui.ui.controls.GUI_ButtonList;
 import extendedui.ui.controls.GUI_Image;
 import extendedui.ui.hitboxes.AdvancedHitbox;
@@ -25,7 +27,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static extendedui.ui.controls.GUI_ButtonList.BUTTON_SIZE;
+import static extendedui.ui.controls.GUI_ButtonList.BUTTON_H;
 
 public class ModSettingsScreen extends AbstractScreen
 {
@@ -36,7 +38,7 @@ public class ModSettingsScreen extends AbstractScreen
     protected static final HashMap<ModInfo, ArrayList<ModSettingsProvider<?>>> configSubscribers = new HashMap<>();
     protected static final HashMap<ModInfo, Float> offsets = new HashMap<>();
     protected static final AdvancedHitbox hb = new AdvancedHitbox(478.0F * Settings.scale, Settings.OPTION_Y - 376.0F, 1364.0F, 752.0F);
-    protected final GUI_ButtonList modButtons = new GUI_ButtonList(7, ScreenW(0.2f), ScreenH(0.62f), BUTTON_SIZE);
+    protected final GUI_ButtonList modButtons = new GUI_ButtonList(7, ScreenW(0.14f), ScreenH(0.62f), Scale(240), BUTTON_H);
     public final MenuCancelButton button;
     private final GUI_Image background;
     private ModInfo activeMod;
@@ -91,6 +93,7 @@ public class ModSettingsScreen extends AbstractScreen
 
         if (infos.size() > 0)
         {
+            modButtons.buttons.get(0).SetColor(Color.WHITE);
             SetActiveMod(infos.get(0));
         }
     }
@@ -174,9 +177,19 @@ public class ModSettingsScreen extends AbstractScreen
 
     protected void MakeModButton(ModInfo info) {
         modButtons.AddButton()
-                .SetOnClick(__ -> SetActiveMod(info))
+                .SetColor(Color.GRAY)
+                .SetOnClick(button -> SelectButton(button, info))
                 .SetText(info.Name)
                 .SetFont(FontHelper.buttonLabelFont, 0.8f)
                 .SetButtonScale(1f, 1.2f);
+    }
+
+    protected void SelectButton(GUI_Button button, ModInfo info)
+    {
+        for (GUI_Button b : modButtons.buttons)
+        {
+            b.SetColor(b == button ? Color.WHITE : Color.GRAY);
+        }
+        SetActiveMod(info);
     }
 }
