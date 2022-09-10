@@ -47,6 +47,11 @@ public class STSConfigItem<T>
         return Value;
     }
 
+    public final Class<?> GetConfigClass()
+    {
+        return DefaultValue.getClass();
+    }
+
     protected final void Save() {
         try {
             this.Config.save();
@@ -70,7 +75,7 @@ public class STSConfigItem<T>
     }
 
     protected Method GetMethod() throws Exception {
-        Class<?> valueClass = DefaultValue.getClass();
+        Class<?> valueClass = GetConfigClass();
         if (METHOD_HASH_MAP.containsKey(valueClass)) {
             return METHOD_HASH_MAP.get(valueClass);
         }

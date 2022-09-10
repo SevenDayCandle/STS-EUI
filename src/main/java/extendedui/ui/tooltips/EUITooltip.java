@@ -78,6 +78,7 @@ public class EUITooltip
     public ColoredString modName;
     public ColoredString subHeader;
     public ColoredString subText;
+    public EUITooltip child;
     public String id;
     public String past;
     public String plural;
@@ -231,7 +232,12 @@ public class EUITooltip
     {
         if (TryRender())
         {
-            tooltips.add(tooltip);
+            EUITooltip cur = tooltip;
+            while (cur != null)
+            {
+                tooltips.add(cur);
+                cur = tooltip.child;
+            }
             genericTipPos.x = x;
             genericTipPos.y = y;
             EUI.AddPriorityPostRender(EUITooltip::RenderGeneric);
@@ -746,6 +752,18 @@ public class EUITooltip
         }
 
         return h;
+    }
+
+    public EUITooltip SetChild(EUITooltip other)
+    {
+        this.child = other;
+        // Remove circular children to avoid infinite loops when queueing tooltips
+        if (other.child == this)
+        {
+            other.child = null;
+        }
+
+        return this;
     }
 
     public EUITooltip SetBadgeBackground(Color color)

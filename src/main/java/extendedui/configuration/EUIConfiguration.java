@@ -5,12 +5,15 @@ import basemod.ModLabeledToggleButton;
 import basemod.ModMinMaxSlider;
 import basemod.ModPanel;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.JavaUtils;
+import extendedui.ui.settings.ModSettingsScreen;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -28,6 +31,7 @@ public class EUIConfiguration
     //public static final int BASE_SPRITES_MAX = 6000;
     private static final String PREFIX = "EUI";
     private static SpireConfig config;
+    private static ModInfo INFO;
     private static int counter;
     public static boolean RequiresReload;
 
@@ -53,7 +57,9 @@ public class EUIConfiguration
         try
         {
             config = new SpireConfig(PREFIX, PREFIX);
+            INFO = EUIGameUtils.GetModInfo(EUIConfiguration.class);
             final ModPanel panel = new ModPanel();
+            ModSettingsScreen.AddSubscriber(EUIGameUtils.GetModInfo(EUIConfiguration.class));
             UseVanillaCompendium.AddConfig(config);
             DisableEffekseer.AddConfig(config);
             FlushOnGameStart.AddConfig(config);
@@ -68,6 +74,10 @@ public class EUIConfiguration
             yPos = AddToggle(panel, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart, yPos);
             //yPos = AddSlider(panel, MaxParticles, s.TEXT[2], yPos, BASE_SPRITES_MIN, BASE_SPRITES_MAX);
             BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
+
+            SubscribeToggle(DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer);
+            SubscribeToggle(FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart);
+            SubscribeToggle(FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart);
         }
         catch (IOException e)
         {
@@ -84,6 +94,11 @@ public class EUIConfiguration
         {
             e.printStackTrace();
         }
+    }
+
+    protected static void SubscribeToggle(STSConfigItem<Boolean> option, String label)
+    {
+        ModSettingsScreen.SubscribeBoolean(INFO, option, label);
     }
 
     protected static int AddToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {

@@ -101,6 +101,7 @@ public class EUIRM
         public final TextureCache LongButton                  = new TextureCache("images/extendedui/ui/LongButton.png");
         public final TextureCache LongButtonBorder            = new TextureCache("images/extendedui/ui/LongButtonBorder.png");
         public final TextureCache Minus                       = new TextureCache("images/extendedui/ui/Minus.png");
+        public final TextureCache ModSettingsButton           = new TextureCache("images/extendedui/ui/ModSettingsButton.png");
         public final TextureCache Panel                       = new TextureCache("images/extendedui/ui/Panel.png");
         public final TextureCache Panel_Elliptical            = new TextureCache("images/extendedui/ui/Panel_Elliptical.png");
         public final TextureCache Panel_Elliptical_Half_H     = new TextureCache("images/extendedui/ui/Panel_Elliptical_Half_H.png");
@@ -134,6 +135,7 @@ public class EUIRM
         public final String Misc_KeyToCycle = StringsMisc.TEXT[0];
         public final String Misc_TypeToSearch = StringsMisc.TEXT[1];
         public final String Misc_SortByCount = StringsMisc.TEXT[2];
+        public final String Misc_ModSettings = StringsMisc.TEXT[3];
 
         public final String UIPool_ViewPool = StringsUIPool.TEXT[0];
         public final String UIPool_ViewPoolDescription = StringsUIPool.TEXT[1];

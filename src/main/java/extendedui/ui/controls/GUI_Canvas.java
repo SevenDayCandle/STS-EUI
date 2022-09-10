@@ -121,6 +121,8 @@ public abstract class GUI_Canvas extends GUI_Base
         scrollBar.Scroll(0, true);
     }
 
+    public boolean IsHovered() {return scrollBar.hb.hovered;}
+
     protected void OnScroll(float newPercent)
     {
         if (!EUI.DoesActiveElementExist())

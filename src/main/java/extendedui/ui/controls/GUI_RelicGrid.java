@@ -323,6 +323,9 @@ public class GUI_RelicGrid extends GUI_CanvasGrid
     }
 
     @Override
+    public boolean IsHovered() {return super.IsHovered() || hoveredRelic != null;}
+
+    @Override
     public int CurrentSize()
     {
         return relicGroup.size();

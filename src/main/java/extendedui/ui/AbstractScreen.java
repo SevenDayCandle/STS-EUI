@@ -11,7 +11,6 @@ import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
 import extendedui.ui.controls.GUI_Button;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
@@ -37,18 +36,7 @@ public abstract class AbstractScreen extends GUI_Base
     protected void Open(boolean hideTopBar, boolean hideRelics)
     {
 
-        if (AbstractDungeon.screen != EUI_SCREEN) {
-
-            // These screens should not be recorded as the previous screen
-            if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.SETTINGS
-                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.INPUT_SETTINGS
-                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP
-                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MASTER_DECK_VIEW) {
-                AbstractDungeon.previousScreen = AbstractDungeon.screen;
-            }
-
-            AbstractDungeon.screen = EUI_SCREEN;
-        }
+        UpdateDungeonScreen();
 
         Settings.hideTopBar = hideTopBar;
         Settings.hideRelics = hideRelics;
@@ -77,6 +65,22 @@ public abstract class AbstractScreen extends GUI_Base
             CardCrawlGame.mainMenuScreen.screen = EUI_MENU;
         }
 
+    }
+
+    protected void UpdateDungeonScreen()
+    {
+        if (AbstractDungeon.screen != EUI_SCREEN) {
+
+            // These screens should not be recorded as the previous screen
+            if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.SETTINGS
+                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.INPUT_SETTINGS
+                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP
+                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MASTER_DECK_VIEW) {
+                AbstractDungeon.previousScreen = AbstractDungeon.screen;
+            }
+
+            AbstractDungeon.screen = EUI_SCREEN;
+        }
     }
 
     public void Reopen() {

@@ -4,8 +4,8 @@
 	"TEXT": [
 	  "Use Vanilla Card Library Screen",
 	  "Disable Effekseer Effects",
-	  "Flush Effekseer Effect Cache when Starting a Run",
-	  "Flush Effekseer Effect Cache when Entering a New Room",
+	  "Flush Effekseer Cache when Starting a Run",
+	  "Flush Effekseer Cache when Entering a New Room",
 	  "Reset Hidden Tooltips"
 	]
   },
@@ -50,7 +50,9 @@
 	"TEXT": [
 	  "{0} to cycle",
 	  "Type to Search",
-	  "Sort by {0}"
+	  "Sort by {0}",
+	  "Mod Settings",
+	  "Toggle mod-specific settings"
 	]
   },
   "extendedui:ui_pool":

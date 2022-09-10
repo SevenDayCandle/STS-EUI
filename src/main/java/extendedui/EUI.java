@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.mod.stslib.StSLib;
 import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
 import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -28,6 +29,7 @@ import extendedui.ui.controls.GUI_Button;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
+import extendedui.ui.settings.ModSettingsScreen;
 import extendedui.ui.tooltips.EUITooltip;
 import org.apache.commons.lang3.StringUtils;
 
@@ -67,6 +69,7 @@ public class EUI
     public static CustomCardLibraryScreen CustomLibraryScreen;
     public static GUI_Button OpenCardFiltersButton;
     public static GUI_Button OpenRelicFiltersButton;
+    public static ModSettingsScreen ModSettingsScreen;
     public static RelicKeywordFilters RelicFilters;
     public static RelicPoolScreen RelicScreen;
     public static RelicSortHeader RelicHeader;
@@ -86,6 +89,7 @@ public class EUI
         CardFilters = new CardKeywordFilters();
         CustomHeader = new CustomCardLibSortHeader(null);
         CustomLibraryScreen = new CustomCardLibraryScreen();
+        ModSettingsScreen = new ModSettingsScreen();
         RelicFilters = new RelicKeywordFilters();
         RelicHeader = new RelicSortHeader(null);
         RelicScreen = new RelicPoolScreen();
@@ -341,7 +345,6 @@ public class EUI
     public static CustomRelicPoolModule GetCustomRelicPoolModule(AbstractCard.CardColor cardColor) {
         return customRelicPoolModules.get(cardColor);
     }
-
 
     public static void ToggleViewUpgrades(boolean value)
     {

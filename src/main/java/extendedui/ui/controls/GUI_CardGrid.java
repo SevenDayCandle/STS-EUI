@@ -370,6 +370,9 @@ public class GUI_CardGrid extends GUI_CanvasGrid
     }
 
     @Override
+    public boolean IsHovered() {return super.IsHovered() || hoveredCard != null;}
+
+    @Override
     public int CurrentSize()
     {
         return cards.size();
