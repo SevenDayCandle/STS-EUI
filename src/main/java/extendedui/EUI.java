@@ -216,8 +216,6 @@ public class EUI
         activeElement = null;
         CurrentScreen = null;
         lastHovered = null;
-        Settings.hideTopBar = false;
-        Settings.hideRelics = false;
     }
 
     public static void PreUpdate()

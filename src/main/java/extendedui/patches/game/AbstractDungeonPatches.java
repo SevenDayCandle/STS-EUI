@@ -3,22 +3,18 @@ package extendedui.patches.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.DrawMaster;
 import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
 import extendedui.EUI;
-import extendedui.JavaUtils;
-import extendedui.patches.CardCrawlGamePatches;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
-
-import javax.sound.midi.Patch;
 
 import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 
 public class AbstractDungeonPatches {
+    private static boolean fromEUI;
+
     @SpirePatch(clz = AbstractDungeon.class, method = "closeCurrentScreen")
     public static class AbstractDungeonPatches_CloseCurrentScreen
     {
@@ -28,6 +24,7 @@ public class AbstractDungeonPatches {
             if (AbstractDungeon.screen == EUI_SCREEN)
             {
                 EUI.Dispose();
+                fromEUI = true;
             }
         }
 
@@ -37,6 +34,17 @@ public class AbstractDungeonPatches {
             if (AbstractDungeon.screen != EUI_SCREEN)
             {
                 EUI.PostDispose();
+                // Dungeon map needs to be manually closed after returning to the main screen
+                if (fromEUI)
+                {
+                    if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP)
+                    {
+                        AbstractDungeon.dungeonMapScreen.map.hideInstantly();
+                    }
+                    Settings.hideTopBar = false;
+                    Settings.hideRelics = false;
+                    fromEUI = false;
+                }
             }
         }
     }
