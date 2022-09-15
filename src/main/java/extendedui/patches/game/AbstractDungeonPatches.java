@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.DrawMaster;
 import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
@@ -12,6 +13,8 @@ import extendedui.JavaUtils;
 import extendedui.patches.CardCrawlGamePatches;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
+
+import javax.sound.midi.Patch;
 
 import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 
@@ -25,6 +28,15 @@ public class AbstractDungeonPatches {
             if (AbstractDungeon.screen == EUI_SCREEN)
             {
                 EUI.Dispose();
+            }
+        }
+
+        @SpirePostfixPatch
+        public static void Postfix()
+        {
+            if (AbstractDungeon.screen != EUI_SCREEN)
+            {
+                EUI.PostDispose();
             }
         }
     }

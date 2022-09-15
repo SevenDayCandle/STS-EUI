@@ -211,6 +211,15 @@ public class EUI
         lastHovered = null;
     }
 
+    public static void PostDispose()
+    {
+        activeElement = null;
+        CurrentScreen = null;
+        lastHovered = null;
+        Settings.hideTopBar = false;
+        Settings.hideRelics = false;
+    }
+
     public static void PreUpdate()
     {
         delta = Gdx.graphics.getRawDeltaTime();
