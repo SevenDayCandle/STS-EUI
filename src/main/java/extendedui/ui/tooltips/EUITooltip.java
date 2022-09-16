@@ -236,7 +236,7 @@ public class EUITooltip
             while (cur != null)
             {
                 tooltips.add(cur);
-                cur = tooltip.child;
+                cur = cur.child;
             }
             genericTipPos.x = x;
             genericTipPos.y = y;
