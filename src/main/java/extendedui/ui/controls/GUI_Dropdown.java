@@ -41,7 +41,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     protected static final float BORDER_SIZE = Settings.scale * 10.0F;
     protected static final float BOX_EDGE_H = 32.0F * Settings.scale;
     protected static final float BOX_BODY_H = 64.0F * Settings.scale;
-    protected static final float ICON_WIDTH = 84.0F * Settings.scale;
+    protected static final float ICON_WIDTH = 64.0F * Settings.scale;
     protected static final float SCROLLBAR_WIDTH = 24.0F * Settings.scale;
     protected static final float SCROLLBAR_PADDING = 8.0F * Settings.scale;
     protected static final float TOGGLE_OFFSET = 5f;
@@ -367,6 +367,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         if (canAutosizeRows) {
             for (DropdownRow<T> row : rows) {
                 row.hb.resize(rowWidth, rowHeight);
+                row.UpdateAlignment();
             }
         }
         this.scrollBar.hb.resize(SCROLLBAR_WIDTH, rowHeight * (this.visibleRowCount() - 1));
@@ -761,6 +762,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     }
 
     protected static class DropdownRow<T> {
+        protected static final float LABEL_OFFSET = 50;
         public final GUI_Dropdown<T> dr;
         public T item;
         public AdvancedHitbox hb;
@@ -774,12 +776,16 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
             this.hb = new RelativeHitbox(hb, 1f, 1f, 0f, 0f).SetIsPopupCompatible(true).SetParentElement(dr);
             this.item = item;
             this.index = index;
-            this.label = new GUI_Label(font, this.hb).SetFont(font, fontScale).SetText(labelFunction.Invoke(item)).SetAlignment(0.5f, 0f, dr.isOptionSmartText);
             this.checkbox = new GUI_Image(ImageMaster.COLOR_TAB_BOX_UNTICKED,  new RelativeHitbox(hb, 48f, 48f, 0f, -TOGGLE_OFFSET, false));
+            this.label = new GUI_Label(font, new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f, false))
+                    .SetFont(font, fontScale)
+                    .SetText(labelFunction.Invoke(item))
+                    .SetAlignment(0.5f, 0f, dr.isOptionSmartText);
         }
 
         public DropdownRow<T> UpdateAlignment() {
-            this.label.SetAlignment(dr.isOptionSmartText ? 1f : 0.5f, (dr.isMultiSelect ? 0.22f : 0.1f) * (dr.isOptionSmartText ? 0.8f : 1f), dr.isOptionSmartText);
+            this.label.SetAlignment(dr.isOptionSmartText ? 1f : 0.5f, 0f, dr.isOptionSmartText);
+            this.label.SetHitbox(new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f, false));
             return this;
         }
 
@@ -805,11 +811,13 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         public void move(float x, float y) {
             this.hb.translate(x,y);
             this.checkbox.hb.translate(x,y - TOGGLE_OFFSET);
+            this.label.hb.translate(x + (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2), y);
         }
 
         public boolean update(boolean isInRange, boolean isSelected) {
             this.hb.update();
             this.label.Update();
+            this.checkbox.Update();
             this.isSelected = isSelected;
             if (!isInRange) {
                 return false;
