@@ -309,7 +309,7 @@ public class GUI_CardGrid extends GUI_CanvasGrid
         for (int i = 0; i < cards.group.size(); i++)
         {
             AbstractCard card = cards.group.get(i);
-            card.target_x = (DRAW_START_X * draw_x) + (column * PAD_X);
+            card.target_x = (DRAW_START_X * draw_x) + (column * pad_x);
             card.target_y = draw_top_y + scrollDelta - (row * pad_y);
             card.fadingOut = false;
             card.update();

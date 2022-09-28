@@ -53,6 +53,7 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     protected FuncT1<Color, List<T>> colorFunctionButton;
     protected FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton;
     protected FuncT1<String, T> labelFunction;
+    protected FuncT1<List<EUITooltip>, T> tooltipFunction;
     protected GUI_Label header;
     protected GUI_VerticalScrollBar scrollBar;
     protected boolean isOpen;
@@ -240,6 +241,11 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         for (DropdownRow<T> row : rows) {
             row.SetLabelFunction(labelFunction, isSmartText);
         }
+        return this;
+    }
+
+    public GUI_Dropdown<T> SetTooltipFunction(FuncT1<List<EUITooltip>, T> tooltipFunction) {
+        this.tooltipFunction = tooltipFunction;
         return this;
     }
 
@@ -861,7 +867,11 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
         }
 
         protected void addTooltip() {
-            if (item instanceof TooltipProvider) {
+            if (dr.tooltipFunction != null)
+            {
+                EUITooltip.QueueTooltips(dr.tooltipFunction.Invoke(item));
+            }
+            else if (item instanceof TooltipProvider) {
                 EUITooltip.QueueTooltips(((TooltipProvider) item).GetTips());
             }
             else if (item instanceof CardObject) {
