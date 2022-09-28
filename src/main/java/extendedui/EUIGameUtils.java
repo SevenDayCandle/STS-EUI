@@ -1,5 +1,7 @@
 package extendedui;
 
+import basemod.BaseMod;
+import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -57,6 +59,25 @@ public class EUIGameUtils {
         copy.targetTransparency = original.targetTransparency;
         copy.angle = original.angle;
         copy.targetAngle = original.targetAngle;
+    }
+
+    public static Color GetColorColor(AbstractCard.CardColor co){
+        switch (co) {
+            case RED:
+                return new Color(0.5F, 0.1F, 0.1F, 1.0F);
+            case GREEN:
+                return new Color(0.25F, 0.55F, 0.0F, 1.0F);
+            case BLUE:
+                return new Color(0.01F, 0.34F, 0.52F, 1.0F);
+            case PURPLE:
+                return new Color(0.37F, 0.22F, 0.49F, 1.0F);
+            case COLORLESS:
+                return new Color(0.4F, 0.4F, 0.4F, 1.0F);
+            case CURSE:
+                return new Color(0.18F, 0.18F, 0.16F, 1.0F);
+            default:
+                return BaseMod.getTrailVfxColor(co);
+        }
     }
 
     public static boolean IsObjectFromMod(Object o, ModInfo mod) {

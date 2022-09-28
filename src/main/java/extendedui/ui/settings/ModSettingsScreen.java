@@ -89,11 +89,9 @@ public class ModSettingsScreen extends AbstractScreen
         {
             MakeModButton(info);
         }
-        modButtons.SetTopButtonIndex(0);
 
         if (infos.size() > 0)
         {
-            modButtons.buttons.get(0).SetColor(Color.WHITE);
             SetActiveMod(infos.get(0));
         }
     }
@@ -176,20 +174,7 @@ public class ModSettingsScreen extends AbstractScreen
     }
 
     protected void MakeModButton(ModInfo info) {
-        modButtons.AddButton()
-                .SetColor(Color.GRAY)
-                .SetOnClick(button -> SelectButton(button, info))
-                .SetText(info.Name)
-                .SetFont(FontHelper.buttonLabelFont, 0.8f)
-                .SetButtonScale(1f, 1.2f);
-    }
-
-    protected void SelectButton(GUI_Button button, ModInfo info)
-    {
-        for (GUI_Button b : modButtons.buttons)
-        {
-            b.SetColor(b == button ? Color.WHITE : Color.GRAY);
-        }
-        SetActiveMod(info);
+        modButtons.AddButton(button -> SetActiveMod(info), info.Name)
+                .SetColor(Color.GRAY);
     }
 }

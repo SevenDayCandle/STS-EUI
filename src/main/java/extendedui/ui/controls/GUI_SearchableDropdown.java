@@ -39,6 +39,11 @@ public class GUI_SearchableDropdown<T> extends GUI_Dropdown<T>
         Initialize();
     }
 
+    public GUI_SearchableDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
+        super(hb, labelFunction, options, font, fontScale, maxRows, canAutosizeButton);
+        Initialize();
+    }
+
     public GUI_SearchableDropdown<T> SetCanAutosizeButton(boolean value) {
         super.SetCanAutosizeButton(value);
         return this;

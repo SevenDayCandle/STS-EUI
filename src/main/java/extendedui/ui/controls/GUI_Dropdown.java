@@ -90,12 +90,16 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
     }
 
     public GUI_Dropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList <T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
+        this(hb, labelFunction, options, EUIFontHelper.CardTooltipFont, 1, DEFAULT_MAX_ROWS, false);
+    }
+
+    public GUI_Dropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList <T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
         super(hb);
         this.hb
                 .SetIsPopupCompatible(true)
                 .SetParentElement(this);
         this.font = font;
-        this.fontScale = 1;
+        this.fontScale = fontScale;
         this.maxRows = maxRows;
         this.labelFunction = labelFunction;
         this.canAutosizeButton = canAutosizeButton;

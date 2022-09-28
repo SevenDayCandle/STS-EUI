@@ -32,6 +32,12 @@ public class GUI_ContextMenu<T> extends GUI_Dropdown<T>
         Initialize();
     }
 
+    public GUI_ContextMenu(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
+        super(hb, labelFunction, options, font, fontScale, maxRows, canAutosizeButton);
+        Initialize();
+    }
+
+
     protected void Initialize() {
         this.button.SetActive(false);
     }

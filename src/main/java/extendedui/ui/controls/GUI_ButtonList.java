@@ -1,9 +1,11 @@
 package extendedui.ui.controls;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.GUI_Base;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
@@ -57,7 +59,6 @@ public class GUI_ButtonList extends GUI_Base
         for (GUI_Button b : buttons) {
             b.TryUpdate();
         }
-
     }
 
     @Override
@@ -91,11 +92,26 @@ public class GUI_ButtonList extends GUI_Base
         downButton.SetActive(topButtonIndex < buttons.size() - visibleButtons);
     }
 
-    public GUI_Button AddButton() {
-        GUI_Button button = new GUI_Button(ImageMaster.COLOR_TAB_BAR, new AdvancedHitbox(Scale(200), buttonHeight))
+    public void SelectButton(GUI_Button button)
+    {
+        for (GUI_Button b : buttons)
+        {
+            b.SetTextColor(b == button ? Settings.GREEN_TEXT_COLOR : Color.WHITE);
+        }
+    }
+
+    public GUI_Button AddButton(ActionT1<GUI_Button> onClick, String title) {
+        GUI_Button button = new GUI_Button(ImageMaster.COLOR_TAB_BAR, new AdvancedHitbox(buttonWidth, buttonHeight))
                 .SetFont(FontHelper.buttonLabelFont, 0.8f)
-                .SetButtonScale(1f, 1.2f);
+                .SetButtonScale(1f, 1.2f)
+                .SetOnClick((b) -> {
+                    SelectButton(b);
+                    onClick.Invoke(b);
+                })
+                .SetText(title);
         buttons.add(button);
+        SetTopButtonIndex(0);
+        SelectButton(buttons.get(0));
         return button;
     }
 }
