@@ -136,7 +136,7 @@ public class ModSettingsScreen extends AbstractScreen
         {
             for (ModSettingsProvider<?> option : list)
             {
-                option.UpdateProvider();
+                option.UpdateAndRefresh();
             }
         }
 

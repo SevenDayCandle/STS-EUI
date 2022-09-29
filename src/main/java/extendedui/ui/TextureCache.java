@@ -23,9 +23,9 @@ public class TextureCache {
 
     public Texture Texture(boolean refresh) {
         if (refresh || this.texture == null) {
-            this.texture = EUIRM.GetTexture(this.path, this.mipmap, refresh);
+            this.texture = EUIRM.GetTexture(this.path, this.mipmap, refresh, false);
             if (this.texture == null) {
-                this.texture = EUIRM.GetLocalTexture(this.path, this.mipmap, refresh);
+                this.texture = EUIRM.GetLocalTexture(this.path, this.mipmap, refresh, false);
             }
         }
 

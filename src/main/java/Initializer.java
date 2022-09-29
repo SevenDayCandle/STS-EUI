@@ -6,7 +6,6 @@ import com.badlogic.gdx.utils.GdxRuntimeException;
 import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.localization.KeywordStrings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import extendedui.*;
@@ -21,7 +20,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
-import static extendedui.configuration.EUIConfiguration.RequiresReload;
+import static extendedui.configuration.EUIConfiguration.ShouldReloadEffekseer;
 
 @SpireInitializer
 public class Initializer implements PostInitializeSubscriber, EditStringsSubscriber, EditKeywordsSubscriber, EditCardsSubscriber, StartGameSubscriber, OnStartBattleSubscriber, PostUpdateSubscriber
@@ -123,10 +122,10 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     @Override
     public void receiveStartGame()
     {
-        if (EUIConfiguration.FlushOnGameStart.Get() || RequiresReload) {
+        if (EUIConfiguration.FlushOnGameStart.Get() || ShouldReloadEffekseer) {
             STSEffekseerManager.Reset();
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager. Particles: " + BASE_SPRITES_DEFAULT);
-            RequiresReload = false;
+            ShouldReloadEffekseer = false;
         }
         EUITooltip.UpdateTooltipIcons();
     }

@@ -29,13 +29,13 @@ public class EUIRM
     }
 
     public static Texture GetTexture(String path, boolean useMipMap) {
-        return GetTexture(path, true, false);
+        return GetTexture(path, true, false, false);
     }
 
-    public static Texture GetTexture(String path, boolean useMipMap, boolean refresh) {
+    public static Texture GetTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {
         Texture texture = internalTextures.get(path);
         if (texture == null || refresh) {
-            texture = LoadTextureImpl(Gdx.files.internal(path), useMipMap);
+            texture = LoadTextureImpl(Gdx.files.internal(path), useMipMap, suppressError);
             internalTextures.put(path, texture);
         }
 
@@ -47,20 +47,20 @@ public class EUIRM
     }
 
     public static Texture GetLocalTexture(String path, boolean useMipMap) {
-        return GetLocalTexture(path, true, false);
+        return GetLocalTexture(path, true, false, false);
     }
 
-    public static Texture GetLocalTexture(String path, boolean useMipMap, boolean refresh) {
+    public static Texture GetLocalTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {
         Texture texture = localTextures.get(path);
         if (texture == null || refresh) {
-            texture = LoadTextureImpl(Gdx.files.local(path), useMipMap);
+            texture = LoadTextureImpl(Gdx.files.local(path), useMipMap, suppressError);
             localTextures.put(path, texture);
         }
 
         return texture;
     }
 
-    private static Texture LoadTextureImpl(FileHandle file, boolean useMipMap) {
+    private static Texture LoadTextureImpl(FileHandle file, boolean useMipMap, boolean suppressError) {
         if (file.exists()) {
             Texture texture = new Texture(file, useMipMap);
             if (useMipMap) {
@@ -69,8 +69,17 @@ public class EUIRM
                 texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
             }
             return texture;
-        } else {
-            JavaUtils.GetLogger(EUIRM.class).error("Texture does not exist: " + file.path());
+        }
+        else {
+            if (suppressError)
+            {
+                JavaUtils.LogInfoIfDebug(EUIRM.class, "Texture does not exist: " + file.path());
+            }
+            else
+            {
+                JavaUtils.LogError(EUIRM.class, "Texture does not exist: " + file.path());
+            }
+
         }
         return null;
     }

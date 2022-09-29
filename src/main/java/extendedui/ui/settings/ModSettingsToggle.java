@@ -25,6 +25,12 @@ public class ModSettingsToggle extends GUI_Toggle implements ModSettingsProvider
     }
 
     @Override
+    public void Set(Boolean value)
+    {
+        SetToggle(value);
+    }
+
+    @Override
     public void UpdateProvider()
     {
         super.Update();

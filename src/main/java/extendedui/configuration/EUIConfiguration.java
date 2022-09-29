@@ -33,7 +33,7 @@ public class EUIConfiguration
     private static SpireConfig config;
     private static ModInfo INFO;
     private static int counter;
-    public static boolean RequiresReload;
+    public static boolean ShouldReloadEffekseer;
 
     public static String GetFullKey(String base) {
         return PREFIX + "_" + base;
@@ -110,7 +110,7 @@ public class EUIConfiguration
     protected static int AddSlider(ModPanel panel, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
         panel.addUIElement(new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.Get(), "%d", panel, (c) -> {
             option.Set(MathUtils.round(c.getValue()), true);
-            RequiresReload = true;
+            ShouldReloadEffekseer = true;
         }));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }
