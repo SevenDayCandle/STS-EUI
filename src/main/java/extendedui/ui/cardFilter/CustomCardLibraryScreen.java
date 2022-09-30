@@ -63,7 +63,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
         cancelButton = new MenuCancelButton();
 
         quickSearch = (GUI_TextBoxInput) new GUI_TextBoxInput(EUIRM.Images.RectangularButton.Texture(),
-                new AdvancedHitbox(Settings.WIDTH * 0.35f, Settings.HEIGHT * 0.93f, Scale(280), Scale(48)))
+                new AdvancedHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, Scale(280), Scale(48)))
                 .SetOnComplete((v) -> EUI.CardFilters.NameInput.SetTextAndCommit(v))
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.7f, Settings.GOLD_COLOR, EUIRM.Strings.UI_NameSearch)
                 .SetColors(Color.GRAY, Settings.CREAM_COLOR)
@@ -71,7 +71,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
                 .SetFont(EUIFontHelper.CardTitleFont_Small, 0.7f)
                 .SetBackgroundTexture(EUIRM.Images.RectangularButton.Texture())
                 .SetText("");
-        quickSearch.header.SetAlignment(0f, -0.57f);
+        quickSearch.header.SetAlignment(0f, -0.51f);
     }
 
     public void Initialize(CardLibraryScreen screen) {
@@ -112,7 +112,10 @@ public class CustomCardLibraryScreen extends AbstractScreen
     }
 
     public void SetActiveColor(AbstractCard.CardColor color) {
-        CardGroup cards = CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED));
+        SetActiveColor(color, CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED)));
+    }
+
+    public void SetActiveColor(AbstractCard.CardColor color, CardGroup cards) {
         EUI.ActingColor = CurrentColor = color;
         cardGrid.Clear();
         cardGrid.SetCardGroup(cards);
@@ -137,7 +140,8 @@ public class CustomCardLibraryScreen extends AbstractScreen
     @Override
     public void Update()
     {
-        if (!EUI.CardFilters.TryUpdate() && !CardCrawlGame.isPopupOpen) {
+        boolean shouldDoStandardUpdate = !EUI.CardFilters.TryUpdate() && !CardCrawlGame.isPopupOpen;
+        if (shouldDoStandardUpdate) {
             EUI.OpenCardFiltersButton.TryUpdate();
             colorButtons.TryUpdate();
             EUI.CustomHeader.update();
@@ -145,9 +149,6 @@ public class CustomCardLibraryScreen extends AbstractScreen
             upgradeToggle.SetPosition(upgradeToggle.hb.cX, barY).SetToggle(SingleCardViewPopup.isViewingUpgrade).Update();
             quickSearch.TryUpdate();
             cardGrid.TryUpdate();
-            if (CustomModule != null) {
-                CustomModule.TryUpdate();
-            }
             cancelButton.update();
             if (this.cancelButton.hb.clicked || InputHelper.pressedEscape) {
                 InputHelper.pressedEscape = false;
@@ -156,6 +157,9 @@ public class CustomCardLibraryScreen extends AbstractScreen
                 CardCrawlGame.mainMenuScreen.panelScreen.refresh();
                 Dispose();
             }
+        }
+        if (CustomModule != null) {
+            CustomModule.TryUpdate(shouldDoStandardUpdate);
         }
     }
 

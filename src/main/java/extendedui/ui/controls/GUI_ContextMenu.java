@@ -2,6 +2,7 @@ package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.EUI;
@@ -60,6 +61,12 @@ public class GUI_ContextMenu<T> extends GUI_Dropdown<T>
     public GUI_ContextMenu<T> SetPosition(float x, float y) {
         super.SetPosition(x, y);
         return this;
+    }
+
+    public void PositionToOpen()
+    {
+        SetPosition(InputHelper.mX, InputHelper.mY);
+        OpenOrCloseMenu();
     }
 
     @Override

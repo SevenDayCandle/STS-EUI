@@ -43,11 +43,11 @@ public class GUI_ButtonList extends GUI_Base
         this.yPos = yPos;
         this.buttonWidth = buttonWidth;
         this.buttonHeight = buttonHeight;
-        upButton = new GUI_Button(ImageMaster.CF_LEFT_ARROW, new AdvancedHitbox(xPos, y, ICON_SIZE, ICON_SIZE))
+        upButton = new GUI_Button(ImageMaster.CF_LEFT_ARROW, new AdvancedHitbox(xPos - ICON_SIZE, y + (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE))
                 .SetOnClick(__ -> SetTopButtonIndex(topButtonIndex - 1))
                 .SetText(null);
         upButton.background.SetRotation(-90);
-        downButton = new GUI_Button(ImageMaster.CF_RIGHT_ARROW, new AdvancedHitbox(upButton.hb.cX + Scale(40), y, ICON_SIZE, ICON_SIZE))
+        downButton = new GUI_Button(ImageMaster.CF_RIGHT_ARROW, new AdvancedHitbox(upButton.hb.cX + ICON_SIZE, upButton.getY(), ICON_SIZE, ICON_SIZE))
                 .SetOnClick(__ -> SetTopButtonIndex(topButtonIndex + 1))
                 .SetText(null);
         downButton.background.SetRotation(-90);
@@ -59,6 +59,8 @@ public class GUI_ButtonList extends GUI_Base
         for (GUI_Button b : buttons) {
             b.TryUpdate();
         }
+        upButton.TryUpdate();
+        downButton.TryUpdate();
     }
 
     @Override
@@ -67,6 +69,8 @@ public class GUI_ButtonList extends GUI_Base
         for (GUI_Button b : buttons) {
             b.TryRenderCentered(sb);
         }
+        upButton.TryRenderCentered(sb);
+        downButton.TryRenderCentered(sb);
     }
 
     public void Clear()
