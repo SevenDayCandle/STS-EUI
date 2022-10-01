@@ -1,0 +1,5 @@
+Mod Name
+图鉴筛选
+
+Mod Description (I translate it only in summary, so I suggest adding this before the English version of the description)
+译者注：本mod在卡牌和遗物图鉴中添加了筛选和查找功能。很简单，试一下就知道。如全屏下不显示中文输入法候选框，可以开窗口模式。

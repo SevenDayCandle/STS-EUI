@@ -1,0 +1,70 @@
+{
+  "Channel": {
+	"PAST": "Channeled",
+	"PRESENT": "Channels"
+  },
+  "Curse": {
+	"PLURAL": "Curses"
+  },
+  "Discard":
+  {
+	"DESCRIPTION": "Move cards to your discard pile.",
+	"NAMES": ["discard", "discarded"],
+	"PAST": "discarded",
+	"PRESENT": "discards",
+	"PROPER_NAME": "Discard"
+  },
+  "Draw":
+  {
+	"DESCRIPTION": "Move cards to your hand.",
+	"NAMES": ["draw", "draw"],
+	"PAST": "drawn",
+	"PRESENT": "draws",
+	"PROPER_NAME": "Draw"
+  },
+  "Exhaust": {
+	"PAST": "Exhausted",
+	"PRESENT": "Exhausts"
+  },
+  "Evoke": {
+	"PAST": "Evoked",
+	"PRESENT": "Evokes"
+  },
+  "Orb":
+  {
+	"DESCRIPTION": "An #yOrb's passive effect is triggered every turn.",
+	"NAMES": ["orb", "orbs"],
+	"PROPER_NAME": "Orb",
+	"PLURAL": "Orbs"
+  },
+  "Power":
+  {
+	"DESCRIPTION": "Powers continually affect you until removed.",
+	"NAMES": ["power", "powers"],
+	"PROPER_NAME": "Power",
+	"PLURAL": "Powers"
+  },
+  "Purge": {
+	"PAST": "Purged",
+	"PRESENT": "Purges"
+  },
+  "Retain": {
+	"PAST": "Retained",
+	"PRESENT": "Retains"
+  },
+  "Scry": {
+	"PAST": "Scried",
+	"PRESENT": "Scries"
+  },
+  "Status": {
+	"PLURAL": "Statuses"
+  },
+  "Transform": {
+	"PAST": "Transformed",
+	"PRESENT": "Transforms"
+  },
+  "Upgrade": {
+	"PAST": "Upgraded",
+	"PRESENT": "Upgrades"
+  }
+}
