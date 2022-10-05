@@ -39,8 +39,6 @@ public class GUI_Button extends GUI_Hoverable
     public GenericCallback<GUI_Button> onRightClick;
     public String text;
     public Color textColor = Color.WHITE.cpy();
-    public Color buttonColor;
-    public Color disabledButtonColor;
 
     protected BitmapFont font;
     protected GUI_Label label;
@@ -55,11 +53,10 @@ public class GUI_Button extends GUI_Hoverable
     public GUI_Button(Texture buttonTexture, AdvancedHitbox hitbox)
     {
         super(hitbox);
-        this.background = EUIRenderHelpers.ForTexture(buttonTexture);
+        this.background = EUIRenderHelpers.ForTexture(buttonTexture, hitbox, Color.WHITE);
         this.text = "";
         this.font = FontHelper.buttonLabelFont;
         this.fontScale = 1f;
-        SetColor(Color.WHITE);
     }
 
     public GUI_Button SetAlpha(float currentAlpha, float targetAlpha) {
@@ -207,8 +204,14 @@ public class GUI_Button extends GUI_Hoverable
 
     public GUI_Button SetColor(Color buttonColor)
     {
-        this.buttonColor = buttonColor.cpy();
-        this.disabledButtonColor = EUIColors.Lerp(buttonColor, Color.BLACK, 0.4f);
+        background.SetColor(buttonColor);
+
+        return this;
+    }
+
+    public GUI_Button SetTargetColor(Color buttonColor)
+    {
+        background.SetTargetColor(buttonColor);
 
         return this;
     }
@@ -267,6 +270,7 @@ public class GUI_Button extends GUI_Hoverable
         }
 
         super.Update();
+        background.UpdateColor();
 
         if (IsInteractable() && EUI.TryHover(hb))
         {
@@ -300,7 +304,7 @@ public class GUI_Button extends GUI_Hoverable
     @Override
     public void Render(SpriteBatch sb)
     {
-        this.buttonColor.a = this.textColor.a = currentAlpha;
+        background.color.a = this.textColor.a = currentAlpha;
         if (currentAlpha <= 0)
         {
             return;
@@ -309,7 +313,7 @@ public class GUI_Button extends GUI_Hoverable
         final boolean interactable = IsInteractable();
         if (StringUtils.isNotEmpty(text) && showText)
         {
-            this.RenderButton(sb, interactable, buttonColor);
+            this.RenderButton(sb, interactable);
 
             font.getData().setScale(fontScale);
             final Color color = interactable ? textColor : TEXT_DISABLED_COLOR;
@@ -329,10 +333,10 @@ public class GUI_Button extends GUI_Hoverable
         else
         {
             if (interactable) {
-                this.RenderButton(sb, interactable, buttonColor);
+                this.RenderButton(sb, interactable);
             }
             else {
-                EUIRenderHelpers.DrawGrayscale(sb, (s) -> this.RenderButton(s, interactable, buttonColor));
+                EUIRenderHelpers.DrawGrayscale(sb, (s) -> this.RenderButton(s, interactable));
             }
 
         }
@@ -342,7 +346,7 @@ public class GUI_Button extends GUI_Hoverable
 
     public void RenderCentered(SpriteBatch sb)
     {
-        this.buttonColor.a = this.textColor.a = currentAlpha;
+        background.color.a = this.textColor.a = currentAlpha;
         if (currentAlpha <= 0)
         {
             return;
@@ -351,7 +355,7 @@ public class GUI_Button extends GUI_Hoverable
         final boolean interactable = IsInteractable();
         if (StringUtils.isNotEmpty(text) && showText)
         {
-            this.RenderButtonCentered(sb, interactable, buttonColor);
+            this.RenderButtonCentered(sb, interactable);
 
             font.getData().setScale(fontScale);
             final Color color = interactable ? textColor : TEXT_DISABLED_COLOR;
@@ -371,10 +375,10 @@ public class GUI_Button extends GUI_Hoverable
         else
         {
             if (interactable) {
-                this.RenderButtonCentered(sb, interactable, buttonColor);
+                this.RenderButtonCentered(sb, interactable);
             }
             else {
-                EUIRenderHelpers.DrawGrayscale(sb, (s) -> this.RenderButtonCentered(s, interactable, buttonColor));
+                EUIRenderHelpers.DrawGrayscale(sb, (s) -> this.RenderButtonCentered(s, interactable));
             }
 
         }
@@ -382,9 +386,9 @@ public class GUI_Button extends GUI_Hoverable
         this.hb.render(sb);
     }
 
-    protected void RenderButton(SpriteBatch sb, boolean interactable, Color color)
+    protected void RenderButton(SpriteBatch sb, boolean interactable)
     {
-        background.SetColor(color).Render(sb, hb);
+        background.Render(sb, hb);
 
         if (border != null)
         {
@@ -393,17 +397,13 @@ public class GUI_Button extends GUI_Hoverable
 
         if (interactable && this.hb.hovered && !this.hb.clickStarted)
         {
-            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-
-            background.SetColor(HOVER_BLEND_COLOR).Render(sb, EUIRenderHelpers.ShaderMode.Bright, hb);
-
-            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            background.Render(sb, EUIRenderHelpers.ShaderMode.Bright, hb, HOVER_BLEND_COLOR);
         }
     }
 
-    protected void RenderButtonCentered(SpriteBatch sb, boolean interactable, Color color)
+    protected void RenderButtonCentered(SpriteBatch sb, boolean interactable)
     {
-        background.SetColor(color).RenderCentered(sb, hb);
+        background.RenderCentered(sb, hb);
 
         if (border != null)
         {
@@ -412,11 +412,7 @@ public class GUI_Button extends GUI_Hoverable
 
         if (interactable && this.hb.hovered && !this.hb.clickStarted)
         {
-            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-
-            background.SetColor(HOVER_BLEND_COLOR).RenderCentered(sb, EUIRenderHelpers.ShaderMode.Bright, hb);
-
-            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
+            background.RenderCentered(sb, EUIRenderHelpers.ShaderMode.Bright, hb, HOVER_BLEND_COLOR);
         }
     }
 

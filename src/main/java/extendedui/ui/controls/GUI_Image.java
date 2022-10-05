@@ -210,7 +210,11 @@ public class GUI_Image extends GUI_Hoverable
     public void Update()
     {
         super.Update();
+        UpdateColor();
+    }
 
+    public void UpdateColor()
+    {
         if (targetColor != null && baseTransitionTime > 0) {
             transitionTime -= Gdx.graphics.getRawDeltaTime();
             this.color = EUIColors.Lerp(targetColor, sourceColor, transitionTime / baseTransitionTime);
@@ -233,9 +237,19 @@ public class GUI_Image extends GUI_Hoverable
         Render(sb, hb.x, hb.y, hb.width, hb.height);
     }
 
+    public void Render(SpriteBatch sb, Hitbox hb, Color targetColor)
+    {
+        Render(sb, shaderMode, hb, targetColor);
+    }
+
     public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb)
     {
         Render(sb, mode, hb.x, hb.y, hb.width, hb.height);
+    }
+
+    public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb, Color targetColor)
+    {
+        Render(sb, mode, hb.x, hb.y, hb.width, hb.height, targetColor);
     }
 
     public void Render(SpriteBatch sb, float x, float y, float width, float height) {
@@ -243,10 +257,14 @@ public class GUI_Image extends GUI_Hoverable
     }
 
     public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
-        mode.Draw(sb, (s) -> RenderImpl(s, x, y, width, height));
+        Render(sb, shaderMode, x, y, width, height, color);
     }
 
-    protected void RenderImpl(SpriteBatch sb, float x, float y, float width, float height) {
+    public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height, Color targetColor) {
+        mode.Draw(sb, (s) -> RenderImpl(s, x, y, width, height, targetColor));
+    }
+
+    protected void RenderImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
         sb.setBlendFunction(blendingMode.srcFunc, blendingMode.dstFunc);
         if (background != null)
         {
@@ -254,11 +272,11 @@ public class GUI_Image extends GUI_Hoverable
             final float h = height * background.pos.scale;
             final int s_w = background.texture.getWidth();
             final int s_h = background.texture.getHeight();
-            sb.setColor(background.color != null ? background.color : color);
+            sb.setColor(background.color != null ? background.color : targetColor);
             sb.draw(background.texture, x + ((width-w)*0.5f), y + ((height-h)*0.5f), 0, 0, w, h, scaleX, scaleY, rotation, 0, 0, s_w, s_h, flipX, flipY);
         }
 
-        sb.setColor(color);
+        sb.setColor(targetColor);
         sb.draw(texture, x, y, 0, 0, width, height, scaleX, scaleY, rotation, 0, 0, srcWidth, srcHeight, flipX, flipY);
 
         if (foreground != null)
@@ -267,7 +285,7 @@ public class GUI_Image extends GUI_Hoverable
             final float h = height * foreground.pos.scale;
             final int s_w = foreground.texture.getWidth();
             final int s_h = foreground.texture.getHeight();
-            sb.setColor(foreground.color != null ? foreground.color : color);
+            sb.setColor(foreground.color != null ? foreground.color : targetColor);
             sb.draw(foreground.texture, x + ((width-w)*0.5f), y + ((height-h)*0.5f), 0, 0, w, h, scaleX, scaleY, rotation, 0, 0, s_w, s_h, flipX, flipY);
         }
         sb.setBlendFunction(770, 771);
@@ -285,9 +303,19 @@ public class GUI_Image extends GUI_Hoverable
         RenderCentered(sb, hb.x, hb.y, hb.width, hb.height);
     }
 
+    public void RenderCentered(SpriteBatch sb, Hitbox hb, Color targetColor)
+    {
+        RenderCentered(sb, shaderMode, hb, targetColor);
+    }
+
     public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb)
     {
         RenderCentered(sb, mode, hb.x, hb.y, hb.width, hb.height);
+    }
+
+    public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb, Color targetColor)
+    {
+        RenderCentered(sb, mode, hb.x, hb.y, hb.width, hb.height, targetColor);
     }
 
     public void RenderCentered(SpriteBatch sb, float x, float y, float width, float height) {
@@ -295,10 +323,14 @@ public class GUI_Image extends GUI_Hoverable
     }
 
     public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
-        mode.Draw(sb, (s) -> RenderCenteredImpl(s, x, y, width, height));
+        RenderCentered(sb, shaderMode, x, y, width, height, color);
     }
 
-    protected void RenderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height)
+    public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height, Color targetColor) {
+        mode.Draw(sb, (s) -> RenderCenteredImpl(s, x, y, width, height, targetColor));
+    }
+
+    protected void RenderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor)
     {
         sb.setBlendFunction(blendingMode.srcFunc, blendingMode.dstFunc);
         if (background != null)
@@ -306,11 +338,11 @@ public class GUI_Image extends GUI_Hoverable
             final float scale = background.pos.scale * Settings.scale;
             final int s_w = background.texture.getWidth();
             final int s_h = background.texture.getHeight();
-            sb.setColor(background.color != null ? background.color : color);
+            sb.setColor(background.color != null ? background.color : targetColor);
             sb.draw(background.texture, x, y, width/2f, height/2f, width, height, scaleX * scale, scaleY * scale, rotation, 0, 0, s_w, s_h, flipX, flipY);
         }
 
-        sb.setColor(color);
+        sb.setColor(targetColor);
         sb.draw(texture, x, y, width/2f, height/2f, width, height, scaleX * Settings.scale, scaleY * Settings.scale, rotation, 0, 0, srcWidth, srcHeight, flipX, flipY);
 
         if (foreground != null)
@@ -318,7 +350,7 @@ public class GUI_Image extends GUI_Hoverable
             final float scale = foreground.pos.scale * Settings.scale;
             final int s_w = foreground.texture.getWidth();
             final int s_h = foreground.texture.getHeight();
-            sb.setColor(foreground.color != null ? foreground.color : color);
+            sb.setColor(foreground.color != null ? foreground.color : targetColor);
             sb.draw(foreground.texture, x, y, width/2f, height/2f, width, height, scaleX * scale, scaleY * scale, rotation, 0, 0, s_w, s_h, flipX, flipY);
         }
         sb.setBlendFunction(770, 771);

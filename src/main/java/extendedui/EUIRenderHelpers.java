@@ -20,6 +20,7 @@ import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
 import extendedui.ui.controls.GUI_Image;
+import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.*;
 import org.imgscalr.Scalr;
@@ -571,6 +572,11 @@ public class EUIRenderHelpers
     public static GUI_Image ForTexture(Texture texture)
     {
         return ForTexture(texture, Color.WHITE);
+    }
+
+    public static GUI_Image ForTexture(Texture texture, AdvancedHitbox hb, Color color)
+    {
+        return new GUI_Image(texture, hb, color);
     }
 
     public static GUI_Image ForTexture(Texture texture, Color color)
