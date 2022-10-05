@@ -590,8 +590,7 @@ public class EUITooltip
                     continue;
                 }
 
-                // Replace vanilla newlines with EUI newlines
-                final EUITooltip tip = new EUITooltip(p.name, p.description != null ? p.description.replace(" NL ", " | ") : p.description);
+                final EUITooltip tip = new EUITooltip(p.name, p.description);
                 if (p.region48 != null)
                 {
                     tip.icon = p.region48;

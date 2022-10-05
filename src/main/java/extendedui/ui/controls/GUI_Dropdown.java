@@ -17,6 +17,7 @@ import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import eatyourbeets.interfaces.delegates.FuncT2;
 import extendedui.EUI;
+import extendedui.EUIInputManager;
 import extendedui.EUIRM;
 import extendedui.JavaUtils;
 import extendedui.interfaces.markers.CardObject;
@@ -560,8 +561,8 @@ public class GUI_Dropdown<T> extends GUI_Hoverable
                 }
 
                 if (hoveredIndex >= 0) {
-                    boolean didInputUp = CInputActionSet.up.isJustPressed() || CInputActionSet.altUp.isJustPressed() || InputActionSet.up.isJustPressed();
-                    boolean didInputDown = CInputActionSet.down.isJustPressed() || CInputActionSet.altDown.isJustPressed() || InputActionSet.down.isJustPressed();
+                    boolean didInputUp = EUIInputManager.DidInputUp();
+                    boolean didInputDown = EUIInputManager.DidInputDown();
                     boolean isMoving = didInputUp || didInputDown;
                     if (isMoving) {
                         int targetHoverIndexOffset = didInputDown ? 1 : -1;

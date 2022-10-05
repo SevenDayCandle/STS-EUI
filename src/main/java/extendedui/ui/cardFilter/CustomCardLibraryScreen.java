@@ -95,10 +95,6 @@ public class CustomCardLibraryScreen extends AbstractScreen
 
             // Mod colors are sorted alphabetically
             BaseMod.getCardColors().stream().sorted(Comparator.comparing(EUIGameUtils::GetColorName)).forEach(this::MakeColorButton);
-
-            //boolean showButtons = colorButtons.size() > VISIBLE_BUTTONS;
-            //upButton.SetActive(showButtons);
-            //downButton.SetActive(showButtons);
         }
         Initialized = true;
     }

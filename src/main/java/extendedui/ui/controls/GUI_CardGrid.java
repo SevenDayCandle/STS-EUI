@@ -1,5 +1,6 @@
 package extendedui.ui.controls;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -7,6 +8,7 @@ import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import eatyourbeets.interfaces.delegates.ActionT1;
@@ -14,6 +16,7 @@ import eatyourbeets.interfaces.delegates.ActionT2;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.interfaces.markers.CacheableCard;
+import extendedui.utilities.Mathf;
 
 import java.util.Collection;
 import java.util.HashMap;
@@ -274,6 +277,7 @@ public class GUI_CardGrid extends GUI_CanvasGrid
         super.Update();
 
         UpdateCards();
+        UpdateNonMouseInput();
 
         if (hoveredCard != null && EUI.TryHover(hoveredCard.hb))
         {
@@ -333,6 +337,62 @@ public class GUI_CardGrid extends GUI_CanvasGrid
         }
     }
 
+    protected void UpdateNonMouseInput()
+    {
+        if (EUIInputManager.IsUsingNonMouseControl())
+        {
+            int targetIndex = hoveredIndex;
+            if (EUIInputManager.DidInputDown())
+            {
+                targetIndex += rowSize;
+            }
+            if (EUIInputManager.DidInputUp())
+            {
+                targetIndex -= rowSize;
+            }
+            if (EUIInputManager.DidInputLeft())
+            {
+                targetIndex -= 1;
+            }
+            if (EUIInputManager.DidInputRight())
+            {
+                targetIndex += 1;
+            }
+
+            if (targetIndex != hoveredIndex)
+            {
+                targetIndex = Mathf.Clamp(targetIndex, 0, cards.group.size() - 1);
+                AbstractCard card = cards.group.get(targetIndex);
+                if (card != null)
+                {
+                    float distance = GetScrollDistance(card, targetIndex);
+                    if (distance != 0)
+                    {
+                        this.scrollBar.Scroll(scrollBar.currentScrollPercent + distance, true);
+                    }
+                    EUIInputManager.SetCursor(card.hb.cX, distance == 0 ? Settings.HEIGHT - card.hb.cY : Gdx.input.getY());
+                }
+            }
+        }
+    }
+
+    protected float GetScrollDistance(AbstractCard card, int index)
+    {
+        if (card != null)
+        {
+            float scrollDistance = 1f / GetRowCount();
+            if (card.target_y > draw_top_y)
+            {
+                return -scrollDistance;
+            }
+            else if (card.target_y < 0)
+            {
+                return scrollDistance;
+            }
+        }
+        return 0;
+    }
+
     protected void RenderCard(SpriteBatch sb, AbstractCard card)
     {
         // renderInLibrary continually creates copies of upgraded cards -_-
@@ -376,5 +436,9 @@ public class GUI_CardGrid extends GUI_CanvasGrid
     public int CurrentSize()
     {
         return cards.size();
+    }
+
+    public int GetRowCount() {
+        return (this.cards.size() - 1) / rowSize;
     }
 }

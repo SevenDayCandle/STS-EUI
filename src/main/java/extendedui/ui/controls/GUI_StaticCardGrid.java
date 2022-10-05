@@ -2,6 +2,7 @@ package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import extendedui.JavaUtils;
 import extendedui.utilities.Mathf;
 
 public class GUI_StaticCardGrid extends GUI_CardGrid
@@ -73,6 +74,24 @@ public class GUI_StaticCardGrid extends GUI_CardGrid
     }
 
     @Override
+    protected float GetScrollDistance(AbstractCard card, int index)
+    {
+        if (card != null)
+        {
+            float scrollDistance = 1f / GetRowCount();
+            if (card.target_y > draw_top_y || index < currentRow * ROW_SIZE)
+            {
+                return -scrollDistance;
+            }
+            else if (card.target_y < 0 || index > (currentRow + visibleRowCount) * ROW_SIZE)
+            {
+                return scrollDistance;
+            }
+        }
+        return 0;
+    }
+
+    @Override
     protected void UpdateScrolling(boolean isDraggingScrollBar)
     {
         super.UpdateScrolling(isDraggingScrollBar);
@@ -101,9 +120,4 @@ public class GUI_StaticCardGrid extends GUI_CardGrid
         }
 
     }
-
-    public int GetRowCount() {
-        return (this.cards.size() - 1) / rowSize;
-    }
-
 }

@@ -1,7 +1,10 @@
 package extendedui;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 
 public class EUIInputManager
 {
@@ -36,6 +39,30 @@ public class EUIInputManager
     public static KeyState RightClick = KeyState.Released;
     public static KeyState LeftClick = KeyState.Released;
 
+    public static boolean DidInputDown()
+    {
+        return CInputActionSet.down.isJustPressed() || CInputActionSet.altDown.isJustPressed() || InputActionSet.down.isJustPressed();
+    }
+
+    public static boolean DidInputLeft()
+    {
+        return CInputActionSet.left.isJustPressed() || CInputActionSet.altLeft.isJustPressed() || InputActionSet.left.isJustPressed();
+    }
+
+    public static boolean DidInputRight()
+    {
+        return CInputActionSet.right.isJustPressed() || CInputActionSet.altRight.isJustPressed() || InputActionSet.right.isJustPressed();
+    }
+
+    public static boolean DidInputUp()
+    {
+        return CInputActionSet.up.isJustPressed() || CInputActionSet.altUp.isJustPressed() || InputActionSet.up.isJustPressed();
+    }
+
+    public static boolean IsUsingNonMouseControl() {
+        return Settings.isControllerMode || InputActionSet.up.isJustPressed() || InputActionSet.down.isJustPressed() || InputActionSet.left.isJustPressed() || InputActionSet.right.isJustPressed();
+    }
+
     public static void OnControllerKeyPress(int keyCode)
     {
         if (keyCode == 9)
@@ -56,6 +83,15 @@ public class EUIInputManager
     {
         UpdateLeftClick();
         UpdateRightClick();
+    }
+
+    public static void SetCursor(float x, float y)
+    {
+        SetCursor((int) x, (int) y);
+    }
+    public static void SetCursor(int x, int y)
+    {
+        Gdx.input.setCursorPosition(x, MathUtils.clamp(y, 0, Settings.HEIGHT));
     }
 
     private static void UpdateLeftClick()
