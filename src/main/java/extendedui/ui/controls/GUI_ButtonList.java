@@ -136,9 +136,9 @@ public class GUI_ButtonList extends GUI_Base
     {
         if (Settings.isControllerMode) {
             if (CInputActionSet.pageRightViewExhaust.isJustPressed()) {
-                SelectButton(buttons.get((highlightedIndex + 1) % buttons.size()));
+                buttons.get((highlightedIndex + 1) % buttons.size()).OnLeftClick();
             } else if (CInputActionSet.pageLeftViewDeck.isJustPressed()) {
-                SelectButton(buttons.get(highlightedIndex == 0 ? buttons.size() - 1 : highlightedIndex - 1));
+                buttons.get(highlightedIndex == 0 ? buttons.size() - 1 : highlightedIndex - 1).OnLeftClick();
             }
         }
     }

@@ -37,7 +37,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         Cost1("1", 1, 1),
         Cost2("2", 2, 2),
         Cost3Plus("3+", 3, 9999),
-        Unplayable("Unplayable", -9999, -2);
+        Unplayable(GameDictionary.UNPLAYABLE.NAMES[0], -9999, -2);
 
         public final int lowerBound;
         public final int upperBound;
