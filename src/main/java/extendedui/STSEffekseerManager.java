@@ -1,5 +1,7 @@
 package extendedui;
 
+import basemod.BaseMod;
+import basemod.BaseModInit;
 import basemod.interfaces.ImGuiSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
@@ -17,8 +19,12 @@ import extendedui.debug.DEUIWindow;
 import extendedui.swig.EffekseerBackendCore;
 import extendedui.swig.EffekseerEffectCore;
 import extendedui.swig.EffekseerManagerCore;
+import imgui.ImGui;
+import imgui.flag.ImGuiTableColumnFlags;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static extendedui.STSEffekSeerUtils.LoadEffect;
 import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
@@ -28,12 +34,34 @@ public class STSEffekseerManager implements ImGuiSubscriber
     public static final float BASE_ANIMATION_SPEED = 60f;
     protected static float AnimationSpeed = BASE_ANIMATION_SPEED;
     protected static String WINDOW_ID = "Effekseer";
+    protected static String TABLE_ID = "Current Effekseer Effects";
+    protected static STSEffekseerManager Instance;
+    private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
     private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
-    private static DEUIWindow HandleWindow;
-    private static DEUIDynamicActionTable HandleTable;
     private static EffekseerManagerCore ManagerCore;
     private static FrameBuffer Buffer;
     private static boolean Enabled = false;
+    private final DEUIWindow HandleWindow;
+    private final DEUIDynamicActionTable<Integer> HandleTable;
+
+    private STSEffekseerManager()
+    {
+        HandleWindow = new DEUIWindow(WINDOW_ID);
+        HandleTable = new DEUIDynamicActionTable<Integer>(TABLE_ID, 4);
+        HandleTable.SetItems(PlayingHandles, handle -> {
+                    return JavaUtils.Array(
+                            String.valueOf(handle),
+                            String.valueOf(ManagerCore.GetFrame(handle)),
+                            String.valueOf(ManagerCore.GetInstanceCount(handle))
+                    );
+                })
+                .SetClick(STSEffekseerManager::Stop, "Stop")
+                .SetColumnAction(() -> {
+                    ImGui.tableSetupColumn("Handle", ImGuiTableColumnFlags.WidthStretch);
+                    ImGui.tableSetupColumn("Frame", ImGuiTableColumnFlags.WidthStretch);
+                    ImGui.tableSetupColumn("Particles", ImGuiTableColumnFlags.WidthStretch);
+                });
+    }
 
     /**
      Attempts to initialize the Effekseer system for the current OS and set up the buffer used for rendering
@@ -41,12 +69,13 @@ public class STSEffekseerManager implements ImGuiSubscriber
     public static void Initialize() {
         try {
             STSEffekSeerUtils.LoadLibraryFromJar();
-            EffekseerBackendCore.InitializeAsOpenGL();
+            EffekseerBackendCore.InitializeWithOpenGL();
             ManagerCore = new EffekseerManagerCore();
             ManagerCore.Initialize(BASE_SPRITES_DEFAULT);
             Buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, false);
             Enabled = true;
-            HandleWindow = new DEUIWindow(WINDOW_ID);
+            Instance = new STSEffekseerManager();
+            BaseMod.subscribe(Instance);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -93,6 +122,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
                     if (color != null) {
                         ManagerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
                     }
+                    PlayingHandles.add(handle);
                     return handle;
                 }
             }
@@ -247,5 +277,9 @@ public class STSEffekseerManager implements ImGuiSubscriber
     @Override
     public void receiveImGui()
     {
+        HandleWindow.Render(() -> {
+            PlayingHandles.removeIf(handle -> !Exists(handle));
+            HandleTable.Render();
+        });
     }
 }

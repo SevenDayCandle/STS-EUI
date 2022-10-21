@@ -11,6 +11,8 @@ package extendedui.swig;
 public final class EffekseerCoreDeviceType {
   public final static EffekseerCoreDeviceType Unknown = new EffekseerCoreDeviceType("Unknown");
   public final static EffekseerCoreDeviceType OpenGL = new EffekseerCoreDeviceType("OpenGL");
+  public final static EffekseerCoreDeviceType DirectX9 = new EffekseerCoreDeviceType("DirectX9");
+  public final static EffekseerCoreDeviceType DirectX11 = new EffekseerCoreDeviceType("DirectX11");
 
   public final int swigValue() {
     return swigValue;
@@ -46,7 +48,7 @@ public final class EffekseerCoreDeviceType {
     swigNext = this.swigValue+1;
   }
 
-  private static EffekseerCoreDeviceType[] swigValues = { Unknown, OpenGL };
+  private static EffekseerCoreDeviceType[] swigValues = { Unknown, OpenGL, DirectX9, DirectX11 };
   private static int swigNext = 0;
   private final int swigValue;
   private final String swigName;

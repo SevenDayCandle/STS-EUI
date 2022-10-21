@@ -10,9 +10,9 @@ public abstract class DEUITableBase extends DEUIBaseT0
     protected ActionT0 columnAction;
 
 
-    public DEUITableBase(String id)
+    public DEUITableBase(String id, int columns)
     {
-        this(id, 0, 0);
+        this(id, columns, 0);
     }
 
     public DEUITableBase(String id, int columns, int flags)

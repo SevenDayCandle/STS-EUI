@@ -44,8 +44,8 @@ public class EffekseerBackendCore {
     return EffekseerCoreDeviceType.swigToEnum(EffekseerCoreJNI.EffekseerBackendCore_GetDevice());
   }
 
-  public static boolean InitializeAsOpenGL() {
-    return EffekseerCoreJNI.EffekseerBackendCore_InitializeAsOpenGL();
+  public static boolean InitializeWithOpenGL() {
+    return EffekseerCoreJNI.EffekseerBackendCore_InitializeWithOpenGL();
   }
 
   public static void Terminate() {

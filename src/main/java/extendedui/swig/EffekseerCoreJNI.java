@@ -12,7 +12,7 @@ public class EffekseerCoreJNI {
   public final static native long new_EffekseerBackendCore();
   public final static native void delete_EffekseerBackendCore(long jarg1);
   public final static native int EffekseerBackendCore_GetDevice();
-  public final static native boolean EffekseerBackendCore_InitializeAsOpenGL();
+  public final static native boolean EffekseerBackendCore_InitializeWithOpenGL();
   public final static native void EffekseerBackendCore_Terminate();
   public final static native long new_EffekseerEffectCore();
   public final static native void delete_EffekseerEffectCore(long jarg1);
@@ -44,6 +44,9 @@ public class EffekseerCoreJNI {
   public final static native void EffekseerManagerCore_EndUpdate(long jarg1, EffekseerManagerCore jarg1_);
   public final static native void EffekseerManagerCore_UpdateHandleToMoveToFrame(long jarg1, EffekseerManagerCore jarg1_, int jarg2, float jarg3);
   public final static native int EffekseerManagerCore_Play(long jarg1, EffekseerManagerCore jarg1_, long jarg2, EffekseerEffectCore jarg2_);
+  public final static native float EffekseerManagerCore_GetFrame(long jarg1, EffekseerManagerCore jarg1_, int jarg2);
+  public final static native int EffekseerManagerCore_GetInstanceCount(long jarg1, EffekseerManagerCore jarg1_, int jarg2);
+  public final static native int EffekseerManagerCore_GetLayer(long jarg1, EffekseerManagerCore jarg1_, int jarg2);
   public final static native void EffekseerManagerCore_StopAllEffects(long jarg1, EffekseerManagerCore jarg1_);
   public final static native void EffekseerManagerCore_Stop(long jarg1, EffekseerManagerCore jarg1_, int jarg2);
   public final static native void EffekseerManagerCore_SetPaused(long jarg1, EffekseerManagerCore jarg1_, int jarg2, boolean jarg3);

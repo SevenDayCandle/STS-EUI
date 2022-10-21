@@ -49,6 +49,12 @@ public class JavaUtils
         return false;
     }
 
+    @SafeVarargs
+    public static <T> T[] Array(T... items)
+    {
+        return items;
+    }
+
     public static String Capitalize(String text)
     {
         return text.length() <= 1 ? text.toUpperCase() : TipHelper.capitalize(text);

@@ -68,6 +68,18 @@ public class EffekseerManagerCore {
     return EffekseerCoreJNI.EffekseerManagerCore_Play(swigCPtr, this, EffekseerEffectCore.getCPtr(effect), effect);
   }
 
+  public float GetFrame(int handle) {
+    return EffekseerCoreJNI.EffekseerManagerCore_GetFrame(swigCPtr, this, handle);
+  }
+
+  public int GetInstanceCount(int handle) {
+    return EffekseerCoreJNI.EffekseerManagerCore_GetInstanceCount(swigCPtr, this, handle);
+  }
+
+  public int GetLayer(int handle) {
+    return EffekseerCoreJNI.EffekseerManagerCore_GetLayer(swigCPtr, this, handle);
+  }
+
   public void StopAllEffects() {
     EffekseerCoreJNI.EffekseerManagerCore_StopAllEffects(swigCPtr, this);
   }
