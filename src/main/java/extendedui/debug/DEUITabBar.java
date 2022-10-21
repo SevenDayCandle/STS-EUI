@@ -12,7 +12,12 @@ public class DEUITabBar extends DEUIBaseT1<ActionT0>
 
     public void Render(ActionT0 onRender)
     {
-        if (ImGui.beginTabBar(ID))
+        Render(ID, onRender);
+    }
+
+    public static void Render(String id, ActionT0 onRender)
+    {
+        if (ImGui.beginTabBar(id))
         {
             onRender.Invoke();
             ImGui.endTabBar();

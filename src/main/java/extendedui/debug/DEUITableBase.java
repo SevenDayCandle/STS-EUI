@@ -7,6 +7,10 @@ public abstract class DEUITableBase extends DEUIBaseT0
 {
     protected int columns;
     protected int flags;
+    protected float outerSizeX;
+    protected float outerSizeY;
+    protected float innerWidth;
+
     protected ActionT0 columnAction;
 
 
@@ -22,6 +26,14 @@ public abstract class DEUITableBase extends DEUIBaseT0
         this.flags = flags;
     }
 
+    public DEUITableBase SetSize(float outerSizeX, float outerSizeY, float innerWidth)
+    {
+        this.outerSizeX = outerSizeX;
+        this.outerSizeY = outerSizeY;
+        this.innerWidth = innerWidth;
+        return this;
+    }
+
     public DEUITableBase SetColumnAction(ActionT0 columnAction)
     {
         this.columnAction = columnAction;
@@ -30,7 +42,7 @@ public abstract class DEUITableBase extends DEUIBaseT0
 
     public void Render()
     {
-        if (ImGui.beginTable(ID, columns, flags))
+        if (ImGui.beginTable(ID, columns, flags, outerSizeX, outerSizeY, innerWidth))
         {
             if (this.columnAction != null)
             {

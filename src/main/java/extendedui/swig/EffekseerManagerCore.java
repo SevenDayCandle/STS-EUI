@@ -120,6 +120,14 @@ public class EffekseerManagerCore {
     EffekseerCoreJNI.EffekseerManagerCore_SetEffectTransformBaseMatrix(swigCPtr, this, handle, v0, v1, v2, v3, v4, v5, v6, v7, v8, v9, v10, v11);
   }
 
+  public void Draw(int layer) {
+    EffekseerCoreJNI.EffekseerManagerCore_Draw__SWIG_0(swigCPtr, this, layer);
+  }
+
+  public void Draw() {
+    EffekseerCoreJNI.EffekseerManagerCore_Draw__SWIG_1(swigCPtr, this);
+  }
+
   public void DrawBack(int layer) {
     EffekseerCoreJNI.EffekseerManagerCore_DrawBack__SWIG_0(swigCPtr, this, layer);
   }
@@ -154,6 +162,10 @@ public class EffekseerManagerCore {
 
   public void SetViewProjectionMatrixWithSimpleWindow(int windowWidth, int windowHeight) {
     EffekseerCoreJNI.EffekseerManagerCore_SetViewProjectionMatrixWithSimpleWindow(swigCPtr, this, windowWidth, windowHeight);
+  }
+
+  public void SetViewProjectionMatrixWithSimpleWindowAndUpdate(int windowWidth, int windowHeight, float deltaFrames) {
+    EffekseerCoreJNI.EffekseerManagerCore_SetViewProjectionMatrixWithSimpleWindowAndUpdate(swigCPtr, this, windowWidth, windowHeight, deltaFrames);
   }
 
   public void SetDynamicInput(int handle, int index, float value) {

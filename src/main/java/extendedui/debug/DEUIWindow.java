@@ -47,6 +47,11 @@ public class DEUIWindow extends DEUIBaseT1<ActionT0>
 
     public void Render(ActionT0 onRender)
     {
+        Render(onRender, x, y, width, height, setMode);
+    }
+
+    public void Render(ActionT0 onRender, float x, float y, float width, float height, int setMode)
+    {
         ImVec2 wPos = ImGui.getMainViewport().getPos();
         ImGui.setNextWindowPos(wPos.x + x, wPos.y + y, setMode);
         ImGui.setNextWindowSize(width, height, setMode);

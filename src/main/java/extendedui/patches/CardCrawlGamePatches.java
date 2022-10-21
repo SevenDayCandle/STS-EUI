@@ -10,17 +10,30 @@ import com.megacrit.cardcrawl.helpers.DrawMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
+import extendedui.STSEffekseerManager;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
+import org.apache.logging.log4j.LogManager;
 
 public class CardCrawlGamePatches
 {
+    @SpirePatch(clz = CardCrawlGame.class, method = "render")
+    public static class CardCrawlGame_PreRender
+    {
+        @SpirePrefixPatch
+        public static void PreFix(CardCrawlGame __instance)
+        {
+            STSEffekseerManager.PreUpdate();
+        }
+    }
+
     @SpirePatch(clz = CardCrawlGame.class, method = "render")
     public static class CardCrawlGame_Render
     {
         @SpireInsertPatch(locator = Locator.class, localvars = {"sb"})
         public static void Insert(CardCrawlGame __instance, SpriteBatch sb)
         {
+            STSEffekseerManager.Update();
             EUI.Render(sb);
         }
 
@@ -86,6 +99,17 @@ public class CardCrawlGamePatches
                 res[0] += 1;
                 return res;
             }
+        }
+    }
+
+    @SpirePatch(clz = CardCrawlGame.class, method = "dispose")
+    public static class CardCrawlGame_Dispose
+    {
+        @SpirePostfixPatch
+        public static void Postfix(CardCrawlGame __instance)
+        {
+            STSEffekseerManager.End();
+            LogManager.getLogger(STSEffekseerManager.class.getName()).info("Terminated STSEffekseerManager");
         }
     }
 }

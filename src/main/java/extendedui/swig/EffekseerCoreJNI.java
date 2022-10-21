@@ -57,6 +57,8 @@ public class EffekseerCoreJNI {
   public final static native void EffekseerManagerCore_SetEffectScale(long jarg1, EffekseerManagerCore jarg1_, int jarg2, float jarg3, float jarg4, float jarg5);
   public final static native void EffekseerManagerCore_SetEffectTransformMatrix(long jarg1, EffekseerManagerCore jarg1_, int jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, float jarg10, float jarg11, float jarg12, float jarg13, float jarg14);
   public final static native void EffekseerManagerCore_SetEffectTransformBaseMatrix(long jarg1, EffekseerManagerCore jarg1_, int jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, float jarg10, float jarg11, float jarg12, float jarg13, float jarg14);
+  public final static native void EffekseerManagerCore_Draw__SWIG_0(long jarg1, EffekseerManagerCore jarg1_, int jarg2);
+  public final static native void EffekseerManagerCore_Draw__SWIG_1(long jarg1, EffekseerManagerCore jarg1_);
   public final static native void EffekseerManagerCore_DrawBack__SWIG_0(long jarg1, EffekseerManagerCore jarg1_, int jarg2);
   public final static native void EffekseerManagerCore_DrawBack__SWIG_1(long jarg1, EffekseerManagerCore jarg1_);
   public final static native void EffekseerManagerCore_DrawFront__SWIG_0(long jarg1, EffekseerManagerCore jarg1_, int jarg2);
@@ -66,6 +68,7 @@ public class EffekseerCoreJNI {
   public final static native void EffekseerManagerCore_SetCameraMatrix(long jarg1, EffekseerManagerCore jarg1_, float jarg2, float jarg3, float jarg4, float jarg5, float jarg6, float jarg7, float jarg8, float jarg9, float jarg10, float jarg11, float jarg12, float jarg13, float jarg14, float jarg15, float jarg16, float jarg17);
   public final static native boolean EffekseerManagerCore_Exists(long jarg1, EffekseerManagerCore jarg1_, int jarg2);
   public final static native void EffekseerManagerCore_SetViewProjectionMatrixWithSimpleWindow(long jarg1, EffekseerManagerCore jarg1_, int jarg2, int jarg3);
+  public final static native void EffekseerManagerCore_SetViewProjectionMatrixWithSimpleWindowAndUpdate(long jarg1, EffekseerManagerCore jarg1_, int jarg2, int jarg3, float jarg4);
   public final static native void EffekseerManagerCore_SetDynamicInput(long jarg1, EffekseerManagerCore jarg1_, int jarg2, int jarg3, float jarg4);
   public final static native float EffekseerManagerCore_GetDynamicInput(long jarg1, EffekseerManagerCore jarg1_, int jarg2, int jarg3);
   public final static native void EffekseerManagerCore_LaunchWorkerThreads(long jarg1, EffekseerManagerCore jarg1_, int jarg2);

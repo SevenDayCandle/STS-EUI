@@ -14,8 +14,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.megacrit.cardcrawl.core.Settings;
 import extendedui.configuration.EUIConfiguration;
-import extendedui.debug.DEUIDynamicActionTable;
-import extendedui.debug.DEUIWindow;
+import extendedui.debug.*;
 import extendedui.swig.EffekseerBackendCore;
 import extendedui.swig.EffekseerEffectCore;
 import extendedui.swig.EffekseerManagerCore;
@@ -23,6 +22,7 @@ import imgui.ImGui;
 import imgui.flag.ImGuiTableColumnFlags;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -33,26 +33,79 @@ public class STSEffekseerManager implements ImGuiSubscriber
 {
     public static final float BASE_ANIMATION_SPEED = 60f;
     protected static float AnimationSpeed = BASE_ANIMATION_SPEED;
+    protected static float ZPOS = 99;
     protected static String WINDOW_ID = "Effekseer";
-    protected static String TABLE_ID = "Current Effekseer Effects";
+    protected static String WINDOW_TABLE_ID = "Playing Effects";
+    protected static String EFFECT_LIST_ID = "Effect List";
+    protected static String EFFECT_LIST_POS_X_ID = "Xpos";
+    protected static String EFFECT_LIST_POS_Y_ID = "Ypos";
+    protected static String EFFECT_LIST_ROT_X_ID = "Xrot";
+    protected static String EFFECT_LIST_ROT_Y_ID = "Yrot";
+    protected static String EFFECT_LIST_ROT_Z_ID = "Zrot";
+    protected static String EFFECT_LIST_SCALE_X_ID = "Xscale";
+    protected static String EFFECT_LIST_SCALE_Y_ID = "Yscale";
+    protected static String EFFECT_LIST_SCALE_Z_ID = "Zscale";
+    protected static String EFFECT_LIST_COLOR_R_ID = "R";
+    protected static String EFFECT_LIST_COLOR_G_ID = "G";
+    protected static String EFFECT_LIST_COLOR_B_ID = "B";
+    protected static String EFFECT_LIST_COLOR_A_ID = "A";
+    protected static String EFFECT_LIST_PLAY_ID = "Play";
+    protected static String EFFECT_LIST_TOGGLE_ID = "Show Playing";
+    protected static String TABLE_ID = "Current Playing Effects";
     protected static STSEffekseerManager Instance;
+    protected static final ArrayList<String> AvailablePaths = new ArrayList<>();
     private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
     private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
     private static EffekseerManagerCore ManagerCore;
-    private static FrameBuffer Buffer;
     private static boolean Enabled = false;
-    private final DEUIWindow HandleWindow;
+
+
+    private final DEUIWindow EffectWindow;
+    private final DEUIListBox<String> EffectList;
+    private final DEUICloseableWindow HandleWindow;
+    private final DEUIToggle HandleToggle;
     private final DEUIDynamicActionTable<Integer> HandleTable;
+    private final DEUIFloatInput EffectPosX;
+    private final DEUIFloatInput EffectPosY;
+    private final DEUIFloatInput EffectRotX;
+    private final DEUIFloatInput EffectRotY;
+    private final DEUIFloatInput EffectRotZ;
+    private final DEUIFloatInput EffectScaleX;
+    private final DEUIFloatInput EffectScaleY;
+    private final DEUIFloatInput EffectScaleZ;
+    private final DEUIFloatInput EffectColorR;
+    private final DEUIFloatInput EffectColorG;
+    private final DEUIFloatInput EffectColorB;
+    private final DEUIFloatInput EffectColorA;
+    private final DEUIButton EffectPlay;
 
     private STSEffekseerManager()
     {
-        HandleWindow = new DEUIWindow(WINDOW_ID);
+        EffectWindow = new DEUIWindow(WINDOW_ID);
+        EffectList = new DEUIListBox<String>(EFFECT_LIST_ID, AvailablePaths, p -> p);
+        EffectPosX = new DEUIFloatInput(EFFECT_LIST_POS_X_ID, Settings.WIDTH * 0.5f);
+        EffectPosY = new DEUIFloatInput(EFFECT_LIST_POS_Y_ID, Settings.HEIGHT * 0.5f);
+        EffectRotX = new DEUIFloatInput(EFFECT_LIST_ROT_X_ID);
+        EffectRotY = new DEUIFloatInput(EFFECT_LIST_ROT_Y_ID);
+        EffectRotZ = new DEUIFloatInput(EFFECT_LIST_ROT_Z_ID);
+        EffectScaleX = new DEUIFloatInput(EFFECT_LIST_SCALE_X_ID, 1, 0, Float.MAX_VALUE, 1, 10);
+        EffectScaleY = new DEUIFloatInput(EFFECT_LIST_SCALE_Y_ID, 1, 0, Float.MAX_VALUE, 1, 10);
+        EffectScaleZ = new DEUIFloatInput(EFFECT_LIST_SCALE_Z_ID, 1, 0, Float.MAX_VALUE, 1, 10);
+        EffectColorR = new DEUIFloatInput(EFFECT_LIST_COLOR_R_ID, 255, 0, 255, 1, 10);
+        EffectColorG = new DEUIFloatInput(EFFECT_LIST_COLOR_G_ID, 255, 0, 255, 1, 10);
+        EffectColorB = new DEUIFloatInput(EFFECT_LIST_COLOR_B_ID, 255, 0, 255, 1, 10);
+        EffectColorA = new DEUIFloatInput(EFFECT_LIST_COLOR_A_ID, 255, 0, 255, 1, 10);
+        EffectPlay = new DEUIButton(EFFECT_LIST_PLAY_ID);
+
+        HandleToggle = new DEUIToggle(EFFECT_LIST_TOGGLE_ID);
+        HandleWindow = new DEUICloseableWindow(WINDOW_TABLE_ID).Link(HandleToggle);
         HandleTable = new DEUIDynamicActionTable<Integer>(TABLE_ID, 4);
         HandleTable.SetItems(PlayingHandles, handle -> {
                     return JavaUtils.Array(
                             String.valueOf(handle),
                             String.valueOf(ManagerCore.GetFrame(handle)),
-                            String.valueOf(ManagerCore.GetInstanceCount(handle))
+                            String.valueOf(ManagerCore.GetInstanceCount(handle)),
+                            String.valueOf(ManagerCore.GetLayer(handle))
                     );
                 })
                 .SetClick(STSEffekseerManager::Stop, "Stop")
@@ -60,6 +113,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
                     ImGui.tableSetupColumn("Handle", ImGuiTableColumnFlags.WidthStretch);
                     ImGui.tableSetupColumn("Frame", ImGuiTableColumnFlags.WidthStretch);
                     ImGui.tableSetupColumn("Particles", ImGuiTableColumnFlags.WidthStretch);
+                    ImGui.tableSetupColumn("Layer", ImGuiTableColumnFlags.WidthStretch);
                 });
     }
 
@@ -72,7 +126,6 @@ public class STSEffekseerManager implements ImGuiSubscriber
             EffekseerBackendCore.InitializeWithOpenGL();
             ManagerCore = new EffekseerManagerCore();
             ManagerCore.Initialize(BASE_SPRITES_DEFAULT);
-            Buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, false);
             Enabled = true;
             Instance = new STSEffekseerManager();
             BaseMod.subscribe(Instance);
@@ -112,7 +165,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
                 }
                 if (effect != null) {
                     int handle = ManagerCore.Play(effect);
-                    ManagerCore.SetEffectPosition(handle, position.x, position.y, 0);
+                    ManagerCore.SetEffectPosition(handle, position.x, position.y, ZPOS);
                     if (rotation != null) {
                         ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
                     }
@@ -144,7 +197,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
     public static boolean Modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
         if (Enabled && ManagerCore.Exists(handle)) {
             if (position != null)         {
-                ManagerCore.SetEffectPosition(handle, position.x, position.y, 0);
+                ManagerCore.SetEffectPosition(handle, position.x, position.y, ZPOS);
             }
             if (rotation != null) {
                 ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
@@ -193,63 +246,26 @@ public class STSEffekseerManager implements ImGuiSubscriber
     }
 
     /**
-     Advances the animations of all playing animations.
-     Effekseer animations will only appear on the screen if the color/depth bits are clear. Any subsequent Spritebatch rendering calls will render the animations invisible.
-     Thus, we must render the animations into a framebuffer to be rendered later
+     The color and depth bits must be cleared before every render in order for effekseer effects to work
      */
-    // TODO find an alternate way of doing this
+    public static void PreUpdate() {
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+    }
+
+    /**
+     Advances the animations of all playing animations.
+     */
     public static void Update() {
         if (CanPlay()) {
-            ManagerCore.SetViewProjectionMatrixWithSimpleWindow(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-            ManagerCore.Update(Gdx.graphics.getDeltaTime() * AnimationSpeed);
-            Buffer.begin();
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
-            ManagerCore.DrawBack();
-            ManagerCore.DrawFront();
-            Buffer.end();
+            ManagerCore.SetViewProjectionMatrixWithSimpleWindowAndUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Gdx.graphics.getDeltaTime() * AnimationSpeed);
+            ManagerCore.Draw();
         }
     }
 
-    /**
-     Renders the effects captured in the framebuffer written to in Update()
-     Because the OpenGL world space is flip
-     */
-    public static void Render(SpriteBatch sb) {
-        if (CanPlay()) {
-            TextureRegion t = new TextureRegion(Buffer.getColorBufferTexture());
-            t.flip(false, true);
-            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE);
-            sb.draw(t, 0, 0, 0, 0, Buffer.getWidth(), Buffer.getHeight(), 1f, 1f, 0f);
-            sb.setBlendFunction(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA);
-        }
-    }
-
-    /**
-     These calls render ALL effects captured in the framebuffer using the same blending method or colorization.
-     If you only want to colorize a particular effect, consider passing it through the Color parameter in Play/Modify instead
-     */
-    public static void RenderBrighter(SpriteBatch sb, Color color) {
-        EUIRenderHelpers.DrawBrighter(sb, color, STSEffekseerManager::Render);
-    }
-
-    public static void RenderBrighter(SpriteBatch sb, Float color) {
-        EUIRenderHelpers.DrawBrighter(sb, color, STSEffekseerManager::Render);
-    }
-
-    public static void RenderColored(SpriteBatch sb, Color color) {
-        EUIRenderHelpers.DrawColored(sb, color, STSEffekseerManager::Render);
-    }
-
-    public static void RenderColored(SpriteBatch sb, Float color) {
-        EUIRenderHelpers.DrawColored(sb, color, STSEffekseerManager::Render);
-    }
-
-    public static void RenderColorized(SpriteBatch sb, Color color) {
-        EUIRenderHelpers.DrawColorized(sb, color, STSEffekseerManager::Render);
-    }
-
-    public static void RenderColorized(SpriteBatch sb, Float color) {
-        EUIRenderHelpers.DrawColorized(sb, color, STSEffekseerManager::Render);
+    /* Add Effekseer file paths to the file selector */
+    public static void Register(Collection<String> effects)
+    {
+        AvailablePaths.addAll(effects);
     }
 
     public static void Reset() {
@@ -277,6 +293,38 @@ public class STSEffekseerManager implements ImGuiSubscriber
     @Override
     public void receiveImGui()
     {
+        EffectWindow.Render(() -> {
+            HandleToggle.Render();
+            ImGui.separator();
+            EffectList.Render();
+            DEUIUtils.WithWidth(110, () -> {
+                EffectPosX.RenderInline();
+                EffectPosY.Render();
+                EffectRotX.RenderInline();
+                EffectRotY.RenderInline();
+                EffectRotZ.Render();
+                EffectScaleX.RenderInline();
+                EffectScaleY.RenderInline();
+                EffectScaleZ.Render();
+                EffectColorR.RenderInline();
+                EffectColorG.RenderInline();
+                EffectColorB.RenderInline();
+                EffectColorA.Render();
+            });
+            EffectPlay.Render(() -> {
+                        String value = EffectList.Get();
+                        if (value != null)
+                        {
+                            Play(EffectList.Get(),
+                                    new Vector2(EffectPosX.Get(), EffectPosY.Get()),
+                                    new Vector3(EffectRotX.Get(), EffectRotY.Get(), EffectRotZ.Get()),
+                                    new Vector3(EffectScaleX.Get(), EffectScaleY.Get(), EffectScaleZ.Get()),
+                                    new float[]{EffectColorR.Get(), EffectColorG.Get(), EffectColorB.Get(), EffectColorA.Get()}
+                            );
+                        }
+                    }
+                );
+            });
         HandleWindow.Render(() -> {
             PlayingHandles.removeIf(handle -> !Exists(handle));
             HandleTable.Render();

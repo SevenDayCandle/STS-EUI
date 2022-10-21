@@ -12,7 +12,12 @@ public class DEUIButton extends DEUIBaseT1<ActionT0>
 
     public void Render(ActionT0 onClick)
     {
-        if (ImGui.button(ID))
+        Render(ID, onClick);
+    }
+
+    public static void Render(String id, ActionT0 onClick)
+    {
+        if (ImGui.button(id))
         {
             onClick.Invoke();
         }
