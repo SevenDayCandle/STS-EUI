@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.mod.stslib.StSLib;
 import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
 import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -21,11 +20,12 @@ import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import eatyourbeets.interfaces.delegates.ActionT1;
+import extendedui.debug.DEUITableBase;
 import extendedui.patches.EUIKeyword;
 import extendedui.ui.AbstractScreen;
-import extendedui.ui.GUI_Base;
+import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
-import extendedui.ui.controls.GUI_Button;
+import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
@@ -44,8 +44,8 @@ public class EUI
 {
     private static final String[] ENERGY_STRINGS = {"[E]", "[R]", "[G]", "[B]", "[W]"};
 
-    public static final ArrayList<GUI_Base> BattleSubscribers = new ArrayList<>();
-    public static final ArrayList<GUI_Base> Subscribers = new ArrayList<>();
+    public static final ArrayList<EUIBase> BattleSubscribers = new ArrayList<>();
+    public static final ArrayList<EUIBase> Subscribers = new ArrayList<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> preRenderList = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> postRenderList = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> priorityPostRenderList = new ConcurrentLinkedQueue<>();
@@ -57,18 +57,19 @@ public class EUI
     private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicPoolModules = new HashMap<>();
     private static float delta = 0;
     private static float timer = 0;
+    private static int imguiIndex = 0;
     private static boolean isDragging;
     private static Hitbox lastHovered;
     private static Hitbox lastHoveredTemp;
-    protected static GUI_Base activeElement;
+    protected static EUIBase activeElement;
     public static AbstractCard.CardColor ActingColor;
     public static AbstractScreen CurrentScreen;
     public static CardKeywordFilters CardFilters;
     public static CardPoolScreen CardsScreen;
     public static CustomCardLibSortHeader CustomHeader;
     public static CustomCardLibraryScreen CustomLibraryScreen;
-    public static GUI_Button OpenCardFiltersButton;
-    public static GUI_Button OpenRelicFiltersButton;
+    public static EUIButton OpenCardFiltersButton;
+    public static EUIButton OpenRelicFiltersButton;
     public static ModSettingsScreen ModSettingsScreen;
     public static RelicKeywordFilters RelicFilters;
     public static RelicPoolScreen RelicScreen;
@@ -96,12 +97,12 @@ public class EUI
 
         BaseMod.addTopPanelItem(new CardPoolPanelItem());
 
-        OpenCardFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
+        OpenCardFiltersButton = new EUIButton(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
             .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
             .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(EUIRM.Strings.UI_Filters)
             .SetOnClick(() -> EUI.CardFilters.ToggleFilters())
             .SetColor(Color.GRAY);
-        OpenRelicFiltersButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
+        OpenRelicFiltersButton = new EUIButton(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
                 .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
                 .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(EUIRM.Strings.UI_Filters)
                 .SetOnClick(() -> EUI.RelicFilters.ToggleFilters())
@@ -233,10 +234,10 @@ public class EUI
             CurrentScreen.Update();
         }
 
-        for (GUI_Base s : BattleSubscribers) {
+        for (EUIBase s : BattleSubscribers) {
             s.TryUpdate();
         }
-        for (GUI_Base s : Subscribers) {
+        for (EUIBase s : Subscribers) {
             s.TryUpdate();
         }
 
@@ -264,7 +265,7 @@ public class EUI
             CurrentScreen.Render(sb);
         }
 
-        for (GUI_Base s : Subscribers) {
+        for (EUIBase s : Subscribers) {
             s.TryRender(sb);
         }
 
@@ -281,11 +282,11 @@ public class EUI
         RenderImpl(sb, priorityPostRenderList.iterator());
     }
 
-    public static void AddBattleSubscriber(GUI_Base element) {
+    public static void AddBattleSubscriber(EUIBase element) {
         BattleSubscribers.add(element);
     }
 
-    public static void AddSubscriber(GUI_Base element) {
+    public static void AddSubscriber(EUIBase element) {
         Subscribers.add(element);
     }
 
@@ -401,12 +402,17 @@ public class EUI
         return false;
     }
 
-    public static boolean TryToggleActiveElement(GUI_Base element, boolean setActive) {
+    public static boolean TryToggleActiveElement(EUIBase element, boolean setActive) {
         if (activeElement == null || activeElement == element) {
             activeElement = setActive ? element : null;
             return true;
         }
         return false;
+    }
+
+    public static int GetImguiIndex()
+    {
+        return imguiIndex++;
     }
 
     public static boolean IsInActiveElement(AdvancedHitbox hb) {

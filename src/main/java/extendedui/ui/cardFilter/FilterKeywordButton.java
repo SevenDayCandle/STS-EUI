@@ -6,12 +6,11 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import eatyourbeets.interfaces.delegates.ActionT1;
-import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
-import extendedui.ui.GUI_Hoverable;
-import extendedui.ui.controls.GUI_Button;
-import extendedui.ui.controls.GUI_Label;
+import extendedui.ui.EUIHoverable;
+import extendedui.ui.controls.EUIButton;
+import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
@@ -20,7 +19,7 @@ import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
 import static extendedui.text.EUISmartText.CARD_ENERGY_IMG_WIDTH;
 
-public class FilterKeywordButton extends GUI_Hoverable
+public class FilterKeywordButton extends EUIHoverable
 {
     public static final float ICON_SIZE = Scale(40);
     private static final Color ACTIVE_COLOR = new Color(0.76f, 0.76f, 0.76f, 1f);
@@ -37,9 +36,9 @@ public class FilterKeywordButton extends GUI_Hoverable
     public final float baseTextOffsetY = 0f;
     public int CardCount = -1;
 
-    public GUI_Button background_button;
-    public GUI_Label title_text;
-    public GUI_Label count_text;
+    public EUIButton background_button;
+    public EUILabel title_text;
+    public EUILabel count_text;
 
     protected float offX;
     protected float offY;
@@ -51,7 +50,7 @@ public class FilterKeywordButton extends GUI_Hoverable
         Filters = filters;
         Tooltip = tooltip;
 
-        background_button = new GUI_Button(EUIRM.Images.Panel_Rounded_Half_H.Texture(), new RelativeHitbox(hb, 1, 1, 0.5f, 0).SetIsPopupCompatible(true))
+        background_button = new EUIButton(EUIRM.Images.Panel_Rounded_Half_H.Texture(), new RelativeHitbox(hb, 1, 1, 0.5f, 0).SetIsPopupCompatible(true))
                 .SetClickDelay(0.01f)
         .SetColor(Filters.CurrentFilters.contains(Tooltip) ? ACTIVE_COLOR
                 : Filters.CurrentNegateFilters.contains(Tooltip) ? NEGATE_COLOR : PANEL_COLOR)
@@ -93,14 +92,14 @@ public class FilterKeywordButton extends GUI_Hoverable
                     }
                 });
 
-        title_text = new GUI_Label(EUIFontHelper.CardTooltipFont,
+        title_text = new EUILabel(EUIFontHelper.CardTooltipFont,
         new RelativeHitbox(hb, 0.5f, 1, baseTextOffsetX, baseTextOffsetY))
                 .SetFont(EUIFontHelper.CardTooltipFont, 0.8f)
                 .SetColor(Filters.CurrentFilters.contains(Tooltip) ? Color.DARK_GRAY : Color.WHITE)
         .SetAlignment(0.5f, 0.49f) // 0.1f
         .SetText(Tooltip.title);
 
-        count_text = new GUI_Label(EUIFontHelper.CardDescriptionFont_Normal,
+        count_text = new EUILabel(EUIFontHelper.CardDescriptionFont_Normal,
                 new RelativeHitbox(hb, 0.28f, 1, baseCountOffset, 0f))
                 .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
                 .SetAlignment(0.5f, 0.51f) // 0.1f

@@ -19,7 +19,7 @@ import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
-import extendedui.ui.controls.GUI_Image;
+import extendedui.ui.controls.EUIImage;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.*;
@@ -569,19 +569,19 @@ public class EUIRenderHelpers
         FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.cY, color, scale);
     }
 
-    public static GUI_Image ForTexture(Texture texture)
+    public static EUIImage ForTexture(Texture texture)
     {
         return ForTexture(texture, Color.WHITE);
     }
 
-    public static GUI_Image ForTexture(Texture texture, AdvancedHitbox hb, Color color)
+    public static EUIImage ForTexture(Texture texture, AdvancedHitbox hb, Color color)
     {
-        return new GUI_Image(texture, hb, color);
+        return new EUIImage(texture, hb, color);
     }
 
-    public static GUI_Image ForTexture(Texture texture, Color color)
+    public static EUIImage ForTexture(Texture texture, Color color)
     {
-        return new GUI_Image(texture, color);
+        return new EUIImage(texture, color);
     }
 
     public static Color CopyColor(Color color, float a)

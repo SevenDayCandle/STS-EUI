@@ -3,23 +3,18 @@ package extendedui.ui.settings;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
-import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
-import extendedui.EUIGameUtils;
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.markers.ModSettingsProvider;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.TextureCache;
-import extendedui.ui.controls.GUI_Button;
-import extendedui.ui.controls.GUI_ButtonList;
-import extendedui.ui.controls.GUI_Image;
+import extendedui.ui.controls.EUIButtonList;
+import extendedui.ui.controls.EUIImage;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import org.apache.commons.lang3.StringUtils;
@@ -27,7 +22,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import static extendedui.ui.controls.GUI_ButtonList.BUTTON_H;
+import static extendedui.ui.controls.EUIButtonList.BUTTON_H;
 
 public class ModSettingsScreen extends AbstractScreen
 {
@@ -38,9 +33,9 @@ public class ModSettingsScreen extends AbstractScreen
     protected static final HashMap<ModInfo, ArrayList<ModSettingsProvider<?>>> configSubscribers = new HashMap<>();
     protected static final HashMap<ModInfo, Float> offsets = new HashMap<>();
     protected static final AdvancedHitbox hb = new AdvancedHitbox(478.0F * Settings.scale, Settings.OPTION_Y - 376.0F, 1364.0F, 752.0F);
-    protected final GUI_ButtonList modButtons = new GUI_ButtonList(7, ScreenW(0.14f), ScreenH(0.62f), Scale(240), BUTTON_H);
+    protected final EUIButtonList modButtons = new EUIButtonList(7, ScreenW(0.14f), ScreenH(0.62f), Scale(240), BUTTON_H);
     public final MenuCancelButton button;
-    private final GUI_Image background;
+    private final EUIImage background;
     private ModInfo activeMod;
 
     public static void AddSubscriber(ModInfo mod)
@@ -73,7 +68,7 @@ public class ModSettingsScreen extends AbstractScreen
     public ModSettingsScreen()
     {
         super();
-        background = new GUI_Image(modPanel.Texture(), hb);
+        background = new EUIImage(modPanel.Texture(), hb);
         button = new MenuCancelButton();
     }
 

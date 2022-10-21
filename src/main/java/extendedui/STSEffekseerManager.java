@@ -1,5 +1,6 @@
 package extendedui;
 
+import basemod.interfaces.ImGuiSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -11,6 +12,8 @@ import com.badlogic.gdx.math.Vector2;
 import com.badlogic.gdx.math.Vector3;
 import com.megacrit.cardcrawl.core.Settings;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.debug.DEUIDynamicActionTable;
+import extendedui.debug.DEUIWindow;
 import extendedui.swig.EffekseerBackendCore;
 import extendedui.swig.EffekseerEffectCore;
 import extendedui.swig.EffekseerManagerCore;
@@ -20,10 +23,14 @@ import java.util.HashMap;
 import static extendedui.STSEffekSeerUtils.LoadEffect;
 import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
 
-public class STSEffekseerManager {
+public class STSEffekseerManager implements ImGuiSubscriber
+{
     public static final float BASE_ANIMATION_SPEED = 60f;
     protected static float AnimationSpeed = BASE_ANIMATION_SPEED;
+    protected static String WINDOW_ID = "Effekseer";
     private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
+    private static DEUIWindow HandleWindow;
+    private static DEUIDynamicActionTable HandleTable;
     private static EffekseerManagerCore ManagerCore;
     private static FrameBuffer Buffer;
     private static boolean Enabled = false;
@@ -39,6 +46,7 @@ public class STSEffekseerManager {
             ManagerCore.Initialize(BASE_SPRITES_DEFAULT);
             Buffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), true, false);
             Enabled = true;
+            HandleWindow = new DEUIWindow(WINDOW_ID);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -159,6 +167,7 @@ public class STSEffekseerManager {
      Effekseer animations will only appear on the screen if the color/depth bits are clear. Any subsequent Spritebatch rendering calls will render the animations invisible.
      Thus, we must render the animations into a framebuffer to be rendered later
      */
+    // TODO find an alternate way of doing this
     public static void Update() {
         if (CanPlay()) {
             ManagerCore.SetViewProjectionMatrixWithSimpleWindow(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -235,4 +244,8 @@ public class STSEffekseerManager {
         ParticleEffects.clear();
     }
 
+    @Override
+    public void receiveImGui()
+    {
+    }
 }

@@ -15,10 +15,10 @@ import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.ui.AbstractScreen;
-import extendedui.ui.controls.GUI_Button;
-import extendedui.ui.controls.GUI_CardGrid;
-import extendedui.ui.controls.GUI_StaticCardGrid;
-import extendedui.ui.controls.GUI_Toggle;
+import extendedui.ui.controls.EUIButton;
+import extendedui.ui.controls.EUICardGrid;
+import extendedui.ui.controls.EUIStaticCardGrid;
+import extendedui.ui.controls.EUIToggle;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
@@ -27,14 +27,14 @@ public class CardPoolScreen extends AbstractScreen
 {
     public static CustomCardPoolModule CustomModule;
 
-    private final GUI_Toggle upgradeToggle;
-    private final GUI_Toggle colorlessToggle;
-    private final GUI_Button swapScreen;
-    public GUI_CardGrid cardGrid;
+    private final EUIToggle upgradeToggle;
+    private final EUIToggle colorlessToggle;
+    private final EUIButton swapScreen;
+    public EUICardGrid cardGrid;
 
     public CardPoolScreen()
     {
-        cardGrid = new GUI_StaticCardGrid()
+        cardGrid = new EUIStaticCardGrid()
                 .ShowScrollbar(true)
                 .CanRenderUpgrades(true)
                 .SetOnCardRightClick(c -> {
@@ -43,14 +43,14 @@ public class CardPoolScreen extends AbstractScreen
                 })
                 .SetVerticalStart(Settings.HEIGHT * 0.66f);
 
-        upgradeToggle = new GUI_Toggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
+        upgradeToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .SetBackground(EUIRM.Images.Panel.Texture(), Color.DARK_GRAY)
                 .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.8f)
                 .SetFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
                 .SetText(SingleCardViewPopup.TEXT[6])
                 .SetOnToggle(EUI::ToggleViewUpgrades);
 
-        colorlessToggle = new GUI_Toggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
+        colorlessToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .SetBackground(EUIRM.Images.Panel.Texture(), Color.DARK_GRAY)
                 .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
                 .SetFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
@@ -60,7 +60,7 @@ public class CardPoolScreen extends AbstractScreen
                     EUI.CardFilters.ColorsDropdown.ToggleSelection(AbstractCard.CardColor.CURSE, val, true);
                 });
 
-        this.swapScreen = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(),
+        this.swapScreen = new EUIButton(EUIRM.Images.HexagonalButton.Texture(),
                 new AdvancedHitbox(Scale(210), Scale(43)))
                 .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
                 .SetFont(FontHelper.buttonLabelFont, 0.8f)

@@ -25,7 +25,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-public abstract class GenericFilters<T> extends GUI_CanvasGrid
+public abstract class GenericFilters<T> extends EUICanvasGrid
 {
     protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
@@ -41,13 +41,13 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
     protected int currentTotal;
     protected ActionT1<FilterKeywordButton> onClick;
     protected ArrayList<T> referenceItems;
-    public final GUI_Button closeButton;
-    public final GUI_Button clearButton;
-    public final GUI_Label currentTotalHeaderLabel;
-    public final GUI_Label currentTotalLabel;
-    public final GUI_Label keywordsSectionLabel;
-    public final GUI_Toggle sortTypeToggle;
-    public final GUI_Toggle sortDirectionToggle;
+    public final EUIButton closeButton;
+    public final EUIButton clearButton;
+    public final EUILabel currentTotalHeaderLabel;
+    public final EUILabel currentTotalLabel;
+    public final EUILabel keywordsSectionLabel;
+    public final EUIToggle sortTypeToggle;
+    public final EUIToggle sortDirectionToggle;
     public final HashSet<EUITooltip> CurrentFilters = new HashSet<>();
     public final HashSet<EUITooltip> CurrentNegateFilters = new HashSet<>();
     protected float draw_x;
@@ -61,37 +61,37 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
         super(ROW_SIZE, PAD_Y);
         isActive = false;
         hb = new AdvancedHitbox(DRAW_START_X, DRAW_START_Y, Scale(180), Scale(70)).SetIsPopupCompatible(true);
-        closeButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
+        closeButton = new EUIButton(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
                 .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
                 .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(CombatRewardScreen.TEXT[6])
                 .SetOnClick(this::Close)
                 .SetColor(Color.GRAY);
-        clearButton = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).SetIsPopupCompatible(true))
+        clearButton = new EUIButton(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).SetIsPopupCompatible(true))
                 .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
                 .SetColor(Color.FIREBRICK)
                 .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.13f).SetText("Clear")
                 .SetOnClick(() -> this.Clear(true, isAccessedFromCardPool));
 
-        keywordsSectionLabel = new GUI_Label(EUIFontHelper.CardTitleFont_Small,
+        keywordsSectionLabel = new EUILabel(EUIFontHelper.CardTitleFont_Small,
                 new AdvancedHitbox(0, 0, Scale(48), Scale(48)))
                 .SetFont(EUIFontHelper.CardTitleFont_Small, 0.8f)
                 .SetText(EUIRM.Strings.UI_Keywords)
                 .SetColor(Settings.GOLD_COLOR)
                 .SetAlignment(0.5f, 0.0f, false);
-        currentTotalHeaderLabel = new GUI_Label(EUIFontHelper.CardTitleFont_Normal,
+        currentTotalHeaderLabel = new EUILabel(EUIFontHelper.CardTitleFont_Normal,
                 new AdvancedHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, Scale(48), Scale(48)))
                 .SetFont(EUIFontHelper.CardTitleFont_Small, 1f)
                 .SetText(EUIRM.Strings.UI_Total)
                 .SetColor(Settings.GOLD_COLOR)
                 .SetAlignment(0.5f, 0.0f, false);
-        currentTotalLabel = new GUI_Label(EUIFontHelper.CardTitleFont_Normal,
+        currentTotalLabel = new EUILabel(EUIFontHelper.CardTitleFont_Normal,
                 new AdvancedHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.906f, Scale(48), Scale(48)))
                 .SetFont(EUIFontHelper.CardTitleFont_Small, 1f)
                 .SetText("")
                 .SetColor(Settings.BLUE_TEXT_COLOR)
                 .SetAlignment(0.5f, 0.0f, false);
 
-        sortTypeToggle = new GUI_Toggle( new AdvancedHitbox(0, 0, Scale(170), Scale(32)).SetIsPopupCompatible(true))
+        sortTypeToggle = new EUIToggle( new AdvancedHitbox(0, 0, Scale(170), Scale(32)).SetIsPopupCompatible(true))
                 .SetBackground(EUIRM.Images.RectangularButton.Texture(), Color.DARK_GRAY)
                 .SetTickImage(null, null, 10)
                 .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.7f)
@@ -101,8 +101,8 @@ public abstract class GenericFilters<T> extends GUI_CanvasGrid
                     RefreshButtonOrder();
                 });
 
-        sortDirectionToggle = new GUI_Toggle( new AdvancedHitbox(0, 0, Scale(48), Scale(48)).SetIsPopupCompatible(true))
-                .SetTickImage(new GUI_Image(EUIRM.Images.Arrow.Texture()), new GUI_Image(EUIRM.Images.Arrow.Texture()).SetRotation(180f), 32)
+        sortDirectionToggle = new EUIToggle( new AdvancedHitbox(0, 0, Scale(48), Scale(48)).SetIsPopupCompatible(true))
+                .SetTickImage(new EUIImage(EUIRM.Images.Arrow.Texture()), new EUIImage(EUIRM.Images.Arrow.Texture()).SetRotation(180f), 32)
                 .SetText("")
                 .SetOnToggle(val -> {
                     sortDesc = val;

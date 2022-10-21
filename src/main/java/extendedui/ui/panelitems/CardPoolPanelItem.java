@@ -20,12 +20,10 @@ import eatyourbeets.interfaces.delegates.FuncT0;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
 import extendedui.configuration.EUIHotkeys;
-import extendedui.ui.controls.GUI_ContextMenu;
+import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
-import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
@@ -33,13 +31,13 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 {
     public static final String ID = CreateFullID(CardPoolPanelItem.class);
     protected static FuncT0<String> additionalTextFunc;
-    protected GUI_ContextMenu<ContextOption> contextMenu;
+    protected EUIContextMenu<ContextOption> contextMenu;
 
     public CardPoolPanelItem() {
         super(Loader.isModLoaded("PrideMod") ? EUIRM.Images.CardPool_Pride : EUIRM.Images.CardPool, ID);
         SetTooltip(new EUITooltip(EUIRM.Strings.UIPool_ViewPool, EUIRM.Strings.UIPool_ViewPoolDescription));
 
-        contextMenu = (GUI_ContextMenu<ContextOption>) new GUI_ContextMenu<ContextOption>(new AdvancedHitbox(0, 0, 0, 0), ContextOption::GetDisplayName)
+        contextMenu = (EUIContextMenu<ContextOption>) new EUIContextMenu<ContextOption>(new AdvancedHitbox(0, 0, 0, 0), ContextOption::GetDisplayName)
                 .SetOnChange(options -> {
                     for (ContextOption o : options)
                     {

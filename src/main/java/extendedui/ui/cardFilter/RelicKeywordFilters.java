@@ -19,9 +19,9 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.JavaUtils;
 import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.ui.controls.GUI_Dropdown;
-import extendedui.ui.controls.GUI_RelicGrid;
-import extendedui.ui.controls.GUI_TextBoxInput;
+import extendedui.ui.controls.EUIDropdown;
+import extendedui.ui.controls.EUIRelicGrid;
+import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
@@ -58,18 +58,18 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
     public final HashSet<ModInfo> CurrentOrigins = new HashSet<>();
     public final HashSet<AbstractRelic.RelicTier> CurrentRarities = new HashSet<>();
     public final HashSet<SeenValue> CurrentSeen = new HashSet<>();
-    public final GUI_Dropdown<ModInfo> OriginsDropdown;
-    public final GUI_Dropdown<AbstractRelic.RelicTier> RaritiesDropdown;
-    public final GUI_Dropdown<AbstractCard.CardColor> ColorsDropdown;
-    public final GUI_Dropdown<SeenValue> SeenDropdown;
-    public final GUI_TextBoxInput NameInput;
+    public final EUIDropdown<ModInfo> OriginsDropdown;
+    public final EUIDropdown<AbstractRelic.RelicTier> RaritiesDropdown;
+    public final EUIDropdown<AbstractCard.CardColor> ColorsDropdown;
+    public final EUIDropdown<SeenValue> SeenDropdown;
+    public final EUITextBoxInput NameInput;
     public String CurrentName;
 
     public RelicKeywordFilters()
     {
         super();
 
-        OriginsDropdown = new GUI_Dropdown<ModInfo>(new AdvancedHitbox(0, 0, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
+        OriginsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentOrigins, costs))
                 .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
@@ -78,7 +78,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
                 .SetCanAutosizeButton(true)
                 .SetItems(Loader.MODINFOS);
 
-        RaritiesDropdown = new GUI_Dropdown<AbstractRelic.RelicTier>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
+        RaritiesDropdown = new EUIDropdown<AbstractRelic.RelicTier>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , EUIGameUtils::TextForRelicTier)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentRarities, costs))
@@ -88,7 +88,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
                 .SetCanAutosizeButton(true)
                 .SetItems(AbstractRelic.RelicTier.values());
 
-        ColorsDropdown = new GUI_Dropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
+        ColorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , EUIGameUtils::GetColorName)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentColors, costs))
@@ -96,7 +96,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Colors)
                 .SetIsMultiSelect(true)
                 .SetCanAutosizeButton(true);
-        SeenDropdown = new GUI_Dropdown<SeenValue>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
+        SeenDropdown = new EUIDropdown<SeenValue>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , item -> item.name)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentSeen, costs))
@@ -105,7 +105,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
                 .SetItems(SeenValue.values())
                 .SetIsMultiSelect(true)
                 .SetCanAutosizeButton(true);
-        NameInput = (GUI_TextBoxInput) new GUI_TextBoxInput(EUIRM.Images.RectangularButton.Texture(),
+        NameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.Texture(),
                 new AdvancedHitbox(0, 0, Scale(240), Scale(40)).SetIsPopupCompatible(true))
                 .SetOnComplete(s -> {
                     CurrentName = s;
@@ -271,7 +271,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         return JavaUtils.Filter(input, this::EvaluateRelic);
     }
 
-    public ArrayList<GUI_RelicGrid.RelicInfo> ApplyInfoFilters(ArrayList<GUI_RelicGrid.RelicInfo> input)
+    public ArrayList<EUIRelicGrid.RelicInfo> ApplyInfoFilters(ArrayList<EUIRelicGrid.RelicInfo> input)
     {
         return JavaUtils.Filter(input, info -> EvaluateRelic(info.relic));
     }

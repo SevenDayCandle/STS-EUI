@@ -11,11 +11,11 @@ import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
-import extendedui.ui.controls.GUI_Button;
+import extendedui.ui.controls.EUIButton;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 
-public abstract class AbstractScreen extends GUI_Base
+public abstract class AbstractScreen extends EUIBase
 {
     @SpireEnum
     public static AbstractDungeon.CurrentScreen EUI_SCREEN;
@@ -145,11 +145,11 @@ public abstract class AbstractScreen extends GUI_Base
 
     }
 
-    public static GUI_Button CreateHexagonalButton(float x, float y, float width, float height)
+    public static EUIButton CreateHexagonalButton(float x, float y, float width, float height)
     {
         final Texture buttonTexture = EUIRM.Images.HexagonalButton.Texture();
         final Texture buttonBorderTexture = EUIRM.Images.HexagonalButtonBorder.Texture();
-        return new GUI_Button(buttonTexture, x, y)
+        return new EUIButton(buttonTexture, x, y)
         .SetBorder(buttonBorderTexture, Color.WHITE)
         .SetClickDelay(0.25f)
         .SetDimensions(width, height);

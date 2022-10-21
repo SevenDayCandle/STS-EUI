@@ -25,12 +25,12 @@ public class RelicPoolScreen extends AbstractScreen
 {
     public static CustomRelicPoolModule CustomModule;
 
-    public GUI_RelicGrid relicGrid;
-    private final GUI_Button swapScreen;
+    public EUIRelicGrid relicGrid;
+    private final EUIButton swapScreen;
 
     public RelicPoolScreen()
     {
-        relicGrid = (GUI_RelicGrid) new GUI_StaticRelicGrid()
+        relicGrid = (EUIRelicGrid) new EUIStaticRelicGrid()
                 .SetOnRelicRightClick(c -> {
                     c.hb.unhover();
                     CardCrawlGame.relicPopup.open(c);
@@ -38,7 +38,7 @@ public class RelicPoolScreen extends AbstractScreen
                 .SetVerticalStart(Settings.HEIGHT * 0.74f)
                 .ShowScrollbar(true);
 
-        this.swapScreen = new GUI_Button(EUIRM.Images.HexagonalButton.Texture(),
+        this.swapScreen = new EUIButton(EUIRM.Images.HexagonalButton.Texture(),
                 new AdvancedHitbox(Scale(210), Scale(43)))
                 .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
                 .SetFont(FontHelper.buttonLabelFont, 0.8f)

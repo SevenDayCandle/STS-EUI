@@ -1,15 +1,14 @@
 package extendedui.ui.cardFilter;
 
-import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import extendedui.ui.GUI_Base;
-import extendedui.ui.controls.GUI_RelicGrid;
+import extendedui.ui.EUIBase;
+import extendedui.ui.controls.EUIRelicGrid;
 
 import java.util.ArrayList;
 import java.util.Collection;
 
-public abstract class CustomRelicFilterModule extends GUI_Base {
+public abstract class CustomRelicFilterModule extends EUIBase
+{
     public abstract boolean IsRelicValid(AbstractRelic c);
     public abstract boolean IsEmpty();
     public abstract boolean IsHovered();
@@ -17,7 +16,7 @@ public abstract class CustomRelicFilterModule extends GUI_Base {
     public abstract void Reset();
     public void ProcessGroup(ArrayList<AbstractRelic> group) {}
 
-    public boolean IsRelicValid(GUI_RelicGrid.RelicInfo c)
+    public boolean IsRelicValid(EUIRelicGrid.RelicInfo c)
     {
         return IsRelicValid(c.relic);
     }

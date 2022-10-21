@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
-import extendedui.ui.GUI_Base;
+import extendedui.ui.EUIBase;
 import extendedui.utilities.Mathf;
 
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
@@ -18,7 +18,7 @@ public class AdvancedHitbox extends Hitbox
     public float lerpSpeed;
     public float target_cX;
     public float target_cY;
-    public GUI_Base parentElement;
+    public EUIBase parentElement;
     public boolean isPopupCompatible;
 
     public AdvancedHitbox(Hitbox hb)
@@ -66,7 +66,7 @@ public class AdvancedHitbox extends Hitbox
         return this;
     }
 
-    public AdvancedHitbox SetParentElement(GUI_Base element) {
+    public AdvancedHitbox SetParentElement(EUIBase element) {
         this.parentElement = element;
 
         return this;

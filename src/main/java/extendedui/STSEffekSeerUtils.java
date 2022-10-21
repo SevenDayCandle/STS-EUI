@@ -145,7 +145,11 @@ public class STSEffekSeerUtils {
 
         try (InputStream is = STSEffekSeerUtils.class.getResourceAsStream(path)) {
             Files.copy(is, temp.toPath(), StandardCopyOption.REPLACE_EXISTING);
-        } catch (IOException e) {
+        }
+        catch (AccessDeniedException ignored) {
+            // If the file already exists (i.e. failed to delete last time), we should just try to load it again
+        }
+        catch (IOException e) {
             temp.delete();
             throw e;
         } catch (NullPointerException e) {
@@ -156,13 +160,8 @@ public class STSEffekSeerUtils {
         try {
             System.load(temp.getAbsolutePath());
         } finally {
-            if (IsPosixCompliant()) {
-                // Assume POSIX compliant file system, can be deleted after loading
-                temp.delete();
-            } else {
-                // Assume non-POSIX, and don't delete until last file descriptor closed
-                temp.deleteOnExit();
-            }
+            // We need to keep the DLL file until the program closes, in case the system needs to read from it again
+            temp.deleteOnExit();
         }
     }
 
@@ -174,18 +173,6 @@ public class STSEffekSeerUtils {
             return "/" + LIBRARY_NAME + ".so";
         }
         throw new RuntimeException("Unsupported OS");
-    }
-
-    private static boolean IsPosixCompliant() {
-        try {
-            return FileSystems.getDefault()
-                    .supportedFileAttributeViews()
-                    .contains("posix");
-        } catch (FileSystemNotFoundException
-                | ProviderNotFoundException
-                | SecurityException e) {
-            return false;
-        }
     }
 
     private static File CreateTemporaryDirectory(String prefix) throws IOException {

@@ -4,28 +4,18 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
-import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import com.megacrit.cardcrawl.screens.options.InputSettingsScreen;
 import com.megacrit.cardcrawl.screens.options.OptionsPanel;
-import com.megacrit.cardcrawl.screens.options.SettingsScreen;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.EUIRM;
-import extendedui.ui.controls.GUI_Button;
-import extendedui.ui.controls.GUI_Label;
+import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.AdvancedHitbox;
-import extendedui.utilities.ClassUtils;
-
-import static extendedui.ui.GUI_Base.*;
 
 public class OptionsPanelPatches
 {
-    public static GUI_Label ModSettings = new GUI_Label(FontHelper.panelEndTurnFont, new AdvancedHitbox(Settings.WIDTH * 0.18F, Settings.HEIGHT * 0.021f, 300.0F * Settings.scale, 72.0F * Settings.scale)).SetText(EUIRM.Strings.Misc_ModSettings);
+    public static EUILabel ModSettings = new EUILabel(FontHelper.panelEndTurnFont, new AdvancedHitbox(Settings.WIDTH * 0.18F, Settings.HEIGHT * 0.021f, 300.0F * Settings.scale, 72.0F * Settings.scale)).SetText(EUIRM.Strings.Misc_ModSettings);
 
     @SpirePatch(clz= OptionsPanel.class, method="update")
     public static class OptionsPanel_Update

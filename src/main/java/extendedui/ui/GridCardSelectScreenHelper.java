@@ -8,11 +8,9 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
-import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
 import eatyourbeets.interfaces.delegates.*;
-import extendedui.ui.controls.GUI_TextBox;
+import extendedui.ui.controls.EUITextBox;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.utilities.ClassUtils;
 import extendedui.utilities.GenericCondition;
@@ -25,7 +23,7 @@ public class GridCardSelectScreenHelper
 {
     private static final CardGroup mergedGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
     private static final ArrayList<CardGroup> cardGroups = new ArrayList<>();
-    private static final GUI_TextBox dynamicLabel = new GUI_TextBox(ImageMaster.WHITE_SQUARE_IMG,
+    private static final EUITextBox dynamicLabel = new EUITextBox(ImageMaster.WHITE_SQUARE_IMG,
             new AdvancedHitbox(Settings.WIDTH / 4.0F, 96.0F * Settings.scale, Settings.WIDTH / 2.0F, 48.0F * Settings.scale))
             .SetColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
             .SetAlignment(0.7f, 0.15f, true, false)

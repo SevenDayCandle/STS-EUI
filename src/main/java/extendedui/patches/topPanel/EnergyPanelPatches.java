@@ -5,7 +5,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import extendedui.EUI;
-import extendedui.ui.GUI_Base;
+import extendedui.ui.EUIBase;
 
 public class EnergyPanelPatches
 {
@@ -15,7 +15,7 @@ public class EnergyPanelPatches
         @SpirePostfixPatch
         public static void Postfix(EnergyPanel __instance, SpriteBatch sb)
         {
-            for (GUI_Base s : EUI.BattleSubscribers) {
+            for (EUIBase s : EUI.BattleSubscribers) {
                 s.TryRender(sb);
             }
         }

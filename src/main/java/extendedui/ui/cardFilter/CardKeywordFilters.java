@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
@@ -57,19 +56,19 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     public final HashSet<CostFilter> CurrentCosts = new HashSet<>();
     public final HashSet<AbstractCard.CardRarity> CurrentRarities = new HashSet<>();
     public final HashSet<AbstractCard.CardType> CurrentTypes = new HashSet<>();
-    public final GUI_Dropdown<ModInfo> OriginsDropdown;
-    public final GUI_Dropdown<CostFilter> CostDropdown;
-    public final GUI_Dropdown<AbstractCard.CardRarity> RaritiesDropdown;
-    public final GUI_Dropdown<AbstractCard.CardType> TypesDropdown;
-    public final GUI_Dropdown<AbstractCard.CardColor> ColorsDropdown;
-    public final GUI_TextBoxInput NameInput;
+    public final EUIDropdown<ModInfo> OriginsDropdown;
+    public final EUIDropdown<CostFilter> CostDropdown;
+    public final EUIDropdown<AbstractCard.CardRarity> RaritiesDropdown;
+    public final EUIDropdown<AbstractCard.CardType> TypesDropdown;
+    public final EUIDropdown<AbstractCard.CardColor> ColorsDropdown;
+    public final EUITextBoxInput NameInput;
     public String CurrentName;
 
     public CardKeywordFilters()
     {
         super();
 
-        OriginsDropdown = new GUI_Dropdown<ModInfo>(new AdvancedHitbox(0, 0, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
+        OriginsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentOrigins, costs))
                 .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
@@ -78,7 +77,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .SetCanAutosizeButton(true)
                 .SetItems(Loader.MODINFOS);
 
-        CostDropdown = new GUI_Dropdown<CostFilter>(new AdvancedHitbox(0, 0, Scale(160), Scale(48)), c -> c.name)
+        CostDropdown = new EUIDropdown<CostFilter>(new AdvancedHitbox(0, 0, Scale(160), Scale(48)), c -> c.name)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentCosts, costs))
                 .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
@@ -87,7 +86,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .SetCanAutosize(false, false)
                 .SetItems(CostFilter.values());
 
-        RaritiesDropdown = new GUI_Dropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
+        RaritiesDropdown = new EUIDropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , EUIGameUtils::TextForRarity)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentRarities, costs))
@@ -97,7 +96,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .SetCanAutosizeButton(true)
                 .SetItems(AbstractCard.CardRarity.values());
 
-        TypesDropdown = new GUI_Dropdown<AbstractCard.CardType>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
+        TypesDropdown = new EUIDropdown<AbstractCard.CardType>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , EUIGameUtils::TextForType)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentTypes, costs))
@@ -107,7 +106,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .SetCanAutosizeButton(true)
                 .SetItems(AbstractCard.CardType.values());
 
-        ColorsDropdown = new GUI_Dropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
+        ColorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
                 , EUIGameUtils::GetColorName)
                 .SetOnOpenOrClose(this::UpdateActive)
                 .SetOnChange(costs -> this.OnFilterChanged(CurrentColors, costs))
@@ -115,7 +114,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Colors)
                 .SetIsMultiSelect(true)
                 .SetCanAutosizeButton(true);
-        NameInput = (GUI_TextBoxInput) new GUI_TextBoxInput(EUIRM.Images.RectangularButton.Texture(),
+        NameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.Texture(),
                 new AdvancedHitbox(0, 0, Scale(240), Scale(40)).SetIsPopupCompatible(true))
                 .SetOnComplete(s -> {
                     CurrentName = s;

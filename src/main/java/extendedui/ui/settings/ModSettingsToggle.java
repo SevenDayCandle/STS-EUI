@@ -3,10 +3,10 @@ package extendedui.ui.settings;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.markers.ModSettingsProvider;
-import extendedui.ui.controls.GUI_Toggle;
+import extendedui.ui.controls.EUIToggle;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
-public class ModSettingsToggle extends GUI_Toggle implements ModSettingsProvider<Boolean>
+public class ModSettingsToggle extends EUIToggle implements ModSettingsProvider<Boolean>
 {
     public final STSConfigItem<Boolean> Config;
 

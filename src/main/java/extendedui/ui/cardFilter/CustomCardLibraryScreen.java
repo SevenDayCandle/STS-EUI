@@ -34,11 +34,11 @@ public class CustomCardLibraryScreen extends AbstractScreen
     public static CustomCardPoolModule CustomModule;
     public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
 
-    public final GUI_CardGrid cardGrid;
-    public final GUI_TextBoxInput quickSearch;
-    public final GUI_Toggle upgradeToggle;
+    public final EUICardGrid cardGrid;
+    public final EUITextBoxInput quickSearch;
+    public final EUIToggle upgradeToggle;
     public final MenuCancelButton cancelButton;
-    protected final GUI_ButtonList colorButtons = new GUI_ButtonList();
+    protected final EUIButtonList colorButtons = new EUIButtonList();
     protected float barY;
     protected int topButtonIndex;
     protected static boolean Initialized;
@@ -46,7 +46,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
     public CustomCardLibraryScreen() {
         final float y = Settings.HEIGHT * 0.92f - (VISIBLE_BUTTONS + 1) * Scale(48);
 
-        cardGrid = new GUI_StaticCardGrid()
+        cardGrid = new EUIStaticCardGrid()
                 .ShowScrollbar(true)
                 .CanRenderUpgrades(true)
                 .SetVerticalStart(Settings.HEIGHT * 0.65f)
@@ -55,14 +55,14 @@ public class CustomCardLibraryScreen extends AbstractScreen
             c.unhover();
             CardCrawlGame.cardPopup.open(c, cardGrid.cards);
         });
-        upgradeToggle = new GUI_Toggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
+        upgradeToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .SetPosition(1450.0F * Settings.xScale, Settings.HEIGHT * 0.8f)
                 .SetFont(FontHelper.topPanelInfoFont, 1f)
                 .SetText(CardLibraryScreen.TEXT[7])
                 .SetOnToggle(EUI::ToggleViewUpgrades);
         cancelButton = new MenuCancelButton();
 
-        quickSearch = (GUI_TextBoxInput) new GUI_TextBoxInput(EUIRM.Images.RectangularButton.Texture(),
+        quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.Texture(),
                 new AdvancedHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, Scale(280), Scale(48)))
                 .SetOnComplete((v) -> EUI.CardFilters.NameInput.SetTextAndCommit(v))
                 .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.7f, Settings.GOLD_COLOR, EUIRM.Strings.UI_NameSearch)
