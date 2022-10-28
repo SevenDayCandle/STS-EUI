@@ -37,18 +37,18 @@ public class STSEffekseerManager implements ImGuiSubscriber
     protected static String WINDOW_ID = "Effekseer";
     protected static String WINDOW_TABLE_ID = "Playing Effects";
     protected static String EFFECT_LIST_ID = "Effect List";
-    protected static String EFFECT_LIST_POS_X_ID = "Xpos";
-    protected static String EFFECT_LIST_POS_Y_ID = "Ypos";
-    protected static String EFFECT_LIST_ROT_X_ID = "Xrot";
-    protected static String EFFECT_LIST_ROT_Y_ID = "Yrot";
-    protected static String EFFECT_LIST_ROT_Z_ID = "Zrot";
-    protected static String EFFECT_LIST_SCALE_X_ID = "Xscale";
-    protected static String EFFECT_LIST_SCALE_Y_ID = "Yscale";
-    protected static String EFFECT_LIST_SCALE_Z_ID = "Zscale";
-    protected static String EFFECT_LIST_COLOR_R_ID = "R";
-    protected static String EFFECT_LIST_COLOR_G_ID = "G";
-    protected static String EFFECT_LIST_COLOR_B_ID = "B";
-    protected static String EFFECT_LIST_COLOR_A_ID = "A";
+    protected static String EFFECT_LIST_POS_X_ID = "X##posX";
+    protected static String EFFECT_LIST_POS_Y_ID = "Y##posY";
+    protected static String EFFECT_LIST_ROT_X_ID = "X##rotX";
+    protected static String EFFECT_LIST_ROT_Y_ID = "Y##rotY";
+    protected static String EFFECT_LIST_ROT_Z_ID = "Z##rotZ";
+    protected static String EFFECT_LIST_SCALE_X_ID = "X##scaleX";
+    protected static String EFFECT_LIST_SCALE_Y_ID = "Y##scaleY";
+    protected static String EFFECT_LIST_SCALE_Z_ID = "Z##scaleZ";
+    protected static String EFFECT_LIST_COLOR_R_ID = "R##colorR";
+    protected static String EFFECT_LIST_COLOR_G_ID = "G##colorG";
+    protected static String EFFECT_LIST_COLOR_B_ID = "B##colorB";
+    protected static String EFFECT_LIST_COLOR_A_ID = "A##colorA";
     protected static String EFFECT_LIST_PLAY_ID = "Play";
     protected static String EFFECT_LIST_TOGGLE_ID = "Show Playing";
     protected static String TABLE_ID = "Current Playing Effects";
@@ -249,14 +249,18 @@ public class STSEffekseerManager implements ImGuiSubscriber
      The color and depth bits must be cleared before every render in order for effekseer effects to work
      */
     public static void PreUpdate() {
-        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+        PlayingHandles.removeIf(handle -> !Exists(handle));
+        if (!PlayingHandles.isEmpty())
+        {
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+        }
     }
 
     /**
      Advances the animations of all playing animations.
      */
     public static void Update() {
-        if (CanPlay()) {
+        if (CanPlay() && !PlayingHandles.isEmpty()) {
             ManagerCore.SetViewProjectionMatrixWithSimpleWindowAndUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Gdx.graphics.getDeltaTime() * AnimationSpeed);
             ManagerCore.Draw();
         }
@@ -298,14 +302,18 @@ public class STSEffekseerManager implements ImGuiSubscriber
             ImGui.separator();
             EffectList.Render();
             DEUIUtils.WithWidth(110, () -> {
+                DEUIUtils.InlineText("Pos");
                 EffectPosX.RenderInline();
                 EffectPosY.Render();
+                DEUIUtils.InlineText("Rot");
                 EffectRotX.RenderInline();
                 EffectRotY.RenderInline();
                 EffectRotZ.Render();
+                DEUIUtils.InlineText("Scale");
                 EffectScaleX.RenderInline();
                 EffectScaleY.RenderInline();
                 EffectScaleZ.Render();
+                DEUIUtils.InlineText("Color");
                 EffectColorR.RenderInline();
                 EffectColorG.RenderInline();
                 EffectColorB.RenderInline();
@@ -325,9 +333,6 @@ public class STSEffekseerManager implements ImGuiSubscriber
                     }
                 );
             });
-        HandleWindow.Render(() -> {
-            PlayingHandles.removeIf(handle -> !Exists(handle));
-            HandleTable.Render();
-        });
+        HandleWindow.Render(HandleTable::Render);
     }
 }

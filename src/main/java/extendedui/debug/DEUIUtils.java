@@ -18,6 +18,12 @@ public class DEUIUtils
         return name + "###" + id;
     }
 
+    public static void InlineText(String text)
+    {
+        ImGui.text(text);
+        ImGui.sameLine();
+    }
+
     public static void WithFullWidth(ActionT0 onRender)
     {
         WithWidth(-1, onRender);

@@ -101,6 +101,11 @@ public class CustomCardLibraryScreen extends AbstractScreen
 
     public void Open() {
         super.Open();
+        OpenImpl();
+    }
+
+    public void OpenImpl()
+    {
         SingleCardViewPopup.isViewingUpgrade = false;
         EUI.CustomHeader.SetupButtons();
         SetActiveColor(CurrentColor);
@@ -151,7 +156,10 @@ public class CustomCardLibraryScreen extends AbstractScreen
                 this.cancelButton.hb.clicked = false;
                 this.cancelButton.hide();
                 CardCrawlGame.mainMenuScreen.panelScreen.refresh();
-                Dispose();
+                if (EUI.CurrentScreen == this)
+                {
+                    Dispose();
+                }
             }
         }
         if (CustomModule != null) {

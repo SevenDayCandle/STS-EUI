@@ -5,11 +5,13 @@ import basemod.patches.com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar.Color
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
+import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.utilities.ClassUtils;
@@ -40,7 +42,8 @@ public class CardLibraryScreenPatches
         {
             // Redirect to the custom library screen if enabled
             if (!EUIConfiguration.UseVanillaCompendium.Get()) {
-                EUI.CustomLibraryScreen.Open();
+                EUI.CustomLibraryScreen.OpenImpl();
+                CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.CARD_LIBRARY;
                 return SpireReturn.Return();
             }
 
@@ -86,8 +89,15 @@ public class CardLibraryScreenPatches
     {
 
         @SpirePrefixPatch
-        public static void Prefix(CardLibraryScreen __instance)
+        public static SpireReturn<Void> Prefix(CardLibraryScreen __instance)
         {
+            // Override vanilla compendium if enabled
+            if (!EUIConfiguration.UseVanillaCompendium.Get())
+            {
+                EUI.CustomLibraryScreen.Update();
+                return SpireReturn.Return();
+            }
+
             if (!EUI.CardFilters.isActive && EUI.OpenCardFiltersButton != null) {
                 EUI.OpenCardFiltersButton.TryUpdate();
             }
@@ -95,6 +105,7 @@ public class CardLibraryScreenPatches
             {
                 ClassUtils.SetField(__instance, "grabbedScreen", false);
             }
+            return SpireReturn.Continue();
         }
     }
 
@@ -114,6 +125,19 @@ public class CardLibraryScreenPatches
     @SpirePatch(clz= CardLibraryScreen.class, method="render", paramtypez = {SpriteBatch.class})
     public static class CardLibraryScreen_Render
     {
+        @SpirePrefixPatch
+        public static SpireReturn<Void> Prefix(CardLibraryScreen __instance, SpriteBatch sb)
+        {
+            // Override vanilla compendium if enabled
+            if (!EUIConfiguration.UseVanillaCompendium.Get())
+            {
+                EUI.CustomLibraryScreen.Render(sb);
+                return SpireReturn.Return();
+            }
+
+            return SpireReturn.Continue();
+        }
+
         @SpirePrefixPatch
         public static void Postfix(CardLibraryScreen __instance, SpriteBatch sb)
         {
