@@ -22,6 +22,11 @@ public class DEUIFloatInput extends DEUIBaseT0
         this(id, defaultValue, Float.MIN_VALUE, Float.MAX_VALUE, 1, 100);
     }
 
+    public DEUIFloatInput(String id, float defaultValue, float min, float max)
+    {
+        this(id, defaultValue, min, max, 1, 100);
+    }
+
     public DEUIFloatInput(String id, float defaultValue, float min, float max, float step, float stepFast)
     {
         super(id);

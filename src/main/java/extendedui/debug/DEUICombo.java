@@ -18,6 +18,10 @@ public class DEUICombo<T> extends DEUIBaseT0
         super(id);
         this.items = items;
         this.stringFunc = stringFunc;
+        if (this.items.size() > 0)
+        {
+            selected = items.get(0);
+        }
     }
 
     public T Get()
@@ -27,7 +31,7 @@ public class DEUICombo<T> extends DEUIBaseT0
 
     public void Render()
     {
-        if (ImGui.beginCombo(ID, stringFunc.Invoke(selected))) {
+        if (ImGui.beginCombo(ID, AsLabel())) {
             for (T item : items) {
                 boolean isSelected = item.equals(selected);
                 if (ImGui.selectable(stringFunc.Invoke(item), isSelected)) {
@@ -40,5 +44,14 @@ public class DEUICombo<T> extends DEUIBaseT0
             }
             ImGui.endCombo();
         }
+    }
+
+    protected String AsLabel()
+    {
+        if (selected == null)
+        {
+            return "##null";
+        }
+        return stringFunc.Invoke(selected);
     }
 }

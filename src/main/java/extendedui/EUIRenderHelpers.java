@@ -23,7 +23,6 @@ import extendedui.ui.controls.EUIImage;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.*;
-import org.imgscalr.Scalr;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -484,61 +483,6 @@ public class EUIRenderHelpers
         sb.setColor(color);
         sb.draw(img, x, y, 0, 0, width, height, Settings.scale, Settings.scale, 0, 0, 0,
                 srcWidth, srcHeight, false, false);
-    }
-
-    public static BufferedImage ScalrScale(Texture image, float xScale, float yScale) {
-        return ScalrScale(image, xScale, yScale, Scalr.Method.AUTOMATIC);
-    }
-
-    public static BufferedImage ScalrScale(Texture image, float xScale, float yScale, Scalr.Method scalingMethod, BufferedImageOp... ops) {
-        if (!image.getTextureData().isPrepared()) {
-            image.getTextureData().prepare();
-        }
-        return ScalrScale(image.getTextureData().consumePixmap(), xScale, yScale);
-    }
-
-    public static BufferedImage ScalrScale(Pixmap image, float xScale, float yScale) {
-        return ScalrScale(image, xScale, yScale, Scalr.Method.AUTOMATIC);
-    }
-
-    public static BufferedImage ScalrScale(Pixmap image, float xScale, float yScale, Scalr.Method scalingMethod, BufferedImageOp... ops) {
-        try {
-            PixmapIO.PNG writer = new PixmapIO.PNG((int)((float)(image.getWidth() * image.getHeight()) * 1.5F));
-            ByteArrayOutputStream  stream = new ByteArrayOutputStream();
-            writer.setFlipY(false);
-            writer.write(stream, image);
-            writer.dispose();
-            return ScalrScale(ImageIO.read(new ByteArrayInputStream(stream.toByteArray())), xScale, yScale, scalingMethod, ops);
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            return null;
-        }
-    }
-
-    public static BufferedImage ScalrScale(BufferedImage image, float xScale, float yScale) {
-        return ScalrScale(image, xScale, yScale, Scalr.Method.AUTOMATIC);
-    }
-
-    public static BufferedImage ScalrScale(BufferedImage image, float xScale, float yScale, Scalr.Method scalingMethod, BufferedImageOp... ops) {
-        if (image == null) {
-            return null;
-        }
-        return Scalr.resize(image, scalingMethod, (int) (image.getWidth() * xScale), (int) (image.getHeight() * yScale), ops);
-    }
-
-    public static Pixmap ScalrScaleAsPixmap(Texture image, float xScale, float yScale) {
-        BufferedImage bi = ScalrScale(image, xScale, yScale);
-        return bi != null ? GetPixmapFromBufferedImage(bi) : null;
-    }
-
-    public static Pixmap ScalrScaleAsPixmap(Pixmap image, float xScale, float yScale) {
-        BufferedImage bi = ScalrScale(image, xScale, yScale);
-        return bi != null ? GetPixmapFromBufferedImage(bi) : null;
-    }
-
-    public static Pixmap ScalrScaleAsPixmap(BufferedImage image, float xScale, float yScale) {
-        return GetPixmapFromBufferedImage(image);
     }
 
     public static void WriteOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color)

@@ -21,6 +21,11 @@ public class DEUIIntInput extends DEUIBaseT0
         this(id, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 100);
     }
 
+    public DEUIIntInput(String id, int defaultValue, int min, int max)
+    {
+        this(id, defaultValue, min, max, 1, 100);
+    }
+
     public DEUIIntInput(String id, int defaultValue, int min, int max, int step, int stepFast)
     {
         super(id);
