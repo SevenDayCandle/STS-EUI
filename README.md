@@ -11,7 +11,6 @@ Both the card pool and the card filters components come with hooks that allow mo
 This mod also comes with the following features:
 - Support for playing Effekseer animations in Slay the Spire.
 - Support for colorizing Effekseer animations and images in general with the colorful-gdx library, which offers a greater degree of freedom with color manipulation.
-- Support for resizing image with Scalr, which can be used to create high-quality thumbnails (Note: This functionality should ideally only be used for exporting textures in different sizes that lack mipmaps, as Scalr resizing can be very expensive to run).
 
 You can find Effekseer, along with some sample animations, at https://effekseer.github.io/en/.
 
