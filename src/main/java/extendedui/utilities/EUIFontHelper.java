@@ -8,6 +8,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
+import extendedui.configuration.EUIConfiguration;
+import extendedui.configuration.STSStringConfigItem;
 
 import java.util.HashMap;
 
@@ -16,10 +18,49 @@ import java.util.HashMap;
 //TODO add support for more languages
 public class EUIFontHelper
 {
+    public static final String TINY_NUMBERS_FONT = "font/04b03.ttf";
+    public static final String ENG_DEFAULT_FONT = "font/Kreon-Regular.ttf";
+    public static final String ENG_BOLD_FONT = "font/Kreon-Bold.ttf";
+    public static final String ENG_ITALIC_FONT = "font/ZillaSlab-RegularItalic.otf";
+    public static final String ENG_DRAMATIC_FONT = "font/FeDPrm27C.otf";
+    public static final String ZHS_DEFAULT_FONT = "font/zhs/NotoSansMonoCJKsc-Regular.otf";
+    public static final String ZHS_BOLD_FONT = "font/zhs/SourceHanSerifSC-Bold.otf";
+    public static final String ZHS_ITALIC_FONT = "font/zhs/SourceHanSerifSC-Medium.otf";
+    public static final String ZHT_DEFAULT_FONT = "font/zht/NotoSansCJKtc-Regular.otf";
+    public static final String ZHT_BOLD_FONT = "font/zht/NotoSansCJKtc-Bold.otf";
+    public static final String ZHT_ITALIC_FONT = "font/zht/NotoSansCJKtc-Medium.otf";
+    public static final String EPO_DEFAULT_FONT = "font/epo/Andada-Regular.otf";
+    public static final String EPO_BOLD_FONT = "font/epo/Andada-Bold.otf";
+    public static final String EPO_ITALIC_FONT = "font/epo/Andada-Italic.otf";
+    public static final String GRE_DEFAULT_FONT = "font/gre/Roboto-Regular.ttf";
+    public static final String GRE_BOLD_FONT = "font/gre/Roboto-Bold.ttf";
+    public static final String GRE_ITALIC_FONT = "font/gre/Roboto-Italic.ttf";
+    public static final String JPN_DEFAULT_FONT = "font/jpn/NotoSansCJKjp-Regular.otf";
+    public static final String JPN_BOLD_FONT = "font/jpn/NotoSansCJKjp-Bold.otf";
+    public static final String JPN_ITALIC_FONT = "font/jpn/NotoSansCJKjp-Medium.otf";
+    public static final String KOR_DEFAULT_FONT = "font/kor/GyeonggiCheonnyeonBatangBold.ttf";
+    public static final String KOR_BOLD_FONT = "font/kor/GyeonggiCheonnyeonBatangBold.ttf";
+    public static final String KOR_ITALIC_FONT = "font/kor/GyeonggiCheonnyeonBatangBold.ttf";
+    public static final String RUS_DEFAULT_FONT = "font/rus/FiraSansExtraCondensed-Regular.ttf";
+    public static final String RUS_BOLD_FONT = "font/rus/FiraSansExtraCondensed-Bold.ttf";
+    public static final String RUS_ITALIC_FONT = "font/rus/FiraSansExtraCondensed-Italic.ttf";
+    public static final String SRB_DEFAULT_FONT = "font/srb/InfluBG.otf";
+    public static final String SRB_BOLD_FONT = "font/srb/InfluBG-Bold.otf";
+    public static final String SRB_ITALIC_FONT = "font/srb/InfluBG-Italic.otf";
+    public static final String THA_DEFAULT_FONT = "font/tha/CSChatThaiUI.ttf";
+    public static final String THA_BOLD_FONT = "font/tha/CSChatThaiUI.ttf";
+    public static final String THA_ITALIC_FONT = "font/tha/CSChatThaiUI.ttf";
+    public static final String VIE_DEFAULT_FONT = "font/vie/Grenze-Regular.ttf";
+    public static final String VIE_BOLD_FONT = "font/vie/Grenze-SemiBold.ttf";
+    public static final String VIE_DRAMATIC_FONT = "font/vie/Grenze-Black.ttf";
+    public static final String VIE_ITALIC_FONT = "font/vie/Grenze-RegularItalic.ttf";
+
     protected static FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
     protected static FreeTypeFontGenerator.FreeTypeBitmapFontData data = new FreeTypeFontGenerator.FreeTypeBitmapFontData();
     protected static HashMap<String, FreeTypeFontGenerator> generators = new HashMap<>();
     protected static FileHandle fontFile = null;
+    protected static FileHandle fontFileBold = null;
+    protected static FileHandle fontFileItalic = null;
     protected static BitmapFont cardDescFont;
     protected static BitmapFont cardDescFont_L;
     protected static BitmapFont cardTipFont;
@@ -41,7 +82,7 @@ public class EUIFontHelper
         generators.clear();
         data.xChars = new char[]{'动'};
         data.capChars = new char[]{'动'};
-        fontFile = GetFontFileForLanguage(Settings.language);
+        fontFile = GetFontDefaultFile(Settings.language);
 
         param.hinting = FreeTypeFontGenerator.Hinting.Slight;
         param.kerning = true;
@@ -75,7 +116,7 @@ public class EUIFontHelper
         param.borderColor = new Color(0.4F, 0.1F, 0.1F, 1.0F);
         param.borderWidth = 0.0F;
         EUIFontHelper.cardTipFont = PrepFont(22.0F, true);
-        //
+
         Color bc1 = new Color(0.35F, 0.35F, 0.35F, 1.0F);
         Color sc1 = new Color(0, 0, 0, 0.25f);
         EUIFontHelper.CardTitleFont_Small = PrepFont(cardTitleFont, 25, 2f, bc1, 3f, sc1);
@@ -190,26 +231,160 @@ public class EUIFontHelper
         return font;
     }
 
-    private static FileHandle GetFontFileForLanguage(Settings.GameLanguage language) {
-        switch (language) {
+    private static FileHandle GetFontDefaultFile(Settings.GameLanguage language) {
+        STSStringConfigItem config = GetFontDefaultConfig(language);
+        String value = config.Get();
+        if (value != null && !value.isEmpty()) {
+            FileHandle custom = Gdx.files.external(value);
+            if (custom.exists()) {
+                return custom;
+            }
+        }
+
+        return Gdx.files.internal(GetFontDefaultPath(language));
+    }
+
+    private static FileHandle GetFontBoldFile(Settings.GameLanguage language) {
+        STSStringConfigItem config = GetFontDefaultConfig(language);
+        String value = config.Get();
+        if (value != null && !value.isEmpty()) {
+            FileHandle custom = Gdx.files.external(value);
+            if (custom.exists()) {
+                return custom;
+            }
+        }
+
+        return Gdx.files.internal(GetFontDefaultPath(language));
+    }
+
+    private static STSStringConfigItem GetFontDefaultConfig(Settings.GameLanguage language)
+    {
+        switch (language)
+        {
             case JPN:
-                return Gdx.files.internal("font/jpn/NotoSansCJKjp-Regular.otf");
+                return EUIConfiguration.CustomJPNDefaultFont;
             case KOR:
-                return Gdx.files.internal("font/kor/GyeonggiCheonnyeonBatangBold.ttf");
+                return EUIConfiguration.CustomKORDefaultFont;
             case ZHS:
-                return Gdx.files.internal("font/zhs/NotoSansMonoCJKsc-Regular.otf");
+                return EUIConfiguration.CustomZHSDefaultFont;
             case ZHT:
-                return Gdx.files.internal("font/zht/NotoSansCJKtc-Regular.otf");
+                return EUIConfiguration.CustomZHTDefaultFont;
+            case POL:
+            case UKR:
             case RUS:
-                return Gdx.files.internal("font/rus/FiraSansExtraCondensed-Regular.ttf");
+                return EUIConfiguration.CustomRUSDefaultFont;
+            case EPO:
+                return EUIConfiguration.CustomEPODefaultFont;
+            case GRE:
+                return EUIConfiguration.CustomGREDefaultFont;
+            case SRP:
+            case SRB:
+                return EUIConfiguration.CustomSRBDefaultFont;
+            case THA:
+                return EUIConfiguration.CustomTHADefaultFont;
             default:
-                return Gdx.files.internal("font/Kreon-Regular.ttf");
+                return EUIConfiguration.CustomENGDefaultFont;
+        }
+    }
+
+    private static STSStringConfigItem GetFontBoldConfig(Settings.GameLanguage language)
+    {
+        switch (language)
+        {
+            case JPN:
+                return EUIConfiguration.CustomJPNBoldFont;
+            case KOR:
+                return EUIConfiguration.CustomKORBoldFont;
+            case ZHS:
+                return EUIConfiguration.CustomZHSBoldFont;
+            case ZHT:
+                return EUIConfiguration.CustomZHTBoldFont;
+            case POL:
+            case UKR:
+            case RUS:
+                return EUIConfiguration.CustomRUSBoldFont;
+            case EPO:
+                return EUIConfiguration.CustomEPOBoldFont;
+            case GRE:
+                return EUIConfiguration.CustomGREBoldFont;
+            case SRP:
+            case SRB:
+                return EUIConfiguration.CustomSRBBoldFont;
+            case THA:
+                return EUIConfiguration.CustomTHABoldFont;
+            default:
+                return EUIConfiguration.CustomENGBoldFont;
+        }
+    }
+
+    private static String GetFontDefaultPath(Settings.GameLanguage language)
+    {
+        switch (language)
+        {
+            case JPN:
+                return JPN_DEFAULT_FONT;
+            case KOR:
+                return KOR_DEFAULT_FONT;
+            case ZHS:
+                return ZHS_DEFAULT_FONT;
+            case ZHT:
+                return ZHT_DEFAULT_FONT;
+            case POL:
+            case UKR:
+            case RUS:
+                return RUS_DEFAULT_FONT;
+            case EPO:
+                return EPO_DEFAULT_FONT;
+            case GRE:
+                return EPO_DEFAULT_FONT;
+            case SRP:
+            case SRB:
+                return SRB_DEFAULT_FONT;
+            case THA:
+                return ENG_DEFAULT_FONT;
+            default:
+                return ENG_DEFAULT_FONT;
+        }
+    }
+
+    private static String GetFontBoldPath(Settings.GameLanguage language)
+    {
+        switch (language)
+        {
+            case JPN:
+                return JPN_BOLD_FONT;
+            case KOR:
+                return KOR_BOLD_FONT;
+            case ZHS:
+                return ZHS_BOLD_FONT;
+            case ZHT:
+                return ZHT_BOLD_FONT;
+            case POL:
+            case UKR:
+            case RUS:
+                return RUS_BOLD_FONT;
+            case EPO:
+                return EPO_BOLD_FONT;
+            case GRE:
+                return EPO_BOLD_FONT;
+            case SRP:
+            case SRB:
+                return SRB_BOLD_FONT;
+            case THA:
+                return ENG_BOLD_FONT;
+            default:
+                return ENG_BOLD_FONT;
         }
     }
 
     public static BitmapFont CreateFontForLanguage(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
-        FileHandle file = GetFontFileForLanguage(language);
+        FileHandle file = GetFontDefaultFile(language);
         BitmapFont preppedFont = PrepFont(GetGenerator(file), size, isLinearFiltering);
         return PrepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
+    }
+
+    public static boolean HasGlyph(BitmapFont font, char c)
+    {
+        return font.getData().hasGlyph(c);
     }
 }

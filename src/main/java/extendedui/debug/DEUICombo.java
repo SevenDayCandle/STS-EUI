@@ -29,6 +29,14 @@ public class DEUICombo<T> extends DEUIBaseT0
         return selected;
     }
 
+    public void Set(T item)
+    {
+        if (items.contains(item))
+        {
+            selected = item;
+        }
+    }
+
     public void Render()
     {
         if (ImGui.beginCombo(ID, AsLabel())) {
@@ -50,7 +58,14 @@ public class DEUICombo<T> extends DEUIBaseT0
     {
         if (selected == null)
         {
-            return "##null";
+            if (this.items.size() > 0)
+            {
+                selected = items.get(0);
+            }
+            else
+            {
+                return "##null";
+            }
         }
         return stringFunc.Invoke(selected);
     }
