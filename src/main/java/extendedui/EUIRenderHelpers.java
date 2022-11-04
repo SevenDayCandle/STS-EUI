@@ -652,7 +652,7 @@ public class EUIRenderHelpers
         Normal(GL20.GL_SRC_ALPHA, GL20.GL_ONE_MINUS_SRC_ALPHA),
         Glowing(GL20.GL_SRC_ALPHA, GL20.GL_ONE),
         Overlay(GL20.GL_DST_COLOR, GL20.GL_ONE),
-        Screen(GL20.GL_DST_COLOR, GL20.GL_ONE_MINUS_SRC_COLOR),
+        Screen(GL20.GL_ONE_MINUS_SRC_ALPHA, GL20.GL_ONE),
         Mask(GL20.GL_ONE, GL20.GL_ZERO),
         MaskBlend(GL20.GL_DST_ALPHA, GL20.GL_ZERO);
 

@@ -42,7 +42,10 @@ public class ModSettingsScreen extends AbstractScreen
 
     public static void AddModList(Category cat, ModPanel panel)
     {
-        modListCategories.putIfAbsent(cat, panel.getUIElements());
+        if (panel != null)
+        {
+            modListCategories.putIfAbsent(cat, panel.getUIElements());
+        }
     }
 
     public static void AddCategory(Category cat)
