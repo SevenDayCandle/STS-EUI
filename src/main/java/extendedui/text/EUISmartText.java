@@ -309,7 +309,18 @@ public class EUISmartText
             mainColor = baseColor;
             currentText = text;
 
-            final float fontScale = font.getScaleX();
+            float fontScale = 0;
+            try
+            {
+                fontScale = font.getScaleX();
+            }
+            catch (Exception e)
+            {
+                EUIUtils.LogError(null, "OH NOES, " + text + " with font " + font);
+                throw e;
+            }
+
+
             if (currentFont != font || currentFontScale != fontScale)
             {
                 currentFontScale = fontScale;

@@ -46,11 +46,11 @@ public class EUIFontHelper
     protected static FreeTypeFontGenerator.FreeTypeBitmapFontData data = new FreeTypeFontGenerator.FreeTypeBitmapFontData();
     protected static HashMap<String, FreeTypeFontGenerator> generators = new HashMap<>();
     protected static FileHandle mainFont = null;
-    protected static BitmapFont cardDescFont;
-    protected static BitmapFont cardDescFont_L;
-    protected static BitmapFont cardTipBodyFont;
-    protected static BitmapFont cardTipTitleFont;
-    protected static BitmapFont cardTitleFont;
+    public static BitmapFont cardDescFont;
+    public static BitmapFont cardDescFont_L;
+    public static BitmapFont cardTipBodyFont;
+    public static BitmapFont cardTipTitleFont;
+    public static BitmapFont cardTitleFont;
 
     public static BitmapFont CardTitleFont_Small;
     public static BitmapFont CardTitleFont_Normal;

@@ -684,10 +684,11 @@ public class EUITooltip
     }
 
     public float Height() {
+        BitmapFont descFont = GetDescriptionFont();
         String desc = Description();
-        final float textHeight = EUISmartText.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-        final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
-        final float subHeaderTextHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
+        final float textHeight = EUISmartText.GetSmartHeight(descFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+        final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
+        final float subHeaderTextHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
         return (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
     }
 
@@ -696,15 +697,17 @@ public class EUITooltip
         if (EUIHotkeys.cycle.isJustPressed()) {
             CycleDescription();
         }
-        if (descriptions.size() > 1 && (subText == null || subText.text.isEmpty())) {
+        if (descriptions.size() > 1 && (subText == null || subText.text == null || subText.text.isEmpty())) {
             UpdateCycleText();
         }
 
+        BitmapFont descFont = GetDescriptionFont();
+        BitmapFont hFont = GetHeaderFont();
         String desc = Description();
 
-        final float textHeight = EUISmartText.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-        final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
-        final float subHeaderTextHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
+        final float textHeight = EUISmartText.GetSmartHeight(descFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+        final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
+        final float subHeaderTextHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
         final float h = (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
 
         if (renderBg)
@@ -723,41 +726,51 @@ public class EUITooltip
         {
             // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
             renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, 28 * iconMulti_W, 28 * iconMulti_H);
-            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+            FontHelper.renderFontLeftTopAligned(sb, hFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
         else
         {
-            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+            FontHelper.renderFontLeftTopAligned(sb, hFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
 
         if (!StringUtils.isEmpty(desc))
         {
             if (provider != null && StringUtils.isNotEmpty(id) && !inHand && index >= 0)
             {
-                FontHelper.renderFontRightTopAligned(sb, descriptionFont, "Alt+" + (index + 1), x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, Settings.PURPLE_COLOR);
+                FontHelper.renderFontRightTopAligned(sb, descFont, "Alt+" + (index + 1), x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, Settings.PURPLE_COLOR);
             }
             else if (subText != null)
             {
-                FontHelper.renderFontRightTopAligned(sb, descriptionFont, subText.text, x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, subText.color);
+                FontHelper.renderFontRightTopAligned(sb, descFont, subText.text, x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, subText.color);
             }
 
             float yOff = y + BODY_OFFSET_Y;
             if (modName != null) {
-                FontHelper.renderFontLeftTopAligned(sb, descriptionFont, modName.text, x + TEXT_OFFSET_X, yOff, modName.color);
+                FontHelper.renderFontLeftTopAligned(sb, descFont, modName.text, x + TEXT_OFFSET_X, yOff, modName.color);
                 yOff += modTextHeight;
             }
             if (subHeader != null) {
-                FontHelper.renderFontLeftTopAligned(sb, descriptionFont, subHeader.text, x + TEXT_OFFSET_X, yOff, subHeader.color);
+                FontHelper.renderFontLeftTopAligned(sb, descFont, subHeader.text, x + TEXT_OFFSET_X, yOff, subHeader.color);
                 yOff += subHeaderTextHeight;
             }
 
             if (!HideDescription())
             {
-                EUISmartText.Write(sb, descriptionFont, desc, x + TEXT_OFFSET_X, yOff, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+                EUISmartText.Write(sb, descFont, desc, x + TEXT_OFFSET_X, yOff, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
             }
         }
 
         return h;
+    }
+
+    protected BitmapFont GetDescriptionFont()
+    {
+        return descriptionFont != null ? descriptionFont : EUIFontHelper.CardTooltipFont;
+    }
+
+    protected BitmapFont GetHeaderFont()
+    {
+        return headerFont != null ? headerFont : EUIFontHelper.CardTooltipTitleFont_Normal;
     }
 
     public EUITooltip SetChild(EUITooltip other)
