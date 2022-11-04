@@ -1,4 +1,4 @@
-# STS Compendium Filters + Effekseer
+# EUI
 
 This mod (formerly known as STS-Effekseer) adds the following features:
 
