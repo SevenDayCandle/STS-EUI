@@ -28,14 +28,14 @@ import java.util.HashMap;
 public class ModSettingsScreen extends AbstractScreen
 {
     protected static final float OPTION_SIZE = Scale(40);
-    protected static final float OFFSET_SIZE = Scale(420);
+    protected static final float OFFSET_SIZE = Scale(640);
     protected static final float COLOR_BUTTON_SIZE = Scale(51);
     protected static final TextureCache modPanel = new TextureCache("img/ModPanelBg.png");
     protected static final HashMap<Category, ArrayList<IUIElement>> modListCategories = new HashMap<>();
     protected static final HashMap<Category, ArrayList<IUIElement>> configCategories = new HashMap<>();
     protected static final HashMap<Category, Float> offsets = new HashMap<>();
     protected static final AdvancedHitbox hb = new AdvancedHitbox(ScreenW(0.5f) - Scale(700), Settings.OPTION_Y - Scale(400), Scale(1400), Scale(800));
-    protected final EUIButtonList buttons = new EUIButtonList(7, ScreenW(0.08f), hb.y + Scale(800), Scale(200), Scale(42)).SetFontScale(0.6f);
+    protected final EUIButtonList buttons = new EUIButtonList(7, ScreenW(0.077f), hb.y + Scale(800), Scale(205), Scale(42)).SetFontScale(0.6f);
     public final MenuCancelButton button;
     private final EUIImage background;
     private Category activeMod;
@@ -71,7 +71,7 @@ public class ModSettingsScreen extends AbstractScreen
         float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
         if (list != null)
         {
-            ModSettingsPathSelector selector = new ModSettingsPathSelector(new RelativeHitbox(hb, OPTION_SIZE * 8, OPTION_SIZE, OPTION_SIZE * 6f, offY, false), option, label);
+            ModSettingsPathSelector selector = new ModSettingsPathSelector(new RelativeHitbox(hb, OPTION_SIZE * 8, OPTION_SIZE, OPTION_SIZE * 7f, offY, false), option, label);
             if (extensions.length > 0)
             {
                 selector.SetFileFilters(extensions);

@@ -156,6 +156,7 @@ public class EUIFileSelector extends EUIHoverable
 
             JFrame f = new JFrame();
             f.toFront();
+            f.setAlwaysOnTop(true);
             f.setLocationRelativeTo(null);
             f.setPreferredSize(new Dimension(Settings.WIDTH / 2, Settings.HEIGHT / 2));
             fc.setPreferredSize(f.getPreferredSize());

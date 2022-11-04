@@ -62,7 +62,8 @@
 	  "Extra Settings",
 	  "Effekseer",
 	  "Fonts",
-	  "Requires restart to take effect"
+	  "Requires restart",
+	  "This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well."
 	]
   },
   "extendedui:ui_pool":

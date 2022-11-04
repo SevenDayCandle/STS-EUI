@@ -103,7 +103,7 @@ public class EUIConfiguration
     {
 
         // Add EUI options
-        EUITooltip restartTip = new EUITooltip("",EUIRM.Strings.Misc_RestartRequired);
+        EUITooltip restartTip = new EUITooltip(EUIRM.Strings.Misc_RestartRequired).SetHeaderFont(EUIFontHelper.CardDescriptionFont_Normal);
         EffekseerCategory = new ModSettingsScreen.Category(EUIRM.Strings.Misc_EffekseerSettings);
         FontCategory = new ModSettingsScreen.Category(EUIRM.Strings.Misc_FontSettings);
         ModSettingsScreen.AddCategory(EffekseerCategory);
@@ -112,7 +112,7 @@ public class EUIConfiguration
         MakeModToggle(EffekseerCategory, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart);
         MakeModToggle(EffekseerCategory, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart);
         MakeModToggle(FontCategory, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts).SetTooltip(restartTip);
-        MakeModToggle(FontCategory, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont).SetTooltip(restartTip);
+        MakeModToggle(FontCategory, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont).SetTooltip(new EUITooltip(EUIRM.Strings.Misc_FontDescription + " | " + EUIRM.Strings.Misc_RestartRequired));
         ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, CardDescFont, EUIRM.Strings.Config_CardDescFont, FONT_EXTS).SetTooltip(restartTip);
         ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, CardTitleFont, EUIRM.Strings.Config_CardTitleFont, FONT_EXTS).SetTooltip(restartTip);
         ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, TipDescFont, EUIRM.Strings.Config_TipDescFont, FONT_EXTS).SetTooltip(restartTip);
@@ -129,7 +129,7 @@ public class EUIConfiguration
         yPos = AddToggle(panel, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart, yPos);
         yPos = AddToggle(panel, ShowModSettings, EUIRM.Strings.Config_ShowModSettings, yPos);
         yPos = AddToggle(panel, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts, yPos, EUIRM.Strings.Misc_RestartRequired);
-        yPos = AddToggle(panel, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont, yPos, EUIRM.Strings.Misc_RestartRequired);
+        yPos = AddToggle(panel, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont, yPos, EUIRM.Strings.Misc_FontDescription + " NL NL " + EUIRM.Strings.Misc_RestartRequired);
 
         yPos = (BASE_OPTION_OFFSET_Y + yPos) / 2;
         ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);

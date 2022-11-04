@@ -76,6 +76,8 @@ public class EUITooltip
     private static final Vector2 genericTipPos = new Vector2(0, 0);
 
     public ArrayList<String> descriptions = new ArrayList<>();
+    public BitmapFont headerFont = EUIFontHelper.CardTooltipTitleFont_Normal;
+    public BitmapFont descriptionFont = EUIFontHelper.CardTooltipFont;
     public Boolean hideDescription = null;
     public Color backgroundColor;
     public ColoredString modName;
@@ -682,7 +684,6 @@ public class EUITooltip
     }
 
     public float Height() {
-        BitmapFont descriptionFont = GetTooltipBodyFont();
         String desc = Description();
         final float textHeight = EUISmartText.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
         final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
@@ -699,8 +700,6 @@ public class EUITooltip
             UpdateCycleText();
         }
 
-        BitmapFont descriptionFont = GetTooltipBodyFont();
-        BitmapFont headerFont = GetTooltipTitleFont();
         String desc = Description();
 
         final float textHeight = EUISmartText.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
@@ -759,16 +758,6 @@ public class EUITooltip
         }
 
         return h;
-    }
-
-    protected BitmapFont GetTooltipBodyFont()
-    {
-        return provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
-    }
-
-    protected BitmapFont GetTooltipTitleFont()
-    {
-        return provider == null ? FontHelper.tipHeaderFont : EUIFontHelper.CardTooltipTitleFont_Normal;
     }
 
     public EUITooltip SetChild(EUITooltip other)
@@ -923,6 +912,25 @@ public class EUITooltip
         currentDesc = 0;
         UpdateCycleText();
 
+        return this;
+    }
+
+    public EUITooltip SetFonts(BitmapFont headerFont, BitmapFont descriptionFont)
+    {
+        this.headerFont = headerFont;
+        this.descriptionFont = descriptionFont;
+        return this;
+    }
+
+    public EUITooltip SetHeaderFont(BitmapFont headerFont)
+    {
+        this.headerFont = headerFont;
+        return this;
+    }
+
+    public EUITooltip SetDescriptionFont(BitmapFont descriptionFont)
+    {
+        this.descriptionFont = descriptionFont;
         return this;
     }
 

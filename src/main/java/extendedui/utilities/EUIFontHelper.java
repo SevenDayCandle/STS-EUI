@@ -65,6 +65,8 @@ public class EUIFontHelper
     public static BitmapFont CardIconFont_Large;
     public static BitmapFont CardIconFont_VeryLarge;
 
+    /* Because EUIFontHelper creates its fonts separately from the base game, mods that alter the game's font will not affect it.
+    * Thus, EUIFontHelper requires its own version of a font configuration to allow users to make changes to them */
     public static void Initialize()
     {
         boolean useSeparateFonts = EUIConfiguration.UseSeparateFonts.Get();

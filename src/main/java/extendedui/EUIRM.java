@@ -158,6 +158,7 @@ public class EUIRM
         public final String Misc_EffekseerSettings = StringsMisc.TEXT[4];
         public final String Misc_FontSettings = StringsMisc.TEXT[5];
         public final String Misc_RestartRequired = StringsMisc.TEXT[6];
+        public final String Misc_FontDescription = StringsMisc.TEXT[7];
 
         public final String UIPool_ViewPool = StringsUIPool.TEXT[0];
         public final String UIPool_ViewPoolDescription = StringsUIPool.TEXT[1];
