@@ -62,7 +62,7 @@
 	  "Extra Settings",
 	  "Effekseer",
 	  "Fonts",
-	  "Font settings take effect after a game restart"
+	  "Requires restart to take effect"
 	]
   },
   "extendedui:ui_pool":

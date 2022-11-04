@@ -17,6 +17,7 @@ import extendedui.ui.controls.EUILabel;
 import extendedui.ui.settings.ModSettingsPathSelector;
 import extendedui.ui.settings.ModSettingsScreen;
 import extendedui.ui.settings.ModSettingsToggle;
+import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
 import java.io.IOException;
@@ -28,7 +29,7 @@ import java.util.HashSet;
 public class EUIConfiguration
 {
     private static final int BASE_OPTION_OFFSET_X = 400;
-    private static final int BASE_OPTION_OFFSET_X2 = 500;
+    private static final int BASE_OPTION_OFFSET_X2 = 580;
     private static final int BASE_OPTION_OFFSET_Y = 700;
     private static final int BASE_OPTION_OPTION_HEIGHT = 32;
     public static final int BASE_SPRITES_DEFAULT = 6000;
@@ -102,6 +103,7 @@ public class EUIConfiguration
     {
 
         // Add EUI options
+        EUITooltip restartTip = new EUITooltip("",EUIRM.Strings.Misc_RestartRequired);
         EffekseerCategory = new ModSettingsScreen.Category(EUIRM.Strings.Misc_EffekseerSettings);
         FontCategory = new ModSettingsScreen.Category(EUIRM.Strings.Misc_FontSettings);
         ModSettingsScreen.AddCategory(EffekseerCategory);
@@ -109,13 +111,12 @@ public class EUIConfiguration
         MakeModToggle(EffekseerCategory, DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer);
         MakeModToggle(EffekseerCategory, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart);
         MakeModToggle(EffekseerCategory, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart);
-        EUILabel disclaimer = MakeModLabel(FontCategory, EUIRM.Strings.Misc_FontSettingDescription, EUIFontHelper.CardDescriptionFont_Normal);
-        MakeModToggle(FontCategory, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts);
-        MakeModToggle(FontCategory, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont);
-        ModSettingsPathSelector cardDescFontSelector = MakeModPathSelection(FontCategory, CardDescFont, EUIRM.Strings.Config_CardDescFont, FONT_EXTS);
-        ModSettingsPathSelector cardTitleFontSelector = MakeModPathSelection(FontCategory, CardTitleFont, EUIRM.Strings.Config_CardTitleFont, FONT_EXTS);
-        ModSettingsPathSelector tipDescFontSelector = MakeModPathSelection(FontCategory, TipDescFont, EUIRM.Strings.Config_TipDescFont, FONT_EXTS);
-        ModSettingsPathSelector tipTitleFontSelector = MakeModPathSelection(FontCategory, TipTitleFont, EUIRM.Strings.Config_TipTitleFont, FONT_EXTS);
+        MakeModToggle(FontCategory, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts).SetTooltip(restartTip);
+        MakeModToggle(FontCategory, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont).SetTooltip(restartTip);
+        ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, CardDescFont, EUIRM.Strings.Config_CardDescFont, FONT_EXTS).SetTooltip(restartTip);
+        ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, CardTitleFont, EUIRM.Strings.Config_CardTitleFont, FONT_EXTS).SetTooltip(restartTip);
+        ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, TipDescFont, EUIRM.Strings.Config_TipDescFont, FONT_EXTS).SetTooltip(restartTip);
+        ModSettingsPathSelector tipTitleFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, TipTitleFont, EUIRM.Strings.Config_TipTitleFont, FONT_EXTS).SetTooltip(restartTip);
 
 
         // Add basemod options
@@ -127,12 +128,10 @@ public class EUIConfiguration
         yPos = AddToggle(panel, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart, yPos);
         yPos = AddToggle(panel, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart, yPos);
         yPos = AddToggle(panel, ShowModSettings, EUIRM.Strings.Config_ShowModSettings, yPos);
-        yPos = AddToggle(panel, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts, yPos);
-        yPos = AddToggle(panel, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont, yPos);
+        yPos = AddToggle(panel, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts, yPos, EUIRM.Strings.Misc_RestartRequired);
+        yPos = AddToggle(panel, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont, yPos, EUIRM.Strings.Misc_RestartRequired);
 
         yPos = (BASE_OPTION_OFFSET_Y + yPos) / 2;
-
-        yPos = AddGenericElement(panel, disclaimer.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos), yPos);
         ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = AddGenericElement(panel, cardDescFontSelector2, yPos);
         ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
@@ -195,7 +194,11 @@ public class EUIConfiguration
     }
 
     protected static int AddToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {
-        panel.addUIElement(new ModLabeledToggleButton(label, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.CardDescriptionFont_Normal, option.Get(), panel, (__) -> {
+        return AddToggle(panel, option, label, ypos, null);
+    }
+
+    protected static int AddToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos, String tip) {
+        panel.addUIElement(new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.CardDescriptionFont_Normal, option.Get(), panel, (__) -> {
         }, (c) -> option.Set(c.enabled, true)));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }

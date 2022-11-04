@@ -43,11 +43,12 @@ public class EUILabel extends EUIHoverable
 
     public EUILabel MakeCopy()
     {
-        return new EUILabel(font, new AdvancedHitbox(hb))
+        return (EUILabel) new EUILabel(font, new AdvancedHitbox(hb))
                 .SetAlignment(verticalRatio, horizontalRatio, smartText)
                 .SetColor(textColor)
                 .SetFont(font, fontScale)
-                .SetText(text);
+                .SetText(text)
+                .SetTooltip(tooltip);
     }
 
     public EUILabel SetText(Object content)

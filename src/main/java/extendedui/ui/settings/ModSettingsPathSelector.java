@@ -32,6 +32,7 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
     {
         ModSettingsPathSelector other = new ModSettingsPathSelector(new AdvancedHitbox(hb), Config, this.header.text);
         other.extensionFilter = new FileNameExtensionFilter(this.extensionFilter.getDescription(), this.extensionFilter.getExtensions());
+        other.tooltip = this.tooltip;
         return other;
     }
 

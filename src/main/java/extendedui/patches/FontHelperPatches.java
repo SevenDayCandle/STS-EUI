@@ -20,7 +20,7 @@ public class FontHelperPatches
     public static class FontHelperPatches_Initialize
     {
         @SpireInsertPatch(locator = MainLocator.class)
-        public static void InsertMain(FontHelper __instance)
+        public static void InsertMain()
         {
             if (EUIConfiguration.OverrideGameFont.Get())
             {
@@ -38,7 +38,7 @@ public class FontHelperPatches
         }
 
         @SpireInsertPatch(locator = BoldLocator1.class)
-        public static void InsertBold(FontHelper __instance)
+        public static void InsertBold()
         {
             if (EUIConfiguration.OverrideGameFont.Get())
             {
@@ -56,7 +56,7 @@ public class FontHelperPatches
         }
 
         @SpireInsertPatch(locator = BoldLocator2.class)
-        public static void InsertBold2(FontHelper __instance)
+        public static void InsertBold2()
         {
             if (EUIConfiguration.OverrideGameFont.Get())
             {
