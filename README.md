@@ -1,4 +1,4 @@
-# EUI
+# EUI (Compendium Filters + STSEffekseer)
 
 This mod adds the following features:
 
