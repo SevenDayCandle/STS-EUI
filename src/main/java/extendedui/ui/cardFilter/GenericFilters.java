@@ -13,8 +13,8 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.EUI;
+import extendedui.EUIUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.AdvancedHitbox;
@@ -87,7 +87,6 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         currentTotalLabel = new EUILabel(EUIFontHelper.CardTitleFont_Normal,
                 new AdvancedHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.906f, Scale(48), Scale(48)))
                 .SetFont(EUIFontHelper.CardTitleFont_Small, 1f)
-                .SetText("")
                 .SetColor(Settings.BLUE_TEXT_COLOR)
                 .SetAlignment(0.5f, 0.0f, false);
 
@@ -103,7 +102,6 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
 
         sortDirectionToggle = new EUIToggle( new AdvancedHitbox(0, 0, Scale(48), Scale(48)).SetIsPopupCompatible(true))
                 .SetTickImage(new EUIImage(EUIRM.Images.Arrow.Texture()), new EUIImage(EUIRM.Images.Arrow.Texture()).SetRotation(180f), 32)
-                .SetText("")
                 .SetOnToggle(val -> {
                     sortDesc = val;
                     RefreshButtonOrder();
@@ -349,7 +347,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         {
             return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
         }
-        return StringUtils.join(JavaUtils.Map(items, originalFunction), ", ");
+        return StringUtils.join(EUIUtils.Map(items, originalFunction), ", ");
     }
 
     // Shorthand function to be fed to all dropdown filters

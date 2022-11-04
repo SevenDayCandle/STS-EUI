@@ -73,11 +73,11 @@ public class EUIRM
         else {
             if (suppressError)
             {
-                JavaUtils.LogInfoIfDebug(EUIRM.class, "Texture does not exist: " + file.path());
+                EUIUtils.LogInfoIfDebug(EUIRM.class, "Texture does not exist: " + file.path());
             }
             else
             {
-                JavaUtils.LogError(EUIRM.class, "Texture does not exist: " + file.path());
+                EUIUtils.LogError(EUIRM.class, "Texture does not exist: " + file.path());
             }
 
         }
@@ -103,6 +103,7 @@ public class EUIRM
         public final TextureCache CardPool_Pride              = new TextureCache("images/extendedui/ui/CardPool2.png");
         public final TextureCache Divider                     = new TextureCache("images/extendedui/ui/Divider.png");
         public final TextureCache Draggable                   = new TextureCache("images/extendedui/ui/Draggable.png");
+        public final TextureCache FileSelectButton           = new TextureCache("images/extendedui/ui/FileSelectButton.png");
         public final TextureCache FullSquare                  = new TextureCache("images/extendedui/ui/FullSquare.png");
         public final TextureCache HexagonalButton             = new TextureCache("images/extendedui/ui/HexagonalButton.png");
         public final TextureCache HexagonalButtonBorder       = new TextureCache("images/extendedui/ui/HexagonalButtonBorder.png");
@@ -110,7 +111,6 @@ public class EUIRM
         public final TextureCache LongButton                  = new TextureCache("images/extendedui/ui/LongButton.png");
         public final TextureCache LongButtonBorder            = new TextureCache("images/extendedui/ui/LongButtonBorder.png");
         public final TextureCache Minus                       = new TextureCache("images/extendedui/ui/Minus.png");
-        public final TextureCache ModSettingsButton           = new TextureCache("images/extendedui/ui/ModSettingsButton.png");
         public final TextureCache Panel                       = new TextureCache("images/extendedui/ui/Panel.png");
         public final TextureCache Panel_Elliptical            = new TextureCache("images/extendedui/ui/Panel_Elliptical.png");
         public final TextureCache Panel_Elliptical_Half_H     = new TextureCache("images/extendedui/ui/Panel_Elliptical_Half_H.png");
@@ -136,6 +136,16 @@ public class EUIRM
         public final String Config_DisableEffekseer = StringsConfig.TEXT[1];
         public final String Config_FlushOnGameStart = StringsConfig.TEXT[2];
         public final String Config_FlushOnRoomStart = StringsConfig.TEXT[3];
+        public final String Config_ShowModSettings = StringsConfig.TEXT[4];
+        public final String Config_UseSeparateFonts = StringsConfig.TEXT[5];
+        public final String Config_OverrideGameFont = StringsConfig.TEXT[6];
+        public final String Config_MainFont = StringsConfig.TEXT[7];
+        public final String Config_CardDescFont = StringsConfig.TEXT[8];
+        public final String Config_CardTitleFont = StringsConfig.TEXT[9];
+        public final String Config_TipDescFont = StringsConfig.TEXT[10];
+        public final String Config_TipTitleFont = StringsConfig.TEXT[11];
+        //public final String Config_BannerFont = StringsConfig.TEXT[12];
+        //public final String Config_ResetTooltips = StringsConfig.TEXT[13];
 
         public final String Hotkey_Cycle = StringsHotkeys.TEXT[0];
         public final String Hotkey_OpenCardPool = StringsHotkeys.TEXT[1];
@@ -144,7 +154,10 @@ public class EUIRM
         public final String Misc_KeyToCycle = StringsMisc.TEXT[0];
         public final String Misc_TypeToSearch = StringsMisc.TEXT[1];
         public final String Misc_SortByCount = StringsMisc.TEXT[2];
-        public final String Misc_ModSettings = StringsMisc.TEXT[3];
+        public final String Misc_ExtraSettings = StringsMisc.TEXT[3];
+        public final String Misc_EffekseerSettings = StringsMisc.TEXT[4];
+        public final String Misc_FontSettings = StringsMisc.TEXT[5];
+        public final String Misc_FontSettingDescription = StringsMisc.TEXT[6];
 
         public final String UIPool_ViewPool = StringsUIPool.TEXT[0];
         public final String UIPool_ViewPoolDescription = StringsUIPool.TEXT[1];
@@ -168,99 +181,99 @@ public class EUIRM
         public final String UI_Unseen = StringsUIFilter.TEXT[13];
 
         public final String KeyToCycle(String keyName) {
-            return JavaUtils.Format(Misc_KeyToCycle, keyName);
+            return EUIUtils.Format(Misc_KeyToCycle, keyName);
         }
         public final String SortBy(String item) {
-            return JavaUtils.Format(Misc_SortByCount, item);
+            return EUIUtils.Format(Misc_SortByCount, item);
         }
 
         // e.g. English: Red Card -> 0 1, Spanish: Carta roja -> 1 0
         public final String AdjNoun(Object adj, Object noun) {
-            return JavaUtils.Format(StringsGrammar.TEXT[0], adj, noun);
+            return EUIUtils.Format(StringsGrammar.TEXT[0], adj, noun);
         }
 
         // e.g. English: Two Cards -> 0 1, Spanish: Dos cartas -> 0 1
         public final String NumNoun(Object verb, Object noun) {
-            return JavaUtils.Format(StringsGrammar.TEXT[1], verb, noun);
+            return EUIUtils.Format(StringsGrammar.TEXT[1], verb, noun);
         }
 
         // e.g. English: Discard Cards -> 0 1, Spanish: Descarta cartas -> 0 1
         public final String VerbNoun(Object verb, Object noun) {
-            return JavaUtils.Format(StringsGrammar.TEXT[2], verb, noun);
+            return EUIUtils.Format(StringsGrammar.TEXT[2], verb, noun);
         }
 
         // e.g. English: Cards discarded -> 0 1, Spanish: Cartas descartada -> 0 1
         public final String NounVerb(Object verb, Object noun) {
-            return JavaUtils.Format(StringsGrammar.TEXT[3], verb, noun);
+            return EUIUtils.Format(StringsGrammar.TEXT[3], verb, noun);
         }
 
         // e.g. English: Card #2 -> 0 1, Spanish: Carta #2 -> 0 1
         public final String Generic2(Object noun, Object number) {
-            return JavaUtils.Format(StringsGrammar.TEXT[4], noun, number);
+            return EUIUtils.Format(StringsGrammar.TEXT[4], noun, number);
         }
 
         // e.g. English: Two Red Cards -> 0 1 2, Spanish: Dos Cartas rojas -> 0 2 1
         public final String NumAdjNoun(Object num, Object adj, Object noun) {
-            return JavaUtils.Format(StringsGrammar.TEXT[5], num, adj, noun);
+            return EUIUtils.Format(StringsGrammar.TEXT[5], num, adj, noun);
         }
 
         // e.g. English: Two Cards In Hand, Spanish: Dos cartas en la mano
         public final String NumNounPlace(Object num, Object noun, Object place) {
-            return JavaUtils.Format(StringsGrammar.TEXT[6], num, noun, place);
+            return EUIUtils.Format(StringsGrammar.TEXT[6], num, noun, place);
         }
 
         // e.g. English: Discard Red Cards, Spanish: Descarta cartas rojas
         public final String VerbAdjNoun(Object verb, Object adj, Object noun) {
-            return JavaUtils.Format(StringsGrammar.TEXT[7], verb, adj, noun);
+            return EUIUtils.Format(StringsGrammar.TEXT[7], verb, adj, noun);
         }
 
         // e.g. English: Discard Two Cards, Spanish: Descarta dos cartas
         public final String VerbNumNoun(Object verb, Object num, Object noun) {
-            return JavaUtils.Format(StringsGrammar.TEXT[8], verb, num, noun);
+            return EUIUtils.Format(StringsGrammar.TEXT[8], verb, num, noun);
         }
 
         // e.g. English: Discard the Cards Recklessly -> 0 1 2, Spanish: Descarta imprudentemente las cartas -> 0 2 1
         public final String VerbNounAdv(Object verb, Object adj, Object noun) {
-            return JavaUtils.Format(StringsGrammar.TEXT[9], verb, adj, noun);
+            return EUIUtils.Format(StringsGrammar.TEXT[9], verb, adj, noun);
         }
 
         // e.g. English: Two Red Cards In Hand, Spanish: Dos cartas rojas en la mano
         public final String NumAdjNounPlace(Object num, Object adj, Object noun, Object place) {
-            return JavaUtils.Format(StringsGrammar.TEXT[10], num, adj, noun, place);
+            return EUIUtils.Format(StringsGrammar.TEXT[10], num, adj, noun, place);
         }
 
         // e.g. English: Discard Two Cards In Hand, Spanish: Descarta dos cartas en la mano
         public final String VerbNumNounPlace(Object num, Object adj, Object noun, Object place) {
-            return JavaUtils.Format(StringsGrammar.TEXT[11], num, adj, noun, place);
+            return EUIUtils.Format(StringsGrammar.TEXT[11], num, adj, noun, place);
         }
 
         // e.g. English: Discard Two Red Cards In Hand, Spanish: Descarta dos cartas rojas en la mano
         public final String VerbNumAdjNounPlace(Object verb, Object num, Object adj, Object noun, Object place) {
-            return JavaUtils.Format(StringsGrammar.TEXT[12], verb, num, adj, noun, place);
+            return EUIUtils.Format(StringsGrammar.TEXT[12], verb, num, adj, noun, place);
         }
 
         // e.g. English: O1 and O2, Spanish: O1 y O2
-        public final String And(Object obj1, Object obj2) {return JavaUtils.Format(StringsGrammar.TEXT[13], obj1, obj2);}
+        public final String And(Object obj1, Object obj2) {return EUIUtils.Format(StringsGrammar.TEXT[13], obj1, obj2);}
 
         // e.g. English: O1 or O2, Spanish: O1 o O2
-        public final String Or(Object obj1, Object obj2) {return JavaUtils.Format(StringsGrammar.TEXT[14], obj1, obj2);}
+        public final String Or(Object obj1, Object obj2) {return EUIUtils.Format(StringsGrammar.TEXT[14], obj1, obj2);}
 
         // e.g. English: Not O1, Spanish: No 01
-        public final String Not(Object obj1) {return JavaUtils.Format(StringsGrammar.TEXT[15], obj1);}
+        public final String Not(Object obj1) {return EUIUtils.Format(StringsGrammar.TEXT[15], obj1);}
 
         // e.g. English: Card -> Cards, Spanish: Carta -> Cartas
         public final String Plural(Object obj) {
             String base = String.valueOf(obj);
-            return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[0], obj);
+            return EUIUtils.Format(StringsGrammar.EXTRA_TEXT[0], obj);
         }
 
         // e.g. English: Card -> Card(s)
-        public final String PluralC(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[1], obj);}
+        public final String PluralC(Object obj) {return EUIUtils.Format(StringsGrammar.EXTRA_TEXT[1], obj);}
 
         // e.g. English: Discard -> Discarded, Spanish: Descarta -> Descartada
-        public final String Past(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[2], obj);}
+        public final String Past(Object obj) {return EUIUtils.Format(StringsGrammar.EXTRA_TEXT[2], obj);}
 
-        public final String Present(Object obj) {return JavaUtils.Format(StringsGrammar.EXTRA_TEXT[3], obj);}
+        public final String Present(Object obj) {return EUIUtils.Format(StringsGrammar.EXTRA_TEXT[3], obj);}
 
         public final String JoinWithAnd(List<String> values) {
             return JoinWith(this::And, values);

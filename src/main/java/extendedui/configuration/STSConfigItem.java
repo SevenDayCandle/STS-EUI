@@ -1,11 +1,11 @@
 package extendedui.configuration;
 
-import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
-import extendedui.JavaUtils;
-import extendedui.utilities.ClassUtils;
+import extendedui.EUIUtils;
+import extendedui.interfaces.listeners.STSConfigListener;
 
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
@@ -13,6 +13,7 @@ import java.util.HashMap;
 public class STSConfigItem<T>
 {
     protected static final HashMap<Class<?>,Method> METHOD_HASH_MAP = new HashMap<>();
+    protected final ArrayList<STSConfigListener<T>> Listeners = new ArrayList<>();
 
     public final String Key;
     protected SpireConfig Config;
@@ -44,7 +45,25 @@ public class STSConfigItem<T>
         this.Value = Value;
         this.Config.setString(this.Key, Serialize());
         Save();
+        for (STSConfigListener<T> listener : Listeners)
+        {
+            listener.OnChange(Value);
+        }
         return Value;
+    }
+
+    public final void AddListener(STSConfigListener<T> listener)
+    {
+        if (!this.Listeners.contains(listener))
+        {
+            this.Listeners.add(listener);
+            listener.OnInitialize(Value);
+        }
+    }
+
+    public final void RemoveListener(STSConfigListener<T> listener)
+    {
+        this.Listeners.remove(listener);
     }
 
     public final Class<?> GetConfigClass()
@@ -64,7 +83,7 @@ public class STSConfigItem<T>
         try {
             return (T) GetMethod().invoke(null, raw);
         } catch (Exception e) {
-            JavaUtils.LogError(this, "Failed to load preference for " + Key + ", value was: " + raw);
+            EUIUtils.LogError(this, "Failed to load preference for " + Key + ", value was: " + raw);
             e.printStackTrace();
         }
         return DefaultValue;

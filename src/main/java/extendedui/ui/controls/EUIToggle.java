@@ -16,6 +16,7 @@ import extendedui.EUI;
 import extendedui.EUIRenderHelpers;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.utilities.EUIFontHelper;
 
 public class EUIToggle extends EUIHoverable
 {
@@ -29,7 +30,7 @@ public class EUIToggle extends EUIHoverable
     public EUIImage backgroundImage = null;
     public Color defaultColor = Settings.CREAM_COLOR.cpy();
     public Color hoveredColor = Settings.GOLD_COLOR.cpy();
-    public BitmapFont font = FontHelper.topPanelInfoFont;
+    public BitmapFont font = EUIFontHelper.CardTooltipTitleFont_Large;
     public float fontSize = 1;
     public float tickSize = 48;
     public ActionT1<Boolean> onToggle = null;

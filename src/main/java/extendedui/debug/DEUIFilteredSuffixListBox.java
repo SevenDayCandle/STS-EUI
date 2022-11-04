@@ -2,7 +2,6 @@ package extendedui.debug;
 
 import eatyourbeets.interfaces.delegates.FuncT1;
 import imgui.ImGui;
-import imgui.ImVec2;
 
 import java.util.ArrayList;
 

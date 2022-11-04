@@ -1,6 +1,6 @@
 package extendedui.configuration;
 
-import extendedui.JavaUtils;
+import extendedui.EUIUtils;
 
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
@@ -16,6 +16,6 @@ public class STSStringConfigItem extends STSConfigItem<String>
     }
 
     protected String Serialize() {
-        return JavaUtils.Serialize(Value);
+        return Value;
     }
 }

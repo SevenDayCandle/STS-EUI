@@ -1,6 +1,5 @@
 package extendedui.debug;
 
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import imgui.ImGui;

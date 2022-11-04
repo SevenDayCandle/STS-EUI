@@ -20,7 +20,6 @@ import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import eatyourbeets.interfaces.delegates.ActionT1;
-import extendedui.debug.DEUITableBase;
 import extendedui.patches.EUIKeyword;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.EUIBase;
@@ -33,6 +32,7 @@ import extendedui.ui.settings.ModSettingsScreen;
 import extendedui.ui.tooltips.EUITooltip;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.swing.*;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -81,6 +81,16 @@ public class EUI
 
     public static void Initialize()
     {
+        // Set UI theming for file selector
+        try
+        {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
         // Save custom mod color names
         for (AbstractPlayer p : CardCrawlGame.characterManager.getAllCharacters()) {
             EUIGameUtils.CustomColorNames.put(p.getCardColor(), p.getLocalizedCharacterName());
@@ -124,7 +134,7 @@ public class EUI
 
     // Add CommonKeywordIcon pictures to keywords
     public static void RegisterKeywordIcons() {
-        for (EUITooltip tooltip : JavaUtils.Map(EUITooltip.GetEntries(), Map.Entry::getValue)) {
+        for (EUITooltip tooltip : EUIUtils.Map(EUITooltip.GetEntries(), Map.Entry::getValue)) {
             String title = tooltip.title;
             // Add CommonKeywordIcon pictures to keywords
             if (title.equals(GameDictionary.INNATE.NAMES[0])) {
@@ -170,8 +180,8 @@ public class EUI
                 try
                 {
                     final com.megacrit.cardcrawl.localization.Keyword k = (Keyword) field.get(null);
-                    String id = JavaUtils.Capitalize(field.getName());
-                    TryRegisterTooltip(JavaUtils.Capitalize(id), k.DESCRIPTION, k.NAMES);
+                    String id = EUIUtils.Capitalize(field.getName());
+                    TryRegisterTooltip(EUIUtils.Capitalize(id), k.DESCRIPTION, k.NAMES);
                 }
                 catch (IllegalAccessException ex)
                 {
@@ -190,7 +200,7 @@ public class EUI
     public static EUITooltip TryRegisterTooltip(String id, String title, String description, String[] names) {
         EUITooltip tooltip = EUITooltip.FindByID(id);
         if (tooltip == null) {
-            String newTitle = JavaUtils.Capitalize(title);
+            String newTitle = EUIUtils.Capitalize(title);
             tooltip = new EUITooltip(newTitle, description);
             EUITooltip.RegisterID(id, tooltip);
             for (String subName : names) {

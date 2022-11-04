@@ -1,4 +1,4 @@
-package extendedui.patches;
+package extendedui.patches.game;
 
 import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;

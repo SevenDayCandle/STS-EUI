@@ -6,7 +6,15 @@
 	  "Disable Effekseer Effects",
 	  "Flush Effekseer Cache when Starting a Run",
 	  "Flush Effekseer Cache when Entering a New Room",
-	  "Reset Hidden Tooltips"
+	  "Show All Mod Settings in Extra Settings (Warning: unstable)",
+	  "Use Separate Fonts",
+	  "Override Vanilla Fonts",
+	  "Main Font",
+	  "Card Description Font",
+	  "Card Title Font",
+	  "Tip Description Font",
+	  "Tip Title Font",
+	  "Banner Font"
 	]
   },
   "extendedui:grammar":
@@ -51,8 +59,10 @@
 	  "{0} to cycle",
 	  "Type to Search",
 	  "Sort by {0}",
-	  "Mod Settings",
-	  "Toggle mod-specific settings"
+	  "Extra Settings",
+	  "Effekseer",
+	  "Fonts",
+	  "Font settings take effect after a game restart"
 	]
   },
   "extendedui:ui_pool":

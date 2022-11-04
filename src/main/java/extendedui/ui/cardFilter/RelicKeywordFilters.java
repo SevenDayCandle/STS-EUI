@@ -16,8 +16,8 @@ import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
+import extendedui.EUIUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUIRelicGrid;
@@ -240,7 +240,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
     public ArrayList<EUITooltip> GetAllTooltips(AbstractRelic c)
     {
         ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
-        TooltipProvider eC = JavaUtils.SafeCast(c, TooltipProvider.class);
+        TooltipProvider eC = EUIUtils.SafeCast(c, TooltipProvider.class);
         if (eC != null)
         {
             eC.GenerateDynamicTooltips(dynamicTooltips);
@@ -268,12 +268,12 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
 
     public ArrayList<AbstractRelic> ApplyFilters(ArrayList<AbstractRelic> input)
     {
-        return JavaUtils.Filter(input, this::EvaluateRelic);
+        return EUIUtils.Filter(input, this::EvaluateRelic);
     }
 
     public ArrayList<EUIRelicGrid.RelicInfo> ApplyInfoFilters(ArrayList<EUIRelicGrid.RelicInfo> input)
     {
-        return JavaUtils.Filter(input, info -> EvaluateRelic(info.relic));
+        return EUIUtils.Filter(input, info -> EvaluateRelic(info.relic));
     }
 
     protected boolean EvaluateRelic(AbstractRelic c)
@@ -310,7 +310,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         }
 
         //Negate Tooltips check
-        if (!CurrentNegateFilters.isEmpty() && (JavaUtils.Any(GetAllTooltips(c), CurrentNegateFilters::contains)))
+        if (!CurrentNegateFilters.isEmpty() && (EUIUtils.Any(GetAllTooltips(c), CurrentNegateFilters::contains)))
         {
             return false;
         }

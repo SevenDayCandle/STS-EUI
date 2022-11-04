@@ -8,7 +8,6 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
@@ -57,7 +56,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
         });
         upgradeToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .SetPosition(1450.0F * Settings.xScale, Settings.HEIGHT * 0.8f)
-                .SetFont(FontHelper.topPanelInfoFont, 1f)
+                .SetFont(EUIFontHelper.CardTooltipTitleFont_Large, 1f)
                 .SetText(CardLibraryScreen.TEXT[7])
                 .SetOnToggle(EUI::ToggleViewUpgrades);
         cancelButton = new MenuCancelButton();

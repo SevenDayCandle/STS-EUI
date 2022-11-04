@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import extendedui.EUIUtils;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
-import extendedui.JavaUtils;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.TupleT2;
 import org.apache.commons.lang3.StringUtils;
@@ -63,7 +63,7 @@ public class EUISmartText
         }
         catch (NumberFormatException e)
         {
-            JavaUtils.LogWarning(EUIRenderHelpers.class, "Invalid color: #" + s);
+            EUIUtils.LogWarning(EUIRenderHelpers.class, "Invalid color: #" + s);
             return mainColor;
         }
     }
@@ -97,7 +97,7 @@ public class EUISmartText
             case '#':
                 return mainColor;
             default:
-                JavaUtils.LogWarning(EUIRenderHelpers.class, "Unknown color: #" + c);
+                EUIUtils.LogWarning(EUIRenderHelpers.class, "Unknown color: #" + c);
                 return mainColor;
         }
     }
@@ -183,7 +183,7 @@ public class EUISmartText
             {
                 subBuilder.append(currentChar);
             }
-            blockColor = GetColor(JavaUtils.PopBuilder(subBuilder));
+            blockColor = GetColor(EUIUtils.PopBuilder(subBuilder));
         }
         else if (currentChar != null)
         {
@@ -235,7 +235,7 @@ public class EUISmartText
                     }
                     else
                     {
-                        String condOutput = JavaUtils.PopBuilder(buffer);
+                        String condOutput = EUIUtils.PopBuilder(buffer);
                         current.value = StringUtils.isNumeric(condOutput) ? Integer.parseInt(condOutput) : evaluated;
                         currentBlock.conditions.add(current);
                     }
@@ -251,14 +251,14 @@ public class EUISmartText
                     {
                         current = new LogicCondition(LogicComparison.True);
                     }
-                    String condOutput = JavaUtils.PopBuilder(buffer);
+                    String condOutput = EUIUtils.PopBuilder(buffer);
                     current.value = StringUtils.isNumeric(condOutput) ? Integer.parseInt(condOutput) : evaluated;
                     currentBlock.conditions.add(current);
                     break;
                 // @ $ signals end of block. If there was no conditionBlock, this goes into evaluated
                 case '$':
                 case '@':
-                    String output = JavaUtils.PopBuilder(buffer);
+                    String output = EUIUtils.PopBuilder(buffer);
                     if (currentBlock != null)
                     {
                         currentBlock.text = output;
@@ -343,7 +343,7 @@ public class EUISmartText
                         break;
                     // End Color Block
                     case '}':
-                        String o = JavaUtils.PopBuilder(builder);
+                        String o = EUIUtils.PopBuilder(builder);
                         if (!o.isEmpty())
                         {
                             WriteWord(sb, o, x, y, lineWidth, lineSpacing);
@@ -361,7 +361,7 @@ public class EUISmartText
                     default:
                         if (Character.isWhitespace(currentChar))
                         {
-                            String output = JavaUtils.PopBuilder(builder);
+                            String output = EUIUtils.PopBuilder(builder);
                             if (!output.isEmpty())
                             {
                                 WriteWord(sb, output, x, y, lineWidth, lineSpacing);
@@ -379,7 +379,7 @@ public class EUISmartText
                         }
                 }
             }
-            String output = JavaUtils.PopBuilder(builder);
+            String output = EUIUtils.PopBuilder(builder);
             if (!output.isEmpty())
             {
                 WriteWord(sb, output, x, y, lineWidth, lineSpacing);
@@ -401,7 +401,7 @@ public class EUISmartText
                 break;
             }
         }
-        String output = ParseLogicString(JavaUtils.PopBuilder(subBuilder));
+        String output = ParseLogicString(EUIUtils.PopBuilder(subBuilder));
         if (output != null && !output.isEmpty())
         {
             WriteWord(sb, output, x, y, lineWidth, lineSpacing);
@@ -427,7 +427,7 @@ public class EUISmartText
             subBuilder.append(currentChar);
         }
 
-        String iconID = JavaUtils.PopBuilder(subBuilder);
+        String iconID = EUIUtils.PopBuilder(subBuilder);
         Color backgroundColor = GetTooltipBackgroundColor(iconID);
         TextureRegion icon = GetSmallIcon(iconID);
         if (icon != null)
@@ -557,7 +557,7 @@ public class EUISmartText
 
         public boolean Evaluate(int input)
         {
-            return JavaUtils.Any(conditions, block -> block.Evaluate(input));
+            return EUIUtils.Any(conditions, block -> block.Evaluate(input));
         }
     }
 

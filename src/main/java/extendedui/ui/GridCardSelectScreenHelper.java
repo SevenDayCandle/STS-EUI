@@ -6,13 +6,14 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
-import eatyourbeets.interfaces.delegates.*;
+import eatyourbeets.interfaces.delegates.ActionT3;
+import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.ui.controls.EUITextBox;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.utilities.ClassUtils;
+import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.GenericCondition;
 
 import java.util.ArrayList;
@@ -27,7 +28,7 @@ public class GridCardSelectScreenHelper
             new AdvancedHitbox(Settings.WIDTH / 4.0F, 96.0F * Settings.scale, Settings.WIDTH / 2.0F, 48.0F * Settings.scale))
             .SetColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
             .SetAlignment(0.7f, 0.15f, true, false)
-            .SetFont(FontHelper.cardDescFont_N, 1f);
+            .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
     private static GenericCondition<ArrayList<AbstractCard>> condition;
     private static FuncT1<String, ArrayList<AbstractCard>> dynamicString;
     private static ActionT3<CardGroup, ArrayList<AbstractCard>, AbstractCard> onClickCard;

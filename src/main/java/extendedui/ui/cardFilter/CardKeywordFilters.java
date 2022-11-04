@@ -14,10 +14,11 @@ import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
+import extendedui.EUIUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
 import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.ui.controls.*;
+import extendedui.ui.controls.EUIDropdown;
+import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
@@ -25,7 +26,9 @@ import extendedui.utilities.FakeLibraryCard;
 import extendedui.utilities.Mathf;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 
 public class CardKeywordFilters extends GenericFilters<AbstractCard>
 {
@@ -204,7 +207,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         ColorsDropdown.SetItems(colorsItems);
         if (isAccessedFromCardPool)
         {
-            ColorsDropdown.SetSelection(JavaUtils.Filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE), true);
+            ColorsDropdown.SetSelection(EUIUtils.Filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE), true);
         }
     }
 
@@ -277,7 +280,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     public ArrayList<EUITooltip> GetAllTooltips(AbstractCard c)
     {
         ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
-        TooltipProvider eC = JavaUtils.SafeCast(c, TooltipProvider.class);
+        TooltipProvider eC = EUIUtils.SafeCast(c, TooltipProvider.class);
         if (eC != null)
         {
             eC.GenerateDynamicTooltips(dynamicTooltips);
@@ -346,7 +349,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
 
     public ArrayList<AbstractCard> ApplyFilters(ArrayList<AbstractCard> input)
     {
-        return JavaUtils.Filter(input, c -> {
+        return EUIUtils.Filter(input, c -> {
             //Name check
             if (CurrentName != null && !CurrentName.isEmpty()) {
                 if (c.name == null || !c.name.toLowerCase().contains(CurrentName.toLowerCase())) {
@@ -373,7 +376,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
             }
 
             //Negate Tooltips check
-            if (!CurrentNegateFilters.isEmpty() && (JavaUtils.Any(GetAllTooltips(c), CurrentNegateFilters::contains)))
+            if (!CurrentNegateFilters.isEmpty() && (EUIUtils.Any(GetAllTooltips(c), CurrentNegateFilters::contains)))
             {
                 return false;
             }

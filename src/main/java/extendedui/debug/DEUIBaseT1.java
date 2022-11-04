@@ -1,6 +1,5 @@
 package extendedui.debug;
 
-import eatyourbeets.interfaces.delegates.ActionT0;
 import imgui.ImGui;
 
 public abstract class DEUIBaseT1<T> extends DEUIBase

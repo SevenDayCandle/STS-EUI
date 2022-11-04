@@ -2,7 +2,7 @@ package extendedui.utilities;
 
 import basemod.ReflectionHacks;
 import eatyourbeets.interfaces.delegates.FuncT1;
-import extendedui.JavaUtils;
+import extendedui.EUIUtils;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -50,12 +50,12 @@ public class ClassUtils
 
     public static <T> T Invoke(Class<?> className, String methodName, Object... parameters)
     {
-        return ReflectionHacks.privateStaticMethod(className, methodName, JavaUtils.Map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(parameters);
+        return ReflectionHacks.privateStaticMethod(className, methodName, EUIUtils.Map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(parameters);
     }
 
     public static <T> T Invoke(Object o, String methodName, Object... parameters)
     {
-        return GetMethod(o, methodName, JavaUtils.Map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(o, parameters);
+        return GetMethod(o, methodName, EUIUtils.Map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(o, parameters);
     }
 
     public static boolean IsFieldFinal(Field f) {

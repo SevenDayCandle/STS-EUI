@@ -1,12 +1,12 @@
 package extendedui.ui.settings;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import extendedui.configuration.STSConfigItem;
-import extendedui.interfaces.markers.ModSettingsProvider;
+import extendedui.interfaces.listeners.STSConfigListener;
 import extendedui.ui.controls.EUIToggle;
 import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.utilities.EUIFontHelper;
 
-public class ModSettingsToggle extends EUIToggle implements ModSettingsProvider<Boolean>
+public class ModSettingsToggle extends EUIToggle implements STSConfigListener<Boolean>
 {
     public final STSConfigItem<Boolean> Config;
 
@@ -15,30 +15,14 @@ public class ModSettingsToggle extends EUIToggle implements ModSettingsProvider<
         super(hb);
         Config = config;
         SetText(title);
+        SetFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
         SetOnToggle(val -> Config.Set(val, true));
+        this.Config.AddListener(this);
     }
 
     @Override
-    public STSConfigItem<Boolean> Config()
+    public void OnChange(Boolean newValue)
     {
-        return Config;
-    }
-
-    @Override
-    public void Set(Boolean value)
-    {
-        SetToggle(value);
-    }
-
-    @Override
-    public void UpdateProvider()
-    {
-        super.Update();
-    }
-
-    @Override
-    public void RenderProvider(SpriteBatch sb)
-    {
-        super.Render(sb);
+        SetToggle(newValue);
     }
 }

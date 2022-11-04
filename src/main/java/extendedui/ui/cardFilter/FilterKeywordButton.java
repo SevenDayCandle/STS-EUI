@@ -54,7 +54,6 @@ public class FilterKeywordButton extends EUIHoverable
                 .SetClickDelay(0.01f)
         .SetColor(Filters.CurrentFilters.contains(Tooltip) ? ACTIVE_COLOR
                 : Filters.CurrentNegateFilters.contains(Tooltip) ? NEGATE_COLOR : PANEL_COLOR)
-        .SetText("")
                 .SetOnClick(button -> {
                     if (Filters.CurrentFilters.contains(Tooltip))
                     {

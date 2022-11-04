@@ -5,9 +5,9 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
+import extendedui.EUIUtils;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
-import extendedui.JavaUtils;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 
@@ -94,7 +94,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T>
 
     @Override
     public ArrayList<T> GetAllItems() {
-        return JavaUtils.Map(this.originalRows, row -> row.item);
+        return EUIUtils.Map(this.originalRows, row -> row.item);
     }
 
     @Override
@@ -138,7 +138,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T>
             this.rows = this.originalRows;
         }
         else {
-            this.rows = JavaUtils.Filter(this.originalRows, row -> row.GetText() != null && row.GetText().toLowerCase().contains(searchInput.toLowerCase()));
+            this.rows = EUIUtils.Filter(this.originalRows, row -> row.GetText() != null && row.GetText().toLowerCase().contains(searchInput.toLowerCase()));
             this.topVisibleRowIndex = 0;
         }
     }

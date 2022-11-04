@@ -2,8 +2,14 @@ package extendedui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
-import com.badlogic.gdx.graphics.*;
-import com.badlogic.gdx.graphics.g2d.*;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.GL20;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -22,12 +28,12 @@ import extendedui.text.EUISmartText;
 import extendedui.ui.controls.EUIImage;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
-import extendedui.utilities.*;
+import extendedui.utilities.AdvancedTexture;
+import extendedui.utilities.EUIColors;
+import extendedui.utilities.EUIFontHelper;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.awt.image.BufferedImageOp;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -326,7 +332,7 @@ public class EUIRenderHelpers
     public static void DrawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation, boolean flipX, boolean flipY)
     {
         if (img == null) {
-            JavaUtils.LogWarning(card, "Image was null:");
+            EUIUtils.LogWarning(card, "Image was null:");
             return;
         }
         final float scale = card.drawScale * Settings.scale * imgScale;
@@ -581,7 +587,7 @@ public class EUIRenderHelpers
 
     public static float GetTooltipHeight(EUITooltip tip)
     {
-        return -EUISmartText.GetSmartHeight(FontHelper.tipBodyFont, tip.Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
+        return -EUISmartText.GetSmartHeight(EUIFontHelper.CardTooltipFont, tip.Description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
     }
 
     public static float CalculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY)

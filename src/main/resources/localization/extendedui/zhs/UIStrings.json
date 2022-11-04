@@ -6,7 +6,15 @@
 	  "禁用Effekseer特效",
 	  "开始游戏时清空Effekseer缓存",
 	  "进入新房间时清空Effekseer缓存",
-	  "重置隐藏的工具提示栏"
+	  "Show All Mod Settings in Extra Settings (Warning: unstable)",
+	  "Use Separate Fonts",
+	  "Override Vanilla Fonts",
+	  "Main Font",
+	  "Card Description Font",
+	  "Card Title Font",
+	  "Tip Description Font",
+	  "Tip Title Font",
+	  "Banner Font"
 	]
   },
   "extendedui:grammar":
@@ -51,8 +59,10 @@
 	  "{0} to cycle",
 	  "Type to Search",
 	  "按 {0} 排序",
-	  "Mod设置",
-	  "Toggle mod-specific settings"
+	  "Extra Settings",
+	  "Effekseer",
+	  "Fonts",
+	  "Font settings take effect after a game restart"
 	]
   },
   "extendedui:ui_pool":

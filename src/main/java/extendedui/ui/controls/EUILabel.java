@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import extendedui.EUIUtils;
 import extendedui.EUIRenderHelpers;
-import extendedui.JavaUtils;
+import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
-import extendedui.text.EUISmartText;
 
 public class EUILabel extends EUIHoverable
 {
@@ -38,7 +38,7 @@ public class EUILabel extends EUIHoverable
         this.textColor = Color.WHITE;
         this.fontScale = 1;
         this.font = font;
-        this.text = "-";
+        this.text = "";
     }
 
     public EUILabel MakeCopy()
@@ -66,7 +66,7 @@ public class EUILabel extends EUIHoverable
 
     public EUILabel SetText(String format, Object... args)
     {
-        this.text = JavaUtils.Format(format, args);
+        this.text = EUIUtils.Format(format, args);
 
         return this;
     }
@@ -138,6 +138,21 @@ public class EUILabel extends EUIHoverable
     public EUILabel SetColor(Color textColor)
     {
         this.textColor = textColor.cpy();
+
+        return this;
+    }
+
+    public EUILabel Autosize() {
+        return Autosize(1f, 1f);
+    }
+
+    public EUILabel Autosize(Float resizeMultiplier, Float resizeHeight) {
+        if (resizeMultiplier != null) {
+            this.hb.width = GetAutoWidth();
+        }
+        if (resizeHeight != null) {
+            this.hb.height = GetAutoHeight();
+        }
 
         return this;
     }

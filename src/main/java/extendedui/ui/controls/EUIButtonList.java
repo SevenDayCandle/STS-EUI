@@ -26,6 +26,7 @@ public class EUIButtonList extends EUIBase
     protected float yPos;
     protected float buttonWidth;
     protected float buttonHeight;
+    protected float fontScale = 0.8f;
     protected int highlightedIndex;
     protected int topButtonIndex;
     protected int visibleButtons;
@@ -53,6 +54,12 @@ public class EUIButtonList extends EUIBase
                 .SetOnClick(__ -> SetTopButtonIndex(topButtonIndex + 1))
                 .SetText(null);
         downButton.background.SetRotation(-90);
+    }
+
+    public EUIButtonList SetFontScale(float fontScale)
+    {
+        this.fontScale = fontScale;
+        return this;
     }
 
     @Override
@@ -118,7 +125,7 @@ public class EUIButtonList extends EUIBase
 
     public EUIButton AddButton(ActionT1<EUIButton> onClick, String title) {
         EUIButton button = new EUIButton(ImageMaster.COLOR_TAB_BAR, new AdvancedHitbox(buttonWidth, buttonHeight))
-                .SetFont(FontHelper.buttonLabelFont, 0.8f)
+                .SetFont(FontHelper.buttonLabelFont, fontScale)
                 .SetButtonScale(1f, 1.2f)
                 .SetOnClick((b) -> {
                     SelectButton(b);

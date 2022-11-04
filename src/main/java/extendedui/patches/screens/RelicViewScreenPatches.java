@@ -1,30 +1,21 @@
 package extendedui.patches.screens;
 
-import basemod.ReflectionHacks;
-import basemod.patches.com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar.ColorTabBarFix;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
-import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
-import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
-import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
 import extendedui.EUI;
-import extendedui.JavaUtils;
-import extendedui.configuration.EUIConfiguration;
-import extendedui.patches.RelicLibraryPatches;
+import extendedui.EUIUtils;
 import extendedui.utilities.ClassUtils;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 
 public class RelicViewScreenPatches
 {
@@ -175,7 +166,7 @@ public class RelicViewScreenPatches
 
     private static void ResetAllList()
     {
-        allList = JavaUtils.Flatten(starterList, commonList, uncommonList, rareList, bossList, specialList, shopList);
+        allList = EUIUtils.Flatten(starterList, commonList, uncommonList, rareList, bossList, specialList, shopList);
     }
 
     private static void EditImpl(javassist.expr.FieldAccess m) throws CannotCompileException

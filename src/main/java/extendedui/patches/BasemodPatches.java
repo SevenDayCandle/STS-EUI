@@ -1,16 +1,16 @@
 package extendedui.patches;
 
 import basemod.BaseMod;
+import basemod.ModPanel;
 import basemod.helpers.RelicType;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
+import extendedui.ui.settings.ModSettingsScreen;
 
 public class BasemodPatches
 {
@@ -68,6 +68,18 @@ public class BasemodPatches
         public static void Postfix(AbstractRelic relic, AbstractCard.CardColor color)
         {
             EUIGameUtils.AddRelicColor(relic, color);
+        }
+    }
+
+    // Create mod options menu for extra settings menu
+    @SpirePatch(clz = BaseMod.class,
+            method = "registerModBadge")
+    public static class BaseMod_RegisterModBadge
+    {
+        @SpirePostfixPatch
+        public static void Postfix(Texture t, String name, String author, String desc, ModPanel settingsPanel)
+        {
+            ModSettingsScreen.AddModList(new ModSettingsScreen.Category(name), settingsPanel);
         }
     }
 }

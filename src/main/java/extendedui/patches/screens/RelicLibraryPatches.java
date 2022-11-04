@@ -1,12 +1,10 @@
-package extendedui.patches;
+package extendedui.patches.screens;
 
-import basemod.BaseMod;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import extendedui.EUI;
 import extendedui.EUIGameUtils;
 
 public class RelicLibraryPatches

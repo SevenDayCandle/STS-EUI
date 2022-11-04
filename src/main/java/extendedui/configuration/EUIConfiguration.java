@@ -4,16 +4,20 @@ import basemod.BaseMod;
 import basemod.ModLabeledToggleButton;
 import basemod.ModMinMaxSlider;
 import basemod.ModPanel;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
-import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import extendedui.EUIGameUtils;
+import extendedui.EUIUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
+import extendedui.interfaces.listeners.STSConfigListener;
+import extendedui.ui.EUIHoverable;
+import extendedui.ui.controls.EUILabel;
+import extendedui.ui.settings.ModSettingsPathSelector;
 import extendedui.ui.settings.ModSettingsScreen;
+import extendedui.ui.settings.ModSettingsToggle;
+import extendedui.utilities.EUIFontHelper;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -24,15 +28,18 @@ import java.util.HashSet;
 public class EUIConfiguration
 {
     private static final int BASE_OPTION_OFFSET_X = 400;
+    private static final int BASE_OPTION_OFFSET_X2 = 500;
     private static final int BASE_OPTION_OFFSET_Y = 700;
-    private static final int BASE_OPTION_OPTION_HEIGHT = 50;
+    private static final int BASE_OPTION_OPTION_HEIGHT = 32;
     public static final int BASE_SPRITES_DEFAULT = 6000;
     //public static final int BASE_SPRITES_MIN = 6000;
     //public static final int BASE_SPRITES_MAX = 6000;
+    private static final String[] FONT_EXTS = EUIUtils.Array("otf", "ttf", "fnt");
     private static final String PREFIX = "EUI";
     private static SpireConfig config;
-    private static ModInfo INFO;
     private static int counter;
+    public static ModSettingsScreen.Category EffekseerCategory;
+    public static ModSettingsScreen.Category FontCategory;
     public static boolean ShouldReloadEffekseer;
 
     public static String GetFullKey(String base) {
@@ -43,75 +50,27 @@ public class EUIConfiguration
     private static final String DISABLE_EFFEKSEER = GetFullKey("DisableEffekseer");
     private static final String FLUSH_ON_GAME_START = GetFullKey("FlushOnGameStart");
     private static final String FLUSH_ON_ROOM_START = GetFullKey("FlushOnRoomStart");
+    private static final String SHOW_MOD_SETTINGS = GetFullKey("ShowModSettings");
+    private static final String USE_SEPARATE_FONTS = GetFullKey("UseSeparateFonts");
+    private static final String OVERRIDE_GAME_FONT = GetFullKey("OverrideGameFont");
     private static final String HIDE_TIP_DESCRIPTION = GetFullKey("HideTipDescription");
-    private static final String CUSTOM_ENG_DEFAULT_FONT = GetFullKey("CustomENGDefaultFont");
-    private static final String CUSTOM_ENG_BOLD_FONT = GetFullKey("CustomENGBoldFont");
-    private static final String CUSTOM_ENG_ITALIC_FONT = GetFullKey("CustomENGItalicFont");
-    private static final String CUSTOM_ENG_DRAMATIC_FONT = GetFullKey("CustomENGDramaticFont");
-    private static final String CUSTOM_ZHS_DEFAULT_FONT = GetFullKey("CustomZHSDefaultFont");
-    private static final String CUSTOM_ZHS_BOLD_FONT = GetFullKey("CustomZHSBoldFont");
-    private static final String CUSTOM_ZHS_ITALIC_FONT = GetFullKey("CustomZHSItalicFont");
-    private static final String CUSTOM_ZHT_DEFAULT_FONT = GetFullKey("CustomZHTDefaultFont");
-    private static final String CUSTOM_ZHT_BOLD_FONT = GetFullKey("CustomZHTBoldFont");
-    private static final String CUSTOM_ZHT_ITALIC_FONT = GetFullKey("CustomZHTItalicFont");
-    private static final String CUSTOM_EPO_DEFAULT_FONT = GetFullKey("CustomEPODefaultFont");
-    private static final String CUSTOM_EPO_BOLD_FONT = GetFullKey("CustomEPOBoldFont");
-    private static final String CUSTOM_EPO_ITALIC_FONT = GetFullKey("CustomEPOItalicFont");
-    private static final String CUSTOM_GRE_DEFAULT_FONT = GetFullKey("CustomGREDefaultFont");
-    private static final String CUSTOM_GRE_BOLD_FONT = GetFullKey("CustomGREBoldFont");
-    private static final String CUSTOM_GRE_ITALIC_FONT = GetFullKey("CustomGREItalicFont");
-    private static final String CUSTOM_JPN_DEFAULT_FONT = GetFullKey("CustomJPNDefaultFont");
-    private static final String CUSTOM_JPN_BOLD_FONT = GetFullKey("CustomJPNBoldFont");
-    private static final String CUSTOM_JPN_ITALIC_FONT = GetFullKey("CustomJPNItalicFont");
-    private static final String CUSTOM_KOR_DEFAULT_FONT = GetFullKey("CustomKORDefaultFont");
-    private static final String CUSTOM_KOR_BOLD_FONT = GetFullKey("CustomKORBoldFont");
-    private static final String CUSTOM_KOR_ITALIC_FONT = GetFullKey("CustomKORItalicFont");
-    private static final String CUSTOM_RUS_DEFAULT_FONT = GetFullKey("CustomRUSDefaultFont");
-    private static final String CUSTOM_RUS_BOLD_FONT = GetFullKey("CustomRUSBoldFont");
-    private static final String CUSTOM_RUS_ITALIC_FONT = GetFullKey("CustomRUSItalicFont");
-    private static final String CUSTOM_SRB_DEFAULT_FONT = GetFullKey("CustomSRBDefaultFont");
-    private static final String CUSTOM_SRB_BOLD_FONT = GetFullKey("CustomSRBBoldFont");
-    private static final String CUSTOM_SRB_ITALIC_FONT = GetFullKey("CustomSRBItalicFont");
-    private static final String CUSTOM_THA_DEFAULT_FONT = GetFullKey("CustomTHADefaultFont");
-    private static final String CUSTOM_THA_BOLD_FONT = GetFullKey("CustomTHABoldFont");
-    private static final String CUSTOM_THA_ITALIC_FONT = GetFullKey("CustomTHAItalicFont");
+    private static final String CARD_DESC_FONT = GetFullKey("CardDescFont");
+    private static final String CARD_TITLE_FONT = GetFullKey("CardTitleFont");
+    private static final String TIP_DESC_FONT = GetFullKey("TipDescFont");
+    private static final String TITLE_TITLE_FONT = GetFullKey("TipTitleFont");
 
     public static STSConfigItem<Boolean> UseVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
     public static STSConfigItem<Boolean> DisableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
     public static STSConfigItem<Boolean> FlushOnGameStart = new STSConfigItem<>(FLUSH_ON_GAME_START, false);
     public static STSConfigItem<Boolean> FlushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
+    public static STSConfigItem<Boolean> ShowModSettings = new STSConfigItem<>(SHOW_MOD_SETTINGS, false);
+    public static STSConfigItem<Boolean> UseSeparateFonts = new STSConfigItem<>(USE_SEPARATE_FONTS, false);
+    public static STSConfigItem<Boolean> OverrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
 
-    public static STSStringConfigItem CustomENGDefaultFont = new STSStringConfigItem(CUSTOM_ENG_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomENGBoldFont = new STSStringConfigItem(CUSTOM_ENG_BOLD_FONT,"");
-    public static STSStringConfigItem CustomENGItalicFont = new STSStringConfigItem(CUSTOM_ENG_ITALIC_FONT,"");
-    public static STSStringConfigItem CustomENGDramaticFont = new STSStringConfigItem(CUSTOM_ENG_DRAMATIC_FONT,"");
-    public static STSStringConfigItem CustomZHSDefaultFont = new STSStringConfigItem(CUSTOM_ZHS_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomZHSBoldFont = new STSStringConfigItem(CUSTOM_ZHS_BOLD_FONT,"");
-    public static STSStringConfigItem CustomZHSItalicFont = new STSStringConfigItem(CUSTOM_ZHS_ITALIC_FONT,"");
-    public static STSStringConfigItem CustomZHTDefaultFont = new STSStringConfigItem(CUSTOM_ZHT_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomZHTBoldFont = new STSStringConfigItem(CUSTOM_ZHT_BOLD_FONT,"");
-    public static STSStringConfigItem CustomZHTItalicFont = new STSStringConfigItem(CUSTOM_ZHT_ITALIC_FONT,"");
-    public static STSStringConfigItem CustomEPODefaultFont = new STSStringConfigItem(CUSTOM_EPO_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomEPOBoldFont = new STSStringConfigItem(CUSTOM_EPO_BOLD_FONT,"");
-    public static STSStringConfigItem CustomEPOItalicFont = new STSStringConfigItem(CUSTOM_EPO_ITALIC_FONT,"");
-    public static STSStringConfigItem CustomGREDefaultFont = new STSStringConfigItem(CUSTOM_GRE_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomGREBoldFont = new STSStringConfigItem(CUSTOM_GRE_BOLD_FONT,"");
-    public static STSStringConfigItem CustomGREItalicFont = new STSStringConfigItem(CUSTOM_GRE_ITALIC_FONT,"");
-    public static STSStringConfigItem CustomJPNDefaultFont = new STSStringConfigItem(CUSTOM_JPN_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomJPNBoldFont = new STSStringConfigItem(CUSTOM_JPN_BOLD_FONT,"");
-    public static STSStringConfigItem CustomJPNItalicFont = new STSStringConfigItem(CUSTOM_JPN_ITALIC_FONT,"");
-    public static STSStringConfigItem CustomKORDefaultFont = new STSStringConfigItem(CUSTOM_KOR_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomKORBoldFont = new STSStringConfigItem(CUSTOM_KOR_BOLD_FONT,"");
-    public static STSStringConfigItem CustomKORItalicFont = new STSStringConfigItem(CUSTOM_KOR_ITALIC_FONT,"");
-    public static STSStringConfigItem CustomRUSDefaultFont = new STSStringConfigItem(CUSTOM_RUS_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomRUSBoldFont = new STSStringConfigItem(CUSTOM_RUS_BOLD_FONT,"");
-    public static STSStringConfigItem CustomRUSItalicFont = new STSStringConfigItem(CUSTOM_RUS_ITALIC_FONT,"");
-    public static STSStringConfigItem CustomSRBDefaultFont = new STSStringConfigItem(CUSTOM_SRB_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomSRBBoldFont = new STSStringConfigItem(CUSTOM_SRB_BOLD_FONT,"");
-    public static STSStringConfigItem CustomSRBItalicFont = new STSStringConfigItem(CUSTOM_SRB_ITALIC_FONT,"");
-    public static STSStringConfigItem CustomTHADefaultFont = new STSStringConfigItem(CUSTOM_THA_DEFAULT_FONT,"");
-    public static STSStringConfigItem CustomTHABoldFont = new STSStringConfigItem(CUSTOM_THA_BOLD_FONT,"");
-    public static STSStringConfigItem CustomTHAItalicFont = new STSStringConfigItem(CUSTOM_THA_ITALIC_FONT,"");
+    public static STSStringConfigItem CardDescFont = new STSStringConfigItem(CARD_DESC_FONT,"");
+    public static STSStringConfigItem CardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT,"");
+    public static STSStringConfigItem TipDescFont = new STSStringConfigItem(TIP_DESC_FONT,"");
+    public static STSStringConfigItem TipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT,"");
 
     //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
 
@@ -121,62 +80,92 @@ public class EUIConfiguration
         try
         {
             config = new SpireConfig(PREFIX, PREFIX);
-            INFO = EUIGameUtils.GetModInfo(EUIConfiguration.class);
-            final ModPanel panel = new ModPanel();
-            ModSettingsScreen.AddSubscriber(EUIGameUtils.GetModInfo(EUIConfiguration.class));
             UseVanillaCompendium.AddConfig(config);
             DisableEffekseer.AddConfig(config);
             FlushOnGameStart.AddConfig(config);
             FlushOnRoomStart.AddConfig(config);
-            CustomENGDefaultFont.AddConfig(config);
-            CustomENGBoldFont.AddConfig(config);
-            CustomENGItalicFont.AddConfig(config);
-            CustomENGDramaticFont.AddConfig(config);
-            CustomZHSDefaultFont.AddConfig(config);
-            CustomZHSBoldFont.AddConfig(config);
-            CustomZHSItalicFont.AddConfig(config);
-            CustomZHTDefaultFont.AddConfig(config);
-            CustomZHTBoldFont.AddConfig(config);
-            CustomZHTItalicFont.AddConfig(config);
-            CustomEPODefaultFont.AddConfig(config);
-            CustomEPOBoldFont.AddConfig(config);
-            CustomEPOItalicFont.AddConfig(config);
-            CustomGREDefaultFont.AddConfig(config);
-            CustomGREBoldFont.AddConfig(config);
-            CustomGREItalicFont.AddConfig(config);
-            CustomJPNDefaultFont.AddConfig(config);
-            CustomJPNBoldFont.AddConfig(config);
-            CustomJPNItalicFont.AddConfig(config);
-            CustomKORDefaultFont.AddConfig(config);
-            CustomKORBoldFont.AddConfig(config);
-            CustomKORItalicFont.AddConfig(config);
-            CustomRUSDefaultFont.AddConfig(config);
-            CustomRUSBoldFont.AddConfig(config);
-            CustomRUSItalicFont.AddConfig(config);
-            CustomSRBDefaultFont.AddConfig(config);
-            CustomSRBBoldFont.AddConfig(config);
-            CustomSRBItalicFont.AddConfig(config);
-            CustomTHADefaultFont.AddConfig(config);
-            CustomTHABoldFont.AddConfig(config);
-            CustomTHAItalicFont.AddConfig(config);
-
-            int yPos = BASE_OPTION_OFFSET_Y;
-
-            yPos = AddToggle(panel, UseVanillaCompendium, EUIRM.Strings.Config_UseVanillaCompendium, yPos);
-            yPos = AddToggle(panel, DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer, yPos);
-            yPos = AddToggle(panel, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart, yPos);
-            yPos = AddToggle(panel, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart, yPos);
-            //yPos = AddSlider(panel, MaxParticles, s.TEXT[2], yPos, BASE_SPRITES_MIN, BASE_SPRITES_MAX);
-            BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
-
-            SubscribeToggle(DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer);
-            SubscribeToggle(FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart);
-            SubscribeToggle(FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart);
+            ShowModSettings.AddConfig(config);
+            UseSeparateFonts.AddConfig(config);
+            OverrideGameFont.AddConfig(config);
+            CardDescFont.AddConfig(config);
+            CardTitleFont.AddConfig(config);
+            TipDescFont.AddConfig(config);
+            TipTitleFont.AddConfig(config);
         }
         catch (IOException e)
         {
             throw new RuntimeException(e);
         }
+    }
+
+    public static void PostInitialize()
+    {
+
+        // Add EUI options
+        EffekseerCategory = new ModSettingsScreen.Category(EUIRM.Strings.Misc_EffekseerSettings);
+        FontCategory = new ModSettingsScreen.Category(EUIRM.Strings.Misc_FontSettings);
+        ModSettingsScreen.AddCategory(EffekseerCategory);
+        ModSettingsScreen.AddCategory(FontCategory);
+        MakeModToggle(EffekseerCategory, DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer);
+        MakeModToggle(EffekseerCategory, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart);
+        MakeModToggle(EffekseerCategory, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart);
+        EUILabel disclaimer = MakeModLabel(FontCategory, EUIRM.Strings.Misc_FontSettingDescription, EUIFontHelper.CardDescriptionFont_Normal);
+        MakeModToggle(FontCategory, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts);
+        MakeModToggle(FontCategory, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont);
+        ModSettingsPathSelector cardDescFontSelector = MakeModPathSelection(FontCategory, CardDescFont, EUIRM.Strings.Config_CardDescFont, FONT_EXTS);
+        ModSettingsPathSelector cardTitleFontSelector = MakeModPathSelection(FontCategory, CardTitleFont, EUIRM.Strings.Config_CardTitleFont, FONT_EXTS);
+        ModSettingsPathSelector tipDescFontSelector = MakeModPathSelection(FontCategory, TipDescFont, EUIRM.Strings.Config_TipDescFont, FONT_EXTS);
+        ModSettingsPathSelector tipTitleFontSelector = MakeModPathSelection(FontCategory, TipTitleFont, EUIRM.Strings.Config_TipTitleFont, FONT_EXTS);
+
+
+        // Add basemod options
+        int yPos = BASE_OPTION_OFFSET_Y;
+        ModPanel panel = new ModPanel();
+
+        yPos = AddToggle(panel, UseVanillaCompendium, EUIRM.Strings.Config_UseVanillaCompendium, yPos);
+        yPos = AddToggle(panel, DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer, yPos);
+        yPos = AddToggle(panel, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart, yPos);
+        yPos = AddToggle(panel, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart, yPos);
+        yPos = AddToggle(panel, ShowModSettings, EUIRM.Strings.Config_ShowModSettings, yPos);
+        yPos = AddToggle(panel, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts, yPos);
+        yPos = AddToggle(panel, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont, yPos);
+
+        yPos = (BASE_OPTION_OFFSET_Y + yPos) / 2;
+
+        yPos = AddGenericElement(panel, disclaimer.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos), yPos);
+        ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = AddGenericElement(panel, cardDescFontSelector2, yPos);
+        ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = AddGenericElement(panel, cardTitleFontSelector2, yPos);
+        ModSettingsPathSelector tipDescFontSelector2 = (ModSettingsPathSelector) tipDescFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = AddGenericElement(panel, tipDescFontSelector2, yPos);
+        ModSettingsPathSelector tipTitleFontSelector2 = (ModSettingsPathSelector) tipTitleFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = AddGenericElement(panel, tipTitleFontSelector2, yPos);
+        BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
+
+        // Sub-font settings should only show up if UseSeparateFonts is true
+        boolean showOtherSelectors = UseSeparateFonts.Get();
+        cardDescFontSelector2.SetHeaderText(showOtherSelectors ? EUIRM.Strings.Config_CardDescFont : EUIRM.Strings.Config_MainFont);
+        cardTitleFontSelector.SetActive(showOtherSelectors);
+        tipDescFontSelector.SetActive(showOtherSelectors);
+        tipTitleFontSelector.SetActive(showOtherSelectors);
+        cardTitleFontSelector2.SetActive(showOtherSelectors);
+        tipDescFontSelector2.SetActive(showOtherSelectors);
+        tipTitleFontSelector2.SetActive(showOtherSelectors);
+        UseSeparateFonts.AddListener(new STSConfigListener<Boolean>()
+        {
+            @Override
+            public void OnChange(Boolean newValue)
+            {
+                cardDescFontSelector2.SetHeaderText(newValue ? EUIRM.Strings.Config_CardDescFont : EUIRM.Strings.Config_MainFont);
+                cardTitleFontSelector.SetActive(newValue);
+                tipDescFontSelector.SetActive(newValue);
+                tipTitleFontSelector.SetActive(newValue);
+                cardTitleFontSelector2.SetActive(newValue);
+                tipDescFontSelector2.SetActive(newValue);
+                tipTitleFontSelector2.SetActive(newValue);
+            }
+        });
     }
 
     public static void Save() {
@@ -190,13 +179,23 @@ public class EUIConfiguration
         }
     }
 
-    protected static void SubscribeToggle(STSConfigItem<Boolean> option, String label)
+    protected static ModSettingsToggle MakeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label)
     {
-        ModSettingsScreen.SubscribeBoolean(INFO, option, label);
+        return ModSettingsScreen.AddBoolean(category, option, label);
+    }
+
+    protected static ModSettingsPathSelector MakeModPathSelection(ModSettingsScreen.Category category, STSConfigItem<String> option, String label, String... exts)
+    {
+        return ModSettingsScreen.AddPathSelection(category, option, label, exts);
+    }
+
+    protected static EUILabel MakeModLabel(ModSettingsScreen.Category category, String label, BitmapFont font)
+    {
+        return ModSettingsScreen.AddLabel(category, label, font);
     }
 
     protected static int AddToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {
-        panel.addUIElement(new ModLabeledToggleButton(label, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), FontHelper.charDescFont, option.Get(), panel, (__) -> {
+        panel.addUIElement(new ModLabeledToggleButton(label, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.CardDescriptionFont_Normal, option.Get(), panel, (__) -> {
         }, (c) -> option.Set(c.enabled, true)));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }
@@ -207,6 +206,12 @@ public class EUIConfiguration
             ShouldReloadEffekseer = true;
         }));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
+    }
+
+    protected static int AddGenericElement(ModPanel panel, EUIHoverable renderable, int ypos)
+    {
+        panel.addUIElement(renderable);
+        return (int) (ypos - renderable.hb.height);
     }
 
     public static boolean HideTipDescription(String id)
@@ -243,7 +248,7 @@ public class EUIConfiguration
             tips.remove(id);
         }
 
-        config.setString(HIDE_TIP_DESCRIPTION, JavaUtils.JoinStrings("|", tips));
+        config.setString(HIDE_TIP_DESCRIPTION, EUIUtils.JoinStrings("|", tips));
 
         if (flush)
         {

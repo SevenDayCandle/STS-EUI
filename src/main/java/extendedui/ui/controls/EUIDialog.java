@@ -13,6 +13,7 @@ import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.utilities.EUIFontHelper;
 
 import static extendedui.EUIRenderHelpers.DARKENED_SCREEN;
 
@@ -44,7 +45,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.9f, false))
                 .SetAlignment(0.5f,0.5f,false)
                 .SetText(headerText);
-        this.description = new EUILabel(FontHelper.tipBodyFont,
+        this.description = new EUILabel(EUIFontHelper.CardTooltipFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.1f, hb.height * 0.7f, false))
                 .SetAlignment(0.5f,0.5f,true)
                 .SetSmartText(true, false)
@@ -56,7 +57,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
     protected EUIButton GetConfirmButton() {
         return new EUIButton(ImageMaster.OPTION_YES,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.1f, hb.height * 0.05f, false))
-                .SetFont(FontHelper.cardTitleFont, 1f)
+                .SetFont(EUIFontHelper.CardTitleFont_Normal, 1f)
                 .SetText(TEXT[2])
                 .SetOnClick(() -> {
                     if (onComplete != null) {
@@ -68,7 +69,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
     protected EUIButton GetCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.9f, hb.height * 0.05f, false))
-                .SetFont(FontHelper.cardTitleFont, 1f)
+                .SetFont(EUIFontHelper.CardTitleFont_Normal, 1f)
                 .SetText(TEXT[3])
                 .SetOnClick(() -> {
                     if (onComplete != null) {

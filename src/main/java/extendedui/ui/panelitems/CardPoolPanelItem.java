@@ -7,7 +7,6 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
@@ -24,6 +23,7 @@ import extendedui.configuration.EUIHotkeys;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
@@ -44,7 +44,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
                         o.onSelect.Invoke();
                     }
                 })
-                .SetFontForRows(FontHelper.tipBodyFont, 1f)
+                .SetFontForRows(EUIFontHelper.CardTooltipFont, 1f)
                 .SetItems(ContextOption.values())
                 .SetCanAutosizeButton(true);
     }

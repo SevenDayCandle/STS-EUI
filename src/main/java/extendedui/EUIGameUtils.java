@@ -10,9 +10,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
@@ -145,7 +143,7 @@ public class EUIGameUtils {
             case COLORLESS:
                 return CardLibraryScreen.TEXT[4];
             default:
-                return CustomColorNames.getOrDefault(co, JavaUtils.Capitalize(String.valueOf(co)));
+                return CustomColorNames.getOrDefault(co, EUIUtils.Capitalize(String.valueOf(co)));
         }
     }
 

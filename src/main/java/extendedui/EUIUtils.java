@@ -9,14 +9,16 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.StringJoiner;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
-public class JavaUtils
+public class EUIUtils
 {
     private static final Gson GsonReader = new Gson();
 
@@ -155,7 +157,7 @@ public class JavaUtils
                         }
                         else
                         {
-                            LogError(JavaUtils.class, "Invalid format: " + format + "\n" + JoinStrings(", " , args));
+                            LogError(EUIUtils.class, "Invalid format: " + format + "\n" + JoinStrings(", " , args));
                         }
 
                         i = j;

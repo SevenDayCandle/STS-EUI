@@ -14,11 +14,11 @@ import eatyourbeets.interfaces.delegates.ActionT2;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.EUIRenderHelpers;
+import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.GenericCallback;
-import extendedui.text.EUISmartText;
 import org.apache.commons.lang3.StringUtils;
 
 public class EUIButton extends EUIHoverable

@@ -1,6 +1,5 @@
 package extendedui.debug;
 
-import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import imgui.ImGui;
 

@@ -2,7 +2,6 @@ package extendedui.debug;
 
 import imgui.ImGui;
 import imgui.type.ImFloat;
-import imgui.type.ImInt;
 
 public class DEUIFloatInput extends DEUIBaseT0
 {

@@ -12,10 +12,12 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
+import extendedui.EUIUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
 import extendedui.ui.AbstractScreen;
-import extendedui.ui.controls.*;
+import extendedui.ui.controls.EUIButton;
+import extendedui.ui.controls.EUIRelicGrid;
+import extendedui.ui.controls.EUIStaticRelicGrid;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 
@@ -77,7 +79,7 @@ public class RelicPoolScreen extends AbstractScreen
         CustomModule = EUI.GetCustomRelicPoolModule(player);
         if (CustomModule != null) {
             CustomModule.SetActive(true);
-            CustomModule.Open(JavaUtils.Map(relicGrid.relicGroup, r -> r.relic));
+            CustomModule.Open(EUIUtils.Map(relicGrid.relicGroup, r -> r.relic));
         }
 
     }

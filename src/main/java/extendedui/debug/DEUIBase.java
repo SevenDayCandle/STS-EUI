@@ -1,7 +1,5 @@
 package extendedui.debug;
 
-import imgui.ImGui;
-
 public abstract class DEUIBase
 {
     protected final String ID;

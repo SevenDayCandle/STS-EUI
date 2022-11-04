@@ -18,17 +18,17 @@ import eatyourbeets.interfaces.delegates.FuncT1;
 import eatyourbeets.interfaces.delegates.FuncT2;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
+import extendedui.EUIUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
 import extendedui.interfaces.markers.CardObject;
 import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.Mathf;
-import extendedui.text.EUISmartText;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -417,7 +417,7 @@ public class EUIDropdown<T> extends EUIHoverable
     }
 
     public ArrayList<T> GetAllItems() {
-        return JavaUtils.Map(this.rows, row -> row.item);
+        return EUIUtils.Map(this.rows, row -> row.item);
     }
 
     public ArrayList<T> GetCurrentItems() {
@@ -724,7 +724,7 @@ public class EUIDropdown<T> extends EUIHoverable
     }
 
     public String makeMultiSelectString(FuncT1<String, T> optionFunc) {
-        String prospective = StringUtils.join(JavaUtils.Map(GetCurrentItems(), optionFunc), ", ");
+        String prospective = StringUtils.join(EUIUtils.Map(GetCurrentItems(), optionFunc), ", ");
         float width = button.isSmartText ? EUISmartText.GetSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
         return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected : prospective;
     }

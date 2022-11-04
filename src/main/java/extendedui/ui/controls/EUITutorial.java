@@ -56,7 +56,7 @@ public class EUITutorial extends EUIHoverable
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.75f, false))
                 .SetFontScale(0.85f)
                 .SetAlignment(0.5f,0.5f,false);
-        this.description = new EUILabel(FontHelper.tipBodyFont,
+        this.description = new EUILabel(EUIFontHelper.CardTooltipFont,
                 new RelativeHitbox(hb, hb.width * 0.8f, hb.height, hb.width * 0.1f, hb.height * 0.65f, false))
                 .SetAlignment(0.5f,0.5f,true)
                 .SetSmartText(true, false);

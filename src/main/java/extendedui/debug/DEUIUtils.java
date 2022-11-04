@@ -1,7 +1,6 @@
 package extendedui.debug;
 
 import eatyourbeets.interfaces.delegates.ActionT0;
-import extendedui.JavaUtils;
 import imgui.ImGui;
 
 public class DEUIUtils

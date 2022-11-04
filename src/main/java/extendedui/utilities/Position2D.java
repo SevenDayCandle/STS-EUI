@@ -2,7 +2,7 @@ package extendedui.utilities;
 
 import com.badlogic.gdx.math.Interpolation;
 import com.megacrit.cardcrawl.core.Settings;
-import extendedui.JavaUtils;
+import extendedui.EUIUtils;
 import org.lwjgl.util.vector.Vector4f;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
@@ -119,6 +119,6 @@ public class Position2D
     @Override
     public String toString()
     {
-        return JavaUtils.Format("[x:{0}, y:{1}, rotation:{2}, scale:{3}]", x, y, rotation, scale);
+        return EUIUtils.Format("[x:{0}, y:{1}, rotation:{2}, scale:{3}]", x, y, rotation, scale);
     }
 }

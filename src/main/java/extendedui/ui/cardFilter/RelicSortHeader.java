@@ -7,8 +7,8 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButtonListener;
 import extendedui.EUI;
+import extendedui.EUIUtils;
 import extendedui.EUIRM;
-import extendedui.JavaUtils;
 import extendedui.ui.EUIBase;
 import extendedui.ui.controls.EUIRelicGrid;
 import org.apache.commons.lang3.StringUtils;
@@ -65,7 +65,7 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         this.originalGroup = new ArrayList<>(grid.relicGroup);
 
         if (RelicKeywordFilters.CustomModule != null) {
-            RelicKeywordFilters.CustomModule.ProcessGroup(JavaUtils.Map(grid.relicGroup, r -> r.relic));
+            RelicKeywordFilters.CustomModule.ProcessGroup(EUIUtils.Map(grid.relicGroup, r -> r.relic));
         }
         for (SortHeaderButton button : buttons)
         {
@@ -138,18 +138,18 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
                 this.grid.relicGroup = EUI.RelicFilters.ApplyInfoFilters(originalGroup);
             }
             didChangeOrder(lastUsedButton, isAscending);
-            EUI.RelicFilters.Refresh(JavaUtils.Map(grid.relicGroup, group -> group.relic));
+            EUI.RelicFilters.Refresh(EUIUtils.Map(grid.relicGroup, group -> group.relic));
         }
     }
 
     public ArrayList<AbstractRelic> GetRelics()
     {
-        return JavaUtils.Map(grid.relicGroup, r -> r.relic);
+        return EUIUtils.Map(grid.relicGroup, r -> r.relic);
     }
 
     public ArrayList<AbstractRelic> GetOriginalRelics()
     {
-        return JavaUtils.Map(originalGroup, r -> r.relic);
+        return EUIUtils.Map(originalGroup, r -> r.relic);
     }
 
     protected int SortBySeen(EUIRelicGrid.RelicInfo a, EUIRelicGrid.RelicInfo b)

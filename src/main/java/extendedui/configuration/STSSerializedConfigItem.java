@@ -1,7 +1,7 @@
 package extendedui.configuration;
 
 import com.google.gson.reflect.TypeToken;
-import extendedui.JavaUtils;
+import extendedui.EUIUtils;
 
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
@@ -15,16 +15,16 @@ public class STSSerializedConfigItem<T> extends STSConfigItem<T>
 
     protected T ParseValue(String raw) {
         try {
-            return (T) JavaUtils.Deserialize(raw, DefaultValue.getClass());
+            return (T) EUIUtils.Deserialize(raw, DefaultValue.getClass());
         }
         catch (Exception e) {
-            JavaUtils.LogError(this, "Failed to load preference for " + Key + ", value was: " + raw);
+            EUIUtils.LogError(this, "Failed to load preference for " + Key + ", value was: " + raw);
             e.printStackTrace();
         }
         return DefaultValue;
     }
 
     protected String Serialize() {
-        return JavaUtils.Serialize(Value);
+        return EUIUtils.Serialize(Value);
     }
 }

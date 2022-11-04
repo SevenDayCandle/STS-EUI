@@ -3,7 +3,7 @@ package extendedui.utilities;
 import eatyourbeets.interfaces.delegates.FuncT0;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import eatyourbeets.interfaces.delegates.FuncT2;
-import extendedui.JavaUtils;
+import extendedui.EUIUtils;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 
@@ -60,7 +60,7 @@ public class GenericCondition<T>
             return conditionT0.Invoke();
         }
 
-        JavaUtils.LogWarning(this, "No Condition found: " + getClass().getName());
+        EUIUtils.LogWarning(this, "No Condition found: " + getClass().getName());
         return true;
     }
 }

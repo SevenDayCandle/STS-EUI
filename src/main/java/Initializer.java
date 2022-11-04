@@ -13,7 +13,6 @@ import extendedui.patches.EUIKeyword;
 import extendedui.ui.tooltips.EUITooltip;
 import org.apache.logging.log4j.LogManager;
 import extendedui.configuration.EUIConfiguration;
-import extendedui.utilities.EUIFontHelper;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -38,6 +37,7 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
 
     public Initializer()
     {
+        EUIConfiguration.Load();
         BaseMod.subscribe(this);
     }
 
@@ -62,13 +62,12 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
         String language = Settings.language.name().toLowerCase();
         this.loadUIStrings("eng");
         this.loadUIStrings(language);
-        EUIFontHelper.Initialize();
     }
 
     @Override
     public void receivePostInitialize()
     {
-        EUIConfiguration.Load();
+        EUIConfiguration.PostInitialize();
         EUI.Initialize();
         EUI.RegisterGrammar(loadKeywords("eng", JSON_KEYWORD_EXTENSION));
         EUI.RegisterKeywordIcons();
@@ -80,7 +79,7 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     private Map<String, EUIKeyword> loadKeywords(String language, String path) {
         FileHandle handle = Gdx.files.internal(PATH + language + path);
         if (handle.exists()) {
-            return JavaUtils.Deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
+            return EUIUtils.Deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
         }
         return new HashMap<>();
     }
@@ -89,7 +88,7 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     {
         FileHandle handle = Gdx.files.internal(PATH + language + JSON_KEYWORD);
         if (handle.exists()) {
-            Map<String, EUIKeyword> keywords = JavaUtils.Deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
+            Map<String, EUIKeyword> keywords = EUIUtils.Deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
             // Find standard tooltips. These tooltips only appear in the filters screen
             for (Map.Entry<String, EUIKeyword> pair : keywords.entrySet()) {
                 EUIKeyword keyword = pair.getValue();

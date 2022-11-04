@@ -34,7 +34,10 @@ import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.patches.EUIKeyword;
 import extendedui.text.EUISmartText;
-import extendedui.utilities.*;
+import extendedui.utilities.ClassUtils;
+import extendedui.utilities.ColoredString;
+import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.Mathf;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -88,6 +91,7 @@ public class EUITooltip
     public boolean canHighlight = true;
     public boolean canFilter = true;
     public boolean canRender = true;
+    public boolean renderBg = true;
     public boolean useLogic = false;
     public float iconMulti_H = 1;
     public float iconMulti_W = 1;
@@ -246,7 +250,7 @@ public class EUITooltip
 
     public static void QueueTooltips(Collection<EUITooltip> tips)
     {
-        float estHeight = JavaUtils.Sum(tips, EUITooltip::Height);
+        float estHeight = EUIUtils.Sum(tips, EUITooltip::Height);
         float x = InputHelper.mX;
         float y = InputHelper.mY;
         x += (x < Settings.WIDTH * 0.75f) ? (Settings.scale * 40f) : -(BOX_W + (Settings.scale * 40f));
@@ -316,7 +320,7 @@ public class EUITooltip
 
     public static void RenderFromCard(SpriteBatch sb)
     {
-        AbstractCard card = JavaUtils.SafeCast(provider, AbstractCard.class);
+        AbstractCard card = EUIUtils.SafeCast(provider, AbstractCard.class);
         if (card == null)
         {
             return;
@@ -431,7 +435,7 @@ public class EUITooltip
 
     public static void RenderFromPotion(SpriteBatch sb)
     {
-        AbstractPotion potion = JavaUtils.SafeCast(provider, AbstractPotion.class);
+        AbstractPotion potion = EUIUtils.SafeCast(provider, AbstractPotion.class);
         if (potion == null)
         {
             return;
@@ -477,7 +481,7 @@ public class EUITooltip
 
     public static void RenderFromRelic(SpriteBatch sb)
     {
-        AbstractRelic relic = JavaUtils.SafeCast(provider, AbstractRelic.class);
+        AbstractRelic relic = EUIUtils.SafeCast(provider, AbstractRelic.class);
         if (relic == null)
         {
             return;
@@ -523,7 +527,7 @@ public class EUITooltip
 
     public static void RenderFromBlight(SpriteBatch sb)
     {
-        AbstractBlight blight = JavaUtils.SafeCast(provider, AbstractBlight.class);
+        AbstractBlight blight = EUIUtils.SafeCast(provider, AbstractBlight.class);
         if (blight == null)
         {
             return;
@@ -678,7 +682,7 @@ public class EUITooltip
     }
 
     public float Height() {
-        BitmapFont descriptionFont = provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
+        BitmapFont descriptionFont = GetTooltipBodyFont();
         String desc = Description();
         final float textHeight = EUISmartText.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
         final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descriptionFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
@@ -695,7 +699,8 @@ public class EUITooltip
             UpdateCycleText();
         }
 
-        BitmapFont descriptionFont = provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
+        BitmapFont descriptionFont = GetTooltipBodyFont();
+        BitmapFont headerFont = GetTooltipTitleFont();
         String desc = Description();
 
         final float textHeight = EUISmartText.GetSmartHeight(descriptionFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
@@ -703,24 +708,27 @@ public class EUITooltip
         final float subHeaderTextHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descriptionFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
         final float h = (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
 
-        sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
-        sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, BOX_W, BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BODY, x + SHADOW_DIST_X, y - h - BOX_EDGE_H - SHADOW_DIST_Y, BOX_W, h + BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BOT, x + SHADOW_DIST_X, y - h - BOX_BODY_H - SHADOW_DIST_Y, BOX_W, BOX_EDGE_H);
-        sb.setColor(Color.WHITE);
-        sb.draw(ImageMaster.KEYWORD_TOP, x, y, BOX_W, BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BODY, x, y - h - BOX_EDGE_H, BOX_W, h + BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, BOX_W, BOX_EDGE_H);
+        if (renderBg)
+        {
+            sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
+            sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, BOX_W, BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_BODY, x + SHADOW_DIST_X, y - h - BOX_EDGE_H - SHADOW_DIST_Y, BOX_W, h + BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_BOT, x + SHADOW_DIST_X, y - h - BOX_BODY_H - SHADOW_DIST_Y, BOX_W, BOX_EDGE_H);
+            sb.setColor(Color.WHITE);
+            sb.draw(ImageMaster.KEYWORD_TOP, x, y, BOX_W, BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_BODY, x, y - h - BOX_EDGE_H, BOX_W, h + BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, BOX_W, BOX_EDGE_H);
+        }
 
         if (icon != null)
         {
             // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
             renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, 28 * iconMulti_W, 28 * iconMulti_H);
-            FontHelper.renderFontLeftTopAligned(sb, FontHelper.tipHeaderFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
         else
         {
-            FontHelper.renderFontLeftTopAligned(sb, FontHelper.tipHeaderFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
 
         if (!StringUtils.isEmpty(desc))
@@ -751,6 +759,16 @@ public class EUITooltip
         }
 
         return h;
+    }
+
+    protected BitmapFont GetTooltipBodyFont()
+    {
+        return provider == null ? FontHelper.tipBodyFont : EUIFontHelper.CardTooltipFont;
+    }
+
+    protected BitmapFont GetTooltipTitleFont()
+    {
+        return provider == null ? FontHelper.tipHeaderFont : EUIFontHelper.CardTooltipTitleFont_Normal;
     }
 
     public EUITooltip SetChild(EUITooltip other)
@@ -856,6 +874,13 @@ public class EUITooltip
         return this;
     }
 
+    public EUITooltip RenderBackground(boolean value)
+    {
+        this.renderBg = value;
+
+        return this;
+    }
+
     public EUITooltip ShowText(boolean value)
     {
         this.canRender = value;
@@ -955,7 +980,7 @@ public class EUITooltip
         if (plural == null) {
             plural = EUIRM.Strings.Plural(title);
         }
-        return useLogic ? EUISmartText.ParseLogicString(JavaUtils.Format(plural.substring(1), amount)) : plural;
+        return useLogic ? EUISmartText.ParseLogicString(EUIUtils.Format(plural.substring(1), amount)) : plural;
     }
 
     public String Present() {

@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.EUI;
-import extendedui.JavaUtils;
+import extendedui.EUIUtils;
 
 public class DraggableHitbox extends AdvancedHitbox
 {
@@ -116,8 +116,8 @@ public class DraggableHitbox extends AdvancedHitbox
                 float cxPercentage = cX * 100f / Settings.WIDTH;
                 float cyPercentage = cY * 100f / Settings.HEIGHT;
 
-                JavaUtils.LogInfo(this, "x  = {0}({1}%) , y  = {2}({3}%)", x, xPercentage, y, yPercentage);
-                JavaUtils.LogInfo(this, "cX = {0}({1}%) , cY = {2}({3}%)", cX, cxPercentage, cY, cyPercentage);
+                EUIUtils.LogInfo(this, "x  = {0}({1}%) , y  = {2}({3}%)", x, xPercentage, y, yPercentage);
+                EUIUtils.LogInfo(this, "cX = {0}({1}%) , cY = {2}({3}%)", cX, cxPercentage, cY, cyPercentage);
             }
 
             if (onDragFinish != null) {
