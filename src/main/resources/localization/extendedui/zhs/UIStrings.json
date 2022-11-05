@@ -6,14 +6,14 @@
 	  "禁用Effekseer特效",
 	  "开始游戏时清空Effekseer缓存",
 	  "进入新房间时清空Effekseer缓存",
-	  "Show All Mod Settings in Extra Settings (Warning: unstable)",
-	  "Use Separate Fonts",
-	  "Override Vanilla Fonts",
-	  "Main Font",
-	  "Card Description Font",
-	  "Card Title Font",
-	  "Tip Description Font",
-	  "Tip Title Font",
+	  "在“其他设置”中显示所有Mod设置（警告：不稳定）",
+	  "使用非统一字体",
+	  "覆盖原版字体",
+	  "主字体",
+	  "卡牌描述字体",
+	  "卡牌标题字体",
+	  "提示描述字体",
+	  "提示标题字体",
 	  "Banner Font"
 	]
   },
@@ -48,23 +48,23 @@
   "extendedui:hotkeys":
   {
 	"TEXT": [
-	  "Cycle Previews",
-	  "Open Card Pool",
-	  "Toggle Filters"
+	  "循环预览",
+	  "运行百科大全",
+	  "打开/关闭筛选器"
 	]
   },
   "extendedui:misc":
   {
 	"TEXT": [
 	  "{0} to cycle",
-	  "Type to Search",
+	  "输入以查找",
 	  "按 {0} 排序",
-	  "Clear",
-	  "Extra Settings",
+	  "重置",
+	  "其他设置",
 	  "Effekseer",
-	  "Fonts",
-	  "Requires restart",
-	  "This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well."
+	  "字体",
+	  "需要重启",
+	  "本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。"
 	]
   },
   "extendedui:ui_pool":
