@@ -69,7 +69,8 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         clearButton = new EUIButton(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).SetIsPopupCompatible(true))
                 .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
                 .SetColor(Color.FIREBRICK)
-                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.13f).SetText("Clear")
+                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.13f)
+                .SetText(EUIRM.Strings.Misc_Clear)
                 .SetOnClick(() -> this.Clear(true, isAccessedFromCardPool));
 
         keywordsSectionLabel = new EUILabel(EUIFontHelper.CardTitleFont_Small,
