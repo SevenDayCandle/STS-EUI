@@ -323,6 +323,12 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         return referenceItems.size();
     }
 
+    public void AddManualKeyword(EUITooltip tooltip, int count)
+    {
+        FilterButtons.add(new FilterKeywordButton(this, tooltip).SetOnClick(onClick).SetCardCount(count));
+        CurrentFilterCounts.merge(tooltip, count, Integer::sum);
+    }
+
     // Shorthand function to be fed to all dropdown filters
     protected void UpdateActive(boolean whatever) {CardCrawlGame.isPopupOpen = this.isActive;}
 
