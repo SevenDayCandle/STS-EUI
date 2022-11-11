@@ -73,6 +73,7 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
         EUI.RegisterKeywordIcons();
         EUIRenderHelpers.InitializeBuffers();
         STSEffekseerManager.Initialize();
+        ShaderDebugger.Initialize();
         LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
     }
 

@@ -6,10 +6,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.graphics.g2d.*;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
@@ -23,6 +20,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import eatyourbeets.interfaces.delegates.ActionT1;
+import eatyourbeets.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
 import extendedui.ui.controls.EUIImage;
@@ -46,6 +44,7 @@ public class EUIRenderHelpers
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
     protected static final String SHADER_INVERT_FRAGMENT = "shaders/invertFragment.glsl";
+    protected static final String SHADER_RAINBOW_FRAGMENT = "shaders/rainbowFragment.glsl";
     protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
     protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
 
@@ -68,6 +67,7 @@ public class EUIRenderHelpers
     protected static ShaderProgram ColorizeShader;
     protected static ShaderProgram GrayscaleShader;
     protected static ShaderProgram InvertShader;
+    protected static ShaderProgram RainbowShader;
     protected static ShaderProgram SepiaShader;
     private static FrameBuffer MaskBuffer;
 
@@ -78,7 +78,21 @@ public class EUIRenderHelpers
     public static void DrawBlended(SpriteBatch sb, BlendingMode mode, ActionT1<SpriteBatch> drawFunc) {
         sb.setBlendFunction(mode.srcFunc,mode.dstFunc);
         drawFunc.Invoke(sb);
-        sb.setBlendFunction(770,771);
+        sb.setBlendFunction(BlendingMode.Normal.srcFunc,BlendingMode.Normal.dstFunc);
+    }
+
+    public static void DrawBlended(PolygonSpriteBatch sb, BlendingMode mode, ActionT1<PolygonSpriteBatch> drawFunc) {
+        sb.setBlendFunction(mode.srcFunc,mode.dstFunc);
+        drawFunc.Invoke(sb);
+        sb.setBlendFunction(BlendingMode.Normal.srcFunc,BlendingMode.Normal.dstFunc);
+    }
+
+    public static void DrawBlendedWithShader(SpriteBatch sb, BlendingMode mode, ShaderMode shaderMode, ActionT1<SpriteBatch> drawFunc) {
+        DrawWithShader(sb, shaderMode, s -> DrawBlended(s, mode, drawFunc));
+    }
+
+    public static void DrawBlendedWithShader(PolygonSpriteBatch sb, BlendingMode mode, ShaderMode shaderMode, ActionT1<PolygonSpriteBatch> drawFunc) {
+        DrawWithShader(sb, shaderMode, s -> DrawBlended(s, mode, drawFunc));
     }
 
     public static void DrawBlur(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
@@ -88,10 +102,10 @@ public class EUIRenderHelpers
     public static void DrawBlur(SpriteBatch sb, float radius, float resolution, float xDir, float yDir, ActionT1<SpriteBatch> drawFunc) {
         ShaderProgram defaultShader = sb.getShader();
         ShaderProgram bs = GetBlurShader();
+        sb.setShader(bs);
         bs.setUniformf("u_radius", radius);
         bs.setUniformf("u_resolution", resolution);
         bs.setUniform2fv("u_dir", new float[] {xDir, yDir}, 0, 2);
-        sb.setShader(bs);
         drawFunc.Invoke(sb);
         sb.setShader(defaultShader);
     }
@@ -105,6 +119,10 @@ public class EUIRenderHelpers
     }
 
     public static void DrawBrighter(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
+        DrawWithShader(sb, GetBrightShader(), drawFunc);
+    }
+
+    public static void DrawBrighter(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
         DrawWithShader(sb, GetBrightShader(), drawFunc);
     }
 
@@ -136,6 +154,10 @@ public class EUIRenderHelpers
         DrawWithShader(sb, GetColorizeShader(), drawFunc);
     }
 
+    public static void DrawColorized(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
+        DrawWithShader(sb, GetColorizeShader(), drawFunc);
+    }
+
     public static void DrawGlowing(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawBlended(sb, BlendingMode.Glowing, drawFunc);
     }
@@ -144,12 +166,46 @@ public class EUIRenderHelpers
         DrawWithShader(sb, GetGrayscaleShader(), drawFunc);
     }
 
+    public static void DrawGrayscale(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
+        DrawWithShader(sb, GetGrayscaleShader(), drawFunc);
+    }
+
     public static void DrawInverted(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
+        DrawWithShader(sb, GetInvertShader(), drawFunc);
+    }
+
+    public static void DrawInverted(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
         DrawWithShader(sb, GetInvertShader(), drawFunc);
     }
 
     public static void DrawOverlay(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         DrawBlended(sb, BlendingMode.Overlay, drawFunc);
+    }
+
+    public static void DrawRainbow(SpriteBatch sb, ActionT1<SpriteBatch>  drawFunc) {
+        DrawRainbow(sb, EUI.Time(), 1, 1, 0.5f, drawFunc);
+    }
+
+    public static void DrawRainbow(SpriteBatch sb, float xOffset, float saturation, float brightness, float opacity, ActionT1<SpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = sb.getShader();
+        ShaderProgram rs = GetRainbowShader();
+        sb.setShader(rs);
+        SetRainbowShader(rs, xOffset, saturation, brightness, opacity);
+        drawFunc.Invoke(sb);
+        sb.setShader(defaultShader);
+    }
+
+    public static void DrawRainbow(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch>  drawFunc) {
+        DrawRainbow(pb, EUI.Time(), 1, 1, 0.5f, drawFunc);
+    }
+
+    public static void DrawRainbow(PolygonSpriteBatch pb, float xOffset, float saturation, float brightness, float opacity, ActionT1<PolygonSpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = pb.getShader();
+        ShaderProgram rs = GetRainbowShader();
+        pb.setShader(rs);
+        SetRainbowShader(rs, xOffset, saturation, brightness, opacity);
+        drawFunc.Invoke(pb);
+        pb.setShader(defaultShader);
     }
 
     public static void DrawScreen(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
@@ -160,11 +216,44 @@ public class EUIRenderHelpers
         DrawWithShader(sb, GetSepiaShader(), drawFunc);
     }
 
+    public static void DrawSepia(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
+        DrawWithShader(sb, GetSepiaShader(), drawFunc);
+    }
+
+    public static void DrawWithShader(SpriteBatch sb, ShaderMode shader, ActionT1<SpriteBatch> drawFunc) {
+        if (shader != null)
+        {
+            shader.Draw(sb, drawFunc);
+        }
+        else
+        {
+            drawFunc.Invoke(sb);
+        }
+    }
+
+    public static void DrawWithShader(PolygonSpriteBatch sb, ShaderMode shader, ActionT1<PolygonSpriteBatch> drawFunc) {
+        if (shader != null)
+        {
+            shader.Draw(sb, drawFunc);
+        }
+        else
+        {
+            drawFunc.Invoke(sb);
+        }
+    }
+
     public static void DrawWithShader(SpriteBatch sb, ShaderProgram shader, ActionT1<SpriteBatch> drawFunc) {
         ShaderProgram defaultShader = sb.getShader();
         sb.setShader(shader);
         drawFunc.Invoke(sb);
         sb.setShader(defaultShader);
+    }
+
+    public static void DrawWithShader(PolygonSpriteBatch pb, ShaderProgram shader, ActionT1<PolygonSpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = pb.getShader();
+        pb.setShader(shader);
+        drawFunc.Invoke(pb);
+        pb.setShader(defaultShader);
     }
 
     // Not public because blur needs parameters to use properly
@@ -214,6 +303,21 @@ public class EUIRenderHelpers
             e.printStackTrace();
             return null;
         }
+    }
+
+    protected static ShaderProgram GetRainbowShader() {
+        if (RainbowShader == null) {
+            RainbowShader = InitializeShader(SHADER_VERTEX, SHADER_RAINBOW_FRAGMENT);
+        }
+        return RainbowShader;
+    }
+
+    protected static ShaderProgram SetRainbowShader(ShaderProgram rs, float xOffset, float saturation, float brightness, float opacity) {
+        rs.setUniformf("u_time", xOffset);
+        rs.setUniformf("u_saturation", saturation);
+        rs.setUniformf("u_brightness", brightness);
+        rs.setUniformf("u_opacity", opacity);
+        return rs;
     }
 
     public static ShaderProgram GetSepiaShader() {
@@ -671,27 +775,55 @@ public class EUIRenderHelpers
         Invert,
         Sepia,
         Bright,
-        Colorize;
+        Colorize,
+        Rainbow;
 
         public void Draw(SpriteBatch sb, ActionT1<SpriteBatch> drawImpl) {
             switch (this) {
+                case Rainbow:
+                    EUIRenderHelpers.DrawRainbow(sb, drawImpl);
                 case Grayscale:
-                    EUIRenderHelpers.DrawGrayscale(sb, drawImpl);
-                    return;
                 case Invert:
-                    EUIRenderHelpers.DrawInverted(sb, drawImpl);
-                    return;
                 case Sepia:
-                    EUIRenderHelpers.DrawSepia(sb, drawImpl);
-                    return;
                 case Bright:
-                    EUIRenderHelpers.DrawBrighter(sb, drawImpl);
-                    return;
                 case Colorize:
-                    EUIRenderHelpers.DrawColorized(sb, drawImpl);
+                    EUIRenderHelpers.DrawWithShader(sb, GetShaderProgram(), drawImpl);
                     return;
             }
             drawImpl.Invoke(sb);
+        }
+
+        public void Draw(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawImpl) {
+            switch (this) {
+                case Rainbow:
+                    EUIRenderHelpers.DrawRainbow(sb, drawImpl);
+                case Grayscale:
+                case Invert:
+                case Sepia:
+                case Bright:
+                case Colorize:
+                    EUIRenderHelpers.DrawWithShader(sb, GetShaderProgram(), drawImpl);
+                    return;
+            }
+            drawImpl.Invoke(sb);
+        }
+
+        public ShaderProgram GetShaderProgram()
+        {
+            switch (this)
+            {
+                case Grayscale:
+                    return GetGrayscaleShader();
+                case Invert:
+                    return GetInvertShader();
+                case Sepia:
+                    return GetSepiaShader();
+                case Bright:
+                    return GetBrightShader();
+                case Colorize:
+                    return GetColorizeShader();
+            }
+            return null;
         }
     }
 }
