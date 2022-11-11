@@ -292,10 +292,10 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     public void UpdateImpl()
     {
         OriginsDropdown.SetPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
-        CostDropdown.SetPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
-        RaritiesDropdown.SetPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
-        TypesDropdown.SetPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
-        NameInput.SetPosition(hb.x + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).TryUpdate();
+        CostDropdown.SetPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).TryUpdate();
+        RaritiesDropdown.SetPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).TryUpdate();
+        TypesDropdown.SetPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).TryUpdate();
+        NameInput.SetPosition(hb.x + SPACING * 2.05f, DRAW_START_Y + scrollDelta - SPACING * 3).TryUpdate();
         DescriptionInput.SetPosition(NameInput.hb.cX + NameInput.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).TryUpdate();
 
         if (CustomModule != null)

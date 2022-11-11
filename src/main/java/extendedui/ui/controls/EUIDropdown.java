@@ -365,6 +365,11 @@ public class EUIDropdown<T> extends EUIHoverable
                 .UpdateAlignment();
     }
 
+    public int Size()
+    {
+        return this.rows.size();
+    }
+
     public void Autosize() {
 
         this.rowWidth = CalculateRowWidth();
