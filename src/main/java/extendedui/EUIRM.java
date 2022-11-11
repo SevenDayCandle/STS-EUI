@@ -178,9 +178,10 @@ public class EUIRM
         public final String UI_NoMatch = StringsUIFilter.TEXT[8];
         public final String UI_BaseGame = StringsUIFilter.TEXT[9];
         public final String UI_NameSearch = StringsUIFilter.TEXT[10];
-        public final String UI_Basic = StringsUIFilter.TEXT[11];
-        public final String UI_Seen = StringsUIFilter.TEXT[12];
-        public final String UI_Unseen = StringsUIFilter.TEXT[13];
+        public final String UI_DescriptionSearch = StringsUIFilter.TEXT[11];
+        public final String UI_Basic = StringsUIFilter.TEXT[12];
+        public final String UI_Seen = StringsUIFilter.TEXT[13];
+        public final String UI_Unseen = StringsUIFilter.TEXT[14];
 
         public final String KeyToCycle(String keyName) {
             return EUIUtils.Format(Misc_KeyToCycle, keyName);

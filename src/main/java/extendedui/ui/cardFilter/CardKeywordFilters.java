@@ -64,7 +64,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     public final EUIDropdown<AbstractCard.CardRarity> RaritiesDropdown;
     public final EUIDropdown<AbstractCard.CardType> TypesDropdown;
     public final EUIDropdown<AbstractCard.CardColor> ColorsDropdown;
+    public final EUITextBoxInput DescriptionInput;
     public final EUITextBoxInput NameInput;
+    public String CurrentDescription;
     public String CurrentName;
 
     public CardKeywordFilters()
@@ -130,7 +132,22 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .SetHeaderSpacing(1f)
                 .SetColors(Color.GRAY, Settings.CREAM_COLOR)
                 .SetAlignment(0.5f, 0.1f)
-                .SetFont(EUIFontHelper.CardTitleFont_Small, 0.8f)
+                .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
+                .SetBackgroundTexture(EUIRM.Images.RectangularButton.Texture());
+        DescriptionInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.Texture(),
+                new AdvancedHitbox(0, 0, Scale(240), Scale(40)).SetIsPopupCompatible(true))
+                .SetOnComplete(s -> {
+                    CurrentDescription = s;
+                    if (onClick != null)
+                    {
+                        onClick.Invoke(null);
+                    }
+                })
+                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_DescriptionSearch)
+                .SetHeaderSpacing(1f)
+                .SetColors(Color.GRAY, Settings.CREAM_COLOR)
+                .SetAlignment(0.5f, 0.1f)
+                .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
                 .SetBackgroundTexture(EUIRM.Images.RectangularButton.Texture());
     }
 
@@ -143,7 +160,12 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     @Override
     public boolean AreFiltersEmpty()
     {
-        return (CurrentName == null || CurrentName.isEmpty()) && CurrentColors.isEmpty() && CurrentOrigins.isEmpty() && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty() && CurrentCosts.isEmpty() && CurrentRarities.isEmpty() && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.IsEmpty());
+        return (CurrentName == null || CurrentName.isEmpty())
+                && (CurrentDescription == null || CurrentDescription.isEmpty())
+                && CurrentColors.isEmpty() && CurrentOrigins.isEmpty()
+                && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty()
+                && CurrentCosts.isEmpty() && CurrentRarities.isEmpty()
+                && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.IsEmpty());
     }
 
     @Override
@@ -219,6 +241,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 || RaritiesDropdown.AreAnyItemsHovered()
                 || TypesDropdown.AreAnyItemsHovered()
                 || NameInput.hb.hovered
+                || DescriptionInput.hb.hovered
                 || (CustomModule != null && CustomModule.IsHovered());
     }
 
@@ -236,11 +259,13 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         CurrentRarities.clear();
         CurrentTypes.clear();
         CurrentName = null;
+        CurrentDescription = null;
         CostDropdown.SetSelectionIndices(null, false);
         OriginsDropdown.SetSelectionIndices(null, false);
         TypesDropdown.SetSelectionIndices(null, false);
         RaritiesDropdown.SetSelectionIndices(null, false);
         NameInput.SetText("");
+        DescriptionInput.SetText("");
         if (CustomModule != null)
         {
             CustomModule.Reset();
@@ -255,6 +280,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         RaritiesDropdown.TryRender(sb);
         TypesDropdown.TryRender(sb);
         NameInput.TryRender(sb);
+        DescriptionInput.TryRender(sb);
 
         if (CustomModule != null)
         {
@@ -270,6 +296,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         RaritiesDropdown.SetPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
         TypesDropdown.SetPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
         NameInput.SetPosition(hb.x + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).TryUpdate();
+        DescriptionInput.SetPosition(NameInput.hb.cX + NameInput.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).TryUpdate();
 
         if (CustomModule != null)
         {
@@ -353,6 +380,13 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
             //Name check
             if (CurrentName != null && !CurrentName.isEmpty()) {
                 if (c.name == null || !c.name.toLowerCase().contains(CurrentName.toLowerCase())) {
+                    return false;
+                }
+            }
+
+            //Description check
+            if (CurrentDescription != null && !CurrentDescription.isEmpty()) {
+                if (c.rawDescription == null || !c.rawDescription.toLowerCase().contains(CurrentDescription.toLowerCase())) {
                     return false;
                 }
             }

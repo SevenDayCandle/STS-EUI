@@ -4,7 +4,7 @@
   "author_list": ["PinaColada","EatYourBeetS"],
   "description": "Adds a screen check on the current card pool during a run and a filtering menu for this screen and the card library filters. Also serves as a utility library for rendering objects and creating GUI elements.",
   "credits" : "Adapts code from https://github.com/EatYourBeetS/STS-AnimatorMod, https://github.com/SrJohnathan/gdx-effekseer. \n DLL libraries: https://github.com/effekseer/EffekseerForMultiLanguages \n Shaders: Landon Manning",
-  "version": "3.0.0",
+  "version": "3.1.0",
   "sts_version": "12-22-2020",
   "mts_version": "3.3.0",
   "dependencies": ["basemod", "stslib"],
