@@ -2,6 +2,7 @@ package extendedui;
 
 import basemod.BaseMod;
 import basemod.interfaces.ImGuiSubscriber;
+import basemod.interfaces.OnStartBattleSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
@@ -225,7 +226,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
     }
 
     /**
-     Force an animation to stop playing
+     Force all animations to stop playing
      */
     public static void StopAll(){
         if (Enabled) {

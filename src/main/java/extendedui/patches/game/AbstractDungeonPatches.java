@@ -3,10 +3,12 @@ package extendedui.patches.game;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
+import com.megacrit.cardcrawl.core.OverlayMenu;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
 import extendedui.EUI;
+import extendedui.STSEffekseerManager;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 
@@ -80,6 +82,21 @@ public class AbstractDungeonPatches {
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
             {
                 Matcher finalMatcher = new Matcher.MethodCallMatcher(DynamicBanner.class, "render");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
+        @SpireInsertPatch(locator = Locator2.class)
+        public static void Insert2(AbstractDungeon __instance, SpriteBatch sb)
+        {
+            STSEffekseerManager.Update();
+        }
+
+        private static class Locator2 extends SpireInsertLocator
+        {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
+            {
+                Matcher finalMatcher = new Matcher.MethodCallMatcher(OverlayMenu.class, "render");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }
