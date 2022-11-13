@@ -59,6 +59,26 @@ public class EUIStaticCardGrid extends EUICardGrid
         }
     }
 
+    public void ForceUpdateCardPositions()
+    {
+        int row = 0;
+        int column = 0;
+        for (int i = Math.max(0, currentRow * ROW_SIZE); i < Math.min((currentRow + visibleRowCount) * ROW_SIZE, cards.group.size()); i++) {
+            AbstractCard card = cards.group.get(i);
+            card.current_x = card.target_x = (DRAW_START_X * draw_x) + (column * PAD_X);
+            card.current_y = card.target_y = draw_top_y - (row * pad_y);
+            card.drawScale = card.targetDrawScale = target_scale;
+            card.hb.move(card.current_x, card.current_y);
+
+            column += 1;
+            if (column >= ROW_SIZE)
+            {
+                column = 0;
+                row += 1;
+            }
+        }
+    }
+
     @Override
     protected void RenderCards(SpriteBatch sb)
     {

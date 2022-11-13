@@ -25,11 +25,11 @@ public class EUIToggle extends EUIHoverable
     public boolean interactable = true;
 
     public CInputAction controllerAction = CInputActionSet.select;
-    public EUIImage untickedImage = new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED);
-    public EUIImage tickedImage = new EUIImage(ImageMaster.COLOR_TAB_BOX_TICKED);
-    public EUIImage backgroundImage = null;
     public Color defaultColor = Settings.CREAM_COLOR.cpy();
     public Color hoveredColor = Settings.GOLD_COLOR.cpy();
+    public EUIImage untickedImage;
+    public EUIImage tickedImage;
+    public EUIImage backgroundImage = null;
     public BitmapFont font = EUIFontHelper.CardTooltipTitleFont_Large;
     public float fontSize = 1;
     public float tickSize = 48;
@@ -37,7 +37,14 @@ public class EUIToggle extends EUIHoverable
 
     public EUIToggle(AdvancedHitbox hb)
     {
+        this(hb, new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED), new EUIImage(ImageMaster.COLOR_TAB_BOX_TICKED));
+    }
+
+    public EUIToggle(AdvancedHitbox hb, EUIImage untickedImage, EUIImage tickedImage)
+    {
         super(hb);
+        this.untickedImage = untickedImage;
+        this.tickedImage = tickedImage;
     }
 
     public EUIToggle SetFontColors(Color defaultColor, Color hoveredColor)

@@ -23,6 +23,7 @@ public class EUISmartText
     public static final Color INDIGO_TEXT_COLOR = new Color(0.65F, 0.37F, 1.F, 1F);
     public static final Color PINK_TEXT_COLOR = new Color(1.0F, 0.37F, 0.65F, 1F);
     public static final float CARD_ENERGY_IMG_WIDTH = 26.0F * Settings.scale;
+    private static final String NEWLINE = "NL";
     private static final StringBuilder builder = new StringBuilder();
     private static final GlyphLayout layout = new GlyphLayout();
     private static Character currentChar;
@@ -152,26 +153,6 @@ public class EUISmartText
     {
         EUITooltip tooltip = EUITooltip.FindByID(id);
         return (tooltip != null) ? tooltip.backgroundColor : null;
-    }
-
-    private static boolean HasNext(int offset, char target)
-    {
-        offset += index;
-        if (offset < currentText.length())
-        {
-            return currentText.charAt(offset) == target;
-        }
-        return false;
-    }
-
-    private static boolean HasWhitespace(int offset)
-    {
-        offset += index;
-        if (offset < currentText.length())
-        {
-            return Character.isWhitespace(currentText.charAt(offset));
-        }
-        return false;
     }
 
     private static void ObtainBlockColor()
@@ -375,13 +356,15 @@ public class EUISmartText
                             String output = EUIUtils.PopBuilder(builder);
                             if (!output.isEmpty())
                             {
-                                WriteWord(sb, output, x, y, lineWidth, lineSpacing);
-                            }
-                            // Base game newlines
-                            if (HasNext(1, 'N') && HasNext(2, 'L') && HasWhitespace(3))
-                            {
-                                WriteNewline(lineSpacing);
-                                index += 3;
+                                // Base game newlines
+                                if (NEWLINE.equals(output))
+                                {
+                                    WriteNewline(lineSpacing);
+                                }
+                                else
+                                {
+                                    WriteWord(sb, output, x, y, lineWidth, lineSpacing);
+                                }
                             }
                         }
                         else
@@ -445,6 +428,8 @@ public class EUISmartText
         {
             final float orbWidth = icon.getRegionWidth();
             final float orbHeight = icon.getRegionHeight();
+            final float halfOrbWidth = orbWidth / 2f;
+            final float halfOrbHeight = orbHeight / 2f;
             final float scaleX = imageSize / orbWidth;
             final float scaleY = imageSize / orbHeight;
 
@@ -457,14 +442,14 @@ public class EUISmartText
                     if (backgroundColor != null)
                     {
                         sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.Images.Base_Badge.Texture(), x - orbWidth / 2f + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * orbHeight / 2f - 8f * Settings.scale,
-                                orbWidth / 2f, orbHeight / 2f,
+                        sb.draw(EUIRM.Images.Base_Badge.Texture(), x - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
+                                halfOrbWidth, halfOrbHeight,
                                 orbWidth, orbHeight, scaleX, scaleY, 0f,
                                 icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
                                 icon.getRegionHeight(), false, false);
                     }
                     sb.setColor(mainColor);
-                    sb.draw(icon, x - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
+                    sb.draw(icon, x - halfOrbWidth + 13f * Settings.scale, y + curHeight - halfOrbHeight - 8f * Settings.scale, halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f);
                 }
                 curWidth = imageSize + spaceWidth;
             }
@@ -475,13 +460,13 @@ public class EUISmartText
                     if (backgroundColor != null)
                     {
                         sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.Images.Base_Badge.Texture(), x + curWidth - orbWidth / 2f + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * orbHeight / 2f - 8f * Settings.scale,
-                                orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f,
+                        sb.draw(EUIRM.Images.Base_Badge.Texture(), x + curWidth - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
+                                halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f,
                                 icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
                                 icon.getRegionHeight(), false, false);
                     }
                     sb.setColor(mainColor);
-                    sb.draw(icon, x + curWidth - orbWidth / 2f + 13f * Settings.scale, y + curHeight - orbHeight / 2f - 8f * Settings.scale, orbWidth / 2f, orbHeight / 2f, orbWidth, orbHeight, scaleX, scaleY, 0f);
+                    sb.draw(icon, x + curWidth - halfOrbWidth + 13f * Settings.scale, y + curHeight - halfOrbHeight - 8f * Settings.scale, halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f);
                 }
 
                 curWidth += imageSize + spaceWidth;

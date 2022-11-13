@@ -127,6 +127,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
             if (CustomModule != null) {
                 CustomModule.Open(EUI.CustomHeader.group.group);
             }
+            cardGrid.ForceUpdateCardPositions();
         }, EUI.CustomHeader.originalGroup, color, false);
         EUI.CustomHeader.UpdateForFilters();
 

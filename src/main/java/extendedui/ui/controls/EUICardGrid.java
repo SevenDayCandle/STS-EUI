@@ -19,7 +19,6 @@ import extendedui.utilities.Mathf;
 
 import java.util.HashMap;
 
-// TODO controller/keyboard support
 public class EUICardGrid extends EUICanvasGrid
 {
     protected static final float CARD_SCALE = 0.75f;
@@ -325,6 +324,27 @@ public class EUICardGrid extends EUICanvasGrid
                     card.drawScale = card.targetDrawScale = target_scale;
                 }
             }
+
+            column += 1;
+            if (column >= rowSize)
+            {
+                column = 0;
+                row += 1;
+            }
+        }
+    }
+
+    public void ForceUpdateCardPositions()
+    {
+        int row = 0;
+        int column = 0;
+        for (int i = 0; i < cards.group.size(); i++)
+        {
+            AbstractCard card = cards.group.get(i);
+            card.current_x = card.target_x = (DRAW_START_X * draw_x) + (column * pad_x);
+            card.current_y = card.target_y = draw_top_y + scrollDelta - (row * pad_y);
+            card.drawScale = card.targetDrawScale = target_scale;
+            card.hb.move(card.current_x, card.current_y);
 
             column += 1;
             if (column >= rowSize)

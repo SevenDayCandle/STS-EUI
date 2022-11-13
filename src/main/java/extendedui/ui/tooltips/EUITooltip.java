@@ -61,13 +61,13 @@ public class EUITooltip
     public static final float BOX_W = 360f * Settings.scale;
     public static final float BODY_TEXT_WIDTH = 320f * Settings.scale;
     public static final float TIP_DESC_LINE_SPACING = 26f * Settings.scale;
-    public static final float POWER_ICON_OFFSET_X = 40f * Settings.scale;
     public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
     public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
     public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
 
     private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
+    private static final String ALT_STRING = Input.Keys.toString(Input.Keys.ALT_LEFT) + "+";
     private static boolean inHand;
     private static TooltipProvider provider;
     private static TooltipProvider lastProvider;
@@ -99,6 +99,10 @@ public class EUITooltip
     public float iconMulti_W = 1;
     protected int currentDesc;
     protected FuncT0<TextureRegion> iconFunc;
+    private Float lastModNameHeight;
+    private Float lastSubHeaderHeight;
+    private Float lastTextHeight;
+    private Float lastHeight;
 
     public EUITooltip(String title, String... descriptions)
     {
@@ -683,13 +687,25 @@ public class EUITooltip
         return tooltip != null && id.equals(tooltip.id);
     }
 
+    public void InvalidateHeight()
+    {
+        lastHeight = null;
+        lastTextHeight = null;
+        lastModNameHeight = null;
+        lastSubHeaderHeight = null;
+    }
+
     public float Height() {
-        BitmapFont descFont = GetDescriptionFont();
-        String desc = Description();
-        final float textHeight = EUISmartText.GetSmartHeight(descFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-        final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
-        final float subHeaderTextHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-        return (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
+        if (lastHeight == null)
+        {
+            BitmapFont descFont = GetDescriptionFont();
+            String desc = Description();
+            lastTextHeight = EUISmartText.GetSmartHeight(descFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+            lastModNameHeight = (modName != null) ? EUISmartText.GetSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
+            lastSubHeaderHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
+            lastHeight = (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastModNameHeight + lastSubHeaderHeight) - 7f * Settings.scale);
+        }
+        return lastHeight;
     }
 
     public float Render(SpriteBatch sb, float x, float y, int index)
@@ -705,10 +721,7 @@ public class EUITooltip
         BitmapFont hFont = GetHeaderFont();
         String desc = Description();
 
-        final float textHeight = EUISmartText.GetSmartHeight(descFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-        final float modTextHeight = (modName != null) ? EUISmartText.GetSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
-        final float subHeaderTextHeight = (subHeader != null) ? EUISmartText.GetSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-        final float h = (HideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(textHeight + modTextHeight + subHeaderTextHeight) - 7f * Settings.scale);
+        final float h = Height();
 
         if (renderBg)
         {
@@ -737,7 +750,7 @@ public class EUITooltip
         {
             if (provider != null && StringUtils.isNotEmpty(id) && !inHand && index >= 0)
             {
-                FontHelper.renderFontRightTopAligned(sb, descFont, "Alt+" + (index + 1), x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, Settings.PURPLE_COLOR);
+                FontHelper.renderFontRightTopAligned(sb, descFont, ALT_STRING + (index + 1), x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, Settings.PURPLE_COLOR);
             }
             else if (subText != null)
             {
@@ -747,11 +760,11 @@ public class EUITooltip
             float yOff = y + BODY_OFFSET_Y;
             if (modName != null) {
                 FontHelper.renderFontLeftTopAligned(sb, descFont, modName.text, x + TEXT_OFFSET_X, yOff, modName.color);
-                yOff += modTextHeight;
+                yOff += lastModNameHeight;
             }
             if (subHeader != null) {
                 FontHelper.renderFontLeftTopAligned(sb, descFont, subHeader.text, x + TEXT_OFFSET_X, yOff, subHeader.color);
-                yOff += subHeaderTextHeight;
+                yOff += lastSubHeaderHeight;
             }
 
             if (!HideDescription())
@@ -893,6 +906,15 @@ public class EUITooltip
     public EUITooltip SetTitle(String title)
     {
         this.title = title;
+        InvalidateHeight();
+
+        return this;
+    }
+
+    public EUITooltip SetSubheader(ColoredString string)
+    {
+        this.subHeader = string;
+        InvalidateHeight();
 
         return this;
     }
@@ -909,6 +931,7 @@ public class EUITooltip
         else {
             this.descriptions.set(index, description);
         }
+        UpdateCycleText();
 
         return this;
     }
@@ -1026,6 +1049,7 @@ public class EUITooltip
                 subText = new ColoredString("", Settings.PURPLE_COLOR);
             }
             subText.SetText(EUIRM.Strings.KeyToCycle(EUIHotkeys.cycle.getKeyString()) + " (" + (currentDesc + 1) + "/" + descriptions.size() + ")");
+            InvalidateHeight();
         }
     }
 
