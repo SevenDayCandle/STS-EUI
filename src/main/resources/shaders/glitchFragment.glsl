@@ -11,9 +11,8 @@ precision mediump int;
 varying vec4 v_color;
 varying vec2 v_texCoords;
 uniform sampler2D u_texture;
-uniform vec2 u_texOffset;
-uniform bool colorSeparation = false;
-uniform float time = 0;
+uniform float u_time;
+uniform bool colorSeparation = true;
 uniform float amp = 0.2;
 uniform float glitchSpeed = 0.16;
 uniform float barSize = 0.25;
@@ -35,7 +34,7 @@ float insideRange(float v, float bottom, float top) {
 }
 
 void main() {
-  float timeAdjusted = floor(time * glitchSpeed * 60.0);
+  float timeAdjusted = floor(u_time * glitchSpeed * 60.0);
 
   // copy orig
   vec3 color = texture2D(u_texture, v_texCoords).rgb;

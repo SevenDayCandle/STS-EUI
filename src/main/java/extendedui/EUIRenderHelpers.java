@@ -162,7 +162,7 @@ public class EUIRenderHelpers
     }
 
     public static void DrawGlitched(SpriteBatch sb, ActionT1<SpriteBatch>  drawFunc) {
-        DrawGlitched(sb, EUI.Time_Cos(5, 2.5f), drawFunc);
+        DrawGlitched(sb, EUI.Time(), drawFunc);
     }
 
     public static void DrawGlitched(SpriteBatch sb, float xOffset, ActionT1<SpriteBatch> drawFunc) {
@@ -175,7 +175,7 @@ public class EUIRenderHelpers
     }
 
     public static void DrawGlitched(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch>  drawFunc) {
-        DrawGlitched(pb, EUI.Time_Cos(5, 2.5f), drawFunc);
+        DrawGlitched(pb, EUI.Time(), drawFunc);
     }
 
     public static void DrawGlitched(PolygonSpriteBatch pb, float xOffset, ActionT1<PolygonSpriteBatch> drawFunc) {
@@ -315,7 +315,7 @@ public class EUIRenderHelpers
     }
 
     protected static ShaderProgram SetGlitchShader(ShaderProgram rs, float xOffset) {
-        rs.setUniformf("u_texOffset", xOffset);
+        rs.setUniformf("u_time", xOffset);
         return rs;
     }
 
