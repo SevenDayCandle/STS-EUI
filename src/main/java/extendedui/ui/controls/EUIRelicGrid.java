@@ -232,6 +232,26 @@ public class EUIRelicGrid extends EUICanvasGrid
         }
     }
 
+    public void ForceUpdateRelicPositions()
+    {
+        int row = 0;
+        int column = 0;
+        for (RelicInfo relic : relicGroup)
+        {
+            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * draw_x) + (column * PAD);
+            relic.relic.currentY = relic.relic.targetY = draw_top_y + scrollDelta - (row * pad_y);
+            relic.relic.hb.update();
+            relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
+
+            column += 1;
+            if (column >= rowSize)
+            {
+                column = 0;
+                row += 1;
+            }
+        }
+    }
+
     @Override
     public void Render(SpriteBatch sb)
     {

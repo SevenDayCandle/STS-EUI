@@ -15,6 +15,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.tommyettinger.colorful.Shaders;
 import com.github.tommyettinger.colorful.rgb.ColorTools;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.blue.Rainbow;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
@@ -42,6 +43,7 @@ public class EUIRenderHelpers
 {
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.5F);
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
+    protected static final String SHADER_GLITCH_FRAGMENT = "shaders/glitchFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
     protected static final String SHADER_INVERT_FRAGMENT = "shaders/invertFragment.glsl";
     protected static final String SHADER_RAINBOW_FRAGMENT = "shaders/rainbowFragment.glsl";
@@ -65,6 +67,7 @@ public class EUIRenderHelpers
     protected static ShaderProgram BlurShader;
     protected static ShaderProgram BrighterShader;
     protected static ShaderProgram ColorizeShader;
+    protected static ShaderProgram GlitchShader;
     protected static ShaderProgram GrayscaleShader;
     protected static ShaderProgram InvertShader;
     protected static ShaderProgram RainbowShader;
@@ -156,6 +159,32 @@ public class EUIRenderHelpers
 
     public static void DrawColorized(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
         DrawWithShader(sb, GetColorizeShader(), drawFunc);
+    }
+
+    public static void DrawGlitched(SpriteBatch sb, ActionT1<SpriteBatch>  drawFunc) {
+        DrawGlitched(sb, EUI.Time_Cos(5, 2.5f), drawFunc);
+    }
+
+    public static void DrawGlitched(SpriteBatch sb, float xOffset, ActionT1<SpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = sb.getShader();
+        ShaderProgram rs = GetGlitchShader();
+        sb.setShader(rs);
+        SetGlitchShader(rs, xOffset);
+        drawFunc.Invoke(sb);
+        sb.setShader(defaultShader);
+    }
+
+    public static void DrawGlitched(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch>  drawFunc) {
+        DrawGlitched(pb, EUI.Time_Cos(5, 2.5f), drawFunc);
+    }
+
+    public static void DrawGlitched(PolygonSpriteBatch pb, float xOffset, ActionT1<PolygonSpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = pb.getShader();
+        ShaderProgram rs = GetGlitchShader();
+        pb.setShader(rs);
+        SetGlitchShader(rs, xOffset);
+        drawFunc.Invoke(pb);
+        pb.setShader(defaultShader);
     }
 
     public static void DrawGlowing(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
@@ -276,6 +305,18 @@ public class EUIRenderHelpers
             ColorizeShader = new ShaderProgram(Shaders.vertexShader, Shaders.fragmentShaderColorize);
         }
         return ColorizeShader;
+    }
+
+    protected static ShaderProgram GetGlitchShader() {
+        if (GlitchShader == null) {
+            GlitchShader = InitializeShader(SHADER_VERTEX, SHADER_GLITCH_FRAGMENT);
+        }
+        return GlitchShader;
+    }
+
+    protected static ShaderProgram SetGlitchShader(ShaderProgram rs, float xOffset) {
+        rs.setUniformf("u_texOffset", xOffset);
+        return rs;
     }
 
     public static ShaderProgram GetGrayscaleShader() {
@@ -779,10 +820,13 @@ public class EUIRenderHelpers
         Sepia,
         Bright,
         Colorize,
+        Glitch,
         Rainbow;
 
         public void Draw(SpriteBatch sb, ActionT1<SpriteBatch> drawImpl) {
             switch (this) {
+                case Glitch:
+                    EUIRenderHelpers.DrawGlitched(sb, drawImpl);
                 case Rainbow:
                     EUIRenderHelpers.DrawRainbow(sb, drawImpl);
                 case Grayscale:
@@ -798,6 +842,8 @@ public class EUIRenderHelpers
 
         public void Draw(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawImpl) {
             switch (this) {
+                case Glitch:
+                    EUIRenderHelpers.DrawGlitched(sb, drawImpl);
                 case Rainbow:
                     EUIRenderHelpers.DrawRainbow(sb, drawImpl);
                 case Grayscale:

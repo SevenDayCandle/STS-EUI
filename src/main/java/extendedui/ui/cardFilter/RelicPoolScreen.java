@@ -68,6 +68,7 @@ public class RelicPoolScreen extends AbstractScreen
             if (CustomModule != null) {
                 CustomModule.Open(EUI.RelicHeader.GetRelics());
             }
+            relicGrid.ForceUpdateRelicPositions();
         }, EUI.RelicHeader.GetOriginalRelics(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
         EUI.RelicHeader.UpdateForFilters();
 

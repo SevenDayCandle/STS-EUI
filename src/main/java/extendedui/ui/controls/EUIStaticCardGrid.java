@@ -33,7 +33,7 @@ public class EUIStaticCardGrid extends EUICardGrid
         int row = 0;
         int column = 0;
 
-        for (int i = Math.max(0, currentRow * ROW_SIZE); i < Math.min((currentRow + visibleRowCount) * ROW_SIZE, cards.group.size()); i++) {
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++) {
             AbstractCard card = cards.group.get(i);
             card.current_x = card.target_x = (DRAW_START_X * draw_x) + (column * PAD_X);
             card.current_y = card.target_y = draw_top_y - (row * pad_y);
@@ -51,7 +51,7 @@ public class EUIStaticCardGrid extends EUICardGrid
             }
 
             column += 1;
-            if (column >= ROW_SIZE)
+            if (column >= rowSize)
             {
                 column = 0;
                 row += 1;
@@ -63,7 +63,7 @@ public class EUIStaticCardGrid extends EUICardGrid
     {
         int row = 0;
         int column = 0;
-        for (int i = Math.max(0, currentRow * ROW_SIZE); i < Math.min((currentRow + visibleRowCount) * ROW_SIZE, cards.group.size()); i++) {
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++) {
             AbstractCard card = cards.group.get(i);
             card.current_x = card.target_x = (DRAW_START_X * draw_x) + (column * PAD_X);
             card.current_y = card.target_y = draw_top_y - (row * pad_y);
@@ -71,7 +71,7 @@ public class EUIStaticCardGrid extends EUICardGrid
             card.hb.move(card.current_x, card.current_y);
 
             column += 1;
-            if (column >= ROW_SIZE)
+            if (column >= rowSize)
             {
                 column = 0;
                 row += 1;
@@ -82,7 +82,7 @@ public class EUIStaticCardGrid extends EUICardGrid
     @Override
     protected void RenderCards(SpriteBatch sb)
     {
-        for (int i = Math.max(0, currentRow * ROW_SIZE); i < Math.min((currentRow + visibleRowCount) * ROW_SIZE, cards.group.size()); i++)
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++)
         {
             AbstractCard card = cards.group.get(i);
             if (card != hoveredCard)
@@ -98,11 +98,11 @@ public class EUIStaticCardGrid extends EUICardGrid
         if (card != null)
         {
             float scrollDistance = 1f / GetRowCount();
-            if (card.target_y > draw_top_y || index < currentRow * ROW_SIZE)
+            if (card.target_y > draw_top_y || index < currentRow * rowSize)
             {
                 return -scrollDistance;
             }
-            else if (card.target_y < 0 || index > (currentRow + visibleRowCount) * ROW_SIZE)
+            else if (card.target_y < 0 || index > (currentRow + visibleRowCount) * rowSize)
             {
                 return scrollDistance;
             }
@@ -122,12 +122,12 @@ public class EUIStaticCardGrid extends EUICardGrid
         int min;
         int max;
         if (prevRow < currentRow) {
-            min = (prevRow + visibleRowCount) * ROW_SIZE;
-            max = min + (currentRow - prevRow) * ROW_SIZE;
+            min = (prevRow + visibleRowCount) * rowSize;
+            max = min + (currentRow - prevRow) * rowSize;
         }
         else if (currentRow < prevRow) {
-            max = prevRow * ROW_SIZE;
-            min = max - (prevRow - currentRow) * ROW_SIZE;
+            max = prevRow * rowSize;
+            min = max - (prevRow - currentRow) * rowSize;
         }
         else {
             return;

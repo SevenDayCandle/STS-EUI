@@ -32,14 +32,35 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
         int row = 0;
         int column = 0;
 
-        for (int i = Math.max(0, currentRow * ROW_SIZE); i < Math.min((currentRow + visibleRowCount) * ROW_SIZE, relicGroup.size()); i++) {
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++) {
             RelicInfo relic = relicGroup.get(i);
             relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * draw_x) + (column * PAD);
             relic.relic.currentY = relic.relic.targetY = draw_top_y - (row * pad_y);
             UpdateHoverLogic(relic, i);
 
             column += 1;
-            if (column >= ROW_SIZE)
+            if (column >= rowSize)
+            {
+                column = 0;
+                row += 1;
+            }
+        }
+    }
+
+    public void ForceUpdateRelicPositions()
+    {
+        int row = 0;
+        int column = 0;
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++)
+        {
+            RelicInfo relic = relicGroup.get(i);
+            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * draw_x) + (column * PAD);
+            relic.relic.currentY = relic.relic.targetY = draw_top_y + scrollDelta - (row * pad_y);
+            relic.relic.hb.update();
+            relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
+
+            column += 1;
+            if (column >= rowSize)
             {
                 column = 0;
                 row += 1;
@@ -50,7 +71,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
     @Override
     protected void RenderRelics(SpriteBatch sb)
     {
-        for (int i = Math.max(0, currentRow * ROW_SIZE); i < Math.min((currentRow + visibleRowCount) * ROW_SIZE, relicGroup.size()); i++)
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++)
         {
             RenderRelic(sb, relicGroup.get(i));
         }
@@ -69,12 +90,12 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
         int min;
         int max;
         if (prevRow < currentRow) {
-            min = (prevRow + visibleRowCount) * ROW_SIZE;
-            max = min + (currentRow - prevRow) * ROW_SIZE;
+            min = (prevRow + visibleRowCount) * rowSize;
+            max = min + (currentRow - prevRow) * rowSize;
         }
         else if (currentRow < prevRow) {
-            max = prevRow * ROW_SIZE;
-            min = max - (prevRow - currentRow) * ROW_SIZE;
+            max = prevRow * rowSize;
+            min = max - (prevRow - currentRow) * rowSize;
         }
         else {
             return;
