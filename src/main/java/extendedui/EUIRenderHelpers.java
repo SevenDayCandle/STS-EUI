@@ -811,6 +811,16 @@ public class EUIRenderHelpers
             this.srcFunc = srcFunc;
             this.dstFunc = dstFunc;
         }
+
+        public void Apply(SpriteBatch sb)
+        {
+            sb.setBlendFunction(srcFunc, dstFunc);
+        }
+
+        public void Apply(PolygonSpriteBatch sb)
+        {
+            sb.setBlendFunction(srcFunc, dstFunc);
+        }
     }
 
     public enum ShaderMode {
