@@ -1,8 +1,8 @@
 package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import extendedui.utilities.Mathf;
 
 public class EUIStaticCardGrid extends EUICardGrid
 {
@@ -116,7 +116,7 @@ public class EUIStaticCardGrid extends EUICardGrid
         super.UpdateScrolling(isDraggingScrollBar);
         int rowCount = GetRowCount();
         int prevRow = currentRow;
-        currentRow = (int) Mathf.Clamp(scrollBar.currentScrollPercent * rowCount, 0, rowCount - 1);
+        currentRow = (int) MathUtils.clamp(scrollBar.currentScrollPercent * rowCount, 0, rowCount - 1);
 
         // Reset zooming of the cards newly added to the screen
         int min;

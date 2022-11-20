@@ -8,7 +8,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
-public class ClassUtils
+public class EUIClassUtils
 {
     public static <T> void GetAndSetField(Object o, String fieldName, FuncT1<T, T> valueFunc)
     {

@@ -9,6 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
@@ -34,8 +35,8 @@ import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.patches.EUIKeyword;
 import extendedui.text.EUISmartText;
-import extendedui.utilities.ClassUtils;
 import extendedui.utilities.ColoredString;
+import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.Mathf;
 import org.apache.commons.lang3.StringUtils;
@@ -191,7 +192,7 @@ public class EUITooltip
 
     public static boolean CanRenderTooltips()
     {
-        return !ClassUtils.GetFieldStatic(TipHelper.class, "renderedTipThisFrame", Boolean.class);
+        return !EUIClassUtils.GetFieldStatic(TipHelper.class, "renderedTipThisFrame", Boolean.class);
     }
 
     public static void CanRenderTooltips(boolean canRender)
@@ -1038,7 +1039,7 @@ public class EUITooltip
         if (descriptions.size() < 1) {
             return "";
         }
-        currentDesc = Mathf.Clamp(index, 0, descriptions.size() - 1);
+        currentDesc = MathUtils.clamp(index, 0, descriptions.size() - 1);
         UpdateCycleText();
         return Description();
     }

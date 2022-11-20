@@ -19,7 +19,7 @@ import extendedui.EUIRM;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.AdvancedHitbox;
-import extendedui.utilities.ClassUtils;
+import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
 
 import java.util.Comparator;
@@ -76,12 +76,12 @@ public class CustomCardLibraryScreen extends AbstractScreen
     public void Initialize(CardLibraryScreen screen) {
         if (!Initialized) {
             // Let's just re-use the hard sorting work that basemod and the base game has done for us :)
-            CardLists.put(AbstractCard.CardColor.RED, ClassUtils.GetField(screen, "redCards"));
-            CardLists.put(AbstractCard.CardColor.GREEN, ClassUtils.GetField(screen, "greenCards"));
-            CardLists.put(AbstractCard.CardColor.BLUE, ClassUtils.GetField(screen, "blueCards"));
-            CardLists.put(AbstractCard.CardColor.PURPLE, ClassUtils.GetField(screen, "purpleCards"));
-            CardLists.put(AbstractCard.CardColor.CURSE, ClassUtils.GetField(screen, "curseCards"));
-            CardLists.put(AbstractCard.CardColor.COLORLESS, ClassUtils.GetField(screen, "colorlessCards"));
+            CardLists.put(AbstractCard.CardColor.RED, EUIClassUtils.GetField(screen, "redCards"));
+            CardLists.put(AbstractCard.CardColor.GREEN, EUIClassUtils.GetField(screen, "greenCards"));
+            CardLists.put(AbstractCard.CardColor.BLUE, EUIClassUtils.GetField(screen, "blueCards"));
+            CardLists.put(AbstractCard.CardColor.PURPLE, EUIClassUtils.GetField(screen, "purpleCards"));
+            CardLists.put(AbstractCard.CardColor.CURSE, EUIClassUtils.GetField(screen, "curseCards"));
+            CardLists.put(AbstractCard.CardColor.COLORLESS, EUIClassUtils.GetField(screen, "colorlessCards"));
             CardLists.putAll(EverythingFix.Fields.cardGroupMap);
 
             // Add custom buttons. Base game colors come first.

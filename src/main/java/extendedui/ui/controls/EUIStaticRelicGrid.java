@@ -1,7 +1,7 @@
 package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import extendedui.utilities.Mathf;
+import com.badlogic.gdx.math.MathUtils;
 
 public class EUIStaticRelicGrid extends EUIRelicGrid
 {
@@ -84,7 +84,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
         super.UpdateScrolling(isDraggingScrollBar);
         int rowCount = GetRowCount();
         int prevRow = currentRow;
-        currentRow = (int) Mathf.Clamp(scrollBar.currentScrollPercent * rowCount, 0, rowCount - 1);
+        currentRow = (int) MathUtils.clamp(scrollBar.currentScrollPercent * rowCount, 0, rowCount - 1);
 
         // Reset zooming of the cards newly added to the screen
         int min;

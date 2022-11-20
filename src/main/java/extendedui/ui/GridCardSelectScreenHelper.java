@@ -12,7 +12,7 @@ import eatyourbeets.interfaces.delegates.ActionT3;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.ui.controls.EUITextBox;
 import extendedui.ui.hitboxes.AdvancedHitbox;
-import extendedui.utilities.ClassUtils;
+import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.GenericCondition;
 
@@ -89,7 +89,7 @@ public class GridCardSelectScreenHelper
         {
             if (cardGroups.size() == 1)
             {
-                ClassUtils.SetField(selectScreen, "targetGroup", cardGroups.get(0));
+                EUIClassUtils.SetField(selectScreen, "targetGroup", cardGroups.get(0));
                 Clear(false);
             }
 
@@ -110,13 +110,13 @@ public class GridCardSelectScreenHelper
 
         float lineNum = 0;
 
-        float drawStartX = ClassUtils.GetField(selectScreen, "drawStartX");
-        float drawStartY = ClassUtils.GetField(selectScreen, "drawStartY");
-        float padX = ClassUtils.GetField(selectScreen, "padX");
-        float padY = ClassUtils.GetField(selectScreen, "padY");
-        float currentDiffY = ClassUtils.GetField(selectScreen, "currentDiffY");
+        float drawStartX = EUIClassUtils.GetField(selectScreen, "drawStartX");
+        float drawStartY = EUIClassUtils.GetField(selectScreen, "drawStartY");
+        float padX = EUIClassUtils.GetField(selectScreen, "padX");
+        float padY = EUIClassUtils.GetField(selectScreen, "padY");
+        float currentDiffY = EUIClassUtils.GetField(selectScreen, "currentDiffY");
 
-        ClassUtils.SetField(selectScreen, "hoveredCard", null);
+        EUIClassUtils.SetField(selectScreen, "hoveredCard", null);
 
         for (CardGroup cardGroup : cardGroups)
         {
@@ -140,7 +140,7 @@ public class GridCardSelectScreenHelper
 
                 if (card.hb.hovered)
                 {
-                    ClassUtils.SetField(selectScreen, "hoveredCard", card);
+                    EUIClassUtils.SetField(selectScreen, "hoveredCard", card);
                 }
             }
 
@@ -157,8 +157,8 @@ public class GridCardSelectScreenHelper
             return false;
         }
 
-        float padY = ClassUtils.GetField(instance, "padY");
-        CardGroup targetCardGroup = ClassUtils.GetField(instance, "targetGroup");
+        float padY = EUIClassUtils.GetField(instance, "padY");
+        CardGroup targetCardGroup = EUIClassUtils.GetField(instance, "targetGroup");
 
         float scrollTmp = (mergedGroup.size() + 2.6f * cardGroups.size()) / 5f - 2;
         if (targetCardGroup.size() % 5 != 0)
@@ -166,15 +166,15 @@ public class GridCardSelectScreenHelper
             scrollTmp += 1;
         }
 
-        ClassUtils.SetField(instance, "scrollUpperBound", Settings.DEFAULT_SCROLL_LIMIT + scrollTmp * padY);
-        ClassUtils.SetField(instance, "prevDeckSize", targetCardGroup.size());
+        EUIClassUtils.SetField(instance, "scrollUpperBound", Settings.DEFAULT_SCROLL_LIMIT + scrollTmp * padY);
+        EUIClassUtils.SetField(instance, "prevDeckSize", targetCardGroup.size());
 
         return true;
     }
 
     public static void InvokeOnClick(GridCardSelectScreen selectScreen){
         if (onClickCard != null) {
-            onClickCard.Invoke(mergedGroup, AbstractDungeon.gridSelectScreen.selectedCards, ClassUtils.GetField(selectScreen, "hoveredCard"));
+            onClickCard.Invoke(mergedGroup, AbstractDungeon.gridSelectScreen.selectedCards, EUIClassUtils.GetField(selectScreen, "hoveredCard"));
         }
     }
 

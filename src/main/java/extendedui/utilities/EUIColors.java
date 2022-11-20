@@ -25,10 +25,10 @@ public class EUIColors
     public static Color Lerp(Color current, Color target, float amount)
     {
         current = current.cpy();
-        current.r = Mathf.Lerp(current.r, target.r, amount);
-        current.g = Mathf.Lerp(current.g, target.g, amount);
-        current.b = Mathf.Lerp(current.b, target.b, amount);
-        current.a = Mathf.Lerp(current.a, target.a, amount);
+        current.r = MathUtils.lerp(current.r, target.r, amount);
+        current.g = MathUtils.lerp(current.g, target.g, amount);
+        current.b = MathUtils.lerp(current.b, target.b, amount);
+        current.a = MathUtils.lerp(current.a, target.a, amount);
         return current;
     }
 

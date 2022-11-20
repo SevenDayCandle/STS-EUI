@@ -75,10 +75,10 @@ public class Position2D
     {
         if (duration == 0)
         {
-            x = Mathf.Max(0, x + (acceleration.x * delta));
-            y = Mathf.Max(0, y + (acceleration.y * delta));
-            rotation = Mathf.Max(0, rotation + (acceleration.rotation * delta));
-            scale = Mathf.Max(0, scale + (acceleration.scale * delta));
+            x = Math.max(0, x + (acceleration.x * delta));
+            y = Math.max(0, y + (acceleration.y * delta));
+            rotation = Math.max(0, rotation + (acceleration.rotation * delta));
+            scale = Math.max(0, scale + (acceleration.scale * delta));
             return;
         }
 
@@ -88,7 +88,7 @@ public class Position2D
         float t_r = acceleration.rotation;
         if (duration > delta)
         {
-            float m = Mathf.Min(1, delta / duration);
+            float m = Math.min(1, delta / duration);
             if (interpolation != null)
             {
                 m = interpolation.apply(m);

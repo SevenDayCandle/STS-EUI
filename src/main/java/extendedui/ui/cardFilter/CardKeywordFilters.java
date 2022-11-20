@@ -4,6 +4,7 @@ import basemod.abstracts.CustomCard;
 import basemod.helpers.TooltipInfo;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -14,8 +15,8 @@ import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
 import eatyourbeets.interfaces.delegates.ActionT1;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
-import extendedui.EUIUtils;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUITextBoxInput;
@@ -23,7 +24,6 @@ import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.FakeLibraryCard;
-import extendedui.utilities.Mathf;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -193,7 +193,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 availableMods.add(EUIGameUtils.GetModInfo(card));
                 availableRarities.add(card.rarity);
                 availableTypes.add(card.type);
-                availableCosts.add(Mathf.Clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost3Plus.lowerBound));
+                availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost3Plus.lowerBound));
                 availableColors.add(card.color);
             }
             if (CustomModule != null)

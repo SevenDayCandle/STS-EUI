@@ -11,7 +11,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
 import extendedui.EUI;
 import extendedui.EUIUtils;
-import extendedui.utilities.ClassUtils;
+import extendedui.utilities.EUIClassUtils;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 
@@ -58,7 +58,7 @@ public class RelicViewScreenPatches
             }
             if (EUI.RelicFilters.TryUpdate())
             {
-                ClassUtils.SetField(__instance, "grabbedScreen", false);
+                EUIClassUtils.SetField(__instance, "grabbedScreen", false);
             }
         }
 

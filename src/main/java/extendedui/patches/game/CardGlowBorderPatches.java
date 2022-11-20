@@ -6,7 +6,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.vfx.cardManip.CardGlowBorder;
-import extendedui.utilities.ClassUtils;
+import extendedui.utilities.EUIClassUtils;
 
 public class CardGlowBorderPatches
 {
@@ -20,7 +20,7 @@ public class CardGlowBorderPatches
         {
             if (overrideColor != null)
             {
-                Color color = ClassUtils.GetField(__instance, "color");
+                Color color = EUIClassUtils.GetField(__instance, "color");
                 if (color != null)
                 {
                     color.r = overrideColor.r;
@@ -37,7 +37,7 @@ public class CardGlowBorderPatches
         @SpirePrefixPatch
         public static void Method(CardGlowBorder __instance)
         {
-            AbstractCard card = ClassUtils.GetField(__instance, "card");
+            AbstractCard card = EUIClassUtils.GetField(__instance, "card");
             if (card.transparency < 0.9f)
             {
                 __instance.duration = 0f;

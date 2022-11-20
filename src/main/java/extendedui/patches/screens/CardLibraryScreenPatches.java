@@ -14,7 +14,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.configuration.EUIConfiguration;
-import extendedui.utilities.ClassUtils;
+import extendedui.utilities.EUIClassUtils;
 
 import java.util.ArrayList;
 
@@ -47,7 +47,7 @@ public class CardLibraryScreenPatches
                 return SpireReturn.Return();
             }
 
-            ColorTabBar tabBar = ClassUtils.GetField(screen, "colorBar");
+            ColorTabBar tabBar = EUIClassUtils.GetField(screen, "colorBar");
             ArrayList<ColorTabBarFix.ModColorTab> tabs = ReflectionHacks.getPrivateStatic(ColorTabBarFix.Fields.class, "modTabs");
             if (tabBar.curTab != ColorTabBarFix.Enums.MOD)
             {
@@ -69,9 +69,9 @@ public class CardLibraryScreenPatches
             Hitbox upgradeHitbox = tabBar.viewUpgradeHb;
             upgradeHitbox.width = 260 * Settings.scale;
 
-            if (ClassUtils.GetField(screen, "sortHeader") != EUI.CustomHeader)
+            if (EUIClassUtils.GetField(screen, "sortHeader") != EUI.CustomHeader)
             {
-                ClassUtils.SetField(screen, "sortHeader", EUI.CustomHeader);
+                EUIClassUtils.SetField(screen, "sortHeader", EUI.CustomHeader);
             }
 
             EUI.CustomHeader.SetupButtons();
@@ -103,7 +103,7 @@ public class CardLibraryScreenPatches
             }
             if (EUI.CardFilters.TryUpdate())
             {
-                ClassUtils.SetField(__instance, "grabbedScreen", false);
+                EUIClassUtils.SetField(__instance, "grabbedScreen", false);
             }
             return SpireReturn.Continue();
         }

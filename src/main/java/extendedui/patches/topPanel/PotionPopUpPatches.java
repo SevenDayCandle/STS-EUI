@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.ui.panels.PotionPopUp;
 import extendedui.EUIUtils;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
-import extendedui.utilities.ClassUtils;
+import extendedui.utilities.EUIClassUtils;
 import javassist.CtBehavior;
 
 public class PotionPopUpPatches {
@@ -19,9 +19,9 @@ public class PotionPopUpPatches {
         @SpireInsertPatch(locator = Locator.class)
         public static SpireReturn<Void> Insert(PotionPopUp __instance)
         {
-            TooltipProvider p = EUIUtils.SafeCast(ClassUtils.GetField(__instance, "x"), TooltipProvider.class);
+            TooltipProvider p = EUIUtils.SafeCast(EUIClassUtils.GetField(__instance, "x"), TooltipProvider.class);
             if (p != null) {
-                EUITooltip.QueueTooltips(p.GetTips(), ClassUtils.GetFieldAsType(__instance, "x", Float.class) + 180.0F * Settings.scale, ClassUtils.GetFieldAsType(__instance, "y", Float.class)  + 70.0F * Settings.scale);
+                EUITooltip.QueueTooltips(p.GetTips(), EUIClassUtils.GetFieldAsType(__instance, "x", Float.class) + 180.0F * Settings.scale, EUIClassUtils.GetFieldAsType(__instance, "y", Float.class)  + 70.0F * Settings.scale);
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();

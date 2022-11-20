@@ -379,7 +379,7 @@ public class EUICardGrid extends EUICanvasGrid
 
             if (targetIndex != hoveredIndex)
             {
-                targetIndex = Mathf.Clamp(targetIndex, 0, cards.group.size() - 1);
+                targetIndex = MathUtils.clamp(targetIndex, 0, cards.group.size() - 1);
                 AbstractCard card = cards.group.get(targetIndex);
                 if (card != null)
                 {

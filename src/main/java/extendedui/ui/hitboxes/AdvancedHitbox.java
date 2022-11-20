@@ -1,6 +1,7 @@
 package extendedui.ui.hitboxes;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -8,7 +9,6 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
 import extendedui.ui.EUIBase;
-import extendedui.utilities.Mathf;
 
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
@@ -169,6 +169,6 @@ public class AdvancedHitbox extends Hitbox
             return target;
         }
 
-        return Mathf.Lerp(current, target, lerpSpeed * Gdx.graphics.getDeltaTime());
+        return MathUtils.lerp(current, target, lerpSpeed * Gdx.graphics.getDeltaTime());
     }
 }

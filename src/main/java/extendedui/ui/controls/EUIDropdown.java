@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -18,8 +19,8 @@ import eatyourbeets.interfaces.delegates.FuncT1;
 import eatyourbeets.interfaces.delegates.FuncT2;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
-import extendedui.EUIUtils;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.interfaces.markers.CardObject;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
@@ -28,7 +29,6 @@ import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.Mathf;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -463,7 +463,7 @@ public class EUIDropdown<T> extends EUIHoverable
 
     protected void OnScroll(float newPercent)
     {
-        this.topVisibleRowIndex = (int) Mathf.Clamp(newPercent * (this.rows.size() - this.visibleRowCount()), 0, this.rows.size() - this.visibleRowCount());
+        this.topVisibleRowIndex = (int) MathUtils.clamp(newPercent * (this.rows.size() - this.visibleRowCount()), 0, this.rows.size() - this.visibleRowCount());
     }
 
     public void RefreshText()
