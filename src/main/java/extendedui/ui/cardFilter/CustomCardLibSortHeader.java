@@ -75,7 +75,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
                 nameButton = buttons[3];
             }
 
-            amountButton = new SortHeaderButton(EUIRM.Strings.UI_Amount, xPosition, 0f, this);
+            amountButton = new SortHeaderButton(EUIRM.Strings.uiAmount, xPosition, 0f, this);
 
             float offsetX = -(Settings.scale * 30f);
 

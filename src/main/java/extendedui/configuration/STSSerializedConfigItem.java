@@ -7,7 +7,7 @@ import extendedui.EUIUtils;
 
 public class STSSerializedConfigItem<T> extends STSConfigItem<T>
 {
-    protected final TypeToken<T> TOKEN = new TypeToken<T>() {};
+    protected final TypeToken<T> token = new TypeToken<T>() {};
 
     public STSSerializedConfigItem(String Key, T defaultValue) {
         super(Key, defaultValue);
@@ -15,16 +15,16 @@ public class STSSerializedConfigItem<T> extends STSConfigItem<T>
 
     protected T parseValue(String raw) {
         try {
-            return (T) EUIUtils.deserialize(raw, DefaultValue.getClass());
+            return (T) EUIUtils.deserialize(raw, defaultValue.getClass());
         }
         catch (Exception e) {
-            EUIUtils.logError(this, "Failed to load preference for " + Key + ", value was: " + raw);
+            EUIUtils.logError(this, "Failed to load preference for " + key + ", value was: " + raw);
             e.printStackTrace();
         }
-        return DefaultValue;
+        return defaultValue;
     }
 
     protected String serialize() {
-        return EUIUtils.serialize(Value);
+        return EUIUtils.serialize(value);
     }
 }

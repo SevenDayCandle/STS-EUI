@@ -40,7 +40,7 @@ public class EUITutorial extends EUIHoverable
 
     public EUITutorial(String headerText, Collection<String> descriptions)
     {
-        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350F, 720F), EUIRM.Images.Panel_Large.texture(), headerText, descriptions);
+        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350F, 720F), EUIRM.Images.panelLarge.texture(), headerText, descriptions);
     }
 
     public EUITutorial(AdvancedHitbox hb, Texture backgroundTexture, String headerText, Collection<String> descriptions)

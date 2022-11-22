@@ -13,28 +13,28 @@ import java.util.HashMap;
 public class STSConfigItem<T>
 {
     protected static final HashMap<Class<?>,Method> METHOD_HASH_MAP = new HashMap<>();
-    protected final ArrayList<STSConfigListener<T>> Listeners = new ArrayList<>();
+    protected final ArrayList<STSConfigListener<T>> listeners = new ArrayList<>();
 
-    public final String Key;
-    protected SpireConfig Config;
-    protected T Value;
-    protected final T DefaultValue;
+    public final String key;
+    protected SpireConfig config;
+    protected T value;
+    protected final T defaultValue;
 
     public STSConfigItem(String Key, T defaultValue) {
-        this.Key = Key;
-        DefaultValue = Value = defaultValue;
+        this.key = Key;
+        this.defaultValue = value = defaultValue;
     }
 
     public final STSConfigItem<T> addConfig(SpireConfig Config) {
-        this.Config = Config;
-        if (this.Config.has(this.Key)) {
-            this.Value = parseValue(this.Config.getString(this.Key));
+        this.config = Config;
+        if (this.config.has(this.key)) {
+            this.value = parseValue(this.config.getString(this.key));
         }
         return this;
     }
 
     public final T get() {
-        return Value;
+        return value;
     }
 
     public final T set(T Value) {
@@ -42,10 +42,10 @@ public class STSConfigItem<T>
     }
 
     public final T set(T Value, boolean save) {
-        this.Value = Value;
-        this.Config.setString(this.Key, serialize());
+        this.value = Value;
+        this.config.setString(this.key, serialize());
         save();
-        for (STSConfigListener<T> listener : Listeners)
+        for (STSConfigListener<T> listener : listeners)
         {
             listener.onChange(Value);
         }
@@ -54,26 +54,26 @@ public class STSConfigItem<T>
 
     public final void addListener(STSConfigListener<T> listener)
     {
-        if (!this.Listeners.contains(listener))
+        if (!this.listeners.contains(listener))
         {
-            this.Listeners.add(listener);
-            listener.onInitialize(Value);
+            this.listeners.add(listener);
+            listener.onInitialize(value);
         }
     }
 
     public final void removeListener(STSConfigListener<T> listener)
     {
-        this.Listeners.remove(listener);
+        this.listeners.remove(listener);
     }
 
     public final Class<?> getConfigClass()
     {
-        return DefaultValue.getClass();
+        return defaultValue.getClass();
     }
 
     protected final void save() {
         try {
-            this.Config.save();
+            this.config.save();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -83,14 +83,14 @@ public class STSConfigItem<T>
         try {
             return (T) getMethod().invoke(null, raw);
         } catch (Exception e) {
-            EUIUtils.logError(this, "Failed to load preference for " + Key + ", value was: " + raw);
+            EUIUtils.logError(this, "Failed to load preference for " + key + ", value was: " + raw);
             e.printStackTrace();
         }
-        return DefaultValue;
+        return defaultValue;
     }
 
     protected String serialize() {
-        return String.valueOf(Value);
+        return String.valueOf(value);
     }
 
     protected Method getMethod() throws Exception {

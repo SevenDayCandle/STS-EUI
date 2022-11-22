@@ -5,8 +5,8 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 public class RelativeHitbox extends AdvancedHitbox
 {
     public Hitbox parentHB;
-    public float offset_cX;
-    public float offset_cY;
+    public float offsetCx;
+    public float offsetCy;
     public boolean percentageOffset;
 
     public RelativeHitbox(Hitbox hb, float width, float height)
@@ -19,14 +19,14 @@ public class RelativeHitbox extends AdvancedHitbox
         this(hb, percentWidth * hb.width, percentHeight * hb.height, percent_cX, percent_cY, true);
     }
 
-    public RelativeHitbox(Hitbox hb, float width, float height, float offset_cX, float offset_cY, boolean percentageOffset)
+    public RelativeHitbox(Hitbox hb, float width, float height, float offsetCx, float offsetCy, boolean percentageOffset)
     {
         super(hb.x, hb.y, width, height);
 
         this.parentHB = hb;
         this.percentageOffset = percentageOffset;
-        this.offset_cX = offset_cX;
-        this.offset_cY = offset_cY;
+        this.offsetCx = offsetCx;
+        this.offsetCy = offsetCy;
         this.lerpSpeed = -1;
 
         updateTargetPosition();
@@ -36,8 +36,8 @@ public class RelativeHitbox extends AdvancedHitbox
     public RelativeHitbox setOffset(float x, float y)
     {
         this.percentageOffset = false;
-        this.offset_cX = x;
-        this.offset_cY = y;
+        this.offsetCx = x;
+        this.offsetCy = y;
 
         return this;
     }
@@ -45,8 +45,8 @@ public class RelativeHitbox extends AdvancedHitbox
     public RelativeHitbox setPercentageOffset(float x, float y)
     {
         this.percentageOffset = true;
-        this.offset_cX = x;
-        this.offset_cY = y;
+        this.offsetCx = x;
+        this.offsetCy = y;
 
         return this;
     }
@@ -55,13 +55,13 @@ public class RelativeHitbox extends AdvancedHitbox
     {
         if (percentageOffset)
         {
-            this.targetCx = parentHB.x + (offset_cX * parentHB.width);
-            this.targetCy = parentHB.y + (offset_cY * parentHB.height);
+            this.targetCx = parentHB.x + (offsetCx * parentHB.width);
+            this.targetCy = parentHB.y + (offsetCy * parentHB.height);
         }
         else
         {
-            this.targetCx = parentHB.x + offset_cX;
-            this.targetCy = parentHB.y + offset_cY;
+            this.targetCx = parentHB.x + offsetCx;
+            this.targetCy = parentHB.y + offsetCy;
         }
 
         return this;
@@ -78,7 +78,7 @@ public class RelativeHitbox extends AdvancedHitbox
     public static RelativeHitbox setPercentageOffset(Hitbox hb, Float x, Float y)
     {
         RelativeHitbox hitbox = (RelativeHitbox)hb;
-        hitbox.setPercentageOffset(x == null ? hitbox.offset_cX : x, y == null ? hitbox.offset_cY : y);
+        hitbox.setPercentageOffset(x == null ? hitbox.offsetCx : x, y == null ? hitbox.offsetCy : y);
         return hitbox;
     }
 }

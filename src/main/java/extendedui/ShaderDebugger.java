@@ -20,13 +20,13 @@ public class ShaderDebugger implements ImGuiSubscriber
     protected static String RENDER_ID = "Render";
     protected static String STOP_ID = "Stop";
 
-    private final DEUIWindow EffectWindow;
-    private final DEUIButton EffectRender;
-    private final DEUIButton EffectStop;
-    private final EUIImage TestImage;
-    private final EUIImage TestImage2;
-    private DEUITextMultilineInput FragmentShader;
-    private ShaderProgram Shader;
+    private final DEUIWindow effectWindow;
+    private final DEUIButton effectRender;
+    private final DEUIButton effectStop;
+    private final EUIImage testImage;
+    private final EUIImage testImage2;
+    private DEUITextMultilineInput fragmentShader;
+    private ShaderProgram shader;
 
     public static void initialize() {
         Instance = new ShaderDebugger();
@@ -35,29 +35,29 @@ public class ShaderDebugger implements ImGuiSubscriber
 
     private ShaderDebugger()
     {
-        EffectWindow = new DEUIWindow(WINDOW_ID);
-        EffectRender = new DEUIButton(RENDER_ID);
-        EffectStop = new DEUIButton(STOP_ID);
-        TestImage = new EUIImage(EUIRM.Images.CardPool.texture());
-        TestImage2 = new EUIImage(EUIRM.Images.CardPool.texture());
-        TestImage.setPosition(EUIBase.screenW(0.5f), EUIBase.screenH(0.5f));
-        TestImage2.setPosition(EUIBase.screenW(0.7f), EUIBase.screenH(0.7f));
+        effectWindow = new DEUIWindow(WINDOW_ID);
+        effectRender = new DEUIButton(RENDER_ID);
+        effectStop = new DEUIButton(STOP_ID);
+        testImage = new EUIImage(EUIRM.Images.cardPool.texture());
+        testImage2 = new EUIImage(EUIRM.Images.cardPool.texture());
+        testImage.setPosition(EUIBase.screenW(0.5f), EUIBase.screenH(0.5f));
+        testImage2.setPosition(EUIBase.screenW(0.7f), EUIBase.screenH(0.7f));
     }
 
     @Override
     public void receiveImGui()
     {
-        EffectWindow.render(() -> {
+        effectWindow.render(() -> {
             // Buffers can be expensive so we only create this if we have to
-            if (FragmentShader == null)
+            if (fragmentShader == null)
             {
-                FragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 700, 3000);
+                fragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 700, 3000);
             }
-            FragmentShader.render();
+            fragmentShader.render();
             ImGui.separator();
-            EffectRender.renderInline(this::compile);
-            EffectStop.render(() -> {
-                        Shader = null;
+            effectRender.renderInline(this::compile);
+            effectStop.render(() -> {
+                        shader = null;
                     }
             );
         });
@@ -66,11 +66,11 @@ public class ShaderDebugger implements ImGuiSubscriber
 
     protected void renderShader()
     {
-        if (Shader != null)
+        if (shader != null)
         {
-            Shader.setUniformf("u_time", EUI.time());
-            EUI.addPostRender(s -> EUIRenderHelpers.drawWithShader(s, Shader, TestImage::tryRender));
-            EUI.addPostRender(s -> EUIRenderHelpers.drawRainbow(s, TestImage2::tryRender));
+            shader.setUniformf("u_time", EUI.time());
+            EUI.addPostRender(s -> EUIRenderHelpers.drawWithShader(s, shader, testImage::tryRender));
+            EUI.addPostRender(s -> EUIRenderHelpers.drawRainbow(s, testImage2::tryRender));
         }
     }
 
@@ -78,10 +78,10 @@ public class ShaderDebugger implements ImGuiSubscriber
     {
         FileHandle vShader = Gdx.files.internal(EUIRenderHelpers.SHADER_VERTEX);
         String vShaderString = vShader.readString();
-        ShaderProgram program = new ShaderProgram(vShaderString, FragmentShader.get());
+        ShaderProgram program = new ShaderProgram(vShaderString, fragmentShader.get());
         if (program.isCompiled())
         {
-            Shader = program;
+            shader = program;
             if (program.getLog().length() > 0) {
                 System.out.println(program.getLog());
             }
@@ -89,7 +89,7 @@ public class ShaderDebugger implements ImGuiSubscriber
         else
         {
             System.err.println(program.getLog());
-            Shader = null;
+            shader = null;
         }
     }
 }

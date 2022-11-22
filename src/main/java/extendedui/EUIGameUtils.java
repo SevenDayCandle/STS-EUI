@@ -222,7 +222,7 @@ public class EUIGameUtils {
         switch (type)
         {
             case BASIC:
-                return EUIRM.Strings.UI_Basic; // STS calls this rarity "Starter" but this keyword is used by Animator/Clown Emporium
+                return EUIRM.Strings.uiBasic; // STS calls this rarity "Starter" but this keyword is used by Animator/Clown Emporium
 
             case COMMON:
                 return RunHistoryScreen.TEXT[12];

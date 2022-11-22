@@ -15,10 +15,10 @@ public class DraggableHitbox extends AdvancedHitbox
     protected ActionT1<DraggableHitbox> onDragFinish;
 
     public boolean canDrag;
-    public float min_y;
-    public float max_y;
-    public float min_x;
-    public float max_x;
+    public float minY;
+    public float maxY;
+    public float minX;
+    public float maxX;
 
     public DraggableHitbox(Hitbox hb)
     {
@@ -45,10 +45,10 @@ public class DraggableHitbox extends AdvancedHitbox
         super(x, y, width, height);
 
         this.canDrag = canDrag;
-        this.min_x = -width * 0.25f;
-        this.max_x = Settings.WIDTH + (width * 0.25f);
-        this.min_y = -height * 0.25f;
-        this.max_y = Settings.HEIGHT + (height * 0.25f);
+        this.minX = -width * 0.25f;
+        this.maxX = Settings.WIDTH + (width * 0.25f);
+        this.minY = -height * 0.25f;
+        this.maxY = Settings.HEIGHT + (height * 0.25f);
     }
 
     public DraggableHitbox setPosition(float cX, float cY)
@@ -60,10 +60,10 @@ public class DraggableHitbox extends AdvancedHitbox
 
     public DraggableHitbox setBounds(float min_x, float max_x, float min_y, float max_y)
     {
-        this.min_x = min_x;
-        this.max_x = max_x;
-        this.min_y = min_y;
-        this.max_y = max_y;
+        this.minX = min_x;
+        this.maxX = max_x;
+        this.minY = min_y;
+        this.maxY = max_y;
 
         return this;
     }
@@ -95,8 +95,8 @@ public class DraggableHitbox extends AdvancedHitbox
                 }
                 else if (!InputHelper.justReleasedClickLeft && dragStart != null)
                 {
-                    targetCx = Math.min(max_x, Math.max(min_x, targetCx + (mX - dragStart.x)));
-                    targetCy = Math.min(max_y, Math.max(min_y, targetCy + (mY - dragStart.y)));
+                    targetCx = Math.min(maxX, Math.max(minX, targetCx + (mX - dragStart.x)));
+                    targetCy = Math.min(maxY, Math.max(minY, targetCy + (mY - dragStart.y)));
 
                     if (EUI.tryDragging())
                     {

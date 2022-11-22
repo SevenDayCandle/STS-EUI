@@ -6,9 +6,9 @@ import java.util.Objects;
 
 public class TupleT3<V1, V2, V3>
 {
-    public V1 V1;
-    public V2 V2;
-    public V3 V3;
+    public V1 v1;
+    public V2 v2;
+    public V3 v3;
 
     public TupleT3()
     {
@@ -17,31 +17,31 @@ public class TupleT3<V1, V2, V3>
 
     public TupleT3(V1 v1, V2 v2, V3 v3)
     {
-        this.V1 = v1;
-        this.V2 = v2;
-        this.V3 = v3;
+        this.v1 = v1;
+        this.v2 = v2;
+        this.v3 = v3;
     }
 
     public TupleT3<V1, V2, V3> set(V1 v1, V2 v2, V3 v3)
     {
-        this.V1 = v1;
-        this.V2 = v2;
-        this.V3 = v3;
+        this.v1 = v1;
+        this.v2 = v2;
+        this.v3 = v3;
         return this;
     }
 
     public TupleT3<V1, V2, V3> clear()
     {
-        this.V1 = null;
-        this.V2 = null;
-        this.V3 = null;
+        this.v1 = null;
+        this.v2 = null;
+        this.v3 = null;
         return this;
     }
 
     @Override
     public String toString()
     {
-        return this.V1 + ": " + this.V2 + ", " + this.V3;
+        return this.v1 + ": " + this.v2 + ", " + this.v3;
     }
 
     @Override
@@ -50,7 +50,7 @@ public class TupleT3<V1, V2, V3>
         if (other instanceof TupleT3)
         {
             TupleT3 b = (TupleT3) other;
-            return V1 == b.V1 && V2 == b.V2 && V3 == b.V3;
+            return v1 == b.v1 && v2 == b.v2 && v3 == b.v3;
         }
 
         return false;
@@ -59,6 +59,6 @@ public class TupleT3<V1, V2, V3>
     @Override
     public int hashCode()
     {
-        return Objects.hash(V1, V2, V3);
+        return Objects.hash(v1, v2, v3);
     }
 }

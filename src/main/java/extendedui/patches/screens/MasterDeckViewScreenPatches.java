@@ -172,7 +172,7 @@ public class MasterDeckViewScreenPatches
                 fakeMasterDeck.group = tempGroup;
             }
             else if (!EUI.CardFilters.areFiltersEmpty()) {
-                EUI.CardFilters.CurrentFilters.clear();
+                EUI.CardFilters.currentFilters.clear();
                 tempGroup = EUI.CardFilters.applyFilters(AbstractDungeon.player.masterDeck.group);
                 fakeMasterDeck.group = tempGroup.size() > 0 ? tempGroup : getFakeGroup();
             }

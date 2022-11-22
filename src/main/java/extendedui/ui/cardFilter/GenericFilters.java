@@ -35,8 +35,8 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     public static final float SPACING = Settings.scale * 22.5f;
     public static final int ROW_SIZE = 8;
 
-    protected final HashMap<EUITooltip, Integer> CurrentFilterCounts = new HashMap<>();
-    protected final ArrayList<FilterKeywordButton> FilterButtons = new ArrayList<>();
+    protected final HashMap<EUITooltip, Integer> currentFilterCounts = new HashMap<>();
+    protected final ArrayList<FilterKeywordButton> filterButtons = new ArrayList<>();
     protected final AdvancedHitbox hb;
     protected int currentTotal;
     protected ActionT1<FilterKeywordButton> onClick;
@@ -48,9 +48,9 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     public final EUILabel keywordsSectionLabel;
     public final EUIToggle sortTypeToggle;
     public final EUIToggle sortDirectionToggle;
-    public final HashSet<EUITooltip> CurrentFilters = new HashSet<>();
-    public final HashSet<EUITooltip> CurrentNegateFilters = new HashSet<>();
-    protected float draw_x;
+    public final HashSet<EUITooltip> currentFilters = new HashSet<>();
+    public final HashSet<EUITooltip> currentNegateFilters = new HashSet<>();
+    protected float drawX;
     protected boolean invalidated;
     protected boolean isAccessedFromCardPool;
     private boolean shouldSortByCount;
@@ -61,28 +61,28 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         super(ROW_SIZE, PAD_Y);
         isActive = false;
         hb = new AdvancedHitbox(DRAW_START_X, DRAW_START_Y, scale(180), scale(70)).setIsPopupCompatible(true);
-        closeButton = new EUIButton(EUIRM.Images.HexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.WHITE)
+        closeButton = new EUIButton(EUIRM.Images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(CombatRewardScreen.TEXT[6])
                 .setOnClick(this::close)
                 .setColor(Color.GRAY);
-        clearButton = new EUIButton(EUIRM.Images.HexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).setIsPopupCompatible(true))
-                .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.WHITE)
+        clearButton = new EUIButton(EUIRM.Images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).setIsPopupCompatible(true))
+                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setColor(Color.FIREBRICK)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.13f)
-                .setText(EUIRM.Strings.Misc_Clear)
+                .setText(EUIRM.Strings.miscClear)
                 .setOnClick(() -> this.clear(true, isAccessedFromCardPool));
 
         keywordsSectionLabel = new EUILabel(EUIFontHelper.CardTitleFont_Small,
                 new AdvancedHitbox(0, 0, scale(48), scale(48)))
                 .setFont(EUIFontHelper.CardTitleFont_Small, 0.8f)
-                .setLabel(EUIRM.Strings.UI_Keywords)
+                .setLabel(EUIRM.Strings.uiKeywords)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
         currentTotalHeaderLabel = new EUILabel(EUIFontHelper.CardTitleFont_Normal,
                 new AdvancedHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)))
                 .setFont(EUIFontHelper.CardTitleFont_Small, 1f)
-                .setLabel(EUIRM.Strings.UI_Total)
+                .setLabel(EUIRM.Strings.uiTotal)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
         currentTotalLabel = new EUILabel(EUIFontHelper.CardTitleFont_Normal,
@@ -92,17 +92,17 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
                 .setAlignment(0.5f, 0.0f, false);
 
         sortTypeToggle = new EUIToggle( new AdvancedHitbox(0, 0, scale(170), scale(32)).setIsPopupCompatible(true))
-                .setBackground(EUIRM.Images.RectangularButton.texture(), Color.DARK_GRAY)
+                .setBackground(EUIRM.Images.rectangularButton.texture(), Color.DARK_GRAY)
                 .setTickImage(null, null, 10)
                 .setFont(EUIFontHelper.CardDescriptionFont_Normal, 0.7f)
-                .setText(EUIRM.Strings.Misc_SortByCount)
+                .setText(EUIRM.Strings.miscSortbycount)
                 .setOnToggle(val -> {
                     shouldSortByCount = val;
                     refreshButtonOrder();
                 });
 
         sortDirectionToggle = new EUIToggle( new AdvancedHitbox(0, 0, scale(48), scale(48)).setIsPopupCompatible(true))
-                .setTickImage(new EUIImage(EUIRM.Images.Arrow.texture()), new EUIImage(EUIRM.Images.Arrow.texture()).setRotation(180f), 32)
+                .setTickImage(new EUIImage(EUIRM.Images.arrow.texture()), new EUIImage(EUIRM.Images.arrow.texture()).setRotation(180f), 32)
                 .setOnToggle(val -> {
                     sortDesc = val;
                     refreshButtonOrder();
@@ -112,8 +112,8 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     public final GenericFilters<T> initialize(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
     {
         clear(false, true);
-        CurrentFilterCounts.clear();
-        FilterButtons.clear();
+        currentFilterCounts.clear();
+        filterButtons.clear();
         currentTotal = 0;
 
         EUI.ActingColor = color;
@@ -124,10 +124,10 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         initializeImpl(onClick, items, color, isAccessedFromCardPool);
 
         // InitializeImpl should set up the CurrentFilterCounts set
-        for (Map.Entry<EUITooltip, Integer> filter : CurrentFilterCounts.entrySet())
+        for (Map.Entry<EUITooltip, Integer> filter : currentFilterCounts.entrySet())
         {
             int cardCount = filter.getValue();
-            FilterButtons.add(new FilterKeywordButton(this, filter.getKey()).setOnClick(onClick).setCardCount(cardCount));
+            filterButtons.add(new FilterKeywordButton(this, filter.getKey()).setOnClick(onClick).setCardCount(cardCount));
         }
         currentTotalLabel.setLabel(currentTotal);
 
@@ -167,7 +167,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
 
     public final void refreshButtons()
     {
-        CurrentFilterCounts.clear();
+        currentFilterCounts.clear();
         currentTotal = 0;
 
         if (referenceItems != null)
@@ -177,13 +177,13 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
             {
                 for (EUITooltip tooltip : getAllTooltips(card))
                 {
-                    CurrentFilterCounts.merge(tooltip, 1, Integer::sum);
+                    currentFilterCounts.merge(tooltip, 1, Integer::sum);
                 }
             }
         }
-        for (FilterKeywordButton c : FilterButtons)
+        for (FilterKeywordButton c : filterButtons)
         {
-            c.setCardCount(CurrentFilterCounts.getOrDefault(c.Tooltip, 0));
+            c.setCardCount(currentFilterCounts.getOrDefault(c.tooltip, 0));
         }
 
         currentTotalLabel.setLabel(currentTotal);
@@ -193,11 +193,11 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
 
     public final void refreshButtonOrder()
     {
-        sortTypeToggle.setText(EUIRM.Strings.sortBy(shouldSortByCount ? EUIRM.Strings.UI_Amount : CardLibSortHeader.TEXT[2]));
-        FilterButtons.sort((a, b) -> (shouldSortByCount ? a.CardCount - b.CardCount : StringUtils.compare(a.Tooltip.title, b.Tooltip.title)) * (sortDesc ? -1 : 1));
+        sortTypeToggle.setText(EUIRM.Strings.sortBy(shouldSortByCount ? EUIRM.Strings.uiAmount : CardLibSortHeader.TEXT[2]));
+        filterButtons.sort((a, b) -> (shouldSortByCount ? a.cardCount - b.cardCount : StringUtils.compare(a.tooltip.title, b.tooltip.title)) * (sortDesc ? -1 : 1));
 
         int index = 0;
-        for (FilterKeywordButton c : FilterButtons)
+        for (FilterKeywordButton c : filterButtons)
         {
             if (c.isActive)
             {
@@ -237,7 +237,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
 
         if (!EUI.doesActiveElementExist())
         {
-            for (FilterKeywordButton c : FilterButtons)
+            for (FilterKeywordButton c : filterButtons)
             {
                 c.tryUpdate();
             }
@@ -264,7 +264,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         sortTypeToggle.tryRender(sb);
         sortDirectionToggle.tryRender(sb);
 
-        for (FilterKeywordButton c : FilterButtons)
+        for (FilterKeywordButton c : filterButtons)
         {
             c.tryRender(sb);
         }
@@ -284,9 +284,9 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
             {
                 return;
             }
-            for (FilterKeywordButton c : FilterButtons)
+            for (FilterKeywordButton c : filterButtons)
             {
-                if (c.background_button.hb.hovered)
+                if (c.backgroundButton.hb.hovered)
                 {
                     //CardCrawlGame.sound.play("UI_CLICK_1");
                     //c.background_button.onLeftClick.Complete(c.background_button);
@@ -315,7 +315,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     @Override
     public int currentSize()
     {
-        return FilterButtons.size();
+        return filterButtons.size();
     }
 
     public int getReferenceCount()
@@ -325,8 +325,8 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
 
     public void addManualKeyword(EUITooltip tooltip, int count)
     {
-        FilterButtons.add(new FilterKeywordButton(this, tooltip).setOnClick(onClick).setCardCount(count));
-        CurrentFilterCounts.merge(tooltip, count, Integer::sum);
+        filterButtons.add(new FilterKeywordButton(this, tooltip).setOnClick(onClick).setCardCount(count));
+        currentFilterCounts.merge(tooltip, count, Integer::sum);
     }
 
     // Shorthand function to be fed to all dropdown filters
@@ -348,11 +348,11 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     {
         if (items.size() == 0)
         {
-            return EUIRM.Strings.UI_Any;
+            return EUIRM.Strings.uiAny;
         }
         if (items.size() > 1)
         {
-            return items.size() + " " + EUIRM.Strings.UI_ItemsSelected;
+            return items.size() + " " + EUIRM.Strings.uiItemsselected;
         }
         return StringUtils.join(EUIUtils.map(items, originalFunction), ", ");
     }

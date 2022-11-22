@@ -29,17 +29,17 @@ public class EUIRelicGrid extends EUICanvasGrid
     protected ActionT1<AbstractRelic> onRelicHovered;
     protected ActionT1<AbstractRelic> onRelicRightClick;
     protected ActionT2<SpriteBatch, AbstractRelic> onRelicRender;
-    protected float draw_x = DRAW_START_X;
-    protected float draw_top_y = DRAW_START_Y;
+    protected float drawX = DRAW_START_X;
+    protected float drawTopY = DRAW_START_Y;
     protected int hoveredIndex;
     public boolean shouldEnlargeHovered = true;
-    public float pad_x = PAD;
-    public float pad_y = PAD;
+    public float padX = PAD;
+    public float padY = PAD;
     public ArrayList<RelicInfo> relicGroup;
     public RelicInfo hoveredRelic = null;
     public String message = null;
-    public float target_scale = 1;
-    public float starting_scale = target_scale;
+    public float targetScale = 1;
+    public float startingScale = targetScale;
 
     public EUIRelicGrid()
     {
@@ -62,14 +62,14 @@ public class EUIRelicGrid extends EUICanvasGrid
 
     public EUIRelicGrid addPadX(float padX)
     {
-        this.pad_x += padX;
+        this.padX += padX;
 
         return this;
     }
 
     public EUIRelicGrid addPadY(float padY)
     {
-        this.pad_y += padY;
+        this.padY += padY;
 
         return this;
     }
@@ -97,14 +97,14 @@ public class EUIRelicGrid extends EUICanvasGrid
 
     public EUIRelicGrid setHorizontalAlignment(float percentage)
     {
-        this.draw_x = MathUtils.clamp(percentage, 0.35f, 0.55f);
+        this.drawX = MathUtils.clamp(percentage, 0.35f, 0.55f);
         this.scrollBar.setPosition(screenW((percentage < 0.5f) ? 0.05f : 0.9f), screenH(0.5f));
 
         return this;
     }
 
     public EUIRelicGrid setVerticalStart(float posY) {
-        this.draw_top_y = posY;
+        this.drawTopY = posY;
 
         return this;
     }
@@ -156,8 +156,8 @@ public class EUIRelicGrid extends EUICanvasGrid
     }
 
     public EUIRelicGrid setRelicScale(float startingScale, float targetScale) {
-        this.starting_scale = startingScale;
-        this.target_scale = targetScale;
+        this.startingScale = startingScale;
+        this.targetScale = targetScale;
 
         return this;
     }
@@ -203,8 +203,8 @@ public class EUIRelicGrid extends EUICanvasGrid
         for (int i = 0; i < relicGroup.size(); i++)
         {
             RelicInfo relic = relicGroup.get(i);
-            relic.relic.targetX = (DRAW_START_X * draw_x) + (column * PAD);
-            relic.relic.targetY = draw_top_y + scrollDelta - (row * pad_y);
+            relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
+            relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
             updateHoverLogic(relic, i);
 
             column += 1;
@@ -227,7 +227,7 @@ public class EUIRelicGrid extends EUICanvasGrid
             hoveredRelic = relic;
             hoveredIndex = i;
             if (!shouldEnlargeHovered) {
-                relic.relic.scale = target_scale;
+                relic.relic.scale = targetScale;
             }
         }
     }
@@ -238,8 +238,8 @@ public class EUIRelicGrid extends EUICanvasGrid
         int column = 0;
         for (RelicInfo relic : relicGroup)
         {
-            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * draw_x) + (column * PAD);
-            relic.relic.currentY = relic.relic.targetY = draw_top_y + scrollDelta - (row * pad_y);
+            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
+            relic.relic.currentY = relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
             relic.relic.hb.update();
             relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
 

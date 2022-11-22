@@ -35,8 +35,8 @@ public class EUIStaticCardGrid extends EUICardGrid
 
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++) {
             AbstractCard card = cards.group.get(i);
-            card.current_x = card.target_x = (DRAW_START_X * draw_x) + (column * PAD_X);
-            card.current_y = card.target_y = draw_top_y - (row * pad_y);
+            card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * PAD_X);
+            card.current_y = card.target_y = drawTopY - (row * padY);
             card.fadingOut = false;
             card.update();
             card.updateHoverLogic();
@@ -65,9 +65,9 @@ public class EUIStaticCardGrid extends EUICardGrid
         int column = 0;
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++) {
             AbstractCard card = cards.group.get(i);
-            card.current_x = card.target_x = (DRAW_START_X * draw_x) + (column * PAD_X);
-            card.current_y = card.target_y = draw_top_y - (row * pad_y);
-            card.drawScale = card.targetDrawScale = target_scale;
+            card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * PAD_X);
+            card.current_y = card.target_y = drawTopY - (row * padY);
+            card.drawScale = card.targetDrawScale = targetScale;
             card.hb.move(card.current_x, card.current_y);
 
             column += 1;
@@ -98,7 +98,7 @@ public class EUIStaticCardGrid extends EUICardGrid
         if (card != null)
         {
             float scrollDistance = 1f / getRowCount();
-            if (card.target_y > draw_top_y || index < currentRow * rowSize)
+            if (card.target_y > drawTopY || index < currentRow * rowSize)
             {
                 return -scrollDistance;
             }
@@ -135,7 +135,7 @@ public class EUIStaticCardGrid extends EUICardGrid
 
         for (int i = Math.max(0, min); i < Math.min(max, cards.group.size()); i++) {
             AbstractCard card = cards.group.get(i);
-            card.drawScale = card.targetDrawScale = target_scale;
+            card.drawScale = card.targetDrawScale = targetScale;
         }
 
     }

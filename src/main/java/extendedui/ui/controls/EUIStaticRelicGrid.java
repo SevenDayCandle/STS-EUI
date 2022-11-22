@@ -34,8 +34,8 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
 
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++) {
             RelicInfo relic = relicGroup.get(i);
-            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * draw_x) + (column * PAD);
-            relic.relic.currentY = relic.relic.targetY = draw_top_y - (row * pad_y);
+            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
+            relic.relic.currentY = relic.relic.targetY = drawTopY - (row * padY);
             updateHoverLogic(relic, i);
 
             column += 1;
@@ -54,8 +54,8 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++)
         {
             RelicInfo relic = relicGroup.get(i);
-            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * draw_x) + (column * PAD);
-            relic.relic.currentY = relic.relic.targetY = draw_top_y + scrollDelta - (row * pad_y);
+            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
+            relic.relic.currentY = relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
             relic.relic.hb.update();
             relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
 
@@ -103,7 +103,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
 
         for (int i = Math.max(0, min); i < Math.min(max, relicGroup.size()); i++) {
             RelicInfo card = relicGroup.get(i);
-            card.relic.scale = target_scale;
+            card.relic.scale = targetScale;
         }
 
     }

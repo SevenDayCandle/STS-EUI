@@ -15,7 +15,7 @@ import javassist.CtBehavior;
 import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 
 public class AbstractDungeonPatches {
-    private static boolean fromEUI;
+    private static boolean FROM_EUI;
 
     @SpirePatch(clz = AbstractDungeon.class, method = "closeCurrentScreen")
     public static class AbstractDungeonPatches_CloseCurrentScreen
@@ -26,7 +26,7 @@ public class AbstractDungeonPatches {
             if (AbstractDungeon.screen == EUI_SCREEN)
             {
                 EUI.dispose();
-                fromEUI = true;
+                FROM_EUI = true;
             }
         }
 
@@ -37,7 +37,7 @@ public class AbstractDungeonPatches {
             {
                 EUI.postDispose();
                 // Dungeon map needs to be manually closed after returning to the main screen
-                if (fromEUI)
+                if (FROM_EUI)
                 {
                     if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP)
                     {
@@ -45,7 +45,7 @@ public class AbstractDungeonPatches {
                     }
                     Settings.hideTopBar = false;
                     Settings.hideRelics = false;
-                    fromEUI = false;
+                    FROM_EUI = false;
                 }
             }
         }

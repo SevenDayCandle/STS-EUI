@@ -32,18 +32,18 @@ public class EUICardGrid extends EUICanvasGrid
     protected ActionT1<AbstractCard> onCardRightClick;
     protected ActionT2<SpriteBatch, AbstractCard> onCardRender;
     protected HashMap<AbstractCard, AbstractCard> upgradeCards;
-    protected float draw_top_y = DRAW_START_Y;
-    protected float draw_x;
+    protected float drawTopY = DRAW_START_Y;
+    protected float drawX;
     protected int hoveredIndex;
     public AbstractCard hoveredCard = null;
     public CardGroup cards;
     public String message = null;
     public boolean canRenderUpgrades = false;
     public boolean shouldEnlargeHovered = true;
-    public float pad_x = PAD_X;
-    public float pad_y = PAD_Y;
-    public float target_scale = CARD_SCALE;
-    public float starting_scale = target_scale;
+    public float padX = PAD_X;
+    public float padY = PAD_Y;
+    public float targetScale = CARD_SCALE;
+    public float startingScale = targetScale;
 
     public EUICardGrid()
     {
@@ -67,14 +67,14 @@ public class EUICardGrid extends EUICanvasGrid
 
     public EUICardGrid addPadX(float padX)
     {
-        this.pad_x += padX;
+        this.padX += padX;
 
         return this;
     }
 
     public EUICardGrid addPadY(float padY)
     {
-        this.pad_y += padY;
+        this.padY += padY;
 
         return this;
     }
@@ -146,21 +146,21 @@ public class EUICardGrid extends EUICanvasGrid
 
     public EUICardGrid setHorizontalAlignment(float percentage)
     {
-        this.draw_x = MathUtils.clamp(percentage, 0.35f, 0.55f);
+        this.drawX = MathUtils.clamp(percentage, 0.35f, 0.55f);
         this.scrollBar.setPosition(screenW((percentage < 0.5f) ? 0.05f : 0.9f), screenH(0.5f));
 
         return this;
     }
 
     public EUICardGrid setVerticalStart(float posY) {
-        this.draw_top_y = posY;
+        this.drawTopY = posY;
 
         return this;
     }
 
     public EUICardGrid setCardScale(float startingScale, float targetScale) {
-        this.starting_scale = startingScale;
-        this.target_scale = targetScale;
+        this.startingScale = startingScale;
+        this.targetScale = targetScale;
 
         return this;
     }
@@ -186,8 +186,8 @@ public class EUICardGrid extends EUICanvasGrid
         this.upgradeCards.clear();
         this.cards = cardGroup;
         for (AbstractCard c : cardGroup.group) {
-            c.drawScale = starting_scale;
-            c.targetDrawScale = target_scale;
+            c.drawScale = startingScale;
+            c.targetDrawScale = targetScale;
             addUpgrade(c);
         }
         return this;
@@ -205,8 +205,8 @@ public class EUICardGrid extends EUICanvasGrid
 
     public EUICardGrid addCard(AbstractCard card)
     {
-        card.drawScale = starting_scale;
-        card.targetDrawScale = target_scale;
+        card.drawScale = startingScale;
+        card.targetDrawScale = targetScale;
         card.setAngle(0, true);
         card.lighten(true);
         cards.addToTop(card);
@@ -309,8 +309,8 @@ public class EUICardGrid extends EUICanvasGrid
         for (int i = 0; i < cards.group.size(); i++)
         {
             AbstractCard card = cards.group.get(i);
-            card.target_x = (DRAW_START_X * draw_x) + (column * pad_x);
-            card.target_y = draw_top_y + scrollDelta - (row * pad_y);
+            card.target_x = (DRAW_START_X * drawX) + (column * padX);
+            card.target_y = drawTopY + scrollDelta - (row * padY);
             card.fadingOut = false;
             card.update();
             card.updateHoverLogic();
@@ -320,7 +320,7 @@ public class EUICardGrid extends EUICanvasGrid
                 hoveredCard = card;
                 hoveredIndex = i;
                 if (!shouldEnlargeHovered) {
-                    card.drawScale = card.targetDrawScale = target_scale;
+                    card.drawScale = card.targetDrawScale = targetScale;
                 }
             }
 
@@ -340,9 +340,9 @@ public class EUICardGrid extends EUICanvasGrid
         for (int i = 0; i < cards.group.size(); i++)
         {
             AbstractCard card = cards.group.get(i);
-            card.current_x = card.target_x = (DRAW_START_X * draw_x) + (column * pad_x);
-            card.current_y = card.target_y = draw_top_y + scrollDelta - (row * pad_y);
-            card.drawScale = card.targetDrawScale = target_scale;
+            card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * padX);
+            card.current_y = card.target_y = drawTopY + scrollDelta - (row * padY);
+            card.drawScale = card.targetDrawScale = targetScale;
             card.hb.move(card.current_x, card.current_y);
 
             column += 1;
@@ -398,7 +398,7 @@ public class EUICardGrid extends EUICanvasGrid
         if (card != null)
         {
             float scrollDistance = 1f / getRowCount();
-            if (card.target_y > draw_top_y)
+            if (card.target_y > drawTopY)
             {
                 return -scrollDistance;
             }

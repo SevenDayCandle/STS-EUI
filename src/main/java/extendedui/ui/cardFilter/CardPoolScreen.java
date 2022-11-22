@@ -44,30 +44,30 @@ public class CardPoolScreen extends AbstractScreen
                 .setVerticalStart(Settings.HEIGHT * 0.66f);
 
         upgradeToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
-                .setBackground(EUIRM.Images.Panel.texture(), Color.DARK_GRAY)
+                .setBackground(EUIRM.Images.panel.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.8f)
                 .setFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
                 .setText(SingleCardViewPopup.TEXT[6])
                 .setOnToggle(EUI::toggleViewUpgrades);
 
         colorlessToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
-                .setBackground(EUIRM.Images.Panel.texture(), Color.DARK_GRAY)
+                .setBackground(EUIRM.Images.panel.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
                 .setFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
-                .setText(EUIRM.Strings.UICardPool_ShowColorless)
+                .setText(EUIRM.Strings.uicardpoolShowcolorless)
                 .setOnToggle(val -> {
-                    EUI.CardFilters.ColorsDropdown.toggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
-                    EUI.CardFilters.ColorsDropdown.toggleSelection(AbstractCard.CardColor.CURSE, val, true);
+                    EUI.CardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
+                    EUI.CardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.CURSE, val, true);
                 });
 
-        this.swapScreen = new EUIButton(EUIRM.Images.HexagonalButton.texture(),
+        this.swapScreen = new EUIButton(EUIRM.Images.hexagonalButton.texture(),
                 new AdvancedHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
                 .setFont(FontHelper.buttonLabelFont, 0.8f)
                 .setColor(Color.GRAY)
-                .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.GRAY)
+                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.GRAY)
                 .setOnClick(() -> EUI.RelicScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
-                .setText(EUIRM.Strings.UIPool_ViewRelicPool);
+                .setText(EUIRM.Strings.uipoolViewrelicpool);
     }
 
     public void open(AbstractPlayer player, CardGroup cards)

@@ -39,7 +39,7 @@ public class EUIFileSelector extends EUIHoverable
 
     public EUIFileSelector(AdvancedHitbox hb)
     {
-        this(hb, EUIRM.Images.Panel.texture());
+        this(hb, EUIRM.Images.panel.texture());
     }
 
     public EUIFileSelector(AdvancedHitbox hb, Texture texture)
@@ -47,8 +47,8 @@ public class EUIFileSelector extends EUIHoverable
         super(hb);
         this.header = new EUILabel(EUIFontHelper.CardTitleFont_Small, hb).setAlignment(0.5f,0.0f,false);
         this.filePath = new EUITextBox(texture, new RelativeHitbox(hb, hb.width, hb.height, hb.width * (1.5f + headerSpacing), hb.height * 0.5f, false));
-        this.selectButton = new EUIButton(EUIRM.Images.FileSelectButton.texture(), new RelativeHitbox(hb, hb.height, hb.height, hb.width * (2.1f + headerSpacing), hb.height * 0.5f, false)).setOnClick(this::chooseFile);
-        this.clearButton = new EUIButton(EUIRM.Images.X.texture(), new RelativeHitbox(selectButton.hb, hb.height, hb.height, selectButton.hb.width * 1.5f, hb.height * 0.5f,  false)).setOnClick(() -> this.selectFile(null, true));
+        this.selectButton = new EUIButton(EUIRM.Images.fileSelectButton.texture(), new RelativeHitbox(hb, hb.height, hb.height, hb.width * (2.1f + headerSpacing), hb.height * 0.5f, false)).setOnClick(this::chooseFile);
+        this.clearButton = new EUIButton(EUIRM.Images.x.texture(), new RelativeHitbox(selectButton.hb, hb.height, hb.height, selectButton.hb.width * 1.5f, hb.height * 0.5f,  false)).setOnClick(() -> this.selectFile(null, true));
     }
 
     public EUIFileSelector setHeader(BitmapFont font, float fontScale, Color textColor, String text) {

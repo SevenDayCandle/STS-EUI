@@ -54,47 +54,47 @@ public class STSEffekseerManager implements ImGuiSubscriber
     private static boolean Enabled = false;
 
 
-    private final DEUIWindow EffectWindow;
-    private final DEUIListBox<String> EffectList;
-    private final DEUICloseableWindow HandleWindow;
-    private final DEUIToggle HandleToggle;
-    private final DEUIDynamicActionTable<Integer> HandleTable;
-    private final DEUIFloatInput EffectPosX;
-    private final DEUIFloatInput EffectPosY;
-    private final DEUIFloatInput EffectRotX;
-    private final DEUIFloatInput EffectRotY;
-    private final DEUIFloatInput EffectRotZ;
-    private final DEUIFloatInput EffectScaleX;
-    private final DEUIFloatInput EffectScaleY;
-    private final DEUIFloatInput EffectScaleZ;
-    private final DEUIFloatInput EffectColorR;
-    private final DEUIFloatInput EffectColorG;
-    private final DEUIFloatInput EffectColorB;
-    private final DEUIFloatInput EffectColorA;
-    private final DEUIButton EffectPlay;
+    private final DEUIWindow effectWindow;
+    private final DEUIListBox<String> effectList;
+    private final DEUICloseableWindow handleWindow;
+    private final DEUIToggle handleToggle;
+    private final DEUIDynamicActionTable<Integer> handleTable;
+    private final DEUIFloatInput effectPosX;
+    private final DEUIFloatInput effectPosY;
+    private final DEUIFloatInput effectRotX;
+    private final DEUIFloatInput effectRotY;
+    private final DEUIFloatInput effectRotZ;
+    private final DEUIFloatInput effectScaleX;
+    private final DEUIFloatInput effectScaleY;
+    private final DEUIFloatInput effectScaleZ;
+    private final DEUIFloatInput effectColorR;
+    private final DEUIFloatInput effectColorG;
+    private final DEUIFloatInput effectColorB;
+    private final DEUIFloatInput effectColorA;
+    private final DEUIButton effectPlay;
 
     private STSEffekseerManager()
     {
-        EffectWindow = new DEUIWindow(WINDOW_ID);
-        EffectList = new DEUIListBox<String>(EFFECT_LIST_ID, AvailablePaths, p -> p);
-        EffectPosX = new DEUIFloatInput(EFFECT_LIST_POS_X_ID, Settings.WIDTH * 0.5f);
-        EffectPosY = new DEUIFloatInput(EFFECT_LIST_POS_Y_ID, Settings.HEIGHT * 0.5f);
-        EffectRotX = new DEUIFloatInput(EFFECT_LIST_ROT_X_ID);
-        EffectRotY = new DEUIFloatInput(EFFECT_LIST_ROT_Y_ID);
-        EffectRotZ = new DEUIFloatInput(EFFECT_LIST_ROT_Z_ID);
-        EffectScaleX = new DEUIFloatInput(EFFECT_LIST_SCALE_X_ID, 1, 0, Float.MAX_VALUE, 1, 10);
-        EffectScaleY = new DEUIFloatInput(EFFECT_LIST_SCALE_Y_ID, 1, 0, Float.MAX_VALUE, 1, 10);
-        EffectScaleZ = new DEUIFloatInput(EFFECT_LIST_SCALE_Z_ID, 1, 0, Float.MAX_VALUE, 1, 10);
-        EffectColorR = new DEUIFloatInput(EFFECT_LIST_COLOR_R_ID, 255, 0, 255, 1, 10);
-        EffectColorG = new DEUIFloatInput(EFFECT_LIST_COLOR_G_ID, 255, 0, 255, 1, 10);
-        EffectColorB = new DEUIFloatInput(EFFECT_LIST_COLOR_B_ID, 255, 0, 255, 1, 10);
-        EffectColorA = new DEUIFloatInput(EFFECT_LIST_COLOR_A_ID, 255, 0, 255, 1, 10);
-        EffectPlay = new DEUIButton(EFFECT_LIST_PLAY_ID);
+        effectWindow = new DEUIWindow(WINDOW_ID);
+        effectList = new DEUIListBox<String>(EFFECT_LIST_ID, AvailablePaths, p -> p);
+        effectPosX = new DEUIFloatInput(EFFECT_LIST_POS_X_ID, Settings.WIDTH * 0.5f);
+        effectPosY = new DEUIFloatInput(EFFECT_LIST_POS_Y_ID, Settings.HEIGHT * 0.5f);
+        effectRotX = new DEUIFloatInput(EFFECT_LIST_ROT_X_ID);
+        effectRotY = new DEUIFloatInput(EFFECT_LIST_ROT_Y_ID);
+        effectRotZ = new DEUIFloatInput(EFFECT_LIST_ROT_Z_ID);
+        effectScaleX = new DEUIFloatInput(EFFECT_LIST_SCALE_X_ID, 1, 0, Float.MAX_VALUE, 1, 10);
+        effectScaleY = new DEUIFloatInput(EFFECT_LIST_SCALE_Y_ID, 1, 0, Float.MAX_VALUE, 1, 10);
+        effectScaleZ = new DEUIFloatInput(EFFECT_LIST_SCALE_Z_ID, 1, 0, Float.MAX_VALUE, 1, 10);
+        effectColorR = new DEUIFloatInput(EFFECT_LIST_COLOR_R_ID, 255, 0, 255, 1, 10);
+        effectColorG = new DEUIFloatInput(EFFECT_LIST_COLOR_G_ID, 255, 0, 255, 1, 10);
+        effectColorB = new DEUIFloatInput(EFFECT_LIST_COLOR_B_ID, 255, 0, 255, 1, 10);
+        effectColorA = new DEUIFloatInput(EFFECT_LIST_COLOR_A_ID, 255, 0, 255, 1, 10);
+        effectPlay = new DEUIButton(EFFECT_LIST_PLAY_ID);
 
-        HandleToggle = new DEUIToggle(EFFECT_LIST_TOGGLE_ID);
-        HandleWindow = new DEUICloseableWindow(WINDOW_TABLE_ID).link(HandleToggle);
-        HandleTable = new DEUIDynamicActionTable<Integer>(TABLE_ID, 4);
-        HandleTable.setItems(PlayingHandles, handle -> {
+        handleToggle = new DEUIToggle(EFFECT_LIST_TOGGLE_ID);
+        handleWindow = new DEUICloseableWindow(WINDOW_TABLE_ID).link(handleToggle);
+        handleTable = new DEUIDynamicActionTable<Integer>(TABLE_ID, 4);
+        handleTable.setItems(PlayingHandles, handle -> {
                     return EUIUtils.array(
                             String.valueOf(handle),
                             String.valueOf(ManagerCore.GetFrame(handle)),
@@ -291,42 +291,42 @@ public class STSEffekseerManager implements ImGuiSubscriber
     @Override
     public void receiveImGui()
     {
-        EffectWindow.render(() -> {
-            HandleToggle.render();
+        effectWindow.render(() -> {
+            handleToggle.render();
             ImGui.separator();
-            EffectList.render();
+            effectList.render();
             DEUIUtils.withWidth(110, () -> {
                 DEUIUtils.inlineText("Pos");
-                EffectPosX.renderInline();
-                EffectPosY.render();
+                effectPosX.renderInline();
+                effectPosY.render();
                 DEUIUtils.inlineText("Rot");
-                EffectRotX.renderInline();
-                EffectRotY.renderInline();
-                EffectRotZ.render();
+                effectRotX.renderInline();
+                effectRotY.renderInline();
+                effectRotZ.render();
                 DEUIUtils.inlineText("Scale");
-                EffectScaleX.renderInline();
-                EffectScaleY.renderInline();
-                EffectScaleZ.render();
+                effectScaleX.renderInline();
+                effectScaleY.renderInline();
+                effectScaleZ.render();
                 DEUIUtils.inlineText("Color");
-                EffectColorR.renderInline();
-                EffectColorG.renderInline();
-                EffectColorB.renderInline();
-                EffectColorA.render();
+                effectColorR.renderInline();
+                effectColorG.renderInline();
+                effectColorB.renderInline();
+                effectColorA.render();
             });
-            EffectPlay.render(() -> {
-                        String value = EffectList.get();
+            effectPlay.render(() -> {
+                        String value = effectList.get();
                         if (value != null)
                         {
-                            play(EffectList.get(),
-                                    new Vector2(EffectPosX.get(), EffectPosY.get()),
-                                    new Vector3(EffectRotX.get(), EffectRotY.get(), EffectRotZ.get()),
-                                    new Vector3(EffectScaleX.get(), EffectScaleY.get(), EffectScaleZ.get()),
-                                    new float[]{EffectColorR.get(), EffectColorG.get(), EffectColorB.get(), EffectColorA.get()}
+                            play(effectList.get(),
+                                    new Vector2(effectPosX.get(), effectPosY.get()),
+                                    new Vector3(effectRotX.get(), effectRotY.get(), effectRotZ.get()),
+                                    new Vector3(effectScaleX.get(), effectScaleY.get(), effectScaleZ.get()),
+                                    new float[]{effectColorR.get(), effectColorG.get(), effectColorB.get(), effectColorA.get()}
                             );
                         }
                     }
                 );
             });
-        HandleWindow.render(HandleTable::render);
+        handleWindow.render(handleTable::render);
     }
 }

@@ -6,8 +6,8 @@ import java.util.Objects;
 
 public class TupleT2<V1, V2>
 {
-    public V1 V1;
-    public V2 V2;
+    public V1 v1;
+    public V2 v2;
 
     public TupleT2()
     {
@@ -16,28 +16,28 @@ public class TupleT2<V1, V2>
 
     public TupleT2(V1 v1, V2 v2)
     {
-        this.V1 = v1;
-        this.V2 = v2;
+        this.v1 = v1;
+        this.v2 = v2;
     }
 
     public TupleT2<V1, V2> set(V1 v1, V2 v2)
     {
-        this.V1 = v1;
-        this.V2 = v2;
+        this.v1 = v1;
+        this.v2 = v2;
         return this;
     }
 
     public TupleT2<V1, V2> clear()
     {
-        this.V1 = null;
-        this.V2 = null;
+        this.v1 = null;
+        this.v2 = null;
         return this;
     }
 
     @Override
     public String toString()
     {
-        return this.V1 + ": " + this.V2;
+        return this.v1 + ": " + this.v2;
     }
 
     @Override
@@ -46,7 +46,7 @@ public class TupleT2<V1, V2>
         if (other instanceof TupleT2)
         {
             TupleT2 b = (TupleT2) other;
-            return V1 == b.V1 && V2 == b.V2;
+            return v1 == b.v1 && v2 == b.v2;
         }
 
         return false;
@@ -55,6 +55,6 @@ public class TupleT2<V1, V2>
     @Override
     public int hashCode()
     {
-        return Objects.hash(V1, V2);
+        return Objects.hash(v1, v2);
     }
 }

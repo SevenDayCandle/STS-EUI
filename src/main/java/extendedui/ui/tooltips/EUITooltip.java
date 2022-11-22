@@ -84,7 +84,7 @@ public class EUITooltip
     public ColoredString subHeader;
     public ColoredString subText;
     public EUITooltip child;
-    public String id;
+    public String ID;
     public String past;
     public String plural;
     public String present;
@@ -95,8 +95,8 @@ public class EUITooltip
     public boolean canRender = true;
     public boolean renderBg = true;
     public boolean useLogic = false;
-    public float iconMulti_H = 1;
-    public float iconMulti_W = 1;
+    public float iconmultiH = 1;
+    public float iconmultiW = 1;
     protected int currentDesc;
     protected FuncT0<TextureRegion> iconFunc;
     private Float lastModNameHeight;
@@ -154,7 +154,7 @@ public class EUITooltip
     public static void registerID(String id, EUITooltip tooltip)
     {
         RegisteredIDs.put(id, tooltip);
-        tooltip.id = id;
+        tooltip.ID = id;
     }
 
     public static void registerName(String name, EUITooltip tooltip)
@@ -353,16 +353,16 @@ public class EUITooltip
         for (int i = 0; i < tooltips.size(); i++)
         {
             EUITooltip tip = tooltips.get(i);
-            if (StringUtils.isNotEmpty(tip.id))
+            if (StringUtils.isNotEmpty(tip.ID))
             {
                 if (tip.hideDescription == null)
                 {
-                    tip.hideDescription = EUIConfiguration.hideTipDescription(tip.id);
+                    tip.hideDescription = EUIConfiguration.hideTipDescription(tip.ID);
                 }
 
                 if (!inHand && alt && Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 + i))
                 {
-                    EUIConfiguration.hideTipDescription(tip.id, (tip.hideDescription ^= true), true);
+                    EUIConfiguration.hideTipDescription(tip.ID, (tip.hideDescription ^= true), true);
                 }
             }
 
@@ -644,7 +644,7 @@ public class EUITooltip
 
             if (tip.hideDescription == null)
             {
-                tip.hideDescription = !StringUtils.isEmpty(tip.id) && EUIConfiguration.hideTipDescription(tip.id);
+                tip.hideDescription = !StringUtils.isEmpty(tip.ID) && EUIConfiguration.hideTipDescription(tip.ID);
             }
 
             y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
@@ -664,7 +664,7 @@ public class EUITooltip
             final EUITooltip tip = tips.get(i);
             if (tip.hideDescription == null)
             {
-                tip.hideDescription = !StringUtils.isEmpty(tip.id) && EUIConfiguration.hideTipDescription(tip.id);
+                tip.hideDescription = !StringUtils.isEmpty(tip.ID) && EUIConfiguration.hideTipDescription(tip.ID);
             }
 
             if (!tip.hideDescription && tip.canRender)
@@ -677,14 +677,14 @@ public class EUITooltip
     public boolean hideDescription() {
         if (hideDescription == null)
         {
-            hideDescription = !StringUtils.isEmpty(id) && EUIConfiguration.hideTipDescription(id);
+            hideDescription = !StringUtils.isEmpty(ID) && EUIConfiguration.hideTipDescription(ID);
         }
         return hideDescription;
     }
 
     public boolean is(EUITooltip tooltip)
     {
-        return tooltip != null && id.equals(tooltip.id);
+        return tooltip != null && ID.equals(tooltip.ID);
     }
 
     public void invalidateHeight()
@@ -738,7 +738,7 @@ public class EUITooltip
         if (icon != null)
         {
             // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
-            renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, 28 * iconMulti_W, 28 * iconMulti_H);
+            renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, 28 * iconmultiW, 28 * iconmultiH);
             FontHelper.renderFontLeftTopAligned(sb, hFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
         else
@@ -748,7 +748,7 @@ public class EUITooltip
 
         if (!StringUtils.isEmpty(desc))
         {
-            if (provider != null && StringUtils.isNotEmpty(id) && !inHand && index >= 0)
+            if (provider != null && StringUtils.isNotEmpty(ID) && !inHand && index >= 0)
             {
                 FontHelper.renderFontRightTopAligned(sb, descFont, ALT_STRING + (index + 1), x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, Settings.PURPLE_COLOR);
             }
@@ -807,8 +807,8 @@ public class EUITooltip
 
     public EUITooltip setIconSizeMulti(float w, float h)
     {
-        this.iconMulti_W = w;
-        this.iconMulti_H = h;
+        this.iconmultiW = w;
+        this.iconmultiH = h;
 
         return this;
     }
@@ -978,7 +978,7 @@ public class EUITooltip
     {
         if (backgroundColor != null) {
             sb.setColor(backgroundColor);
-            sb.draw(EUIRM.Images.Base_Badge.texture(), x, y, 0f, 0f,
+            sb.draw(EUIRM.Images.baseBadge.texture(), x, y, 0f, 0f,
                     width, height, Settings.scale, Settings.scale, 0f,
                     region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
                     region.getRegionHeight(), false, false);
@@ -1003,7 +1003,7 @@ public class EUITooltip
 
     public String getTitleOrIcon()
     {
-        return (id != null) ? "[" + id + "]" : title;
+        return (ID != null) ? "[" + ID + "]" : title;
     }
 
     public String past() {

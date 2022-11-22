@@ -1,7 +1,5 @@
 package extendedui.configuration;
 
-import extendedui.EUIUtils;
-
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
 public class STSStringConfigItem extends STSConfigItem<String>
@@ -12,10 +10,10 @@ public class STSStringConfigItem extends STSConfigItem<String>
     }
 
     protected String parseValue(String raw) {
-        return raw != null ? raw : DefaultValue;
+        return raw != null ? raw : defaultValue;
     }
 
     protected String serialize() {
-        return Value;
+        return value;
     }
 }

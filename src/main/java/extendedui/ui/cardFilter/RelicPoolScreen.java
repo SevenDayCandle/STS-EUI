@@ -40,14 +40,14 @@ public class RelicPoolScreen extends AbstractScreen
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);
 
-        this.swapScreen = new EUIButton(EUIRM.Images.HexagonalButton.texture(),
+        this.swapScreen = new EUIButton(EUIRM.Images.hexagonalButton.texture(),
                 new AdvancedHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
                 .setFont(FontHelper.buttonLabelFont, 0.8f)
                 .setColor(Color.GRAY)
-                .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.GRAY)
+                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.GRAY)
                 .setOnClick(() -> EUI.CardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
-                .setText(EUIRM.Strings.UIPool_ViewCardPool);
+                .setText(EUIRM.Strings.uipoolViewcardpool);
     }
 
     public void open(AbstractPlayer player, ArrayList<AbstractRelic> relics)

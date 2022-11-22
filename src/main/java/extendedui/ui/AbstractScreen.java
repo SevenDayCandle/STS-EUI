@@ -147,8 +147,8 @@ public abstract class AbstractScreen extends EUIBase
 
     public static EUIButton createHexagonalButton(float x, float y, float width, float height)
     {
-        final Texture buttonTexture = EUIRM.Images.HexagonalButton.texture();
-        final Texture buttonBorderTexture = EUIRM.Images.HexagonalButtonBorder.texture();
+        final Texture buttonTexture = EUIRM.Images.hexagonalButton.texture();
+        final Texture buttonBorderTexture = EUIRM.Images.hexagonalButtonBorder.texture();
         return new EUIButton(buttonTexture, x, y)
         .setBorder(buttonBorderTexture, Color.WHITE)
         .setClickDelay(0.25f)

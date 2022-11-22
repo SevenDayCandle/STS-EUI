@@ -107,14 +107,14 @@ public class EUI
 
         BaseMod.addTopPanelItem(new CardPoolPanelItem());
 
-        OpenCardFiltersButton = new EUIButton(EUIRM.Images.HexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-            .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.WHITE)
-            .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.Strings.UI_Filters)
+        OpenCardFiltersButton = new EUIButton(EUIRM.Images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+            .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.WHITE)
+            .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.Strings.uiFilters)
             .setOnClick(() -> EUI.CardFilters.toggleFilters())
             .setColor(Color.GRAY);
-        OpenRelicFiltersButton = new EUIButton(EUIRM.Images.HexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.Strings.UI_Filters)
+        OpenRelicFiltersButton = new EUIButton(EUIRM.Images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.WHITE)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.Strings.uiFilters)
                 .setOnClick(() -> EUI.RelicFilters.toggleFilters())
                 .setColor(Color.GRAY);
     }

@@ -54,75 +54,75 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     }
 
     public static CustomCardFilterModule CustomModule;
-    public final HashSet<AbstractCard.CardColor> CurrentColors = new HashSet<>();
-    public final HashSet<ModInfo> CurrentOrigins = new HashSet<>();
-    public final HashSet<CostFilter> CurrentCosts = new HashSet<>();
-    public final HashSet<AbstractCard.CardRarity> CurrentRarities = new HashSet<>();
-    public final HashSet<AbstractCard.CardType> CurrentTypes = new HashSet<>();
-    public final EUIDropdown<ModInfo> OriginsDropdown;
-    public final EUIDropdown<CostFilter> CostDropdown;
-    public final EUIDropdown<AbstractCard.CardRarity> RaritiesDropdown;
-    public final EUIDropdown<AbstractCard.CardType> TypesDropdown;
-    public final EUIDropdown<AbstractCard.CardColor> ColorsDropdown;
-    public final EUITextBoxInput DescriptionInput;
-    public final EUITextBoxInput NameInput;
-    public String CurrentDescription;
-    public String CurrentName;
+    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
+    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
+    public final HashSet<CostFilter> currentCosts = new HashSet<>();
+    public final HashSet<AbstractCard.CardRarity> currentRarities = new HashSet<>();
+    public final HashSet<AbstractCard.CardType> currentTypes = new HashSet<>();
+    public final EUIDropdown<ModInfo> originsDropdown;
+    public final EUIDropdown<CostFilter> costDropdown;
+    public final EUIDropdown<AbstractCard.CardRarity> raritiesDropdown;
+    public final EUIDropdown<AbstractCard.CardType> typesDropdown;
+    public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
+    public final EUITextBoxInput descriptionInput;
+    public final EUITextBoxInput nameInput;
+    public String currentDescription;
+    public String currentName;
 
     public CardKeywordFilters()
     {
         super();
 
-        OriginsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
+        originsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.Strings.uiBasegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(CurrentOrigins, costs))
+                .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, null, false)
-                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Origins)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.uiOrigins)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
 
-        CostDropdown = new EUIDropdown<CostFilter>(new AdvancedHitbox(0, 0, scale(160), scale(48)), c -> c.name)
+        costDropdown = new EUIDropdown<CostFilter>(new AdvancedHitbox(0, 0, scale(160), scale(48)), c -> c.name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(CurrentCosts, costs))
+                .setOnChange(costs -> this.onFilterChanged(currentCosts, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, null, false)
                 .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[3])
                 .setIsMultiSelect(true)
                 .setCanAutosize(false, false)
                 .setItems(CostFilter.values());
 
-        RaritiesDropdown = new EUIDropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+        raritiesDropdown = new EUIDropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForRarity)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(CurrentRarities, costs))
+                .setOnChange(costs -> this.onFilterChanged(currentRarities, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, null, false)
                 .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(AbstractCard.CardRarity.values());
 
-        TypesDropdown = new EUIDropdown<AbstractCard.CardType>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+        typesDropdown = new EUIDropdown<AbstractCard.CardType>(new AdvancedHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForType)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(CurrentTypes, costs))
+                .setOnChange(costs -> this.onFilterChanged(currentTypes, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, null, false)
                 .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[1])
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(AbstractCard.CardType.values());
 
-        ColorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+        colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::getColorName)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(CurrentColors, costs))
+                .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, null, false)
-                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Colors)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.uiColors)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
-        NameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.texture(),
+        nameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.rectangularButton.texture(),
                 new AdvancedHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
                 .setOnComplete(s -> {
-                    CurrentName = s;
+                    currentName = s;
                     if (onClick != null)
                     {
                         onClick.invoke(null);
@@ -133,22 +133,22 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
                 .setFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
-                .setBackgroundTexture(EUIRM.Images.RectangularButton.texture());
-        DescriptionInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.texture(),
+                .setBackgroundTexture(EUIRM.Images.rectangularButton.texture());
+        descriptionInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.rectangularButton.texture(),
                 new AdvancedHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
                 .setOnComplete(s -> {
-                    CurrentDescription = s;
+                    currentDescription = s;
                     if (onClick != null)
                     {
                         onClick.invoke(null);
                     }
                 })
-                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_DescriptionSearch)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.uiDescriptionsearch)
                 .setHeaderSpacing(1f)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
                 .setFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
-                .setBackgroundTexture(EUIRM.Images.RectangularButton.texture());
+                .setBackgroundTexture(EUIRM.Images.rectangularButton.texture());
     }
 
     @Override
@@ -160,12 +160,12 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     @Override
     public boolean areFiltersEmpty()
     {
-        return (CurrentName == null || CurrentName.isEmpty())
-                && (CurrentDescription == null || CurrentDescription.isEmpty())
-                && CurrentColors.isEmpty() && CurrentOrigins.isEmpty()
-                && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty()
-                && CurrentCosts.isEmpty() && CurrentRarities.isEmpty()
-                && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.isEmpty());
+        return (currentName == null || currentName.isEmpty())
+                && (currentDescription == null || currentDescription.isEmpty())
+                && currentColors.isEmpty() && currentOrigins.isEmpty()
+                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
+                && currentCosts.isEmpty() && currentRarities.isEmpty()
+                && currentTypes.isEmpty() && (CustomModule != null && CustomModule.isEmpty());
     }
 
     @Override
@@ -186,7 +186,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 for (EUITooltip tooltip : getAllTooltips(card))
                 {
                     if (tooltip.canFilter) {
-                        CurrentFilterCounts.merge(tooltip, 1, Integer::sum);
+                        currentFilterCounts.merge(tooltip, 1, Integer::sum);
                     }
                 }
 
@@ -204,15 +204,15 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
 
         ArrayList<ModInfo> modInfos = new ArrayList<>(availableMods);
         modInfos.sort((a, b) -> a == null ? -1 : b == null ? 1 : StringUtils.compare(a.Name, b.Name));
-        OriginsDropdown.setItems(modInfos);
+        originsDropdown.setItems(modInfos);
 
         ArrayList<AbstractCard.CardRarity> rarityItems = new ArrayList<>(availableRarities);
         rarityItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
-        RaritiesDropdown.setItems(rarityItems);
+        raritiesDropdown.setItems(rarityItems);
 
         ArrayList<AbstractCard.CardType> typesItems = new ArrayList<>(availableTypes);
         typesItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
-        TypesDropdown.setItems(typesItems);
+        typesDropdown.setItems(typesItems);
 
         ArrayList<CostFilter> costItems = new ArrayList<>();
         for (CostFilter c : CostFilter.values())
@@ -222,26 +222,26 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 costItems.add(c);
             }
         }
-        CostDropdown.setItems(costItems);
+        costDropdown.setItems(costItems);
 
         ArrayList<AbstractCard.CardColor> colorsItems = new ArrayList<>(availableColors);
         colorsItems.sort((a, b) -> a == AbstractCard.CardColor.COLORLESS ? -1 : a == AbstractCard.CardColor.CURSE ? -2 : StringUtils.compare(a.name(), b.name()));
-        ColorsDropdown.setItems(colorsItems);
+        colorsDropdown.setItems(colorsItems);
         if (isAccessedFromCardPool)
         {
-            ColorsDropdown.setSelection(EUIUtils.filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE), true);
+            colorsDropdown.setSelection(EUIUtils.filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE), true);
         }
     }
 
     @Override
     public boolean isHoveredImpl()
     {
-        return OriginsDropdown.areAnyItemsHovered()
-                || CostDropdown.areAnyItemsHovered()
-                || RaritiesDropdown.areAnyItemsHovered()
-                || TypesDropdown.areAnyItemsHovered()
-                || NameInput.hb.hovered
-                || DescriptionInput.hb.hovered
+        return originsDropdown.areAnyItemsHovered()
+                || costDropdown.areAnyItemsHovered()
+                || raritiesDropdown.areAnyItemsHovered()
+                || typesDropdown.areAnyItemsHovered()
+                || nameInput.hb.hovered
+                || descriptionInput.hb.hovered
                 || (CustomModule != null && CustomModule.isHovered());
     }
 
@@ -250,22 +250,22 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     {
         if (shouldClearColors)
         {
-            CurrentColors.clear();
+            currentColors.clear();
         }
-        CurrentOrigins.clear();
-        CurrentFilters.clear();
-        CurrentNegateFilters.clear();
-        CurrentCosts.clear();
-        CurrentRarities.clear();
-        CurrentTypes.clear();
-        CurrentName = null;
-        CurrentDescription = null;
-        CostDropdown.setSelectionIndices(null, false);
-        OriginsDropdown.setSelectionIndices(null, false);
-        TypesDropdown.setSelectionIndices(null, false);
-        RaritiesDropdown.setSelectionIndices(null, false);
-        NameInput.setLabel("");
-        DescriptionInput.setLabel("");
+        currentOrigins.clear();
+        currentFilters.clear();
+        currentNegateFilters.clear();
+        currentCosts.clear();
+        currentRarities.clear();
+        currentTypes.clear();
+        currentName = null;
+        currentDescription = null;
+        costDropdown.setSelectionIndices(null, false);
+        originsDropdown.setSelectionIndices(null, false);
+        typesDropdown.setSelectionIndices(null, false);
+        raritiesDropdown.setSelectionIndices(null, false);
+        nameInput.setLabel("");
+        descriptionInput.setLabel("");
         if (CustomModule != null)
         {
             CustomModule.reset();
@@ -275,12 +275,12 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     @Override
     public void renderFilters(SpriteBatch sb)
     {
-        OriginsDropdown.tryRender(sb);
-        CostDropdown.tryRender(sb);
-        RaritiesDropdown.tryRender(sb);
-        TypesDropdown.tryRender(sb);
-        NameInput.tryRender(sb);
-        DescriptionInput.tryRender(sb);
+        originsDropdown.tryRender(sb);
+        costDropdown.tryRender(sb);
+        raritiesDropdown.tryRender(sb);
+        typesDropdown.tryRender(sb);
+        nameInput.tryRender(sb);
+        descriptionInput.tryRender(sb);
 
         if (CustomModule != null)
         {
@@ -291,12 +291,12 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     @Override
     public void updateFilters()
     {
-        OriginsDropdown.setPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
-        CostDropdown.setPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-        RaritiesDropdown.setPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-        TypesDropdown.setPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-        NameInput.setPosition(hb.x + SPACING * 2.05f, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
-        DescriptionInput.setPosition(NameInput.hb.cX + NameInput.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
+        originsDropdown.setPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        costDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        raritiesDropdown.setPosition(costDropdown.hb.x + costDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        typesDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        nameInput.setPosition(hb.x + SPACING * 2.05f, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
+        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
 
         if (CustomModule != null)
         {
@@ -378,51 +378,51 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     {
         return EUIUtils.filter(input, c -> {
             //Name check
-            if (CurrentName != null && !CurrentName.isEmpty()) {
-                if (c.name == null || !c.name.toLowerCase().contains(CurrentName.toLowerCase())) {
+            if (currentName != null && !currentName.isEmpty()) {
+                if (c.name == null || !c.name.toLowerCase().contains(currentName.toLowerCase())) {
                     return false;
                 }
             }
 
             //Description check
-            if (CurrentDescription != null && !CurrentDescription.isEmpty()) {
-                if (c.rawDescription == null || !c.rawDescription.toLowerCase().contains(CurrentDescription.toLowerCase())) {
+            if (currentDescription != null && !currentDescription.isEmpty()) {
+                if (c.rawDescription == null || !c.rawDescription.toLowerCase().contains(currentDescription.toLowerCase())) {
                     return false;
                 }
             }
 
             //Colors check
-            if (!CurrentColors.isEmpty() && !CurrentColors.contains(c.color))
+            if (!currentColors.isEmpty() && !currentColors.contains(c.color))
             {
                 return false;
             }
 
             //Origin check
-            if (!evaluateItem(CurrentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt)))
+            if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt)))
             {
                 return false;
             }
 
             //Tooltips check
-            if (!CurrentFilters.isEmpty() && (!getAllTooltips(c).containsAll(CurrentFilters)))
+            if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters)))
             {
                 return false;
             }
 
             //Negate Tooltips check
-            if (!CurrentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), CurrentNegateFilters::contains)))
+            if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains)))
             {
                 return false;
             }
 
             //Rarities check
-            if (!CurrentRarities.isEmpty() && !CurrentRarities.contains(c.rarity))
+            if (!currentRarities.isEmpty() && !currentRarities.contains(c.rarity))
             {
                 return false;
             }
 
             //Types check
-            if (!CurrentTypes.isEmpty() && !CurrentTypes.contains(c.type))
+            if (!currentTypes.isEmpty() && !currentTypes.contains(c.type))
             {
                 return false;
             }
@@ -434,10 +434,10 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
             }
 
             //Cost check
-            if (!CurrentCosts.isEmpty())
+            if (!currentCosts.isEmpty())
             {
                 boolean passes = false;
-                for (CostFilter cf : CurrentCosts)
+                for (CostFilter cf : currentCosts)
                 {
                     if (c.cost >= cf.lowerBound && c.cost <= cf.upperBound)
                     {

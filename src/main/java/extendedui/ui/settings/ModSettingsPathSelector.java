@@ -11,15 +11,15 @@ import java.io.File;
 
 public class ModSettingsPathSelector extends EUIFileSelector implements STSConfigListener<String>
 {
-    public final STSConfigItem<String> Config;
+    public final STSConfigItem<String> config;
 
     public ModSettingsPathSelector(AdvancedHitbox hb, STSConfigItem<String> config, String title)
     {
         super(hb);
-        Config = config;
+        this.config = config;
         this.header.setLabel(title).setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
         this.filePath.setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
-        this.Config.addListener(this);
+        this.config.addListener(this);
         setOnUpdate(this::onUpdateFile);
     }
 
@@ -30,7 +30,7 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
 
     public ModSettingsPathSelector makeCopy()
     {
-        ModSettingsPathSelector other = new ModSettingsPathSelector(new AdvancedHitbox(hb), Config, this.header.text);
+        ModSettingsPathSelector other = new ModSettingsPathSelector(new AdvancedHitbox(hb), config, this.header.text);
         other.extensionFilter = new FileNameExtensionFilter(this.extensionFilter.getDescription(), this.extensionFilter.getExtensions());
         other.tooltip = this.tooltip;
         return other;
@@ -44,6 +44,6 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
 
     private void onUpdateFile(File file)
     {
-        Config.set(file != null && file.exists() ? file.getAbsolutePath() : "", true);
+        config.set(file != null && file.exists() ? file.getAbsolutePath() : "", true);
     }
 }

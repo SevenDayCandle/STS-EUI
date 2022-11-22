@@ -253,7 +253,7 @@ public class EUIFontHelper
                 return new FileHandle(file);
             }
             else {
-                EUIUtils.logWarning(EUIFontHelper.class, "Could not load external font for config " + config.Key + ". Config value: " + trimmed + ". Actual path: " + file.getAbsolutePath());
+                EUIUtils.logWarning(EUIFontHelper.class, "Could not load external font for config " + config.key + ". Config value: " + trimmed + ". Actual path: " + file.getAbsolutePath());
             }
         }
         return fallback;

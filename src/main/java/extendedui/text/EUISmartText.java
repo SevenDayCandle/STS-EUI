@@ -8,9 +8,9 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import extendedui.EUIUtils;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
+import extendedui.EUIUtils;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.TupleT2;
 import org.apache.commons.lang3.StringUtils;
@@ -131,7 +131,7 @@ public class EUISmartText
 
     public static float getSmartHeight(BitmapFont font, String text, float lineWidth, float lineSpacing)
     {
-        return write(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).V2;
+        return write(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).v2;
     }
 
     public static float getSmartWidth(BitmapFont font, String text)
@@ -146,7 +146,7 @@ public class EUISmartText
 
     public static float getSmartWidth(BitmapFont font, String text, float lineWidth, float lineSpacing)
     {
-        return write(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).V1;
+        return write(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).v1;
     }
 
     private static Color getTooltipBackgroundColor(String id)
@@ -442,7 +442,7 @@ public class EUISmartText
                     if (backgroundColor != null)
                     {
                         sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.Images.Base_Badge.texture(), x - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
+                        sb.draw(EUIRM.Images.baseBadge.texture(), x - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
                                 halfOrbWidth, halfOrbHeight,
                                 orbWidth, orbHeight, scaleX, scaleY, 0f,
                                 icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
@@ -460,7 +460,7 @@ public class EUISmartText
                     if (backgroundColor != null)
                     {
                         sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.Images.Base_Badge.texture(), x + curWidth - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
+                        sb.draw(EUIRM.Images.baseBadge.texture(), x + curWidth - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
                                 halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f,
                                 icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
                                 icon.getRegionHeight(), false, false);

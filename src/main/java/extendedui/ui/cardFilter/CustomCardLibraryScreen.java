@@ -61,14 +61,14 @@ public class CustomCardLibraryScreen extends AbstractScreen
                 .setOnToggle(EUI::toggleViewUpgrades);
         cancelButton = new MenuCancelButton();
 
-        quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.texture(),
+        quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.rectangularButton.texture(),
                 new AdvancedHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, scale(280), scale(48)))
-                .setOnComplete((v) -> EUI.CardFilters.NameInput.setTextAndCommit(v))
-                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.7f, Settings.GOLD_COLOR, EUIRM.Strings.UI_NameSearch)
+                .setOnComplete((v) -> EUI.CardFilters.nameInput.setTextAndCommit(v))
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.7f, Settings.GOLD_COLOR, EUIRM.Strings.uiNamesearch)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
                 .setFont(EUIFontHelper.CardTitleFont_Small, 0.7f)
-                .setBackgroundTexture(EUIRM.Images.RectangularButton.texture())
+                .setBackgroundTexture(EUIRM.Images.rectangularButton.texture())
                 .setLabel("");
         quickSearch.header.setAlignment(0f, -0.51f);
     }
@@ -122,7 +122,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
         EUI.CustomHeader.setGroup(cards);
         EUI.CardFilters.initialize(__ -> {
             cardGrid.moveToTop();
-            quickSearch.setLabel(EUI.CardFilters.CurrentName != null ? EUI.CardFilters.CurrentName : "");
+            quickSearch.setLabel(EUI.CardFilters.currentName != null ? EUI.CardFilters.currentName : "");
             EUI.CustomHeader.updateForFilters();
             if (CustomModule != null) {
                 CustomModule.open(EUI.CustomHeader.group.group);

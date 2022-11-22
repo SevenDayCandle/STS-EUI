@@ -115,13 +115,13 @@ public class EUIDropdown<T> extends EUIHoverable
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnScroll(this::onScroll);
-        this.button = new EUIButton(EUIRM.Images.RectangularButton.texture(), this.hb)
+        this.button = new EUIButton(EUIRM.Images.rectangularButton.texture(), this.hb)
                 .setColor(Color.GRAY)
                 .setFont(font, fontScale)
-                .setText(currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected)
+                .setText(currentIndices.size() + " " + EUIRM.Strings.uiItemsselected)
                 .setOnClick(this::openOrCloseMenu);
         //noinspection SuspiciousNameCombination
-        this.clearButton = new EUIButton(EUIRM.Images.X.texture(), new AdvancedHitbox(hb.x + hb.width, hb.y, hb.height, hb.height)
+        this.clearButton = new EUIButton(EUIRM.Images.x.texture(), new AdvancedHitbox(hb.x + hb.width, hb.y, hb.height, hb.height)
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnClick(() -> {
@@ -732,7 +732,7 @@ public class EUIDropdown<T> extends EUIHoverable
     public String makeMultiSelectString(FuncT1<String, T> optionFunc) {
         String prospective = StringUtils.join(EUIUtils.map(getCurrentItems(), optionFunc), ", ");
         float width = button.isSmartText ? EUISmartText.getSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
-        return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected : prospective;
+        return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.Strings.uiItemsselected : prospective;
     }
 
     protected boolean shouldShowSlider() {

@@ -41,9 +41,9 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         xPosition += CardLibSortHeader.SPACE_X;
         this.nameButton = new SortHeaderButton(CardLibSortHeader.TEXT[2], xPosition, 0.0F, this);
         xPosition += CardLibSortHeader.SPACE_X;
-        this.colorButton = new SortHeaderButton(EUIRM.Strings.UI_Colors, xPosition, 0.0F, this);
+        this.colorButton = new SortHeaderButton(EUIRM.Strings.uiColors, xPosition, 0.0F, this);
         xPosition += CardLibSortHeader.SPACE_X;
-        this.seenButton = new SortHeaderButton(EUIRM.Strings.UI_Seen, xPosition, 0.0F, this);
+        this.seenButton = new SortHeaderButton(EUIRM.Strings.uiSeen, xPosition, 0.0F, this);
         this.buttons = new SortHeaderButton[]{this.rarityButton, this.nameButton, this.colorButton, this.seenButton};
     }
 

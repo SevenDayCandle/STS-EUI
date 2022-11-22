@@ -8,16 +8,16 @@ import extendedui.utilities.EUIFontHelper;
 
 public class ModSettingsToggle extends EUIToggle implements STSConfigListener<Boolean>
 {
-    public final STSConfigItem<Boolean> Config;
+    public final STSConfigItem<Boolean> config;
 
     public ModSettingsToggle(AdvancedHitbox hb, STSConfigItem<Boolean> config, String title)
     {
         super(hb);
-        Config = config;
+        this.config = config;
         setText(title);
         setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
-        setOnToggle(val -> Config.set(val, true));
-        this.Config.addListener(this);
+        setOnToggle(val -> this.config.set(val, true));
+        this.config.addListener(this);
     }
 
     @Override
