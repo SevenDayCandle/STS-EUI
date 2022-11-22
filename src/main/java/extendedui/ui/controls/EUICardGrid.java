@@ -15,7 +15,6 @@ import eatyourbeets.interfaces.delegates.ActionT2;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.interfaces.markers.CacheableCard;
-import extendedui.utilities.Mathf;
 
 import java.util.HashMap;
 

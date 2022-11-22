@@ -15,19 +15,17 @@ import com.badlogic.gdx.math.Vector2;
 import com.github.tommyettinger.colorful.Shaders;
 import com.github.tommyettinger.colorful.rgb.ColorTools;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.blue.Rainbow;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import eatyourbeets.interfaces.delegates.ActionT1;
-import eatyourbeets.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
 import extendedui.ui.controls.EUIImage;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.tooltips.EUITooltip;
-import extendedui.utilities.AdvancedTexture;
+import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
 
@@ -73,6 +71,16 @@ public class EUIRenderHelpers
     protected static ShaderProgram RainbowShader;
     protected static ShaderProgram SepiaShader;
     private static FrameBuffer MaskBuffer;
+
+    public static float GetAngleDegrees(float aX, float aY, float bX, float bY)
+    {
+        return MathUtils.radiansToDegrees * (float) Math.atan2(bY - aY, bX - aX);
+    }
+
+    public static float GetAngleRadians(float aX, float aY, float bX, float bY)
+    {
+        return (float) Math.atan2(bY - aY, bX - aX);
+    }
 
     public static void InitializeBuffers() {
         MaskBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false);
@@ -502,17 +510,17 @@ public class EUIRenderHelpers
         DrawOnCardAuto(sb, card, img, offset, width, height, Color.WHITE, card.transparency, 1, 0);
     }
 
-    public static void DrawOnCardAuto(SpriteBatch sb, AbstractCard card, AdvancedTexture img, float drawX, float drawY, float width, float height)
+    public static void DrawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, float drawX, float drawY, float width, float height)
     {
         DrawOnCardAuto(sb, card, img.texture, new Vector2(drawX, drawY), width, height, img.color, img.color.a * card.transparency, 1, 0);
     }
 
-    public static void DrawOnCardAuto(SpriteBatch sb, AbstractCard card, AdvancedTexture img, float drawX, float drawY, float width, float height, float scale)
+    public static void DrawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, float drawX, float drawY, float width, float height, float scale)
     {
         DrawOnCardAuto(sb, card, img.texture, new Vector2(drawX, drawY), width, height, img.color, img.color.a * card.transparency, scale, 0);
     }
 
-    public static void DrawOnCardAuto(SpriteBatch sb, AbstractCard card, AdvancedTexture img, Vector2 offset, float width, float height)
+    public static void DrawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, Vector2 offset, float width, float height)
     {
         DrawOnCardAuto(sb, card, img.texture, offset, width, height, img.color, img.color.a * card.transparency, 1, 0);
     }

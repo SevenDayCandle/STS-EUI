@@ -5,15 +5,15 @@ import com.badlogic.gdx.graphics.Texture;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 
-public class AdvancedTexture
+public class ColoredTexture
 {
     public Color color;
     public Texture texture;
-    public Position2D pos;
+    public float scale;
 
-    public AdvancedTexture(Texture texture, Color color, float alpha)
+    public ColoredTexture(Texture texture, Color color, float alpha, float scale)
     {
-        this.pos = new Position2D(0, 0, 0, 1);
+        this.scale = scale;
         this.texture = texture;
 
         if (color != null)
@@ -23,34 +23,19 @@ public class AdvancedTexture
         }
     }
 
-    public AdvancedTexture(Texture texture, Color color)
+    public ColoredTexture(Texture texture, Color color, float alpha)
+    {
+        this(texture, color, alpha, 1);
+    }
+
+    public ColoredTexture(Texture texture, Color color)
     {
         this(texture, color, 1);
     }
 
-    public AdvancedTexture(Texture texture)
+    public ColoredTexture(Texture texture)
     {
         this(texture, Color.WHITE);
-    }
-
-    public float GetX()
-    {
-        return pos.x;
-    }
-
-    public float GetY()
-    {
-        return pos.y;
-    }
-
-    public float GetRotation()
-    {
-        return pos.rotation;
-    }
-
-    public float GetScale()
-    {
-        return pos.scale;
     }
 
     public int GetWidth()
@@ -63,7 +48,7 @@ public class AdvancedTexture
         return texture.getHeight();
     }
 
-    public AdvancedTexture SetColor(Color color)
+    public ColoredTexture SetColor(Color color)
     {
         if (color != null)
         {
@@ -80,7 +65,7 @@ public class AdvancedTexture
         return this;
     }
 
-    public AdvancedTexture SetColor(Float r, Float g, Float b, Float a)
+    public ColoredTexture SetColor(Float r, Float g, Float b, Float a)
     {
         if (r != null)
         {

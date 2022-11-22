@@ -38,7 +38,6 @@ import extendedui.text.EUISmartText;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.Mathf;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
@@ -414,7 +413,7 @@ public class EUITooltip
                 float steps = (tooltips.size() - 3) * 0.4f;
                 float multi = 1f - (card.current_y / (Settings.HEIGHT * 0.5f));
 
-                y += AbstractCard.IMG_HEIGHT * (0.5f + Mathf.Round(multi * steps));
+                y += AbstractCard.IMG_HEIGHT * (0.5f + MathUtils.round(multi * steps));
             }
             else
             {

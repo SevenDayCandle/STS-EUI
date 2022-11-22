@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.StringJoiner;
 import java.util.function.Predicate;
@@ -184,6 +185,21 @@ public class EUIUtils
 
     public static <T> T Deserialize(String s, Type token) {
         return GsonReader.fromJson(s, token);
+    }
+
+    public static Integer[] Range(int lowest, int highest)
+    {
+        return Range(lowest, highest, 1);
+    }
+
+    public static Integer[] Range(int lowest, int highest, int step)
+    {
+        if (highest < lowest) {
+            return new Integer[]{};
+        }
+        Integer[] values = new Integer[(highest - lowest) / step + 1];
+        Arrays.setAll(values, i -> i * step + lowest);
+        return values;
     }
 
     public static String Serialize(Object o) {
