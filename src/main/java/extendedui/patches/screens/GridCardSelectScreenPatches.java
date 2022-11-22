@@ -15,9 +15,9 @@ public class GridCardSelectScreenPatches {
     public static class GridCardSelectScreen_CalculateScrollBounds
     {
         @SpirePrefixPatch
-        public static SpireReturn Prefix(GridCardSelectScreen __instance)
+        public static SpireReturn prefix(GridCardSelectScreen __instance)
         {
-            if (GridCardSelectScreenHelper.CalculateScrollBounds(__instance))
+            if (GridCardSelectScreenHelper.calculateScrollBounds(__instance))
             {
                 return SpireReturn.Return(null);
             }
@@ -32,9 +32,9 @@ public class GridCardSelectScreenPatches {
     public static class GridCardSelectScreen_CallOnOpen
     {
         @SpirePostfixPatch
-        public static void Postfix(GridCardSelectScreen __instance)
+        public static void postfix(GridCardSelectScreen __instance)
         {
-            GridCardSelectScreenHelper.Open(__instance);
+            GridCardSelectScreenHelper.open(__instance);
         }
     }
 
@@ -42,9 +42,9 @@ public class GridCardSelectScreenPatches {
     public static class GridCardSelectScreen_UpdateCardPositionsAndHoverLogic
     {
         @SpirePrefixPatch
-        public static SpireReturn Prefix(GridCardSelectScreen __instance)
+        public static SpireReturn prefix(GridCardSelectScreen __instance)
         {
-            if (GridCardSelectScreenHelper.UpdateCardPositionAndHover(__instance))
+            if (GridCardSelectScreenHelper.updateCardPositionAndHover(__instance))
             {
                 return SpireReturn.Return(null);
             }
@@ -66,9 +66,9 @@ public class GridCardSelectScreenPatches {
         @SpireInsertPatch(
                 locator = Locator.class
         )
-        public static void Insert2(GridCardSelectScreen __instance) {
+        public static void insert2(GridCardSelectScreen __instance) {
             if (__instance.anyNumber) {
-                __instance.confirmButton.isDisabled = !GridCardSelectScreenHelper.IsConditionMet();
+                __instance.confirmButton.isDisabled = !GridCardSelectScreenHelper.isConditionMet();
             }
         }
 
@@ -86,8 +86,8 @@ public class GridCardSelectScreenPatches {
         @SpireInsertPatch(
                 locator = Locator2.class
         )
-        public static void Insert3(GridCardSelectScreen __instance) {
-            GridCardSelectScreenHelper.InvokeOnClick(__instance);
+        public static void insert3(GridCardSelectScreen __instance) {
+            GridCardSelectScreenHelper.invokeOnClick(__instance);
         }
 
         private static class Locator2 extends SpireInsertLocator {
@@ -102,9 +102,9 @@ public class GridCardSelectScreenPatches {
         }
 
         @SpirePostfixPatch
-        public static void Postfix(GridCardSelectScreen __instance)
+        public static void postfix(GridCardSelectScreen __instance)
         {
-            GridCardSelectScreenHelper.UpdateDynamicString();
+            GridCardSelectScreenHelper.updateDynamicString();
         }
     }
 
@@ -117,9 +117,9 @@ public class GridCardSelectScreenPatches {
         }
 
         @SpirePostfixPatch
-        public static void Postfix(GridCardSelectScreen __instance, SpriteBatch sb)
+        public static void postfix(GridCardSelectScreen __instance, SpriteBatch sb)
         {
-            GridCardSelectScreenHelper.RenderDynamicString(sb);
+            GridCardSelectScreenHelper.renderDynamicString(sb);
         }
     }
 }

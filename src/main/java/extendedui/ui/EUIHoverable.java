@@ -13,31 +13,31 @@ public abstract class EUIHoverable extends EUIBase
         this.hb = hb;
     }
 
-    public boolean TryRender(SpriteBatch sb)
+    public boolean tryRender(SpriteBatch sb)
     {
         if (isActive)
         {
             this.hb.render(sb);
-            Render(sb);
+            renderImpl(sb);
         }
 
         return isActive;
     }
 
-    public void Update()
+    public void updateImpl()
     {
         this.hb.update();
         if (this.hb.hovered && tooltip != null && tooltip.canRender) {
-            EUITooltip.QueueTooltip(tooltip);
+            EUITooltip.queueTooltip(tooltip);
         }
     }
 
-    public EUIHoverable SetHitbox(AdvancedHitbox hb) {
+    public EUIHoverable setHitbox(AdvancedHitbox hb) {
         this.hb = hb;
         return this;
     }
 
-    public EUIHoverable SetDimensions(float width, float height)
+    public EUIHoverable setDimensions(float width, float height)
     {
         this.hb.resize(width, height);
 
@@ -45,7 +45,7 @@ public abstract class EUIHoverable extends EUIBase
     }
 
     // Center the hitbox on the specified coordinates
-    public EUIHoverable SetPosition(float cX, float cY)
+    public EUIHoverable setPosition(float cX, float cY)
     {
         this.hb.move(cX, cY);
 
@@ -53,27 +53,27 @@ public abstract class EUIHoverable extends EUIBase
     }
 
     // The hitbox's center will move towards the designated position
-    public EUIHoverable SetTargetPosition(float cX, float cY)
+    public EUIHoverable setTargetPosition(float cX, float cY)
     {
-        this.hb.SetTargetPosition(cX, cY);
+        this.hb.setTargetPosition(cX, cY);
 
         return this;
     }
 
     // Move the hitbox's bottom-left corner to the specified coordinates
-    public EUIHoverable Translate(float x, float y)
+    public EUIHoverable translate(float x, float y)
     {
         this.hb.translate(x, y);
 
         return this;
     }
 
-    public EUIHoverable SetTooltip(String title, String description)
+    public EUIHoverable setTooltip(String title, String description)
     {
-        return SetTooltip(new EUITooltip(title, description));
+        return setTooltip(new EUITooltip(title, description));
     }
 
-    public EUIHoverable SetTooltip(EUITooltip tooltip)
+    public EUIHoverable setTooltip(EUITooltip tooltip)
     {
         this.tooltip = tooltip;
 
@@ -81,15 +81,15 @@ public abstract class EUIHoverable extends EUIBase
     }
 
     public void set(float xPos, float yPos) {
-        Translate(xPos, yPos);
+        translate(xPos, yPos);
     }
 
     public void setX(float xPos) {
-        Translate(xPos, hb.y);
+        translate(xPos, hb.y);
     }
 
     public void setY(float yPos) {
-        Translate(hb.x, yPos);
+        translate(hb.x, yPos);
     }
 
     public float getX() {

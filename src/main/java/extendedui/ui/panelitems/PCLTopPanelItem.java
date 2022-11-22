@@ -16,28 +16,28 @@ public abstract class PCLTopPanelItem extends TopPanelItem
     private boolean rightClickable = true;
 
 
-    public static String CreateFullID(Class<? extends PCLTopPanelItem> type)
+    public static String createFullID(Class<? extends PCLTopPanelItem> type)
     {
-        return EUIRM.GetID(type.getSimpleName());
+        return EUIRM.getID(type.getSimpleName());
     }
 
     public PCLTopPanelItem(TextureCache tc, String id) {
-        super(tc.Texture(), id);
+        super(tc.texture(), id);
     }
 
-    public PCLTopPanelItem SetOnClick(GenericCallback<PCLTopPanelItem> onLeftClick) {
+    public PCLTopPanelItem setOnClick(GenericCallback<PCLTopPanelItem> onLeftClick) {
         this.onLeftClick = onLeftClick;
         setClickable(this.onLeftClick != null);
         return this;
     }
 
-    public PCLTopPanelItem SetOnRightClick(GenericCallback<PCLTopPanelItem> onRightClick) {
+    public PCLTopPanelItem setOnRightClick(GenericCallback<PCLTopPanelItem> onRightClick) {
         this.onRightClick = onRightClick;
         setRightClickable(this.onRightClick != null);
         return this;
     }
 
-    public PCLTopPanelItem SetTooltip(EUITooltip tooltip) {
+    public PCLTopPanelItem setTooltip(EUITooltip tooltip) {
         this.tooltip = tooltip;
         return this;
     }
@@ -49,13 +49,13 @@ public abstract class PCLTopPanelItem extends TopPanelItem
     @Override
     protected void onClick() {
         if (this.onLeftClick != null) {
-            this.onLeftClick.Complete(this);
+            this.onLeftClick.complete(this);
         }
     }
 
     protected void onRightClick() {
         if (this.onRightClick != null) {
-            this.onRightClick.Complete(this);
+            this.onRightClick.complete(this);
         }
     }
 
@@ -65,7 +65,7 @@ public abstract class PCLTopPanelItem extends TopPanelItem
         if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.FTUE) {
             super.update();
             if (this.tooltip != null && getHitbox().hovered) {
-                EUITooltip.QueueTooltip(tooltip);
+                EUITooltip.queueTooltip(tooltip);
             }
             if (this.hitbox.hovered && InputHelper.justClickedRight && this.rightClickable) {
                 this.onRightClick();

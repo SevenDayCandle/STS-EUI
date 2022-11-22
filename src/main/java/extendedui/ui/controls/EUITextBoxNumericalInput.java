@@ -16,12 +16,12 @@ public class EUITextBoxNumericalInput extends EUITextBoxInput
         super(backgroundTexture, hb);
     }
 
-    public EUITextBoxNumericalInput SetOnCompleteNumber(ActionT1<Integer> onComplete) {
+    public EUITextBoxNumericalInput setOnCompleteNumber(ActionT1<Integer> onComplete) {
         this.onCompleteNumber = onComplete;
         return this;
     }
 
-    public EUITextBoxNumericalInput SetOnUpdateNumber(ActionT1<Integer> onUpdate) {
+    public EUITextBoxNumericalInput setOnUpdateNumber(ActionT1<Integer> onUpdate) {
         this.onUpdateNumber = onUpdate;
         return this;
     }
@@ -32,23 +32,23 @@ public class EUITextBoxNumericalInput extends EUITextBoxInput
     }
 
     @Override
-    public void Start() {
-        super.Start();
+    public void start() {
+        super.start();
         if (!NumberUtils.isCreatable(label.text)) {
             label.text = "";
         }
     }
 
     @Override
-    protected void RenderUnderscore(SpriteBatch sb, float cur_x) {
+    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
         // Do not render
     }
 
     @Override
-    public void End(boolean commit) {
-        super.End(commit);
+    public void end(boolean commit) {
+        super.end(commit);
         if (commit && onCompleteNumber != null && !label.text.isEmpty()) {
-            onCompleteNumber.Invoke(Integer.parseInt(label.text));
+            onCompleteNumber.invoke(Integer.parseInt(label.text));
         }
     }
 }

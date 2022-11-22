@@ -15,7 +15,7 @@ import javassist.expr.ExprEditor;
 
 import java.util.ArrayList;
 
-import static extendedui.ui.cardFilter.CustomCardLibSortHeader.GetFakeGroup;
+import static extendedui.ui.cardFilter.CustomCardLibSortHeader.getFakeGroup;
 
 public class MasterDeckViewScreenPatches
 {
@@ -25,16 +25,16 @@ public class MasterDeckViewScreenPatches
     public static class MasterDeckViewScreen_Open
     {
         @SpirePrefixPatch
-        public static void Prefix(MasterDeckViewScreen __instance)
+        public static void prefix(MasterDeckViewScreen __instance)
         {
-            GetFakeMasterDeck();
-            EUI.CardFilters.Initialize(__ -> {
-                UpdateForFilters();
+            getFakeMasterDeck();
+            EUI.CardFilters.initialize(__ -> {
+                updateForFilters();
                 if (CardPoolScreen.CustomModule != null) {
-                    CardPoolScreen.CustomModule.Open(fakeMasterDeck.group);
+                    CardPoolScreen.CustomModule.open(fakeMasterDeck.group);
                 }
             }, fakeMasterDeck.group, AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : AbstractCard.CardColor.COLORLESS, false);
-            UpdateForFilters();
+            updateForFilters();
         }
     }
 
@@ -42,10 +42,10 @@ public class MasterDeckViewScreenPatches
     public static class MasterDeckViewScreen_Update
     {
         @SpirePrefixPatch
-        public static void Prefix(MasterDeckViewScreen __instance)
+        public static void prefix(MasterDeckViewScreen __instance)
         {
-            if (!EUI.CardFilters.TryUpdate() && EUI.OpenCardFiltersButton != null) {
-                EUI.OpenCardFiltersButton.TryUpdate();
+            if (!EUI.CardFilters.tryUpdate() && EUI.OpenCardFiltersButton != null) {
+                EUI.OpenCardFiltersButton.tryUpdate();
             }
         }
     }
@@ -54,14 +54,14 @@ public class MasterDeckViewScreenPatches
     public static class MasterDeckViewScreen_Render
     {
         @SpirePrefixPatch
-        public static void Prefix(MasterDeckViewScreen __instance, SpriteBatch sb)
+        public static void prefix(MasterDeckViewScreen __instance, SpriteBatch sb)
         {
             if (!EUI.CardFilters.isActive) {
-                EUI.OpenCardFiltersButton.TryRender(sb);
+                EUI.OpenCardFiltersButton.tryRender(sb);
             }
         }
 
-        public static ExprEditor Instrument()
+        public static ExprEditor instrument()
         {
             return new ExprEditor()
             {
@@ -80,7 +80,7 @@ public class MasterDeckViewScreenPatches
     public static class MasterDeckViewScreen_HideCards
     {
 
-        public static ExprEditor Instrument()
+        public static ExprEditor instrument()
         {
             return new ExprEditor()
             {
@@ -99,7 +99,7 @@ public class MasterDeckViewScreenPatches
     public static class MasterDeckViewScreen_UpdatePositions
     {
 
-        public static ExprEditor Instrument()
+        public static ExprEditor instrument()
         {
             return new ExprEditor()
             {
@@ -118,7 +118,7 @@ public class MasterDeckViewScreenPatches
     public static class MasterDeckViewScreen_UpdateControllerInput
     {
 
-        public static ExprEditor Instrument()
+        public static ExprEditor instrument()
         {
             return new ExprEditor()
             {
@@ -137,7 +137,7 @@ public class MasterDeckViewScreenPatches
     public static class MasterDeckViewScreen_UpdateClicking
     {
 
-        public static ExprEditor Instrument()
+        public static ExprEditor instrument()
         {
             return new ExprEditor()
             {
@@ -152,7 +152,7 @@ public class MasterDeckViewScreenPatches
         }
     }
 
-    public static CardGroup GetFakeMasterDeck() {
+    public static CardGroup getFakeMasterDeck() {
         fakeMasterDeck.clear();
         if (AbstractDungeon.player != null) {
             for (AbstractCard c : AbstractDungeon.player.masterDeck.group) {
@@ -162,24 +162,24 @@ public class MasterDeckViewScreenPatches
         return fakeMasterDeck;
     }
 
-    public static void UpdateForFilters() {
-        if (EUI.CardFilters.AreFiltersEmpty()) {
-            GetFakeMasterDeck();
+    public static void updateForFilters() {
+        if (EUI.CardFilters.areFiltersEmpty()) {
+            getFakeMasterDeck();
         }
         else {
-            ArrayList<AbstractCard> tempGroup = EUI.CardFilters.ApplyFilters(AbstractDungeon.player.masterDeck.group);
+            ArrayList<AbstractCard> tempGroup = EUI.CardFilters.applyFilters(AbstractDungeon.player.masterDeck.group);
             if (tempGroup.size() > 0) {
                 fakeMasterDeck.group = tempGroup;
             }
-            else if (!EUI.CardFilters.AreFiltersEmpty()) {
+            else if (!EUI.CardFilters.areFiltersEmpty()) {
                 EUI.CardFilters.CurrentFilters.clear();
-                tempGroup = EUI.CardFilters.ApplyFilters(AbstractDungeon.player.masterDeck.group);
-                fakeMasterDeck.group = tempGroup.size() > 0 ? tempGroup : GetFakeGroup();
+                tempGroup = EUI.CardFilters.applyFilters(AbstractDungeon.player.masterDeck.group);
+                fakeMasterDeck.group = tempGroup.size() > 0 ? tempGroup : getFakeGroup();
             }
             else {
-                fakeMasterDeck.group = GetFakeGroup();
+                fakeMasterDeck.group = getFakeGroup();
             }
         }
-        EUI.CardFilters.Refresh(fakeMasterDeck.group);
+        EUI.CardFilters.refresh(fakeMasterDeck.group);
     }
 }

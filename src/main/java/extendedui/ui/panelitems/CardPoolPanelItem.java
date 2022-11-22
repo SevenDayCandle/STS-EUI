@@ -29,58 +29,58 @@ import java.util.ArrayList;
 
 public class CardPoolPanelItem extends PCLTopPanelItem
 {
-    public static final String ID = CreateFullID(CardPoolPanelItem.class);
+    public static final String ID = createFullID(CardPoolPanelItem.class);
     protected static FuncT0<String> additionalTextFunc;
     protected EUIContextMenu<ContextOption> contextMenu;
 
     public CardPoolPanelItem() {
         super(Loader.isModLoaded("PrideMod") ? EUIRM.Images.CardPool_Pride : EUIRM.Images.CardPool, ID);
-        SetTooltip(new EUITooltip(EUIRM.Strings.UIPool_ViewPool, EUIRM.Strings.UIPool_ViewPoolDescription));
+        setTooltip(new EUITooltip(EUIRM.Strings.UIPool_ViewPool, EUIRM.Strings.UIPool_ViewPoolDescription));
 
-        contextMenu = (EUIContextMenu<ContextOption>) new EUIContextMenu<ContextOption>(new AdvancedHitbox(0, 0, 0, 0), ContextOption::GetDisplayName)
-                .SetOnChange(options -> {
+        contextMenu = (EUIContextMenu<ContextOption>) new EUIContextMenu<ContextOption>(new AdvancedHitbox(0, 0, 0, 0), ContextOption::getDisplayName)
+                .setOnChange(options -> {
                     for (ContextOption o : options)
                     {
-                        o.onSelect.Invoke();
+                        o.onSelect.invoke();
                     }
                 })
-                .SetFontForRows(EUIFontHelper.CardTooltipFont, 1f)
-                .SetItems(ContextOption.values())
-                .SetCanAutosizeButton(true);
+                .setFontForRows(EUIFontHelper.CardTooltipFont, 1f)
+                .setItems(ContextOption.values())
+                .setCanAutosizeButton(true);
     }
 
     @Override
     protected void onClick() {
         super.onClick();
 
-        EUI.CardsScreen.Open(AbstractDungeon.player, GetAllCards());
+        EUI.CardsScreen.open(AbstractDungeon.player, getAllCards());
     }
 
     @Override
     protected void onRightClick() {
         super.onRightClick();
 
-        contextMenu.SetPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
-        contextMenu.RefreshText();
-        contextMenu.OpenOrCloseMenu();
+        contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
+        contextMenu.refreshText();
+        contextMenu.openOrCloseMenu();
     }
 
     @Override
     public void update() {
         super.update();
         if (this.tooltip != null && getHitbox().hovered) {
-            tooltip.SetText(EUIRM.Strings.UIPool_ViewPool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")", GetFullDescription());
-            EUITooltip.QueueTooltip(tooltip);
+            tooltip.setText(EUIRM.Strings.UIPool_ViewPool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")", getFullDescription());
+            EUITooltip.queueTooltip(tooltip);
         }
 
         if (EUIHotkeys.openCardPool.isJustPressed() && EUI.CurrentScreen != EUI.CardsScreen) {
-            EUI.CardsScreen.Open(AbstractDungeon.player, GetAllCards());
+            EUI.CardsScreen.open(AbstractDungeon.player, getAllCards());
         }
         else if (EUIHotkeys.openRelicPool.isJustPressed() && EUI.CurrentScreen != EUI.RelicScreen) {
-            EUI.RelicScreen.Open(AbstractDungeon.player, GetAllRelics());
+            EUI.RelicScreen.open(AbstractDungeon.player, getAllRelics());
         }
 
-        contextMenu.TryUpdate();
+        contextMenu.tryUpdate();
     }
 
     @Override
@@ -88,24 +88,24 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     {
         super.render(sb);
 
-        contextMenu.TryRender(sb);
+        contextMenu.tryRender(sb);
     }
 
-    public void SetAdditionalStringFunction(FuncT0<String> func) {
+    public void setAdditionalStringFunction(FuncT0<String> func) {
         additionalTextFunc = func;
         update();
     }
 
-    public String GetFullDescription()
+    public String getFullDescription()
     {
         String base = EUIRM.Strings.UIPool_ViewPoolDescription;
-        String addendum = additionalTextFunc != null ? additionalTextFunc.Invoke() : null;
+        String addendum = additionalTextFunc != null ? additionalTextFunc.invoke() : null;
         return addendum != null ? base + " || " + addendum : base;
     }
 
-    public static CardGroup GetAllCards() {
+    public static CardGroup getAllCards() {
         CardGroup cardGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        for (CardGroup cg: EUIGameUtils.GetSourceCardPools()) {
+        for (CardGroup cg: EUIGameUtils.getSourceCardPools()) {
             for (AbstractCard c : cg.group) {
                 cardGroup.addToTop(c);
             }
@@ -114,9 +114,9 @@ public class CardPoolPanelItem extends PCLTopPanelItem
         return cardGroup;
     }
 
-    public static ArrayList<AbstractRelic> GetAllRelics() {
+    public static ArrayList<AbstractRelic> getAllRelics() {
         ArrayList<AbstractRelic> newRelics = new ArrayList<>();
-        for (String relicID : EUIGameUtils.GetAllRelicIDs())
+        for (String relicID : EUIGameUtils.getAllRelicIDs())
         {
             AbstractRelic original = RelicLibrary.getRelic(relicID);
             if (original instanceof Circlet)
@@ -134,8 +134,8 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
     public enum ContextOption
     {
-        CardPool(EUIRM.Strings.UIPool_ViewCardPool, EUIHotkeys.openCardPool, () -> EUI.CardsScreen.Open(AbstractDungeon.player, GetAllCards())),
-        RelicPool(EUIRM.Strings.UIPool_ViewRelicPool, EUIHotkeys.openRelicPool, () -> EUI.RelicScreen.Open(AbstractDungeon.player, GetAllRelics()));
+        CardPool(EUIRM.Strings.UIPool_ViewCardPool, EUIHotkeys.openCardPool, () -> EUI.CardsScreen.open(AbstractDungeon.player, getAllCards())),
+        RelicPool(EUIRM.Strings.UIPool_ViewRelicPool, EUIHotkeys.openRelicPool, () -> EUI.RelicScreen.open(AbstractDungeon.player, getAllRelics()));
 
         public final String baseName;
         public final InputAction hotkey;
@@ -148,7 +148,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
             this.onSelect = onSelect;
         }
 
-        public String GetDisplayName()
+        public String getDisplayName()
         {
             return baseName + " (" + hotkey.getKeyString() + ")";
         }

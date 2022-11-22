@@ -16,8 +16,8 @@ import eatyourbeets.interfaces.delegates.ActionT1;
 import eatyourbeets.interfaces.delegates.FuncT1;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
-import extendedui.EUIUtils;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUIRelicGrid;
@@ -47,9 +47,9 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
             this.name = name;
         }
 
-        public boolean Evaluate(String relicID)
+        public boolean evaluate(String relicID)
         {
-            return evalFunc.Invoke(relicID);
+            return evalFunc.invoke(relicID);
         }
     }
 
@@ -69,123 +69,123 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
     {
         super();
 
-        OriginsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
-                .SetOnOpenOrClose(this::UpdateActive)
-                .SetOnChange(costs -> this.OnFilterChanged(CurrentOrigins, costs))
-                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Origins)
-                .SetIsMultiSelect(true)
-                .SetCanAutosizeButton(true)
-                .SetItems(Loader.MODINFOS);
+        OriginsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(CurrentOrigins, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, null, false)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Origins)
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(Loader.MODINFOS);
 
-        RaritiesDropdown = new EUIDropdown<AbstractRelic.RelicTier>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
-                , EUIGameUtils::TextForRelicTier)
-                .SetOnOpenOrClose(this::UpdateActive)
-                .SetOnChange(costs -> this.OnFilterChanged(CurrentRarities, costs))
-                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
-                .SetIsMultiSelect(true)
-                .SetCanAutosizeButton(true)
-                .SetItems(AbstractRelic.RelicTier.values());
+        RaritiesDropdown = new EUIDropdown<AbstractRelic.RelicTier>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+                , EUIGameUtils::textForRelicTier)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(CurrentRarities, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, null, false)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(AbstractRelic.RelicTier.values());
 
-        ColorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
-                , EUIGameUtils::GetColorName)
-                .SetOnOpenOrClose(this::UpdateActive)
-                .SetOnChange(costs -> this.OnFilterChanged(CurrentColors, costs))
-                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Colors)
-                .SetIsMultiSelect(true)
-                .SetCanAutosizeButton(true);
-        SeenDropdown = new EUIDropdown<SeenValue>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
+        ColorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+                , EUIGameUtils::getColorName)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(CurrentColors, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, null, false)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Colors)
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true);
+        SeenDropdown = new EUIDropdown<SeenValue>(new AdvancedHitbox(0, 0, scale(240), scale(48))
                 , item -> item.name)
-                .SetOnOpenOrClose(this::UpdateActive)
-                .SetOnChange(costs -> this.OnFilterChanged(CurrentSeen, costs))
-                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Seen)
-                .SetItems(SeenValue.values())
-                .SetIsMultiSelect(true)
-                .SetCanAutosizeButton(true);
-        NameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.Texture(),
-                new AdvancedHitbox(0, 0, Scale(240), Scale(40)).SetIsPopupCompatible(true))
-                .SetOnComplete(s -> {
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(CurrentSeen, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, null, false)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Seen)
+                .setItems(SeenValue.values())
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true);
+        NameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.texture(),
+                new AdvancedHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
+                .setOnComplete(s -> {
                     CurrentName = s;
                     if (onClick != null)
                     {
-                        onClick.Invoke(null);
+                        onClick.invoke(null);
                     }
                 })
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
-                .SetHeaderSpacing(1f)
-                .SetColors(Color.GRAY, Settings.CREAM_COLOR)
-                .SetAlignment(0.5f, 0.1f)
-                .SetFont(EUIFontHelper.CardTitleFont_Small, 0.8f)
-                .SetBackgroundTexture(EUIRM.Images.RectangularButton.Texture());
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
+                .setHeaderSpacing(1f)
+                .setColors(Color.GRAY, Settings.CREAM_COLOR)
+                .setAlignment(0.5f, 0.1f)
+                .setFont(EUIFontHelper.CardTitleFont_Small, 0.8f)
+                .setBackgroundTexture(EUIRM.Images.RectangularButton.texture());
     }
 
     @Override
-    public boolean AreFiltersEmpty()
+    public boolean areFiltersEmpty()
     {
         return (CurrentName == null || CurrentName.isEmpty())
                 && CurrentColors.isEmpty() && CurrentOrigins.isEmpty() && CurrentRarities.isEmpty() && CurrentSeen.isEmpty()
-                && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty() && (CustomModule != null && CustomModule.IsEmpty());
+                && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty() && (CustomModule != null && CustomModule.isEmpty());
     }
 
     @Override
-    protected void InitializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<AbstractRelic> cards, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<AbstractRelic> cards, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
     {
-        CustomModule = EUI.GetCustomRelicFilter(color);
+        CustomModule = EUI.getCustomRelicFilter(color);
 
         HashSet<ModInfo> availableMods = new HashSet<>();
         HashSet<AbstractCard.CardColor> availableColors = new HashSet<>();
         HashSet<AbstractRelic.RelicTier> availableRarities = new HashSet<>();
         if (referenceItems != null)
         {
-            currentTotal = GetReferenceCount();
+            currentTotal = getReferenceCount();
             for (AbstractRelic relic : referenceItems)
             {
-                for (EUITooltip tooltip : GetAllTooltips(relic))
+                for (EUITooltip tooltip : getAllTooltips(relic))
                 {
                     if (tooltip.canFilter) {
                         CurrentFilterCounts.merge(tooltip, 1, Integer::sum);
                     }
                 }
 
-                availableMods.add(EUIGameUtils.GetModInfo(relic));
+                availableMods.add(EUIGameUtils.getModInfo(relic));
                 availableRarities.add(relic.tier);
-                availableColors.add(EUIGameUtils.GetRelicColor(relic.relicId));
+                availableColors.add(EUIGameUtils.getRelicColor(relic.relicId));
             }
             if (CustomModule != null)
             {
-                CustomModule.InitializeSelection(referenceItems);
+                CustomModule.initializeSelection(referenceItems);
             }
         }
 
         ArrayList<ModInfo> modInfos = new ArrayList<>(availableMods);
         modInfos.sort((a, b) -> a == null ? -1 : b == null ? 1 : StringUtils.compare(a.Name, b.Name));
-        OriginsDropdown.SetItems(modInfos);
+        OriginsDropdown.setItems(modInfos);
 
         ArrayList<AbstractRelic.RelicTier> rarityItems = new ArrayList<>(availableRarities);
         rarityItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
-        RaritiesDropdown.SetItems(rarityItems);
+        RaritiesDropdown.setItems(rarityItems);
 
         ArrayList<AbstractCard.CardColor> colorsItems = new ArrayList<>(availableColors);
         colorsItems.sort((a, b) -> a == AbstractCard.CardColor.COLORLESS ? -1 : a == AbstractCard.CardColor.CURSE ? -2 : StringUtils.compare(a.name(), b.name()));
-        ColorsDropdown.SetItems(colorsItems);
+        ColorsDropdown.setItems(colorsItems);
     }
 
     @Override
-    public boolean IsHoveredImpl()
+    public boolean isHoveredImpl()
     {
-        return OriginsDropdown.AreAnyItemsHovered()
-                || RaritiesDropdown.AreAnyItemsHovered()
-                || ColorsDropdown.AreAnyItemsHovered()
-                || SeenDropdown.AreAnyItemsHovered()
+        return OriginsDropdown.areAnyItemsHovered()
+                || RaritiesDropdown.areAnyItemsHovered()
+                || ColorsDropdown.areAnyItemsHovered()
+                || SeenDropdown.areAnyItemsHovered()
                 || NameInput.hb.hovered
-                || (CustomModule != null && CustomModule.IsHovered());
+                || (CustomModule != null && CustomModule.isHovered());
     }
 
     @Override
-    public void ClearImpl(boolean shouldInvoke, boolean shouldClearColors)
+    public void clearFilters(boolean shouldInvoke, boolean shouldClearColors)
     {
         if (shouldClearColors)
         {
@@ -196,55 +196,55 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         CurrentNegateFilters.clear();
         CurrentRarities.clear();
         CurrentName = null;
-        OriginsDropdown.SetSelectionIndices(null, false);
-        RaritiesDropdown.SetSelectionIndices(null, false);
-        ColorsDropdown.SetSelectionIndices(null, false);
-        SeenDropdown.SetSelectionIndices(null, false);
-        NameInput.SetText("");
+        OriginsDropdown.setSelectionIndices(null, false);
+        RaritiesDropdown.setSelectionIndices(null, false);
+        ColorsDropdown.setSelectionIndices(null, false);
+        SeenDropdown.setSelectionIndices(null, false);
+        NameInput.setLabel("");
         if (CustomModule != null)
         {
-            CustomModule.Reset();
+            CustomModule.reset();
         }
     }
 
     @Override
-    public void RenderImpl(SpriteBatch sb)
+    public void renderFilters(SpriteBatch sb)
     {
-        OriginsDropdown.TryRender(sb);
-        RaritiesDropdown.TryRender(sb);
-        ColorsDropdown.TryRender(sb);
-        SeenDropdown.TryRender(sb);
-        NameInput.TryRender(sb);
+        OriginsDropdown.tryRender(sb);
+        RaritiesDropdown.tryRender(sb);
+        ColorsDropdown.tryRender(sb);
+        SeenDropdown.tryRender(sb);
+        NameInput.tryRender(sb);
 
         if (CustomModule != null)
         {
-            CustomModule.TryRender(sb);
+            CustomModule.tryRender(sb);
         }
     }
 
     @Override
-    public void UpdateImpl()
+    public void updateFilters()
     {
-        OriginsDropdown.SetPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
-        RaritiesDropdown.SetPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
-        ColorsDropdown.SetPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
-        SeenDropdown.SetPosition(ColorsDropdown.hb.x + ColorsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
-        NameInput.SetPosition(hb.x + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).TryUpdate();
+        OriginsDropdown.setPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        RaritiesDropdown.setPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        ColorsDropdown.setPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        SeenDropdown.setPosition(ColorsDropdown.hb.x + ColorsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        NameInput.setPosition(hb.x + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
 
         if (CustomModule != null)
         {
-            CustomModule.TryUpdate();
+            CustomModule.tryUpdate();
         }
     }
 
-    public ArrayList<EUITooltip> GetAllTooltips(AbstractRelic c)
+    public ArrayList<EUITooltip> getAllTooltips(AbstractRelic c)
     {
         ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
-        TooltipProvider eC = EUIUtils.SafeCast(c, TooltipProvider.class);
+        TooltipProvider eC = EUIUtils.safeCast(c, TooltipProvider.class);
         if (eC != null)
         {
-            eC.GenerateDynamicTooltips(dynamicTooltips);
-            for (EUITooltip tip : eC.GetTipsForFilters())
+            eC.generateDynamicTooltips(dynamicTooltips);
+            for (EUITooltip tip : eC.getTipsForFilters())
             {
                 if (!dynamicTooltips.contains(tip))
                 {
@@ -256,7 +256,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         {
             for (PowerTip sk : c.tips)
             {
-                EUITooltip tip = EUITooltip.FindByName(sk.header);
+                EUITooltip tip = EUITooltip.findByName(sk.header);
                 if (tip != null && !dynamicTooltips.contains(tip))
                 {
                     dynamicTooltips.add(tip);
@@ -266,17 +266,17 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         return dynamicTooltips;
     }
 
-    public ArrayList<AbstractRelic> ApplyFilters(ArrayList<AbstractRelic> input)
+    public ArrayList<AbstractRelic> applyFilters(ArrayList<AbstractRelic> input)
     {
-        return EUIUtils.Filter(input, this::EvaluateRelic);
+        return EUIUtils.filter(input, this::evaluateRelic);
     }
 
-    public ArrayList<EUIRelicGrid.RelicInfo> ApplyInfoFilters(ArrayList<EUIRelicGrid.RelicInfo> input)
+    public ArrayList<EUIRelicGrid.RelicInfo> applyInfoFilters(ArrayList<EUIRelicGrid.RelicInfo> input)
     {
-        return EUIUtils.Filter(input, info -> EvaluateRelic(info.relic));
+        return EUIUtils.filter(input, info -> evaluateRelic(info.relic));
     }
 
-    protected boolean EvaluateRelic(AbstractRelic c)
+    protected boolean evaluateRelic(AbstractRelic c)
     {
         //Name check
         if (CurrentName != null && !CurrentName.isEmpty()) {
@@ -286,31 +286,31 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         }
 
         //Colors check
-        if (!EvaluateItem(CurrentColors, (opt) -> opt == EUIGameUtils.GetRelicColor(c.relicId)))
+        if (!evaluateItem(CurrentColors, (opt) -> opt == EUIGameUtils.getRelicColor(c.relicId)))
         {
             return false;
         }
 
         //Origin check
-        if (!EvaluateItem(CurrentOrigins, (opt) -> EUIGameUtils.IsObjectFromMod(c, opt)))
+        if (!evaluateItem(CurrentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt)))
         {
             return false;
         }
 
         //Seen check
-        if (!EvaluateItem(CurrentSeen, (opt) -> opt.Evaluate(c.relicId)))
+        if (!evaluateItem(CurrentSeen, (opt) -> opt.evaluate(c.relicId)))
         {
             return false;
         }
 
         //Tooltips check
-        if (!CurrentFilters.isEmpty() && (!GetAllTooltips(c).containsAll(CurrentFilters)))
+        if (!CurrentFilters.isEmpty() && (!getAllTooltips(c).containsAll(CurrentFilters)))
         {
             return false;
         }
 
         //Negate Tooltips check
-        if (!CurrentNegateFilters.isEmpty() && (EUIUtils.Any(GetAllTooltips(c), CurrentNegateFilters::contains)))
+        if (!CurrentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), CurrentNegateFilters::contains)))
         {
             return false;
         }
@@ -322,7 +322,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         }
 
         //Module check
-        if (CustomModule != null && !CustomModule.IsRelicValid(c))
+        if (CustomModule != null && !CustomModule.isRelicValid(c))
         {
             return false;
         }
@@ -330,15 +330,15 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         return true;
     }
 
-    public void ToggleFilters()
+    public void toggleFilters()
     {
         if (EUI.RelicFilters.isActive)
         {
-            EUI.RelicFilters.Close();
+            EUI.RelicFilters.close();
         }
         else
         {
-            EUI.RelicFilters.Open();
+            EUI.RelicFilters.open();
         }
     }
 }

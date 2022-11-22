@@ -21,21 +21,21 @@ public class AbstractDungeonPatches {
     public static class AbstractDungeonPatches_CloseCurrentScreen
     {
         @SpirePrefixPatch
-        public static void Prefix()
+        public static void prefix()
         {
             if (AbstractDungeon.screen == EUI_SCREEN)
             {
-                EUI.Dispose();
+                EUI.dispose();
                 fromEUI = true;
             }
         }
 
         @SpirePostfixPatch
-        public static void Postfix()
+        public static void postfix()
         {
             if (AbstractDungeon.screen != EUI_SCREEN)
             {
-                EUI.PostDispose();
+                EUI.postDispose();
                 // Dungeon map needs to be manually closed after returning to the main screen
                 if (fromEUI)
                 {
@@ -55,7 +55,7 @@ public class AbstractDungeonPatches {
     public static class AbstractDungeonPatches_OpenPreviousScreen
     {
         @SpirePrefixPatch
-        public static void Prefix(AbstractDungeon.CurrentScreen s)
+        public static void prefix(AbstractDungeon.CurrentScreen s)
         {
             if (EUI.CurrentScreen != null)
             {
@@ -63,7 +63,7 @@ public class AbstractDungeonPatches {
                 if (s == AbstractDungeon.CurrentScreen.NONE) {
                     AbstractDungeon.screen = EUI_SCREEN;
                 }
-                EUI.CurrentScreen.Reopen();
+                EUI.CurrentScreen.reopen();
             }
         }
     }
@@ -72,9 +72,9 @@ public class AbstractDungeonPatches {
     public static class AbstractDungeon_Render
     {
         @SpireInsertPatch(locator = Locator.class)
-        public static void Insert(AbstractDungeon __instance, SpriteBatch sb)
+        public static void insert(AbstractDungeon __instance, SpriteBatch sb)
         {
-            EUI.PreRender(sb);
+            EUI.preRender(sb);
         }
 
         private static class Locator extends SpireInsertLocator
@@ -87,9 +87,9 @@ public class AbstractDungeonPatches {
         }
 
         @SpireInsertPatch(locator = Locator2.class)
-        public static void Insert2(AbstractDungeon __instance, SpriteBatch sb)
+        public static void insert2(AbstractDungeon __instance, SpriteBatch sb)
         {
-            STSEffekseerManager.Update();
+            STSEffekseerManager.update();
         }
 
         private static class Locator2 extends SpireInsertLocator

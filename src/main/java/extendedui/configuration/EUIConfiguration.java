@@ -9,8 +9,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import extendedui.EUIUtils;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.interfaces.listeners.STSConfigListener;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUILabel;
@@ -35,7 +35,7 @@ public class EUIConfiguration
     public static final int BASE_SPRITES_DEFAULT = 6000;
     //public static final int BASE_SPRITES_MIN = 6000;
     //public static final int BASE_SPRITES_MAX = 6000;
-    private static final String[] FONT_EXTS = EUIUtils.Array("otf", "ttf", "fnt");
+    private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "fnt");
     private static final String PREFIX = "EUI";
     private static SpireConfig config;
     private static int counter;
@@ -43,22 +43,22 @@ public class EUIConfiguration
     public static ModSettingsScreen.Category FontCategory;
     public static boolean ShouldReloadEffekseer;
 
-    public static String GetFullKey(String base) {
+    public static String getFullKey(String base) {
         return PREFIX + "_" + base;
     }
 
-    private static final String USE_VANILLA_COMPENDIUM = GetFullKey("UseVanillaCompendium");
-    private static final String DISABLE_EFFEKSEER = GetFullKey("DisableEffekseer");
-    private static final String FLUSH_ON_GAME_START = GetFullKey("FlushOnGameStart");
-    private static final String FLUSH_ON_ROOM_START = GetFullKey("FlushOnRoomStart");
-    private static final String SHOW_MOD_SETTINGS = GetFullKey("ShowModSettings");
-    private static final String USE_SEPARATE_FONTS = GetFullKey("UseSeparateFonts");
-    private static final String OVERRIDE_GAME_FONT = GetFullKey("OverrideGameFont");
-    private static final String HIDE_TIP_DESCRIPTION = GetFullKey("HideTipDescription");
-    private static final String CARD_DESC_FONT = GetFullKey("CardDescFont");
-    private static final String CARD_TITLE_FONT = GetFullKey("CardTitleFont");
-    private static final String TIP_DESC_FONT = GetFullKey("TipDescFont");
-    private static final String TITLE_TITLE_FONT = GetFullKey("TipTitleFont");
+    private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
+    private static final String DISABLE_EFFEKSEER = getFullKey("DisableEffekseer");
+    private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
+    private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
+    private static final String SHOW_MOD_SETTINGS = getFullKey("ShowModSettings");
+    private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
+    private static final String OVERRIDE_GAME_FONT = getFullKey("OverrideGameFont");
+    private static final String HIDE_TIP_DESCRIPTION = getFullKey("HideTipDescription");
+    private static final String CARD_DESC_FONT = getFullKey("CardDescFont");
+    private static final String CARD_TITLE_FONT = getFullKey("CardTitleFont");
+    private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
+    private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
 
     public static STSConfigItem<Boolean> UseVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
     public static STSConfigItem<Boolean> DisableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
@@ -77,21 +77,21 @@ public class EUIConfiguration
 
     private static HashSet<String> tips = null;
 
-    public static void Load() {
+    public static void load() {
         try
         {
             config = new SpireConfig(PREFIX, PREFIX);
-            UseVanillaCompendium.AddConfig(config);
-            DisableEffekseer.AddConfig(config);
-            FlushOnGameStart.AddConfig(config);
-            FlushOnRoomStart.AddConfig(config);
-            ShowModSettings.AddConfig(config);
-            UseSeparateFonts.AddConfig(config);
-            OverrideGameFont.AddConfig(config);
-            CardDescFont.AddConfig(config);
-            CardTitleFont.AddConfig(config);
-            TipDescFont.AddConfig(config);
-            TipTitleFont.AddConfig(config);
+            UseVanillaCompendium.addConfig(config);
+            DisableEffekseer.addConfig(config);
+            FlushOnGameStart.addConfig(config);
+            FlushOnRoomStart.addConfig(config);
+            ShowModSettings.addConfig(config);
+            UseSeparateFonts.addConfig(config);
+            OverrideGameFont.addConfig(config);
+            CardDescFont.addConfig(config);
+            CardTitleFont.addConfig(config);
+            TipDescFont.addConfig(config);
+            TipTitleFont.addConfig(config);
         }
         catch (IOException e)
         {
@@ -99,75 +99,75 @@ public class EUIConfiguration
         }
     }
 
-    public static void PostInitialize()
+    public static void postInitialize()
     {
 
         // Add EUI options
-        EUITooltip restartTip = new EUITooltip(EUIRM.Strings.Misc_RestartRequired).SetHeaderFont(EUIFontHelper.CardDescriptionFont_Normal);
+        EUITooltip restartTip = new EUITooltip(EUIRM.Strings.Misc_RestartRequired).setHeaderFont(EUIFontHelper.CardDescriptionFont_Normal);
         EffekseerCategory = new ModSettingsScreen.Category(EUIRM.Strings.Misc_EffekseerSettings);
         FontCategory = new ModSettingsScreen.Category(EUIRM.Strings.Misc_FontSettings);
-        ModSettingsScreen.AddCategory(EffekseerCategory);
-        ModSettingsScreen.AddCategory(FontCategory);
-        MakeModToggle(EffekseerCategory, DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer);
-        MakeModToggle(EffekseerCategory, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart);
-        MakeModToggle(EffekseerCategory, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart);
-        MakeModToggle(FontCategory, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts).SetTooltip(restartTip);
-        MakeModToggle(FontCategory, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont).SetTooltip(new EUITooltip(EUIRM.Strings.Misc_FontDescription + " | " + EUIRM.Strings.Misc_RestartRequired));
-        ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, CardDescFont, EUIRM.Strings.Config_CardDescFont, FONT_EXTS).SetTooltip(restartTip);
-        ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, CardTitleFont, EUIRM.Strings.Config_CardTitleFont, FONT_EXTS).SetTooltip(restartTip);
-        ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, TipDescFont, EUIRM.Strings.Config_TipDescFont, FONT_EXTS).SetTooltip(restartTip);
-        ModSettingsPathSelector tipTitleFontSelector = (ModSettingsPathSelector) MakeModPathSelection(FontCategory, TipTitleFont, EUIRM.Strings.Config_TipTitleFont, FONT_EXTS).SetTooltip(restartTip);
+        ModSettingsScreen.addCategory(EffekseerCategory);
+        ModSettingsScreen.addCategory(FontCategory);
+        makeModToggle(EffekseerCategory, DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer);
+        makeModToggle(EffekseerCategory, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart);
+        makeModToggle(EffekseerCategory, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart);
+        makeModToggle(FontCategory, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts).setTooltip(restartTip);
+        makeModToggle(FontCategory, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont).setTooltip(new EUITooltip(EUIRM.Strings.Misc_FontDescription + " | " + EUIRM.Strings.Misc_RestartRequired));
+        ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(FontCategory, CardDescFont, EUIRM.Strings.Config_CardDescFont, FONT_EXTS).setTooltip(restartTip);
+        ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(FontCategory, CardTitleFont, EUIRM.Strings.Config_CardTitleFont, FONT_EXTS).setTooltip(restartTip);
+        ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(FontCategory, TipDescFont, EUIRM.Strings.Config_TipDescFont, FONT_EXTS).setTooltip(restartTip);
+        ModSettingsPathSelector tipTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(FontCategory, TipTitleFont, EUIRM.Strings.Config_TipTitleFont, FONT_EXTS).setTooltip(restartTip);
 
 
         // Add basemod options
         int yPos = BASE_OPTION_OFFSET_Y;
         ModPanel panel = new ModPanel();
 
-        yPos = AddToggle(panel, UseVanillaCompendium, EUIRM.Strings.Config_UseVanillaCompendium, yPos);
-        yPos = AddToggle(panel, DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer, yPos);
-        yPos = AddToggle(panel, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart, yPos);
-        yPos = AddToggle(panel, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart, yPos);
-        yPos = AddToggle(panel, ShowModSettings, EUIRM.Strings.Config_ShowModSettings, yPos);
-        yPos = AddToggle(panel, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts, yPos, EUIRM.Strings.Misc_RestartRequired);
-        yPos = AddToggle(panel, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont, yPos, EUIRM.Strings.Misc_FontDescription + " NL NL " + EUIRM.Strings.Misc_RestartRequired);
+        yPos = addToggle(panel, UseVanillaCompendium, EUIRM.Strings.Config_UseVanillaCompendium, yPos);
+        yPos = addToggle(panel, DisableEffekseer, EUIRM.Strings.Config_DisableEffekseer, yPos);
+        yPos = addToggle(panel, FlushOnGameStart, EUIRM.Strings.Config_FlushOnGameStart, yPos);
+        yPos = addToggle(panel, FlushOnRoomStart, EUIRM.Strings.Config_FlushOnRoomStart, yPos);
+        yPos = addToggle(panel, ShowModSettings, EUIRM.Strings.Config_ShowModSettings, yPos);
+        yPos = addToggle(panel, UseSeparateFonts, EUIRM.Strings.Config_UseSeparateFonts, yPos, EUIRM.Strings.Misc_RestartRequired);
+        yPos = addToggle(panel, OverrideGameFont, EUIRM.Strings.Config_OverrideGameFont, yPos, EUIRM.Strings.Misc_FontDescription + " NL NL " + EUIRM.Strings.Misc_RestartRequired);
 
         yPos = (BASE_OPTION_OFFSET_Y + yPos) / 2;
-        ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = AddGenericElement(panel, cardDescFontSelector2, yPos);
-        ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = AddGenericElement(panel, cardTitleFontSelector2, yPos);
-        ModSettingsPathSelector tipDescFontSelector2 = (ModSettingsPathSelector) tipDescFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = AddGenericElement(panel, tipDescFontSelector2, yPos);
-        ModSettingsPathSelector tipTitleFontSelector2 = (ModSettingsPathSelector) tipTitleFontSelector.MakeCopy().Translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = AddGenericElement(panel, tipTitleFontSelector2, yPos);
+        ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = addGenericElement(panel, cardDescFontSelector2, yPos);
+        ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = addGenericElement(panel, cardTitleFontSelector2, yPos);
+        ModSettingsPathSelector tipDescFontSelector2 = (ModSettingsPathSelector) tipDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = addGenericElement(panel, tipDescFontSelector2, yPos);
+        ModSettingsPathSelector tipTitleFontSelector2 = (ModSettingsPathSelector) tipTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = addGenericElement(panel, tipTitleFontSelector2, yPos);
         BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
 
         // Sub-font settings should only show up if UseSeparateFonts is true
-        boolean showOtherSelectors = UseSeparateFonts.Get();
-        cardDescFontSelector2.SetHeaderText(showOtherSelectors ? EUIRM.Strings.Config_CardDescFont : EUIRM.Strings.Config_MainFont);
-        cardTitleFontSelector.SetActive(showOtherSelectors);
-        tipDescFontSelector.SetActive(showOtherSelectors);
-        tipTitleFontSelector.SetActive(showOtherSelectors);
-        cardTitleFontSelector2.SetActive(showOtherSelectors);
-        tipDescFontSelector2.SetActive(showOtherSelectors);
-        tipTitleFontSelector2.SetActive(showOtherSelectors);
-        UseSeparateFonts.AddListener(new STSConfigListener<Boolean>()
+        boolean showOtherSelectors = UseSeparateFonts.get();
+        cardDescFontSelector2.setHeaderText(showOtherSelectors ? EUIRM.Strings.Config_CardDescFont : EUIRM.Strings.Config_MainFont);
+        cardTitleFontSelector.setActive(showOtherSelectors);
+        tipDescFontSelector.setActive(showOtherSelectors);
+        tipTitleFontSelector.setActive(showOtherSelectors);
+        cardTitleFontSelector2.setActive(showOtherSelectors);
+        tipDescFontSelector2.setActive(showOtherSelectors);
+        tipTitleFontSelector2.setActive(showOtherSelectors);
+        UseSeparateFonts.addListener(new STSConfigListener<Boolean>()
         {
             @Override
-            public void OnChange(Boolean newValue)
+            public void onChange(Boolean newValue)
             {
-                cardDescFontSelector2.SetHeaderText(newValue ? EUIRM.Strings.Config_CardDescFont : EUIRM.Strings.Config_MainFont);
-                cardTitleFontSelector.SetActive(newValue);
-                tipDescFontSelector.SetActive(newValue);
-                tipTitleFontSelector.SetActive(newValue);
-                cardTitleFontSelector2.SetActive(newValue);
-                tipDescFontSelector2.SetActive(newValue);
-                tipTitleFontSelector2.SetActive(newValue);
+                cardDescFontSelector2.setHeaderText(newValue ? EUIRM.Strings.Config_CardDescFont : EUIRM.Strings.Config_MainFont);
+                cardTitleFontSelector.setActive(newValue);
+                tipDescFontSelector.setActive(newValue);
+                tipTitleFontSelector.setActive(newValue);
+                cardTitleFontSelector2.setActive(newValue);
+                tipDescFontSelector2.setActive(newValue);
+                tipTitleFontSelector2.setActive(newValue);
             }
         });
     }
 
-    public static void Save() {
+    public static void save() {
         try
         {
             config.save();
@@ -178,46 +178,46 @@ public class EUIConfiguration
         }
     }
 
-    protected static ModSettingsToggle MakeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label)
+    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label)
     {
-        return ModSettingsScreen.AddBoolean(category, option, label);
+        return ModSettingsScreen.addBoolean(category, option, label);
     }
 
-    protected static ModSettingsPathSelector MakeModPathSelection(ModSettingsScreen.Category category, STSConfigItem<String> option, String label, String... exts)
+    protected static ModSettingsPathSelector makeModPathSelection(ModSettingsScreen.Category category, STSConfigItem<String> option, String label, String... exts)
     {
-        return ModSettingsScreen.AddPathSelection(category, option, label, exts);
+        return ModSettingsScreen.addPathSelection(category, option, label, exts);
     }
 
-    protected static EUILabel MakeModLabel(ModSettingsScreen.Category category, String label, BitmapFont font)
+    protected static EUILabel makeModLabel(ModSettingsScreen.Category category, String label, BitmapFont font)
     {
-        return ModSettingsScreen.AddLabel(category, label, font);
+        return ModSettingsScreen.addLabel(category, label, font);
     }
 
-    protected static int AddToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {
-        return AddToggle(panel, option, label, ypos, null);
+    protected static int addToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {
+        return addToggle(panel, option, label, ypos, null);
     }
 
-    protected static int AddToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos, String tip) {
-        panel.addUIElement(new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.CardDescriptionFont_Normal, option.Get(), panel, (__) -> {
-        }, (c) -> option.Set(c.enabled, true)));
+    protected static int addToggle(ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos, String tip) {
+        panel.addUIElement(new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.CardDescriptionFont_Normal, option.get(), panel, (__) -> {
+        }, (c) -> option.set(c.enabled, true)));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }
 
-    protected static int AddSlider(ModPanel panel, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
-        panel.addUIElement(new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.Get(), "%d", panel, (c) -> {
-            option.Set(MathUtils.round(c.getValue()), true);
+    protected static int addSlider(ModPanel panel, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
+        panel.addUIElement(new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.get(), "%d", panel, (c) -> {
+            option.set(MathUtils.round(c.getValue()), true);
             ShouldReloadEffekseer = true;
         }));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }
 
-    protected static int AddGenericElement(ModPanel panel, EUIHoverable renderable, int ypos)
+    protected static int addGenericElement(ModPanel panel, EUIHoverable renderable, int ypos)
     {
         panel.addUIElement(renderable);
         return (int) (ypos - renderable.hb.height);
     }
 
-    public static boolean HideTipDescription(String id)
+    public static boolean hideTipDescription(String id)
     {
         if (tips == null)
         {
@@ -232,7 +232,7 @@ public class EUIConfiguration
         return tips.contains(id);
     }
 
-    public static void HideTipDescription(String id, boolean value, boolean flush)
+    public static void hideTipDescription(String id, boolean value, boolean flush)
     {
         if (tips == null)
         {
@@ -251,11 +251,11 @@ public class EUIConfiguration
             tips.remove(id);
         }
 
-        config.setString(HIDE_TIP_DESCRIPTION, EUIUtils.JoinStrings("|", tips));
+        config.setString(HIDE_TIP_DESCRIPTION, EUIUtils.joinStrings("|", tips));
 
         if (flush)
         {
-            Save();
+            save();
         }
     }
 }

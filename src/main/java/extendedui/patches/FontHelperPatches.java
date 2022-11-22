@@ -20,11 +20,11 @@ public class FontHelperPatches
     public static class FontHelperPatches_Initialize
     {
         @SpireInsertPatch(locator = MainLocator.class)
-        public static void InsertMain()
+        public static void insertMain()
         {
-            if (EUIConfiguration.OverrideGameFont.Get())
+            if (EUIConfiguration.OverrideGameFont.get())
             {
-                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.GetCustomDefaultFontFile(Settings.language));
+                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomDefaultFontFile(Settings.language));
             }
         }
 
@@ -38,11 +38,11 @@ public class FontHelperPatches
         }
 
         @SpireInsertPatch(locator = BoldLocator1.class)
-        public static void InsertBold()
+        public static void insertBold()
         {
-            if (EUIConfiguration.OverrideGameFont.Get())
+            if (EUIConfiguration.OverrideGameFont.get())
             {
-                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.GetCustomBoldFontFile(Settings.language));
+                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomBoldFontFile(Settings.language));
             }
         }
 
@@ -56,11 +56,11 @@ public class FontHelperPatches
         }
 
         @SpireInsertPatch(locator = BoldLocator2.class)
-        public static void InsertBold2()
+        public static void insertBold2()
         {
-            if (EUIConfiguration.OverrideGameFont.Get())
+            if (EUIConfiguration.OverrideGameFont.get())
             {
-                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.GetCustomBoldFontFile(Settings.language));
+                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomBoldFontFile(Settings.language));
             }
         }
 
@@ -74,12 +74,12 @@ public class FontHelperPatches
         }
 
         @SpirePostfixPatch
-        public static void Postfix()
+        public static void postfix()
         {
-            EUIFontHelper.Initialize();
-            if (EUIConfiguration.OverrideGameFont.Get())
+            EUIFontHelper.initialize();
+            if (EUIConfiguration.OverrideGameFont.get())
             {
-                EUIFontHelper.OverwriteBaseFonts();
+                EUIFontHelper.overwriteBaseFonts();
             }
         }
     }

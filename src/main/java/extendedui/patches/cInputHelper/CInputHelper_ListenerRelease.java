@@ -9,8 +9,8 @@ import extendedui.EUIInputManager;
 public class CInputHelper_ListenerRelease
 {
     @SpirePrefixPatch
-    public static void Method(int keycode)
+    public static void method(int keycode)
     {
-        EUIInputManager.OnControllerKeyRelease(keycode);
+        EUIInputManager.onControllerKeyRelease(keycode);
     }
 }

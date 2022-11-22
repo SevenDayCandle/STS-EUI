@@ -75,11 +75,11 @@ public class EUI
     public static RelicPoolScreen RelicScreen;
     public static RelicSortHeader RelicHeader;
 
-    public static boolean IsLoaded() {
+    public static boolean isLoaded() {
         return CardsScreen != null; // This will be null before the UI has loaded
     }
 
-    public static void Initialize()
+    public static void initialize()
     {
         // Set UI theming for file selector
         try
@@ -107,23 +107,23 @@ public class EUI
 
         BaseMod.addTopPanelItem(new CardPoolPanelItem());
 
-        OpenCardFiltersButton = new EUIButton(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
-            .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
-            .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(EUIRM.Strings.UI_Filters)
-            .SetOnClick(() -> EUI.CardFilters.ToggleFilters())
-            .SetColor(Color.GRAY);
-        OpenRelicFiltersButton = new EUIButton(EUIRM.Images.HexagonalButton.Texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).SetIsPopupCompatible(true))
-                .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.WHITE)
-                .SetPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).SetText(EUIRM.Strings.UI_Filters)
-                .SetOnClick(() -> EUI.RelicFilters.ToggleFilters())
-                .SetColor(Color.GRAY);
+        OpenCardFiltersButton = new EUIButton(EUIRM.Images.HexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+            .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.WHITE)
+            .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.Strings.UI_Filters)
+            .setOnClick(() -> EUI.CardFilters.toggleFilters())
+            .setColor(Color.GRAY);
+        OpenRelicFiltersButton = new EUIButton(EUIRM.Images.HexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+                .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.WHITE)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.Strings.UI_Filters)
+                .setOnClick(() -> EUI.RelicFilters.toggleFilters())
+                .setColor(Color.GRAY);
     }
 
     /* Add grammar rules to existing tooltips */
-    public static void RegisterGrammar(Map<String, EUIKeyword> keywords) {
+    public static void registerGrammar(Map<String, EUIKeyword> keywords) {
         for (Map.Entry<String, EUIKeyword> entry : keywords.entrySet()) {
             EUIKeyword grammar = entry.getValue();
-            EUITooltip existing = EUITooltip.FindByID(entry.getKey());
+            EUITooltip existing = EUITooltip.findByID(entry.getKey());
             if (existing != null) {
                 existing.past = grammar.PAST;
                 existing.plural = grammar.PLURAL;
@@ -133,30 +133,30 @@ public class EUI
     }
 
     // Add CommonKeywordIcon pictures to keywords
-    public static void RegisterKeywordIcons() {
-        for (EUITooltip tooltip : EUIUtils.Map(EUITooltip.GetEntries(), Map.Entry::getValue)) {
+    public static void registerKeywordIcons() {
+        for (EUITooltip tooltip : EUIUtils.map(EUITooltip.getEntries(), Map.Entry::getValue)) {
             String title = tooltip.title;
             // Add CommonKeywordIcon pictures to keywords
             if (title.equals(GameDictionary.INNATE.NAMES[0])) {
-                tooltip.SetIcon(StSLib.BADGE_INNATE);
+                tooltip.setIcon(StSLib.BADGE_INNATE);
             }
             else if (title.equals(GameDictionary.ETHEREAL.NAMES[0]))
             {
-                tooltip.SetIcon(StSLib.BADGE_ETHEREAL);
+                tooltip.setIcon(StSLib.BADGE_ETHEREAL);
             }
             else if (title.equals(GameDictionary.RETAIN.NAMES[0]))
             {
-                tooltip.SetIcon(StSLib.BADGE_RETAIN);
+                tooltip.setIcon(StSLib.BADGE_RETAIN);
             }
             else if (title.equals(GameDictionary.EXHAUST.NAMES[0]))
             {
-                tooltip.SetIcon(StSLib.BADGE_EXHAUST);
+                tooltip.setIcon(StSLib.BADGE_EXHAUST);
             }
             else {
                 // Add Custom Icons
                 AbstractCustomIcon icon = CustomIconHelper.getIcon(title);
                 if (icon != null) {
-                    tooltip.SetIcon(icon.region);
+                    tooltip.setIcon(icon.region);
                 }
             }
         }
@@ -166,11 +166,11 @@ public class EUI
     *  For basegame keywords, we use the properly capitalized version of its key as its ID and the first name value as its name
     *  Modded keywords are added via BasemodPatches
     * */
-    public static void RegisterBasegameKeywords() {
+    public static void registerBasegameKeywords() {
 
         // Energy tooltips are not present in GameDictionary
-        EUITooltip energyTooltip = TryRegisterTooltip("E", TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).SetIconFunc(EUI::GetEnergyIcon);
-        EUITooltip.RegisterName(StringUtils.lowerCase(TipHelper.TEXT[0]), energyTooltip);
+        EUITooltip energyTooltip = tryRegisterTooltip("E", TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).setIconFunc(EUI::getEnergyIcon);
+        EUITooltip.registerName(StringUtils.lowerCase(TipHelper.TEXT[0]), energyTooltip);
 
         // Read directly from fields to obtain the actual IDs to use, which are language-invariant
         for (Field field : GameDictionary.class.getDeclaredFields())
@@ -180,8 +180,8 @@ public class EUI
                 try
                 {
                     final com.megacrit.cardcrawl.localization.Keyword k = (Keyword) field.get(null);
-                    String id = EUIUtils.Capitalize(field.getName());
-                    TryRegisterTooltip(EUIUtils.Capitalize(id), k.DESCRIPTION, k.NAMES);
+                    String id = EUIUtils.capitalize(field.getName());
+                    tryRegisterTooltip(EUIUtils.capitalize(id), k.DESCRIPTION, k.NAMES);
                 }
                 catch (IllegalAccessException ex)
                 {
@@ -191,30 +191,30 @@ public class EUI
         }
     }
 
-    public static EUITooltip TryRegisterTooltip(String id, String description, String[] names) {
-        return TryRegisterTooltip(id, names[0], description, names);
+    public static EUITooltip tryRegisterTooltip(String id, String description, String[] names) {
+        return tryRegisterTooltip(id, names[0], description, names);
     }
 
     /* Register a tooltip with the given parameters. If grammar exists, its contents will be merged with this tooltip
      * */
-    public static EUITooltip TryRegisterTooltip(String id, String title, String description, String[] names) {
-        EUITooltip tooltip = EUITooltip.FindByID(id);
+    public static EUITooltip tryRegisterTooltip(String id, String title, String description, String[] names) {
+        EUITooltip tooltip = EUITooltip.findByID(id);
         if (tooltip == null) {
-            String newTitle = EUIUtils.Capitalize(title);
+            String newTitle = EUIUtils.capitalize(title);
             tooltip = new EUITooltip(newTitle, description);
-            EUITooltip.RegisterID(id, tooltip);
+            EUITooltip.registerID(id, tooltip);
             for (String subName : names) {
-                EUITooltip.RegisterName(subName, tooltip);
+                EUITooltip.registerName(subName, tooltip);
             }
         }
         return tooltip;
     }
 
-    public static void Dispose()
+    public static void dispose()
     {
         if (CurrentScreen != null)
         {
-            CurrentScreen.Dispose();
+            CurrentScreen.dispose();
             activeElement = null;
         }
 
@@ -222,14 +222,14 @@ public class EUI
         lastHovered = null;
     }
 
-    public static void PostDispose()
+    public static void postDispose()
     {
         activeElement = null;
         CurrentScreen = null;
         lastHovered = null;
     }
 
-    public static void PreUpdate()
+    public static void preUpdate()
     {
         delta = Gdx.graphics.getRawDeltaTime();
         timer += delta;
@@ -237,164 +237,164 @@ public class EUI
         lastHoveredTemp = null;
     }
 
-    public static void Update()
+    public static void update()
     {
         if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && CurrentScreen != null)
         {
-            CurrentScreen.Update();
+            CurrentScreen.updateImpl();
         }
 
         for (EUIBase s : BattleSubscribers) {
-            s.TryUpdate();
+            s.tryUpdate();
         }
         for (EUIBase s : Subscribers) {
-            s.TryUpdate();
+            s.tryUpdate();
         }
 
     }
 
-    public static void PostUpdate()
+    public static void postUpdate()
     {
         lastHovered = lastHoveredTemp;
     }
 
-    public static void PreRender(SpriteBatch sb)
+    public static void preRender(SpriteBatch sb)
     {
         if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && CurrentScreen != null)
         {
-            CurrentScreen.PreRender(sb);
+            CurrentScreen.preRender(sb);
         }
 
-        RenderImpl(sb, preRenderList.iterator());
+        renderImpl(sb, preRenderList.iterator());
     }
 
-    public static void Render(SpriteBatch sb)
+    public static void render(SpriteBatch sb)
     {
         if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && CurrentScreen != null)
         {
-            CurrentScreen.Render(sb);
+            CurrentScreen.renderImpl(sb);
         }
 
         for (EUIBase s : Subscribers) {
-            s.TryRender(sb);
+            s.tryRender(sb);
         }
 
         // Battle subscribers are rendered in the energy panel patch
     }
 
-    public static void PostRender(SpriteBatch sb)
+    public static void postRender(SpriteBatch sb)
     {
-        RenderImpl(sb, postRenderList.iterator());
+        renderImpl(sb, postRenderList.iterator());
     }
 
-    public static void PriorityPostRender(SpriteBatch sb)
+    public static void priorityPostRender(SpriteBatch sb)
     {
-        RenderImpl(sb, priorityPostRenderList.iterator());
+        renderImpl(sb, priorityPostRenderList.iterator());
     }
 
-    public static void AddBattleSubscriber(EUIBase element) {
+    public static void addBattleSubscriber(EUIBase element) {
         BattleSubscribers.add(element);
     }
 
-    public static void AddSubscriber(EUIBase element) {
+    public static void addSubscriber(EUIBase element) {
         Subscribers.add(element);
     }
 
-    public static void SetCustomCardFilter(AbstractCard.CardColor cardColor, CustomCardFilterModule element) {
+    public static void setCustomCardFilter(AbstractCard.CardColor cardColor, CustomCardFilterModule element) {
         customCardFilters.put(cardColor, element);
     }
 
-    public static void SetCustomCardLibraryModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
+    public static void setCustomCardLibraryModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
         customCardLibraryModules.put(cardColor, element);
     }
 
-    public static void SetCustomCardPoolModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
+    public static void setCustomCardPoolModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
         customCardPoolModules.put(cardColor, element);
     }
 
-    public static void SetCustomRelicFilter(AbstractCard.CardColor cardColor, CustomRelicFilterModule element) {
+    public static void setCustomRelicFilter(AbstractCard.CardColor cardColor, CustomRelicFilterModule element) {
         customRelicFilters.put(cardColor, element);
     }
 
-    public static void SetCustomRelicLibraryModule(AbstractCard.CardColor cardColor, CustomRelicPoolModule element) {
+    public static void setCustomRelicLibraryModule(AbstractCard.CardColor cardColor, CustomRelicPoolModule element) {
         customRelicLibraryModules.put(cardColor, element);
     }
 
-    public static void SetCustomRelicPoolModule(AbstractCard.CardColor cardColor, CustomRelicPoolModule element) {
+    public static void setCustomRelicPoolModule(AbstractCard.CardColor cardColor, CustomRelicPoolModule element) {
         customRelicPoolModules.put(cardColor, element);
     }
 
-    public static CustomCardFilterModule GetCustomCardFilter(AbstractPlayer player) {
-        return player != null ? GetCustomCardFilter(player.getCardColor()) : null;
+    public static CustomCardFilterModule getCustomCardFilter(AbstractPlayer player) {
+        return player != null ? getCustomCardFilter(player.getCardColor()) : null;
     }
 
-    public static CustomCardFilterModule GetCustomCardFilter(AbstractCard.CardColor cardColor) {
+    public static CustomCardFilterModule getCustomCardFilter(AbstractCard.CardColor cardColor) {
         return customCardFilters.get(cardColor);
     }
 
-    public static CustomCardPoolModule GetCustomCardLibraryModule(AbstractCard.CardColor cardColor) {
+    public static CustomCardPoolModule getCustomCardLibraryModule(AbstractCard.CardColor cardColor) {
         return customCardLibraryModules.get(cardColor);
     }
 
-    public static CustomCardPoolModule GetCustomCardPoolModule(AbstractPlayer player) {
-        return player != null ? GetCustomCardPoolModule(player.getCardColor()) : null;
+    public static CustomCardPoolModule getCustomCardPoolModule(AbstractPlayer player) {
+        return player != null ? getCustomCardPoolModule(player.getCardColor()) : null;
     }
 
-    public static CustomCardPoolModule GetCustomCardPoolModule(AbstractCard.CardColor cardColor) {
+    public static CustomCardPoolModule getCustomCardPoolModule(AbstractCard.CardColor cardColor) {
         return customCardPoolModules.get(cardColor);
     }
 
-    public static CustomRelicFilterModule GetCustomRelicFilter(AbstractPlayer player) {
-        return player != null ? GetCustomRelicFilter(player.getCardColor()) : null;
+    public static CustomRelicFilterModule getCustomRelicFilter(AbstractPlayer player) {
+        return player != null ? getCustomRelicFilter(player.getCardColor()) : null;
     }
 
-    public static CustomRelicFilterModule GetCustomRelicFilter(AbstractCard.CardColor cardColor) {
+    public static CustomRelicFilterModule getCustomRelicFilter(AbstractCard.CardColor cardColor) {
         return customRelicFilters.get(cardColor);
     }
 
-    public static CustomRelicPoolModule GetCustomRelicLibraryModule(AbstractCard.CardColor cardColor) {
+    public static CustomRelicPoolModule getCustomRelicLibraryModule(AbstractCard.CardColor cardColor) {
         return customRelicLibraryModules.get(cardColor);
     }
 
-    public static CustomRelicPoolModule GetCustomRelicPoolModule(AbstractPlayer player) {
-        return player != null ? GetCustomRelicPoolModule(player.getCardColor()) : null;
+    public static CustomRelicPoolModule getCustomRelicPoolModule(AbstractPlayer player) {
+        return player != null ? getCustomRelicPoolModule(player.getCardColor()) : null;
     }
 
-    public static CustomRelicPoolModule GetCustomRelicPoolModule(AbstractCard.CardColor cardColor) {
+    public static CustomRelicPoolModule getCustomRelicPoolModule(AbstractCard.CardColor cardColor) {
         return customRelicPoolModules.get(cardColor);
     }
 
-    public static void ToggleViewUpgrades(boolean value)
+    public static void toggleViewUpgrades(boolean value)
     {
         SingleCardViewPopup.isViewingUpgrade = value;
     }
 
-    private static void RenderImpl(SpriteBatch sb, Iterator<ActionT1<SpriteBatch>> i)
+    private static void renderImpl(SpriteBatch sb, Iterator<ActionT1<SpriteBatch>> i)
     {
         while (i.hasNext()) {
             ActionT1<SpriteBatch> toRender = i.next();
-            toRender.Invoke(sb);
+            toRender.invoke(sb);
             i.remove();
         }
     }
 
-    public static boolean IsDragging()
+    public static boolean isDragging()
     {
         return isDragging;
     }
 
-    public static boolean TryDragging()
+    public static boolean tryDragging()
     {
         final boolean drag = !CardCrawlGame.isPopupOpen && (CurrentScreen == null || !isDragging) && (isDragging = true);
         if (drag)
         {
-            EUITooltip.CanRenderTooltips(false);
+            EUITooltip.canRenderTooltips(false);
         }
 
         return drag;
     }
 
-    public static boolean TryHover(Hitbox hitbox)
+    public static boolean tryHover(Hitbox hitbox)
     {
         if (hitbox != null && hitbox.justHovered && hitbox != lastHovered)
         {
@@ -412,7 +412,7 @@ public class EUI
         return false;
     }
 
-    public static boolean TryToggleActiveElement(EUIBase element, boolean setActive) {
+    public static boolean tryToggleActiveElement(EUIBase element, boolean setActive) {
         if (activeElement == null || activeElement == element) {
             activeElement = setActive ? element : null;
             return true;
@@ -420,90 +420,90 @@ public class EUI
         return false;
     }
 
-    public static int GetImguiIndex()
+    public static int getImguiIndex()
     {
         return imguiIndex++;
     }
 
-    public static boolean IsInActiveElement(AdvancedHitbox hb) {
+    public static boolean isInActiveElement(AdvancedHitbox hb) {
         return activeElement == null || activeElement == hb.parentElement;
     }
 
-    public static boolean DoesActiveElementExist() {
+    public static boolean doesActiveElementExist() {
         return activeElement != null;
     }
 
-    public static float Time_Sin(float distance, float speed)
+    public static float timeSin(float distance, float speed)
     {
         return MathUtils.sin(timer * speed) * distance;
     }
 
-    public static float Time_Cos(float distance, float speed)
+    public static float timeCos(float distance, float speed)
     {
         return MathUtils.cos(timer * speed) * distance;
     }
 
-    public static float Time_Multi(float value)
+    public static float timeMulti(float value)
     {
         return timer * value;
     }
 
-    public static float Time()
+    public static float time()
     {
         return timer;
     }
 
-    public static float Delta()
+    public static float delta()
     {
         return delta;
     }
 
-    public static float Delta(float multiplier)
+    public static float delta(float multiplier)
     {
         return delta * multiplier;
     }
 
-    public static boolean Elapsed(float value)
+    public static boolean elapsed(float value)
     {
         return (delta >= value) || (((timer % value) - delta) < 0);
     }
 
-    public static boolean Elapsed25()
+    public static boolean elapsed25()
     {
-        return Elapsed(0.25f);
+        return elapsed(0.25f);
     }
 
-    public static boolean Elapsed50()
+    public static boolean elapsed50()
     {
-        return Elapsed(0.50f);
+        return elapsed(0.50f);
     }
 
-    public static boolean Elapsed75()
+    public static boolean elapsed75()
     {
-        return Elapsed(0.75f);
+        return elapsed(0.75f);
     }
 
-    public static boolean Elapsed100()
+    public static boolean elapsed100()
     {
-        return Elapsed(1.00f);
+        return elapsed(1.00f);
     }
 
-    public static void AddPreRender(ActionT1<SpriteBatch> toRender)
+    public static void addPreRender(ActionT1<SpriteBatch> toRender)
     {
         preRenderList.add(toRender);
     }
 
-    public static void AddPostRender(ActionT1<SpriteBatch> toRender)
+    public static void addPostRender(ActionT1<SpriteBatch> toRender)
     {
         postRenderList.add(toRender);
     }
 
-    public static void AddPriorityPostRender(ActionT1<SpriteBatch> toRender)
+    public static void addPriorityPostRender(ActionT1<SpriteBatch> toRender)
     {
         priorityPostRenderList.add(toRender);
     }
 
-    public static TextureRegion GetEnergyIcon() {
+    public static TextureRegion getEnergyIcon() {
         AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : ActingColor;
         if (color == null) {
             return AbstractCard.orb_red;

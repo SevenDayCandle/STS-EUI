@@ -25,53 +25,53 @@ public class STSConfigItem<T>
         DefaultValue = Value = defaultValue;
     }
 
-    public final STSConfigItem<T> AddConfig(SpireConfig Config) {
+    public final STSConfigItem<T> addConfig(SpireConfig Config) {
         this.Config = Config;
         if (this.Config.has(this.Key)) {
-            this.Value = ParseValue(this.Config.getString(this.Key));
+            this.Value = parseValue(this.Config.getString(this.Key));
         }
         return this;
     }
 
-    public final T Get() {
+    public final T get() {
         return Value;
     }
 
-    public final T Set(T Value) {
-        return Set(Value, true);
+    public final T set(T Value) {
+        return set(Value, true);
     }
 
-    public final T Set(T Value, boolean save) {
+    public final T set(T Value, boolean save) {
         this.Value = Value;
-        this.Config.setString(this.Key, Serialize());
-        Save();
+        this.Config.setString(this.Key, serialize());
+        save();
         for (STSConfigListener<T> listener : Listeners)
         {
-            listener.OnChange(Value);
+            listener.onChange(Value);
         }
         return Value;
     }
 
-    public final void AddListener(STSConfigListener<T> listener)
+    public final void addListener(STSConfigListener<T> listener)
     {
         if (!this.Listeners.contains(listener))
         {
             this.Listeners.add(listener);
-            listener.OnInitialize(Value);
+            listener.onInitialize(Value);
         }
     }
 
-    public final void RemoveListener(STSConfigListener<T> listener)
+    public final void removeListener(STSConfigListener<T> listener)
     {
         this.Listeners.remove(listener);
     }
 
-    public final Class<?> GetConfigClass()
+    public final Class<?> getConfigClass()
     {
         return DefaultValue.getClass();
     }
 
-    protected final void Save() {
+    protected final void save() {
         try {
             this.Config.save();
         } catch (Exception e) {
@@ -79,22 +79,22 @@ public class STSConfigItem<T>
         }
     }
 
-    protected T ParseValue(String raw) {
+    protected T parseValue(String raw) {
         try {
-            return (T) GetMethod().invoke(null, raw);
+            return (T) getMethod().invoke(null, raw);
         } catch (Exception e) {
-            EUIUtils.LogError(this, "Failed to load preference for " + Key + ", value was: " + raw);
+            EUIUtils.logError(this, "Failed to load preference for " + Key + ", value was: " + raw);
             e.printStackTrace();
         }
         return DefaultValue;
     }
 
-    protected String Serialize() {
+    protected String serialize() {
         return String.valueOf(Value);
     }
 
-    protected Method GetMethod() throws Exception {
-        Class<?> valueClass = GetConfigClass();
+    protected Method getMethod() throws Exception {
+        Class<?> valueClass = getConfigClass();
         if (METHOD_HASH_MAP.containsKey(valueClass)) {
             return METHOD_HASH_MAP.get(valueClass);
         }

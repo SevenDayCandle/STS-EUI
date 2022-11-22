@@ -19,11 +19,11 @@ public class EUICardPreview implements CardObject
     public AbstractCard upgradedPreview;
     public boolean isMultiPreview;
 
-    public static EUICardPreview GeneratePreviewCard(AbstractCard card) {
-        return GeneratePreviewCard(card, false);
+    public static EUICardPreview generatePreviewCard(AbstractCard card) {
+        return generatePreviewCard(card, false);
     }
 
-    public static EUICardPreview GeneratePreviewCard(AbstractCard card, boolean upgrade) {
+    public static EUICardPreview generatePreviewCard(AbstractCard card, boolean upgrade) {
         return new EUICardPreview(card, upgrade);
     }
 
@@ -31,7 +31,7 @@ public class EUICardPreview implements CardObject
     {
         this.defaultPreview = card;
         if (defaultPreview instanceof TooltipProvider) {
-            ((TooltipProvider) this.defaultPreview).SetIsPreview(true);
+            ((TooltipProvider) this.defaultPreview).setIsPreview(true);
         }
 
         if (upgrade)
@@ -40,25 +40,25 @@ public class EUICardPreview implements CardObject
             this.upgradedPreview.upgrade();
             this.upgradedPreview.displayUpgrades();
             if (upgradedPreview instanceof TooltipProvider) {
-                ((TooltipProvider) this.upgradedPreview).SetIsPreview(true);
+                ((TooltipProvider) this.upgradedPreview).setIsPreview(true);
             }
         }
     }
 
     @Override
-    public AbstractCard GetCard()
+    public AbstractCard getCard()
     {
         return defaultPreview;
     }
 
-    public AbstractCard GetPreview(boolean upgraded)
+    public AbstractCard getPreview(boolean upgraded)
     {
         return upgraded && upgradedPreview != null ? upgradedPreview : defaultPreview;
     }
 
-    public void Render(SpriteBatch sb, AbstractCard card, boolean upgraded, boolean isPopup)
+    public void render(SpriteBatch sb, AbstractCard card, boolean upgraded, boolean isPopup)
     {
-        AbstractCard preview = GetPreview(upgraded);
+        AbstractCard preview = getPreview(upgraded);
 
         if (isPopup)
         {
@@ -80,12 +80,12 @@ public class EUICardPreview implements CardObject
 
         if (isMultiPreview)
         {
-            String cyclePreviewText = EUIRM.Strings.KeyToCycle(EUIHotkeys.cycle.getKeyString());
-            BitmapFont font = EUIRenderHelpers.GetDescriptionFont(preview, 0.9f);
-            EUIRenderHelpers.DrawOnCardAuto(sb, preview, EUIRM.Images.Panel.Texture(), new Vector2(0, -AbstractCard.RAW_H * 0.55f),
+            String cyclePreviewText = EUIRM.Strings.keyToCycle(EUIHotkeys.cycle.getKeyString());
+            BitmapFont font = EUIRenderHelpers.getDescriptionFont(preview, 0.9f);
+            EUIRenderHelpers.drawOnCardAuto(sb, preview, EUIRM.Images.Panel.texture(), new Vector2(0, -AbstractCard.RAW_H * 0.55f),
             AbstractCard.IMG_WIDTH * 0.6f, font.getLineHeight() * 1.8f, Color.DARK_GRAY, 0.75f, 1);
-            EUIRenderHelpers.WriteOnCard(sb, preview, font, cyclePreviewText, 0, -AbstractCard.RAW_H * 0.55f, Color.MAGENTA);
-            EUIRenderHelpers.ResetFont(font);
+            EUIRenderHelpers.writeOnCard(sb, preview, font, cyclePreviewText, 0, -AbstractCard.RAW_H * 0.55f, Color.MAGENTA);
+            EUIRenderHelpers.resetFont(font);
         }
     }
 }

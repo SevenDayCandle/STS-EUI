@@ -7,24 +7,24 @@ import java.util.ArrayList;
 
 public abstract class CustomCardPoolModule extends EUIBase
 {
-    public abstract void Open(ArrayList<AbstractCard> cards);
-    public abstract void Update(boolean shouldDoStandardUpdate);
+    public abstract void open(ArrayList<AbstractCard> cards);
+    public abstract void update(boolean shouldDoStandardUpdate);
 
-    public boolean TryUpdate()
+    public boolean tryUpdate()
     {
-        return TryUpdate(true);
+        return tryUpdate(true);
     }
-    public boolean TryUpdate(boolean shouldDoStandardUpdate)
+    public boolean tryUpdate(boolean shouldDoStandardUpdate)
     {
         if (isActive)
         {
-            Update(shouldDoStandardUpdate);
+            update(shouldDoStandardUpdate);
         }
 
         return isActive;
     }
-    public void Update()
+    public void updateImpl()
     {
-        Update(true);
+        update(true);
     }
 }

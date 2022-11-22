@@ -45,37 +45,37 @@ public class EUIButton extends EUIHoverable
 
     public EUIButton(Texture buttonTexture, float x, float y)
     {
-        this(buttonTexture, new AdvancedHitbox(x, y, Scale(buttonTexture.getWidth()), Scale(buttonTexture.getHeight())));
+        this(buttonTexture, new AdvancedHitbox(x, y, scale(buttonTexture.getWidth()), scale(buttonTexture.getHeight())));
     }
 
     public EUIButton(Texture buttonTexture, AdvancedHitbox hitbox)
     {
         super(hitbox);
-        this.background = EUIRenderHelpers.ForTexture(buttonTexture, hitbox, Color.WHITE);
+        this.background = EUIRenderHelpers.forTexture(buttonTexture, hitbox, Color.WHITE);
         this.text = "";
         this.font = FontHelper.buttonLabelFont;
         this.fontScale = 1f;
     }
 
-    public EUIButton SetAlpha(float currentAlpha, float targetAlpha) {
+    public EUIButton setAlpha(float currentAlpha, float targetAlpha) {
         this.currentAlpha = currentAlpha;
         this.targetAlpha = targetAlpha;
         return this;
     }
 
-    public EUIButton SetAlpha(float targetAlpha) {
+    public EUIButton setAlpha(float targetAlpha) {
         this.targetAlpha = targetAlpha;
         return this;
     }
 
-    public EUIButton SetBackground(Texture borderTexture)
+    public EUIButton setBackground(Texture borderTexture)
     {
-        this.background = EUIRenderHelpers.ForTexture(borderTexture);
+        this.background = EUIRenderHelpers.forTexture(borderTexture);
 
         return this;
     }
 
-    public EUIButton SetBorder(Texture borderTexture, Color color)
+    public EUIButton setBorder(Texture borderTexture, Color color)
     {
         if (borderTexture == null)
         {
@@ -83,13 +83,13 @@ public class EUIButton extends EUIHoverable
         }
         else
         {
-            this.border = EUIRenderHelpers.ForTexture(borderTexture, color).SetHitbox(hb);
+            this.border = EUIRenderHelpers.forTexture(borderTexture, color).setHitbox(hb);
         }
 
         return this;
     }
 
-    public EUIButton SetFont(BitmapFont font, float fontScale)
+    public EUIButton setFont(BitmapFont font, float fontScale)
     {
         if (font != null)
         {
@@ -101,21 +101,21 @@ public class EUIButton extends EUIHoverable
         return this;
     }
 
-    public EUIButton SetInteractable(boolean interactable)
+    public EUIButton setInteractable(boolean interactable)
     {
         this.interactable = interactable;
 
         return this;
     }
 
-    public EUIButton SetSmartText(boolean isSmartText)
+    public EUIButton setSmartText(boolean isSmartText)
     {
         this.isSmartText = isSmartText;
 
         return this;
     }
 
-    public EUIButton SetSmartText(boolean isSmartText, boolean smartTextResize)
+    public EUIButton setSmartText(boolean isSmartText, boolean smartTextResize)
     {
         this.isSmartText = isSmartText;
         this.smartTextResize = smartTextResize;
@@ -123,122 +123,122 @@ public class EUIButton extends EUIHoverable
         return this;
     }
 
-    public EUIButton SetButtonScale(float scaleX, float scaleY)
+    public EUIButton setButtonScale(float scaleX, float scaleY)
     {
-        this.background.SetScale(scaleX, scaleY);
+        this.background.setScale(scaleX, scaleY);
 
         return this;
     }
 
-    public EUIButton SetDimensions(float width, float height)
+    public EUIButton setDimensions(float width, float height)
     {
         this.hb.resize(width, height);
 
         return this;
     }
 
-    public EUIButton SetPosition(float cX, float cY)
+    public EUIButton setPosition(float cX, float cY)
     {
         this.hb.move(cX, cY);
 
         return this;
     }
 
-    public EUIButton SetText(String text)
+    public EUIButton setText(String text)
     {
         this.text = text;
 
         return this;
     }
 
-    public EUIButton SetClickDelay(float delay)
+    public EUIButton setClickDelay(float delay)
     {
         this.clickDelay = delay;
 
         return this;
     }
 
-    public EUIButton SetOnClick(ActionT0 onClick)
+    public EUIButton setOnClick(ActionT0 onClick)
     {
-        this.onLeftClick = GenericCallback.FromT0(onClick);
+        this.onLeftClick = GenericCallback.fromT0(onClick);
 
         return this;
     }
 
-    public EUIButton SetOnClick(ActionT1<EUIButton> onClick)
+    public EUIButton setOnClick(ActionT1<EUIButton> onClick)
     {
-        this.onLeftClick = GenericCallback.FromT1(onClick);
+        this.onLeftClick = GenericCallback.fromT1(onClick);
 
         return this;
     }
 
-    public <T> EUIButton SetOnClick(T state, ActionT2<T, EUIButton> onClick)
+    public <T> EUIButton setOnClick(T state, ActionT2<T, EUIButton> onClick)
     {
-        this.onLeftClick = GenericCallback.FromT2(onClick, state);
+        this.onLeftClick = GenericCallback.fromT2(onClick, state);
 
         return this;
     }
 
-    public EUIButton SetOnRightClick(ActionT0 onClick)
+    public EUIButton setOnRightClick(ActionT0 onClick)
     {
-        this.onRightClick = GenericCallback.FromT0(onClick);
+        this.onRightClick = GenericCallback.fromT0(onClick);
 
         return this;
     }
 
-    public EUIButton SetOnRightClick(ActionT1<EUIButton> onClick)
+    public EUIButton setOnRightClick(ActionT1<EUIButton> onClick)
     {
-        this.onRightClick = GenericCallback.FromT1(onClick);
+        this.onRightClick = GenericCallback.fromT1(onClick);
 
         return this;
     }
 
-    public <T> EUIButton SetOnRightClick(T state, ActionT2<T, EUIButton> onClick)
+    public <T> EUIButton setOnRightClick(T state, ActionT2<T, EUIButton> onClick)
     {
-        this.onRightClick = GenericCallback.FromT2(onClick, state);
+        this.onRightClick = GenericCallback.fromT2(onClick, state);
 
         return this;
     }
 
-    public EUIButton SetColor(Color buttonColor)
+    public EUIButton setColor(Color buttonColor)
     {
-        background.SetColor(buttonColor);
+        background.setColor(buttonColor);
 
         return this;
     }
 
-    public EUIButton SetTargetColor(Color buttonColor)
+    public EUIButton setTargetColor(Color buttonColor)
     {
-        background.SetTargetColor(buttonColor);
+        background.setTargetColor(buttonColor);
 
         return this;
     }
 
-    public EUIButton SetShaderMode(EUIRenderHelpers.ShaderMode shaderMode) {
-        this.background.SetShaderMode(shaderMode);
+    public EUIButton setShaderMode(EUIRenderHelpers.ShaderMode shaderMode) {
+        this.background.setShaderMode(shaderMode);
         return this;
     }
 
-    public EUIButton SetTextColor(Color textColor)
+    public EUIButton setTextColor(Color textColor)
     {
         this.textColor = textColor.cpy();
 
         return this;
     }
 
-    public EUIButton SetTooltip(String title, String description)
+    public EUIButton setTooltip(String title, String description)
     {
-        return SetTooltip(new EUITooltip(title, description));
+        return setTooltip(new EUITooltip(title, description));
     }
 
-    public EUIButton SetTooltip(EUITooltip tooltip)
+    public EUIButton setTooltip(EUITooltip tooltip)
     {
-        super.SetTooltip(tooltip);
+        super.setTooltip(tooltip);
 
         return this;
     }
 
-    public EUIButton ShowTooltip(boolean show)
+    public EUIButton showTooltip(boolean show)
     {
         if (tooltip != null)
         {
@@ -248,17 +248,17 @@ public class EUIButton extends EUIHoverable
         return this;
     }
 
-    public boolean IsInteractable()
+    public boolean isInteractable()
     {
         return interactable && onLeftClick != null;
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
         if (currentClickDelay > 0)
         {
-            this.currentClickDelay -= EUI.Delta();
+            this.currentClickDelay -= EUI.delta();
         }
 
         this.currentAlpha = MathHelper.fadeLerpSnap(currentAlpha, targetAlpha);
@@ -267,40 +267,40 @@ public class EUIButton extends EUIHoverable
             return;
         }
 
-        super.Update();
-        background.UpdateColor();
+        super.updateImpl();
+        background.updateColor();
 
-        if (IsInteractable() && EUI.TryHover(hb))
+        if (isInteractable() && EUI.tryHover(hb))
         {
             if (this.hb.justHovered)
             {
-                OnJustHovered();
+                onJustHovered();
             }
 
             if (this.hb.hovered)
             {
                 if (currentClickDelay <= 0)
                 {
-                    if (EUIInputManager.RightClick.IsJustPressed())
+                    if (EUIInputManager.RightClick.isJustPressed())
                     {
-                        OnRightClick();
+                        onRightClick();
                     }
                     else if (InputHelper.justClickedLeft)
                     {
-                        OnClickStart();
+                        onClickStart();
                     }
                 }
             }
 
             if (this.hb.clicked)
             {
-                OnLeftClick();
+                onLeftClick();
             }
         }
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
         background.color.a = this.textColor.a = currentAlpha;
         if (currentAlpha <= 0)
@@ -308,33 +308,33 @@ public class EUIButton extends EUIHoverable
             return;
         }
 
-        final boolean interactable = IsInteractable();
+        final boolean interactable = isInteractable();
         if (StringUtils.isNotEmpty(text) && showText)
         {
-            this.RenderButton(sb, interactable);
+            this.renderButton(sb, interactable);
 
             font.getData().setScale(fontScale);
             final Color color = interactable ? textColor : TEXT_DISABLED_COLOR;
             if (isSmartText) {
-                EUISmartText.Write(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color);
+                EUISmartText.write(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color);
             }
             else if (FontHelper.getSmartWidth(font, text, Integer.MAX_VALUE, 0f) > (hb.width * 0.7))
             {
-                EUIRenderHelpers.WriteCentered(sb, font, text, hb, color, 0.8f);
+                EUIRenderHelpers.writeCentered(sb, font, text, hb, color, 0.8f);
             }
             else
             {
-                EUIRenderHelpers.WriteCentered(sb, font, text, hb, color);
+                EUIRenderHelpers.writeCentered(sb, font, text, hb, color);
             }
-            EUIRenderHelpers.ResetFont(font);
+            EUIRenderHelpers.resetFont(font);
         }
         else
         {
             if (interactable) {
-                this.RenderButton(sb, interactable);
+                this.renderButton(sb, interactable);
             }
             else {
-                EUIRenderHelpers.DrawGrayscale(sb, (s) -> this.RenderButton(s, interactable));
+                EUIRenderHelpers.drawGrayscale(sb, (s) -> this.renderButton(s, interactable));
             }
 
         }
@@ -342,7 +342,7 @@ public class EUIButton extends EUIHoverable
         this.hb.render(sb);
     }
 
-    public void RenderCentered(SpriteBatch sb)
+    public void renderCentered(SpriteBatch sb)
     {
         background.color.a = this.textColor.a = currentAlpha;
         if (currentAlpha <= 0)
@@ -350,33 +350,33 @@ public class EUIButton extends EUIHoverable
             return;
         }
 
-        final boolean interactable = IsInteractable();
+        final boolean interactable = isInteractable();
         if (StringUtils.isNotEmpty(text) && showText)
         {
-            this.RenderButtonCentered(sb, interactable);
+            this.renderButtonCentered(sb, interactable);
 
             font.getData().setScale(fontScale);
             final Color color = interactable ? textColor : TEXT_DISABLED_COLOR;
             if (isSmartText) {
-                EUISmartText.Write(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color, smartTextResize);
+                EUISmartText.write(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color, smartTextResize);
             }
             else if (FontHelper.getSmartWidth(font, text, Integer.MAX_VALUE, 0f) > (hb.width * 0.7))
             {
-                EUIRenderHelpers.WriteCentered(sb, font, text, hb, color, 0.8f);
+                EUIRenderHelpers.writeCentered(sb, font, text, hb, color, 0.8f);
             }
             else
             {
-                EUIRenderHelpers.WriteCentered(sb, font, text, hb, color);
+                EUIRenderHelpers.writeCentered(sb, font, text, hb, color);
             }
-            EUIRenderHelpers.ResetFont(font);
+            EUIRenderHelpers.resetFont(font);
         }
         else
         {
             if (interactable) {
-                this.RenderButtonCentered(sb, interactable);
+                this.renderButtonCentered(sb, interactable);
             }
             else {
-                EUIRenderHelpers.DrawGrayscale(sb, (s) -> this.RenderButtonCentered(s, interactable));
+                EUIRenderHelpers.drawGrayscale(sb, (s) -> this.renderButtonCentered(s, interactable));
             }
 
         }
@@ -384,76 +384,76 @@ public class EUIButton extends EUIHoverable
         this.hb.render(sb);
     }
 
-    protected void RenderButton(SpriteBatch sb, boolean interactable)
+    protected void renderButton(SpriteBatch sb, boolean interactable)
     {
-        background.Render(sb, hb);
+        background.render(sb, hb);
 
         if (border != null)
         {
-            border.Render(sb);
+            border.renderImpl(sb);
         }
 
         if (interactable && this.hb.hovered && !this.hb.clickStarted)
         {
-            background.Render(sb, EUIRenderHelpers.ShaderMode.Bright, hb, HOVER_BLEND_COLOR);
+            background.render(sb, EUIRenderHelpers.ShaderMode.Bright, hb, HOVER_BLEND_COLOR);
         }
     }
 
-    protected void RenderButtonCentered(SpriteBatch sb, boolean interactable)
+    protected void renderButtonCentered(SpriteBatch sb, boolean interactable)
     {
-        background.RenderCentered(sb, hb);
+        background.renderCentered(sb, hb);
 
         if (border != null)
         {
-            border.RenderCentered(sb);
+            border.renderCentered(sb);
         }
 
         if (interactable && this.hb.hovered && !this.hb.clickStarted)
         {
-            background.RenderCentered(sb, EUIRenderHelpers.ShaderMode.Bright, hb, HOVER_BLEND_COLOR);
+            background.renderCentered(sb, EUIRenderHelpers.ShaderMode.Bright, hb, HOVER_BLEND_COLOR);
         }
     }
 
 
-    protected void OnJustHovered()
+    protected void onJustHovered()
     {
         CardCrawlGame.sound.play("UI_HOVER");
     }
 
-    protected void OnClickStart()
+    protected void onClickStart()
     {
         this.hb.clickStarted = true;
         CardCrawlGame.sound.play("UI_CLICK_1");
     }
 
-    protected void OnLeftClick()
+    protected void onLeftClick()
     {
         this.hb.clicked = false;
         this.currentClickDelay = clickDelay;
 
         if (onLeftClick != null)
         {
-            this.onLeftClick.Complete(this);
+            this.onLeftClick.complete(this);
         }
     }
 
-    protected void OnRightClick()
+    protected void onRightClick()
     {
         this.hb.clicked = false;
         this.currentClickDelay = clickDelay;
 
         if (onRightClick != null)
         {
-            this.onRightClick.Complete(this);
+            this.onRightClick.complete(this);
         }
     }
 
-    public boolean TryRenderCentered(SpriteBatch sb)
+    public boolean tryRenderCentered(SpriteBatch sb)
     {
         if (isActive)
         {
             this.hb.render(sb);
-            RenderCentered(sb);
+            renderCentered(sb);
         }
 
         return isActive;

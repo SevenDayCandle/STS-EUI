@@ -13,18 +13,18 @@ public class STSSerializedConfigItem<T> extends STSConfigItem<T>
         super(Key, defaultValue);
     }
 
-    protected T ParseValue(String raw) {
+    protected T parseValue(String raw) {
         try {
-            return (T) EUIUtils.Deserialize(raw, DefaultValue.getClass());
+            return (T) EUIUtils.deserialize(raw, DefaultValue.getClass());
         }
         catch (Exception e) {
-            EUIUtils.LogError(this, "Failed to load preference for " + Key + ", value was: " + raw);
+            EUIUtils.logError(this, "Failed to load preference for " + Key + ", value was: " + raw);
             e.printStackTrace();
         }
         return DefaultValue;
     }
 
-    protected String Serialize() {
-        return EUIUtils.Serialize(Value);
+    protected String serialize() {
+        return EUIUtils.serialize(Value);
     }
 }

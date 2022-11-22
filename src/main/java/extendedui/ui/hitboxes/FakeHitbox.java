@@ -17,9 +17,9 @@ public class FakeHitbox extends AdvancedHitbox
     public void update()
     {
         this.update(this.x, this.y);
-        if (cX != target_cX || cY != target_cY)
+        if (cX != targetCx || cY != targetCy)
         {
-            moveInternal(Lerp(cX, target_cX), Lerp(cY, target_cY));
+            moveInternal(lerp(cX, targetCx), lerp(cY, targetCy));
         }
     }
 

@@ -67,15 +67,15 @@ public class EUIFontHelper
 
     /* Because EUIFontHelper creates its fonts separately from the base game, mods that alter the game's font will not affect it.
     * Thus, EUIFontHelper requires its own version of a font configuration to allow users to make changes to them */
-    public static void Initialize()
+    public static void initialize()
     {
-        boolean useSeparateFonts = EUIConfiguration.UseSeparateFonts.Get();
+        boolean useSeparateFonts = EUIConfiguration.UseSeparateFonts.get();
         generators.clear();
         data.xChars = new char[]{'动'};
         data.capChars = new char[]{'动'};
-        FileHandle fontFile = GetDefaultFontFile(Settings.language);
-        FileHandle fontFileBold = GetBoldFontFile(Settings.language);
-        mainFont = GetCustomFont(EUIConfiguration.CardDescFont, fontFile);
+        FileHandle fontFile = getDefaultFontFile(Settings.language);
+        FileHandle fontFileBold = getBoldFontFile(Settings.language);
+        mainFont = getCustomFont(EUIConfiguration.CardDescFont, fontFile);
 
         param.hinting = FreeTypeFontGenerator.Hinting.Slight;
         param.kerning = true;
@@ -88,18 +88,18 @@ public class EUIFontHelper
         param.shadowOffsetX = 1;
         param.shadowOffsetY = 1;
         param.spaceX = 0;
-        EUIFontHelper.cardDescFont = PrepFont(mainFont, 24.0F, true);
+        EUIFontHelper.cardDescFont = prepFont(mainFont, 24.0F, true);
 
         param.shadowOffsetX = Math.round(3.0F * Settings.scale);
         param.shadowOffsetY = Math.round(3.0F * Settings.scale);
         param.borderWidth = 2.0F * Settings.scale;
-        EUIFontHelper.cardTitleFont = PrepFont(useSeparateFonts ? GetCustomFont(EUIConfiguration.CardTitleFont, fontFile) : mainFont,27.0F, true);
+        EUIFontHelper.cardTitleFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.CardTitleFont, fontFile) : mainFont,27.0F, true);
 
         param.borderWidth = 0.0F;
         param.shadowColor = Settings.QUARTER_TRANSPARENT_BLACK_COLOR.cpy();
         param.shadowOffsetX = Math.round(4.0F * Settings.scale);
         param.shadowOffsetY = Math.round(3.0F * Settings.scale);
-        EUIFontHelper.cardDescFont_L = PrepFont(mainFont,48.0F, true);
+        EUIFontHelper.cardDescFont_L = prepFont(mainFont,48.0F, true);
 
         param.shadowColor = Settings.QUARTER_TRANSPARENT_BLACK_COLOR.cpy();
         param.shadowOffsetX = (int) (3.0F * Settings.scale);
@@ -108,7 +108,7 @@ public class EUIFontHelper
         param.borderGamma = 0.9F;
         param.borderColor = new Color(0.4F, 0.1F, 0.1F, 1.0F);
         param.borderWidth = 0.0F;
-        EUIFontHelper.cardTipBodyFont = PrepFont(useSeparateFonts ? GetCustomFont(EUIConfiguration.TipDescFont, fontFile) : mainFont,22.0F, true);
+        EUIFontHelper.cardTipBodyFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.TipDescFont, fontFile) : mainFont,22.0F, true);
 
         param.shadowColor = new Color(0.0F, 0.0F, 0.0F, 0.33F);
         param.gamma = 2.0F;
@@ -118,25 +118,25 @@ public class EUIFontHelper
         param.borderWidth = 2.0F * Settings.scale;
         param.shadowOffsetX = 1;
         param.shadowOffsetY = 1;
-        EUIFontHelper.cardTipTitleFont = PrepFont(useSeparateFonts ? GetCustomFont(EUIConfiguration.TipTitleFont, fontFileBold) : EUIConfiguration.CardDescFont.Get().isEmpty() ? fontFileBold : mainFont,23, true);
+        EUIFontHelper.cardTipTitleFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.TipTitleFont, fontFileBold) : EUIConfiguration.CardDescFont.get().isEmpty() ? fontFileBold : mainFont,23, true);
 
         Color bc1 = new Color(0.35F, 0.35F, 0.35F, 1.0F);
         Color sc1 = new Color(0, 0, 0, 0.25f);
-        EUIFontHelper.CardTitleFont_Small = PrepFont(cardTitleFont, 25, 2f, bc1, 3f, sc1);
-        EUIFontHelper.CardTitleFont_Normal = PrepFont(cardTitleFont, 27, 2f, bc1, 3f, sc1);
-        EUIFontHelper.CardTitleFont_Large = PrepFont(cardTitleFont, 46, 4f, bc1, 3f, sc1);
-        EUIFontHelper.CardTypeFont = PrepFont(cardDescFont, 17f, 0, null, 1f, sc1);
-        EUIFontHelper.CardDescriptionFont_Normal = PrepFont(cardDescFont, 23, 0, 1f);
-        EUIFontHelper.CardDescriptionFont_Large = PrepFont(cardDescFont_L, 46, 0, 2f);
-        EUIFontHelper.CardIconFont_VeryLarge = PrepFont(cardDescFont, 76, 4.5f, 1.4f);
-        EUIFontHelper.CardIconFont_Large = PrepFont(cardDescFont, 38, 2.25f, 0.7f);
-        EUIFontHelper.CardIconFont_Small = PrepFont(cardDescFont, 19, 1f, 0.3f);
-        EUIFontHelper.CardTooltipFont = PrepFont(cardTipBodyFont, 19, 0f, 2f);
-        EUIFontHelper.CardTooltipTitleFont_Normal = PrepFont(cardTipTitleFont, 23, 0f, 1f);
-        EUIFontHelper.CardTooltipTitleFont_Large = PrepFont(cardTipTitleFont, 26, 0f, 2f);
+        EUIFontHelper.CardTitleFont_Small = prepFont(cardTitleFont, 25, 2f, bc1, 3f, sc1);
+        EUIFontHelper.CardTitleFont_Normal = prepFont(cardTitleFont, 27, 2f, bc1, 3f, sc1);
+        EUIFontHelper.CardTitleFont_Large = prepFont(cardTitleFont, 46, 4f, bc1, 3f, sc1);
+        EUIFontHelper.CardTypeFont = prepFont(cardDescFont, 17f, 0, null, 1f, sc1);
+        EUIFontHelper.CardDescriptionFont_Normal = prepFont(cardDescFont, 23, 0, 1f);
+        EUIFontHelper.CardDescriptionFont_Large = prepFont(cardDescFont_L, 46, 0, 2f);
+        EUIFontHelper.CardIconFont_VeryLarge = prepFont(cardDescFont, 76, 4.5f, 1.4f);
+        EUIFontHelper.CardIconFont_Large = prepFont(cardDescFont, 38, 2.25f, 0.7f);
+        EUIFontHelper.CardIconFont_Small = prepFont(cardDescFont, 19, 1f, 0.3f);
+        EUIFontHelper.CardTooltipFont = prepFont(cardTipBodyFont, 19, 0f, 2f);
+        EUIFontHelper.CardTooltipTitleFont_Normal = prepFont(cardTipTitleFont, 23, 0f, 1f);
+        EUIFontHelper.CardTooltipTitleFont_Large = prepFont(cardTipTitleFont, 26, 0f, 2f);
     }
 
-    public static void OverwriteBaseFonts()
+    public static void overwriteBaseFonts()
     {
         FontHelper.cardDescFont_N = EUIFontHelper.CardDescriptionFont_Normal;
         FontHelper.cardDescFont_L = EUIFontHelper.CardDescriptionFont_Large;
@@ -147,7 +147,7 @@ public class EUIFontHelper
         FontHelper.topPanelInfoFont = EUIFontHelper.CardTooltipTitleFont_Large;
     }
 
-    private static FreeTypeFontGenerator GetGenerator(FileHandle fontFile)
+    private static FreeTypeFontGenerator getGenerator(FileHandle fontFile)
     {
         FreeTypeFontGenerator generator;
         if (generators.containsKey(fontFile.path()))
@@ -163,9 +163,9 @@ public class EUIFontHelper
         return generator;
     }
 
-    private static BitmapFont PrepFont(FileHandle file, float size, boolean isLinearFiltering)
+    private static BitmapFont prepFont(FileHandle file, float size, boolean isLinearFiltering)
     {
-        final FreeTypeFontGenerator g = GetGenerator(file);
+        final FreeTypeFontGenerator g = getGenerator(file);
         final float fontScale = 1.0F;
         final FreeTypeFontGenerator.FreeTypeFontParameter p = new FreeTypeFontGenerator.FreeTypeFontParameter();
         p.characters = "";
@@ -205,12 +205,12 @@ public class EUIFontHelper
         return font;
     }
 
-    private static BitmapFont PrepFont(BitmapFont source, float size, float borderWidth, float shadowOffset)
+    private static BitmapFont prepFont(BitmapFont source, float size, float borderWidth, float shadowOffset)
     {
-        return PrepFont(source, size, borderWidth, new Color(0f, 0f, 0f, 1f), shadowOffset, new Color(0f, 0f, 0f, 0.5f));
+        return prepFont(source, size, borderWidth, new Color(0f, 0f, 0f, 1f), shadowOffset, new Color(0f, 0f, 0f, 0.5f));
     }
 
-    private static BitmapFont PrepFont(BitmapFont source, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor)
+    private static BitmapFont prepFont(BitmapFont source, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor)
     {
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
         param.minFilter = Texture.TextureFilter.Linear;
@@ -230,7 +230,7 @@ public class EUIFontHelper
         param.incremental = true;
         param.size = Math.round(size * Settings.scale);
 
-        FreeTypeFontGenerator generator = GetGenerator(source.getData().fontFile);
+        FreeTypeFontGenerator generator = getGenerator(source.getData().fontFile);
         generator.scaleForPixelHeight(param.size);
         BitmapFont font = generator.generateFont(param);
         font.setUseIntegerPositions(false);
@@ -243,9 +243,9 @@ public class EUIFontHelper
         return font;
     }
 
-    private static FileHandle GetCustomFont(STSConfigItem<String> config, FileHandle fallback)
+    private static FileHandle getCustomFont(STSConfigItem<String> config, FileHandle fallback)
     {
-        String value = config.Get();
+        String value = config.get();
         if (value != null && !value.isEmpty()) {
             String trimmed = value.replace("\"","").trim();
             File file = new File(trimmed);
@@ -253,13 +253,13 @@ public class EUIFontHelper
                 return new FileHandle(file);
             }
             else {
-                EUIUtils.LogWarning(EUIFontHelper.class, "Could not load external font for config " + config.Key + ". Config value: " + trimmed + ". Actual path: " + file.getAbsolutePath());
+                EUIUtils.logWarning(EUIFontHelper.class, "Could not load external font for config " + config.Key + ". Config value: " + trimmed + ". Actual path: " + file.getAbsolutePath());
             }
         }
         return fallback;
     }
 
-    public static String GetFontDefaultPath(Settings.GameLanguage language)
+    public static String getFontDefaultPath(Settings.GameLanguage language)
     {
         switch (language)
         {
@@ -289,7 +289,7 @@ public class EUIFontHelper
         }
     }
 
-    public static String GetFontBoldPath(Settings.GameLanguage language)
+    public static String getFontBoldPath(Settings.GameLanguage language)
     {
         switch (language)
         {
@@ -319,43 +319,43 @@ public class EUIFontHelper
         }
     }
 
-    public static FileHandle GetDefaultFontFile(Settings.GameLanguage language)
+    public static FileHandle getDefaultFontFile(Settings.GameLanguage language)
     {
-        return Gdx.files.internal(GetFontDefaultPath(language));
+        return Gdx.files.internal(getFontDefaultPath(language));
     }
 
-    public static FileHandle GetBoldFontFile(Settings.GameLanguage language)
+    public static FileHandle getBoldFontFile(Settings.GameLanguage language)
     {
-        return Gdx.files.internal(GetFontBoldPath(language));
+        return Gdx.files.internal(getFontBoldPath(language));
     }
 
-    public static FileHandle GetCustomDefaultFontFile(Settings.GameLanguage language)
+    public static FileHandle getCustomDefaultFontFile(Settings.GameLanguage language)
     {
-        return GetCustomFont(EUIConfiguration.CardDescFont, GetDefaultFontFile(language));
+        return getCustomFont(EUIConfiguration.CardDescFont, getDefaultFontFile(language));
     }
 
-    public static FileHandle GetCustomBoldFontFile(Settings.GameLanguage language)
+    public static FileHandle getCustomBoldFontFile(Settings.GameLanguage language)
     {
-        if (EUIConfiguration.UseSeparateFonts.Get())
+        if (EUIConfiguration.UseSeparateFonts.get())
         {
-            return GetCustomFont(EUIConfiguration.TipTitleFont, GetBoldFontFile(language));
+            return getCustomFont(EUIConfiguration.TipTitleFont, getBoldFontFile(language));
         }
-        return GetCustomFont(EUIConfiguration.CardDescFont, GetBoldFontFile(language));
+        return getCustomFont(EUIConfiguration.CardDescFont, getBoldFontFile(language));
     }
 
-    public static BitmapFont CreateDefaultFont(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
-        FileHandle file = GetCustomDefaultFontFile(language);
-        BitmapFont preppedFont = PrepFont(file, size, isLinearFiltering);
-        return PrepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
+    public static BitmapFont createDefaultFont(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
+        FileHandle file = getCustomDefaultFontFile(language);
+        BitmapFont preppedFont = prepFont(file, size, isLinearFiltering);
+        return prepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
     }
 
-    public static BitmapFont CreateBoldFont(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
-        FileHandle file = GetCustomBoldFontFile(language);
-        BitmapFont preppedFont = PrepFont(file, size, isLinearFiltering);
-        return PrepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
+    public static BitmapFont createBoldFont(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
+        FileHandle file = getCustomBoldFontFile(language);
+        BitmapFont preppedFont = prepFont(file, size, isLinearFiltering);
+        return prepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
     }
 
-    public static boolean HasGlyph(BitmapFont font, char c)
+    public static boolean hasGlyph(BitmapFont font, char c)
     {
         return font.getData().hasGlyph(c);
     }

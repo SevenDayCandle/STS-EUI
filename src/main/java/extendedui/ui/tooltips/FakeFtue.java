@@ -19,14 +19,14 @@ public class FakeFtue extends FtueTip {
 
     public FakeFtue(EUITutorial tutorial) {
         this.tutorial = tutorial;
-        OpenScreen();
+        openScreen();
     }
 
     public FakeFtue(String title, String... descriptions) {
-        this(new EUITutorial(new AdvancedHitbox(Settings.WIDTH / 2.0F - WIDTH / 2, Settings.HEIGHT / 2.0F - HEIGHT / 2, WIDTH, HEIGHT), EUIRM.Images.Panel_Large.Texture(), title, Arrays.asList(descriptions)));
+        this(new EUITutorial(new AdvancedHitbox(Settings.WIDTH / 2.0F - WIDTH / 2, Settings.HEIGHT / 2.0F - HEIGHT / 2, WIDTH, HEIGHT), EUIRM.Images.Panel_Large.texture(), title, Arrays.asList(descriptions)));
     }
 
-    public void OpenScreen() {
+    public void openScreen() {
         AbstractDungeon.player.releaseCard();
         if (AbstractDungeon.isScreenUp) {
             AbstractDungeon.dynamicBanner.hide();
@@ -41,7 +41,7 @@ public class FakeFtue extends FtueTip {
     }
 
     public void update() {
-        tutorial.Update();
+        tutorial.updateImpl();
         AbstractDungeon.overlayMenu.cancelButton.update();
         if (AbstractDungeon.overlayMenu.cancelButton.hb.clicked) {
             AbstractDungeon.overlayMenu.cancelButton.hide();
@@ -50,6 +50,6 @@ public class FakeFtue extends FtueTip {
     }
 
     public void render(SpriteBatch sb) {
-        tutorial.Render(sb);
+        tutorial.renderImpl(sb);
     }
 }

@@ -20,14 +20,14 @@ public class TupleT2<V1, V2>
         this.V2 = v2;
     }
 
-    public TupleT2<V1, V2> Set(V1 v1, V2 v2)
+    public TupleT2<V1, V2> set(V1 v1, V2 v2)
     {
         this.V1 = v1;
         this.V2 = v2;
         return this;
     }
 
-    public TupleT2<V1, V2> Clear()
+    public TupleT2<V1, V2> clear()
     {
         this.V1 = null;
         this.V2 = null;

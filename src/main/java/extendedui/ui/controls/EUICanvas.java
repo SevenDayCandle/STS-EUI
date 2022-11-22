@@ -24,17 +24,17 @@ public abstract class EUICanvas extends EUIBase
 
 
     public EUICanvas() {
-        this.scrollBar = new EUIVerticalScrollBar(new AdvancedHitbox(ScreenW(0.03f), ScreenH(0.7f)))
-                .SetOnScroll(this::OnScroll);
+        this.scrollBar = new EUIVerticalScrollBar(new AdvancedHitbox(screenW(0.03f), screenH(0.7f)))
+                .setOnScroll(this::onScroll);
     }
 
-    public EUICanvas SetScrollBounds(float lowerScrollBound, float upperScrollBound) {
+    public EUICanvas setScrollBounds(float lowerScrollBound, float upperScrollBound) {
         this.lowerScrollBound = lowerScrollBound;
         this.upperScrollBound = Math.max(lowerScrollBound, upperScrollBound);
         return this;
     }
 
-    public EUICanvas ShowScrollbar(boolean showScrollbar)
+    public EUICanvas showScrollbar(boolean showScrollbar)
     {
         this.autoShowScrollbar = showScrollbar;
 
@@ -42,37 +42,37 @@ public abstract class EUICanvas extends EUIBase
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        if (!EUI.DoesActiveElementExist()) {
-            if (ShouldShowScrollbar())
+        if (!EUI.doesActiveElementExist()) {
+            if (shouldShowScrollbar())
             {
-                scrollBar.Update();
-                UpdateScrolling(scrollBar.isDragging);
+                scrollBar.updateImpl();
+                updateScrolling(scrollBar.isDragging);
             }
             else
             {
-                UpdateScrolling(false);
+                updateScrolling(false);
             }
         }
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        if (ShouldShowScrollbar())
+        if (shouldShowScrollbar())
         {
-            scrollBar.Render(sb);
+            scrollBar.renderImpl(sb);
         }
     }
 
-    protected void UpdateScrolling(boolean isDraggingScrollBar)
+    protected void updateScrolling(boolean isDraggingScrollBar)
     {
         if (!isDraggingScrollBar)
         {
             if (draggingScreen)
             {
-                if (InputHelper.isMouseDown && EUI.TryDragging())
+                if (InputHelper.isMouseDown && EUI.tryDragging())
                 {
                     scrollDelta = InputHelper.mY - scrollStart;
                 }
@@ -92,7 +92,7 @@ public abstract class EUICanvas extends EUIBase
                     scrollDelta -= Settings.SCROLL_SPEED;
                 }
 
-                if (canDragScreen && InputHelper.justClickedLeft && EUI.TryDragging())
+                if (canDragScreen && InputHelper.justClickedLeft && EUI.tryDragging())
                 {
                     draggingScreen = true;
                     scrollStart = InputHelper.mY - scrollDelta;
@@ -109,29 +109,29 @@ public abstract class EUICanvas extends EUIBase
             scrollDelta = instantSnap ? upperScrollBound : MathHelper.scrollSnapLerpSpeed(scrollDelta, upperScrollBound);
         }
 
-        scrollBar.Scroll(MathHelper.percentFromValueBetween(lowerScrollBound, upperScrollBound, scrollDelta), false);
+        scrollBar.scroll(MathHelper.percentFromValueBetween(lowerScrollBound, upperScrollBound, scrollDelta), false);
     }
 
-    public float GetScrollDelta()
+    public float getScrollDelta()
     {
         return scrollDelta;
     }
 
-    public void MoveToTop() {
-        scrollBar.Scroll(0, true);
+    public void moveToTop() {
+        scrollBar.scroll(0, true);
     }
 
-    public boolean IsHovered() {return scrollBar.hb.hovered;}
+    public boolean isHovered() {return scrollBar.hb.hovered;}
 
-    protected void OnScroll(float newPercent)
+    protected void onScroll(float newPercent)
     {
-        if (!EUI.DoesActiveElementExist())
+        if (!EUI.doesActiveElementExist())
         {
             scrollDelta = MathHelper.valueFromPercentBetween(lowerScrollBound, upperScrollBound, newPercent);
         }
     }
 
-    protected boolean ShouldShowScrollbar()
+    protected boolean shouldShowScrollbar()
     {
         return autoShowScrollbar && upperScrollBound > SCROLL_BAR_THRESHOLD;
     }

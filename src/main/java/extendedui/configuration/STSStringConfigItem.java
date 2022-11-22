@@ -11,11 +11,11 @@ public class STSStringConfigItem extends STSConfigItem<String>
         super(Key, defaultValue);
     }
 
-    protected String ParseValue(String raw) {
+    protected String parseValue(String raw) {
         return raw != null ? raw : DefaultValue;
     }
 
-    protected String Serialize() {
+    protected String serialize() {
         return Value;
     }
 }

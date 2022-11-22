@@ -7,8 +7,8 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButtonListener;
 import extendedui.EUI;
-import extendedui.EUIUtils;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.ui.EUIBase;
 import extendedui.ui.controls.EUIRelicGrid;
 import org.apache.commons.lang3.StringUtils;
@@ -18,7 +18,7 @@ import java.util.ArrayList;
 public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
 {
     public static RelicSortHeader Instance;
-    public static final float START_X = ScreenW(0.5f) - CardLibSortHeader.SPACE_X * 1.45f;
+    public static final float START_X = screenW(0.5f) - CardLibSortHeader.SPACE_X * 1.45f;
 
     private SortHeaderButton lastUsedButton;
     protected boolean isAscending;
@@ -47,25 +47,25 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         this.buttons = new SortHeaderButton[]{this.rarityButton, this.nameButton, this.colorButton, this.seenButton};
     }
 
-    public RelicSortHeader SetBaseY(float value)
+    public RelicSortHeader setBaseY(float value)
     {
         this.baseY = value;
         return this;
     }
 
-    public RelicSortHeader SnapToGroup(boolean value)
+    public RelicSortHeader snapToGroup(boolean value)
     {
         this.snapToGroup = value;
         return this;
     }
 
-    public RelicSortHeader SetGrid(EUIRelicGrid grid) {
-        EUI.RelicFilters.Clear(false, true);
+    public RelicSortHeader setGrid(EUIRelicGrid grid) {
+        EUI.RelicFilters.clear(false, true);
         this.grid = grid;
         this.originalGroup = new ArrayList<>(grid.relicGroup);
 
         if (RelicKeywordFilters.CustomModule != null) {
-            RelicKeywordFilters.CustomModule.ProcessGroup(EUIUtils.Map(grid.relicGroup, r -> r.relic));
+            RelicKeywordFilters.CustomModule.processGroup(EUIUtils.map(grid.relicGroup, r -> r.relic));
         }
         for (SortHeaderButton button : buttons)
         {
@@ -76,7 +76,7 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
         float scrolledY = snapToGroup && this.grid != null && this.grid.relicGroup.size() > 0 ? this.grid.relicGroup.get(0).relic.currentY + 230.0F * Settings.yScale : baseY;
         for (SortHeaderButton button : buttons)
@@ -87,7 +87,7 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
         for (SortHeaderButton button : buttons)
         {
@@ -114,13 +114,13 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
             }
             else if (button == this.seenButton)
             {
-                this.grid.relicGroup.sort((a, b) -> SortBySeen(a, b) * (isAscending ? 1 : -1));
+                this.grid.relicGroup.sort((a, b) -> sortBySeen(a, b) * (isAscending ? 1 : -1));
             }
             else
             {
                 this.grid.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relicColor.ordinal() - b.relicColor.ordinal()) * (isAscending ? 1 : -1));
                 this.grid.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relic.tier.ordinal() - b.relic.tier.ordinal()) * (isAscending ? 1 : -1));
-                this.grid.relicGroup.sort((a, b) -> SortBySeen(a, b) * (isAscending ? 1 : -1));
+                this.grid.relicGroup.sort((a, b) -> sortBySeen(a, b) * (isAscending ? 1 : -1));
             }
         }
         for (SortHeaderButton eB : buttons)
@@ -129,30 +129,30 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         }
     }
 
-    public void UpdateForFilters() {
+    public void updateForFilters() {
         if (this.grid != null) {
-            if (EUI.RelicFilters.AreFiltersEmpty()) {
+            if (EUI.RelicFilters.areFiltersEmpty()) {
                 this.grid.relicGroup = originalGroup;
             }
             else {
-                this.grid.relicGroup = EUI.RelicFilters.ApplyInfoFilters(originalGroup);
+                this.grid.relicGroup = EUI.RelicFilters.applyInfoFilters(originalGroup);
             }
             didChangeOrder(lastUsedButton, isAscending);
-            EUI.RelicFilters.Refresh(EUIUtils.Map(grid.relicGroup, group -> group.relic));
+            EUI.RelicFilters.refresh(EUIUtils.map(grid.relicGroup, group -> group.relic));
         }
     }
 
-    public ArrayList<AbstractRelic> GetRelics()
+    public ArrayList<AbstractRelic> getRelics()
     {
-        return EUIUtils.Map(grid.relicGroup, r -> r.relic);
+        return EUIUtils.map(grid.relicGroup, r -> r.relic);
     }
 
-    public ArrayList<AbstractRelic> GetOriginalRelics()
+    public ArrayList<AbstractRelic> getOriginalRelics()
     {
-        return EUIUtils.Map(originalGroup, r -> r.relic);
+        return EUIUtils.map(originalGroup, r -> r.relic);
     }
 
-    protected int SortBySeen(EUIRelicGrid.RelicInfo a, EUIRelicGrid.RelicInfo b)
+    protected int sortBySeen(EUIRelicGrid.RelicInfo a, EUIRelicGrid.RelicInfo b)
     {
         int aValue = a == null || a.locked ? 2 : a.relic.isSeen ? 1 : 0;
         int bValue = b == null || b.locked ? 2 : b.relic.isSeen ? 1 : 0;

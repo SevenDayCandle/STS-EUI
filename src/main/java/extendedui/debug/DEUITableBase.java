@@ -26,7 +26,7 @@ public abstract class DEUITableBase extends DEUIBaseT0
         this.flags = flags;
     }
 
-    public DEUITableBase SetSize(float outerSizeX, float outerSizeY, float innerWidth)
+    public DEUITableBase setSize(float outerSizeX, float outerSizeY, float innerWidth)
     {
         this.outerSizeX = outerSizeX;
         this.outerSizeY = outerSizeY;
@@ -34,24 +34,24 @@ public abstract class DEUITableBase extends DEUIBaseT0
         return this;
     }
 
-    public DEUITableBase SetColumnAction(ActionT0 columnAction)
+    public DEUITableBase setColumnAction(ActionT0 columnAction)
     {
         this.columnAction = columnAction;
         return this;
     }
 
-    public void Render()
+    public void render()
     {
         if (ImGui.beginTable(ID, columns, flags, outerSizeX, outerSizeY, innerWidth))
         {
             if (this.columnAction != null)
             {
-                columnAction.Invoke();
+                columnAction.invoke();
             }
-            OnRender();
+            onRender();
             ImGui.endTable();
         }
     }
 
-    public abstract void OnRender();
+    public abstract void onRender();
 }

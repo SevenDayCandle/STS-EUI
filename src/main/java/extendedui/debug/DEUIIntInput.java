@@ -36,12 +36,12 @@ public class DEUIIntInput extends DEUIBaseT0
         this.stepFast = stepFast;
     }
 
-    public int Get()
+    public int get()
     {
         return value.get();
     }
 
-    public void Render()
+    public void render()
     {
         ImGui.inputInt(ID, value, step, stepFast);
         int result = value.get();

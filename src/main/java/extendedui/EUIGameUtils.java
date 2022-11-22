@@ -33,12 +33,12 @@ public class EUIGameUtils {
     private static final HashMap<String, AbstractCard.CardColor> RelicColors = new HashMap<>();
     public static final HashMap<AbstractCard.CardColor, String> CustomColorNames = new HashMap<>();
 
-    public static void AddRelicColor(AbstractRelic relic, AbstractCard.CardColor color)
+    public static void addRelicColor(AbstractRelic relic, AbstractCard.CardColor color)
     {
         RelicColors.put(relic.relicId, color);
     }
 
-    public static boolean CanShowUpgrades(boolean isLibrary)
+    public static boolean canShowUpgrades(boolean isLibrary)
     {
         return SingleCardViewPopup.isViewingUpgrade && (AbstractDungeon.player == null || isLibrary
                 || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD
@@ -46,7 +46,7 @@ public class EUIGameUtils {
                 || AbstractDungeon.screen == EUI_SCREEN);
     }
 
-    public static void CopyVisualProperties(AbstractCard copy, AbstractCard original) {
+    public static void copyVisualProperties(AbstractCard copy, AbstractCard original) {
         copy.current_y = original.current_y;
         copy.current_x = original.current_x;
         copy.target_x = original.target_x;
@@ -59,7 +59,7 @@ public class EUIGameUtils {
         copy.targetAngle = original.targetAngle;
     }
 
-    public static Color GetColorColor(AbstractCard.CardColor co){
+    public static Color getColorColor(AbstractCard.CardColor co){
         switch (co) {
             case RED:
                 return new Color(0.5F, 0.1F, 0.1F, 1.0F);
@@ -78,11 +78,11 @@ public class EUIGameUtils {
         }
     }
 
-    public static boolean IsObjectFromMod(Object o, ModInfo mod) {
-        return GetModInfo(o) == mod;
+    public static boolean isObjectFromMod(Object o, ModInfo mod) {
+        return getModInfo(o) == mod;
     }
 
-    public static ArrayList<String> GetAllRelicIDs() {
+    public static ArrayList<String> getAllRelicIDs() {
         ArrayList<String> result = new ArrayList<>();
         result.addAll(AbstractDungeon.commonRelicPool);
         result.addAll(AbstractDungeon.uncommonRelicPool);
@@ -92,7 +92,7 @@ public class EUIGameUtils {
         return result;
     }
 
-    public static ArrayList<CardGroup> GetSourceCardPools() {
+    public static ArrayList<CardGroup> getSourceCardPools() {
         ArrayList<CardGroup> result = new ArrayList<>();
         result.add(AbstractDungeon.srcColorlessCardPool);
         result.add(AbstractDungeon.srcCommonCardPool);
@@ -102,11 +102,11 @@ public class EUIGameUtils {
         return result;
     }
 
-    public static ModInfo GetModInfo(Object o) {
-        return GetModInfo(o.getClass());
+    public static ModInfo getModInfo(Object o) {
+        return getModInfo(o.getClass());
     }
 
-    public static ModInfo GetModInfo(Class<?> objectClass) {
+    public static ModInfo getModInfo(Class<?> objectClass) {
         CodeSource source = objectClass.getProtectionDomain().getCodeSource();
         ModInfo info = ModInfoMapping.get(source);
         if (info != null) {
@@ -128,7 +128,7 @@ public class EUIGameUtils {
         return null;
     }
 
-    public static String GetColorName(AbstractCard.CardColor co) {
+    public static String getColorName(AbstractCard.CardColor co) {
         switch (co) {
             case RED:
                 return CardLibraryScreen.TEXT[1];
@@ -143,28 +143,28 @@ public class EUIGameUtils {
             case COLORLESS:
                 return CardLibraryScreen.TEXT[4];
             default:
-                return CustomColorNames.getOrDefault(co, EUIUtils.Capitalize(String.valueOf(co)));
+                return CustomColorNames.getOrDefault(co, EUIUtils.capitalize(String.valueOf(co)));
         }
     }
 
-    public static AbstractCard.CardColor GetRelicColor(String relicID) {
+    public static AbstractCard.CardColor getRelicColor(String relicID) {
         return RelicColors.getOrDefault(relicID, AbstractCard.CardColor.COLORLESS);
     }
 
-    public static boolean InBattle() {
+    public static boolean inBattle() {
         AbstractRoom room = AbstractDungeon.currMapNode == null ? null : AbstractDungeon.currMapNode.getRoom();
         return room != null && AbstractDungeon.player != null && !room.isBattleOver && !AbstractDungeon.player.isDead && room.phase == AbstractRoom.RoomPhase.COMBAT;
     }
 
-    public static boolean InGame() {
+    public static boolean inGame() {
         return CardCrawlGame.GameMode.GAMEPLAY.equals(CardCrawlGame.mode);
     }
 
-    public static boolean IsPlayerClass(AbstractPlayer.PlayerClass playerClass) {
+    public static boolean isPlayerClass(AbstractPlayer.PlayerClass playerClass) {
         return AbstractDungeon.player != null && AbstractDungeon.player.chosenClass == playerClass;
     }
 
-    public static void ScanForTips(String rawDesc, ArrayList<EUITooltip> tips) {
+    public static void scanForTips(String rawDesc, ArrayList<EUITooltip> tips) {
         final Scanner desc = new Scanner(rawDesc);
         String s;
         boolean alreadyExists;
@@ -194,7 +194,7 @@ public class EUIGameUtils {
             s = s.trim();
             s = s.toLowerCase();
 
-            EUITooltip tip = EUITooltip.FindByName(s);
+            EUITooltip tip = EUITooltip.findByName(s);
             if (tip != null && !tips.contains(tip))
             {
                 tips.add(tip);
@@ -203,22 +203,22 @@ public class EUIGameUtils {
         while (true);
     }
 
-    public static float Scale(float value)
+    public static float scale(float value)
     {
         return Settings.scale * value;
     }
 
-    public static float ScreenW(float value)
+    public static float screenW(float value)
     {
         return Settings.WIDTH * value;
     }
 
-    public static float ScreenH(float value)
+    public static float screenH(float value)
     {
         return Settings.HEIGHT * value;
     }
 
-    public static String TextForRarity(AbstractCard.CardRarity type) {
+    public static String textForRarity(AbstractCard.CardRarity type) {
         switch (type)
         {
             case BASIC:
@@ -244,7 +244,7 @@ public class EUIGameUtils {
         }
     }
 
-    public static String TextForRelicTier(AbstractRelic.RelicTier type) {
+    public static String textForRelicTier(AbstractRelic.RelicTier type) {
         switch (type)
         {
             case STARTER:
@@ -276,7 +276,7 @@ public class EUIGameUtils {
         }
     }
 
-    public static String TextForType(AbstractCard.CardType type) {
+    public static String textForType(AbstractCard.CardType type) {
         switch (type)
         {
             case ATTACK:

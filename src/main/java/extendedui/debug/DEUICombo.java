@@ -22,12 +22,12 @@ public class DEUICombo<T> extends DEUIBaseT0
         }
     }
 
-    public T Get()
+    public T get()
     {
         return selected;
     }
 
-    public void Set(T item)
+    public void set(T item)
     {
         if (items.contains(item))
         {
@@ -35,12 +35,12 @@ public class DEUICombo<T> extends DEUIBaseT0
         }
     }
 
-    public void Render()
+    public void render()
     {
-        if (ImGui.beginCombo(ID, AsLabel())) {
+        if (ImGui.beginCombo(ID, asLabel())) {
             for (T item : items) {
                 boolean isSelected = item.equals(selected);
-                if (ImGui.selectable(stringFunc.Invoke(item), isSelected)) {
+                if (ImGui.selectable(stringFunc.invoke(item), isSelected)) {
                     selected = item;
                 }
 
@@ -52,7 +52,7 @@ public class DEUICombo<T> extends DEUIBaseT0
         }
     }
 
-    protected String AsLabel()
+    protected String asLabel()
     {
         if (selected == null)
         {
@@ -65,6 +65,6 @@ public class DEUICombo<T> extends DEUIBaseT0
                 return "##null";
             }
         }
-        return stringFunc.Invoke(selected);
+        return stringFunc.invoke(selected);
     }
 }

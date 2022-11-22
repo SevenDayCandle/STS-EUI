@@ -39,73 +39,73 @@ public class EUIFileSelector extends EUIHoverable
 
     public EUIFileSelector(AdvancedHitbox hb)
     {
-        this(hb, EUIRM.Images.Panel.Texture());
+        this(hb, EUIRM.Images.Panel.texture());
     }
 
     public EUIFileSelector(AdvancedHitbox hb, Texture texture)
     {
         super(hb);
-        this.header = new EUILabel(EUIFontHelper.CardTitleFont_Small, hb).SetAlignment(0.5f,0.0f,false);
+        this.header = new EUILabel(EUIFontHelper.CardTitleFont_Small, hb).setAlignment(0.5f,0.0f,false);
         this.filePath = new EUITextBox(texture, new RelativeHitbox(hb, hb.width, hb.height, hb.width * (1.5f + headerSpacing), hb.height * 0.5f, false));
-        this.selectButton = new EUIButton(EUIRM.Images.FileSelectButton.Texture(), new RelativeHitbox(hb, hb.height, hb.height, hb.width * (2.1f + headerSpacing), hb.height * 0.5f, false)).SetOnClick(this::ChooseFile);
-        this.clearButton = new EUIButton(EUIRM.Images.X.Texture(), new RelativeHitbox(selectButton.hb, hb.height, hb.height, selectButton.hb.width * 1.5f, hb.height * 0.5f,  false)).SetOnClick(() -> this.SelectFile(null, true));
+        this.selectButton = new EUIButton(EUIRM.Images.FileSelectButton.texture(), new RelativeHitbox(hb, hb.height, hb.height, hb.width * (2.1f + headerSpacing), hb.height * 0.5f, false)).setOnClick(this::chooseFile);
+        this.clearButton = new EUIButton(EUIRM.Images.X.texture(), new RelativeHitbox(selectButton.hb, hb.height, hb.height, selectButton.hb.width * 1.5f, hb.height * 0.5f,  false)).setOnClick(() -> this.selectFile(null, true));
     }
 
-    public EUIFileSelector SetHeader(BitmapFont font, float fontScale, Color textColor, String text) {
-        return SetHeader(font,fontScale,textColor,text,false);
+    public EUIFileSelector setHeader(BitmapFont font, float fontScale, Color textColor, String text) {
+        return setHeader(font,fontScale,textColor,text,false);
     }
 
-    public EUIFileSelector SetHeader(BitmapFont font, float fontScale, Color textColor, String text, boolean smartText) {
-        this.header.SetFont(font, fontScale).SetColor(textColor).SetText(text).SetSmartText(smartText).SetActive(true);
+    public EUIFileSelector setHeader(BitmapFont font, float fontScale, Color textColor, String text, boolean smartText) {
+        this.header.setFont(font, fontScale).setColor(textColor).setLabel(text).setSmartText(smartText).setActive(true);
         return this;
     }
 
-    public EUIFileSelector SetHeaderSpacing(float headerSpacing) {
+    public EUIFileSelector setHeaderSpacing(float headerSpacing) {
         this.headerSpacing = headerSpacing;
         this.filePath.hb = new RelativeHitbox(hb, hb.width, hb.height, hb.width * (1 + headerSpacing), 0, false);
         return this;
     }
 
-    public EUIFileSelector SetHeaderText(String text) {
-        this.header.SetText(text);
+    public EUIFileSelector setHeaderText(String text) {
+        this.header.setLabel(text);
         return this;
     }
 
-    public EUIFileSelector SetOnUpdate(ActionT1<File> onUpdate) {
+    public EUIFileSelector setOnUpdate(ActionT1<File> onUpdate) {
         this.onUpdate = onUpdate;
         return this;
     }
 
-    public EUIFileSelector SetShowFullPath(boolean showFullPath) {
+    public EUIFileSelector setShowFullPath(boolean showFullPath) {
         this.showFullPath = showFullPath;
         return this;
     }
 
-    public EUIFileSelector SetFileFilters(String... filters) {
-        this.extensionFilter = new FileNameExtensionFilter(EUIUtils.JoinStrings(", ", EUIUtils.Map(filters, f -> "*." + f)), filters);
+    public EUIFileSelector setFileFilters(String... filters) {
+        this.extensionFilter = new FileNameExtensionFilter(EUIUtils.joinStrings(", ", EUIUtils.map(filters, f -> "*." + f)), filters);
         return this;
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        super.Update();
-        header.Update();
-        filePath.Update();
-        selectButton.Update();
-        clearButton.Update();
+        super.updateImpl();
+        header.updateImpl();
+        filePath.updateImpl();
+        selectButton.updateImpl();
+        clearButton.updateImpl();
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        header.Render(sb);
-        filePath.Render(sb);
-        selectButton.Render(sb);
-        clearButton.Render(sb);
+        header.renderImpl(sb);
+        filePath.renderImpl(sb);
+        selectButton.renderImpl(sb);
+        clearButton.renderImpl(sb);
     }
 
-    protected void ChooseFile()
+    protected void chooseFile()
     {
         try
         {
@@ -168,40 +168,40 @@ public class EUIFileSelector extends EUIHoverable
 
             if (result == JFileChooser.APPROVE_OPTION)
             {
-                SelectFile(fc.getSelectedFile(), true);
+                selectFile(fc.getSelectedFile(), true);
             }
         }
         catch (Exception e)
         {
             e.printStackTrace();
-            EUIUtils.LogError(this, "Failed to select file");
+            EUIUtils.logError(this, "Failed to select file");
         }
     }
 
-    protected void SelectFile(File file, boolean shouldInvoke)
+    protected void selectFile(File file, boolean shouldInvoke)
     {
         currentFile = file;
         if (currentFile != null)
         {
             if (showFullPath)
             {
-                filePath.SetText(currentFile.getAbsolutePath());
+                filePath.setLabel(currentFile.getAbsolutePath());
             }
             else
             {
-                filePath.SetText(currentFile.getName());
-                filePath.tooltip = new EUITooltip("", currentFile.getAbsolutePath()).RenderBackground(false);
+                filePath.setLabel(currentFile.getName());
+                filePath.tooltip = new EUITooltip("", currentFile.getAbsolutePath()).renderBackground(false);
             }
         }
         else
         {
-            filePath.SetText("");
+            filePath.setLabel("");
             filePath.tooltip = null;
         }
 
         if (shouldInvoke && onUpdate != null)
         {
-            onUpdate.Invoke(currentFile);
+            onUpdate.invoke(currentFile);
         }
     }
 }

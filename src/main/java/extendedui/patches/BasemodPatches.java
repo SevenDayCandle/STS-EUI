@@ -21,13 +21,13 @@ public class BasemodPatches
     public static class BaseMod_AddKeyword
     {
         @SpirePostfixPatch
-        public static void Postfix(String modID, String proper, String[] names, String description)
+        public static void postfix(String modID, String proper, String[] names, String description)
         {
             String title = BaseMod.getKeywordUnique(names[0]);
             if (title == null) {
                 title = names[0];
             }
-            EUI.TryRegisterTooltip(names[0], title, description, names);
+            EUI.tryRegisterTooltip(names[0], title, description, names);
         }
     }
 
@@ -37,24 +37,24 @@ public class BasemodPatches
     public static class BaseMod_AddRelic
     {
         @SpirePostfixPatch
-        public static void Postfix(AbstractRelic relic, RelicType type)
+        public static void postfix(AbstractRelic relic, RelicType type)
         {
             switch (type)
             {
                 case RED:
-                    EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.RED);
+                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.RED);
                     return;
                 case GREEN:
-                    EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.GREEN);
+                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.GREEN);
                     return;
                 case BLUE:
-                    EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.BLUE);
+                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.BLUE);
                     return;
                 case PURPLE:
-                    EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.PURPLE);
+                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.PURPLE);
                     return;
                 default:
-                    EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.COLORLESS);
+                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.COLORLESS);
             }
         }
     }
@@ -65,9 +65,9 @@ public class BasemodPatches
     public static class BaseMod_AddRelicToCustomPool
     {
         @SpirePostfixPatch
-        public static void Postfix(AbstractRelic relic, AbstractCard.CardColor color)
+        public static void postfix(AbstractRelic relic, AbstractCard.CardColor color)
         {
-            EUIGameUtils.AddRelicColor(relic, color);
+            EUIGameUtils.addRelicColor(relic, color);
         }
     }
 
@@ -77,9 +77,9 @@ public class BasemodPatches
     public static class BaseMod_RegisterModBadge
     {
         @SpirePostfixPatch
-        public static void Postfix(Texture t, String name, String author, String desc, ModPanel settingsPanel)
+        public static void postfix(Texture t, String name, String author, String desc, ModPanel settingsPanel)
         {
-            ModSettingsScreen.AddModList(new ModSettingsScreen.Category(name), settingsPanel);
+            ModSettingsScreen.addModList(new ModSettingsScreen.Category(name), settingsPanel);
         }
     }
 }

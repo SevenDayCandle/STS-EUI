@@ -13,10 +13,10 @@ public class EnergyPanelPatches
     public static class EnergyPanel_Render
     {
         @SpirePostfixPatch
-        public static void Postfix(EnergyPanel __instance, SpriteBatch sb)
+        public static void postfix(EnergyPanel __instance, SpriteBatch sb)
         {
             for (EUIBase s : EUI.BattleSubscribers) {
-                s.TryRender(sb);
+                s.tryRender(sb);
             }
         }
     }

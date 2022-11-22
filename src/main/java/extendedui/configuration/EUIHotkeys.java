@@ -11,10 +11,10 @@ public class EUIHotkeys
 
     public static final HashMap<Integer, Integer> EQUIVALENT_KEYS = new HashMap<>();
 
-    private static final String KEYMAP_CYCLE = EUIConfiguration.GetFullKey("Cycle");
-    private static final String KEYMAP_OPEN_CARD_POOL = EUIConfiguration.GetFullKey("OpenCardPool");
-    private static final String KEYMAP_OPEN_RELIC_POOL = EUIConfiguration.GetFullKey("OpenRelicPool");
-    private static final String KEYMAP_TOGGLE_FILTERS = EUIConfiguration.GetFullKey("ToggleFilters");
+    private static final String KEYMAP_CYCLE = EUIConfiguration.getFullKey("Cycle");
+    private static final String KEYMAP_OPEN_CARD_POOL = EUIConfiguration.getFullKey("OpenCardPool");
+    private static final String KEYMAP_OPEN_RELIC_POOL = EUIConfiguration.getFullKey("OpenRelicPool");
+    private static final String KEYMAP_TOGGLE_FILTERS = EUIConfiguration.getFullKey("ToggleFilters");
 
     static {
         EQUIVALENT_KEYS.put(Input.Keys.ALT_LEFT, Input.Keys.ALT_RIGHT);

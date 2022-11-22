@@ -18,7 +18,7 @@ public class TopPanelPatches {
     public static class TopPanelPatches_Update
     {
         @SpirePrefixPatch
-        public static SpireReturn Method(TopPanel __instance)
+        public static SpireReturn method(TopPanel __instance)
         {
             // To simulate AbstractDungeon.screen == CurrentScreen.NO_INTERACT
             if (AbstractDungeon.screen == EUI_SCREEN && Settings.hideTopBar)
@@ -36,7 +36,7 @@ public class TopPanelPatches {
     public static class TopPanelPatches_UpdateRelics
     {
         @SpirePrefixPatch
-        public static SpireReturn Method(TopPanel __instance)
+        public static SpireReturn method(TopPanel __instance)
         {
             // To simulate AbstractDungeon.screen == CurrentScreen.NO_INTERACT
             if (AbstractDungeon.screen == EUI_SCREEN && Settings.hideRelics)
@@ -54,10 +54,10 @@ public class TopPanelPatches {
     public static class TopPanel_RenderPotionTips
     {
         @SpireInsertPatch(locator = Locator.class, localvars = {"p"})
-        public static SpireReturn<Void> Insert(TopPanel __instance, AbstractPotion p)
+        public static SpireReturn<Void> insert(TopPanel __instance, AbstractPotion p)
         {
             if (p instanceof TooltipProvider) {
-                EUITooltip.QueueTooltips((AbstractPotion & TooltipProvider) p);
+                EUITooltip.queueTooltips((AbstractPotion & TooltipProvider) p);
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();

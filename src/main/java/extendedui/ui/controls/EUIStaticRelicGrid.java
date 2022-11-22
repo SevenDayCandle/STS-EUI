@@ -25,7 +25,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
     }
 
     @Override
-    protected void UpdateRelics()
+    protected void updateRelics()
     {
         hoveredRelic = null;
 
@@ -36,7 +36,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
             RelicInfo relic = relicGroup.get(i);
             relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * draw_x) + (column * PAD);
             relic.relic.currentY = relic.relic.targetY = draw_top_y - (row * pad_y);
-            UpdateHoverLogic(relic, i);
+            updateHoverLogic(relic, i);
 
             column += 1;
             if (column >= rowSize)
@@ -47,7 +47,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
         }
     }
 
-    public void ForceUpdateRelicPositions()
+    public void forceUpdateRelicPositions()
     {
         int row = 0;
         int column = 0;
@@ -69,20 +69,20 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
     }
 
     @Override
-    protected void RenderRelics(SpriteBatch sb)
+    protected void renderRelics(SpriteBatch sb)
     {
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++)
         {
-            RenderRelic(sb, relicGroup.get(i));
+            renderRelic(sb, relicGroup.get(i));
         }
     }
 
     // TODO Remove, probably not necessary
     @Override
-    protected void UpdateScrolling(boolean isDraggingScrollBar)
+    protected void updateScrolling(boolean isDraggingScrollBar)
     {
-        super.UpdateScrolling(isDraggingScrollBar);
-        int rowCount = GetRowCount();
+        super.updateScrolling(isDraggingScrollBar);
+        int rowCount = getRowCount();
         int prevRow = currentRow;
         currentRow = (int) MathUtils.clamp(scrollBar.currentScrollPercent * rowCount, 0, rowCount - 1);
 
@@ -108,7 +108,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
 
     }
 
-    public int GetRowCount() {
+    public int getRowCount() {
         return (relicGroup.size() - 1) / rowSize;
     }
 

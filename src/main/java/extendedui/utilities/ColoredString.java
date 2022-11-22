@@ -38,21 +38,21 @@ public class ColoredString
         this("");
     }
 
-    public ColoredString SetText(String text)
+    public ColoredString setText(String text)
     {
         this.text = text;
 
         return this;
     }
 
-    public ColoredString SetText(Object text)
+    public ColoredString setText(Object text)
     {
         this.text = String.valueOf(text);
 
         return this;
     }
 
-    public ColoredString SetColor(Color color)
+    public ColoredString setColor(Color color)
     {
         this.color = color.cpy();
 

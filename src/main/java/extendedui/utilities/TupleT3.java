@@ -22,7 +22,7 @@ public class TupleT3<V1, V2, V3>
         this.V3 = v3;
     }
 
-    public TupleT3<V1, V2, V3> Set(V1 v1, V2 v2, V3 v3)
+    public TupleT3<V1, V2, V3> set(V1 v1, V2 v2, V3 v3)
     {
         this.V1 = v1;
         this.V2 = v2;
@@ -30,7 +30,7 @@ public class TupleT3<V1, V2, V3>
         return this;
     }
 
-    public TupleT3<V1, V2, V3> Clear()
+    public TupleT3<V1, V2, V3> clear()
     {
         this.V1 = null;
         this.V2 = null;

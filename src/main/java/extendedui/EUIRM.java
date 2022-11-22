@@ -20,47 +20,47 @@ public class EUIRM
     protected static final HashMap<String, Texture> internalTextures = new HashMap<>();
     private static final HashMap<String, Texture> localTextures = new HashMap<>();
 
-    public static void Initialize() {
+    public static void initialize() {
         Strings = new Strings();
     }
 
-    public static Texture GetTexture(String path) {
-        return GetTexture(path, false);
+    public static Texture getTexture(String path) {
+        return getTexture(path, false);
     }
 
-    public static Texture GetTexture(String path, boolean useMipMap) {
-        return GetTexture(path, true, false, false);
+    public static Texture getTexture(String path, boolean useMipMap) {
+        return getTexture(path, true, false, false);
     }
 
-    public static Texture GetTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {
+    public static Texture getTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {
         Texture texture = internalTextures.get(path);
         if (texture == null || refresh) {
-            texture = LoadTextureImpl(Gdx.files.internal(path), useMipMap, suppressError);
+            texture = loadTextureImpl(Gdx.files.internal(path), useMipMap, suppressError);
             internalTextures.put(path, texture);
         }
 
         return texture;
     }
 
-    public static Texture GetLocalTexture(String path) {
-        return GetLocalTexture(path, false);
+    public static Texture getLocalTexture(String path) {
+        return getLocalTexture(path, false);
     }
 
-    public static Texture GetLocalTexture(String path, boolean useMipMap) {
-        return GetLocalTexture(path, true, false, false);
+    public static Texture getLocalTexture(String path, boolean useMipMap) {
+        return getLocalTexture(path, true, false, false);
     }
 
-    public static Texture GetLocalTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {
+    public static Texture getLocalTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {
         Texture texture = localTextures.get(path);
         if (texture == null || refresh) {
-            texture = LoadTextureImpl(Gdx.files.local(path), useMipMap, suppressError);
+            texture = loadTextureImpl(Gdx.files.local(path), useMipMap, suppressError);
             localTextures.put(path, texture);
         }
 
         return texture;
     }
 
-    private static Texture LoadTextureImpl(FileHandle file, boolean useMipMap, boolean suppressError) {
+    private static Texture loadTextureImpl(FileHandle file, boolean useMipMap, boolean suppressError) {
         if (file.exists()) {
             Texture texture = new Texture(file, useMipMap);
             if (useMipMap) {
@@ -73,25 +73,25 @@ public class EUIRM
         else {
             if (suppressError)
             {
-                EUIUtils.LogInfoIfDebug(EUIRM.class, "Texture does not exist: " + file.path());
+                EUIUtils.logInfoIfDebug(EUIRM.class, "Texture does not exist: " + file.path());
             }
             else
             {
-                EUIUtils.LogError(EUIRM.class, "Texture does not exist: " + file.path());
+                EUIUtils.logError(EUIRM.class, "Texture does not exist: " + file.path());
             }
 
         }
         return null;
     }
 
-    public static String GetID(String suffix)
+    public static String getID(String suffix)
     {
         return ID + ":" + suffix;
     }
 
-    private static UIStrings GetUIStrings(String suffix)
+    private static UIStrings getUIStrings(String suffix)
     {
-        return CardCrawlGame.languagePack.getUIString(GetID(suffix));
+        return CardCrawlGame.languagePack.getUIString(getID(suffix));
     }
 
     public static class Images {
@@ -125,12 +125,12 @@ public class EUIRM
     }
 
     public static class Strings {
-        private final UIStrings StringsConfig = GetUIStrings("config");
-        private final UIStrings StringsGrammar = GetUIStrings("grammar");
-        private final UIStrings StringsHotkeys = GetUIStrings("hotkeys");
-        private final UIStrings StringsMisc = GetUIStrings("misc");
-        private final UIStrings StringsUIPool = GetUIStrings("ui_pool");
-        private final UIStrings StringsUIFilter = GetUIStrings("ui_filters");
+        private final UIStrings StringsConfig = getUIStrings("config");
+        private final UIStrings StringsGrammar = getUIStrings("grammar");
+        private final UIStrings StringsHotkeys = getUIStrings("hotkeys");
+        private final UIStrings StringsMisc = getUIStrings("misc");
+        private final UIStrings StringsUIPool = getUIStrings("ui_pool");
+        private final UIStrings StringsUIFilter = getUIStrings("ui_filters");
 
         public final String Config_UseVanillaCompendium = StringsConfig.TEXT[0];
         public final String Config_DisableEffekseer = StringsConfig.TEXT[1];
@@ -183,115 +183,115 @@ public class EUIRM
         public final String UI_Seen = StringsUIFilter.TEXT[13];
         public final String UI_Unseen = StringsUIFilter.TEXT[14];
 
-        public final String KeyToCycle(String keyName) {
-            return EUIUtils.Format(Misc_KeyToCycle, keyName);
+        public final String keyToCycle(String keyName) {
+            return EUIUtils.format(Misc_KeyToCycle, keyName);
         }
-        public final String SortBy(String item) {
-            return EUIUtils.Format(Misc_SortByCount, item);
+        public final String sortBy(String item) {
+            return EUIUtils.format(Misc_SortByCount, item);
         }
 
         // e.g. English: Red Card -> 0 1, Spanish: Carta roja -> 1 0
-        public final String AdjNoun(Object adj, Object noun) {
-            return EUIUtils.Format(StringsGrammar.TEXT[0], adj, noun);
+        public final String adjNoun(Object adj, Object noun) {
+            return EUIUtils.format(StringsGrammar.TEXT[0], adj, noun);
         }
 
         // e.g. English: Two Cards -> 0 1, Spanish: Dos cartas -> 0 1
-        public final String NumNoun(Object verb, Object noun) {
-            return EUIUtils.Format(StringsGrammar.TEXT[1], verb, noun);
+        public final String numNoun(Object verb, Object noun) {
+            return EUIUtils.format(StringsGrammar.TEXT[1], verb, noun);
         }
 
         // e.g. English: Discard Cards -> 0 1, Spanish: Descarta cartas -> 0 1
-        public final String VerbNoun(Object verb, Object noun) {
-            return EUIUtils.Format(StringsGrammar.TEXT[2], verb, noun);
+        public final String verbNoun(Object verb, Object noun) {
+            return EUIUtils.format(StringsGrammar.TEXT[2], verb, noun);
         }
 
         // e.g. English: Cards discarded -> 0 1, Spanish: Cartas descartada -> 0 1
-        public final String NounVerb(Object verb, Object noun) {
-            return EUIUtils.Format(StringsGrammar.TEXT[3], verb, noun);
+        public final String nounVerb(Object verb, Object noun) {
+            return EUIUtils.format(StringsGrammar.TEXT[3], verb, noun);
         }
 
         // e.g. English: Card #2 -> 0 1, Spanish: Carta #2 -> 0 1
-        public final String Generic2(Object noun, Object number) {
-            return EUIUtils.Format(StringsGrammar.TEXT[4], noun, number);
+        public final String generic2(Object noun, Object number) {
+            return EUIUtils.format(StringsGrammar.TEXT[4], noun, number);
         }
 
         // e.g. English: Two Red Cards -> 0 1 2, Spanish: Dos Cartas rojas -> 0 2 1
-        public final String NumAdjNoun(Object num, Object adj, Object noun) {
-            return EUIUtils.Format(StringsGrammar.TEXT[5], num, adj, noun);
+        public final String numAdjNoun(Object num, Object adj, Object noun) {
+            return EUIUtils.format(StringsGrammar.TEXT[5], num, adj, noun);
         }
 
         // e.g. English: Two Cards In Hand, Spanish: Dos cartas en la mano
-        public final String NumNounPlace(Object num, Object noun, Object place) {
-            return EUIUtils.Format(StringsGrammar.TEXT[6], num, noun, place);
+        public final String numNounPlace(Object num, Object noun, Object place) {
+            return EUIUtils.format(StringsGrammar.TEXT[6], num, noun, place);
         }
 
         // e.g. English: Discard Red Cards, Spanish: Descarta cartas rojas
-        public final String VerbAdjNoun(Object verb, Object adj, Object noun) {
-            return EUIUtils.Format(StringsGrammar.TEXT[7], verb, adj, noun);
+        public final String verbAdjNoun(Object verb, Object adj, Object noun) {
+            return EUIUtils.format(StringsGrammar.TEXT[7], verb, adj, noun);
         }
 
         // e.g. English: Discard Two Cards, Spanish: Descarta dos cartas
-        public final String VerbNumNoun(Object verb, Object num, Object noun) {
-            return EUIUtils.Format(StringsGrammar.TEXT[8], verb, num, noun);
+        public final String verbNumNoun(Object verb, Object num, Object noun) {
+            return EUIUtils.format(StringsGrammar.TEXT[8], verb, num, noun);
         }
 
         // e.g. English: Discard the Cards Recklessly -> 0 1 2, Spanish: Descarta imprudentemente las cartas -> 0 2 1
-        public final String VerbNounAdv(Object verb, Object adj, Object noun) {
-            return EUIUtils.Format(StringsGrammar.TEXT[9], verb, adj, noun);
+        public final String verbNounAdv(Object verb, Object adj, Object noun) {
+            return EUIUtils.format(StringsGrammar.TEXT[9], verb, adj, noun);
         }
 
         // e.g. English: Two Red Cards In Hand, Spanish: Dos cartas rojas en la mano
-        public final String NumAdjNounPlace(Object num, Object adj, Object noun, Object place) {
-            return EUIUtils.Format(StringsGrammar.TEXT[10], num, adj, noun, place);
+        public final String numAdjNounPlace(Object num, Object adj, Object noun, Object place) {
+            return EUIUtils.format(StringsGrammar.TEXT[10], num, adj, noun, place);
         }
 
         // e.g. English: Discard Two Cards In Hand, Spanish: Descarta dos cartas en la mano
-        public final String VerbNumNounPlace(Object num, Object adj, Object noun, Object place) {
-            return EUIUtils.Format(StringsGrammar.TEXT[11], num, adj, noun, place);
+        public final String verbNumNounPlace(Object num, Object adj, Object noun, Object place) {
+            return EUIUtils.format(StringsGrammar.TEXT[11], num, adj, noun, place);
         }
 
         // e.g. English: Discard Two Red Cards In Hand, Spanish: Descarta dos cartas rojas en la mano
-        public final String VerbNumAdjNounPlace(Object verb, Object num, Object adj, Object noun, Object place) {
-            return EUIUtils.Format(StringsGrammar.TEXT[12], verb, num, adj, noun, place);
+        public final String verbNumAdjNounPlace(Object verb, Object num, Object adj, Object noun, Object place) {
+            return EUIUtils.format(StringsGrammar.TEXT[12], verb, num, adj, noun, place);
         }
 
         // e.g. English: O1 and O2, Spanish: O1 y O2
-        public final String And(Object obj1, Object obj2) {return EUIUtils.Format(StringsGrammar.TEXT[13], obj1, obj2);}
+        public final String and(Object obj1, Object obj2) {return EUIUtils.format(StringsGrammar.TEXT[13], obj1, obj2);}
 
         // e.g. English: O1 or O2, Spanish: O1 o O2
-        public final String Or(Object obj1, Object obj2) {return EUIUtils.Format(StringsGrammar.TEXT[14], obj1, obj2);}
+        public final String or(Object obj1, Object obj2) {return EUIUtils.format(StringsGrammar.TEXT[14], obj1, obj2);}
 
         // e.g. English: Not O1, Spanish: No 01
-        public final String Not(Object obj1) {return EUIUtils.Format(StringsGrammar.TEXT[15], obj1);}
+        public final String not(Object obj1) {return EUIUtils.format(StringsGrammar.TEXT[15], obj1);}
 
         // e.g. English: Card -> Cards, Spanish: Carta -> Cartas
-        public final String Plural(Object obj) {
+        public final String plural(Object obj) {
             String base = String.valueOf(obj);
-            return EUIUtils.Format(StringsGrammar.EXTRA_TEXT[0], obj);
+            return EUIUtils.format(StringsGrammar.EXTRA_TEXT[0], obj);
         }
 
         // e.g. English: Card -> Card(s)
-        public final String PluralC(Object obj) {return EUIUtils.Format(StringsGrammar.EXTRA_TEXT[1], obj);}
+        public final String pluralC(Object obj) {return EUIUtils.format(StringsGrammar.EXTRA_TEXT[1], obj);}
 
         // e.g. English: Discard -> Discarded, Spanish: Descarta -> Descartada
-        public final String Past(Object obj) {return EUIUtils.Format(StringsGrammar.EXTRA_TEXT[2], obj);}
+        public final String past(Object obj) {return EUIUtils.format(StringsGrammar.EXTRA_TEXT[2], obj);}
 
-        public final String Present(Object obj) {return EUIUtils.Format(StringsGrammar.EXTRA_TEXT[3], obj);}
+        public final String present(Object obj) {return EUIUtils.format(StringsGrammar.EXTRA_TEXT[3], obj);}
 
-        public final String JoinWithAnd(List<String> values) {
-            return JoinWith(this::And, values);
+        public final String joinWithAnd(List<String> values) {
+            return joinWith(this::and, values);
         }
-        public final String JoinWithAnd(String... values) {
-            return JoinWith(this::And, values);
+        public final String joinWithAnd(String... values) {
+            return joinWith(this::and, values);
         }
-        public final String JoinWithOr(List<String> values) {
-            return JoinWith(this::Or, values);
+        public final String joinWithOr(List<String> values) {
+            return joinWith(this::or, values);
         }
-        public final String JoinWithOr(String... values) {
-            return JoinWith(this::Or, values);
+        public final String joinWithOr(String... values) {
+            return joinWith(this::or, values);
         }
 
-        public final String JoinWith(FuncT2<String, String, String> strFunc, List<String> values) {
+        public final String joinWith(FuncT2<String, String, String> strFunc, List<String> values) {
             if (values.size() == 0) {
                 return "";
             }
@@ -305,9 +305,9 @@ public class EUIRM
                 sj.add(values.get(i));
             }
 
-            return strFunc.Invoke(sj.toString(), values.get(i));
+            return strFunc.invoke(sj.toString(), values.get(i));
         }
-        public final String JoinWith(FuncT2<String, String, String> strFunc, String... values) {
+        public final String joinWith(FuncT2<String, String, String> strFunc, String... values) {
             if (values.length == 0) {
                 return "";
             }
@@ -322,7 +322,7 @@ public class EUIRM
                 sj.add(values[i]);
             }
 
-            return strFunc.Invoke(sj.toString(), values[i]);
+            return strFunc.invoke(sj.toString(), values[i]);
         }
     }
 }

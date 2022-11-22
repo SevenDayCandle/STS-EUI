@@ -9,11 +9,11 @@ public abstract class DEUIBaseT0 extends DEUIBase
         super(id);
     }
 
-    public void RenderInline()
+    public void renderInline()
     {
-        Render();
+        render();
         ImGui.sameLine();
     }
 
-    public abstract void Render();
+    public abstract void render();
 }

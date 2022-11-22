@@ -20,109 +20,109 @@ public class EUITextBox extends EUIHoverable
         this.image = new EUIImage(backgroundTexture);
     }
 
-    public EUITextBox SetText(Object value)
+    public EUITextBox setLabel(Object value)
     {
-        this.label.SetText(String.valueOf(value));
+        this.label.setLabel(String.valueOf(value));
 
         return this;
     }
 
-    public EUITextBox SetText(String text)
+    public EUITextBox setLabel(String text)
     {
-        this.label.SetText(text);
+        this.label.setLabel(text);
 
         return this;
     }
 
-    public EUITextBox SetText(String format, Object... args)
+    public EUITextBox setLabel(String format, Object... args)
     {
-        this.label.SetText(format, args);
+        this.label.setLabel(format, args);
 
         return this;
     }
 
-    public EUITextBox SetFont(BitmapFont font, float fontScale)
+    public EUITextBox setFont(BitmapFont font, float fontScale)
     {
-        this.label.SetFont(font, fontScale);
+        this.label.setFont(font, fontScale);
 
         return this;
     }
 
-    public EUITextBox SetAlignment(float verticalRatio, float horizontalRatio)
+    public EUITextBox setAlignment(float verticalRatio, float horizontalRatio)
     {
-        return SetAlignment(verticalRatio, horizontalRatio, false);
+        return setAlignment(verticalRatio, horizontalRatio, false);
     }
 
-    public EUITextBox SetAlignment(float verticalRatio, float horizontalRatio, boolean smartText)
+    public EUITextBox setAlignment(float verticalRatio, float horizontalRatio, boolean smartText)
     {
-        this.label.SetAlignment(verticalRatio, horizontalRatio, smartText);
+        this.label.setAlignment(verticalRatio, horizontalRatio, smartText);
 
         return this;
     }
 
-    public EUITextBox SetAlignment(float verticalRatio, float horizontalRatio, boolean smartText, boolean smartPadEnd)
+    public EUITextBox setAlignment(float verticalRatio, float horizontalRatio, boolean smartText, boolean smartPadEnd)
     {
-        this.label.SetAlignment(verticalRatio, horizontalRatio, smartText, smartPadEnd);
+        this.label.setAlignment(verticalRatio, horizontalRatio, smartText, smartPadEnd);
 
         return this;
     }
 
-    public EUITextBox SetBackgroundTexture(Texture texture, Color color, float scale)
+    public EUITextBox setBackgroundTexture(Texture texture, Color color, float scale)
     {
-        this.image.SetBackgroundTexture(texture, color, scale);
+        this.image.setBackgroundTexture(texture, color, scale);
 
         return this;
     }
 
-    public EUITextBox SetBackgroundTexture(Texture texture)
+    public EUITextBox setBackgroundTexture(Texture texture)
     {
-        this.image.SetBackgroundTexture(texture);
+        this.image.setBackgroundTexture(texture);
 
         return this;
     }
 
-    public EUITextBox SetColors(Color backgroundColor, Color textColor)
+    public EUITextBox setColors(Color backgroundColor, Color textColor)
     {
-        this.image.SetColor(backgroundColor);
-        this.label.SetColor(textColor);
+        this.image.setColor(backgroundColor);
+        this.label.setColor(textColor);
 
         return this;
     }
 
-    public EUITextBox SetPosition(float x, float y)
+    public EUITextBox setPosition(float x, float y)
     {
         this.hb.move(x, y);
 
         return this;
     }
 
-    public EUITextBox SetFontColor(Color textColor)
+    public EUITextBox setFontColor(Color textColor)
     {
-        this.label.SetColor(textColor);
+        this.label.setColor(textColor);
 
         return this;
     }
 
-    public EUITextBox Autosize() {
-        return Autosize(1f, 1f);
+    public EUITextBox autosize() {
+        return autosize(1f, 1f);
     }
 
-    public EUITextBox Autosize(Float resizeMultiplier, Float resizeHeight) {
+    public EUITextBox autosize(Float resizeMultiplier, Float resizeHeight) {
         if (resizeMultiplier != null) {
-            this.hb.width = label.GetAutoWidth();
+            this.hb.width = label.getAutoWidth();
         }
         if (resizeHeight != null) {
-            this.hb.height = label.GetAutoHeight();
+            this.hb.height = label.getAutoHeight();
         }
 
         return this;
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        image.Render(sb, hb);
-        label.Render(sb, hb);
+        image.render(sb, hb);
+        label.render(sb, hb);
 
         hb.render(sb);
     }

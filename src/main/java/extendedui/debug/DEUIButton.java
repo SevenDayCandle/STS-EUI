@@ -10,16 +10,16 @@ public class DEUIButton extends DEUIBaseT1<ActionT0>
         super(id);
     }
 
-    public void Render(ActionT0 onClick)
+    public void render(ActionT0 onClick)
     {
-        Render(ID, onClick);
+        render(ID, onClick);
     }
 
-    public static void Render(String id, ActionT0 onClick)
+    public static void render(String id, ActionT0 onClick)
     {
         if (ImGui.button(id))
         {
-            onClick.Invoke();
+            onClick.invoke();
         }
     }
 }

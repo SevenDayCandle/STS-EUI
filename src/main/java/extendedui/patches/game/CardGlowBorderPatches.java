@@ -16,11 +16,11 @@ public class CardGlowBorderPatches
     public static class CardGlowBorderPatches_ctor
     {
         @SpirePostfixPatch
-        public static void Method(CardGlowBorder __instance, AbstractCard card, Color letsHardcodeEverything)
+        public static void method(CardGlowBorder __instance, AbstractCard card, Color letsHardcodeEverything)
         {
             if (overrideColor != null)
             {
-                Color color = EUIClassUtils.GetField(__instance, "color");
+                Color color = EUIClassUtils.getField(__instance, "color");
                 if (color != null)
                 {
                     color.r = overrideColor.r;
@@ -35,9 +35,9 @@ public class CardGlowBorderPatches
     public static class CardGlowBorderPatches_Update
     {
         @SpirePrefixPatch
-        public static void Method(CardGlowBorder __instance)
+        public static void method(CardGlowBorder __instance)
         {
-            AbstractCard card = EUIClassUtils.GetField(__instance, "card");
+            AbstractCard card = EUIClassUtils.getField(__instance, "card");
             if (card.transparency < 0.9f)
             {
                 __instance.duration = 0f;

@@ -8,10 +8,10 @@ import java.util.Collection;
 
 public abstract class CustomCardFilterModule extends EUIBase
 {
-    public abstract boolean IsCardValid(AbstractCard c);
-    public abstract boolean IsEmpty();
-    public abstract boolean IsHovered();
-    public abstract void InitializeSelection(Collection<AbstractCard> cards);
-    public abstract void Reset();
-    public void ProcessGroup(CardGroup group) {}
+    public abstract boolean isCardValid(AbstractCard c);
+    public abstract boolean isEmpty();
+    public abstract boolean isHovered();
+    public abstract void initializeSelection(Collection<AbstractCard> cards);
+    public abstract void reset();
+    public void processGroup(CardGroup group) {}
 }

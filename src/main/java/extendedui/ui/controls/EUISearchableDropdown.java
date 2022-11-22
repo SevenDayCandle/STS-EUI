@@ -21,84 +21,84 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T>
 
     public EUISearchableDropdown(AdvancedHitbox hb) {
         super(hb);
-        Initialize();
+        initialize();
     }
 
     public EUISearchableDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction) {
         super(hb, labelFunction);
-        Initialize();
+        initialize();
     }
 
     public EUISearchableDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options) {
         super(hb, labelFunction, options);
-        Initialize();
+        initialize();
     }
 
     public EUISearchableDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
         super(hb, labelFunction, options, font, maxRows, canAutosizeButton);
-        Initialize();
+        initialize();
     }
 
     public EUISearchableDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
         super(hb, labelFunction, options, font, fontScale, maxRows, canAutosizeButton);
-        Initialize();
+        initialize();
     }
 
-    public EUISearchableDropdown<T> SetCanAutosizeButton(boolean value) {
-        super.SetCanAutosizeButton(value);
+    public EUISearchableDropdown<T> setCanAutosizeButton(boolean value) {
+        super.setCanAutosizeButton(value);
         return this;
     }
 
-    public EUISearchableDropdown<T> SetOnChange(ActionT1<List<T>> onChange) {
-        super.SetOnChange(onChange);
+    public EUISearchableDropdown<T> setOnChange(ActionT1<List<T>> onChange) {
+        super.setOnChange(onChange);
         return this;
     }
 
-    public EUISearchableDropdown<T> SetOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
-        super.SetOnOpenOrClose(onOpenOrClose);
+    public EUISearchableDropdown<T> setOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
+        super.setOnOpenOrClose(onOpenOrClose);
         return this;
     }
 
-    public EUISearchableDropdown<T> SetPosition(float x, float y) {
-        super.SetPosition(x, y);
+    public EUISearchableDropdown<T> setPosition(float x, float y) {
+        super.setPosition(x, y);
         return this;
     }
 
-    public void OpenOrCloseMenu() {
-        super.OpenOrCloseMenu();
+    public void openOrCloseMenu() {
+        super.openOrCloseMenu();
         button.showText = !this.isOpen;
         this.rows = this.originalRows;
         searchInput.text = "";
         if (this.isOpen) {
-            searchInput.Start();
+            searchInput.start();
         }
         else {
-            searchInput.End();
+            searchInput.end();
         }
     }
 
     @Override
-    public void Update() {
-        super.Update();
-        this.searchInput.TryUpdate();
+    public void updateImpl() {
+        super.updateImpl();
+        this.searchInput.tryUpdate();
     }
 
     @Override
-    public void Render(SpriteBatch sb) {
-        super.Render(sb);
-        this.searchInput.TryRender(sb);
+    public void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
+        this.searchInput.tryRender(sb);
         if (isOpen && searchInput.text.isEmpty()) {
-            EUIRenderHelpers.WriteCentered(sb, font, EUIRM.Strings.Misc_TypeToSearch, hb, Color.GRAY);
+            EUIRenderHelpers.writeCentered(sb, font, EUIRM.Strings.Misc_TypeToSearch, hb, Color.GRAY);
         }
     }
 
     @Override
-    public ArrayList<T> GetAllItems() {
-        return EUIUtils.Map(this.originalRows, row -> row.item);
+    public ArrayList<T> getAllItems() {
+        return EUIUtils.map(this.originalRows, row -> row.item);
     }
 
     @Override
-    public ArrayList<T> GetCurrentItems() {
+    public ArrayList<T> getCurrentItems() {
         ArrayList<T> items = new ArrayList<>();
         for (Integer i : currentIndices) {
             items.add(this.originalRows.get(i).item);
@@ -110,35 +110,35 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T>
     public void updateForSelection(boolean shouldInvoke) {
         int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
         if (isMultiSelect) {
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems(), labelFunction) : currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected;
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected;
         }
         else if (currentIndices.size() > 0) {
             this.topVisibleRowIndex = Math.min(temp, this.originalRows.size() - this.visibleRowCount());
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems(), labelFunction) : originalRows.get(temp).label.text;
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : originalRows.get(temp).label.text;
             if (colorFunctionButton != null) {
-                this.button.SetTextColor(colorFunctionButton.Invoke(GetCurrentItems()));
+                this.button.setTextColor(colorFunctionButton.invoke(getCurrentItems()));
             }
 
-            this.scrollBar.Scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
+            this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
         }
         if (shouldInvoke && onChange != null) {
-            onChange.Invoke(GetCurrentItems());
+            onChange.invoke(getCurrentItems());
         }
     }
 
-    protected void Initialize() {
+    protected void initialize() {
         this.originalRows = this.rows;
         searchInput = (EUITextInput) new EUITextInput(button.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f, false))
-                .SetOnUpdate(this::OnUpdate)
-                .SetText("");
+                .setOnUpdate(this::onUpdate)
+                .setLabel("");
     }
 
-    protected void OnUpdate(String searchInput) {
+    protected void onUpdate(String searchInput) {
         if (searchInput == null || searchInput.isEmpty()) {
             this.rows = this.originalRows;
         }
         else {
-            this.rows = EUIUtils.Filter(this.originalRows, row -> row.GetText() != null && row.GetText().toLowerCase().contains(searchInput.toLowerCase()));
+            this.rows = EUIUtils.filter(this.originalRows, row -> row.getText() != null && row.getText().toLowerCase().contains(searchInput.toLowerCase()));
             this.topVisibleRowIndex = 0;
         }
     }

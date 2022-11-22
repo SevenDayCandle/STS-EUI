@@ -15,9 +15,9 @@ public class RelicLibraryPatches
     public static class BaseMod_AddRed
     {
         @SpirePostfixPatch
-        public static void Postfix(AbstractRelic relic)
+        public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.RED);
+            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.RED);
         }
     }
 
@@ -26,9 +26,9 @@ public class RelicLibraryPatches
     public static class BaseMod_AddGreen
     {
         @SpirePostfixPatch
-        public static void Postfix(AbstractRelic relic)
+        public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.GREEN);
+            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.GREEN);
         }
     }
 
@@ -37,9 +37,9 @@ public class RelicLibraryPatches
     public static class BaseMod_AddBlue
     {
         @SpirePostfixPatch
-        public static void Postfix(AbstractRelic relic)
+        public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.BLUE);
+            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.BLUE);
         }
     }
 
@@ -48,9 +48,9 @@ public class RelicLibraryPatches
     public static class BaseMod_AddPurple
     {
         @SpirePostfixPatch
-        public static void Postfix(AbstractRelic relic)
+        public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.PURPLE);
+            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.PURPLE);
         }
     }
 
@@ -59,9 +59,9 @@ public class RelicLibraryPatches
     public static class BaseMod_Add
     {
         @SpirePostfixPatch
-        public static void Postfix(AbstractRelic relic)
+        public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.AddRelicColor(relic, AbstractCard.CardColor.COLORLESS);
+            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.COLORLESS);
         }
     }
 }

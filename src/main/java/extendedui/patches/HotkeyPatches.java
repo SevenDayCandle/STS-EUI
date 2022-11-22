@@ -26,7 +26,7 @@ public class HotkeyPatches
                 locator=Locator.class,
                 localvars={"elements"}
         )
-        public static void Insert(InputSettingsScreen __instance, ArrayList<RemapInputElement> elements)
+        public static void insert(InputSettingsScreen __instance, ArrayList<RemapInputElement> elements)
         {
             if (!Settings.isControllerMode) {
                 elements.add(new RemapInputElement(__instance, EUIRM.Strings.Hotkey_Cycle, EUIHotkeys.cycle));
@@ -52,7 +52,7 @@ public class HotkeyPatches
     )
     public static class Load
     {
-        public static void Prefix()
+        public static void prefix()
         {
             EUIHotkeys.load();
         }
@@ -64,7 +64,7 @@ public class HotkeyPatches
     )
     public static class Save
     {
-        public static void Prefix()
+        public static void prefix()
         {
             EUIHotkeys.save();
         }
@@ -76,7 +76,7 @@ public class HotkeyPatches
     )
     public static class Reset
     {
-        public static void Prefix()
+        public static void prefix()
         {
             EUIHotkeys.resetToDefaults();
         }

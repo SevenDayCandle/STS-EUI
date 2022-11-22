@@ -5,7 +5,7 @@ import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCond;
 
-import static extendedui.ui.EUIBase.Scale;
+import static extendedui.ui.EUIBase.scale;
 
 public class DEUIWindow extends DEUIBaseT1<ActionT0>
 {
@@ -17,7 +17,7 @@ public class DEUIWindow extends DEUIBaseT1<ActionT0>
 
     public DEUIWindow(String id)
     {
-        this(id, 0, 0, Scale(100), Scale(100), ImGuiCond.FirstUseEver);
+        this(id, 0, 0, scale(100), scale(100), ImGuiCond.FirstUseEver);
     }
 
     public DEUIWindow(String id, float x, float y, float width, float height, int setMode)
@@ -30,7 +30,7 @@ public class DEUIWindow extends DEUIBaseT1<ActionT0>
         this.setMode = setMode;
     }
 
-    public DEUIWindow SetDimensions(float x, float y, float width, float height)
+    public DEUIWindow setDimensions(float x, float y, float width, float height)
     {
         this.x = x;
         this.y = y;
@@ -39,25 +39,25 @@ public class DEUIWindow extends DEUIBaseT1<ActionT0>
         return this;
     }
 
-    public DEUIWindow SetSetMode(int mode)
+    public DEUIWindow setSetMode(int mode)
     {
         this.setMode = mode;
         return this;
     }
 
-    public void Render(ActionT0 onRender)
+    public void render(ActionT0 onRender)
     {
-        Render(onRender, x, y, width, height, setMode);
+        render(onRender, x, y, width, height, setMode);
     }
 
-    public void Render(ActionT0 onRender, float x, float y, float width, float height, int setMode)
+    public void render(ActionT0 onRender, float x, float y, float width, float height, int setMode)
     {
         ImVec2 wPos = ImGui.getMainViewport().getPos();
         ImGui.setNextWindowPos(wPos.x + x, wPos.y + y, setMode);
         ImGui.setNextWindowSize(width, height, setMode);
         if (ImGui.begin(ID))
         {
-            onRender.Invoke();
+            onRender.invoke();
         }
         ImGui.end();
     }

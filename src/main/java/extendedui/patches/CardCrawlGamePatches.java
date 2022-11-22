@@ -19,9 +19,9 @@ public class CardCrawlGamePatches
     public static class CardCrawlGame_PreRender
     {
         @SpirePrefixPatch
-        public static void PreFix(CardCrawlGame __instance)
+        public static void preFix(CardCrawlGame __instance)
         {
-            STSEffekseerManager.PreUpdate();
+            STSEffekseerManager.preUpdate();
         }
     }
 
@@ -29,9 +29,9 @@ public class CardCrawlGamePatches
     public static class CardCrawlGame_Render
     {
         @SpireInsertPatch(locator = Locator.class, localvars = {"sb"})
-        public static void Insert(CardCrawlGame __instance, SpriteBatch sb)
+        public static void insert(CardCrawlGame __instance, SpriteBatch sb)
         {
-            EUI.Render(sb);
+            EUI.render(sb);
         }
 
         private static class Locator extends SpireInsertLocator
@@ -48,12 +48,12 @@ public class CardCrawlGamePatches
     public static class CardCrawlGame_PostRender
     {
         @SpireInsertPatch(locator = Locator.class, localvars = {"sb"})
-        public static void Insert(CardCrawlGame __instance, SpriteBatch sb)
+        public static void insert(CardCrawlGame __instance, SpriteBatch sb)
         {
-            EUI.RelicFilters.TryRender(sb);
-            EUI.CardFilters.TryRender(sb);
-            EUI.PostRender(sb);
-            EUI.PriorityPostRender(sb);
+            EUI.RelicFilters.tryRender(sb);
+            EUI.CardFilters.tryRender(sb);
+            EUI.postRender(sb);
+            EUI.priorityPostRender(sb);
         }
 
         private static class Locator extends SpireInsertLocator
@@ -70,21 +70,21 @@ public class CardCrawlGamePatches
     public static class CardCrawlGame_Update
     {
         @SpirePrefixPatch
-        public static void Prefix(CardCrawlGame __instance)
+        public static void prefix(CardCrawlGame __instance)
         {
-            EUI.PreUpdate();
+            EUI.preUpdate();
         }
 
         @SpirePostfixPatch
-        public static void Postfix(CardCrawlGame __instance)
+        public static void postfix(CardCrawlGame __instance)
         {
-            EUI.PostUpdate();
+            EUI.postUpdate();
         }
 
         @SpireInsertPatch(locator = Locator.class)
-        public static void Insert(CardCrawlGame __instance)
+        public static void insert(CardCrawlGame __instance)
         {
-            EUI.Update();
+            EUI.update();
         }
 
         private static class Locator extends SpireInsertLocator
@@ -103,9 +103,9 @@ public class CardCrawlGamePatches
     public static class CardCrawlGame_Dispose
     {
         @SpirePostfixPatch
-        public static void Postfix(CardCrawlGame __instance)
+        public static void postfix(CardCrawlGame __instance)
         {
-            STSEffekseerManager.End();
+            STSEffekseerManager.end();
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Terminated STSEffekseerManager");
         }
     }

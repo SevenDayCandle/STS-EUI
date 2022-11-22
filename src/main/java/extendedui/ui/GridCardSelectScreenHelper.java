@@ -26,15 +26,15 @@ public class GridCardSelectScreenHelper
     private static final ArrayList<CardGroup> cardGroups = new ArrayList<>();
     private static final EUITextBox dynamicLabel = new EUITextBox(ImageMaster.WHITE_SQUARE_IMG,
             new AdvancedHitbox(Settings.WIDTH / 4.0F, 96.0F * Settings.scale, Settings.WIDTH / 2.0F, 48.0F * Settings.scale))
-            .SetColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
-            .SetAlignment(0.7f, 0.15f, true, false)
-            .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
+            .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
+            .setAlignment(0.7f, 0.15f, true, false)
+            .setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
     private static GenericCondition<ArrayList<AbstractCard>> condition;
     private static FuncT1<String, ArrayList<AbstractCard>> dynamicString;
     private static ActionT3<CardGroup, ArrayList<AbstractCard>, AbstractCard> onClickCard;
     private static boolean enabled = false;
 
-    public static void Clear(boolean clearFunctions)
+    public static void clear(boolean clearFunctions)
     {
         cardGroups.clear();
         mergedGroup.clear();
@@ -45,25 +45,25 @@ public class GridCardSelectScreenHelper
         }
     }
 
-    public static void SetCondition(GenericCondition<ArrayList<AbstractCard>> newCondition) {
+    public static void setCondition(GenericCondition<ArrayList<AbstractCard>> newCondition) {
         condition = newCondition;
     }
 
-    public static void SetDynamicLabel(FuncT1<String, ArrayList<AbstractCard>> stringFunc) {
+    public static void setDynamicLabel(FuncT1<String, ArrayList<AbstractCard>> stringFunc) {
         dynamicString = stringFunc;
         if (dynamicString != null) {
             dynamicLabel
-                    .SetText(dynamicString.Invoke(AbstractDungeon.gridSelectScreen.selectedCards))
-                    .Autosize(1f, null)
-                    .SetPosition((Settings.WIDTH / 2.0F) - dynamicLabel.hb.width / 8, 96.0F * Settings.scale);
+                    .setLabel(dynamicString.invoke(AbstractDungeon.gridSelectScreen.selectedCards))
+                    .autosize(1f, null)
+                    .setPosition((Settings.WIDTH / 2.0F) - dynamicLabel.hb.width / 8, 96.0F * Settings.scale);
         }
     }
 
-    public static void SetOnClickCard(ActionT3<CardGroup, ArrayList<AbstractCard>, AbstractCard> newOnClickCard) {
+    public static void setOnClickCard(ActionT3<CardGroup, ArrayList<AbstractCard>, AbstractCard> newOnClickCard) {
         onClickCard = newOnClickCard;
     }
 
-    public static void AddGroup(CardGroup cardGroup)
+    public static void addGroup(CardGroup cardGroup)
     {
         if (!cardGroup.isEmpty())
         {
@@ -74,34 +74,34 @@ public class GridCardSelectScreenHelper
         enabled = !mergedGroup.isEmpty();
     }
 
-    public static CardGroup GetCardGroup()
+    public static CardGroup getCardGroup()
     {
         return mergedGroup;
     }
 
-    public static void Open(GridCardSelectScreen selectScreen)
+    public static void open(GridCardSelectScreen selectScreen)
     {
         if (!enabled)
         {
-            Clear(false);
+            clear(false);
         }
         else
         {
             if (cardGroups.size() == 1)
             {
-                EUIClassUtils.SetField(selectScreen, "targetGroup", cardGroups.get(0));
-                Clear(false);
+                EUIClassUtils.setField(selectScreen, "targetGroup", cardGroups.get(0));
+                clear(false);
             }
 
             enabled = false;
         }
     }
 
-    public static boolean IsConditionMet() {
-        return condition == null || condition.Check(AbstractDungeon.gridSelectScreen.selectedCards);
+    public static boolean isConditionMet() {
+        return condition == null || condition.check(AbstractDungeon.gridSelectScreen.selectedCards);
     }
 
-    public static boolean UpdateCardPositionAndHover(GridCardSelectScreen selectScreen)
+    public static boolean updateCardPositionAndHover(GridCardSelectScreen selectScreen)
     {
         if (cardGroups.isEmpty())
         {
@@ -110,13 +110,13 @@ public class GridCardSelectScreenHelper
 
         float lineNum = 0;
 
-        float drawStartX = EUIClassUtils.GetField(selectScreen, "drawStartX");
-        float drawStartY = EUIClassUtils.GetField(selectScreen, "drawStartY");
-        float padX = EUIClassUtils.GetField(selectScreen, "padX");
-        float padY = EUIClassUtils.GetField(selectScreen, "padY");
-        float currentDiffY = EUIClassUtils.GetField(selectScreen, "currentDiffY");
+        float drawStartX = EUIClassUtils.getField(selectScreen, "drawStartX");
+        float drawStartY = EUIClassUtils.getField(selectScreen, "drawStartY");
+        float padX = EUIClassUtils.getField(selectScreen, "padX");
+        float padY = EUIClassUtils.getField(selectScreen, "padY");
+        float currentDiffY = EUIClassUtils.getField(selectScreen, "currentDiffY");
 
-        EUIClassUtils.SetField(selectScreen, "hoveredCard", null);
+        EUIClassUtils.setField(selectScreen, "hoveredCard", null);
 
         for (CardGroup cardGroup : cardGroups)
         {
@@ -140,7 +140,7 @@ public class GridCardSelectScreenHelper
 
                 if (card.hb.hovered)
                 {
-                    EUIClassUtils.SetField(selectScreen, "hoveredCard", card);
+                    EUIClassUtils.setField(selectScreen, "hoveredCard", card);
                 }
             }
 
@@ -150,15 +150,15 @@ public class GridCardSelectScreenHelper
         return true;
     }
 
-    public static boolean CalculateScrollBounds(GridCardSelectScreen instance)
+    public static boolean calculateScrollBounds(GridCardSelectScreen instance)
     {
         if (cardGroups.isEmpty())
         {
             return false;
         }
 
-        float padY = EUIClassUtils.GetField(instance, "padY");
-        CardGroup targetCardGroup = EUIClassUtils.GetField(instance, "targetGroup");
+        float padY = EUIClassUtils.getField(instance, "padY");
+        CardGroup targetCardGroup = EUIClassUtils.getField(instance, "targetGroup");
 
         float scrollTmp = (mergedGroup.size() + 2.6f * cardGroups.size()) / 5f - 2;
         if (targetCardGroup.size() % 5 != 0)
@@ -166,28 +166,28 @@ public class GridCardSelectScreenHelper
             scrollTmp += 1;
         }
 
-        EUIClassUtils.SetField(instance, "scrollUpperBound", Settings.DEFAULT_SCROLL_LIMIT + scrollTmp * padY);
-        EUIClassUtils.SetField(instance, "prevDeckSize", targetCardGroup.size());
+        EUIClassUtils.setField(instance, "scrollUpperBound", Settings.DEFAULT_SCROLL_LIMIT + scrollTmp * padY);
+        EUIClassUtils.setField(instance, "prevDeckSize", targetCardGroup.size());
 
         return true;
     }
 
-    public static void InvokeOnClick(GridCardSelectScreen selectScreen){
+    public static void invokeOnClick(GridCardSelectScreen selectScreen){
         if (onClickCard != null) {
-            onClickCard.Invoke(mergedGroup, AbstractDungeon.gridSelectScreen.selectedCards, EUIClassUtils.GetField(selectScreen, "hoveredCard"));
+            onClickCard.invoke(mergedGroup, AbstractDungeon.gridSelectScreen.selectedCards, EUIClassUtils.getField(selectScreen, "hoveredCard"));
         }
     }
 
-    public static void UpdateDynamicString() {
+    public static void updateDynamicString() {
         if (dynamicString != null) {
-            dynamicLabel.SetText(dynamicString.Invoke(AbstractDungeon.gridSelectScreen.selectedCards)).Autosize(1f, null);
+            dynamicLabel.setLabel(dynamicString.invoke(AbstractDungeon.gridSelectScreen.selectedCards)).autosize(1f, null);
         }
     }
 
-    public static void RenderDynamicString(SpriteBatch sb) {
+    public static void renderDynamicString(SpriteBatch sb) {
         if (dynamicString != null) {
             //dynamicLabel.SetText(dynamicString.Invoke(AbstractDungeon.gridSelectScreen.selectedCards));
-            dynamicLabel.Render(sb);
+            dynamicLabel.renderImpl(sb);
         }
     }
 }

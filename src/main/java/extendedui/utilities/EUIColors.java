@@ -17,12 +17,12 @@ public class EUIColors
     private static final Color GOLD = Settings.GOLD_COLOR.cpy();
     private static final Color RED = Settings.RED_TEXT_COLOR.cpy();
 
-    public static Color Copy(Color color, float a)
+    public static Color copy(Color color, float a)
     {
         return new Color(color.r, color.g, color.b, a);
     }
 
-    public static Color Lerp(Color current, Color target, float amount)
+    public static Color lerp(Color current, Color target, float amount)
     {
         current = current.cpy();
         current.r = MathUtils.lerp(current.r, target.r, amount);
@@ -32,7 +32,7 @@ public class EUIColors
         return current;
     }
 
-    public static Color Random(float min, float max, boolean grayscale)
+    public static Color random(float min, float max, boolean grayscale)
     {
         if (grayscale)
         {
@@ -43,49 +43,49 @@ public class EUIColors
         return new Color(MathUtils.random(min, max), MathUtils.random(min, max), MathUtils.random(min, max), 1);
     }
 
-    public static Color Black(float a)
+    public static Color black(float a)
     {
         BLACK.a = a;
         return BLACK;
     }
 
-    public static Color White(float a)
+    public static Color white(float a)
     {
         WHITE.a = a;
         return WHITE;
     }
 
-    public static Color Cream(float a)
+    public static Color cream(float a)
     {
         CREAM.a = a;
         return CREAM;
     }
 
-    public static Color Purple(float a)
+    public static Color purple(float a)
     {
         PURPLE.a = a;
         return PURPLE;
     }
 
-    public static Color Green(float a)
+    public static Color green(float a)
     {
         GREEN.a = a;
         return GREEN;
     }
 
-    public static Color Blue(float a)
+    public static Color blue(float a)
     {
         BLUE.a = a;
         return BLUE;
     }
 
-    public static Color Gold(float a)
+    public static Color gold(float a)
     {
         GOLD.a = a;
         return GOLD;
     }
 
-    public static Color Red(float a)
+    public static Color red(float a)
     {
         RED.a = a;
         return RED;

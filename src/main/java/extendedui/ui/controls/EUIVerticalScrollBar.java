@@ -36,25 +36,25 @@ public class EUIVerticalScrollBar extends EUIHoverable
         this.borderHeight = cursorHeight * 0.25f;
     }
 
-    public EUIVerticalScrollBar SetPosition(float x, float y)
+    public EUIVerticalScrollBar setPosition(float x, float y)
     {
         this.hb.move(x, y);
 
         return this;
     }
 
-    public EUIVerticalScrollBar SetOnScroll(ActionT1<Float> onScroll)
+    public EUIVerticalScrollBar setOnScroll(ActionT1<Float> onScroll)
     {
         this.onScroll = onScroll;
 
         return this;
     }
 
-    public void Update()
+    public void updateImpl()
     {
-        cursorDrawPosition = MathHelper.scrollSnapLerpSpeed(cursorDrawPosition, FromPercentage(currentScrollPercent));
+        cursorDrawPosition = MathHelper.scrollSnapLerpSpeed(cursorDrawPosition, fromPercentage(currentScrollPercent));
 
-        super.Update();
+        super.updateImpl();
 
         if (isDragging)
         {
@@ -64,7 +64,7 @@ public class EUIVerticalScrollBar extends EUIHoverable
             }
             else
             {
-                Scroll(ToPercentage(CardCrawlGame.isPopupOpen ? CardCrawlGame.popupMY : InputHelper.mY), true);
+                scroll(toPercentage(CardCrawlGame.isPopupOpen ? CardCrawlGame.popupMY : InputHelper.mY), true);
             }
         }
         else if (hb.hovered && InputHelper.isMouseDown)
@@ -73,47 +73,47 @@ public class EUIVerticalScrollBar extends EUIHoverable
         }
     }
 
-    public void Scroll(float percent, boolean triggerEvent)
+    public void scroll(float percent, boolean triggerEvent)
     {
-        currentScrollPercent = Clamp(percent);
+        currentScrollPercent = clamp(percent);
 
         if (triggerEvent && onScroll != null)
         {
-            onScroll.Invoke(currentScrollPercent);
+            onScroll.invoke(currentScrollPercent);
         }
     }
 
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
         if (isBackgroundVisible)
         {
-            centerImage.Render(sb, hb);
-            topImage.Render(sb, hb.x, hb.y + hb.height, hb.width, topImage.srcHeight);
-            bottomImage.Render(sb, hb.x, hb.y - bottomImage.srcHeight, hb.width, bottomImage.srcHeight);
+            centerImage.render(sb, hb);
+            topImage.render(sb, hb.x, hb.y + hb.height, hb.width, topImage.srcHeight);
+            bottomImage.render(sb, hb.x, hb.y - bottomImage.srcHeight, hb.width, bottomImage.srcHeight);
         }
 
-        cursorImage.Render(sb,hb.cX - (cursorWidth / 2f), cursorDrawPosition, cursorWidth, cursorHeight);
+        cursorImage.render(sb,hb.cX - (cursorWidth / 2f), cursorDrawPosition, cursorWidth, cursorHeight);
 
         hb.render(sb);
     }
 
-    private float ToPercentage(float position)
+    private float toPercentage(float position)
     {
         float minY = this.hb.y + this.hb.height - borderHeight;
         float maxY = this.hb.y + borderHeight;
 
-        return Clamp(MathHelper.percentFromValueBetween(minY, maxY, position));
+        return clamp(MathHelper.percentFromValueBetween(minY, maxY, position));
     }
 
-    private float FromPercentage(float percent)
+    private float fromPercentage(float percent)
     {
         float topY = this.hb.y + this.hb.height - cursorHeight + borderHeight;
         float bottomY = this.hb.y - borderHeight;
 
-        return MathHelper.valueFromPercentBetween(topY, bottomY, Clamp(percent));
+        return MathHelper.valueFromPercentBetween(topY, bottomY, clamp(percent));
     }
 
-    private static float Clamp(float percent)
+    private static float clamp(float percent)
     {
         return MathUtils.clamp(percent, 0f, 1f);
     }

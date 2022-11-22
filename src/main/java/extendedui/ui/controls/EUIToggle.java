@@ -47,7 +47,7 @@ public class EUIToggle extends EUIHoverable
         this.tickedImage = tickedImage;
     }
 
-    public EUIToggle SetFontColors(Color defaultColor, Color hoveredColor)
+    public EUIToggle setFontColors(Color defaultColor, Color hoveredColor)
     {
         this.defaultColor = defaultColor.cpy();
         this.hoveredColor = hoveredColor.cpy();
@@ -55,14 +55,14 @@ public class EUIToggle extends EUIHoverable
         return this;
     }
 
-    public EUIToggle SetControllerAction(CInputAction action)
+    public EUIToggle setControllerAction(CInputAction action)
     {
         this.controllerAction = action;
 
         return this;
     }
 
-    public EUIToggle SetTickImage(EUIImage unticked, EUIImage ticked, float size)
+    public EUIToggle setTickImage(EUIImage unticked, EUIImage ticked, float size)
     {
         this.untickedImage = unticked;
         this.tickedImage = ticked;
@@ -71,21 +71,21 @@ public class EUIToggle extends EUIHoverable
         return this;
     }
 
-    public EUIToggle SetInteractable(boolean interactable)
+    public EUIToggle setInteractable(boolean interactable)
     {
         this.interactable = interactable;
 
         return this;
     }
 
-    public EUIToggle SetFontSize(float fontSize)
+    public EUIToggle setFontSize(float fontSize)
     {
         this.fontSize = fontSize;
 
         return this;
     }
 
-    public EUIToggle SetFont(BitmapFont font, float fontSize)
+    public EUIToggle setFont(BitmapFont font, float fontSize)
     {
         this.font = font;
         this.fontSize = fontSize;
@@ -93,54 +93,54 @@ public class EUIToggle extends EUIHoverable
         return this;
     }
 
-    public EUIToggle SetText(String text)
+    public EUIToggle setText(String text)
     {
         this.text = text;
 
         return this;
     }
 
-    public EUIToggle SetPosition(float cX, float cY)
+    public EUIToggle setPosition(float cX, float cY)
     {
         this.hb.move(cX, cY);
 
         return this;
     }
 
-    public EUIToggle SetBackground(EUIImage image)
+    public EUIToggle setBackground(EUIImage image)
     {
         this.backgroundImage = image;
 
         return this;
     }
 
-    public EUIToggle SetBackground(Texture texture, Color color)
+    public EUIToggle setBackground(Texture texture, Color color)
     {
-        this.backgroundImage = EUIRenderHelpers.ForTexture(texture).SetHitbox(hb).SetColor(color);
+        this.backgroundImage = EUIRenderHelpers.forTexture(texture).setHitbox(hb).setColor(color);
 
         return this;
     }
 
-    public EUIToggle SetOnToggle(ActionT1<Boolean> onToggle)
+    public EUIToggle setOnToggle(ActionT1<Boolean> onToggle)
     {
         this.onToggle = onToggle;
 
         return this;
     }
 
-    public EUIToggle SetToggle(boolean value)
+    public EUIToggle setToggle(boolean value)
     {
         this.toggled = value;
 
         return this;
     }
 
-    public void Toggle()
+    public void toggle()
     {
-        Toggle(!toggled);
+        toggle(!toggled);
     }
 
-    public void Toggle(boolean value)
+    public void toggle(boolean value)
     {
         if (toggled != value)
         {
@@ -148,27 +148,27 @@ public class EUIToggle extends EUIHoverable
 
             if (onToggle != null)
             {
-                onToggle.Invoke(value);
+                onToggle.invoke(value);
             }
         }
     }
 
-    public boolean IsToggled()
+    public boolean isToggled()
     {
         return toggled;
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        super.Update();
+        super.updateImpl();
 
         if (!interactable)
         {
             return;
         }
 
-        if (EUI.TryHover(hb))
+        if (EUI.tryHover(hb))
         {
             if (hb.justHovered)
             {
@@ -186,22 +186,22 @@ public class EUIToggle extends EUIHoverable
             hb.clicked = false;
             CardCrawlGame.sound.playA("UI_CLICK_1", -0.2f);
 
-            Toggle();
+            toggle();
         }
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
         if (backgroundImage != null)
         {
             if (backgroundImage.hb != null)
             {
-                backgroundImage.Render(sb);
+                backgroundImage.renderImpl(sb);
             }
             else
             {
-                backgroundImage.RenderCentered(sb, hb.x + (tickSize / 6f), hb.cY - (tickSize / 2f), tickSize, tickSize);
+                backgroundImage.renderCentered(sb, hb.x + (tickSize / 6f), hb.cY - (tickSize / 2f), tickSize, tickSize);
             }
         }
 
@@ -223,7 +223,7 @@ public class EUIToggle extends EUIHoverable
         {
             font.getData().setScale(fontSize);
             FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.3f * Settings.scale), hb.cY, fontColor);
-            EUIRenderHelpers.ResetFont(font);
+            EUIRenderHelpers.resetFont(font);
         }
         else
         {
@@ -233,7 +233,7 @@ public class EUIToggle extends EUIHoverable
         EUIImage image = toggled ? tickedImage : untickedImage;
         if (image != null)
         {
-            image.RenderCentered(sb, hb.x + (tickSize / 6f), hb.cY - (tickSize / 2f), tickSize, tickSize);
+            image.renderCentered(sb, hb.x + (tickSize / 6f), hb.cY - (tickSize / 2f), tickSize, tickSize);
 
 //            sb.setColor(fontColor);
 //            sb.draw(image, hb.x + (tickSize / 6f) * Settings.scale, hb.cY - tickSize / 2f, tickSize / 2f, tickSize / 2f, tickSize, tickSize,

@@ -25,7 +25,7 @@ public class STSEffekSeerUtils {
     private static File temporaryDir;
 
     /* Effekseer color values range from 0-255, whereas LibGDX color values range from 0-1 */
-    public static float[] ToEffekseerColor(Color color) {
+    public static float[] toEffekseerColor(Color color) {
         return color != null ?
                 new float[]{color.r * EFFEKSEER_COLOR_RATE,
                             color.g * EFFEKSEER_COLOR_RATE,
@@ -34,12 +34,12 @@ public class STSEffekSeerUtils {
                 : null;
     }
 
-    public static EffekseerEffectCore LoadEffect(String effectPath)
+    public static EffekseerEffectCore loadEffect(String effectPath)
     {
-        return LoadEffect(effectPath, DEFAULT_MAGNIFICATION);
+        return loadEffect(effectPath, DEFAULT_MAGNIFICATION);
     }
 
-    public static EffekseerEffectCore LoadEffect(String effectPath, float magnification)
+    public static EffekseerEffectCore loadEffect(String effectPath, float magnification)
     {
         com.badlogic.gdx.files.FileHandle handle = Gdx.files.internal(effectPath);
         EffekseerEffectCore effectCore = new EffekseerEffectCore();
@@ -118,11 +118,11 @@ public class STSEffekSeerUtils {
         return effectCore;
     }
 
-    protected static void LoadLibraryFromJar() throws IOException {
-        LoadLibraryFromJar(GetEffekseerPath());
+    protected static void loadLibraryFromJar() throws IOException {
+        loadLibraryFromJar(getEffekseerPath());
     }
 
-    protected static void LoadLibraryFromJar(String path) throws IOException {
+    protected static void loadLibraryFromJar(String path) throws IOException {
 
         if (null == path || !path.startsWith("/")) {
             throw new IllegalArgumentException("The path has to be absolute (start with '/').");
@@ -139,7 +139,7 @@ public class STSEffekSeerUtils {
 
         // Prepare temporary file
         if (temporaryDir == null) {
-            temporaryDir = CreateTemporaryDirectory(PATH_PREFIX);
+            temporaryDir = createTemporaryDirectory(PATH_PREFIX);
             temporaryDir.deleteOnExit();
         }
 
@@ -167,7 +167,7 @@ public class STSEffekSeerUtils {
         }
     }
 
-    private static String GetEffekseerPath() {
+    private static String getEffekseerPath() {
         if (SystemUtils.IS_OS_WINDOWS) {
             return "/" + LIBRARY_NAME + ".dll";
         }
@@ -177,7 +177,7 @@ public class STSEffekSeerUtils {
         throw new RuntimeException("Unsupported OS");
     }
 
-    private static File CreateTemporaryDirectory(String prefix) throws IOException {
+    private static File createTemporaryDirectory(String prefix) throws IOException {
         String tempDir = System.getProperty("java.io.tmpdir");
         File generatedDir = new File(tempDir, prefix + System.nanoTime());
 

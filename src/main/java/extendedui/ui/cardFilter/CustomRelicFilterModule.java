@@ -9,15 +9,15 @@ import java.util.Collection;
 
 public abstract class CustomRelicFilterModule extends EUIBase
 {
-    public abstract boolean IsRelicValid(AbstractRelic c);
-    public abstract boolean IsEmpty();
-    public abstract boolean IsHovered();
-    public abstract void InitializeSelection(Collection<AbstractRelic> cards);
-    public abstract void Reset();
-    public void ProcessGroup(ArrayList<AbstractRelic> group) {}
+    public abstract boolean isRelicValid(AbstractRelic c);
+    public abstract boolean isEmpty();
+    public abstract boolean isHovered();
+    public abstract void initializeSelection(Collection<AbstractRelic> cards);
+    public abstract void reset();
+    public void processGroup(ArrayList<AbstractRelic> group) {}
 
-    public boolean IsRelicValid(EUIRelicGrid.RelicInfo c)
+    public boolean isRelicValid(EUIRelicGrid.RelicInfo c)
     {
-        return IsRelicValid(c.relic);
+        return isRelicValid(c.relic);
     }
 }

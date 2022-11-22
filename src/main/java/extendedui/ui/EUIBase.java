@@ -12,30 +12,30 @@ public abstract class EUIBase implements IUIElement
 
     public boolean isActive = true;
 
-    public abstract void Update();
-    public abstract void Render(SpriteBatch sb);
+    public abstract void updateImpl();
+    public abstract void renderImpl(SpriteBatch sb);
 
-    public boolean TryRender(SpriteBatch sb)
+    public boolean tryRender(SpriteBatch sb)
     {
         if (isActive)
         {
-            Render(sb);
+            renderImpl(sb);
         }
 
         return isActive;
     }
 
-    public boolean TryUpdate()
+    public boolean tryUpdate()
     {
         if (isActive)
         {
-            Update();
+            updateImpl();
         }
 
         return isActive;
     }
 
-    public EUIBase SetActive(boolean active)
+    public EUIBase setActive(boolean active)
     {
         this.isActive = active;
 
@@ -44,12 +44,12 @@ public abstract class EUIBase implements IUIElement
 
     public void update()
     {
-        TryUpdate();
+        tryUpdate();
     }
 
     public void render(SpriteBatch sb)
     {
-        TryRender(sb);
+        tryRender(sb);
     }
 
     public int renderLayer() {
@@ -60,18 +60,18 @@ public abstract class EUIBase implements IUIElement
         return 1;
     }
 
-    public static float Scale(float value)
+    public static float scale(float value)
     {
-        return EUIGameUtils.Scale(value);
+        return EUIGameUtils.scale(value);
     }
 
-    public static float ScreenW(float value)
+    public static float screenW(float value)
     {
-        return EUIGameUtils.ScreenW(value);
+        return EUIGameUtils.screenW(value);
     }
 
-    public static float ScreenH(float value)
+    public static float screenH(float value)
     {
-        return EUIGameUtils.ScreenH(value);
+        return EUIGameUtils.screenH(value);
     }
 }

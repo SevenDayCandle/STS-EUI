@@ -35,116 +35,116 @@ public class CardPoolScreen extends AbstractScreen
     public CardPoolScreen()
     {
         cardGrid = new EUIStaticCardGrid()
-                .ShowScrollbar(true)
-                .CanRenderUpgrades(true)
-                .SetOnCardRightClick(c -> {
+                .showScrollbar(true)
+                .canRenderUpgrades(true)
+                .setOnCardRightClick(c -> {
                     c.unhover();
                     CardCrawlGame.cardPopup.open(c, cardGrid.cards);
                 })
-                .SetVerticalStart(Settings.HEIGHT * 0.66f);
+                .setVerticalStart(Settings.HEIGHT * 0.66f);
 
         upgradeToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
-                .SetBackground(EUIRM.Images.Panel.Texture(), Color.DARK_GRAY)
-                .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.8f)
-                .SetFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
-                .SetText(SingleCardViewPopup.TEXT[6])
-                .SetOnToggle(EUI::ToggleViewUpgrades);
+                .setBackground(EUIRM.Images.Panel.texture(), Color.DARK_GRAY)
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.8f)
+                .setFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
+                .setText(SingleCardViewPopup.TEXT[6])
+                .setOnToggle(EUI::toggleViewUpgrades);
 
         colorlessToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
-                .SetBackground(EUIRM.Images.Panel.Texture(), Color.DARK_GRAY)
-                .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
-                .SetFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
-                .SetText(EUIRM.Strings.UICardPool_ShowColorless)
-                .SetOnToggle(val -> {
-                    EUI.CardFilters.ColorsDropdown.ToggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
-                    EUI.CardFilters.ColorsDropdown.ToggleSelection(AbstractCard.CardColor.CURSE, val, true);
+                .setBackground(EUIRM.Images.Panel.texture(), Color.DARK_GRAY)
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
+                .setFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
+                .setText(EUIRM.Strings.UICardPool_ShowColorless)
+                .setOnToggle(val -> {
+                    EUI.CardFilters.ColorsDropdown.toggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
+                    EUI.CardFilters.ColorsDropdown.toggleSelection(AbstractCard.CardColor.CURSE, val, true);
                 });
 
-        this.swapScreen = new EUIButton(EUIRM.Images.HexagonalButton.Texture(),
-                new AdvancedHitbox(Scale(210), Scale(43)))
-                .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
-                .SetFont(FontHelper.buttonLabelFont, 0.8f)
-                .SetColor(Color.GRAY)
-                .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.GRAY)
-                .SetOnClick(() -> EUI.RelicScreen.Open(AbstractDungeon.player, CardPoolPanelItem.GetAllRelics()))
-                .SetText(EUIRM.Strings.UIPool_ViewRelicPool);
+        this.swapScreen = new EUIButton(EUIRM.Images.HexagonalButton.texture(),
+                new AdvancedHitbox(scale(210), scale(43)))
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
+                .setFont(FontHelper.buttonLabelFont, 0.8f)
+                .setColor(Color.GRAY)
+                .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.GRAY)
+                .setOnClick(() -> EUI.RelicScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
+                .setText(EUIRM.Strings.UIPool_ViewRelicPool);
     }
 
-    public void Open(AbstractPlayer player, CardGroup cards)
+    public void open(AbstractPlayer player, CardGroup cards)
     {
-        super.Open(false, true);
+        super.open(false, true);
 
-        cardGrid.Clear();
-        colorlessToggle.SetToggle(false);
+        cardGrid.clear();
+        colorlessToggle.setToggle(false);
         if (cards.isEmpty())
         {
             AbstractDungeon.closeCurrentScreen();
             return;
         }
 
-        cardGrid.SetCardGroup(cards);
+        cardGrid.setCardGroup(cards);
         EUI.CustomHeader.setGroup(cards);
-        EUI.CustomHeader.SetupButtons();
-        EUI.CardFilters.Initialize(__ -> {
-            EUI.CustomHeader.UpdateForFilters();
+        EUI.CustomHeader.setupButtons();
+        EUI.CardFilters.initialize(__ -> {
+            EUI.CustomHeader.updateForFilters();
             if (CustomModule != null) {
-                CustomModule.Open(EUI.CustomHeader.group.group);
+                CustomModule.open(EUI.CustomHeader.group.group);
             }
-            cardGrid.ForceUpdateCardPositions();
+            cardGrid.forceUpdateCardPositions();
         }, EUI.CustomHeader.originalGroup, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
-        EUI.CustomHeader.UpdateForFilters();
+        EUI.CustomHeader.updateForFilters();
 
-        if (EUIGameUtils.InGame())
+        if (EUIGameUtils.inGame())
         {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
 
-        CustomModule = EUI.GetCustomCardPoolModule(player);
+        CustomModule = EUI.getCustomCardPoolModule(player);
         if (CustomModule != null) {
-            CustomModule.SetActive(true);
-            CustomModule.Open(cardGrid.cards.group);
+            CustomModule.setActive(true);
+            CustomModule.open(cardGrid.cards.group);
         }
 
     }
 
     @Override
-    public void Reopen()
+    public void reopen()
     {
-        if (EUIGameUtils.InGame())
+        if (EUIGameUtils.inGame())
         {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        if (!EUI.CardFilters.TryUpdate() && !CardCrawlGame.isPopupOpen) {
-            cardGrid.TryUpdate();
-            upgradeToggle.SetToggle(SingleCardViewPopup.isViewingUpgrade).Update();
-            colorlessToggle.Update();
-            swapScreen.Update();
+        if (!EUI.CardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
+            cardGrid.tryUpdate();
+            upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
+            colorlessToggle.updateImpl();
+            swapScreen.updateImpl();
             EUI.CustomHeader.update();
-            EUI.OpenCardFiltersButton.TryUpdate();
+            EUI.OpenCardFiltersButton.tryUpdate();
             if (CustomModule != null) {
-                CustomModule.TryUpdate();
+                CustomModule.tryUpdate();
             }
         }
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        cardGrid.TryRender(sb);
-        upgradeToggle.Render(sb);
-        colorlessToggle.Render(sb);
-        swapScreen.Render(sb);
+        cardGrid.tryRender(sb);
+        upgradeToggle.renderImpl(sb);
+        colorlessToggle.renderImpl(sb);
+        swapScreen.renderImpl(sb);
         EUI.CustomHeader.render(sb);
         if (!EUI.CardFilters.isActive) {
-            EUI.OpenCardFiltersButton.TryRender(sb);
+            EUI.OpenCardFiltersButton.tryRender(sb);
         }
         if (CustomModule != null) {
-            CustomModule.TryRender(sb);
+            CustomModule.tryRender(sb);
         }
     }
 }

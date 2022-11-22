@@ -16,8 +16,8 @@ import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
 public class AdvancedHitbox extends Hitbox
 {
     public float lerpSpeed;
-    public float target_cX;
-    public float target_cY;
+    public float targetCx;
+    public float targetCy;
     public EUIBase parentElement;
     public boolean isPopupCompatible;
 
@@ -40,33 +40,33 @@ public class AdvancedHitbox extends Hitbox
     {
         super(x, y, width, height);
 
-        this.target_cX = cX;
-        this.target_cY = cY;
+        this.targetCx = cX;
+        this.targetCy = cY;
         this.lerpSpeed = 9f;
     }
 
-    public AdvancedHitbox SetPosition(float cX, float cY)
+    public AdvancedHitbox setPosition(float cX, float cY)
     {
         move(cX, cY);
 
         return this;
     }
 
-    public AdvancedHitbox SetTargetPosition(float cX, float cY)
+    public AdvancedHitbox setTargetPosition(float cX, float cY)
     {
-        this.target_cX = cX;
-        this.target_cY = cY;
+        this.targetCx = cX;
+        this.targetCy = cY;
 
         return this;
     }
 
-    public AdvancedHitbox SetIsPopupCompatible(boolean value) {
+    public AdvancedHitbox setIsPopupCompatible(boolean value) {
         this.isPopupCompatible = value;
 
         return this;
     }
 
-    public AdvancedHitbox SetParentElement(EUIBase element) {
+    public AdvancedHitbox setParentElement(EUIBase element) {
         this.parentElement = element;
 
         return this;
@@ -84,9 +84,9 @@ public class AdvancedHitbox extends Hitbox
             this.clickStarted = false;
         }
 
-        if (cX != target_cX || cY != target_cY)
+        if (cX != targetCx || cY != targetCy)
         {
-            moveInternal(Lerp(cX, target_cX), Lerp(cY, target_cY));
+            moveInternal(lerp(cX, targetCx), lerp(cY, targetCy));
         }
     }
 
@@ -101,7 +101,7 @@ public class AdvancedHitbox extends Hitbox
 
             float actualMX;
             float actualMY;
-            if (!EUI.IsInActiveElement(this)) {
+            if (!EUI.isInActiveElement(this)) {
                 this.hovered = false;
                 return;
             }
@@ -132,8 +132,8 @@ public class AdvancedHitbox extends Hitbox
     {
         this.x = x;
         this.y = y;
-        this.target_cX = this.cX = x + this.width / 2f;
-        this.target_cY = this.cY = y + this.height / 2f;
+        this.targetCx = this.cX = x + this.width / 2f;
+        this.targetCy = this.cY = y + this.height / 2f;
     }
 
     @Override
@@ -141,15 +141,15 @@ public class AdvancedHitbox extends Hitbox
     {
         this.width = w;
         this.height = h;
-        this.target_cX = this.cX = x + this.width / 2f;
-        this.target_cY = this.cY = y + this.height / 2f;
+        this.targetCx = this.cX = x + this.width / 2f;
+        this.targetCy = this.cY = y + this.height / 2f;
     }
 
     @Override
     public void move(float cX, float cY)
     {
-        this.target_cX = this.cX = cX;
-        this.target_cY = this.cY = cY;
+        this.targetCx = this.cX = cX;
+        this.targetCy = this.cY = cY;
         this.x = cX - this.width / 2f;
         this.y = cY - this.height / 2f;
     }
@@ -162,7 +162,7 @@ public class AdvancedHitbox extends Hitbox
         this.y = cY - this.height / 2f;
     }
 
-    protected float Lerp(float current, float target)
+    protected float lerp(float current, float target)
     {
         if (lerpSpeed < 0 || Math.abs(current - target) < Settings.UI_SNAP_THRESHOLD)
         {

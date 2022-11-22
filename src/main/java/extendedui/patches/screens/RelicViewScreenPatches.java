@@ -32,15 +32,15 @@ public class RelicViewScreenPatches
     public static class RelicViewScreen_Open
     {
         @SpirePostfixPatch
-        public static SpireReturn<Void> Postfix(RelicViewScreen screen)
+        public static SpireReturn<Void> postfix(RelicViewScreen screen)
         {
-            Reset();
+            reset();
 
-            EUI.RelicFilters.Initialize(__ -> UpdateForFilters()
+            EUI.RelicFilters.initialize(__ -> updateForFilters()
                     , allList
                     , AbstractCard.CardColor.COLORLESS
                     , false);
-            UpdateForFilters();
+            updateForFilters();
 
             return SpireReturn.Continue();
         }
@@ -51,24 +51,24 @@ public class RelicViewScreenPatches
     {
 
         @SpirePrefixPatch
-        public static void Prefix(RelicViewScreen __instance)
+        public static void prefix(RelicViewScreen __instance)
         {
             if (!EUI.RelicFilters.isActive && EUI.OpenRelicFiltersButton != null) {
-                EUI.OpenRelicFiltersButton.TryUpdate();
+                EUI.OpenRelicFiltersButton.tryUpdate();
             }
-            if (EUI.RelicFilters.TryUpdate())
+            if (EUI.RelicFilters.tryUpdate())
             {
-                EUIClassUtils.SetField(__instance, "grabbedScreen", false);
+                EUIClassUtils.setField(__instance, "grabbedScreen", false);
             }
         }
 
-        public static ExprEditor Instrument()
+        public static ExprEditor instrument()
         {
             return new ExprEditor()
             {
                 public void edit(javassist.expr.FieldAccess m) throws CannotCompileException
                 {
-                    EditImpl(m);
+                    editImpl(m);
                 }
             };
         }
@@ -77,13 +77,13 @@ public class RelicViewScreenPatches
     @SpirePatch(clz = RelicViewScreen.class, method = "updateControllerInput")
     public static class RelicViewScreen_UpdateControllerInput
     {
-        public static ExprEditor Instrument()
+        public static ExprEditor instrument()
         {
             return new ExprEditor()
             {
                 public void edit(javassist.expr.FieldAccess m) throws CannotCompileException
                 {
-                    EditImpl(m);
+                    editImpl(m);
                 }
             };
         }
@@ -93,7 +93,7 @@ public class RelicViewScreenPatches
     public static class RelicViewScreen_UpdateScrolling
     {
         @SpirePrefixPatch
-        public static SpireReturn<AbstractCard> Prefix(RelicViewScreen __instance)
+        public static SpireReturn<AbstractCard> prefix(RelicViewScreen __instance)
         {
             if (EUI.RelicFilters.isActive) {
                 return SpireReturn.Return(null);
@@ -106,44 +106,44 @@ public class RelicViewScreenPatches
     public static class RelicViewScreen_Render
     {
         @SpirePrefixPatch
-        public static void Postfix(RelicViewScreen __instance, SpriteBatch sb)
+        public static void postfix(RelicViewScreen __instance, SpriteBatch sb)
         {
             if (!EUI.RelicFilters.isActive && EUI.OpenRelicFiltersButton != null) {
-                EUI.OpenRelicFiltersButton.TryRender(sb);
+                EUI.OpenRelicFiltersButton.tryRender(sb);
             }
         }
 
-        public static ExprEditor Instrument()
+        public static ExprEditor instrument()
         {
             return new ExprEditor()
             {
                 public void edit(javassist.expr.FieldAccess m) throws CannotCompileException
                 {
-                    EditImpl(m);
+                    editImpl(m);
                 }
             };
         }
     }
 
-    public static void UpdateForFilters() {
+    public static void updateForFilters() {
 
-        if (EUI.RelicFilters.AreFiltersEmpty()) {
-            Reset();
+        if (EUI.RelicFilters.areFiltersEmpty()) {
+            reset();
         }
         else {
-            starterList = EUI.RelicFilters.ApplyFilters(RelicLibrary.starterList);
-            commonList = EUI.RelicFilters.ApplyFilters(RelicLibrary.commonList);
-            uncommonList = EUI.RelicFilters.ApplyFilters(RelicLibrary.uncommonList);
-            rareList = EUI.RelicFilters.ApplyFilters(RelicLibrary.rareList);
-            bossList = EUI.RelicFilters.ApplyFilters(RelicLibrary.bossList);
-            specialList = EUI.RelicFilters.ApplyFilters(RelicLibrary.specialList);
-            shopList = EUI.RelicFilters.ApplyFilters(RelicLibrary.shopList);
-            ResetAllList();
+            starterList = EUI.RelicFilters.applyFilters(RelicLibrary.starterList);
+            commonList = EUI.RelicFilters.applyFilters(RelicLibrary.commonList);
+            uncommonList = EUI.RelicFilters.applyFilters(RelicLibrary.uncommonList);
+            rareList = EUI.RelicFilters.applyFilters(RelicLibrary.rareList);
+            bossList = EUI.RelicFilters.applyFilters(RelicLibrary.bossList);
+            specialList = EUI.RelicFilters.applyFilters(RelicLibrary.specialList);
+            shopList = EUI.RelicFilters.applyFilters(RelicLibrary.shopList);
+            resetAllList();
         }
-        EUI.RelicFilters.Refresh(allList);
+        EUI.RelicFilters.refresh(allList);
     }
 
-    private static void Reset()
+    private static void reset()
     {
         starterList.clear();
         commonList.clear();
@@ -161,15 +161,15 @@ public class RelicViewScreenPatches
         specialList.addAll(RelicLibrary.specialList);
         shopList.addAll(RelicLibrary.shopList);
 
-        ResetAllList();
+        resetAllList();
     }
 
-    private static void ResetAllList()
+    private static void resetAllList()
     {
-        allList = EUIUtils.Flatten(starterList, commonList, uncommonList, rareList, bossList, specialList, shopList);
+        allList = EUIUtils.flatten(starterList, commonList, uncommonList, rareList, bossList, specialList, shopList);
     }
 
-    private static void EditImpl(javassist.expr.FieldAccess m) throws CannotCompileException
+    private static void editImpl(javassist.expr.FieldAccess m) throws CannotCompileException
     {
         if (m.getClassName().equals(RelicLibrary.class.getName()))
         {

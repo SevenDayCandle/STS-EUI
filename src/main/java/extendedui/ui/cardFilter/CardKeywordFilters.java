@@ -73,105 +73,105 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     {
         super();
 
-        OriginsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, Scale(240), Scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
-                .SetOnOpenOrClose(this::UpdateActive)
-                .SetOnChange(costs -> this.OnFilterChanged(CurrentOrigins, costs))
-                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Origins)
-                .SetIsMultiSelect(true)
-                .SetCanAutosizeButton(true)
-                .SetItems(Loader.MODINFOS);
+        OriginsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.Strings.UI_BaseGame : c.Name)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(CurrentOrigins, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, null, false)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Origins)
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(Loader.MODINFOS);
 
-        CostDropdown = new EUIDropdown<CostFilter>(new AdvancedHitbox(0, 0, Scale(160), Scale(48)), c -> c.name)
-                .SetOnOpenOrClose(this::UpdateActive)
-                .SetOnChange(costs -> this.OnFilterChanged(CurrentCosts, costs))
-                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[3])
-                .SetIsMultiSelect(true)
+        CostDropdown = new EUIDropdown<CostFilter>(new AdvancedHitbox(0, 0, scale(160), scale(48)), c -> c.name)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(CurrentCosts, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, null, false)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[3])
+                .setIsMultiSelect(true)
                 .setCanAutosize(false, false)
-                .SetItems(CostFilter.values());
+                .setItems(CostFilter.values());
 
-        RaritiesDropdown = new EUIDropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
-                , EUIGameUtils::TextForRarity)
-                .SetOnOpenOrClose(this::UpdateActive)
-                .SetOnChange(costs -> this.OnFilterChanged(CurrentRarities, costs))
-                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
-                .SetIsMultiSelect(true)
-                .SetCanAutosizeButton(true)
-                .SetItems(AbstractCard.CardRarity.values());
+        RaritiesDropdown = new EUIDropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+                , EUIGameUtils::textForRarity)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(CurrentRarities, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, null, false)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(AbstractCard.CardRarity.values());
 
-        TypesDropdown = new EUIDropdown<AbstractCard.CardType>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
-                , EUIGameUtils::TextForType)
-                .SetOnOpenOrClose(this::UpdateActive)
-                .SetOnChange(costs -> this.OnFilterChanged(CurrentTypes, costs))
-                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[1])
-                .SetIsMultiSelect(true)
-                .SetCanAutosizeButton(true)
-                .SetItems(AbstractCard.CardType.values());
+        TypesDropdown = new EUIDropdown<AbstractCard.CardType>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+                , EUIGameUtils::textForType)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(CurrentTypes, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, null, false)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[1])
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(AbstractCard.CardType.values());
 
-        ColorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, Scale(240), Scale(48))
-                , EUIGameUtils::GetColorName)
-                .SetOnOpenOrClose(this::UpdateActive)
-                .SetOnChange(costs -> this.OnFilterChanged(CurrentColors, costs))
-                .SetLabelFunctionForButton(this::FilterNameFunction, null, false)
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Colors)
-                .SetIsMultiSelect(true)
-                .SetCanAutosizeButton(true);
-        NameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.Texture(),
-                new AdvancedHitbox(0, 0, Scale(240), Scale(40)).SetIsPopupCompatible(true))
-                .SetOnComplete(s -> {
+        ColorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+                , EUIGameUtils::getColorName)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(CurrentColors, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, null, false)
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_Colors)
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true);
+        NameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.texture(),
+                new AdvancedHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
+                .setOnComplete(s -> {
                     CurrentName = s;
                     if (onClick != null)
                     {
-                        onClick.Invoke(null);
+                        onClick.invoke(null);
                     }
                 })
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
-                .SetHeaderSpacing(1f)
-                .SetColors(Color.GRAY, Settings.CREAM_COLOR)
-                .SetAlignment(0.5f, 0.1f)
-                .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
-                .SetBackgroundTexture(EUIRM.Images.RectangularButton.Texture());
-        DescriptionInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.Texture(),
-                new AdvancedHitbox(0, 0, Scale(240), Scale(40)).SetIsPopupCompatible(true))
-                .SetOnComplete(s -> {
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
+                .setHeaderSpacing(1f)
+                .setColors(Color.GRAY, Settings.CREAM_COLOR)
+                .setAlignment(0.5f, 0.1f)
+                .setFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
+                .setBackgroundTexture(EUIRM.Images.RectangularButton.texture());
+        DescriptionInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.RectangularButton.texture(),
+                new AdvancedHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
+                .setOnComplete(s -> {
                     CurrentDescription = s;
                     if (onClick != null)
                     {
-                        onClick.Invoke(null);
+                        onClick.invoke(null);
                     }
                 })
-                .SetHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_DescriptionSearch)
-                .SetHeaderSpacing(1f)
-                .SetColors(Color.GRAY, Settings.CREAM_COLOR)
-                .SetAlignment(0.5f, 0.1f)
-                .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
-                .SetBackgroundTexture(EUIRM.Images.RectangularButton.Texture());
+                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.8f, Settings.GOLD_COLOR, EUIRM.Strings.UI_DescriptionSearch)
+                .setHeaderSpacing(1f)
+                .setColors(Color.GRAY, Settings.CREAM_COLOR)
+                .setAlignment(0.5f, 0.1f)
+                .setFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
+                .setBackgroundTexture(EUIRM.Images.RectangularButton.texture());
     }
 
     @Override
-    public int GetReferenceCount()
+    public int getReferenceCount()
     {
         return (referenceItems.size() == 1 && referenceItems.get(0) instanceof FakeLibraryCard) ? 0 : referenceItems.size();
     }
 
     @Override
-    public boolean AreFiltersEmpty()
+    public boolean areFiltersEmpty()
     {
         return (CurrentName == null || CurrentName.isEmpty())
                 && (CurrentDescription == null || CurrentDescription.isEmpty())
                 && CurrentColors.isEmpty() && CurrentOrigins.isEmpty()
                 && CurrentFilters.isEmpty() && CurrentNegateFilters.isEmpty()
                 && CurrentCosts.isEmpty() && CurrentRarities.isEmpty()
-                && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.IsEmpty());
+                && CurrentTypes.isEmpty() && (CustomModule != null && CustomModule.isEmpty());
     }
 
     @Override
-    protected void InitializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<AbstractCard> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<AbstractCard> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
     {
-        CustomModule = EUI.GetCustomCardFilter(color);
+        CustomModule = EUI.getCustomCardFilter(color);
 
         HashSet<ModInfo> availableMods = new HashSet<>();
         HashSet<Integer> availableCosts = new HashSet<>();
@@ -180,17 +180,17 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         HashSet<AbstractCard.CardType> availableTypes = new HashSet<>();
         if (referenceItems != null)
         {
-            currentTotal = GetReferenceCount();
+            currentTotal = getReferenceCount();
             for (AbstractCard card : referenceItems)
             {
-                for (EUITooltip tooltip : GetAllTooltips(card))
+                for (EUITooltip tooltip : getAllTooltips(card))
                 {
                     if (tooltip.canFilter) {
                         CurrentFilterCounts.merge(tooltip, 1, Integer::sum);
                     }
                 }
 
-                availableMods.add(EUIGameUtils.GetModInfo(card));
+                availableMods.add(EUIGameUtils.getModInfo(card));
                 availableRarities.add(card.rarity);
                 availableTypes.add(card.type);
                 availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost3Plus.lowerBound));
@@ -198,21 +198,21 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
             }
             if (CustomModule != null)
             {
-                CustomModule.InitializeSelection(referenceItems);
+                CustomModule.initializeSelection(referenceItems);
             }
         }
 
         ArrayList<ModInfo> modInfos = new ArrayList<>(availableMods);
         modInfos.sort((a, b) -> a == null ? -1 : b == null ? 1 : StringUtils.compare(a.Name, b.Name));
-        OriginsDropdown.SetItems(modInfos);
+        OriginsDropdown.setItems(modInfos);
 
         ArrayList<AbstractCard.CardRarity> rarityItems = new ArrayList<>(availableRarities);
         rarityItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
-        RaritiesDropdown.SetItems(rarityItems);
+        RaritiesDropdown.setItems(rarityItems);
 
         ArrayList<AbstractCard.CardType> typesItems = new ArrayList<>(availableTypes);
         typesItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
-        TypesDropdown.SetItems(typesItems);
+        TypesDropdown.setItems(typesItems);
 
         ArrayList<CostFilter> costItems = new ArrayList<>();
         for (CostFilter c : CostFilter.values())
@@ -222,31 +222,31 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 costItems.add(c);
             }
         }
-        CostDropdown.SetItems(costItems);
+        CostDropdown.setItems(costItems);
 
         ArrayList<AbstractCard.CardColor> colorsItems = new ArrayList<>(availableColors);
         colorsItems.sort((a, b) -> a == AbstractCard.CardColor.COLORLESS ? -1 : a == AbstractCard.CardColor.CURSE ? -2 : StringUtils.compare(a.name(), b.name()));
-        ColorsDropdown.SetItems(colorsItems);
+        ColorsDropdown.setItems(colorsItems);
         if (isAccessedFromCardPool)
         {
-            ColorsDropdown.SetSelection(EUIUtils.Filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE), true);
+            ColorsDropdown.setSelection(EUIUtils.filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE), true);
         }
     }
 
     @Override
-    public boolean IsHoveredImpl()
+    public boolean isHoveredImpl()
     {
-        return OriginsDropdown.AreAnyItemsHovered()
-                || CostDropdown.AreAnyItemsHovered()
-                || RaritiesDropdown.AreAnyItemsHovered()
-                || TypesDropdown.AreAnyItemsHovered()
+        return OriginsDropdown.areAnyItemsHovered()
+                || CostDropdown.areAnyItemsHovered()
+                || RaritiesDropdown.areAnyItemsHovered()
+                || TypesDropdown.areAnyItemsHovered()
                 || NameInput.hb.hovered
                 || DescriptionInput.hb.hovered
-                || (CustomModule != null && CustomModule.IsHovered());
+                || (CustomModule != null && CustomModule.isHovered());
     }
 
     @Override
-    public void ClearImpl(boolean shouldInvoke, boolean shouldClearColors)
+    public void clearFilters(boolean shouldInvoke, boolean shouldClearColors)
     {
         if (shouldClearColors)
         {
@@ -260,58 +260,58 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         CurrentTypes.clear();
         CurrentName = null;
         CurrentDescription = null;
-        CostDropdown.SetSelectionIndices(null, false);
-        OriginsDropdown.SetSelectionIndices(null, false);
-        TypesDropdown.SetSelectionIndices(null, false);
-        RaritiesDropdown.SetSelectionIndices(null, false);
-        NameInput.SetText("");
-        DescriptionInput.SetText("");
+        CostDropdown.setSelectionIndices(null, false);
+        OriginsDropdown.setSelectionIndices(null, false);
+        TypesDropdown.setSelectionIndices(null, false);
+        RaritiesDropdown.setSelectionIndices(null, false);
+        NameInput.setLabel("");
+        DescriptionInput.setLabel("");
         if (CustomModule != null)
         {
-            CustomModule.Reset();
+            CustomModule.reset();
         }
     }
 
     @Override
-    public void RenderImpl(SpriteBatch sb)
+    public void renderFilters(SpriteBatch sb)
     {
-        OriginsDropdown.TryRender(sb);
-        CostDropdown.TryRender(sb);
-        RaritiesDropdown.TryRender(sb);
-        TypesDropdown.TryRender(sb);
-        NameInput.TryRender(sb);
-        DescriptionInput.TryRender(sb);
+        OriginsDropdown.tryRender(sb);
+        CostDropdown.tryRender(sb);
+        RaritiesDropdown.tryRender(sb);
+        TypesDropdown.tryRender(sb);
+        NameInput.tryRender(sb);
+        DescriptionInput.tryRender(sb);
 
         if (CustomModule != null)
         {
-            CustomModule.TryRender(sb);
+            CustomModule.tryRender(sb);
         }
     }
 
     @Override
-    public void UpdateImpl()
+    public void updateFilters()
     {
-        OriginsDropdown.SetPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).TryUpdate();
-        CostDropdown.SetPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).TryUpdate();
-        RaritiesDropdown.SetPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).TryUpdate();
-        TypesDropdown.SetPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).TryUpdate();
-        NameInput.SetPosition(hb.x + SPACING * 2.05f, DRAW_START_Y + scrollDelta - SPACING * 3).TryUpdate();
-        DescriptionInput.SetPosition(NameInput.hb.cX + NameInput.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).TryUpdate();
+        OriginsDropdown.setPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        CostDropdown.setPosition(OriginsDropdown.hb.x + OriginsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        RaritiesDropdown.setPosition(CostDropdown.hb.x + CostDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        TypesDropdown.setPosition(RaritiesDropdown.hb.x + RaritiesDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        NameInput.setPosition(hb.x + SPACING * 2.05f, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
+        DescriptionInput.setPosition(NameInput.hb.cX + NameInput.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
 
         if (CustomModule != null)
         {
-            CustomModule.TryUpdate();
+            CustomModule.tryUpdate();
         }
     }
 
-    public ArrayList<EUITooltip> GetAllTooltips(AbstractCard c)
+    public ArrayList<EUITooltip> getAllTooltips(AbstractCard c)
     {
         ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
-        TooltipProvider eC = EUIUtils.SafeCast(c, TooltipProvider.class);
+        TooltipProvider eC = EUIUtils.safeCast(c, TooltipProvider.class);
         if (eC != null)
         {
-            eC.GenerateDynamicTooltips(dynamicTooltips);
-            for (EUITooltip tip : eC.GetTipsForFilters())
+            eC.generateDynamicTooltips(dynamicTooltips);
+            for (EUITooltip tip : eC.getTipsForFilters())
             {
                 if (!dynamicTooltips.contains(tip))
                 {
@@ -322,28 +322,28 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         else
         {
             if (c.isInnate) {
-                EUITooltip tip = EUITooltip.FindByID(GameDictionary.EXHAUST.NAMES[0]);
+                EUITooltip tip = EUITooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
                 if (tip != null)
                 {
                     dynamicTooltips.add(tip);
                 }
             }
             if (c.isEthereal) {
-                EUITooltip tip = EUITooltip.FindByID(GameDictionary.ETHEREAL.NAMES[0]);
+                EUITooltip tip = EUITooltip.findByID(GameDictionary.ETHEREAL.NAMES[0]);
                 if (tip != null)
                 {
                     dynamicTooltips.add(tip);
                 }
             }
             if (c.selfRetain) {
-                EUITooltip tip = EUITooltip.FindByID(GameDictionary.RETAIN.NAMES[0]);
+                EUITooltip tip = EUITooltip.findByID(GameDictionary.RETAIN.NAMES[0]);
                 if (tip != null)
                 {
                     dynamicTooltips.add(tip);
                 }
             }
             if (c.exhaust) {
-                EUITooltip tip = EUITooltip.FindByID(GameDictionary.EXHAUST.NAMES[0]);
+                EUITooltip tip = EUITooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
                 if (tip != null)
                 {
                     dynamicTooltips.add(tip);
@@ -351,7 +351,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
             }
             for (String sk : c.keywords)
             {
-                EUITooltip tip = EUITooltip.FindByName(sk);
+                EUITooltip tip = EUITooltip.findByName(sk);
                 if (tip != null && !dynamicTooltips.contains(tip))
                 {
                     dynamicTooltips.add(tip);
@@ -359,10 +359,10 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
             }
             if (c instanceof CustomCard) {
                 List<TooltipInfo> infos = ((CustomCard) c).getCustomTooltips();
-                ModInfo mi = EUIGameUtils.GetModInfo(c);
+                ModInfo mi = EUIGameUtils.getModInfo(c);
                 if (infos != null && mi != null) {
                     for (TooltipInfo info : infos) {
-                        EUITooltip tip = EUITooltip.FindByName(mi.ID.toLowerCase() + ":" + info.title);
+                        EUITooltip tip = EUITooltip.findByName(mi.ID.toLowerCase() + ":" + info.title);
                         if (tip != null && !dynamicTooltips.contains(tip))
                         {
                             dynamicTooltips.add(tip);
@@ -374,9 +374,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         return dynamicTooltips;
     }
 
-    public ArrayList<AbstractCard> ApplyFilters(ArrayList<AbstractCard> input)
+    public ArrayList<AbstractCard> applyFilters(ArrayList<AbstractCard> input)
     {
-        return EUIUtils.Filter(input, c -> {
+        return EUIUtils.filter(input, c -> {
             //Name check
             if (CurrentName != null && !CurrentName.isEmpty()) {
                 if (c.name == null || !c.name.toLowerCase().contains(CurrentName.toLowerCase())) {
@@ -398,19 +398,19 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
             }
 
             //Origin check
-            if (!EvaluateItem(CurrentOrigins, (opt) -> EUIGameUtils.IsObjectFromMod(c, opt)))
+            if (!evaluateItem(CurrentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt)))
             {
                 return false;
             }
 
             //Tooltips check
-            if (!CurrentFilters.isEmpty() && (!GetAllTooltips(c).containsAll(CurrentFilters)))
+            if (!CurrentFilters.isEmpty() && (!getAllTooltips(c).containsAll(CurrentFilters)))
             {
                 return false;
             }
 
             //Negate Tooltips check
-            if (!CurrentNegateFilters.isEmpty() && (EUIUtils.Any(GetAllTooltips(c), CurrentNegateFilters::contains)))
+            if (!CurrentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), CurrentNegateFilters::contains)))
             {
                 return false;
             }
@@ -428,7 +428,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
             }
 
             //Module check
-            if (CustomModule != null && !CustomModule.IsCardValid(c))
+            if (CustomModule != null && !CustomModule.isCardValid(c))
             {
                 return false;
             }
@@ -452,15 +452,15 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         });
     }
 
-    public void ToggleFilters()
+    public void toggleFilters()
     {
         if (isActive)
         {
-            Close();
+            close();
         }
         else
         {
-            Open();
+            open();
         }
     }
 }

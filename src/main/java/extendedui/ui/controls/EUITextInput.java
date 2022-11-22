@@ -20,12 +20,12 @@ public class EUITextInput extends EUILabel implements TextReceiver {
         super(font, hb);
     }
 
-    public EUITextInput SetOnComplete(ActionT1<String> onComplete) {
+    public EUITextInput setOnComplete(ActionT1<String> onComplete) {
         this.onComplete = onComplete;
         return this;
     }
 
-    public EUITextInput SetOnUpdate(ActionT1<String> onUpdate) {
+    public EUITextInput setOnUpdate(ActionT1<String> onUpdate) {
         this.onUpdate = onUpdate;
         return this;
     }
@@ -39,7 +39,7 @@ public class EUITextInput extends EUILabel implements TextReceiver {
     public void setText(String s) {
         text = s;
         if (onUpdate != null) {
-            onUpdate.Invoke(text);
+            onUpdate.invoke(text);
         }
     }
 
@@ -55,20 +55,20 @@ public class EUITextInput extends EUILabel implements TextReceiver {
 
     @Override
     public boolean onPushEnter() {
-        End();
+        end();
         return true;
     }
 
-    public void Start() {
+    public void start() {
         isEditing = true;
         TextInput.startTextReceiver(this);
     }
 
-    public void End() {
+    public void end() {
         isEditing = false;
         TextInput.stopTextReceiver(this);
         if (onComplete != null) {
-            onComplete.Invoke(text);
+            onComplete.invoke(text);
         }
     }
 }

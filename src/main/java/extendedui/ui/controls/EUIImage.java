@@ -56,21 +56,21 @@ public class EUIImage extends EUIHoverable
         this.srcHeight = texture.getHeight();
     }
 
-    public EUIImage Translate(float x, float y)
+    public EUIImage translate(float x, float y)
     {
         this.hb.translate(x, y);
 
         return this;
     }
 
-    public EUIImage Resize(float width, float height, float scale)
+    public EUIImage resize(float width, float height, float scale)
     {
         hb.resize(width * scale, height * scale);
 
         return this;
     }
 
-    public EUIImage SetTexture(Texture texture, Color color)
+    public EUIImage setTexture(Texture texture, Color color)
     {
         this.texture = texture;
         if (color != null) {
@@ -83,68 +83,68 @@ public class EUIImage extends EUIHoverable
         return this;
     }
 
-    public EUIImage SetTexture(Texture texture) {
-        SetTexture(texture, null);
+    public EUIImage setTexture(Texture texture) {
+        setTexture(texture, null);
         return this;
     }
 
-    public EUIImage SetBackgroundTexture(Texture texture, Color color, float scale)
+    public EUIImage setBackgroundTexture(Texture texture, Color color, float scale)
     {
         this.background = new ColoredTexture(texture);
         this.background.scale = scale;
-        this.background.SetColor(color);
+        this.background.setColor(color);
 
         return this;
     }
 
-    public EUIImage SetBackgroundTexture(Texture texture)
+    public EUIImage setBackgroundTexture(Texture texture)
     {
-        SetBackgroundTexture(texture, null, 1);
+        setBackgroundTexture(texture, null, 1);
 
         return this;
     }
 
-    public EUIImage SetForegroundTexture(Texture texture, Color color, float scale)
+    public EUIImage setForegroundTexture(Texture texture, Color color, float scale)
     {
         this.foreground = new ColoredTexture(texture);
         this.foreground.scale = scale;
-        this.foreground.SetColor(color);
+        this.foreground.setColor(color);
 
         return this;
     }
 
-    public EUIImage SetForegroundTexture(Texture texture)
+    public EUIImage setForegroundTexture(Texture texture)
     {
-        SetForegroundTexture(texture, null, 1);
+        setForegroundTexture(texture, null, 1);
 
         return this;
     }
 
-    public EUIImage SetHitbox(AdvancedHitbox hb)
+    public EUIImage setHitbox(AdvancedHitbox hb)
     {
         this.hb = hb;
 
         return this;
     }
 
-    public EUIImage SetPosition(float cX, float cY)
+    public EUIImage setPosition(float cX, float cY)
     {
         this.hb.move(cX, cY);
 
         return this;
     }
 
-    public EUIImage SetBlendingMode(EUIRenderHelpers.BlendingMode blendingMode) {
+    public EUIImage setBlendingMode(EUIRenderHelpers.BlendingMode blendingMode) {
         this.blendingMode = blendingMode;
         return this;
     }
 
-    public EUIImage SetShaderMode(EUIRenderHelpers.ShaderMode shaderMode) {
+    public EUIImage setShaderMode(EUIRenderHelpers.ShaderMode shaderMode) {
         this.shaderMode = shaderMode;
         return this;
     }
 
-    public EUIImage SetColor(float r, float g, float b, float a)
+    public EUIImage setColor(float r, float g, float b, float a)
     {
         this.color = new Color(r, g, b, a);
         this.sourceColor = this.color.cpy();
@@ -152,7 +152,7 @@ public class EUIImage extends EUIHoverable
         return this;
     }
 
-    public EUIImage SetColor(Color color)
+    public EUIImage setColor(Color color)
     {
         this.color = color.cpy();
         this.sourceColor = this.color.cpy();
@@ -160,12 +160,12 @@ public class EUIImage extends EUIHoverable
         return this;
     }
 
-    public EUIImage SetTargetColor(Color color)
+    public EUIImage setTargetColor(Color color)
     {
-        return SetTargetColor(color, 0.3f);
+        return setTargetColor(color, 0.3f);
     }
 
-    public EUIImage SetTargetColor(Color color, float transitionTime)
+    public EUIImage setTargetColor(Color color, float transitionTime)
     {
         if (!color.equals(targetColor)) {
             this.targetColor = color.cpy();
@@ -175,7 +175,7 @@ public class EUIImage extends EUIHoverable
         return this;
     }
 
-    public EUIImage SetFlipping(boolean flipX, boolean flipY)
+    public EUIImage setFlipping(boolean flipX, boolean flipY)
     {
         this.flipX = flipX;
         this.flipY = flipY;
@@ -183,7 +183,7 @@ public class EUIImage extends EUIHoverable
         return this;
     }
 
-    public EUIImage SetOriginalDimensions(int srcWidth, int srcHeight)
+    public EUIImage setOriginalDimensions(int srcWidth, int srcHeight)
     {
         this.srcWidth = srcWidth;
         this.srcHeight = srcHeight;
@@ -191,7 +191,7 @@ public class EUIImage extends EUIHoverable
         return this;
     }
 
-    public EUIImage SetScale(float scaleX, float scaleY)
+    public EUIImage setScale(float scaleX, float scaleY)
     {
         this.scaleX = scaleX;
         this.scaleY = scaleY;
@@ -199,7 +199,7 @@ public class EUIImage extends EUIHoverable
         return this;
     }
 
-    public EUIImage SetRotation(float rotation)
+    public EUIImage setRotation(float rotation)
     {
         this.rotation = rotation;
 
@@ -207,17 +207,17 @@ public class EUIImage extends EUIHoverable
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        super.Update();
-        UpdateColor();
+        super.updateImpl();
+        updateColor();
     }
 
-    public void UpdateColor()
+    public void updateColor()
     {
         if (targetColor != null && baseTransitionTime > 0) {
             transitionTime -= Gdx.graphics.getRawDeltaTime();
-            this.color = EUIColors.Lerp(targetColor, sourceColor, transitionTime / baseTransitionTime);
+            this.color = EUIColors.lerp(targetColor, sourceColor, transitionTime / baseTransitionTime);
             if (transitionTime <= 0) {
                 this.color = this.sourceColor = this.targetColor;
                 this.targetColor = null;
@@ -225,46 +225,46 @@ public class EUIImage extends EUIHoverable
         }
     }
 
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        Render(sb, hb);
+        render(sb, hb);
 
         hb.render(sb);
     }
 
-    public void Render(SpriteBatch sb, Hitbox hb)
+    public void render(SpriteBatch sb, Hitbox hb)
     {
-        Render(sb, hb.x, hb.y, hb.width, hb.height);
+        render(sb, hb.x, hb.y, hb.width, hb.height);
     }
 
-    public void Render(SpriteBatch sb, Hitbox hb, Color targetColor)
+    public void render(SpriteBatch sb, Hitbox hb, Color targetColor)
     {
-        Render(sb, shaderMode, hb, targetColor);
+        render(sb, shaderMode, hb, targetColor);
     }
 
-    public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb)
+    public void render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb)
     {
-        Render(sb, mode, hb.x, hb.y, hb.width, hb.height);
+        render(sb, mode, hb.x, hb.y, hb.width, hb.height);
     }
 
-    public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb, Color targetColor)
+    public void render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb, Color targetColor)
     {
-        Render(sb, mode, hb.x, hb.y, hb.width, hb.height, targetColor);
+        render(sb, mode, hb.x, hb.y, hb.width, hb.height, targetColor);
     }
 
-    public void Render(SpriteBatch sb, float x, float y, float width, float height) {
-        Render(sb, shaderMode, x, y, width, height);
+    public void render(SpriteBatch sb, float x, float y, float width, float height) {
+        render(sb, shaderMode, x, y, width, height);
     }
 
-    public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
-        Render(sb, shaderMode, x, y, width, height, color);
+    public void render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
+        render(sb, shaderMode, x, y, width, height, color);
     }
 
-    public void Render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height, Color targetColor) {
-        mode.Draw(sb, (s) -> RenderImpl(s, x, y, width, height, targetColor));
+    public void render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height, Color targetColor) {
+        mode.draw(sb, (s) -> renderImpl(s, x, y, width, height, targetColor));
     }
 
-    protected void RenderImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
+    protected void renderImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
         sb.setBlendFunction(blendingMode.srcFunc, blendingMode.dstFunc);
         if (background != null)
         {
@@ -291,46 +291,46 @@ public class EUIImage extends EUIHoverable
         sb.setBlendFunction(770, 771);
     }
 
-    public void RenderCentered(SpriteBatch sb)
+    public void renderCentered(SpriteBatch sb)
     {
-        RenderCentered(sb, hb);
+        renderCentered(sb, hb);
 
         hb.render(sb);
     }
 
-    public void RenderCentered(SpriteBatch sb, Hitbox hb)
+    public void renderCentered(SpriteBatch sb, Hitbox hb)
     {
-        RenderCentered(sb, hb.x, hb.y, hb.width, hb.height);
+        renderCentered(sb, hb.x, hb.y, hb.width, hb.height);
     }
 
-    public void RenderCentered(SpriteBatch sb, Hitbox hb, Color targetColor)
+    public void renderCentered(SpriteBatch sb, Hitbox hb, Color targetColor)
     {
-        RenderCentered(sb, shaderMode, hb, targetColor);
+        renderCentered(sb, shaderMode, hb, targetColor);
     }
 
-    public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb)
+    public void renderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb)
     {
-        RenderCentered(sb, mode, hb.x, hb.y, hb.width, hb.height);
+        renderCentered(sb, mode, hb.x, hb.y, hb.width, hb.height);
     }
 
-    public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb, Color targetColor)
+    public void renderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb, Color targetColor)
     {
-        RenderCentered(sb, mode, hb.x, hb.y, hb.width, hb.height, targetColor);
+        renderCentered(sb, mode, hb.x, hb.y, hb.width, hb.height, targetColor);
     }
 
-    public void RenderCentered(SpriteBatch sb, float x, float y, float width, float height) {
-        RenderCentered(sb, shaderMode, x, y, width, height);
+    public void renderCentered(SpriteBatch sb, float x, float y, float width, float height) {
+        renderCentered(sb, shaderMode, x, y, width, height);
     }
 
-    public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
-        RenderCentered(sb, shaderMode, x, y, width, height, color);
+    public void renderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
+        renderCentered(sb, shaderMode, x, y, width, height, color);
     }
 
-    public void RenderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height, Color targetColor) {
-        mode.Draw(sb, (s) -> RenderCenteredImpl(s, x, y, width, height, targetColor));
+    public void renderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height, Color targetColor) {
+        mode.draw(sb, (s) -> renderCenteredImpl(s, x, y, width, height, targetColor));
     }
 
-    protected void RenderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor)
+    protected void renderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor)
     {
         sb.setBlendFunction(blendingMode.srcFunc, blendingMode.dstFunc);
         if (background != null)
@@ -356,16 +356,16 @@ public class EUIImage extends EUIHoverable
         sb.setBlendFunction(770, 771);
     }
 
-    public void RenderBicubic(SpriteBatch sb, float x, float y, float width, float height) {
+    public void renderBicubic(SpriteBatch sb, float x, float y, float width, float height) {
 
     }
 
-    public boolean TryRenderCentered(SpriteBatch sb)
+    public boolean tryRenderCentered(SpriteBatch sb)
     {
         if (isActive)
         {
             this.hb.render(sb);
-            RenderCentered(sb);
+            renderCentered(sb);
         }
 
         return isActive;

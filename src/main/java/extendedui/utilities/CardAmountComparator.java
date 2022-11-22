@@ -20,12 +20,12 @@ public class CardAmountComparator implements Comparator<AbstractCard>
 
     public int compare(AbstractCard c1, AbstractCard c2)
     {
-        int a = CalculateRank(c1);
-        int b = CalculateRank(c2);
+        int a = calculateRank(c1);
+        int b = calculateRank(c2);
         return ascending ? (a - b) : (b - a);
     }
 
-    public static int CalculateRank(AbstractCard card)
+    public static int calculateRank(AbstractCard card)
     {
         return card.baseDamage > 0 ? card.baseDamage :
                 Math.max(card.baseBlock, 0);

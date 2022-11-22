@@ -37,20 +37,20 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
 
     public Initializer()
     {
-        EUIConfiguration.Load();
+        EUIConfiguration.load();
         BaseMod.subscribe(this);
     }
 
     @Override
     public void receiveEditCards()
     {
-        EUIRM.Initialize();
+        EUIRM.initialize();
     }
 
     @Override
     public void receiveEditKeywords()
     {
-        EUI.RegisterBasegameKeywords();
+        EUI.registerBasegameKeywords();
         String language = Settings.language.name().toLowerCase();
         this.loadKeywordStrings("eng");
         this.loadKeywordStrings(language);
@@ -67,20 +67,20 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     @Override
     public void receivePostInitialize()
     {
-        EUIConfiguration.PostInitialize();
-        EUI.Initialize();
-        EUI.RegisterGrammar(loadKeywords("eng", JSON_KEYWORD_EXTENSION));
-        EUI.RegisterKeywordIcons();
-        EUIRenderHelpers.InitializeBuffers();
-        STSEffekseerManager.Initialize();
-        ShaderDebugger.Initialize();
+        EUIConfiguration.postInitialize();
+        EUI.initialize();
+        EUI.registerGrammar(loadKeywords("eng", JSON_KEYWORD_EXTENSION));
+        EUI.registerKeywordIcons();
+        EUIRenderHelpers.initializeBuffers();
+        STSEffekseerManager.initialize();
+        ShaderDebugger.initialize();
         LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
     }
 
     private Map<String, EUIKeyword> loadKeywords(String language, String path) {
         FileHandle handle = Gdx.files.internal(PATH + language + path);
         if (handle.exists()) {
-            return EUIUtils.Deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
+            return EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
         }
         return new HashMap<>();
     }
@@ -89,15 +89,15 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     {
         FileHandle handle = Gdx.files.internal(PATH + language + JSON_KEYWORD);
         if (handle.exists()) {
-            Map<String, EUIKeyword> keywords = EUIUtils.Deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
+            Map<String, EUIKeyword> keywords = EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
             // Find standard tooltips. These tooltips only appear in the filters screen
             for (Map.Entry<String, EUIKeyword> pair : keywords.entrySet()) {
                 EUIKeyword keyword = pair.getValue();
-                EUITooltip tooltip = new EUITooltip(keyword).CanHighlight(false).ShowText(false);
-                EUITooltip.RegisterID(pair.getKey(), tooltip);
+                EUITooltip tooltip = new EUITooltip(keyword).canHighlight(false).showText(false);
+                EUITooltip.registerID(pair.getKey(), tooltip);
                 for (String name : keyword.NAMES)
                 {
-                    EUITooltip.RegisterName(name, tooltip);
+                    EUITooltip.registerName(name, tooltip);
                 }
             }
         }
@@ -122,19 +122,19 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     @Override
     public void receiveStartGame()
     {
-        if (EUIConfiguration.FlushOnGameStart.Get() || ShouldReloadEffekseer) {
-            STSEffekseerManager.Reset();
+        if (EUIConfiguration.FlushOnGameStart.get() || ShouldReloadEffekseer) {
+            STSEffekseerManager.reset();
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager. Particles: " + BASE_SPRITES_DEFAULT);
             ShouldReloadEffekseer = false;
         }
-        EUITooltip.UpdateTooltipIcons();
+        EUITooltip.updateTooltipIcons();
     }
 
     @Override
     public void receiveOnBattleStart(AbstractRoom abstractRoom)
     {
-        if (EUIConfiguration.FlushOnRoomStart.Get()) {
-            STSEffekseerManager.Reset();
+        if (EUIConfiguration.FlushOnRoomStart.get()) {
+            STSEffekseerManager.reset();
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager");
         }
     }
@@ -142,6 +142,6 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     @Override
     public void receivePostUpdate()
     {
-        EUIInputManager.PostUpdate();
+        EUIInputManager.postUpdate();
     }
 }

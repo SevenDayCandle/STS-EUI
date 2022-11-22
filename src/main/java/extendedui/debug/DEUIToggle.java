@@ -18,12 +18,12 @@ public class DEUIToggle extends DEUIBaseT0
         value = new ImBoolean(defaultValue);
     }
 
-    public boolean Get()
+    public boolean get()
     {
         return value.get();
     }
 
-    public void Render()
+    public void render()
     {
         ImGui.checkbox(ID, value);
     }

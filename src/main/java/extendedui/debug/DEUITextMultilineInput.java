@@ -1,7 +1,6 @@
 package extendedui.debug;
 
 import imgui.ImGui;
-import imgui.type.ImInt;
 import imgui.type.ImString;
 
 public class DEUITextMultilineInput extends DEUIBaseT0
@@ -35,12 +34,12 @@ public class DEUITextMultilineInput extends DEUIBaseT0
         this.flags = flags;
     }
 
-    public String Get()
+    public String get()
     {
         return value.get();
     }
 
-    public void Render()
+    public void render()
     {
         ImGui.inputTextMultiline(ID, value, width, height, flags);
     }

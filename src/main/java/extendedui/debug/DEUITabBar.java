@@ -10,16 +10,16 @@ public class DEUITabBar extends DEUIBaseT1<ActionT0>
         super(id);
     }
 
-    public void Render(ActionT0 onRender)
+    public void render(ActionT0 onRender)
     {
-        Render(ID, onRender);
+        render(ID, onRender);
     }
 
-    public static void Render(String id, ActionT0 onRender)
+    public static void render(String id, ActionT0 onRender)
     {
         if (ImGui.beginTabBar(id))
         {
-            onRender.Invoke();
+            onRender.invoke();
             ImGui.endTabBar();
         }
     }

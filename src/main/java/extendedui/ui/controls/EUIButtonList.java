@@ -14,10 +14,10 @@ import java.util.ArrayList;
 
 public class EUIButtonList extends EUIBase
 {
-    public static final float ICON_SIZE = Scale(40);
-    public static final float BUTTON_W = Scale(200);
-    public static final float BUTTON_H = Scale(51);
-    public static final float STARTING_X = Scale(160);
+    public static final float ICON_SIZE = scale(40);
+    public static final float BUTTON_W = scale(200);
+    public static final float BUTTON_H = scale(51);
+    public static final float STARTING_X = scale(160);
     public static final float STARTING_Y = Settings.HEIGHT * 0.92f;
     public static final int DEFAULT_VISIBLE = 14;
 
@@ -47,66 +47,66 @@ public class EUIButtonList extends EUIBase
         this.buttonWidth = buttonWidth;
         this.buttonHeight = buttonHeight;
         upButton = new EUIButton(ImageMaster.CF_LEFT_ARROW, new AdvancedHitbox(xPos - ICON_SIZE, y + (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE))
-                .SetOnClick(__ -> SetTopButtonIndex(topButtonIndex - 1))
-                .SetText(null);
-        upButton.background.SetRotation(-90);
+                .setOnClick(__ -> setTopButtonIndex(topButtonIndex - 1))
+                .setText(null);
+        upButton.background.setRotation(-90);
         downButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new AdvancedHitbox(upButton.hb.cX + ICON_SIZE, upButton.getY(), ICON_SIZE, ICON_SIZE))
-                .SetOnClick(__ -> SetTopButtonIndex(topButtonIndex + 1))
-                .SetText(null);
-        downButton.background.SetRotation(-90);
+                .setOnClick(__ -> setTopButtonIndex(topButtonIndex + 1))
+                .setText(null);
+        downButton.background.setRotation(-90);
     }
 
-    public EUIButtonList SetFontScale(float fontScale)
+    public EUIButtonList setFontScale(float fontScale)
     {
         this.fontScale = fontScale;
         return this;
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
         for (EUIButton b : buttons) {
-            b.TryUpdate();
+            b.tryUpdate();
         }
-        upButton.TryUpdate();
-        downButton.TryUpdate();
-        UpdateNonMouseInput();
+        upButton.tryUpdate();
+        downButton.tryUpdate();
+        updateNonMouseInput();
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
         for (EUIButton b : buttons) {
-            b.TryRenderCentered(sb);
+            b.tryRenderCentered(sb);
         }
-        upButton.TryRenderCentered(sb);
-        downButton.TryRenderCentered(sb);
+        upButton.tryRenderCentered(sb);
+        downButton.tryRenderCentered(sb);
     }
 
-    public void Clear()
+    public void clear()
     {
         buttons.clear();
-        SetTopButtonIndex(0);
+        setTopButtonIndex(0);
     }
 
-    public void SetTopButtonIndex(int index) {
+    public void setTopButtonIndex(int index) {
         topButtonIndex = Math.max(0, index);
         int lastButtonIndex = topButtonIndex + visibleButtons;
 
         for (int i = 0; i < buttons.size(); i++) {
             if (i >= topButtonIndex && i < lastButtonIndex) {
-                buttons.get(i).SetPosition(xPos, yPos - (i - topButtonIndex) * buttonHeight).SetActive(true);
+                buttons.get(i).setPosition(xPos, yPos - (i - topButtonIndex) * buttonHeight).setActive(true);
             }
             else {
-                buttons.get(i).SetActive(false);
+                buttons.get(i).setActive(false);
             }
         }
 
-        upButton.SetActive(topButtonIndex > 0);
-        downButton.SetActive(topButtonIndex < buttons.size() - visibleButtons);
+        upButton.setActive(topButtonIndex > 0);
+        downButton.setActive(topButtonIndex < buttons.size() - visibleButtons);
     }
 
-    public void SelectButton(EUIButton button)
+    public void selectButton(EUIButton button)
     {
         for (int i = 0; i < buttons.size(); i++)
         {
@@ -114,37 +114,37 @@ public class EUIButtonList extends EUIBase
             if (b == button)
             {
                 highlightedIndex = i;
-                b.SetTextColor(Settings.GREEN_TEXT_COLOR);
+                b.setTextColor(Settings.GREEN_TEXT_COLOR);
             }
             else
             {
-                b.SetTextColor(Color.WHITE);
+                b.setTextColor(Color.WHITE);
             }
         }
     }
 
-    public EUIButton AddButton(ActionT1<EUIButton> onClick, String title) {
+    public EUIButton addButton(ActionT1<EUIButton> onClick, String title) {
         EUIButton button = new EUIButton(ImageMaster.COLOR_TAB_BAR, new AdvancedHitbox(buttonWidth, buttonHeight))
-                .SetFont(FontHelper.buttonLabelFont, fontScale)
-                .SetButtonScale(1f, 1.2f)
-                .SetOnClick((b) -> {
-                    SelectButton(b);
-                    onClick.Invoke(b);
+                .setFont(FontHelper.buttonLabelFont, fontScale)
+                .setButtonScale(1f, 1.2f)
+                .setOnClick((b) -> {
+                    selectButton(b);
+                    onClick.invoke(b);
                 })
-                .SetText(title);
+                .setText(title);
         buttons.add(button);
-        SetTopButtonIndex(0);
-        SelectButton(buttons.get(0));
+        setTopButtonIndex(0);
+        selectButton(buttons.get(0));
         return button;
     }
 
-    protected void UpdateNonMouseInput()
+    protected void updateNonMouseInput()
     {
         if (Settings.isControllerMode) {
             if (CInputActionSet.pageRightViewExhaust.isJustPressed()) {
-                buttons.get((highlightedIndex + 1) % buttons.size()).OnLeftClick();
+                buttons.get((highlightedIndex + 1) % buttons.size()).onLeftClick();
             } else if (CInputActionSet.pageLeftViewDeck.isJustPressed()) {
-                buttons.get(highlightedIndex == 0 ? buttons.size() - 1 : highlightedIndex - 1).OnLeftClick();
+                buttons.get(highlightedIndex == 0 ? buttons.size() - 1 : highlightedIndex - 1).onLeftClick();
             }
         }
     }

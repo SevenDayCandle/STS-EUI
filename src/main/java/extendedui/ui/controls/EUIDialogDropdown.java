@@ -29,66 +29,66 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>>
     public EUIDialogDropdown(AdvancedHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)
     {
         super(hb, backgroundTexture, headerText, descriptionText);
-        this.dropdown = new EUIDropdown<T>(new AdvancedHitbox(hb.x + hb.width / 4, hb.y + hb.height / 4, hb.width / 2, Scale(48)))
+        this.dropdown = new EUIDropdown<T>(new AdvancedHitbox(hb.x + hb.width / 4, hb.y + hb.height / 4, hb.width / 2, scale(48)))
                 .setCanAutosize(false, true);
     }
 
-    public EUIDialogDropdown<T> SetOptions(boolean isMultiSelect, boolean canAutosize) {
+    public EUIDialogDropdown<T> setOptions(boolean isMultiSelect, boolean canAutosize) {
         this.dropdown.isMultiSelect = isMultiSelect;
         this.dropdown.canAutosizeButton = canAutosize;
         if (this.dropdown.canAutosizeButton) {
-            this.dropdown.Autosize();
+            this.dropdown.autosize();
             this.hb.width = this.dropdown.hb.width * 2;
             this.hb.x = (Settings.WIDTH - this.hb.width) / 2;
-            this.dropdown.SetPosition(hb.x + hb.width / 4, hb.y + hb.height / 4);
+            this.dropdown.setPosition(hb.x + hb.width / 4, hb.y + hb.height / 4);
         }
         return this;
     }
 
     @SafeVarargs
-    public final EUIDialogDropdown<T> SetItems(T... items) {
-        this.dropdown.SetItems(items);
+    public final EUIDialogDropdown<T> setItems(T... items) {
+        this.dropdown.setItems(items);
         return this;
     }
 
-    public EUIDialogDropdown<T> SetItems(List<T> items) {
-        this.dropdown.SetItems(items);
+    public EUIDialogDropdown<T> setItems(List<T> items) {
+        this.dropdown.setItems(items);
         return this;
     }
 
-    public EUIDialogDropdown<T> SetLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, FuncT1<Color, List<T>> colorFunctionButton, boolean isSmartText) {
-        this.dropdown.SetLabelFunctionForButton(labelFunctionButton, colorFunctionButton, isSmartText);
+    public EUIDialogDropdown<T> setLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, FuncT1<Color, List<T>> colorFunctionButton, boolean isSmartText) {
+        this.dropdown.setLabelFunctionForButton(labelFunctionButton, colorFunctionButton, isSmartText);
         return this;
     }
 
-    public EUIDialogDropdown<T> SetLabelFunctionForOption(FuncT1<String, T> labelFunction, boolean isSmartText) {
-        this.dropdown.SetLabelFunctionForOption(labelFunction, isSmartText);
+    public EUIDialogDropdown<T> setLabelFunctionForOption(FuncT1<String, T> labelFunction, boolean isSmartText) {
+        this.dropdown.setLabelFunctionForOption(labelFunction, isSmartText);
         return this;
     }
 
     @Override
-    public ArrayList<T> GetConfirmValue()
+    public ArrayList<T> getConfirmValue()
     {
-        return dropdown.GetCurrentItems();
+        return dropdown.getCurrentItems();
     }
 
     @Override
-    public ArrayList<T> GetCancelValue()
+    public ArrayList<T> getCancelValue()
     {
         return null;
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        super.Update();
-        this.dropdown.TryUpdate();
+        super.updateImpl();
+        this.dropdown.tryUpdate();
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        super.Render(sb);
-        this.dropdown.TryRender(sb);
+        super.renderImpl(sb);
+        this.dropdown.tryRender(sb);
     }
 }

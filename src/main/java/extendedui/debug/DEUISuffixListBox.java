@@ -6,7 +6,7 @@ import imgui.ImVec2;
 
 import java.util.ArrayList;
 
-import static extendedui.ui.EUIBase.Scale;
+import static extendedui.ui.EUIBase.scale;
 
 public class DEUISuffixListBox<T> extends DEUIListBox<T>
 {
@@ -15,7 +15,7 @@ public class DEUISuffixListBox<T> extends DEUIListBox<T>
 
     public DEUISuffixListBox(String id, ArrayList<T> items, FuncT1<String, T> stringFunc, FuncT1<String, T> suffixFunc)
     {
-        this(id, items, stringFunc, suffixFunc, -1, Scale(200));
+        this(id, items, stringFunc, suffixFunc, -1, scale(200));
     }
 
     public DEUISuffixListBox(String id, ArrayList<T> items, FuncT1<String, T> stringFunc, FuncT1<String, T> suffixFunc, float width, float height)
@@ -24,21 +24,21 @@ public class DEUISuffixListBox<T> extends DEUIListBox<T>
         this.suffixFunc = suffixFunc;
     }
 
-    public void Render()
+    public void render()
     {
-        Render(width, height);
+        render(width, height);
     }
 
-    public void Render(float width, float height)
+    public void render(float width, float height)
     {
         if (ImGui.beginListBox(ID, width, height)) {
             for (T item : items) {
                 boolean isSelected = item.equals(selected);
-                if (ImGui.selectable(stringFunc.Invoke(item), isSelected)) {
+                if (ImGui.selectable(stringFunc.invoke(item), isSelected)) {
                     selected = item;
                 }
 
-                String text = suffixFunc.Invoke(item);
+                String text = suffixFunc.invoke(item);
                 ImGui.calcTextSize(textSize, text);
                 ImGui.sameLine(ImGui.getWindowContentRegionMaxX() - textSize.x);
                 ImGui.text(text);

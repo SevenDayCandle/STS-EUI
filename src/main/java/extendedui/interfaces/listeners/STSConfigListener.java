@@ -2,9 +2,9 @@ package extendedui.interfaces.listeners;
 
 public interface STSConfigListener<T>
 {
-    public void OnChange(T newValue);
-    default public void OnInitialize(T newValue)
+    public void onChange(T newValue);
+    default public void onInitialize(T newValue)
     {
-        OnChange(newValue);
+        onChange(newValue);
     }
 }

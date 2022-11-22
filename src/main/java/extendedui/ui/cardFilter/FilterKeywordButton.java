@@ -21,7 +21,7 @@ import static extendedui.text.EUISmartText.CARD_ENERGY_IMG_WIDTH;
 
 public class FilterKeywordButton extends EUIHoverable
 {
-    public static final float ICON_SIZE = Scale(40);
+    public static final float ICON_SIZE = scale(40);
     private static final Color ACTIVE_COLOR = new Color(0.76f, 0.76f, 0.76f, 1f);
     private static final Color NEGATE_COLOR = new Color(0.62f, 0.32f, 0.28f, 1f);
     private static final Color PANEL_COLOR = new Color(0.3f, 0.3f, 0.3f, 1f);
@@ -50,122 +50,122 @@ public class FilterKeywordButton extends EUIHoverable
         Filters = filters;
         Tooltip = tooltip;
 
-        background_button = new EUIButton(EUIRM.Images.Panel_Rounded_Half_H.Texture(), new RelativeHitbox(hb, 1, 1, 0.5f, 0).SetIsPopupCompatible(true))
-                .SetClickDelay(0.01f)
-        .SetColor(Filters.CurrentFilters.contains(Tooltip) ? ACTIVE_COLOR
+        background_button = new EUIButton(EUIRM.Images.Panel_Rounded_Half_H.texture(), new RelativeHitbox(hb, 1, 1, 0.5f, 0).setIsPopupCompatible(true))
+                .setClickDelay(0.01f)
+        .setColor(Filters.CurrentFilters.contains(Tooltip) ? ACTIVE_COLOR
                 : Filters.CurrentNegateFilters.contains(Tooltip) ? NEGATE_COLOR : PANEL_COLOR)
-                .SetOnClick(button -> {
+                .setOnClick(button -> {
                     if (Filters.CurrentFilters.contains(Tooltip))
                     {
                         Filters.CurrentFilters.remove(Tooltip);
-                        background_button.SetColor(PANEL_COLOR);
-                        title_text.SetColor(Color.WHITE);
+                        background_button.setColor(PANEL_COLOR);
+                        title_text.setColor(Color.WHITE);
                     }
                     else
                     {
                         Filters.CurrentFilters.add(Tooltip);
-                        background_button.SetColor(ACTIVE_COLOR);
-                        title_text.SetColor(Color.DARK_GRAY);
+                        background_button.setColor(ACTIVE_COLOR);
+                        title_text.setColor(Color.DARK_GRAY);
                     }
 
                     if (this.onClick != null) {
-                        this.onClick.Invoke(this);
+                        this.onClick.invoke(this);
                     }
                 })
-                .SetOnRightClick(button -> {
+                .setOnRightClick(button -> {
                     if (Filters.CurrentNegateFilters.contains(Tooltip))
                     {
                         Filters.CurrentNegateFilters.remove(Tooltip);
-                        background_button.SetColor(PANEL_COLOR);
+                        background_button.setColor(PANEL_COLOR);
                     }
                     else
                     {
                         //CardKeywordFilters.CurrentFilters.remove(Tooltip);
                         Filters.CurrentNegateFilters.add(Tooltip);
-                        background_button.SetColor(NEGATE_COLOR);
+                        background_button.setColor(NEGATE_COLOR);
                     }
-                    title_text.SetColor(Color.WHITE);
+                    title_text.setColor(Color.WHITE);
 
                     if (this.onClick != null) {
-                        this.onClick.Invoke(this);
+                        this.onClick.invoke(this);
                     }
                 });
 
         title_text = new EUILabel(EUIFontHelper.CardTooltipFont,
         new RelativeHitbox(hb, 0.5f, 1, baseTextOffsetX, baseTextOffsetY))
-                .SetFont(EUIFontHelper.CardTooltipFont, 0.8f)
-                .SetColor(Filters.CurrentFilters.contains(Tooltip) ? Color.DARK_GRAY : Color.WHITE)
-        .SetAlignment(0.5f, 0.49f) // 0.1f
-        .SetText(Tooltip.title);
+                .setFont(EUIFontHelper.CardTooltipFont, 0.8f)
+                .setColor(Filters.CurrentFilters.contains(Tooltip) ? Color.DARK_GRAY : Color.WHITE)
+        .setAlignment(0.5f, 0.49f) // 0.1f
+        .setLabel(Tooltip.title);
 
         count_text = new EUILabel(EUIFontHelper.CardDescriptionFont_Normal,
                 new RelativeHitbox(hb, 0.28f, 1, baseCountOffset, 0f))
-                .SetFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
-                .SetAlignment(0.5f, 0.51f) // 0.1f
-                .SetColor(Settings.GOLD_COLOR)
-                .SetText(Filters.CurrentNegateFilters.contains(Tooltip) ? "X" : CardCount);
+                .setFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
+                .setAlignment(0.5f, 0.51f) // 0.1f
+                .setColor(Settings.GOLD_COLOR)
+                .setLabel(Filters.CurrentNegateFilters.contains(Tooltip) ? "X" : CardCount);
     }
 
-    public FilterKeywordButton SetIndex(int index)
+    public FilterKeywordButton setIndex(int index)
     {
         offX = (index % CardKeywordFilters.ROW_SIZE) * 1.06f;
         offY = -(Math.floorDiv(index,CardKeywordFilters.ROW_SIZE)) * 0.85f;
-        RelativeHitbox.SetPercentageOffset(background_button.hb, offX, offY);
-        RelativeHitbox.SetPercentageOffset(title_text.hb, offX + baseTextOffsetX, offY + baseTextOffsetY);
-        RelativeHitbox.SetPercentageOffset(count_text.hb, offX + baseCountOffset, offY);
+        RelativeHitbox.setPercentageOffset(background_button.hb, offX, offY);
+        RelativeHitbox.setPercentageOffset(title_text.hb, offX + baseTextOffsetX, offY + baseTextOffsetY);
+        RelativeHitbox.setPercentageOffset(count_text.hb, offX + baseCountOffset, offY);
 
 
         return this;
     }
 
-    public FilterKeywordButton SetCardCount(int count)
+    public FilterKeywordButton setCardCount(int count)
     {
         this.CardCount = count;
         boolean isNegate = Filters.CurrentNegateFilters.contains(Tooltip);
         boolean isContains = Filters.CurrentFilters.contains(Tooltip);
         count_text
-                .SetText(isNegate ? "X" : count).SetColor(count > 0 ? Settings.GOLD_COLOR : Color.DARK_GRAY);
-        title_text.SetColor((!isContains && count > 0) || isNegate ? Color.WHITE : Color.DARK_GRAY);
+                .setLabel(isNegate ? "X" : count).setColor(count > 0 ? Settings.GOLD_COLOR : Color.DARK_GRAY);
+        title_text.setColor((!isContains && count > 0) || isNegate ? Color.WHITE : Color.DARK_GRAY);
         background_button
-                .SetColor(isContains ? ACTIVE_COLOR
+                .setColor(isContains ? ACTIVE_COLOR
                         : isNegate ? NEGATE_COLOR : PANEL_COLOR)
-                .SetInteractable(count != 0 || isNegate);
+                .setInteractable(count != 0 || isNegate);
 
         return this;
     }
 
-    public FilterKeywordButton SetOnClick(ActionT1<FilterKeywordButton> onClick)
+    public FilterKeywordButton setOnClick(ActionT1<FilterKeywordButton> onClick)
     {
         this.onClick = onClick;
         return this;
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        background_button.Update();
-        title_text.Update();
-        count_text.Update();
+        background_button.updateImpl();
+        title_text.updateImpl();
+        count_text.updateImpl();
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        background_button.Render(sb);
+        background_button.renderImpl(sb);
 
         if (Tooltip.icon != null) {
             if (CardCount != 0 || Filters.CurrentNegateFilters.contains(Tooltip)) {
-                RenderTooltipImage(sb);
+                renderTooltipImage(sb);
             }
             else {
-                EUIRenderHelpers.DrawGrayscale(sb, this::RenderTooltipImage);
+                EUIRenderHelpers.drawGrayscale(sb, this::renderTooltipImage);
             }
         }
 
 
-        title_text.Render(sb);
+        title_text.renderImpl(sb);
         if (CardCount >= 0) {
-            count_text.Render(sb);
+            count_text.renderImpl(sb);
         }
         if (background_button.hb.hovered) {
             float actualMX;
@@ -180,11 +180,11 @@ public class FilterKeywordButton extends EUIHoverable
             }
 
 
-            EUITooltip.QueueTooltip(Tooltip, actualMX + 20 * Settings.scale, actualMY + 20 * Settings.scale);
+            EUITooltip.queueTooltip(Tooltip, actualMX + 20 * Settings.scale, actualMY + 20 * Settings.scale);
         }
     }
 
-    private void RenderTooltipImage(SpriteBatch sb) {
+    private void renderTooltipImage(SpriteBatch sb) {
         Tooltip.renderTipEnergy(sb, Tooltip.icon,
                 hb.x + (offX + baseImageOffsetX) * hb.width,
                 hb.y + (offY + baseImageOffsetY) * hb.height,

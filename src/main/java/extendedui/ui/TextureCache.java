@@ -17,22 +17,22 @@ public class TextureCache {
         this.mipmap = mipmap;
     }
 
-    public String Path() {
+    public String path() {
         return this.path;
     }
 
-    public Texture Texture(boolean refresh) {
+    public Texture texture(boolean refresh) {
         if (refresh || this.texture == null) {
-            this.texture = EUIRM.GetTexture(this.path, this.mipmap, refresh, false);
+            this.texture = EUIRM.getTexture(this.path, this.mipmap, refresh, false);
             if (this.texture == null) {
-                this.texture = EUIRM.GetLocalTexture(this.path, this.mipmap, refresh, false);
+                this.texture = EUIRM.getLocalTexture(this.path, this.mipmap, refresh, false);
             }
         }
 
         return this.texture;
     }
 
-    public Texture Texture() {
-        return this.Texture(false);
+    public Texture texture() {
+        return this.texture(false);
     }
 }

@@ -14,17 +14,17 @@ public class GenericCondition<T>
     protected FuncT1<Boolean, T> conditionT1;
     protected FuncT2<Boolean, ?, T> conditionT2;
 
-    public static <T> GenericCondition<T> FromT0(FuncT0<Boolean> condition)
+    public static <T> GenericCondition<T> fromT0(FuncT0<Boolean> condition)
     {
         return new GenericCondition<>(condition);
     }
 
-    public static <T> GenericCondition<T> FromT1(FuncT1<Boolean, T> condition)
+    public static <T> GenericCondition<T> fromT1(FuncT1<Boolean, T> condition)
     {
         return new GenericCondition<>(condition);
     }
 
-    public static <T, S> GenericCondition<T> FromT2(FuncT2<Boolean, S, T> condition, S state)
+    public static <T, S> GenericCondition<T> fromT2(FuncT2<Boolean, S, T> condition, S state)
     {
         return new GenericCondition<>(condition, state);
     }
@@ -45,22 +45,22 @@ public class GenericCondition<T>
         this.conditionT0 = condition;
     }
 
-    public boolean Check(T result)
+    public boolean check(T result)
     {
         if (conditionT2 != null)
         {
-            return conditionT2.CastAndInvoke(state, result);
+            return conditionT2.castAndInvoke(state, result);
         }
         if (conditionT1 != null)
         {
-            return conditionT1.Invoke(result);
+            return conditionT1.invoke(result);
         }
         if (conditionT0 != null)
         {
-            return conditionT0.Invoke();
+            return conditionT0.invoke();
         }
 
-        EUIUtils.LogWarning(this, "No Condition found: " + getClass().getName());
+        EUIUtils.logWarning(this, "No Condition found: " + getClass().getName());
         return true;
     }
 }

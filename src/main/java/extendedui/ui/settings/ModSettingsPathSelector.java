@@ -17,18 +17,18 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
     {
         super(hb);
         Config = config;
-        this.header.SetText(title).SetFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
-        this.filePath.SetFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
-        this.Config.AddListener(this);
-        SetOnUpdate(this::OnUpdateFile);
+        this.header.setLabel(title).setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
+        this.filePath.setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
+        this.Config.addListener(this);
+        setOnUpdate(this::onUpdateFile);
     }
 
-    public ModSettingsPathSelector SetFileFilters(String... filters) {
-        super.SetFileFilters(filters);
+    public ModSettingsPathSelector setFileFilters(String... filters) {
+        super.setFileFilters(filters);
         return this;
     }
 
-    public ModSettingsPathSelector MakeCopy()
+    public ModSettingsPathSelector makeCopy()
     {
         ModSettingsPathSelector other = new ModSettingsPathSelector(new AdvancedHitbox(hb), Config, this.header.text);
         other.extensionFilter = new FileNameExtensionFilter(this.extensionFilter.getDescription(), this.extensionFilter.getExtensions());
@@ -37,13 +37,13 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
     }
 
     @Override
-    public void OnChange(String newValue)
+    public void onChange(String newValue)
     {
-        SelectFile(new File(newValue), false);
+        selectFile(new File(newValue), false);
     }
 
-    private void OnUpdateFile(File file)
+    private void onUpdateFile(File file)
     {
-        Config.Set(file != null && file.exists() ? file.getAbsolutePath() : "", true);
+        Config.set(file != null && file.exists() ? file.getAbsolutePath() : "", true);
     }
 }

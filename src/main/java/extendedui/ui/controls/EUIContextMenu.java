@@ -15,75 +15,75 @@ public class EUIContextMenu<T> extends EUIDropdown<T>
 {
     public EUIContextMenu(AdvancedHitbox hb) {
         super(hb);
-        Initialize();
+        initialize();
     }
 
     public EUIContextMenu(AdvancedHitbox hb, FuncT1<String, T> labelFunction) {
         super(hb, labelFunction);
-        Initialize();
+        initialize();
     }
 
     public EUIContextMenu(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options) {
         super(hb, labelFunction, options);
-        Initialize();
+        initialize();
     }
 
     public EUIContextMenu(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
         super(hb, labelFunction, options, font, maxRows, canAutosizeButton);
-        Initialize();
+        initialize();
     }
 
     public EUIContextMenu(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
         super(hb, labelFunction, options, font, fontScale, maxRows, canAutosizeButton);
-        Initialize();
+        initialize();
     }
 
 
-    protected void Initialize() {
-        this.button.SetActive(false);
+    protected void initialize() {
+        this.button.setActive(false);
     }
 
-    public EUIContextMenu<T> SetCanAutosizeButton(boolean value) {
-        super.SetCanAutosizeButton(value);
+    public EUIContextMenu<T> setCanAutosizeButton(boolean value) {
+        super.setCanAutosizeButton(value);
         return this;
     }
 
-    public EUIContextMenu<T> SetOnChange(ActionT1<List<T>> onChange) {
-        super.SetOnChange(onChange);
+    public EUIContextMenu<T> setOnChange(ActionT1<List<T>> onChange) {
+        super.setOnChange(onChange);
         return this;
     }
 
-    public EUIContextMenu<T> SetOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
-        super.SetOnOpenOrClose(onOpenOrClose);
+    public EUIContextMenu<T> setOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
+        super.setOnOpenOrClose(onOpenOrClose);
         return this;
     }
 
-    public EUIContextMenu<T> SetPosition(float x, float y) {
-        super.SetPosition(x, y);
+    public EUIContextMenu<T> setPosition(float x, float y) {
+        super.setPosition(x, y);
         return this;
     }
 
-    public void PositionToOpen()
+    public void positionToOpen()
     {
-        SetPosition(InputHelper.mX, InputHelper.mY);
-        OpenOrCloseMenu();
+        this.setPosition(InputHelper.mX, InputHelper.mY);
+        openOrCloseMenu();
     }
 
     @Override
-    protected void RenderArrows(SpriteBatch sb) {
+    protected void renderArrows(SpriteBatch sb) {
     }
 
     @Override
-    public void Render(SpriteBatch sb) {
+    public void renderImpl(SpriteBatch sb) {
 
         this.hb.render(sb);
-        this.button.TryRender(sb);
-        this.header.TryRender(sb);
+        this.button.tryRender(sb);
+        this.header.tryRender(sb);
         if ((this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0) {
-            this.clearButton.Render(sb);
+            this.clearButton.renderImpl(sb);
         }
         if (this.rows.size() > 0) {
-            EUI.AddPriorityPostRender(this::RenderRowContent);
+            EUI.addPriorityPostRender(this::renderRowContent);
         }
     }
 

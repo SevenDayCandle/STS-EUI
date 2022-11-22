@@ -62,52 +62,52 @@ public class EUICardGrid extends EUICanvasGrid
         this.upgradeCards = new HashMap<>();
         this.autoShowScrollbar = autoShowScrollbar;
 
-        SetHorizontalAlignment(horizontalAlignment);
+        setHorizontalAlignment(horizontalAlignment);
     }
 
-    public EUICardGrid AddPadX(float padX)
+    public EUICardGrid addPadX(float padX)
     {
         this.pad_x += padX;
 
         return this;
     }
 
-    public EUICardGrid AddPadY(float padY)
+    public EUICardGrid addPadY(float padY)
     {
         this.pad_y += padY;
 
         return this;
     }
 
-    public EUICardGrid SetOnCardHover(ActionT1<AbstractCard> onCardHovered)
+    public EUICardGrid setOnCardHover(ActionT1<AbstractCard> onCardHovered)
     {
         this.onCardHovered = onCardHovered;
 
         return this;
     }
 
-    public EUICardGrid SetOnCardClick(ActionT1<AbstractCard> onCardClicked)
+    public EUICardGrid setOnCardClick(ActionT1<AbstractCard> onCardClicked)
     {
         this.onCardClick = onCardClicked;
 
         return this;
     }
 
-    public EUICardGrid SetOnCardRightClick(ActionT1<AbstractCard> onCardRightClicked)
+    public EUICardGrid setOnCardRightClick(ActionT1<AbstractCard> onCardRightClicked)
     {
         this.onCardRightClick = onCardRightClicked;
 
         return this;
     }
 
-    public EUICardGrid SetOnCardRender(ActionT2<SpriteBatch, AbstractCard> onCardRender)
+    public EUICardGrid setOnCardRender(ActionT2<SpriteBatch, AbstractCard> onCardRender)
     {
         this.onCardRender = onCardRender;
 
         return this;
     }
 
-    public EUICardGrid SetOptions(boolean canDrag, boolean shouldEnlargeHovered, boolean showScrollbar)
+    public EUICardGrid setOptions(boolean canDrag, boolean shouldEnlargeHovered, boolean showScrollbar)
     {
         this.canDragScreen = canDrag;
         this.shouldEnlargeHovered = shouldEnlargeHovered;
@@ -116,56 +116,56 @@ public class EUICardGrid extends EUICanvasGrid
         return this;
     }
 
-    public EUICardGrid SetEnlargeOnHover(boolean shouldEnlargeHovered)
+    public EUICardGrid setEnlargeOnHover(boolean shouldEnlargeHovered)
     {
         this.shouldEnlargeHovered = shouldEnlargeHovered;
 
         return this;
     }
 
-    public EUICardGrid ShowScrollbar(boolean showScrollbar)
+    public EUICardGrid showScrollbar(boolean showScrollbar)
     {
         this.autoShowScrollbar = showScrollbar;
 
         return this;
     }
 
-    public EUICardGrid CanDragScreen(boolean canDrag)
+    public EUICardGrid canDragScreen(boolean canDrag)
     {
         this.canDragScreen = canDrag;
 
         return this;
     }
 
-    public EUICardGrid CanRenderUpgrades(boolean canRenderUpgrades)
+    public EUICardGrid canRenderUpgrades(boolean canRenderUpgrades)
     {
         this.canRenderUpgrades = canRenderUpgrades;
 
         return this;
     }
 
-    public EUICardGrid SetHorizontalAlignment(float percentage)
+    public EUICardGrid setHorizontalAlignment(float percentage)
     {
         this.draw_x = MathUtils.clamp(percentage, 0.35f, 0.55f);
-        this.scrollBar.SetPosition(ScreenW((percentage < 0.5f) ? 0.05f : 0.9f), ScreenH(0.5f));
+        this.scrollBar.setPosition(screenW((percentage < 0.5f) ? 0.05f : 0.9f), screenH(0.5f));
 
         return this;
     }
 
-    public EUICardGrid SetVerticalStart(float posY) {
+    public EUICardGrid setVerticalStart(float posY) {
         this.draw_top_y = posY;
 
         return this;
     }
 
-    public EUICardGrid SetCardScale(float startingScale, float targetScale) {
+    public EUICardGrid setCardScale(float startingScale, float targetScale) {
         this.starting_scale = startingScale;
         this.target_scale = targetScale;
 
         return this;
     }
 
-    public void Clear()
+    public void clear()
     {
         this.sizeCache = 0;
         this.hoveredCard = null;
@@ -179,31 +179,31 @@ public class EUICardGrid extends EUICanvasGrid
         this.upgradeCards.clear();
 
 
-        RefreshOffset();
+        refreshOffset();
     }
 
-    public EUICardGrid SetCardGroup(CardGroup cardGroup) {
+    public EUICardGrid setCardGroup(CardGroup cardGroup) {
         this.upgradeCards.clear();
         this.cards = cardGroup;
         for (AbstractCard c : cardGroup.group) {
             c.drawScale = starting_scale;
             c.targetDrawScale = target_scale;
-            AddUpgrade(c);
+            addUpgrade(c);
         }
         return this;
     }
 
-    public EUICardGrid AddCards(Iterable<AbstractCard> cards)
+    public EUICardGrid addCards(Iterable<AbstractCard> cards)
     {
         for (AbstractCard card : cards)
         {
-            AddCard(card);
+            addCard(card);
         }
 
         return this;
     }
 
-    public EUICardGrid AddCard(AbstractCard card)
+    public EUICardGrid addCard(AbstractCard card)
     {
         card.drawScale = starting_scale;
         card.targetDrawScale = target_scale;
@@ -214,18 +214,18 @@ public class EUICardGrid extends EUICanvasGrid
         return this;
     }
 
-    public EUICardGrid RemoveCard(AbstractCard card)
+    public EUICardGrid removeCard(AbstractCard card)
     {
         cards.removeCard(card);
 
         return this;
     }
 
-    protected void AddUpgrade(AbstractCard card) {
+    protected void addUpgrade(AbstractCard card) {
         if (canRenderUpgrades) {
             AbstractCard copy;
             if (card instanceof CacheableCard) {
-                copy = ((CacheableCard) card).GetCachedUpgrade();
+                copy = ((CacheableCard) card).getCachedUpgrade();
             }
             else {
                 copy = card.makeSameInstanceOf();
@@ -237,49 +237,49 @@ public class EUICardGrid extends EUICanvasGrid
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        super.Render(sb);
+        super.renderImpl(sb);
 
-        RenderCards(sb);
+        renderCards(sb);
 
         if (hoveredCard != null)
         {
             hoveredCard.renderHoverShadow(sb);
-            RenderCard(sb, hoveredCard);
+            renderCard(sb, hoveredCard);
             hoveredCard.renderCardTip(sb);
         }
 
         if (message != null)
         {
-            FontHelper.renderDeckViewTip(sb, message, Scale(96f), Settings.CREAM_COLOR);
+            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
         }
     }
 
-    protected void RenderCards(SpriteBatch sb) {
+    protected void renderCards(SpriteBatch sb) {
         for (int i = 0; i < cards.group.size(); i++)
         {
             AbstractCard card = cards.group.get(i);
             if (card != hoveredCard)
             {
-                RenderCard(sb, card);
+                renderCard(sb, card);
             }
         }
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        super.Update();
+        super.updateImpl();
 
-        UpdateCards();
-        UpdateNonMouseInput();
+        updateCards();
+        updateNonMouseInput();
 
-        if (hoveredCard != null && EUI.TryHover(hoveredCard.hb))
+        if (hoveredCard != null && EUI.tryHover(hoveredCard.hb))
         {
-            if (EUIInputManager.RightClick.IsJustPressed() && onCardRightClick != null)
+            if (EUIInputManager.RightClick.isJustPressed() && onCardRightClick != null)
             {
-                onCardRightClick.Invoke(hoveredCard);
+                onCardRightClick.invoke(hoveredCard);
                 return;
             }
 
@@ -294,13 +294,13 @@ public class EUICardGrid extends EUICanvasGrid
 
                 if (onCardClick != null)
                 {
-                    onCardClick.Invoke(hoveredCard);
+                    onCardClick.invoke(hoveredCard);
                 }
             }
         }
     }
 
-    protected void UpdateCards()
+    protected void updateCards()
     {
         hoveredCard = null;
 
@@ -333,7 +333,7 @@ public class EUICardGrid extends EUICanvasGrid
         }
     }
 
-    public void ForceUpdateCardPositions()
+    public void forceUpdateCardPositions()
     {
         int row = 0;
         int column = 0;
@@ -354,24 +354,24 @@ public class EUICardGrid extends EUICanvasGrid
         }
     }
 
-    protected void UpdateNonMouseInput()
+    protected void updateNonMouseInput()
     {
-        if (EUIInputManager.IsUsingNonMouseControl())
+        if (EUIInputManager.isUsingNonMouseControl())
         {
             int targetIndex = hoveredIndex;
-            if (EUIInputManager.DidInputDown())
+            if (EUIInputManager.didInputDown())
             {
                 targetIndex += rowSize;
             }
-            if (EUIInputManager.DidInputUp())
+            if (EUIInputManager.didInputUp())
             {
                 targetIndex -= rowSize;
             }
-            if (EUIInputManager.DidInputLeft())
+            if (EUIInputManager.didInputLeft())
             {
                 targetIndex -= 1;
             }
-            if (EUIInputManager.DidInputRight())
+            if (EUIInputManager.didInputRight())
             {
                 targetIndex += 1;
             }
@@ -382,22 +382,22 @@ public class EUICardGrid extends EUICanvasGrid
                 AbstractCard card = cards.group.get(targetIndex);
                 if (card != null)
                 {
-                    float distance = GetScrollDistance(card, targetIndex);
+                    float distance = getScrollDistance(card, targetIndex);
                     if (distance != 0)
                     {
-                        this.scrollBar.Scroll(scrollBar.currentScrollPercent + distance, true);
+                        this.scrollBar.scroll(scrollBar.currentScrollPercent + distance, true);
                     }
-                    EUIInputManager.SetCursor(card.hb.cX, distance == 0 ? Settings.HEIGHT - card.hb.cY : Gdx.input.getY());
+                    EUIInputManager.setCursor(card.hb.cX, distance == 0 ? Settings.HEIGHT - card.hb.cY : Gdx.input.getY());
                 }
             }
         }
     }
 
-    protected float GetScrollDistance(AbstractCard card, int index)
+    protected float getScrollDistance(AbstractCard card, int index)
     {
         if (card != null)
         {
-            float scrollDistance = 1f / GetRowCount();
+            float scrollDistance = 1f / getRowCount();
             if (card.target_y > draw_top_y)
             {
                 return -scrollDistance;
@@ -410,7 +410,7 @@ public class EUICardGrid extends EUICanvasGrid
         return 0;
     }
 
-    protected void RenderCard(SpriteBatch sb, AbstractCard card)
+    protected void renderCard(SpriteBatch sb, AbstractCard card)
     {
         // renderInLibrary continually creates copies of upgraded cards -_-
         // So we use a cache of the upgraded cards to show in compendium screens
@@ -429,14 +429,14 @@ public class EUICardGrid extends EUICanvasGrid
 
         if (onCardRender != null)
         {
-            onCardRender.Invoke(sb, card);
+            onCardRender.invoke(sb, card);
         }
     }
 
     @Override
-    public void RefreshOffset()
+    public void refreshOffset()
     {
-        sizeCache = CurrentSize();
+        sizeCache = currentSize();
         upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
 
         if (sizeCache > rowSize * 2)
@@ -447,15 +447,15 @@ public class EUICardGrid extends EUICanvasGrid
     }
 
     @Override
-    public boolean IsHovered() {return super.IsHovered() || hoveredCard != null;}
+    public boolean isHovered() {return super.isHovered() || hoveredCard != null;}
 
     @Override
-    public int CurrentSize()
+    public int currentSize()
     {
         return cards.size();
     }
 
-    public int GetRowCount() {
+    public int getRowCount() {
         return (this.cards.size() - 1) / rowSize;
     }
 }

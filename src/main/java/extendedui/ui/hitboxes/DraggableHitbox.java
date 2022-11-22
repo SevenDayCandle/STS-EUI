@@ -51,14 +51,14 @@ public class DraggableHitbox extends AdvancedHitbox
         this.max_y = Settings.HEIGHT + (height * 0.25f);
     }
 
-    public DraggableHitbox SetPosition(float cX, float cY)
+    public DraggableHitbox setPosition(float cX, float cY)
     {
         move(cX, cY);
 
         return this;
     }
 
-    public DraggableHitbox SetBounds(float min_x, float max_x, float min_y, float max_y)
+    public DraggableHitbox setBounds(float min_x, float max_x, float min_y, float max_y)
     {
         this.min_x = min_x;
         this.max_x = max_x;
@@ -68,7 +68,7 @@ public class DraggableHitbox extends AdvancedHitbox
         return this;
     }
 
-    public DraggableHitbox SetOnDragFinish(ActionT1<DraggableHitbox> onDragFinish) {
+    public DraggableHitbox setOnDragFinish(ActionT1<DraggableHitbox> onDragFinish) {
         this.onDragFinish = onDragFinish;
         return this;
     }
@@ -87,7 +87,7 @@ public class DraggableHitbox extends AdvancedHitbox
             {
                 if (InputHelper.justClickedLeft)
                 {
-                    if (EUI.TryDragging())
+                    if (EUI.tryDragging())
                     {
                         dragStart = new Vector2(mX, mY);
                         return;
@@ -95,10 +95,10 @@ public class DraggableHitbox extends AdvancedHitbox
                 }
                 else if (!InputHelper.justReleasedClickLeft && dragStart != null)
                 {
-                    target_cX = Math.min(max_x, Math.max(min_x, target_cX + (mX - dragStart.x)));
-                    target_cY = Math.min(max_y, Math.max(min_y, target_cY + (mY - dragStart.y)));
+                    targetCx = Math.min(max_x, Math.max(min_x, targetCx + (mX - dragStart.x)));
+                    targetCy = Math.min(max_y, Math.max(min_y, targetCy + (mY - dragStart.y)));
 
-                    if (EUI.TryDragging())
+                    if (EUI.tryDragging())
                     {
                         dragStart.set(mX, mY);
                         return;
@@ -116,19 +116,19 @@ public class DraggableHitbox extends AdvancedHitbox
                 float cxPercentage = cX * 100f / Settings.WIDTH;
                 float cyPercentage = cY * 100f / Settings.HEIGHT;
 
-                EUIUtils.LogInfo(this, "x  = {0}({1}%) , y  = {2}({3}%)", x, xPercentage, y, yPercentage);
-                EUIUtils.LogInfo(this, "cX = {0}({1}%) , cY = {2}({3}%)", cX, cxPercentage, cY, cyPercentage);
+                EUIUtils.logInfo(this, "x  = {0}({1}%) , y  = {2}({3}%)", x, xPercentage, y, yPercentage);
+                EUIUtils.logInfo(this, "cX = {0}({1}%) , cY = {2}({3}%)", cX, cxPercentage, cY, cyPercentage);
             }
 
             if (onDragFinish != null) {
-                onDragFinish.Invoke(this);
+                onDragFinish.invoke(this);
             }
 
             dragStart = null;
         }
     }
 
-    public boolean IsDragging()
+    public boolean isDragging()
     {
         return dragStart != null;
     }

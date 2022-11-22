@@ -6,7 +6,7 @@ import imgui.ImVec2;
 import imgui.flag.ImGuiCond;
 import imgui.type.ImBoolean;
 
-import static extendedui.ui.EUIBase.Scale;
+import static extendedui.ui.EUIBase.scale;
 
 public class DEUICloseableWindow extends DEUIWindow
 {
@@ -14,7 +14,7 @@ public class DEUICloseableWindow extends DEUIWindow
 
     public DEUICloseableWindow(String id)
     {
-        this(id, 0, 0, Scale(100), Scale(100), ImGuiCond.FirstUseEver);
+        this(id, 0, 0, scale(100), scale(100), ImGuiCond.FirstUseEver);
     }
 
     public DEUICloseableWindow(String id, float x, float y, float width, float height, int setMode)
@@ -22,25 +22,25 @@ public class DEUICloseableWindow extends DEUIWindow
         super(id, x, y, width, height, setMode);
     }
 
-    public DEUICloseableWindow SetDimensions(float x, float y, float width, float height)
+    public DEUICloseableWindow setDimensions(float x, float y, float width, float height)
     {
-        super.SetDimensions(x, y, width, height);
+        super.setDimensions(x, y, width, height);
         return this;
     }
 
-    public DEUICloseableWindow SetSetMode(int mode)
+    public DEUICloseableWindow setSetMode(int mode)
     {
-        super.SetSetMode(mode);
+        super.setSetMode(mode);
         return this;
     }
 
-    public DEUICloseableWindow Link(DEUIToggle toggle)
+    public DEUICloseableWindow link(DEUIToggle toggle)
     {
         this.value = toggle.value;
         return this;
     }
 
-    public void Render(ActionT0 onRender)
+    public void render(ActionT0 onRender)
     {
         if (value.get())
         {
@@ -49,7 +49,7 @@ public class DEUICloseableWindow extends DEUIWindow
             ImGui.setNextWindowSize(width, height, setMode);
             if (ImGui.begin(ID, value))
             {
-                onRender.Invoke();
+                onRender.invoke();
             }
             ImGui.end();
         }

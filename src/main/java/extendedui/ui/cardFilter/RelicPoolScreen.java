@@ -12,8 +12,8 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
-import extendedui.EUIUtils;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIRelicGrid;
@@ -33,92 +33,92 @@ public class RelicPoolScreen extends AbstractScreen
     public RelicPoolScreen()
     {
         relicGrid = (EUIRelicGrid) new EUIStaticRelicGrid()
-                .SetOnRelicRightClick(c -> {
+                .setOnRelicRightClick(c -> {
                     c.hb.unhover();
                     CardCrawlGame.relicPopup.open(c);
                 })
-                .SetVerticalStart(Settings.HEIGHT * 0.74f)
-                .ShowScrollbar(true);
+                .setVerticalStart(Settings.HEIGHT * 0.74f)
+                .showScrollbar(true);
 
-        this.swapScreen = new EUIButton(EUIRM.Images.HexagonalButton.Texture(),
-                new AdvancedHitbox(Scale(210), Scale(43)))
-                .SetPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
-                .SetFont(FontHelper.buttonLabelFont, 0.8f)
-                .SetColor(Color.GRAY)
-                .SetBorder(EUIRM.Images.HexagonalButtonBorder.Texture(), Color.GRAY)
-                .SetOnClick(() -> EUI.CardsScreen.Open(AbstractDungeon.player, CardPoolPanelItem.GetAllCards()))
-                .SetText(EUIRM.Strings.UIPool_ViewCardPool);
+        this.swapScreen = new EUIButton(EUIRM.Images.HexagonalButton.texture(),
+                new AdvancedHitbox(scale(210), scale(43)))
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
+                .setFont(FontHelper.buttonLabelFont, 0.8f)
+                .setColor(Color.GRAY)
+                .setBorder(EUIRM.Images.HexagonalButtonBorder.texture(), Color.GRAY)
+                .setOnClick(() -> EUI.CardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
+                .setText(EUIRM.Strings.UIPool_ViewCardPool);
     }
 
-    public void Open(AbstractPlayer player, ArrayList<AbstractRelic> relics)
+    public void open(AbstractPlayer player, ArrayList<AbstractRelic> relics)
     {
-        super.Open(false, true);
+        super.open(false, true);
 
-        relicGrid.Clear();
+        relicGrid.clear();
         if (relics.isEmpty())
         {
             AbstractDungeon.closeCurrentScreen();
             return;
         }
 
-        relicGrid.SetRelics(relics);
-        EUI.RelicHeader.SetGrid(relicGrid).SnapToGroup(false);
-        EUI.RelicFilters.Initialize(__ -> {
-            EUI.RelicHeader.UpdateForFilters();
+        relicGrid.setRelics(relics);
+        EUI.RelicHeader.setGrid(relicGrid).snapToGroup(false);
+        EUI.RelicFilters.initialize(__ -> {
+            EUI.RelicHeader.updateForFilters();
             if (CustomModule != null) {
-                CustomModule.Open(EUI.RelicHeader.GetRelics());
+                CustomModule.open(EUI.RelicHeader.getRelics());
             }
-            relicGrid.ForceUpdateRelicPositions();
-        }, EUI.RelicHeader.GetOriginalRelics(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
-        EUI.RelicHeader.UpdateForFilters();
+            relicGrid.forceUpdateRelicPositions();
+        }, EUI.RelicHeader.getOriginalRelics(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
+        EUI.RelicHeader.updateForFilters();
 
-        if (EUIGameUtils.InGame())
+        if (EUIGameUtils.inGame())
         {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
 
-        CustomModule = EUI.GetCustomRelicPoolModule(player);
+        CustomModule = EUI.getCustomRelicPoolModule(player);
         if (CustomModule != null) {
-            CustomModule.SetActive(true);
-            CustomModule.Open(EUIUtils.Map(relicGrid.relicGroup, r -> r.relic));
+            CustomModule.setActive(true);
+            CustomModule.open(EUIUtils.map(relicGrid.relicGroup, r -> r.relic));
         }
 
     }
 
     @Override
-    public void Reopen()
+    public void reopen()
     {
-        if (EUIGameUtils.InGame())
+        if (EUIGameUtils.inGame())
         {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        if (!EUI.RelicFilters.TryUpdate() && !CardCrawlGame.isPopupOpen) {
-            relicGrid.TryUpdate();
-            swapScreen.Update();
-            EUI.RelicHeader.Update();
-            EUI.OpenRelicFiltersButton.TryUpdate();
+        if (!EUI.RelicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
+            relicGrid.tryUpdate();
+            swapScreen.updateImpl();
+            EUI.RelicHeader.updateImpl();
+            EUI.OpenRelicFiltersButton.tryUpdate();
             if (CustomModule != null) {
-                CustomModule.TryUpdate();
+                CustomModule.tryUpdate();
             }
         }
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        relicGrid.TryRender(sb);
-        swapScreen.Render(sb);
-        EUI.RelicHeader.Render(sb);
+        relicGrid.tryRender(sb);
+        swapScreen.renderImpl(sb);
+        EUI.RelicHeader.renderImpl(sb);
         if (!EUI.RelicFilters.isActive) {
-            EUI.OpenRelicFiltersButton.TryRender(sb);
+            EUI.OpenRelicFiltersButton.tryRender(sb);
         }
         if (CustomModule != null) {
-            CustomModule.TryRender(sb);
+            CustomModule.tryRender(sb);
         }
     }
 }

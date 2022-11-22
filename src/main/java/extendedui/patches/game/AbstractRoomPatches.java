@@ -14,11 +14,11 @@ public class AbstractRoomPatches
     public static class AbstractRoom_Update
     {
         @SpirePrefixPatch
-        public static void Prefix()
+        public static void prefix()
         {
             // Pressing Esc with the card filters open on the master deck screen will open the settings screen before the filters update, so we need a check here too
-            if (EUI.CardFilters.TryUpdate() && (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MASTER_DECK_VIEW || AbstractDungeon.screen != EUI_SCREEN )) {
-                EUI.CardFilters.Close();
+            if (EUI.CardFilters.tryUpdate() && (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MASTER_DECK_VIEW || AbstractDungeon.screen != EUI_SCREEN )) {
+                EUI.CardFilters.close();
             }
         }
     }

@@ -17,11 +17,11 @@ public class PotionPopUpPatches {
     {
 
         @SpireInsertPatch(locator = Locator.class)
-        public static SpireReturn<Void> Insert(PotionPopUp __instance)
+        public static SpireReturn<Void> insert(PotionPopUp __instance)
         {
-            TooltipProvider p = EUIUtils.SafeCast(EUIClassUtils.GetField(__instance, "x"), TooltipProvider.class);
+            TooltipProvider p = EUIUtils.safeCast(EUIClassUtils.getField(__instance, "x"), TooltipProvider.class);
             if (p != null) {
-                EUITooltip.QueueTooltips(p.GetTips(), EUIClassUtils.GetFieldAsType(__instance, "x", Float.class) + 180.0F * Settings.scale, EUIClassUtils.GetFieldAsType(__instance, "y", Float.class)  + 70.0F * Settings.scale);
+                EUITooltip.queueTooltips(p.getTips(), EUIClassUtils.getFieldAsType(__instance, "x", Float.class) + 180.0F * Settings.scale, EUIClassUtils.getFieldAsType(__instance, "y", Float.class)  + 70.0F * Settings.scale);
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();

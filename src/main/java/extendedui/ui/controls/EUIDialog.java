@@ -43,120 +43,120 @@ public abstract class EUIDialog<T> extends EUIHoverable
         this.backgroundImage = new EUIImage(backgroundTexture, hb);
         this.header = new EUILabel(FontHelper.buttonLabelFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.9f, false))
-                .SetAlignment(0.5f,0.5f,false)
-                .SetText(headerText);
+                .setAlignment(0.5f,0.5f,false)
+                .setLabel(headerText);
         this.description = new EUILabel(EUIFontHelper.CardTooltipFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.1f, hb.height * 0.7f, false))
-                .SetAlignment(0.5f,0.5f,true)
-                .SetSmartText(true, false)
-                .SetText(descriptionText);
-        this.confirm = GetConfirmButton();
-        this.cancel = GetCancelButton();
+                .setAlignment(0.5f,0.5f,true)
+                .setSmartText(true, false)
+                .setLabel(descriptionText);
+        this.confirm = getConfirmButton();
+        this.cancel = getCancelButton();
     }
 
-    protected EUIButton GetConfirmButton() {
+    protected EUIButton getConfirmButton() {
         return new EUIButton(ImageMaster.OPTION_YES,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.1f, hb.height * 0.05f, false))
-                .SetFont(EUIFontHelper.CardTitleFont_Normal, 1f)
-                .SetText(TEXT[2])
-                .SetOnClick(() -> {
+                .setFont(EUIFontHelper.CardTitleFont_Normal, 1f)
+                .setText(TEXT[2])
+                .setOnClick(() -> {
                     if (onComplete != null) {
-                        onComplete.Invoke(GetConfirmValue());
+                        onComplete.invoke(getConfirmValue());
                     }
                 });
     }
 
-    protected EUIButton GetCancelButton() {
+    protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.9f, hb.height * 0.05f, false))
-                .SetFont(EUIFontHelper.CardTitleFont_Normal, 1f)
-                .SetText(TEXT[3])
-                .SetOnClick(() -> {
+                .setFont(EUIFontHelper.CardTitleFont_Normal, 1f)
+                .setText(TEXT[3])
+                .setOnClick(() -> {
                     if (onComplete != null) {
-                        onComplete.Invoke(GetCancelValue());
+                        onComplete.invoke(getCancelValue());
                     }
                 });
     }
 
-    public EUIDialog<T> SetDescriptionProperties(BitmapFont font, float fontScale, Color textColor) {
-        return this.SetDescriptionProperties(font, fontScale, textColor, false);
+    public EUIDialog<T> setDescriptionProperties(BitmapFont font, float fontScale, Color textColor) {
+        return this.setDescriptionProperties(font, fontScale, textColor, false);
     }
 
-    public EUIDialog<T> SetDescriptionProperties(BitmapFont font, float fontScale, Color textColor, boolean smartText) {
-        this.description.SetFont(font, fontScale).SetColor(textColor).SetSmartText(smartText);
+    public EUIDialog<T> setDescriptionProperties(BitmapFont font, float fontScale, Color textColor, boolean smartText) {
+        this.description.setFont(font, fontScale).setColor(textColor).setSmartText(smartText);
         return this;
     }
 
-    public EUIDialog<T> SetDescriptionText(String text) {
-        description.SetText(text);
+    public EUIDialog<T> setDescriptionText(String text) {
+        description.setLabel(text);
         return this;
     }
 
-    public EUIDialog<T> SetHeaderProperties(BitmapFont font, float fontScale, Color textColor) {
-        return this.SetHeaderProperties(font, fontScale, textColor, false);
+    public EUIDialog<T> setHeaderProperties(BitmapFont font, float fontScale, Color textColor) {
+        return this.setHeaderProperties(font, fontScale, textColor, false);
     }
 
-    public EUIDialog<T> SetHeaderProperties(BitmapFont font, float fontScale, Color textColor, boolean smartText) {
-        this.header.SetFont(font, fontScale).SetColor(textColor).SetSmartText(smartText);
+    public EUIDialog<T> setHeaderProperties(BitmapFont font, float fontScale, Color textColor, boolean smartText) {
+        this.header.setFont(font, fontScale).setColor(textColor).setSmartText(smartText);
         return this;
     }
 
-    public EUIDialog<T> SetCancelText(String text) {
-        confirm.SetText(text);
+    public EUIDialog<T> setCancelText(String text) {
+        confirm.setText(text);
         return this;
     }
 
-    public EUIDialog<T> SetConfirmText(String text) {
-        cancel.SetText(text);
+    public EUIDialog<T> setConfirmText(String text) {
+        cancel.setText(text);
         return this;
     }
 
-    public EUIDialog<T> SetHeaderText(String text) {
-        header.SetText(text);
+    public EUIDialog<T> setHeaderText(String text) {
+        header.setLabel(text);
         return this;
     }
 
-    public EUIDialog<T> SetOnComplete(ActionT1<T> onComplete) {
+    public EUIDialog<T> setOnComplete(ActionT1<T> onComplete) {
         this.onComplete = onComplete;
         return this;
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        super.Update();
-        this.header.TryUpdate();
-        this.description.TryUpdate();
-        this.confirm.TryUpdate();
-        this.cancel.TryUpdate();
+        super.updateImpl();
+        this.header.tryUpdate();
+        this.description.tryUpdate();
+        this.confirm.tryUpdate();
+        this.cancel.tryUpdate();
 
         if (CInputActionSet.proceed.isJustPressed()) {
             CInputActionSet.proceed.unpress();
             if (onComplete != null) {
-                onComplete.Invoke(GetConfirmValue());
+                onComplete.invoke(getConfirmValue());
             }
         }
 
         if (CInputActionSet.cancel.isJustPressed()) {
             CInputActionSet.cancel.unpress();
             if (onComplete != null) {
-                onComplete.Invoke(GetCancelValue());
+                onComplete.invoke(getCancelValue());
             }
         }
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
         sb.setColor(DARKENED_SCREEN);
         sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float) Settings.WIDTH, (float)Settings.HEIGHT);
         sb.setColor(Color.WHITE);
-        this.backgroundImage.TryRender(sb);
+        this.backgroundImage.tryRender(sb);
 
-        this.header.TryRender(sb);
-        this.description.TryRender(sb);
-        this.confirm.TryRender(sb);
-        this.cancel.TryRender(sb);
+        this.header.tryRender(sb);
+        this.description.tryRender(sb);
+        this.confirm.tryRender(sb);
+        this.cancel.tryRender(sb);
 
         if (Settings.isControllerMode) {
             sb.draw(CInputActionSet.proceed.getKeyImg(), this.confirm.hb.cX, this.confirm.hb.cY - 32.0F, 32.0F, 32.0F, 64.0F, 64.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 64, 64, false, false);
@@ -164,6 +164,6 @@ public abstract class EUIDialog<T> extends EUIHoverable
         }
     }
 
-    public abstract T GetConfirmValue();
-    public abstract T GetCancelValue();
+    public abstract T getConfirmValue();
+    public abstract T getCancelValue();
 }

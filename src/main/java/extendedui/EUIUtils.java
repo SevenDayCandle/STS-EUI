@@ -29,7 +29,7 @@ public class EUIUtils
     public static final String LEGACY_DOUBLE_SPLIT_LINE = " NL  NL ";
     public static final String SPLIT_LINE = " | ";
 
-    public static boolean All(CharSequence sequence, Predicate<Character> func)
+    public static boolean all(CharSequence sequence, Predicate<Character> func)
     {
         for (int i = 0; i < sequence.length(); i++)
         {
@@ -41,7 +41,7 @@ public class EUIUtils
         return true;
     }
 
-    public static <T> boolean All(T[] list, Predicate<T> predicate)
+    public static <T> boolean all(T[] list, Predicate<T> predicate)
     {
         for (T t : list)
         {
@@ -54,7 +54,7 @@ public class EUIUtils
         return true;
     }
 
-    public static <T> boolean All(Iterable<T> list, Predicate<T> predicate)
+    public static <T> boolean all(Iterable<T> list, Predicate<T> predicate)
     {
         for (T t : list)
         {
@@ -67,7 +67,7 @@ public class EUIUtils
         return true;
     }
 
-    public static boolean Any(CharSequence sequence, Predicate<Character> func)
+    public static boolean any(CharSequence sequence, Predicate<Character> func)
     {
         for (int i = 0; i < sequence.length(); i++)
         {
@@ -79,7 +79,7 @@ public class EUIUtils
         return false;
     }
 
-    public static <T> boolean Any(T[] list, Predicate<T> predicate)
+    public static <T> boolean any(T[] list, Predicate<T> predicate)
     {
         for (T t : list)
         {
@@ -92,7 +92,7 @@ public class EUIUtils
         return false;
     }
 
-    public static <T> boolean Any(Iterable<T> list, Predicate<T> predicate)
+    public static <T> boolean any(Iterable<T> list, Predicate<T> predicate)
     {
         for (T t : list)
         {
@@ -106,20 +106,20 @@ public class EUIUtils
     }
 
     @SafeVarargs
-    public static <T> T[] Array(T... items)
+    public static <T> T[] array(T... items)
     {
         return items;
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] ArrayMap(T[] list, FuncT1<N, T> predicate)
+    public static <T, N> N[] arrayMap(T[] list, FuncT1<N, T> predicate)
     {
         if (list != null)
         {
             final N[] res = (N[]) new Object[list.length];
             for (int i = 0; i < list.length; i++)
             {
-                res[i] = predicate.Invoke(list[i]);
+                res[i] = predicate.invoke(list[i]);
             }
             return res;
         }
@@ -128,14 +128,14 @@ public class EUIUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] ArrayMap(List<T> list, FuncT1<N, T> predicate)
+    public static <T, N> N[] arrayMap(List<T> list, FuncT1<N, T> predicate)
     {
         if (list != null)
         {
             final N[] res = (N[]) new Object[list.size()];
             for (int i = 0; i < list.size(); i++)
             {
-                res[i] = predicate.Invoke(list.get(i));
+                res[i] = predicate.invoke(list.get(i));
             }
             return res;
         }
@@ -144,7 +144,7 @@ public class EUIUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] ArrayMapAsNonnull(T[] list, FuncT1<N, T> predicate)
+    public static <T, N> N[] arrayMapAsNonnull(T[] list, FuncT1<N, T> predicate)
     {
         if (list != null)
         {
@@ -154,7 +154,7 @@ public class EUIUtils
                 T t = list[i];
                 if (t != null)
                 {
-                    res[i] = predicate.Invoke(t);
+                    res[i] = predicate.invoke(t);
                 }
             }
             return res;
@@ -164,7 +164,7 @@ public class EUIUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] ArrayMapAsNonnull(List<T> list, FuncT1<N, T> predicate)
+    public static <T, N> N[] arrayMapAsNonnull(List<T> list, FuncT1<N, T> predicate)
     {
         if (list != null)
         {
@@ -174,7 +174,7 @@ public class EUIUtils
                 T t = list.get(i);
                 if (t != null)
                 {
-                    res[i] = predicate.Invoke(t);
+                    res[i] = predicate.invoke(t);
                 }
             }
             return res;
@@ -183,12 +183,12 @@ public class EUIUtils
         return (N[]) new Object[]{};
     }
 
-    public static String Capitalize(String text)
+    public static String capitalize(String text)
     {
         return text.length() <= 1 ? text.toUpperCase() : TipHelper.capitalize(text);
     }
 
-    public static <T> void ChangeIndex(T item, List<T> list, int index)
+    public static <T> void changeIndex(T item, List<T> list, int index)
     {
         if (list.remove(item))
         {
@@ -196,7 +196,7 @@ public class EUIUtils
         }
     }
 
-    public static <T> int Count(Iterable<T> list, Predicate<T> predicate)
+    public static <T> int count(Iterable<T> list, Predicate<T> predicate)
     {
 
         int count = 0;
@@ -211,17 +211,17 @@ public class EUIUtils
         return count;
     }
 
-    public static <T> T Deserialize(String s, Class<T> tokenClass)
+    public static <T> T deserialize(String s, Class<T> tokenClass)
     {
         return GsonReader.fromJson(s, tokenClass);
     }
 
-    public static <T> T Deserialize(String s, Type token)
+    public static <T> T deserialize(String s, Type token)
     {
         return GsonReader.fromJson(s, token);
     }
 
-    public static <T> ArrayList<T> Filter(T[] array, Predicate<T> predicate)
+    public static <T> ArrayList<T> filter(T[] array, Predicate<T> predicate)
     {
         final ArrayList<T> res = new ArrayList<>();
         for (T t : array)
@@ -235,7 +235,7 @@ public class EUIUtils
         return res;
     }
 
-    public static <T> ArrayList<T> Filter(Iterable<T> list, Predicate<T> predicate)
+    public static <T> ArrayList<T> filter(Iterable<T> list, Predicate<T> predicate)
     {
         final ArrayList<T> res = new ArrayList<>();
         for (T t : list)
@@ -249,7 +249,7 @@ public class EUIUtils
         return res;
     }
 
-    public static <T> T Find(T[] array, Predicate<T> predicate)
+    public static <T> T find(T[] array, Predicate<T> predicate)
     {
         for (T t : array)
         {
@@ -262,7 +262,7 @@ public class EUIUtils
         return null;
     }
 
-    public static <T> T Find(Iterable<T> list, Predicate<T> predicate)
+    public static <T> T find(Iterable<T> list, Predicate<T> predicate)
     {
         for (T t : list)
         {
@@ -275,7 +275,7 @@ public class EUIUtils
         return null;
     }
 
-    public static <T, N extends Comparable<N>> T FindMax(Iterable<T> list, FuncT1<N, T> getProperty)
+    public static <T, N extends Comparable<N>> T findMax(Iterable<T> list, FuncT1<N, T> getProperty)
     {
         N best = null;
         T result = null;
@@ -283,7 +283,7 @@ public class EUIUtils
         {
             if (t != null)
             {
-                N prop = getProperty.Invoke(t);
+                N prop = getProperty.invoke(t);
                 if (prop != null && (best == null || prop.compareTo(best) > 0))
                 {
                     best = prop;
@@ -295,7 +295,7 @@ public class EUIUtils
         return result;
     }
 
-    public static <T, N extends Comparable<N>> T FindMax(T[] list, FuncT1<N, T> getProperty)
+    public static <T, N extends Comparable<N>> T findMax(T[] list, FuncT1<N, T> getProperty)
     {
         N best = null;
         T result = null;
@@ -303,7 +303,7 @@ public class EUIUtils
         {
             if (t != null)
             {
-                N prop = getProperty.Invoke(t);
+                N prop = getProperty.invoke(t);
                 if (prop != null && (best == null || prop.compareTo(best) > 0))
                 {
                     best = prop;
@@ -315,7 +315,7 @@ public class EUIUtils
         return result;
     }
 
-    public static <T, N extends Comparable<N>> T FindMin(Iterable<T> list, FuncT1<N, T> getProperty)
+    public static <T, N extends Comparable<N>> T findMin(Iterable<T> list, FuncT1<N, T> getProperty)
     {
         N best = null;
         T result = null;
@@ -323,7 +323,7 @@ public class EUIUtils
         {
             if (t != null)
             {
-                N prop = getProperty.Invoke(t);
+                N prop = getProperty.invoke(t);
                 if (prop != null && (best == null || prop.compareTo(best) < 0))
                 {
                     best = prop;
@@ -335,7 +335,7 @@ public class EUIUtils
         return result;
     }
 
-    public static <T, N extends Comparable<N>> T FindMin(T[] list, FuncT1<N, T> getProperty)
+    public static <T, N extends Comparable<N>> T findMin(T[] list, FuncT1<N, T> getProperty)
     {
         N best = null;
         T result = null;
@@ -343,7 +343,7 @@ public class EUIUtils
         {
             if (t != null)
             {
-                N prop = getProperty.Invoke(t);
+                N prop = getProperty.invoke(t);
                 if (prop != null && (best == null || prop.compareTo(best) < 0))
                 {
                     best = prop;
@@ -356,14 +356,14 @@ public class EUIUtils
     }
 
     @SafeVarargs
-    public static <T> ArrayList<T> Flatten(Collection<T>... lists)
+    public static <T> ArrayList<T> flatten(Collection<T>... lists)
     {
         return Stream.of(lists)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public static <T> ArrayList<T> FlattenList(Collection<? extends Collection<T>> lists)
+    public static <T> ArrayList<T> flattenList(Collection<? extends Collection<T>> lists)
     {
         ArrayList<T> t = new ArrayList<>();
         for (Collection<T> list : lists)
@@ -373,16 +373,16 @@ public class EUIUtils
         return t;
     }
 
-    public static <T> void ForEach(Iterable<T> list, ActionT1<T> action)
+    public static <T> void forEach(Iterable<T> list, ActionT1<T> action)
     {
         for (T t : list)
         {
-            action.Invoke(t);
+            action.invoke(t);
         }
     }
 
     // Simple string Formatting in which integers inside curly braces are replaced by args[B].
-    public static String Format(String format, Object... args)
+    public static String format(String format, Object... args)
     {
         if (StringUtils.isEmpty(format))
         {
@@ -421,7 +421,7 @@ public class EUIUtils
                         }
                         else
                         {
-                            index = EUIUtils.ParseInt(sb2.toString(), -1);
+                            index = EUIUtils.parseInt(sb2.toString(), -1);
                         }
 
                         if (index >= 0 && index < args.length)
@@ -430,7 +430,7 @@ public class EUIUtils
                         }
                         else
                         {
-                            EUIUtils.LogError(EUIUtils.class, "Invalid format: " + format + "\n" + JoinStrings(", ", args));
+                            EUIUtils.logError(EUIUtils.class, "Invalid format: " + format + "\n" + joinStrings(", ", args));
                         }
 
                         i = j;
@@ -451,7 +451,7 @@ public class EUIUtils
         return sb1.toString();
     }
 
-    public static Logger GetLogger(Object source)
+    public static Logger getLogger(Object source)
     {
         if (source == null)
         {
@@ -461,37 +461,37 @@ public class EUIUtils
         return LogManager.getLogger((source instanceof Class) ? ((Class) source).getName() : source.getClass().getName());
     }
 
-    public static <K, V> Map<K, List<V>> Group(Iterable<V> list, FuncT1<K, V> getKey)
+    public static <K, V> Map<K, List<V>> group(Iterable<V> list, FuncT1<K, V> getKey)
     {
         final Map<K, List<V>> map = new HashMap<>();
         for (V v : list)
         {
-            K k = getKey.Invoke(v);
+            K k = getKey.invoke(v);
             map.computeIfAbsent(k, key -> new ArrayList<>()).add(v);
         }
 
         return map;
     }
 
-    public static <K, V, C> Map<K, C> Group(Iterable<V> list, FuncT1<K, V> getKey, ActionT3<K, V, C> add)
+    public static <K, V, C> Map<K, C> group(Iterable<V> list, FuncT1<K, V> getKey, ActionT3<K, V, C> add)
     {
         final Map<K, C> map = new HashMap<>();
         for (V v : list)
         {
-            K k = getKey.Invoke(v);
-            add.Invoke(k, v, map.get(k));
+            K k = getKey.invoke(v);
+            add.invoke(k, v, map.get(k));
         }
 
         return map;
     }
 
-    public static int IncrementMapElement(Map map, Object key)
+    public static int incrementMapElement(Map map, Object key)
     {
         //noinspection unchecked
         return (int) map.compute(key, (k, v) -> v == null ? 1 : (int) v + 1);
     }
 
-    public static int IncrementMapElement(Map map, Object key, int amount)
+    public static int incrementMapElement(Map map, Object key, int amount)
     {
         if (map.containsKey(key))
         {
@@ -503,34 +503,34 @@ public class EUIUtils
         return amount;
     }
 
-    public static <T> String InvokeBuilder(StringBuilder stringBuilder)
+    public static <T> String invokeBuilder(StringBuilder stringBuilder)
     {
         String result = stringBuilder.toString();
         stringBuilder.setLength(0);
         return result;
     }
 
-    public static boolean IsNotEmpty(List list)
+    public static boolean isNotEmpty(List list)
     {
         return list != null && list.size() > 0;
     }
 
-    public static boolean IsNullOrEmpty(List list)
+    public static boolean isNullOrEmpty(List list)
     {
         return list == null || list.isEmpty();
     }
 
-    public static <T> boolean IsNullOrEmpty(T[] list)
+    public static <T> boolean isNullOrEmpty(T[] list)
     {
         return list == null || list.length == 0;
     }
 
-    public static boolean IsNullOrZero(Number number)
+    public static boolean isNullOrZero(Number number)
     {
         return number == null || number.intValue() == 0;
     }
 
-    public static <T> String JoinStrings(String delimiter, Iterable<T> values)
+    public static <T> String joinStrings(String delimiter, Iterable<T> values)
     {
         final StringJoiner sj = new StringJoiner(delimiter);
         for (T value : values)
@@ -542,7 +542,7 @@ public class EUIUtils
     }
 
     @SafeVarargs
-    public static <T> String JoinStrings(String delimiter, T... values)
+    public static <T> String joinStrings(String delimiter, T... values)
     {
         final StringJoiner sj = new StringJoiner(delimiter);
         for (T value : values)
@@ -553,7 +553,7 @@ public class EUIUtils
         return sj.toString();
     }
 
-    public static <T> String JoinTrueStrings(String delimiter, Iterable<T> values)
+    public static <T> String joinTrueStrings(String delimiter, Iterable<T> values)
     {
         final StringJoiner sj = new StringJoiner(delimiter);
         for (T value : values)
@@ -572,7 +572,7 @@ public class EUIUtils
     }
 
     @SafeVarargs
-    public static <T> String JoinTrueStrings(String delimiter, T... values)
+    public static <T> String joinTrueStrings(String delimiter, T... values)
     {
         final StringJoiner sj = new StringJoiner(delimiter);
         for (T value : values)
@@ -591,107 +591,107 @@ public class EUIUtils
     }
 
     @SafeVarargs
-    public static <T> List<T> List(T... items)
+    public static <T> List<T> list(T... items)
     {
         return Arrays.asList(items);
     }
 
-    public static void LogError(Object source, Object message)
+    public static void logError(Object source, Object message)
     {
-        GetLogger(source).error(message);
+        getLogger(source).error(message);
     }
 
-    public static void LogError(Object source, String format, Object... values)
+    public static void logError(Object source, String format, Object... values)
     {
-        GetLogger(source).error(Format(format, values));
+        getLogger(source).error(format(format, values));
     }
 
-    public static void LogInfo(Object source, Object message)
+    public static void logInfo(Object source, Object message)
     {
-        GetLogger(source).info(message);
+        getLogger(source).info(message);
     }
 
-    public static void LogInfo(Object source, String format, Object... values)
+    public static void logInfo(Object source, String format, Object... values)
     {
-        GetLogger(source).info(Format(format, values));
+        getLogger(source).info(format(format, values));
     }
 
-    public static void LogInfoIfDebug(Object source, Object message)
-    {
-        if (Settings.isDebug)
-        {
-            LogInfo(source, message);
-        }
-    }
-
-    public static void LogInfoIfDebug(Object source, String format, Object... values)
+    public static void logInfoIfDebug(Object source, Object message)
     {
         if (Settings.isDebug)
         {
-            LogInfo(source, format, values);
+            logInfo(source, message);
         }
     }
 
-    public static void LogWarning(Object source, Object message)
+    public static void logInfoIfDebug(Object source, String format, Object... values)
     {
-        GetLogger(source).warn(message);
+        if (Settings.isDebug)
+        {
+            logInfo(source, format, values);
+        }
     }
 
-    public static void LogWarning(Object source, String format, Object... values)
+    public static void logWarning(Object source, Object message)
     {
-        GetLogger(source).warn(Format(format, values));
+        getLogger(source).warn(message);
     }
 
-    public static <T, N> ArrayList<N> Map(T[] list, FuncT1<N, T> predicate)
+    public static void logWarning(Object source, String format, Object... values)
+    {
+        getLogger(source).warn(format(format, values));
+    }
+
+    public static <T, N> ArrayList<N> map(T[] list, FuncT1<N, T> predicate)
     {
         final ArrayList<N> res = new ArrayList<>();
         if (list != null)
         {
             for (T t : list)
             {
-                res.add(predicate.Invoke(t));
+                res.add(predicate.invoke(t));
             }
         }
 
         return res;
     }
 
-    public static <T, N> ArrayList<N> Map(Iterable<T> list, FuncT1<N, T> predicate)
+    public static <T, N> ArrayList<N> map(Iterable<T> list, FuncT1<N, T> predicate)
     {
         final ArrayList<N> res = new ArrayList<>();
         if (list != null)
         {
             for (T t : list)
             {
-                res.add(predicate.Invoke(t));
+                res.add(predicate.invoke(t));
             }
         }
 
         return res;
     }
 
-    public static <T, N> ArrayList<N> Map(List<T> list, FuncT1<N, T> predicate)
+    public static <T, N> ArrayList<N> map(List<T> list, FuncT1<N, T> predicate)
     {
         final ArrayList<N> res = new ArrayList<>();
         for (T t : list)
         {
-            res.add(predicate.Invoke(t));
+            res.add(predicate.invoke(t));
         }
 
         return res;
     }
 
-    public static <T, N> ArrayList<N> MapAsNonnull(T[] list, FuncT1<N, T> predicate)
+    public static <T, N> ArrayList<N> mapAsNonnull(T[] list, FuncT1<N, T> predicate)
     {
         final ArrayList<N> res = new ArrayList<>();
         if (list != null)
         {
             for (T t : list)
             {
-                N n = predicate.Invoke(t);
+                N n = predicate.invoke(t);
                 if (n != null)
                 {
-                    res.add(predicate.Invoke(t));
+                    res.add(predicate.invoke(t));
                 }
             }
         }
@@ -699,17 +699,17 @@ public class EUIUtils
         return res;
     }
 
-    public static <T, N> ArrayList<N> MapAsNonnull(Iterable<T> list, FuncT1<N, T> predicate)
+    public static <T, N> ArrayList<N> mapAsNonnull(Iterable<T> list, FuncT1<N, T> predicate)
     {
         final ArrayList<N> res = new ArrayList<>();
         if (list != null)
         {
             for (T t : list)
             {
-                N n = predicate.Invoke(t);
+                N n = predicate.invoke(t);
                 if (n != null)
                 {
-                    res.add(predicate.Invoke(t));
+                    res.add(predicate.invoke(t));
                 }
             }
         }
@@ -717,14 +717,14 @@ public class EUIUtils
         return res;
     }
 
-    public static <T, N extends Comparable<N>> N Max(T[] list, FuncT1<N, T> getProperty)
+    public static <T, N extends Comparable<N>> N max(T[] list, FuncT1<N, T> getProperty)
     {
         N best = null;
         for (T t : list)
         {
             if (t != null)
             {
-                N prop = getProperty.Invoke(t);
+                N prop = getProperty.invoke(t);
                 if (prop != null && (best == null || prop.compareTo(best) > 0))
                 {
                     best = prop;
@@ -735,14 +735,14 @@ public class EUIUtils
         return best;
     }
 
-    public static <T, N extends Comparable<N>> N Max(Iterable<T> list, FuncT1<N, T> getProperty)
+    public static <T, N extends Comparable<N>> N max(Iterable<T> list, FuncT1<N, T> getProperty)
     {
         N best = null;
         for (T t : list)
         {
             if (t != null)
             {
-                N prop = getProperty.Invoke(t);
+                N prop = getProperty.invoke(t);
                 if (prop != null && (best == null || prop.compareTo(best) > 0))
                 {
                     best = prop;
@@ -753,23 +753,23 @@ public class EUIUtils
         return best;
     }
 
-    public static <T> float Mean(List<T> list, FuncT1<Float, T> predicate)
+    public static <T> float mean(List<T> list, FuncT1<Float, T> predicate)
     {
         if (list.size() <= 0)
         {
             return 0;
         }
-        return Sum(list, predicate) / list.size();
+        return sum(list, predicate) / list.size();
     }
 
-    public static <T, N extends Comparable<N>> N Min(T[] list, FuncT1<N, T> getProperty)
+    public static <T, N extends Comparable<N>> N min(T[] list, FuncT1<N, T> getProperty)
     {
         N best = null;
         for (T t : list)
         {
             if (t != null)
             {
-                N prop = getProperty.Invoke(t);
+                N prop = getProperty.invoke(t);
                 if (prop != null && (best == null || prop.compareTo(best) < 0))
                 {
                     best = prop;
@@ -780,14 +780,14 @@ public class EUIUtils
         return best;
     }
 
-    public static <T, N extends Comparable<N>> N Min(Iterable<T> list, FuncT1<N, T> getProperty)
+    public static <T, N extends Comparable<N>> N min(Iterable<T> list, FuncT1<N, T> getProperty)
     {
         N best = null;
         for (T t : list)
         {
             if (t != null)
             {
-                N prop = getProperty.Invoke(t);
+                N prop = getProperty.invoke(t);
                 if (prop != null && (best == null || prop.compareTo(best) < 0))
                 {
                     best = prop;
@@ -798,26 +798,26 @@ public class EUIUtils
         return best;
     }
 
-    public static String ModifyString(String text, FuncT1<String, String> modifyWord)
+    public static String modifyString(String text, FuncT1<String, String> modifyWord)
     {
-        return EUIUtils.ModifyString(text, " ", " ", modifyWord);
+        return EUIUtils.modifyString(text, " ", " ", modifyWord);
     }
 
-    public static String ModifyString(String text, String separator, String delimiter, FuncT1<String, String> modifyWord)
+    public static String modifyString(String text, String separator, String delimiter, FuncT1<String, String> modifyWord)
     {
-        final String[] words = SplitString(separator, text);
+        final String[] words = splitString(separator, text);
         if (modifyWord != null)
         {
             for (int i = 0; i < words.length; i++)
             {
-                words[i] = modifyWord.Invoke(words[i]);
+                words[i] = modifyWord.invoke(words[i]);
             }
         }
 
-        return JoinStrings(delimiter, words);
+        return joinStrings(delimiter, words);
     }
 
-    public static float ParseFloat(String value, float defaultValue)
+    public static float parseFloat(String value, float defaultValue)
     {
         try
         {
@@ -829,7 +829,7 @@ public class EUIUtils
         }
     }
 
-    public static int ParseInt(String value, int defaultValue)
+    public static int parseInt(String value, int defaultValue)
     {
         try
         {
@@ -841,19 +841,19 @@ public class EUIUtils
         }
     }
 
-    public static String PopBuilder(StringBuilder stringBuilder)
+    public static String popBuilder(StringBuilder stringBuilder)
     {
         String result = stringBuilder.toString();
         stringBuilder.setLength(0);
         return result;
     }
 
-    public static <T> T Random(T[] items)
+    public static <T> T random(T[] items)
     {
         return items != null && items.length > 0 ? items[RNG.nextInt(items.length)] : null;
     }
 
-    public static <T> T Random(List<T> items)
+    public static <T> T random(List<T> items)
     {
         int size = items != null ? items.size() : 0;
         if (size == 0)
@@ -863,7 +863,7 @@ public class EUIUtils
         return items.get(RNG.nextInt(size));
     }
 
-    public static <T> T Random(Collection<T> items)
+    public static <T> T random(Collection<T> items)
     {
         int size = items != null ? items.size() : 0;
         if (size == 0)
@@ -884,7 +884,7 @@ public class EUIUtils
         throw new RuntimeException("items.size() was smaller than " + targetIndex + ".");
     }
 
-    public static <T> T Random(ArrayList<T> items)
+    public static <T> T random(ArrayList<T> items)
     {
         int size = items != null ? items.size() : 0;
         if (size == 0)
@@ -894,12 +894,12 @@ public class EUIUtils
         return items.get(RNG.nextInt(size));
     }
 
-    public static Integer[] Range(int lowest, int highest)
+    public static Integer[] range(int lowest, int highest)
     {
-        return Range(lowest, highest, 1);
+        return range(lowest, highest, 1);
     }
 
-    public static Integer[] Range(int lowest, int highest, int step)
+    public static Integer[] range(int lowest, int highest, int step)
     {
         if (highest < lowest)
         {
@@ -910,12 +910,12 @@ public class EUIUtils
         return values;
     }
 
-    public static <T> T SafeCast(Object o, Class<T> type)
+    public static <T> T safeCast(Object o, Class<T> type)
     {
         return type.isInstance(o) ? (T) o : null;
     }
 
-    public static <T> T SafeIndex(T[] items, int index)
+    public static <T> T safeIndex(T[] items, int index)
     {
         if (items.length == 0)
         {
@@ -924,27 +924,27 @@ public class EUIUtils
         return items[Math.min(items.length - 1, index)];
     }
 
-    public static String Serialize(Object o)
+    public static String serialize(Object o)
     {
         return GsonReader.toJson(o);
     }
 
-    public static String Serialize(Object o, Type token)
+    public static String serialize(Object o, Type token)
     {
         return GsonReader.toJson(o, token);
     }
 
-    public static boolean ShowDebugInfo()
+    public static boolean showDebugInfo()
     {
         return Settings.isDebug || Settings.isInfo;
     }
 
-    public static String[] SplitString(String separator, String text)
+    public static String[] splitString(String separator, String text)
     {
-        return SplitString(separator, text, true);
+        return splitString(separator, text, true);
     }
 
-    public static String[] SplitString(String separator, String text, boolean removeEmptyEntries)
+    public static String[] splitString(String separator, String text, boolean removeEmptyEntries)
     {
         if (StringUtils.isEmpty(text))
         {
@@ -1004,7 +1004,7 @@ public class EUIUtils
         return result.toArray(arr);
     }
 
-    public static <T> float Sum(Iterable<T> list, FuncT1<Float, T> predicate)
+    public static <T> float sum(Iterable<T> list, FuncT1<Float, T> predicate)
     {
         float sum = 0;
         if (list == null)
@@ -1013,12 +1013,12 @@ public class EUIUtils
         }
         for (T t : list)
         {
-            sum += predicate.Invoke(t);
+            sum += predicate.invoke(t);
         }
         return sum;
     }
 
-    public static <T> int SumInt(Iterable<T> list, FuncT1<Integer, T> predicate)
+    public static <T> int sumInt(Iterable<T> list, FuncT1<Integer, T> predicate)
     {
         int sum = 0;
         if (list == null)
@@ -1027,17 +1027,17 @@ public class EUIUtils
         }
         for (T t : list)
         {
-            sum += predicate.Invoke(t);
+            sum += predicate.invoke(t);
         }
         return sum;
     }
 
-    public static String TitleCase(String text)
+    public static String titleCase(String text)
     {
-        return EUIUtils.ModifyString(text, w -> Character.toUpperCase(w.charAt(0)) + (w.length() > 1 ? w.substring(1) : ""));
+        return EUIUtils.modifyString(text, w -> Character.toUpperCase(w.charAt(0)) + (w.length() > 1 ? w.substring(1) : ""));
     }
 
-    public static <T> Constructor<T> TryGetConstructor(Class<T> type, Class... paramTypes)
+    public static <T> Constructor<T> tryGetConstructor(Class<T> type, Class... paramTypes)
     {
         try
         {

@@ -15,22 +15,22 @@ public class EUIInputManager
         JustReleased,
         Released;
 
-        public boolean IsPressed()
+        public boolean isPressed()
         {
             return this == Pressed;
         }
 
-        public boolean IsJustPressed()
+        public boolean isJustPressed()
         {
             return this == JustPressed;
         }
 
-        public boolean IsJustReleased()
+        public boolean isJustReleased()
         {
             return this == JustReleased;
         }
 
-        public boolean IsReleased()
+        public boolean isReleased()
         {
             return this == Released;
         }
@@ -39,31 +39,31 @@ public class EUIInputManager
     public static KeyState RightClick = KeyState.Released;
     public static KeyState LeftClick = KeyState.Released;
 
-    public static boolean DidInputDown()
+    public static boolean didInputDown()
     {
         return CInputActionSet.down.isJustPressed() || CInputActionSet.altDown.isJustPressed() || InputActionSet.down.isJustPressed();
     }
 
-    public static boolean DidInputLeft()
+    public static boolean didInputLeft()
     {
         return CInputActionSet.left.isJustPressed() || CInputActionSet.altLeft.isJustPressed() || InputActionSet.left.isJustPressed();
     }
 
-    public static boolean DidInputRight()
+    public static boolean didInputRight()
     {
         return CInputActionSet.right.isJustPressed() || CInputActionSet.altRight.isJustPressed() || InputActionSet.right.isJustPressed();
     }
 
-    public static boolean DidInputUp()
+    public static boolean didInputUp()
     {
         return CInputActionSet.up.isJustPressed() || CInputActionSet.altUp.isJustPressed() || InputActionSet.up.isJustPressed();
     }
 
-    public static boolean IsUsingNonMouseControl() {
+    public static boolean isUsingNonMouseControl() {
         return Settings.isControllerMode || InputActionSet.up.isJustPressed() || InputActionSet.down.isJustPressed() || InputActionSet.left.isJustPressed() || InputActionSet.right.isJustPressed();
     }
 
-    public static void OnControllerKeyPress(int keyCode)
+    public static void onControllerKeyPress(int keyCode)
     {
         if (keyCode == 9)
         {
@@ -71,7 +71,7 @@ public class EUIInputManager
         }
     }
 
-    public static void OnControllerKeyRelease(int keyCode)
+    public static void onControllerKeyRelease(int keyCode)
     {
         if (keyCode == 9)
         {
@@ -79,89 +79,89 @@ public class EUIInputManager
         }
     }
 
-    public static void PostUpdate()
+    public static void postUpdate()
     {
-        UpdateLeftClick();
-        UpdateRightClick();
+        updateLeftClick();
+        updateRightClick();
     }
 
-    public static void SetCursor(float x, float y)
+    public static void setCursor(float x, float y)
     {
-        SetCursor((int) x, (int) y);
+        setCursor((int) x, (int) y);
     }
-    public static void SetCursor(int x, int y)
+    public static void setCursor(int x, int y)
     {
         Gdx.input.setCursorPosition(x, MathUtils.clamp(y, 0, Settings.HEIGHT));
     }
 
-    private static void UpdateLeftClick()
+    private static void updateLeftClick()
     {
         if (Gdx.input.isButtonPressed(0))
         {
-            if (LeftClick.IsJustPressed())
+            if (LeftClick.isJustPressed())
             {
                 LeftClick = KeyState.Pressed;
             }
-            else if (LeftClick.IsReleased() || LeftClick.IsJustReleased())
+            else if (LeftClick.isReleased() || LeftClick.isJustReleased())
             {
                 LeftClick = KeyState.JustPressed;
             }
         }
         else
         {
-            if (LeftClick.IsJustReleased())
+            if (LeftClick.isJustReleased())
             {
                 LeftClick = KeyState.Released;
             }
-            else if (LeftClick.IsPressed() || LeftClick.IsJustPressed())
+            else if (LeftClick.isPressed() || LeftClick.isJustPressed())
             {
                 LeftClick = KeyState.JustReleased;
             }
         }
     }
 
-    private static void UpdateRightClick()
+    private static void updateRightClick()
     {
         if (Gdx.input.isButtonPressed(1))
         {
-            if (RightClick.IsJustPressed())
+            if (RightClick.isJustPressed())
             {
                 RightClick = KeyState.Pressed;
             }
-            else if (RightClick.IsReleased() || RightClick.IsJustReleased())
+            else if (RightClick.isReleased() || RightClick.isJustReleased())
             {
                 RightClick = KeyState.JustPressed;
             }
         }
         else if (Settings.isControllerMode)
         {
-            if (RightClick.IsJustPressed())
+            if (RightClick.isJustPressed())
             {
                 RightClick = KeyState.Pressed;
             }
-            else if (RightClick.IsJustReleased())
+            else if (RightClick.isJustReleased())
             {
                 RightClick = KeyState.Released;
             }
         }
         else
         {
-            if (RightClick.IsJustReleased())
+            if (RightClick.isJustReleased())
             {
                 RightClick = KeyState.Released;
             }
-            else if (RightClick.IsPressed() || RightClick.IsJustPressed())
+            else if (RightClick.isPressed() || RightClick.isJustPressed())
             {
                 RightClick = KeyState.JustReleased;
             }
         }
     }
 
-    public static void UnpressLeft() {
+    public static void unpressLeft() {
         LeftClick = KeyState.Released;
     }
 
-    public static void UnpressRight() {
+    public static void unpressRight() {
         RightClick = KeyState.Released;
     }
 }

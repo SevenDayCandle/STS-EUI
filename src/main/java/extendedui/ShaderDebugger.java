@@ -5,15 +5,11 @@ import basemod.interfaces.ImGuiSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.math.Vector3;
 import extendedui.debug.DEUIButton;
 import extendedui.debug.DEUITextMultilineInput;
-import extendedui.debug.DEUIUtils;
 import extendedui.debug.DEUIWindow;
 import extendedui.ui.EUIBase;
 import extendedui.ui.controls.EUIImage;
-import extendedui.ui.hitboxes.AdvancedHitbox;
 import imgui.ImGui;
 
 public class ShaderDebugger implements ImGuiSubscriber
@@ -32,7 +28,7 @@ public class ShaderDebugger implements ImGuiSubscriber
     private DEUITextMultilineInput FragmentShader;
     private ShaderProgram Shader;
 
-    public static void Initialize() {
+    public static void initialize() {
         Instance = new ShaderDebugger();
         BaseMod.subscribe(Instance);
     }
@@ -42,47 +38,47 @@ public class ShaderDebugger implements ImGuiSubscriber
         EffectWindow = new DEUIWindow(WINDOW_ID);
         EffectRender = new DEUIButton(RENDER_ID);
         EffectStop = new DEUIButton(STOP_ID);
-        TestImage = new EUIImage(EUIRM.Images.CardPool.Texture());
-        TestImage2 = new EUIImage(EUIRM.Images.CardPool.Texture());
-        TestImage.SetPosition(EUIBase.ScreenW(0.5f), EUIBase.ScreenH(0.5f));
-        TestImage2.SetPosition(EUIBase.ScreenW(0.7f), EUIBase.ScreenH(0.7f));
+        TestImage = new EUIImage(EUIRM.Images.CardPool.texture());
+        TestImage2 = new EUIImage(EUIRM.Images.CardPool.texture());
+        TestImage.setPosition(EUIBase.screenW(0.5f), EUIBase.screenH(0.5f));
+        TestImage2.setPosition(EUIBase.screenW(0.7f), EUIBase.screenH(0.7f));
     }
 
     @Override
     public void receiveImGui()
     {
-        EffectWindow.Render(() -> {
+        EffectWindow.render(() -> {
             // Buffers can be expensive so we only create this if we have to
             if (FragmentShader == null)
             {
                 FragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 700, 3000);
             }
-            FragmentShader.Render();
+            FragmentShader.render();
             ImGui.separator();
-            EffectRender.RenderInline(this::Compile);
-            EffectStop.Render(() -> {
+            EffectRender.renderInline(this::compile);
+            EffectStop.render(() -> {
                         Shader = null;
                     }
             );
         });
-        RenderShader();
+        renderShader();
     }
 
-    protected void RenderShader()
+    protected void renderShader()
     {
         if (Shader != null)
         {
-            Shader.setUniformf("u_time", EUI.Time());
-            EUI.AddPostRender(s -> EUIRenderHelpers.DrawWithShader(s, Shader, TestImage::TryRender));
-            EUI.AddPostRender(s -> EUIRenderHelpers.DrawRainbow(s, TestImage2::TryRender));
+            Shader.setUniformf("u_time", EUI.time());
+            EUI.addPostRender(s -> EUIRenderHelpers.drawWithShader(s, Shader, TestImage::tryRender));
+            EUI.addPostRender(s -> EUIRenderHelpers.drawRainbow(s, TestImage2::tryRender));
         }
     }
 
-    protected void Compile()
+    protected void compile()
     {
         FileHandle vShader = Gdx.files.internal(EUIRenderHelpers.SHADER_VERTEX);
         String vShaderString = vShader.readString();
-        ShaderProgram program = new ShaderProgram(vShaderString, FragmentShader.Get());
+        ShaderProgram program = new ShaderProgram(vShaderString, FragmentShader.get());
         if (program.isCompiled())
         {
             Shader = program;

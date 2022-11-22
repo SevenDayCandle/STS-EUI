@@ -31,7 +31,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
     private boolean isAscending;
 
     // The fake group tells players that nothing can be found. It also prevents crashing from empty cardGroups without the need for patching
-    public static ArrayList<AbstractCard> GetFakeGroup() {
+    public static ArrayList<AbstractCard> getFakeGroup() {
         if (fakeLibraryCard == null) {
             fakeLibraryCard = new FakeLibraryCard();
         }
@@ -52,7 +52,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         }
     }
 
-    public void SetupButtons()
+    public void setupButtons()
     {
         if (override == null)
         {
@@ -79,25 +79,25 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
 
             float offsetX = -(Settings.scale * 30f);
 
-            SetupButton(rarityButton, offsetX, 0);
-            SetupButton(typeButton, offsetX, 1);
-            SetupButton(costButton, offsetX, 2);
+            setupButton(rarityButton, offsetX, 0);
+            setupButton(typeButton, offsetX, 1);
+            setupButton(costButton, offsetX, 2);
 
             if (nameButton != null)
             {
-                SetupButton(nameButton, offsetX, 3);
-                SetupButton(amountButton, offsetX, 4);
+                setupButton(nameButton, offsetX, 3);
+                setupButton(amountButton, offsetX, 4);
             }
             else
             {
-                SetupButton(amountButton, offsetX, 3);
+                setupButton(amountButton, offsetX, 3);
             }
         }
 
         this.buttons = override;
     }
 
-    private void SetupButton(SortHeaderButton button, float offsetX, int index)
+    private void setupButton(SortHeaderButton button, float offsetX, int index)
     {
         override[index] = button;
 
@@ -109,7 +109,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
     @Override
     public void setGroup(CardGroup group)
     {
-        EUI.CardFilters.Clear(false, true);
+        EUI.CardFilters.clear(false, true);
         if (this.group != null && this.originalGroup != null) {
             this.group.group = this.originalGroup;
         }
@@ -120,7 +120,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         }
 
         if (CardKeywordFilters.CustomModule != null) {
-            CardKeywordFilters.CustomModule.ProcessGroup(group);
+            CardKeywordFilters.CustomModule.processGroup(group);
         }
 
         super.setGroup(group);
@@ -179,30 +179,30 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         super.render(sb);
     }
 
-    public ArrayList<AbstractCard> GetVisibleCards() {
+    public ArrayList<AbstractCard> getVisibleCards() {
         return this.group != null ? this.group.group : new ArrayList<>();
     }
 
-    public void UpdateForFilters() {
+    public void updateForFilters() {
         if (this.group != null) {
-            if (EUI.CardFilters.AreFiltersEmpty()) {
+            if (EUI.CardFilters.areFiltersEmpty()) {
                 this.group.group = originalGroup;
             }
             else {
-                ArrayList<AbstractCard> tempGroup = EUI.CardFilters.ApplyFilters(originalGroup);
+                ArrayList<AbstractCard> tempGroup = EUI.CardFilters.applyFilters(originalGroup);
                 if (tempGroup.size() > 0) {
                     this.group.group = tempGroup;
                 }
                 else {
-                    this.group.group = GetFakeGroup();
+                    this.group.group = getFakeGroup();
                 }
             }
             didChangeOrder(lastUsedButton, isAscending);
-            EUI.CardFilters.Refresh(this.group.group);
+            EUI.CardFilters.refresh(this.group.group);
         }
     }
 
-    public float GetCenterY() {
+    public float getCenterY() {
         if (buttons.length > 0) {
             return buttons[0].hb.cY;
         }

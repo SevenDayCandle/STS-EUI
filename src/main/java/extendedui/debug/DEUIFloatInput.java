@@ -36,12 +36,12 @@ public class DEUIFloatInput extends DEUIBaseT0
         this.stepFast = stepFast;
     }
 
-    public float Get()
+    public float get()
     {
         return value.get();
     }
 
-    public void Render()
+    public void render()
     {
         ImGui.inputFloat(ID, value, step, stepFast);
         float result = value.get();

@@ -26,7 +26,7 @@ public class EUIStaticCardGrid extends EUICardGrid
     }
 
     @Override
-    protected void UpdateCards()
+    protected void updateCards()
     {
         hoveredCard = null;
 
@@ -59,7 +59,7 @@ public class EUIStaticCardGrid extends EUICardGrid
         }
     }
 
-    public void ForceUpdateCardPositions()
+    public void forceUpdateCardPositions()
     {
         int row = 0;
         int column = 0;
@@ -80,24 +80,24 @@ public class EUIStaticCardGrid extends EUICardGrid
     }
 
     @Override
-    protected void RenderCards(SpriteBatch sb)
+    protected void renderCards(SpriteBatch sb)
     {
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++)
         {
             AbstractCard card = cards.group.get(i);
             if (card != hoveredCard)
             {
-                RenderCard(sb, card);
+                renderCard(sb, card);
             }
         }
     }
 
     @Override
-    protected float GetScrollDistance(AbstractCard card, int index)
+    protected float getScrollDistance(AbstractCard card, int index)
     {
         if (card != null)
         {
-            float scrollDistance = 1f / GetRowCount();
+            float scrollDistance = 1f / getRowCount();
             if (card.target_y > draw_top_y || index < currentRow * rowSize)
             {
                 return -scrollDistance;
@@ -111,10 +111,10 @@ public class EUIStaticCardGrid extends EUICardGrid
     }
 
     @Override
-    protected void UpdateScrolling(boolean isDraggingScrollBar)
+    protected void updateScrolling(boolean isDraggingScrollBar)
     {
-        super.UpdateScrolling(isDraggingScrollBar);
-        int rowCount = GetRowCount();
+        super.updateScrolling(isDraggingScrollBar);
+        int rowCount = getRowCount();
         int prevRow = currentRow;
         currentRow = (int) MathUtils.clamp(scrollBar.currentScrollPercent * rowCount, 0, rowCount - 1);
 

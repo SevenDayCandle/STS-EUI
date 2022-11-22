@@ -14,15 +14,15 @@ public class ModSettingsToggle extends EUIToggle implements STSConfigListener<Bo
     {
         super(hb);
         Config = config;
-        SetText(title);
-        SetFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
-        SetOnToggle(val -> Config.Set(val, true));
-        this.Config.AddListener(this);
+        setText(title);
+        setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
+        setOnToggle(val -> Config.set(val, true));
+        this.Config.addListener(this);
     }
 
     @Override
-    public void OnChange(Boolean newValue)
+    public void onChange(Boolean newValue)
     {
-        SetToggle(newValue);
+        setToggle(newValue);
     }
 }

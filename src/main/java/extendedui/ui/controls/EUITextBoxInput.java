@@ -29,64 +29,64 @@ public class EUITextBoxInput extends EUITextBox implements TextReceiver {
     public EUITextBoxInput(Texture backgroundTexture, AdvancedHitbox hb) {
         super(backgroundTexture, hb);
         this.header = new EUILabel(EUIFontHelper.CardTitleFont_Small,
-                new AdvancedHitbox(hb.x, hb.y + hb.height * headerSpacing, hb.width, hb.height)).SetAlignment(0.5f,0.0f,false);
-        this.header.SetActive(false);
-        editTextColor = EUIColors.Green(1).cpy();
+                new AdvancedHitbox(hb.x, hb.y + hb.height * headerSpacing, hb.width, hb.height)).setAlignment(0.5f,0.0f,false);
+        this.header.setActive(false);
+        editTextColor = EUIColors.green(1).cpy();
         originalTextColor = this.label.textColor.cpy();
     }
 
-    public EUITextBoxInput SetHeader(BitmapFont font, float fontScale, Color textColor, String text) {
-        return SetHeader(font,fontScale,textColor,text,false);
+    public EUITextBoxInput setHeader(BitmapFont font, float fontScale, Color textColor, String text) {
+        return setHeader(font,fontScale,textColor,text,false);
     }
 
-    public EUITextBoxInput SetHeader(BitmapFont font, float fontScale, Color textColor, String text, boolean smartText) {
-        this.header.SetFont(font, fontScale).SetColor(textColor).SetText(text).SetSmartText(smartText).SetActive(true);
+    public EUITextBoxInput setHeader(BitmapFont font, float fontScale, Color textColor, String text, boolean smartText) {
+        this.header.setFont(font, fontScale).setColor(textColor).setLabel(text).setSmartText(smartText).setActive(true);
         return this;
     }
 
-    public EUITextBoxInput SetHeaderSpacing(float headerSpacing) {
+    public EUITextBoxInput setHeaderSpacing(float headerSpacing) {
         this.headerSpacing = headerSpacing;
         this.header.hb.move(hb.cX, hb.cY + hb.height * headerSpacing);
         return this;
     }
 
-    public EUITextBoxInput SetOnComplete(ActionT1<String> onComplete) {
+    public EUITextBoxInput setOnComplete(ActionT1<String> onComplete) {
         this.onComplete = onComplete;
         return this;
     }
 
-    public EUITextBoxInput SetOnUpdate(ActionT1<String> onUpdate) {
+    public EUITextBoxInput setOnUpdate(ActionT1<String> onUpdate) {
         this.onUpdate = onUpdate;
         return this;
     }
 
-    public EUITextBox SetColors(Color backgroundColor, Color textColor)
+    public EUITextBox setColors(Color backgroundColor, Color textColor)
     {
-        this.image.SetColor(backgroundColor);
-        this.label.SetColor(textColor);
+        this.image.setColor(backgroundColor);
+        this.label.setColor(textColor);
         originalTextColor = textColor;
 
         return this;
     }
 
-    public EUITextBox SetFontColor(Color textColor)
+    public EUITextBox setFontColor(Color textColor)
     {
-        this.label.SetColor(textColor);
+        this.label.setColor(textColor);
         originalTextColor = textColor.cpy();
 
         return this;
     }
 
-    public EUITextBox SetFontColor(Color textColor, Color editTextColor)
+    public EUITextBox setFontColor(Color textColor, Color editTextColor)
     {
-        SetFontColor(textColor);
+        setFontColor(textColor);
         this.editTextColor = editTextColor.cpy();
 
         return this;
     }
 
     @Override
-    public EUITextBox SetPosition(float x, float y)
+    public EUITextBox setPosition(float x, float y)
     {
         this.hb.move(x, y);
         this.header.hb.move(x, y + hb.height * headerSpacing);
@@ -94,45 +94,45 @@ public class EUITextBoxInput extends EUITextBox implements TextReceiver {
         return this;
     }
 
-    public void SetTextAndCommit(String text) {
-        this.label.SetText(text);
+    public void setTextAndCommit(String text) {
+        this.label.setLabel(text);
         if (onComplete != null) {
-            onComplete.Invoke(text);
+            onComplete.invoke(text);
         }
     }
 
     @Override
-    public void Update()
+    public void updateImpl()
     {
-        super.Update();
-        if (EUIInputManager.LeftClick.IsJustReleased()) {
+        super.updateImpl();
+        if (EUIInputManager.LeftClick.isJustReleased()) {
             if (!isEditing && (hb.hovered || hb.clicked)) {
-                Start();
+                start();
             }
             else if (isEditing && !hb.hovered && !hb.clicked) {
-                End(true);
+                end(true);
             }
         }
         else if (isEditing && Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            End(false);
+            end(false);
         }
 
-        header.TryUpdate();
+        header.tryUpdate();
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        super.Render(sb);
+        super.renderImpl(sb);
         float cur_x = FontHelper.layout.width;
-        header.TryRender(sb);
-        RenderUnderscore(sb, cur_x);
+        header.tryRender(sb);
+        renderUnderscore(sb, cur_x);
     }
 
-    protected void RenderUnderscore(SpriteBatch sb, float cur_x) {
+    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
         if (isEditing) {
-            EUI.AddPriorityPostRender(s ->
-                    FontHelper.renderFontLeft(sb, label.font, "_", hb.x + cur_x + hb.width * label.horizontalRatio, hb.y + hb.height / 2, EUIColors.White(0.5f + EUI.Time_Cos(0.5f, 4f))));
+            EUI.addPriorityPostRender(s ->
+                    FontHelper.renderFontLeft(sb, label.font, "_", hb.x + cur_x + hb.width * label.horizontalRatio, hb.y + hb.height / 2, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
         }
     }
 
@@ -145,7 +145,7 @@ public class EUITextBoxInput extends EUITextBox implements TextReceiver {
     public void setText(String s) {
         label.text = s;
         if (onUpdate != null) {
-            onUpdate.Invoke(label.text);
+            onUpdate.invoke(label.text);
         }
     }
 
@@ -161,24 +161,24 @@ public class EUITextBoxInput extends EUITextBox implements TextReceiver {
 
     @Override
     public boolean onPushEnter() {
-        End(true);
+        end(true);
         return true;
     }
 
-    public void Start() {
+    public void start() {
         isEditing = true;
         TextInput.startTextReceiver(this);
-        label.SetColor(editTextColor);
+        label.setColor(editTextColor);
         originalValue = label.text;
     }
 
-    public void End(boolean commit) {
+    public void end(boolean commit) {
         isEditing = false;
         TextInput.stopTextReceiver(this);
-        label.SetColor(originalTextColor);
+        label.setColor(originalTextColor);
         if (commit) {
             if (onComplete != null) {
-                onComplete.Invoke(label.text);
+                onComplete.invoke(label.text);
             }
         }
         else {

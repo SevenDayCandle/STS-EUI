@@ -98,72 +98,73 @@ public class EUIDropdown<T> extends EUIHoverable
     public EUIDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList <T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
         super(hb);
         this.hb
-                .SetIsPopupCompatible(true)
-                .SetParentElement(this);
+                .setIsPopupCompatible(true)
+                .setParentElement(this);
         this.font = font;
         this.fontScale = fontScale;
         this.maxRows = maxRows;
         this.labelFunction = labelFunction;
         this.canAutosizeButton = canAutosizeButton;
 
-        this.rowHeight = CalculateRowHeight();
+        this.rowHeight = calculateRowHeight();
         for (int i = 0; i < options.size(); i++) {
-            rows.add(MakeRow(options, i));
+            rows.add(makeRow(options, i));
         }
         this.scrollBar = new EUIVerticalScrollBar(
-                new AdvancedHitbox(hb.x + hb.width - SCROLLBAR_PADDING, hb.y + CalculateScrollbarOffset(), SCROLLBAR_WIDTH,rowHeight * this.visibleRowCount())
-                .SetIsPopupCompatible(true)
-                .SetParentElement(this))
-                .SetOnScroll(this::OnScroll);
-        this.button = new EUIButton(EUIRM.Images.RectangularButton.Texture(), this.hb)
-                .SetColor(Color.GRAY)
-                .SetFont(font, fontScale)
-                .SetText(currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected)
-                .SetOnClick(this::OpenOrCloseMenu);
+                new AdvancedHitbox(hb.x + hb.width - SCROLLBAR_PADDING, hb.y + calculateScrollbarOffset(), SCROLLBAR_WIDTH,rowHeight * this.visibleRowCount())
+                .setIsPopupCompatible(true)
+                .setParentElement(this))
+                .setOnScroll(this::onScroll);
+        this.button = new EUIButton(EUIRM.Images.RectangularButton.texture(), this.hb)
+                .setColor(Color.GRAY)
+                .setFont(font, fontScale)
+                .setText(currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected)
+                .setOnClick(this::openOrCloseMenu);
         //noinspection SuspiciousNameCombination
-        this.clearButton = new EUIButton(EUIRM.Images.X.Texture(), new AdvancedHitbox(hb.x + hb.width, hb.y, hb.height, hb.height)
-                .SetIsPopupCompatible(true)
-                .SetParentElement(this))
-                .SetOnClick(() -> {SetSelectionIndices(new int[] {}, true);});
-        this.header = new EUILabel(EUIFontHelper.CardTitleFont_Small, new AdvancedHitbox(hb.x, hb.y + hb.height, hb.width, hb.height)).SetAlignment(0.5f,0.0f,false);
-        this.header.SetActive(false);
+        this.clearButton = new EUIButton(EUIRM.Images.X.texture(), new AdvancedHitbox(hb.x + hb.width, hb.y, hb.height, hb.height)
+                .setIsPopupCompatible(true)
+                .setParentElement(this))
+                .setOnClick(() -> {
+                    setSelectionIndices(new int[] {}, true);});
+        this.header = new EUILabel(EUIFontHelper.CardTitleFont_Small, new AdvancedHitbox(hb.x, hb.y + hb.height, hb.width, hb.height)).setAlignment(0.5f,0.0f,false);
+        this.header.setActive(false);
     }
 
     public EUIDropdown<T> setCanAutosize(boolean canAutosizeButton, boolean canAutosizeRows) {
         this.canAutosizeButton = canAutosizeButton;
         this.canAutosizeRows = canAutosizeRows;
-        Autosize();
+        autosize();
 
         return this;
     }
 
-    public EUIDropdown<T> SetCanAutosizeButton(boolean value) {
+    public EUIDropdown<T> setCanAutosizeButton(boolean value) {
         this.canAutosizeButton = value;
-        Autosize();
+        autosize();
 
         return this;
     }
 
-    public EUIDropdown<T> SetHeader(BitmapFont font, float fontScale, Color textColor, String text) {
-        return SetHeader(font,fontScale,textColor,text,false);
+    public EUIDropdown<T> setHeader(BitmapFont font, float fontScale, Color textColor, String text) {
+        return setHeader(font,fontScale,textColor,text,false);
     }
 
-    public EUIDropdown<T> SetHeader(BitmapFont font, float fontScale, Color textColor, String text, boolean smartText) {
-        this.header.SetFont(font, fontScale).SetColor(textColor).SetText(text).SetSmartText(smartText).SetActive(true);
+    public EUIDropdown<T> setHeader(BitmapFont font, float fontScale, Color textColor, String text, boolean smartText) {
+        this.header.setFont(font, fontScale).setColor(textColor).setLabel(text).setSmartText(smartText).setActive(true);
 
         return this;
     }
 
-    public EUIDropdown<T> SetIsMultiSelect(boolean value) {
+    public EUIDropdown<T> setIsMultiSelect(boolean value) {
         this.isMultiSelect = value;
         for (DropdownRow<T> row : rows) {
-            row.UpdateAlignment();
+            row.updateAlignment();
         }
 
         return this;
     }
 
-    public EUIDropdown<T> SetClearButtonOptions(boolean showClearForSingle, boolean shouldPositionClearAtTop) {
+    public EUIDropdown<T> setClearButtonOptions(boolean showClearForSingle, boolean shouldPositionClearAtTop) {
         this.showClearForSingle = showClearForSingle;
         this.shouldPositionClearAtTop = shouldPositionClearAtTop;
         positionClearButton();
@@ -171,128 +172,128 @@ public class EUIDropdown<T> extends EUIHoverable
         return this;
     }
 
-    public EUIDropdown<T> SetShowClearForSingle(boolean value) {
+    public EUIDropdown<T> setShowClearForSingle(boolean value) {
         this.showClearForSingle = value;
 
         return this;
     }
 
-    public EUIDropdown<T> SetShowTooltips(boolean value) {
+    public EUIDropdown<T> setShowTooltips(boolean value) {
         this.showTooltipOnHover = value;
 
         return this;
     }
 
-    public EUIDropdown<T> SetShouldPositionClearAtTop(boolean value) {
+    public EUIDropdown<T> setShouldPositionClearAtTop(boolean value) {
         this.shouldPositionClearAtTop = value;
         positionClearButton();
 
         return this;
     }
 
-    public EUIDropdown<T> AddItems(T... options) {
-        return AddItems(Arrays.asList(options));
+    public EUIDropdown<T> addItems(T... options) {
+        return addItems(Arrays.asList(options));
     }
 
-    public EUIDropdown<T> AddItems(List<T> options) {
+    public EUIDropdown<T> addItems(List<T> options) {
         int initialSize = rows.size();
         for (int i = 0; i < options.size(); i++) {
-            rows.add(MakeRow(options, i, initialSize));
+            rows.add(makeRow(options, i, initialSize));
         }
-        Autosize();
+        autosize();
 
         return this;
     }
 
-    public EUIDropdown<T> SetItems(T... options) {
-        return SetItems(Arrays.asList(options));
+    public EUIDropdown<T> setItems(T... options) {
+        return setItems(Arrays.asList(options));
     }
 
-    public EUIDropdown<T> SetItems(List<T> options) {
+    public EUIDropdown<T> setItems(List<T> options) {
         this.currentIndices.clear();
         this.rows.clear();
         for (int i = 0; i < options.size(); i++) {
-            rows.add(MakeRow(options, i));
+            rows.add(makeRow(options, i));
         }
-        Autosize();
+        autosize();
 
         return this;
     }
 
-    public EUIDropdown<T> SetItems(Collection<T> options) {
-        return SetItems(new ArrayList<>(options));
+    public EUIDropdown<T> setItems(Collection<T> options) {
+        return setItems(new ArrayList<>(options));
     }
 
-    public EUIDropdown<T> SetLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, FuncT1<Color, List<T>> colorFunctionButton, boolean isSmartText) {
-        this.button.SetSmartText(isSmartText);
+    public EUIDropdown<T> setLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, FuncT1<Color, List<T>> colorFunctionButton, boolean isSmartText) {
+        this.button.setSmartText(isSmartText);
         this.labelFunctionButton = labelFunctionButton;
         this.colorFunctionButton = colorFunctionButton;
         if (labelFunctionButton != null) {
-            this.button.SetText(labelFunctionButton.Invoke(GetCurrentItems(), labelFunction));
+            this.button.setText(labelFunctionButton.invoke(getCurrentItems(), labelFunction));
         }
         if (colorFunctionButton != null) {
-            this.button.SetTextColor(colorFunctionButton.Invoke(GetCurrentItems()));
+            this.button.setTextColor(colorFunctionButton.invoke(getCurrentItems()));
         }
         return this;
     }
 
-    public EUIDropdown<T> SetLabelFunctionForOption(FuncT1<String, T> labelFunction, boolean isSmartText) {
+    public EUIDropdown<T> setLabelFunctionForOption(FuncT1<String, T> labelFunction, boolean isSmartText) {
         this.labelFunction = labelFunction;
         this.isOptionSmartText = isSmartText;
         for (DropdownRow<T> row : rows) {
-            row.SetLabelFunction(labelFunction, isSmartText);
+            row.setLabelFunction(labelFunction, isSmartText);
         }
         return this;
     }
 
-    public EUIDropdown<T> SetTooltipFunction(FuncT1<List<EUITooltip>, T> tooltipFunction) {
+    public EUIDropdown<T> setTooltipFunction(FuncT1<List<EUITooltip>, T> tooltipFunction) {
         this.tooltipFunction = tooltipFunction;
         return this;
     }
 
-    public EUIDropdown<T> SetFontForButton(BitmapFont font, float fontScale)
+    public EUIDropdown<T> setFontForButton(BitmapFont font, float fontScale)
     {
-        button.SetFont(font, fontScale);
-        Autosize();
+        button.setFont(font, fontScale);
+        autosize();
 
         return this;
     }
 
-    public EUIDropdown<T> SetFontForRows(BitmapFont font, float fontScale)
+    public EUIDropdown<T> setFontForRows(BitmapFont font, float fontScale)
     {
         this.font = font;
         this.fontScale = fontScale;
 
         for (DropdownRow<T> row : rows) {
-            row.label.SetFont(font, fontScale);
+            row.label.setFont(font, fontScale);
         }
-        Autosize();
+        autosize();
 
         return this;
     }
 
-    public EUIDropdown<T> SetOnChange(ActionT1<List<T>> onChange) {
+    public EUIDropdown<T> setOnChange(ActionT1<List<T>> onChange) {
         this.onChange = onChange;
         return this;
     }
 
     // If you're using this dropdown on a pop-up menu, you need to have this action set CardCrawlGame.isOpen or your pop-up menu won't work properly
-    public EUIDropdown<T> SetOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
+    public EUIDropdown<T> setOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
         this.onOpenOrClose = onOpenOrClose;
 
         return this;
     }
 
-    public EUIDropdown<T> SetPosition(float x, float y) {
+    public EUIDropdown<T> setPosition(float x, float y) {
         this.hb.translate(x, y);
         this.button.hb.translate(x, y);
-        this.scrollBar.hb.translate(x + hb.width - SCROLLBAR_PADDING, y + CalculateScrollbarOffset());
+        this.scrollBar.hb.translate(x + hb.width - SCROLLBAR_PADDING, y + calculateScrollbarOffset());
         this.header.hb.translate(x, y + hb.height);
         positionClearButton();
         return this;
     }
 
-    public EUIDropdown<T> SetSelectionIndices(int[] selection, boolean shouldInvoke) {
+    public EUIDropdown<T> setSelectionIndices(int[] selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
             for (Integer i : selection) {
@@ -305,7 +306,7 @@ public class EUIDropdown<T> extends EUIHoverable
         return this;
     }
 
-    public EUIDropdown<T> SetSelection(T selection, boolean shouldInvoke) {
+    public EUIDropdown<T> setSelection(T selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
             for (int i = 0; i < rows.size(); i++) {
@@ -320,7 +321,7 @@ public class EUIDropdown<T> extends EUIHoverable
     }
 
 
-    public EUIDropdown<T> SetSelection(Collection<T> selection, boolean shouldInvoke) {
+    public EUIDropdown<T> setSelection(Collection<T> selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
             for (int i = 0; i < rows.size(); i++) {
@@ -333,7 +334,7 @@ public class EUIDropdown<T> extends EUIHoverable
         return this;
     }
 
-    public EUIDropdown<T> ToggleSelection(T selection, boolean value, boolean shouldInvoke) {
+    public EUIDropdown<T> toggleSelection(T selection, boolean value, boolean shouldInvoke) {
         for (int i = 0; i < rows.size(); i++) {
             if (selection.equals(rows.get(i).item)) {
                 if (value && !currentIndices.contains(i)) {
@@ -350,30 +351,30 @@ public class EUIDropdown<T> extends EUIHoverable
         return this;
     }
 
-    public DropdownRow<T> MakeRow(List<T> options, int index) {
-        return MakeRow(options, index, 0);
+    public DropdownRow<T> makeRow(List<T> options, int index) {
+        return makeRow(options, index, 0);
     }
 
-    public DropdownRow<T> MakeRow(List<T> options, int index, int offset) {
+    public DropdownRow<T> makeRow(List<T> options, int index, int offset) {
         return new DropdownRow<T>(
                 this,
                 new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0, false)
-                        .SetIsPopupCompatible(true)
-                        .SetParentElement(this)
+                        .setIsPopupCompatible(true)
+                        .setParentElement(this)
                 , options.get(index), labelFunction, font, fontScale, index + offset)
-                .SetLabelFunction(labelFunction, isOptionSmartText)
-                .UpdateAlignment();
+                .setLabelFunction(labelFunction, isOptionSmartText)
+                .updateAlignment();
     }
 
-    public int Size()
+    public int size()
     {
         return this.rows.size();
     }
 
-    public void Autosize() {
+    public void autosize() {
 
-        this.rowWidth = CalculateRowWidth();
-        this.rowHeight = CalculateRowHeight();
+        this.rowWidth = calculateRowWidth();
+        this.rowHeight = calculateRowHeight();
         if (canAutosizeButton) {
             hb.resize(rowWidth, hb.height);
             button.hb.resize(rowWidth, hb.height);
@@ -383,14 +384,14 @@ public class EUIDropdown<T> extends EUIHoverable
         if (canAutosizeRows) {
             for (DropdownRow<T> row : rows) {
                 row.hb.resize(rowWidth, rowHeight);
-                row.UpdateAlignment();
+                row.updateAlignment();
             }
         }
         this.scrollBar.hb.resize(SCROLLBAR_WIDTH, rowHeight * (this.visibleRowCount() - 1));
-        this.scrollBar.hb.translate(hb.x + (canAutosizeRows ? rowWidth : hb.width) - SCROLLBAR_PADDING, hb.y + CalculateScrollbarOffset());
+        this.scrollBar.hb.translate(hb.x + (canAutosizeRows ? rowWidth : hb.width) - SCROLLBAR_PADDING, hb.y + calculateScrollbarOffset());
     }
 
-    public boolean AreAnyItemsHovered() {
+    public boolean areAnyItemsHovered() {
         if (this.hb.hovered || (this.isMultiSelect && currentIndices.size() != 0 && this.clearButton.hb.hovered)) {
             return true;
         }
@@ -402,30 +403,30 @@ public class EUIDropdown<T> extends EUIHoverable
         return false;
     }
 
-    private float CalculateRowWidth() {
+    private float calculateRowWidth() {
         float w = 0;
         for (DropdownRow<T> row : rows) {
-            w = Math.max(w, EUISmartText.GetSmartWidth(this.font, row.GetTextForWidth(), ROW_WIDTH_MULT, ROW_WIDTH_MULT) + ICON_WIDTH);
+            w = Math.max(w, EUISmartText.getSmartWidth(this.font, row.getTextForWidth(), ROW_WIDTH_MULT, ROW_WIDTH_MULT) + ICON_WIDTH);
         }
         return w;
     }
 
-    public float CalculateRowHeight() {
+    public float calculateRowHeight() {
         float scaledHeight = this.font.getCapHeight() * this.fontScale;
         float extraSpace = Math.min(Math.max(scaledHeight, 15.0F) * Settings.scale, 15.0F);
         return scaledHeight + extraSpace;
     }
 
-    public float CalculateScrollbarOffset() {
+    public float calculateScrollbarOffset() {
         float bottomY = this.yPositionForRowBelow(hb.y, this.visibleRowCount());
         return bottomY < 0 ? this.hb.height * 2 : -this.visibleRowCount() * this.rowHeight;
     }
 
-    public ArrayList<T> GetAllItems() {
-        return EUIUtils.Map(this.rows, row -> row.item);
+    public ArrayList<T> getAllItems() {
+        return EUIUtils.map(this.rows, row -> row.item);
     }
 
-    public ArrayList<T> GetCurrentItems() {
+    public ArrayList<T> getCurrentItems() {
         ArrayList<T> items = new ArrayList<>();
         for (Integer i : currentIndices) {
             items.add(this.rows.get(i).item);
@@ -433,23 +434,23 @@ public class EUIDropdown<T> extends EUIHoverable
         return items;
     }
 
-    public FuncT1<String, T> GetOptionLabelFunction()
+    public FuncT1<String, T> getOptionLabelFunction()
     {
         return labelFunction;
     }
 
-    public int GetCurrentIndex() {
+    public int getCurrentIndex() {
         return currentIndices.isEmpty() || currentIndices.first() >= this.rows.size() ? 0 : currentIndices.first();
     }
 
-    public void OpenOrCloseMenu() {
+    public void openOrCloseMenu() {
         if (this.isOpen) {
-            EUI.TryToggleActiveElement(this, false);
+            EUI.tryToggleActiveElement(this, false);
             CardCrawlGame.isPopupOpen = false;
             this.isOpen = false;
         }
         else {
-            EUI.TryToggleActiveElement(this, true);
+            EUI.tryToggleActiveElement(this, true);
             CardCrawlGame.isPopupOpen = true;
             this.isOpen = true;
             this.justOpened = true;
@@ -457,45 +458,45 @@ public class EUIDropdown<T> extends EUIHoverable
         }
 
         if (this.onOpenOrClose != null) {
-            this.onOpenOrClose.Invoke(this.isOpen);
+            this.onOpenOrClose.invoke(this.isOpen);
         }
     }
 
-    protected void OnScroll(float newPercent)
+    protected void onScroll(float newPercent)
     {
         this.topVisibleRowIndex = (int) MathUtils.clamp(newPercent * (this.rows.size() - this.visibleRowCount()), 0, this.rows.size() - this.visibleRowCount());
     }
 
-    public void RefreshText()
+    public void refreshText()
     {
         if (labelFunction != null)
         {
             for (DropdownRow<T> row : rows)
             {
-                row.RefreshText(labelFunction);
+                row.refreshText(labelFunction);
             }
         }
         if (labelFunctionButton != null) {
-            this.button.SetText(labelFunctionButton.Invoke(GetCurrentItems(), labelFunction));
+            this.button.setText(labelFunctionButton.invoke(getCurrentItems(), labelFunction));
         }
         if (colorFunctionButton != null) {
-            this.button.SetTextColor(colorFunctionButton.Invoke(GetCurrentItems()));
+            this.button.setTextColor(colorFunctionButton.invoke(getCurrentItems()));
         }
     }
 
     @Override
-    public void Update() {
-        super.Update();
-        this.button.Update();
-        this.header.TryUpdate();
+    public void updateImpl() {
+        super.updateImpl();
+        this.button.updateImpl();
+        this.header.tryUpdate();
         if ((this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0) {
-            this.clearButton.Update();
+            this.clearButton.updateImpl();
         }
         if (this.rows.size() != 0 && this.isOpen) {
                 boolean isHoveringOver = this.hb.hovered;
                 this.updateNonMouseInput();
 
-                if (this.isMultiSelect && EUI.TryHover(this.clearButton.hb)) {
+                if (this.isMultiSelect && EUI.tryHover(this.clearButton.hb)) {
                     isHoveringOver = true;
                 }
 
@@ -505,25 +506,25 @@ public class EUIDropdown<T> extends EUIHoverable
                         isHoveringOver = true;
                         CardCrawlGame.sound.play("UI_CLICK_2");
                         if (!this.isMultiSelect) {
-                            OpenOrCloseMenu();
+                            openOrCloseMenu();
                         }
                     }
-                    else if (EUI.TryHover(this.rows.get(i).hb)) {
+                    else if (EUI.tryHover(this.rows.get(i).hb)) {
                         isHoveringOver = true;
                     }
                 }
 
                 if (this.shouldShowSlider()) {
-                    this.scrollBar.TryUpdate();
+                    this.scrollBar.tryUpdate();
                     isHoveringOver = isHoveringOver | this.scrollBar.hb.hovered;
                 }
 
                 if (InputHelper.scrolledDown) {
                     this.topVisibleRowIndex = Integer.min(this.topVisibleRowIndex + 1, this.rows.size() - this.visibleRowCount());
-                    this.scrollBar.Scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
+                    this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
                 } else if (InputHelper.scrolledUp) {
                     this.topVisibleRowIndex = Integer.max(0, this.topVisibleRowIndex - 1);
-                    this.scrollBar.Scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
+                    this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
                 }
 
                 boolean shouldCloseMenu = (!justOpened && InputHelper.justClickedLeft && !isHoveringOver) || InputHelper.pressedEscape || CInputActionSet.cancel.isJustPressed();
@@ -533,7 +534,7 @@ public class EUIDropdown<T> extends EUIHoverable
                         CInputHelper.setCursor(this.hb);
                     }
 
-                    OpenOrCloseMenu();
+                    openOrCloseMenu();
                 }
         }
         justOpened = false;
@@ -553,7 +554,7 @@ public class EUIDropdown<T> extends EUIHoverable
     protected void updateNonMouseInput() {
         if (this.isUsingNonMouseControl()) {
             if (this.shouldSnapCursorToSelectedIndex && this.rowsHaveBeenPositioned) {
-                CInputHelper.setCursor((this.rows.get(GetCurrentIndex())).hb);
+                CInputHelper.setCursor((this.rows.get(getCurrentIndex())).hb);
                 this.shouldSnapCursorToSelectedIndex = false;
             } else {
                 int hoveredIndex = -1;
@@ -566,8 +567,8 @@ public class EUIDropdown<T> extends EUIHoverable
                 }
 
                 if (hoveredIndex >= 0) {
-                    boolean didInputUp = EUIInputManager.DidInputUp();
-                    boolean didInputDown = EUIInputManager.DidInputDown();
+                    boolean didInputUp = EUIInputManager.didInputUp();
+                    boolean didInputDown = EUIInputManager.didInputDown();
                     boolean isMoving = didInputUp || didInputDown;
                     if (isMoving) {
                         int targetHoverIndexOffset = didInputDown ? 1 : -1;
@@ -592,7 +593,7 @@ public class EUIDropdown<T> extends EUIHoverable
                         }
 
                         if (this.shouldShowSlider()) {
-                            this.scrollBar.Scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
+                            this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
                         }
 
                     }
@@ -602,21 +603,21 @@ public class EUIDropdown<T> extends EUIHoverable
     }
 
     @Override
-    public void Render(SpriteBatch sb) {
+    public void renderImpl(SpriteBatch sb) {
 
         this.hb.render(sb);
-        this.button.TryRender(sb);
-        this.header.TryRender(sb);
+        this.button.tryRender(sb);
+        this.header.tryRender(sb);
         if ((this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0) {
-            this.clearButton.Render(sb);
+            this.clearButton.renderImpl(sb);
         }
         if (this.rows.size() > 0) {
-            EUI.AddPostRender(this::RenderRowContent);
-            RenderArrows(sb);
+            EUI.addPostRender(this::renderRowContent);
+            renderArrows(sb);
         }
     }
 
-    protected void RenderRowContent(SpriteBatch sb) {
+    protected void renderRowContent(SpriteBatch sb) {
         int rowCount = this.isOpen ? this.visibleRowCount() : 0;
         float topY = this.yPositionForRowBelow(hb.y, -1);
         float bottomY = this.yPositionForRowBelow(hb.y, rowCount);
@@ -642,12 +643,12 @@ public class EUIDropdown<T> extends EUIHoverable
             }
 
             if (this.shouldShowSlider()) {
-                this.scrollBar.TryRender(sb);
+                this.scrollBar.tryRender(sb);
             }
         }
     }
 
-    protected void RenderArrows(SpriteBatch sb) {
+    protected void renderArrows(SpriteBatch sb) {
         float arrowIconX = hb.x + hb.width - ARROW_ICON_W - Settings.scale * 10.0F;
         Texture dropdownArrowIcon = this.isOpen ? ImageMaster.OPTION_TOGGLE_ON : ImageMaster.FILTER_ARROW;
         sb.draw(dropdownArrowIcon, arrowIconX, hb.y + hb.height / 4, ARROW_ICON_W, ARROW_ICON_H);
@@ -703,19 +704,19 @@ public class EUIDropdown<T> extends EUIHoverable
     public void updateForSelection(boolean shouldInvoke) {
         int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
         if (isMultiSelect) {
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems(), labelFunction) : makeMultiSelectString();
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : makeMultiSelectString();
         }
         else if (currentIndices.size() > 0) {
             this.topVisibleRowIndex = Math.min(temp, this.rows.size() - this.visibleRowCount());
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.Invoke(GetCurrentItems(), labelFunction) : rows.get(temp).label.text;
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : rows.get(temp).label.text;
             if (colorFunctionButton != null) {
-                this.button.SetTextColor(colorFunctionButton.Invoke(GetCurrentItems()));
+                this.button.setTextColor(colorFunctionButton.invoke(getCurrentItems()));
             }
 
-            this.scrollBar.Scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
+            this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
         }
         if (shouldInvoke && onChange != null) {
-            onChange.Invoke(GetCurrentItems());
+            onChange.invoke(getCurrentItems());
         }
     }
 
@@ -729,8 +730,8 @@ public class EUIDropdown<T> extends EUIHoverable
     }
 
     public String makeMultiSelectString(FuncT1<String, T> optionFunc) {
-        String prospective = StringUtils.join(EUIUtils.Map(GetCurrentItems(), optionFunc), ", ");
-        float width = button.isSmartText ? EUISmartText.GetSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
+        String prospective = StringUtils.join(EUIUtils.map(getCurrentItems(), optionFunc), ", ");
+        float width = button.isSmartText ? EUISmartText.getSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
         return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.Strings.UI_ItemsSelected : prospective;
     }
 
@@ -761,20 +762,20 @@ public class EUIDropdown<T> extends EUIHoverable
         }
     }
 
-    public EUIDropdown<T> MakeCopy() {
-        return MakeCopy(new AdvancedHitbox(hb));
+    public EUIDropdown<T> makeCopy() {
+        return makeCopy(new AdvancedHitbox(hb));
     }
 
-    public EUIDropdown<T> MakeCopy(AdvancedHitbox hb) {
-        return new EUIDropdown<T>(hb, this.labelFunction, GetAllItems(), this.font, this.maxRows, this.canAutosizeButton)
-                .SetHeader(this.font, this.fontScale, this.header.textColor, this.header.text, this.header.smartText)
-                .SetLabelFunctionForButton(this.labelFunctionButton, this.colorFunctionButton, this.button.isSmartText)
-                .SetLabelFunctionForOption(this.labelFunction, this.isOptionSmartText)
+    public EUIDropdown<T> makeCopy(AdvancedHitbox hb) {
+        return new EUIDropdown<T>(hb, this.labelFunction, getAllItems(), this.font, this.maxRows, this.canAutosizeButton)
+                .setHeader(this.font, this.fontScale, this.header.textColor, this.header.text, this.header.smartText)
+                .setLabelFunctionForButton(this.labelFunctionButton, this.colorFunctionButton, this.button.isSmartText)
+                .setLabelFunctionForOption(this.labelFunction, this.isOptionSmartText)
                 .setCanAutosize(this.canAutosizeButton, this.canAutosizeRows)
-                .SetClearButtonOptions(this.showClearForSingle, this.shouldPositionClearAtTop)
-                .SetIsMultiSelect(this.isMultiSelect)
-                .SetOnChange(this.onChange)
-                .SetOnOpenOrClose(this.onOpenOrClose);
+                .setClearButtonOptions(this.showClearForSingle, this.shouldPositionClearAtTop)
+                .setIsMultiSelect(this.isMultiSelect)
+                .setOnChange(this.onChange)
+                .setOnOpenOrClose(this.onOpenOrClose);
     }
 
     protected static class DropdownRow<T> {
@@ -789,38 +790,38 @@ public class EUIDropdown<T> extends EUIHoverable
 
         public DropdownRow(EUIDropdown<T> dr, AdvancedHitbox hb, T item, FuncT1<String, T> labelFunction, BitmapFont font, float fontScale, int index) {
             this.dr = dr;
-            this.hb = new RelativeHitbox(hb, 1f, 1f, 0f, 0f).SetIsPopupCompatible(true).SetParentElement(dr);
+            this.hb = new RelativeHitbox(hb, 1f, 1f, 0f, 0f).setIsPopupCompatible(true).setParentElement(dr);
             this.item = item;
             this.index = index;
             this.checkbox = new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED,  new RelativeHitbox(hb, 48f, 48f, 0f, -TOGGLE_OFFSET, false));
             this.label = new EUILabel(font, new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f, false))
-                    .SetFont(font, fontScale)
-                    .SetText(labelFunction.Invoke(item))
-                    .SetAlignment(0.5f, 0f, dr.isOptionSmartText);
+                    .setFont(font, fontScale)
+                    .setLabel(labelFunction.invoke(item))
+                    .setAlignment(0.5f, 0f, dr.isOptionSmartText);
         }
 
-        public DropdownRow<T> UpdateAlignment() {
-            this.label.SetAlignment(dr.isOptionSmartText ? 1f : 0.5f, 0f, dr.isOptionSmartText);
-            this.label.SetHitbox(new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f, false));
+        public DropdownRow<T> updateAlignment() {
+            this.label.setAlignment(dr.isOptionSmartText ? 1f : 0.5f, 0f, dr.isOptionSmartText);
+            this.label.setHitbox(new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f, false));
             return this;
         }
 
-        public DropdownRow<T> SetLabelFunction(FuncT1<String, T> labelFunction, boolean isSmartText) {
-            this.label.SetSmartText(isSmartText);
-            RefreshText(labelFunction);
+        public DropdownRow<T> setLabelFunction(FuncT1<String, T> labelFunction, boolean isSmartText) {
+            this.label.setSmartText(isSmartText);
+            refreshText(labelFunction);
             return this;
         }
 
-        public void RefreshText(FuncT1<String, T> labelFunction)
+        public void refreshText(FuncT1<String, T> labelFunction)
         {
-            this.label.SetText(labelFunction.Invoke(item));
+            this.label.setLabel(labelFunction.invoke(item));
         }
 
-        public String GetText() {
+        public String getText() {
             return this.label.text;
         }
 
-        public String GetTextForWidth() {
+        public String getTextForWidth() {
             return this.label.text;
         }
 
@@ -832,14 +833,14 @@ public class EUIDropdown<T> extends EUIHoverable
 
         public boolean update(boolean isInRange, boolean isSelected) {
             this.hb.update();
-            this.label.Update();
-            this.checkbox.Update();
+            this.label.updateImpl();
+            this.checkbox.updateImpl();
             this.isSelected = isSelected;
             if (!isInRange) {
                 return false;
             }
             if (this.hb.hovered) {
-                this.label.SetColor(Settings.GREEN_TEXT_COLOR);
+                this.label.setColor(Settings.GREEN_TEXT_COLOR);
                 if (InputHelper.justClickedLeft) {
                     this.hb.clickStarted = true;
                 }
@@ -848,17 +849,17 @@ public class EUIDropdown<T> extends EUIHoverable
                 }
             }
             else if (isSelected) {
-                this.label.SetColor(Settings.GOLD_COLOR);
-                this.checkbox.SetTexture(ImageMaster.COLOR_TAB_BOX_TICKED);
+                this.label.setColor(Settings.GOLD_COLOR);
+                this.checkbox.setTexture(ImageMaster.COLOR_TAB_BOX_TICKED);
             }
             else {
-                this.label.SetColor(Color.WHITE);
-                this.checkbox.SetTexture(ImageMaster.COLOR_TAB_BOX_UNTICKED);
+                this.label.setColor(Color.WHITE);
+                this.checkbox.setTexture(ImageMaster.COLOR_TAB_BOX_UNTICKED);
             }
 
             if ((this.hb.clicked) || (this.hb.hovered && CInputActionSet.select.isJustPressed())) {
                 this.hb.clicked = false;
-                this.checkbox.SetTexture(isSelected ? ImageMaster.COLOR_TAB_BOX_UNTICKED : ImageMaster.COLOR_TAB_BOX_TICKED);
+                this.checkbox.setTexture(isSelected ? ImageMaster.COLOR_TAB_BOX_UNTICKED : ImageMaster.COLOR_TAB_BOX_TICKED);
                 return true;
             }
             return false;
@@ -866,35 +867,35 @@ public class EUIDropdown<T> extends EUIHoverable
 
         public void renderRow(SpriteBatch sb) {
             this.hb.render(sb);
-            this.label.TryRender(sb);
+            this.label.tryRender(sb);
             if (dr.isMultiSelect) {
-                this.checkbox.TryRender(sb);
+                this.checkbox.tryRender(sb);
             }
         }
 
         protected void addTooltip() {
             if (dr.tooltipFunction != null)
             {
-                EUITooltip.QueueTooltips(dr.tooltipFunction.Invoke(item));
+                EUITooltip.queueTooltips(dr.tooltipFunction.invoke(item));
             }
             else if (item instanceof TooltipProvider) {
-                EUITooltip.QueueTooltips(((TooltipProvider) item).GetTips());
+                EUITooltip.queueTooltips(((TooltipProvider) item).getTips());
             }
             else if (item instanceof CardObject) {
-                RenderCard(((CardObject) item).GetCard());
+                renderCard(((CardObject) item).getCard());
             }
             else if (item instanceof AbstractCard) {
-                RenderCard((AbstractCard) item);
+                renderCard((AbstractCard) item);
             }
         }
 
-        private void RenderCard(AbstractCard card) {
+        private void renderCard(AbstractCard card) {
             card.current_x = card.target_x = card.hb.x = InputHelper.mX + PREVIEW_OFFSET_X;
             card.current_y = card.target_y = card.hb.y = InputHelper.mY;
             card.update();
             card.updateHoverLogic();
             card.drawScale = card.targetDrawScale = 0.75f;
-            EUI.AddPriorityPostRender(card::render);
+            EUI.addPriorityPostRender(card::render);
         }
     }
 }

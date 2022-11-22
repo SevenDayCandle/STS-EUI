@@ -13,17 +13,17 @@ public class GenericCallback<T>
     protected ActionT1<T> actionT1;
     protected ActionT2<?, T> actionT2;
 
-    public static <T> GenericCallback<T> FromT0(ActionT0 onCompletion)
+    public static <T> GenericCallback<T> fromT0(ActionT0 onCompletion)
     {
         return new GenericCallback<>(onCompletion);
     }
 
-    public static <T> GenericCallback<T> FromT1(ActionT1<T> onCompletion)
+    public static <T> GenericCallback<T> fromT1(ActionT1<T> onCompletion)
     {
         return new GenericCallback<>(onCompletion);
     }
 
-    public static <S, T> GenericCallback<T> FromT2(ActionT2<S, T> onCompletion, S state)
+    public static <S, T> GenericCallback<T> fromT2(ActionT2<S, T> onCompletion, S state)
     {
         return new GenericCallback<>(onCompletion, state);
     }
@@ -44,21 +44,21 @@ public class GenericCallback<T>
         this.actionT0 = onCompletion;
     }
 
-    public void Complete(T result)
+    public void complete(T result)
     {
         if (actionT2 != null)
         {
-            actionT2.CastAndInvoke(state, result);
+            actionT2.castAndInvoke(state, result);
         }
 
         if (actionT1 != null)
         {
-            actionT1.Invoke(result);
+            actionT1.invoke(result);
         }
 
         if (actionT0 != null)
         {
-            actionT0.Invoke();
+            actionT0.invoke();
         }
     }
 }

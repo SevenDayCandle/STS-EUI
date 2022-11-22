@@ -5,33 +5,33 @@ import imgui.ImGui;
 
 public class DEUIUtils
 {
-    public static void DisabledIf(boolean disabled, ActionT0 onRender)
+    public static void disabledIf(boolean disabled, ActionT0 onRender)
     {
         ImGui.beginDisabled(disabled);
-        onRender.Invoke();
+        onRender.invoke();
         ImGui.endDisabled();
     }
 
-    public static String GetNameWithID(String name, String id)
+    public static String getNameWithID(String name, String id)
     {
         return name + "###" + id;
     }
 
-    public static void InlineText(String text)
+    public static void inlineText(String text)
     {
         ImGui.text(text);
         ImGui.sameLine();
     }
 
-    public static void WithFullWidth(ActionT0 onRender)
+    public static void withFullWidth(ActionT0 onRender)
     {
-        WithWidth(-1, onRender);
+        withWidth(-1, onRender);
     }
 
-    public static void WithWidth(int width, ActionT0 onRender)
+    public static void withWidth(int width, ActionT0 onRender)
     {
         ImGui.pushItemWidth(90);
-        onRender.Invoke();
+        onRender.invoke();
         ImGui.popItemWidth();
     }
 }

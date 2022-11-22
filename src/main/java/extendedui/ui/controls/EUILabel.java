@@ -41,43 +41,43 @@ public class EUILabel extends EUIHoverable
         this.text = "";
     }
 
-    public EUILabel MakeCopy()
+    public EUILabel makeCopy()
     {
         return (EUILabel) new EUILabel(font, new AdvancedHitbox(hb))
-                .SetAlignment(verticalRatio, horizontalRatio, smartText)
-                .SetColor(textColor)
-                .SetFont(font, fontScale)
-                .SetText(text)
-                .SetTooltip(tooltip);
+                .setAlignment(verticalRatio, horizontalRatio, smartText)
+                .setColor(textColor)
+                .setFont(font, fontScale)
+                .setLabel(text)
+                .setTooltip(tooltip);
     }
 
-    public EUILabel SetText(Object content)
+    public EUILabel setLabel(Object content)
     {
         this.text = String.valueOf(content);
 
         return this;
     }
 
-    public EUILabel SetText(String text)
+    public EUILabel setLabel(String text)
     {
         this.text = text;
 
         return this;
     }
 
-    public EUILabel SetText(String format, Object... args)
+    public EUILabel setLabel(String format, Object... args)
     {
-        this.text = EUIUtils.Format(format, args);
+        this.text = EUIUtils.format(format, args);
 
         return this;
     }
 
-    public EUILabel SetFont(BitmapFont font)
+    public EUILabel setFont(BitmapFont font)
     {
-        return SetFont(font, 1);
+        return setFont(font, 1);
     }
 
-    public EUILabel SetFont(BitmapFont font, float fontScale)
+    public EUILabel setFont(BitmapFont font, float fontScale)
     {
         this.font = font;
         this.fontScale = fontScale;
@@ -85,31 +85,31 @@ public class EUILabel extends EUIHoverable
         return this;
     }
 
-    public EUILabel SetFontScale(float fontScale)
+    public EUILabel setFontScale(float fontScale)
     {
         this.fontScale = fontScale;
 
         return this;
     }
 
-    public EUILabel SetPosition(float cX, float cY)
+    public EUILabel setPosition(float cX, float cY)
     {
         this.hb.move(cX, cY);
 
         return this;
     }
 
-    public EUILabel SetAlignment(float verticalRatio, float horizontalRatio)
+    public EUILabel setAlignment(float verticalRatio, float horizontalRatio)
     {
-        return SetAlignment(verticalRatio, horizontalRatio, false);
+        return setAlignment(verticalRatio, horizontalRatio, false);
     }
 
-    public EUILabel SetAlignment(float verticalRatio, float horizontalRatio, boolean smartText)
+    public EUILabel setAlignment(float verticalRatio, float horizontalRatio, boolean smartText)
     {
-        return SetAlignment(verticalRatio, horizontalRatio, smartText, true);
+        return setAlignment(verticalRatio, horizontalRatio, smartText, true);
     }
 
-    public EUILabel SetAlignment(float verticalRatio, float horizontalRatio, boolean smartText, boolean smartPadEnd)
+    public EUILabel setAlignment(float verticalRatio, float horizontalRatio, boolean smartText, boolean smartPadEnd)
     {
         this.verticalRatio = verticalRatio;
         this.horizontalRatio = horizontalRatio;
@@ -119,69 +119,69 @@ public class EUILabel extends EUIHoverable
         return this;
     }
 
-    public EUILabel SetSmartText(boolean smartText) {
-        return SetSmartText(smartText, true);
+    public EUILabel setSmartText(boolean smartText) {
+        return setSmartText(smartText, true);
     }
 
-    public EUILabel SetSmartText(boolean smartText, boolean smartPadEnd) {
+    public EUILabel setSmartText(boolean smartText, boolean smartPadEnd) {
         this.smartText = smartText;
         this.smartPadEnd = smartPadEnd;
         return this;
     }
 
-    public EUILabel SetSmartText(boolean smartText, boolean smartPadEnd, boolean smartTextResize) {
+    public EUILabel setSmartText(boolean smartText, boolean smartPadEnd, boolean smartTextResize) {
         this.smartText = smartText;
         this.smartPadEnd = smartPadEnd;
         this.smartTextResize = smartTextResize;
         return this;
     }
 
-    public EUILabel SetColor(Color textColor)
+    public EUILabel setColor(Color textColor)
     {
         this.textColor = textColor.cpy();
 
         return this;
     }
 
-    public EUILabel Autosize() {
-        return Autosize(1f, 1f);
+    public EUILabel autosize() {
+        return autosize(1f, 1f);
     }
 
-    public EUILabel Autosize(Float resizeMultiplier, Float resizeHeight) {
+    public EUILabel autosize(Float resizeMultiplier, Float resizeHeight) {
         if (resizeMultiplier != null) {
-            this.hb.width = GetAutoWidth();
+            this.hb.width = getAutoWidth();
         }
         if (resizeHeight != null) {
-            this.hb.height = GetAutoHeight();
+            this.hb.height = getAutoHeight();
         }
 
         return this;
     }
 
-    public float GetAutoHeight() {
-        return EUISmartText.GetSmartHeight(font, text, Settings.WIDTH);
+    public float getAutoHeight() {
+        return EUISmartText.getSmartHeight(font, text, Settings.WIDTH);
     }
 
-    public float GetAutoWidth() {
-        return EUISmartText.GetSmartWidth(font, text, Settings.WIDTH, 0f);
+    public float getAutoWidth() {
+        return EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        Render(sb, hb);
+        render(sb, hb);
 
         hb.render(sb);
     }
 
-    public void Render(SpriteBatch sb, Hitbox hb)
+    public void render(SpriteBatch sb, Hitbox hb)
     {
         font.getData().setScale(fontScale);
 
         if (smartText)
         {
             final float step = hb.width * horizontalRatio;
-            EUISmartText.Write(sb, font, text, hb.x + step, hb.y + (hb.height * verticalRatio),
+            EUISmartText.write(sb, font, text, hb.x + step, hb.y + (hb.height * verticalRatio),
             smartPadEnd ? hb.width - (step * 2) : hb.width, font.getLineHeight(), textColor, smartTextResize);
         }
         else if (horizontalRatio < 0.5f)
@@ -199,6 +199,6 @@ public class EUILabel extends EUIHoverable
             FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.y + hb.height * verticalRatio, textColor);
         }
 
-        EUIRenderHelpers.ResetFont(font);
+        EUIRenderHelpers.resetFont(font);
     }
 }

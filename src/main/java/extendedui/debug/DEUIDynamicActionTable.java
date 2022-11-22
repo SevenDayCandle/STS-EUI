@@ -19,27 +19,27 @@ public class DEUIDynamicActionTable<T> extends DEUIDynamicTable<T>
         super(id, columns, flags);
     }
 
-    public DEUIDynamicActionTable<T> SetClick(ActionT1<T> clickFunc, String text)
+    public DEUIDynamicActionTable<T> setClick(ActionT1<T> clickFunc, String text)
     {
         this.clickFunc = clickFunc;
         this.clickText = text;
         return this;
     }
 
-    public DEUIDynamicActionTable<T> SetItems(Iterable<? extends T> items, FuncT1<String[], T> renderFunc)
+    public DEUIDynamicActionTable<T> setItems(Iterable<? extends T> items, FuncT1<String[], T> renderFunc)
     {
-        super.SetItems(items, renderFunc);
+        super.setItems(items, renderFunc);
         return this;
     }
 
-    public void OnRender()
+    public void onRender()
     {
         if (this.items != null && this.stringsFunc != null)
         {
             int j = 0;
             for (T item : items)
             {
-                String[] labels = stringsFunc.Invoke(item);
+                String[] labels = stringsFunc.invoke(item);
                 ImGui.tableNextRow();
                 int i = 0;
                 for (i = 0; i < Math.min(labels.length, columns); i++)
@@ -49,7 +49,7 @@ public class DEUIDynamicActionTable<T> extends DEUIDynamicTable<T>
                 }
                 ImGui.tableSetColumnIndex(columns - 1);
                 if (ImGui.button(clickText + "##act" + j) && clickFunc != null) {
-                    clickFunc.Invoke(item);
+                    clickFunc.invoke(item);
                 }
                 j += 1;
             }

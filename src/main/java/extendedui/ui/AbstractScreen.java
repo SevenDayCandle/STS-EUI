@@ -22,21 +22,21 @@ public abstract class AbstractScreen extends EUIBase
     @SpireEnum
     public static MainMenuScreen.CurScreen EUI_MENU;
 
-    protected static MainMenuScreen.CurScreen PreviousMainScreen;
+    protected static MainMenuScreen.CurScreen previousMainScreen;
 
-    public boolean CanOpen()
+    public boolean canOpen()
     {
-        return IsNullOrNone(AbstractDungeon.previousScreen) && !CardCrawlGame.isPopupOpen;
+        return isNullOrNone(AbstractDungeon.previousScreen) && !CardCrawlGame.isPopupOpen;
     }
 
-    protected void Open() {
-        Open(true, true);
+    protected void open() {
+        open(true, true);
     }
 
-    protected void Open(boolean hideTopBar, boolean hideRelics)
+    protected void open(boolean hideTopBar, boolean hideRelics)
     {
 
-        UpdateDungeonScreen();
+        updateDungeonScreen();
 
         Settings.hideTopBar = hideTopBar;
         Settings.hideRelics = hideRelics;
@@ -44,13 +44,13 @@ public abstract class AbstractScreen extends EUIBase
 
         AbstractDungeon.isScreenUp = true;
 
-        if (EUIGameUtils.InBattle())
+        if (EUIGameUtils.inBattle())
         {
             AbstractDungeon.player.releaseCard();
             AbstractDungeon.overlayMenu.hideCombatPanels();
         }
 
-        if (EUIGameUtils.InGame())
+        if (EUIGameUtils.inGame())
         {
             AbstractDungeon.topPanel.unhoverHitboxes();
             AbstractDungeon.topPanel.potionUi.isHidden = true;
@@ -61,13 +61,13 @@ public abstract class AbstractScreen extends EUIBase
             AbstractDungeon.overlayMenu.showBlackScreen(0.7f);
         }
         else if (CardCrawlGame.mainMenuScreen != null && CardCrawlGame.mainMenuScreen.screen != EUI_MENU) {
-            PreviousMainScreen = CardCrawlGame.mainMenuScreen.screen;
+            previousMainScreen = CardCrawlGame.mainMenuScreen.screen;
             CardCrawlGame.mainMenuScreen.screen = EUI_MENU;
         }
 
     }
 
-    protected void UpdateDungeonScreen()
+    protected void updateDungeonScreen()
     {
         if (AbstractDungeon.screen != EUI_SCREEN) {
 
@@ -83,11 +83,11 @@ public abstract class AbstractScreen extends EUIBase
         }
     }
 
-    public void Reopen() {
+    public void reopen() {
 
     }
 
-    public void Dispose()
+    public void dispose()
     {
         // Modified Logic from AbstractDungeon.closeCurrentScreen and AbstractDungeon.genericScreenOverlayReset
         EUI.CurrentScreen = null;
@@ -101,16 +101,16 @@ public abstract class AbstractScreen extends EUIBase
             AbstractDungeon.screen = previous;
         }
 
-        if (AbstractDungeon.player == null || !EUIGameUtils.InGame())
+        if (AbstractDungeon.player == null || !EUIGameUtils.inGame())
         {
-            AbstractDungeon.isScreenUp = !IsNullOrNone(previous);
+            AbstractDungeon.isScreenUp = !isNullOrNone(previous);
             if (CardCrawlGame.mainMenuScreen != null) {
-                CardCrawlGame.mainMenuScreen.screen = PreviousMainScreen;
+                CardCrawlGame.mainMenuScreen.screen = previousMainScreen;
             }
             return;
         }
 
-        if (IsNullOrNone(previous) || previous == EUI_SCREEN)
+        if (isNullOrNone(previous) || previous == EUI_SCREEN)
         {
             if (AbstractDungeon.player.isDead)
             {
@@ -124,38 +124,38 @@ public abstract class AbstractScreen extends EUIBase
         }
 
         AbstractDungeon.overlayMenu.cancelButton.hide();
-        if (EUIGameUtils.InBattle())
+        if (EUIGameUtils.inBattle())
         {
             AbstractDungeon.overlayMenu.showCombatPanels();
         }
 
     }
 
-    public void Update()
+    public void updateImpl()
     {
     }
 
-    public void PreRender(SpriteBatch sb)
-    {
-
-    }
-
-    public void Render(SpriteBatch sb)
+    public void preRender(SpriteBatch sb)
     {
 
     }
 
-    public static EUIButton CreateHexagonalButton(float x, float y, float width, float height)
+    public void renderImpl(SpriteBatch sb)
     {
-        final Texture buttonTexture = EUIRM.Images.HexagonalButton.Texture();
-        final Texture buttonBorderTexture = EUIRM.Images.HexagonalButtonBorder.Texture();
+
+    }
+
+    public static EUIButton createHexagonalButton(float x, float y, float width, float height)
+    {
+        final Texture buttonTexture = EUIRM.Images.HexagonalButton.texture();
+        final Texture buttonBorderTexture = EUIRM.Images.HexagonalButtonBorder.texture();
         return new EUIButton(buttonTexture, x, y)
-        .SetBorder(buttonBorderTexture, Color.WHITE)
-        .SetClickDelay(0.25f)
-        .SetDimensions(width, height);
+        .setBorder(buttonBorderTexture, Color.WHITE)
+        .setClickDelay(0.25f)
+        .setDimensions(width, height);
     }
 
-    private static boolean IsNullOrNone(AbstractDungeon.CurrentScreen screen)
+    private static boolean isNullOrNone(AbstractDungeon.CurrentScreen screen)
     {
         return screen == null || screen == AbstractDungeon.CurrentScreen.NONE;
     }

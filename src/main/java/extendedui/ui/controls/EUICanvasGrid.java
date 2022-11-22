@@ -15,9 +15,9 @@ public abstract class EUICanvasGrid extends EUICanvas
         this.yPadding = yPadding;
     }
 
-    public void RefreshOffset()
+    public void refreshOffset()
     {
-        sizeCache = CurrentSize();
+        sizeCache = currentSize();
         upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
         lowerScrollBound = -Settings.DEFAULT_SCROLL_LIMIT;
 
@@ -29,13 +29,13 @@ public abstract class EUICanvasGrid extends EUICanvas
         }
     }
 
-    protected void UpdateScrolling(boolean isDraggingScrollBar) {
-        if (sizeCache != CurrentSize())
+    protected void updateScrolling(boolean isDraggingScrollBar) {
+        if (sizeCache != currentSize())
         {
-            RefreshOffset();
+            refreshOffset();
         }
-        super.UpdateScrolling(isDraggingScrollBar);
+        super.updateScrolling(isDraggingScrollBar);
     }
 
-    abstract public int CurrentSize();
+    abstract public int currentSize();
 }

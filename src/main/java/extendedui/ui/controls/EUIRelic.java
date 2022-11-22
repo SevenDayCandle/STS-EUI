@@ -17,9 +17,9 @@ public class EUIRelic extends EUIImage
     }
 
     @Override
-    public void Render(SpriteBatch sb)
+    public void renderImpl(SpriteBatch sb)
     {
-        super.Render(sb);
+        super.renderImpl(sb);
 
         if (hb.hovered)
         {

@@ -38,17 +38,17 @@ public class ColoredTexture
         this(texture, Color.WHITE);
     }
 
-    public int GetWidth()
+    public int getWidth()
     {
         return texture.getWidth();
     }
 
-    public int GetHeight()
+    public int getHeight()
     {
         return texture.getHeight();
     }
 
-    public ColoredTexture SetColor(Color color)
+    public ColoredTexture setColor(Color color)
     {
         if (color != null)
         {
@@ -65,7 +65,7 @@ public class ColoredTexture
         return this;
     }
 
-    public ColoredTexture SetColor(Float r, Float g, Float b, Float a)
+    public ColoredTexture setColor(Float r, Float g, Float b, Float a)
     {
         if (r != null)
         {

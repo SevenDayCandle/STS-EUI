@@ -29,11 +29,11 @@ public class RelativeHitbox extends AdvancedHitbox
         this.offset_cY = offset_cY;
         this.lerpSpeed = -1;
 
-        UpdateTargetPosition();
-        moveInternal(target_cX, target_cY);
+        updateTargetPosition();
+        moveInternal(targetCx, targetCy);
     }
 
-    public RelativeHitbox SetOffset(float x, float y)
+    public RelativeHitbox setOffset(float x, float y)
     {
         this.percentageOffset = false;
         this.offset_cX = x;
@@ -42,7 +42,7 @@ public class RelativeHitbox extends AdvancedHitbox
         return this;
     }
 
-    public RelativeHitbox SetPercentageOffset(float x, float y)
+    public RelativeHitbox setPercentageOffset(float x, float y)
     {
         this.percentageOffset = true;
         this.offset_cX = x;
@@ -51,17 +51,17 @@ public class RelativeHitbox extends AdvancedHitbox
         return this;
     }
 
-    public RelativeHitbox UpdateTargetPosition()
+    public RelativeHitbox updateTargetPosition()
     {
         if (percentageOffset)
         {
-            this.target_cX = parentHB.x + (offset_cX * parentHB.width);
-            this.target_cY = parentHB.y + (offset_cY * parentHB.height);
+            this.targetCx = parentHB.x + (offset_cX * parentHB.width);
+            this.targetCy = parentHB.y + (offset_cY * parentHB.height);
         }
         else
         {
-            this.target_cX = parentHB.x + offset_cX;
-            this.target_cY = parentHB.y + offset_cY;
+            this.targetCx = parentHB.x + offset_cX;
+            this.targetCy = parentHB.y + offset_cY;
         }
 
         return this;
@@ -72,13 +72,13 @@ public class RelativeHitbox extends AdvancedHitbox
     {
         super.update();
 
-        UpdateTargetPosition();
+        updateTargetPosition();
     }
 
-    public static RelativeHitbox SetPercentageOffset(Hitbox hb, Float x, Float y)
+    public static RelativeHitbox setPercentageOffset(Hitbox hb, Float x, Float y)
     {
         RelativeHitbox hitbox = (RelativeHitbox)hb;
-        hitbox.SetPercentageOffset(x == null ? hitbox.offset_cX : x, y == null ? hitbox.offset_cY : y);
+        hitbox.setPercentageOffset(x == null ? hitbox.offset_cX : x, y == null ? hitbox.offset_cY : y);
         return hitbox;
     }
 }
