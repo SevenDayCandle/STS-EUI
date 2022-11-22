@@ -30,7 +30,7 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>>
     {
         super(hb, backgroundTexture, headerText, descriptionText);
         this.dropdown = new EUIDropdown<T>(new AdvancedHitbox(hb.x + hb.width / 4, hb.y + hb.height / 4, hb.width / 2, Scale(48)))
-                .SetCanAutosize(false, true);
+                .setCanAutosize(false, true);
     }
 
     public EUIDialogDropdown<T> SetOptions(boolean isMultiSelect, boolean canAutosize) {

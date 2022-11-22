@@ -129,7 +129,7 @@ public class EUIDropdown<T> extends EUIHoverable
         this.header.SetActive(false);
     }
 
-    public EUIDropdown<T> SetCanAutosize(boolean canAutosizeButton, boolean canAutosizeRows) {
+    public EUIDropdown<T> setCanAutosize(boolean canAutosizeButton, boolean canAutosizeRows) {
         this.canAutosizeButton = canAutosizeButton;
         this.canAutosizeRows = canAutosizeRows;
         Autosize();
@@ -770,7 +770,7 @@ public class EUIDropdown<T> extends EUIHoverable
                 .SetHeader(this.font, this.fontScale, this.header.textColor, this.header.text, this.header.smartText)
                 .SetLabelFunctionForButton(this.labelFunctionButton, this.colorFunctionButton, this.button.isSmartText)
                 .SetLabelFunctionForOption(this.labelFunction, this.isOptionSmartText)
-                .SetCanAutosize(this.canAutosizeButton, this.canAutosizeRows)
+                .setCanAutosize(this.canAutosizeButton, this.canAutosizeRows)
                 .SetClearButtonOptions(this.showClearForSingle, this.shouldPositionClearAtTop)
                 .SetIsMultiSelect(this.isMultiSelect)
                 .SetOnChange(this.onChange)
