@@ -19,7 +19,7 @@ public class FakeLibraryCard extends AbstractCard
 
     public FakeLibraryCard()
     {
-        super("","", "", "", 0, EUIRM.Strings.uiNomatch, CardType.SKILL, CardColor.COLORLESS, CardRarity.SPECIAL, CardTarget.NONE);
+        super("","", "", "", 0, EUIRM.strings.uiNomatch, CardType.SKILL, CardColor.COLORLESS, CardRarity.SPECIAL, CardTarget.NONE);
         this.hb = new FakeHitbox(hb);
     }
 
@@ -77,6 +77,6 @@ public class FakeLibraryCard extends AbstractCard
     }
 
     private void renderImpl(SpriteBatch sb) {
-        FontHelper.renderFontLeft(sb, EUIFontHelper.CardTitleFont_Normal, EUIRM.Strings.uiNomatch, hb.cX, hb.cY + hb.height / 4, Color.WHITE);
+        FontHelper.renderFontLeft(sb, EUIFontHelper.cardtitlefontNormal, EUIRM.strings.uiNomatch, hb.cX, hb.cY + hb.height / 4, Color.WHITE);
     }
 }

@@ -22,7 +22,7 @@ public class FontHelperPatches
         @SpireInsertPatch(locator = MainLocator.class)
         public static void insertMain()
         {
-            if (EUIConfiguration.OverrideGameFont.get())
+            if (EUIConfiguration.overrideGameFont.get())
             {
                 ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomDefaultFontFile(Settings.language));
             }
@@ -40,7 +40,7 @@ public class FontHelperPatches
         @SpireInsertPatch(locator = BoldLocator1.class)
         public static void insertBold()
         {
-            if (EUIConfiguration.OverrideGameFont.get())
+            if (EUIConfiguration.overrideGameFont.get())
             {
                 ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomBoldFontFile(Settings.language));
             }
@@ -58,7 +58,7 @@ public class FontHelperPatches
         @SpireInsertPatch(locator = BoldLocator2.class)
         public static void insertBold2()
         {
-            if (EUIConfiguration.OverrideGameFont.get())
+            if (EUIConfiguration.overrideGameFont.get())
             {
                 ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomBoldFontFile(Settings.language));
             }
@@ -77,7 +77,7 @@ public class FontHelperPatches
         public static void postfix()
         {
             EUIFontHelper.initialize();
-            if (EUIConfiguration.OverrideGameFont.get())
+            if (EUIConfiguration.overrideGameFont.get())
             {
                 EUIFontHelper.overwriteBaseFonts();
             }

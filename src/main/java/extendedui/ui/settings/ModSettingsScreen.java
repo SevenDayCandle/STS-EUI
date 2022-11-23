@@ -220,7 +220,7 @@ public class ModSettingsScreen extends AbstractScreen
 
     protected HashMap<Category, ArrayList<IUIElement>> getCategories()
     {
-        return EUIConfiguration.ShowModSettings.get() ? modListCategories : configCategories;
+        return EUIConfiguration.showModSettings.get() ? modListCategories : configCategories;
     }
 
     public static class Category

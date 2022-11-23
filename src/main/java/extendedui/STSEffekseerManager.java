@@ -29,29 +29,29 @@ public class STSEffekseerManager implements ImGuiSubscriber
     protected static final ArrayList<String> AvailablePaths = new ArrayList<>();
     private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
     private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
-    protected static float AnimationSpeed = BASE_ANIMATION_SPEED;
-    protected static float ZPOS = 99;
-    protected static String WINDOW_ID = "Effekseer";
-    protected static String WINDOW_TABLE_ID = "Playing Effects";
-    protected static String EFFECT_LIST_ID = "Effect List";
-    protected static String EFFECT_LIST_POS_X_ID = "X##posX";
-    protected static String EFFECT_LIST_POS_Y_ID = "Y##posY";
-    protected static String EFFECT_LIST_ROT_X_ID = "X##rotX";
-    protected static String EFFECT_LIST_ROT_Y_ID = "Y##rotY";
-    protected static String EFFECT_LIST_ROT_Z_ID = "Z##rotZ";
-    protected static String EFFECT_LIST_SCALE_X_ID = "X##scaleX";
-    protected static String EFFECT_LIST_SCALE_Y_ID = "Y##scaleY";
-    protected static String EFFECT_LIST_SCALE_Z_ID = "Z##scaleZ";
-    protected static String EFFECT_LIST_COLOR_R_ID = "R##colorR";
-    protected static String EFFECT_LIST_COLOR_G_ID = "G##colorG";
-    protected static String EFFECT_LIST_COLOR_B_ID = "B##colorB";
-    protected static String EFFECT_LIST_COLOR_A_ID = "A##colorA";
-    protected static String EFFECT_LIST_PLAY_ID = "Play";
-    protected static String EFFECT_LIST_TOGGLE_ID = "Show Playing";
-    protected static String TABLE_ID = "Current Playing Effects";
-    protected static STSEffekseerManager Instance;
-    private static EffekseerManagerCore ManagerCore;
-    private static boolean Enabled = false;
+    protected static float animationSpeed = BASE_ANIMATION_SPEED;
+    protected static final float ZPOS = 99;
+    protected static final String WINDOW_ID = "Effekseer";
+    protected static final String WINDOW_TABLE_ID = "Playing Effects";
+    protected static final String EFFECT_LIST_ID = "Effect List";
+    protected static final String EFFECT_LIST_POS_X_ID = "X##posX";
+    protected static final String EFFECT_LIST_POS_Y_ID = "Y##posY";
+    protected static final String EFFECT_LIST_ROT_X_ID = "X##rotX";
+    protected static final String EFFECT_LIST_ROT_Y_ID = "Y##rotY";
+    protected static final String EFFECT_LIST_ROT_Z_ID = "Z##rotZ";
+    protected static final String EFFECT_LIST_SCALE_X_ID = "X##scaleX";
+    protected static final String EFFECT_LIST_SCALE_Y_ID = "Y##scaleY";
+    protected static final String EFFECT_LIST_SCALE_Z_ID = "Z##scaleZ";
+    protected static final String EFFECT_LIST_COLOR_R_ID = "R##colorR";
+    protected static final String EFFECT_LIST_COLOR_G_ID = "G##colorG";
+    protected static final String EFFECT_LIST_COLOR_B_ID = "B##colorB";
+    protected static final String EFFECT_LIST_COLOR_A_ID = "A##colorA";
+    protected static final String EFFECT_LIST_PLAY_ID = "Play";
+    protected static final String EFFECT_LIST_TOGGLE_ID = "Show Playing";
+    protected static final String TABLE_ID = "Current Playing Effects";
+    protected static STSEffekseerManager instance;
+    private static EffekseerManagerCore managerCore;
+    private static boolean enabled = false;
 
 
     private final DEUIWindow effectWindow;
@@ -97,9 +97,9 @@ public class STSEffekseerManager implements ImGuiSubscriber
         handleTable.setItems(PlayingHandles, handle -> {
                     return EUIUtils.array(
                             String.valueOf(handle),
-                            String.valueOf(ManagerCore.GetFrame(handle)),
-                            String.valueOf(ManagerCore.GetInstanceCount(handle)),
-                            String.valueOf(ManagerCore.GetLayer(handle))
+                            String.valueOf(managerCore.GetFrame(handle)),
+                            String.valueOf(managerCore.GetInstanceCount(handle)),
+                            String.valueOf(managerCore.GetLayer(handle))
                     );
                 })
                 .setClick(STSEffekseerManager::stop, "Stop")
@@ -115,16 +115,16 @@ public class STSEffekseerManager implements ImGuiSubscriber
      Force an animation to stop playing
      */
     public static void stop(int handle){
-        if (Enabled) {
-            ManagerCore.Stop(handle);
+        if (enabled) {
+            managerCore.Stop(handle);
         }
     }
 
     public static void end() {
-        if (Enabled) {
+        if (enabled) {
             clear();
             EffekseerBackendCore.Terminate();
-            Enabled = false;
+            enabled = false;
         }
     }
 
@@ -135,11 +135,11 @@ public class STSEffekseerManager implements ImGuiSubscriber
         try {
             STSEffekSeerUtils.loadLibraryFromJar();
             EffekseerBackendCore.InitializeWithOpenGL();
-            ManagerCore = new EffekseerManagerCore();
-            ManagerCore.Initialize(BASE_SPRITES_DEFAULT);
-            Enabled = true;
-            Instance = new STSEffekseerManager();
-            BaseMod.subscribe(Instance);
+            managerCore = new EffekseerManagerCore();
+            managerCore.Initialize(BASE_SPRITES_DEFAULT);
+            enabled = true;
+            instance = new STSEffekseerManager();
+            BaseMod.subscribe(instance);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -154,18 +154,18 @@ public class STSEffekseerManager implements ImGuiSubscriber
      Edit the attributes of an effect that is currently playing
      */
     public static boolean modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
-        if (Enabled && ManagerCore.Exists(handle)) {
+        if (enabled && managerCore.Exists(handle)) {
             if (position != null)         {
-                ManagerCore.SetEffectPosition(handle, position.x, position.y, ZPOS);
+                managerCore.SetEffectPosition(handle, position.x, position.y, ZPOS);
             }
             if (rotation != null) {
-                ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
+                managerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
             }
             if (scale != null) {
-                ManagerCore.SetEffectScale(handle, scale.x, scale.y, scale.z);
+                managerCore.SetEffectScale(handle, scale.x, scale.y, scale.z);
             }
             if (color != null) {
-                ManagerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
+                managerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
             }
             return true;
         }
@@ -190,16 +190,16 @@ public class STSEffekseerManager implements ImGuiSubscriber
                     ParticleEffects.put(key, effect);
                 }
                 if (effect != null) {
-                    int handle = ManagerCore.Play(effect);
-                    ManagerCore.SetEffectPosition(handle, position.x, position.y, ZPOS);
+                    int handle = managerCore.Play(effect);
+                    managerCore.SetEffectPosition(handle, position.x, position.y, ZPOS);
                     if (rotation != null) {
-                        ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
+                        managerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
                     }
                     if (scale != null) {
-                        ManagerCore.SetEffectScale(handle, scale.x, scale.y, scale.z);
+                        managerCore.SetEffectScale(handle, scale.x, scale.y, scale.z);
                     }
                     if (color != null) {
-                        ManagerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
+                        managerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
                     }
                     PlayingHandles.add(handle);
                     return handle;
@@ -217,7 +217,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
      Effects can only play if the manager is loaded and if in-game effects are enabled
      */
     public static boolean canPlay() {
-        return Enabled && !Settings.DISABLE_EFFECTS && !EUIConfiguration.DisableEffekseer.get();
+        return enabled && !Settings.DISABLE_EFFECTS && !EUIConfiguration.disableEffekseer.get();
     }
 
     public static Integer play(String key, Vector2 position, Vector3 rotation, Vector3 scale, Color color) {
@@ -239,7 +239,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
      Whether the effect with the given handle is currently playing
      */
     public static boolean exists(int handle){
-        return Enabled && ManagerCore.Exists(handle);
+        return enabled && managerCore.Exists(handle);
     }
 
     /* Add Effekseer file paths to the file selector */
@@ -250,12 +250,12 @@ public class STSEffekseerManager implements ImGuiSubscriber
 
     public static void reset() {
         clear();
-        ManagerCore = new EffekseerManagerCore();
-        ManagerCore.Initialize(BASE_SPRITES_DEFAULT);
+        managerCore = new EffekseerManagerCore();
+        managerCore.Initialize(BASE_SPRITES_DEFAULT);
     }
 
     private static void clear() {
-        ManagerCore.delete();
+        managerCore.delete();
         for (EffekseerEffectCore effect : ParticleEffects.values()) {
             effect.delete();
         }
@@ -266,15 +266,15 @@ public class STSEffekseerManager implements ImGuiSubscriber
      Set the global animation speed for ALL animations
      */
     public static void setAnimationSpeed(float speed) {
-        AnimationSpeed = Math.max(0, speed);
+        animationSpeed = Math.max(0, speed);
     }
 
     /**
      Force all animations to stop playing
      */
     public static void stopAll(){
-        if (Enabled) {
-            ManagerCore.StopAllEffects();
+        if (enabled) {
+            managerCore.StopAllEffects();
         }
     }
 
@@ -283,8 +283,8 @@ public class STSEffekseerManager implements ImGuiSubscriber
      */
     public static void update() {
         if (canPlay() && !PlayingHandles.isEmpty()) {
-            ManagerCore.SetViewProjectionMatrixWithSimpleWindowAndUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Gdx.graphics.getDeltaTime() * AnimationSpeed);
-            ManagerCore.Draw();
+            managerCore.SetViewProjectionMatrixWithSimpleWindowAndUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Gdx.graphics.getDeltaTime() * animationSpeed);
+            managerCore.Draw();
         }
     }
 

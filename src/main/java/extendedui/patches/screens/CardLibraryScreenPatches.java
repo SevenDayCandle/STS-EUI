@@ -29,7 +29,7 @@ public class CardLibraryScreenPatches
         public static void postfix(CardLibraryScreen screen)
         {
             // Must perform initialization right after card library groups are first initialized
-            EUI.CustomLibraryScreen.initialize(screen);
+            EUI.customLibraryScreen.initialize(screen);
         }
     }
 
@@ -41,8 +41,8 @@ public class CardLibraryScreenPatches
         public static SpireReturn<Void> prefix(CardLibraryScreen screen)
         {
             // Redirect to the custom library screen if enabled
-            if (!EUIConfiguration.UseVanillaCompendium.get()) {
-                EUI.CustomLibraryScreen.openImpl();
+            if (!EUIConfiguration.useVanillaCompendium.get()) {
+                EUI.customLibraryScreen.openImpl();
                 CardCrawlGame.mainMenuScreen.screen = MainMenuScreen.CurScreen.CARD_LIBRARY;
                 return SpireReturn.Return();
             }
@@ -69,18 +69,18 @@ public class CardLibraryScreenPatches
             Hitbox upgradeHitbox = tabBar.viewUpgradeHb;
             upgradeHitbox.width = 260 * Settings.scale;
 
-            if (EUIClassUtils.getField(screen, "sortHeader") != EUI.CustomHeader)
+            if (EUIClassUtils.getField(screen, "sortHeader") != EUI.customHeader)
             {
-                EUIClassUtils.setField(screen, "sortHeader", EUI.CustomHeader);
+                EUIClassUtils.setField(screen, "sortHeader", EUI.customHeader);
             }
 
-            EUI.CustomHeader.setupButtons();
+            EUI.customHeader.setupButtons();
         }
 
         @SpirePostfixPatch
         public static void postfix(CardLibraryScreen screen, ColorTabBar tabBar, ColorTabBar.CurrentTab newSelection) {
-            EUI.CardFilters.initialize(__ -> EUI.CustomHeader.updateForFilters(), EUI.CustomHeader.originalGroup, newSelection == ColorTabBarFix.Enums.MOD ? ColorTabBarFix.Fields.getModTab().color : AbstractCard.CardColor.COLORLESS, false);
-            EUI.CustomHeader.updateForFilters();
+            EUI.cardFilters.initialize(__ -> EUI.customHeader.updateForFilters(), EUI.customHeader.originalGroup, newSelection == ColorTabBarFix.Enums.MOD ? ColorTabBarFix.Fields.getModTab().color : AbstractCard.CardColor.COLORLESS, false);
+            EUI.customHeader.updateForFilters();
         }
     }
 
@@ -92,16 +92,16 @@ public class CardLibraryScreenPatches
         public static SpireReturn<Void> prefix(CardLibraryScreen __instance)
         {
             // Override vanilla compendium if enabled
-            if (!EUIConfiguration.UseVanillaCompendium.get())
+            if (!EUIConfiguration.useVanillaCompendium.get())
             {
-                EUI.CustomLibraryScreen.updateImpl();
+                EUI.customLibraryScreen.updateImpl();
                 return SpireReturn.Return();
             }
 
-            if (!EUI.CardFilters.isActive && EUI.OpenCardFiltersButton != null) {
-                EUI.OpenCardFiltersButton.tryUpdate();
+            if (!EUI.cardFilters.isActive && EUI.openCardFiltersButton != null) {
+                EUI.openCardFiltersButton.tryUpdate();
             }
-            if (EUI.CardFilters.tryUpdate())
+            if (EUI.cardFilters.tryUpdate())
             {
                 EUIClassUtils.setField(__instance, "grabbedScreen", false);
             }
@@ -115,7 +115,7 @@ public class CardLibraryScreenPatches
         @SpirePrefixPatch
         public static SpireReturn<AbstractCard> prefix(CardLibraryScreen __instance)
         {
-            if (EUI.CardFilters.isActive) {
+            if (EUI.cardFilters.isActive) {
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();
@@ -129,9 +129,9 @@ public class CardLibraryScreenPatches
         public static SpireReturn<Void> prefix(CardLibraryScreen __instance, SpriteBatch sb)
         {
             // Override vanilla compendium if enabled
-            if (!EUIConfiguration.UseVanillaCompendium.get())
+            if (!EUIConfiguration.useVanillaCompendium.get())
             {
-                EUI.CustomLibraryScreen.renderImpl(sb);
+                EUI.customLibraryScreen.renderImpl(sb);
                 return SpireReturn.Return();
             }
 
@@ -141,8 +141,8 @@ public class CardLibraryScreenPatches
         @SpirePrefixPatch
         public static void postfix(CardLibraryScreen __instance, SpriteBatch sb)
         {
-            if (!EUI.CardFilters.isActive && EUI.OpenCardFiltersButton != null) {
-                EUI.OpenCardFiltersButton.tryRender(sb);
+            if (!EUI.cardFilters.isActive && EUI.openCardFiltersButton != null) {
+                EUI.openCardFiltersButton.tryRender(sb);
             }
         }
     }

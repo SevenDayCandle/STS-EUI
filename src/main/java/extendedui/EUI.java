@@ -54,18 +54,18 @@ public class EUI
     private static final HashMap<AbstractCard.CardColor, CustomRelicFilterModule> customRelicFilters = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicLibraryModules = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicPoolModules = new HashMap<>();
-    public static AbstractCard.CardColor ActingColor;
-    public static AbstractScreen CurrentScreen;
-    public static CardKeywordFilters CardFilters;
-    public static CardPoolScreen CardsScreen;
-    public static CustomCardLibSortHeader CustomHeader;
-    public static CustomCardLibraryScreen CustomLibraryScreen;
-    public static EUIButton OpenCardFiltersButton;
-    public static EUIButton OpenRelicFiltersButton;
-    public static ModSettingsScreen ModSettingsScreen;
-    public static RelicKeywordFilters RelicFilters;
-    public static RelicPoolScreen RelicScreen;
-    public static RelicSortHeader RelicHeader;
+    public static AbstractCard.CardColor actingColor;
+    public static AbstractScreen currentScreen;
+    public static CardKeywordFilters cardFilters;
+    public static CardPoolScreen cardsScreen;
+    public static CustomCardLibSortHeader customHeader;
+    public static CustomCardLibraryScreen customLibraryScreen;
+    public static EUIButton openCardFiltersButton;
+    public static EUIButton openRelicFiltersButton;
+    public static ModSettingsScreen modSettingsScreen;
+    public static RelicKeywordFilters relicFilters;
+    public static RelicPoolScreen relicScreen;
+    public static RelicSortHeader relicHeader;
     protected static EUIBase activeElement;
     private static float delta = 0;
     private static float timer = 0;
@@ -109,13 +109,13 @@ public class EUI
 
     public static void dispose()
     {
-        if (CurrentScreen != null)
+        if (currentScreen != null)
         {
-            CurrentScreen.dispose();
+            currentScreen.dispose();
             activeElement = null;
         }
 
-        CurrentScreen = null;
+        currentScreen = null;
         lastHovered = null;
     }
 
@@ -210,26 +210,26 @@ public class EUI
             EUIGameUtils.CustomColorNames.put(p.getCardColor(), p.getLocalizedCharacterName());
         }
 
-        CardsScreen = new CardPoolScreen();
-        CardFilters = new CardKeywordFilters();
-        CustomHeader = new CustomCardLibSortHeader(null);
-        CustomLibraryScreen = new CustomCardLibraryScreen();
-        ModSettingsScreen = new ModSettingsScreen();
-        RelicFilters = new RelicKeywordFilters();
-        RelicHeader = new RelicSortHeader(null);
-        RelicScreen = new RelicPoolScreen();
+        cardsScreen = new CardPoolScreen();
+        cardFilters = new CardKeywordFilters();
+        customHeader = new CustomCardLibSortHeader(null);
+        customLibraryScreen = new CustomCardLibraryScreen();
+        modSettingsScreen = new ModSettingsScreen();
+        relicFilters = new RelicKeywordFilters();
+        relicHeader = new RelicSortHeader(null);
+        relicScreen = new RelicPoolScreen();
 
         BaseMod.addTopPanelItem(new CardPoolPanelItem());
 
-        OpenCardFiltersButton = new EUIButton(EUIRM.Images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-            .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.WHITE)
-            .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.Strings.uiFilters)
-            .setOnClick(() -> EUI.CardFilters.toggleFilters())
+        openCardFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+            .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
+            .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
+            .setOnClick(() -> EUI.cardFilters.toggleFilters())
             .setColor(Color.GRAY);
-        OpenRelicFiltersButton = new EUIButton(EUIRM.Images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.Strings.uiFilters)
-                .setOnClick(() -> EUI.RelicFilters.toggleFilters())
+        openRelicFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
+                .setOnClick(() -> EUI.relicFilters.toggleFilters())
                 .setColor(Color.GRAY);
     }
 
@@ -243,13 +243,13 @@ public class EUI
     }
 
     public static boolean isLoaded() {
-        return CardsScreen != null; // This will be null before the UI has loaded
+        return cardsScreen != null; // This will be null before the UI has loaded
     }
 
     public static void postDispose()
     {
         activeElement = null;
-        CurrentScreen = null;
+        currentScreen = null;
         lastHovered = null;
     }
 
@@ -274,9 +274,9 @@ public class EUI
 
     public static void preRender(SpriteBatch sb)
     {
-        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && CurrentScreen != null)
+        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null)
         {
-            CurrentScreen.preRender(sb);
+            currentScreen.preRender(sb);
         }
 
         renderImpl(sb, preRenderList.iterator());
@@ -340,7 +340,7 @@ public class EUI
     }
 
     public static TextureRegion getEnergyIcon() {
-        AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : ActingColor;
+        AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : actingColor;
         if (color == null) {
             return AbstractCard.orb_red;
         }
@@ -409,9 +409,9 @@ public class EUI
 
     public static void render(SpriteBatch sb)
     {
-        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && CurrentScreen != null)
+        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null)
         {
-            CurrentScreen.renderImpl(sb);
+            currentScreen.renderImpl(sb);
         }
 
         for (EUIBase s : Subscribers) {
@@ -472,7 +472,7 @@ public class EUI
 
     public static boolean tryDragging()
     {
-        final boolean drag = !CardCrawlGame.isPopupOpen && (CurrentScreen == null || !isDragging) && (isDragging = true);
+        final boolean drag = !CardCrawlGame.isPopupOpen && (currentScreen == null || !isDragging) && (isDragging = true);
         if (drag)
         {
             EUITooltip.canRenderTooltips(false);
@@ -509,9 +509,9 @@ public class EUI
 
     public static void update()
     {
-        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && CurrentScreen != null)
+        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null)
         {
-            CurrentScreen.updateImpl();
+            currentScreen.updateImpl();
         }
 
         for (EUIBase s : BattleSubscribers) {

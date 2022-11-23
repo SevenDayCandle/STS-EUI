@@ -15,13 +15,13 @@ import java.util.StringJoiner;
 public class EUIRM
 {
     public static final String ID = "extendedui";
-    public static Images Images = new Images();
-    public static Strings Strings;
+    public static Images images = new Images();
+    public static Strings strings;
     protected static final HashMap<String, Texture> internalTextures = new HashMap<>();
     private static final HashMap<String, Texture> localTextures = new HashMap<>();
 
     public static void initialize() {
-        Strings = new Strings();
+        strings = new Strings();
     }
 
     public static Texture getTexture(String path) {

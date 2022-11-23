@@ -40,14 +40,14 @@ public class RelicPoolScreen extends AbstractScreen
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);
 
-        this.swapScreen = new EUIButton(EUIRM.Images.hexagonalButton.texture(),
+        this.swapScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new AdvancedHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
                 .setFont(FontHelper.buttonLabelFont, 0.8f)
                 .setColor(Color.GRAY)
-                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.CardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
-                .setText(EUIRM.Strings.uipoolViewcardpool);
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
+                .setOnClick(() -> EUI.cardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
+                .setText(EUIRM.strings.uipoolViewcardpool);
     }
 
     public void open(AbstractPlayer player, ArrayList<AbstractRelic> relics)
@@ -62,15 +62,15 @@ public class RelicPoolScreen extends AbstractScreen
         }
 
         relicGrid.setRelics(relics);
-        EUI.RelicHeader.setGrid(relicGrid).snapToGroup(false);
-        EUI.RelicFilters.initialize(__ -> {
-            EUI.RelicHeader.updateForFilters();
+        EUI.relicHeader.setGrid(relicGrid).snapToGroup(false);
+        EUI.relicFilters.initialize(__ -> {
+            EUI.relicHeader.updateForFilters();
             if (CustomModule != null) {
-                CustomModule.open(EUI.RelicHeader.getRelics());
+                CustomModule.open(EUI.relicHeader.getRelics());
             }
             relicGrid.forceUpdateRelicPositions();
-        }, EUI.RelicHeader.getOriginalRelics(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
-        EUI.RelicHeader.updateForFilters();
+        }, EUI.relicHeader.getOriginalRelics(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
+        EUI.relicHeader.updateForFilters();
 
         if (EUIGameUtils.inGame())
         {
@@ -97,11 +97,11 @@ public class RelicPoolScreen extends AbstractScreen
     @Override
     public void updateImpl()
     {
-        if (!EUI.RelicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
+        if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             relicGrid.tryUpdate();
             swapScreen.updateImpl();
-            EUI.RelicHeader.updateImpl();
-            EUI.OpenRelicFiltersButton.tryUpdate();
+            EUI.relicHeader.updateImpl();
+            EUI.openRelicFiltersButton.tryUpdate();
             if (CustomModule != null) {
                 CustomModule.tryUpdate();
             }
@@ -113,9 +113,9 @@ public class RelicPoolScreen extends AbstractScreen
     {
         relicGrid.tryRender(sb);
         swapScreen.renderImpl(sb);
-        EUI.RelicHeader.renderImpl(sb);
-        if (!EUI.RelicFilters.isActive) {
-            EUI.OpenRelicFiltersButton.tryRender(sb);
+        EUI.relicHeader.renderImpl(sb);
+        if (!EUI.relicFilters.isActive) {
+            EUI.openRelicFiltersButton.tryRender(sb);
         }
         if (CustomModule != null) {
             CustomModule.tryRender(sb);

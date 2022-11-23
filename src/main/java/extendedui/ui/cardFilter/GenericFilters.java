@@ -61,48 +61,48 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         super(ROW_SIZE, PAD_Y);
         isActive = false;
         hb = new AdvancedHitbox(DRAW_START_X, DRAW_START_Y, scale(180), scale(70)).setIsPopupCompatible(true);
-        closeButton = new EUIButton(EUIRM.Images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.WHITE)
+        closeButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(CombatRewardScreen.TEXT[6])
                 .setOnClick(this::close)
                 .setColor(Color.GRAY);
-        clearButton = new EUIButton(EUIRM.Images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).setIsPopupCompatible(true))
-                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.WHITE)
+        clearButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).setIsPopupCompatible(true))
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setColor(Color.FIREBRICK)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.13f)
-                .setText(EUIRM.Strings.miscClear)
+                .setText(EUIRM.strings.miscClear)
                 .setOnClick(() -> this.clear(true, isAccessedFromCardPool));
 
-        keywordsSectionLabel = new EUILabel(EUIFontHelper.CardTitleFont_Small,
+        keywordsSectionLabel = new EUILabel(EUIFontHelper.cardtitlefontSmall,
                 new AdvancedHitbox(0, 0, scale(48), scale(48)))
-                .setFont(EUIFontHelper.CardTitleFont_Small, 0.8f)
-                .setLabel(EUIRM.Strings.uiKeywords)
+                .setFont(EUIFontHelper.cardtitlefontSmall, 0.8f)
+                .setLabel(EUIRM.strings.uiKeywords)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
-        currentTotalHeaderLabel = new EUILabel(EUIFontHelper.CardTitleFont_Normal,
+        currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardtitlefontNormal,
                 new AdvancedHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)))
-                .setFont(EUIFontHelper.CardTitleFont_Small, 1f)
-                .setLabel(EUIRM.Strings.uiTotal)
+                .setFont(EUIFontHelper.cardtitlefontSmall, 1f)
+                .setLabel(EUIRM.strings.uiTotal)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
-        currentTotalLabel = new EUILabel(EUIFontHelper.CardTitleFont_Normal,
+        currentTotalLabel = new EUILabel(EUIFontHelper.cardtitlefontNormal,
                 new AdvancedHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.906f, scale(48), scale(48)))
-                .setFont(EUIFontHelper.CardTitleFont_Small, 1f)
+                .setFont(EUIFontHelper.cardtitlefontSmall, 1f)
                 .setColor(Settings.BLUE_TEXT_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
 
         sortTypeToggle = new EUIToggle( new AdvancedHitbox(0, 0, scale(170), scale(32)).setIsPopupCompatible(true))
-                .setBackground(EUIRM.Images.rectangularButton.texture(), Color.DARK_GRAY)
+                .setBackground(EUIRM.images.rectangularButton.texture(), Color.DARK_GRAY)
                 .setTickImage(null, null, 10)
-                .setFont(EUIFontHelper.CardDescriptionFont_Normal, 0.7f)
-                .setText(EUIRM.Strings.miscSortbycount)
+                .setFont(EUIFontHelper.carddescriptionfontNormal, 0.7f)
+                .setText(EUIRM.strings.miscSortbycount)
                 .setOnToggle(val -> {
                     shouldSortByCount = val;
                     refreshButtonOrder();
                 });
 
         sortDirectionToggle = new EUIToggle( new AdvancedHitbox(0, 0, scale(48), scale(48)).setIsPopupCompatible(true))
-                .setTickImage(new EUIImage(EUIRM.Images.arrow.texture()), new EUIImage(EUIRM.Images.arrow.texture()).setRotation(180f), 32)
+                .setTickImage(new EUIImage(EUIRM.images.arrow.texture()), new EUIImage(EUIRM.images.arrow.texture()).setRotation(180f), 32)
                 .setOnToggle(val -> {
                     sortDesc = val;
                     refreshButtonOrder();
@@ -116,7 +116,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         filterButtons.clear();
         currentTotal = 0;
 
-        EUI.ActingColor = color;
+        EUI.actingColor = color;
         EUITooltip.updateTooltipIcons();
         this.onClick = onClick;
         referenceItems = items;
@@ -193,7 +193,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
 
     public final void refreshButtonOrder()
     {
-        sortTypeToggle.setText(EUIRM.Strings.sortBy(shouldSortByCount ? EUIRM.Strings.uiAmount : CardLibSortHeader.TEXT[2]));
+        sortTypeToggle.setText(EUIRM.strings.sortBy(shouldSortByCount ? EUIRM.strings.uiAmount : CardLibSortHeader.TEXT[2]));
         filterButtons.sort((a, b) -> (shouldSortByCount ? a.cardCount - b.cardCount : StringUtils.compare(a.tooltip.title, b.tooltip.title)) * (sortDesc ? -1 : 1));
 
         int index = 0;
@@ -348,11 +348,11 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     {
         if (items.size() == 0)
         {
-            return EUIRM.Strings.uiAny;
+            return EUIRM.strings.uiAny;
         }
         if (items.size() > 1)
         {
-            return items.size() + " " + EUIRM.Strings.uiItemsselected;
+            return items.size() + " " + EUIRM.strings.uiItemsselected;
         }
         return StringUtils.join(EUIUtils.map(items, originalFunction), ", ");
     }

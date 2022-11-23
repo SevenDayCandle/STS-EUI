@@ -14,11 +14,11 @@ import imgui.ImGui;
 
 public class ShaderDebugger implements ImGuiSubscriber
 {
-    protected static ShaderDebugger Instance;
-    protected static String WINDOW_ID = "Shaders";
-    protected static String INPUT_ID = "##FragmentShader";
-    protected static String RENDER_ID = "Render";
-    protected static String STOP_ID = "Stop";
+    protected static ShaderDebugger instance;
+    protected static final String WINDOW_ID = "Shaders";
+    protected static final String INPUT_ID = "##FragmentShader";
+    protected static final String RENDER_ID = "Render";
+    protected static final String STOP_ID = "Stop";
 
     private final DEUIWindow effectWindow;
     private final DEUIButton effectRender;
@@ -33,15 +33,15 @@ public class ShaderDebugger implements ImGuiSubscriber
         effectWindow = new DEUIWindow(WINDOW_ID);
         effectRender = new DEUIButton(RENDER_ID);
         effectStop = new DEUIButton(STOP_ID);
-        testImage = new EUIImage(EUIRM.Images.cardPool.texture());
-        testImage2 = new EUIImage(EUIRM.Images.cardPool.texture());
+        testImage = new EUIImage(EUIRM.images.cardPool.texture());
+        testImage2 = new EUIImage(EUIRM.images.cardPool.texture());
         testImage.setPosition(EUIBase.screenW(0.5f), EUIBase.screenH(0.5f));
         testImage2.setPosition(EUIBase.screenW(0.7f), EUIBase.screenH(0.7f));
     }
 
     public static void initialize() {
-        Instance = new ShaderDebugger();
-        BaseMod.subscribe(Instance);
+        instance = new ShaderDebugger();
+        BaseMod.subscribe(instance);
     }
 
     @Override

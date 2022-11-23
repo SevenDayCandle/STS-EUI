@@ -88,7 +88,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T>
         super.renderImpl(sb);
         this.searchInput.tryRender(sb);
         if (isOpen && searchInput.text.isEmpty()) {
-            EUIRenderHelpers.writeCentered(sb, font, EUIRM.Strings.miscTypetosearch, hb, Color.GRAY);
+            EUIRenderHelpers.writeCentered(sb, font, EUIRM.strings.miscTypetosearch, hb, Color.GRAY);
         }
     }
 
@@ -110,7 +110,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T>
     public void updateForSelection(boolean shouldInvoke) {
         int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
         if (isMultiSelect) {
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : currentIndices.size() + " " + EUIRM.Strings.uiItemsselected;
+            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : currentIndices.size() + " " + EUIRM.strings.uiItemsselected;
         }
         else if (currentIndices.size() > 0) {
             this.topVisibleRowIndex = Math.min(temp, this.originalRows.size() - this.visibleRowCount());

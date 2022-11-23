@@ -18,7 +18,7 @@ import extendedui.ui.hitboxes.AdvancedHitbox;
 
 public class OptionsPanelPatches
 {
-    public static EUILabel ModSettings = new EUILabel(FontHelper.panelEndTurnFont, new AdvancedHitbox(Settings.WIDTH * 0.18F, Settings.HEIGHT * 0.021f, 300.0F * Settings.scale, 72.0F * Settings.scale)).setLabel(EUIRM.Strings.miscExtrasettings);
+    public static EUILabel modSettings = new EUILabel(FontHelper.panelEndTurnFont, new AdvancedHitbox(Settings.WIDTH * 0.18F, Settings.HEIGHT * 0.021f, 300.0F * Settings.scale, 72.0F * Settings.scale)).setLabel(EUIRM.strings.miscExtrasettings);
 
     @SpirePatch(clz= OptionsPanel.class, method="update")
     public static class OptionsPanel_Update
@@ -26,7 +26,7 @@ public class OptionsPanelPatches
         @SpirePostfixPatch
         public static SpireReturn<Void> prefix(OptionsPanel __instance)
         {
-            if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && EUI.CurrentScreen == EUI.ModSettingsScreen)
+            if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && EUI.currentScreen == EUI.modSettingsScreen)
             {
                 return SpireReturn.Return();
             }
@@ -47,24 +47,24 @@ public class OptionsPanelPatches
         @SpirePostfixPatch
         public static void postfix(OptionsPanel __instance, SpriteBatch sb)
         {
-            ModSettings.tryRender(sb);
+            modSettings.tryRender(sb);
         }
     }
 
     private static void tryUpdate()
     {
-        ModSettings.tryUpdate();
-        if (ModSettings.hb.hovered)
+        modSettings.tryUpdate();
+        if (modSettings.hb.hovered)
         {
-            ModSettings.setColor(Settings.GREEN_TEXT_COLOR);
-            if (EUIInputManager.LeftClick.isJustPressed())
+            modSettings.setColor(Settings.GREEN_TEXT_COLOR);
+            if (EUIInputManager.leftClick.isJustPressed())
             {
-                EUI.ModSettingsScreen.open();
+                EUI.modSettingsScreen.open();
             }
         }
         else
         {
-            ModSettings.setColor(Color.WHITE);
+            modSettings.setColor(Color.WHITE);
         }
     }
 }

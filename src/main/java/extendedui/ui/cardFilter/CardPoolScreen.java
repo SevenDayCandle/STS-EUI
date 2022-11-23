@@ -25,7 +25,7 @@ import extendedui.utilities.EUIFontHelper;
 
 public class CardPoolScreen extends AbstractScreen
 {
-    public static CustomCardPoolModule CustomModule;
+    public static CustomCardPoolModule customModule;
 
     private final EUIToggle upgradeToggle;
     private final EUIToggle colorlessToggle;
@@ -44,30 +44,30 @@ public class CardPoolScreen extends AbstractScreen
                 .setVerticalStart(Settings.HEIGHT * 0.66f);
 
         upgradeToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
-                .setBackground(EUIRM.Images.panel.texture(), Color.DARK_GRAY)
+                .setBackground(EUIRM.images.panel.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.8f)
-                .setFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
+                .setFont(EUIFontHelper.carddescriptionfontLarge, 0.5f)
                 .setText(SingleCardViewPopup.TEXT[6])
                 .setOnToggle(EUI::toggleViewUpgrades);
 
         colorlessToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
-                .setBackground(EUIRM.Images.panel.texture(), Color.DARK_GRAY)
+                .setBackground(EUIRM.images.panel.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
-                .setFont(EUIFontHelper.CardDescriptionFont_Large, 0.5f)
-                .setText(EUIRM.Strings.uicardpoolShowcolorless)
+                .setFont(EUIFontHelper.carddescriptionfontLarge, 0.5f)
+                .setText(EUIRM.strings.uicardpoolShowcolorless)
                 .setOnToggle(val -> {
-                    EUI.CardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
-                    EUI.CardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.CURSE, val, true);
+                    EUI.cardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
+                    EUI.cardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.CURSE, val, true);
                 });
 
-        this.swapScreen = new EUIButton(EUIRM.Images.hexagonalButton.texture(),
+        this.swapScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new AdvancedHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
                 .setFont(FontHelper.buttonLabelFont, 0.8f)
                 .setColor(Color.GRAY)
-                .setBorder(EUIRM.Images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.RelicScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
-                .setText(EUIRM.Strings.uipoolViewrelicpool);
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
+                .setOnClick(() -> EUI.relicScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
+                .setText(EUIRM.strings.uipoolViewrelicpool);
     }
 
     public void open(AbstractPlayer player, CardGroup cards)
@@ -83,26 +83,26 @@ public class CardPoolScreen extends AbstractScreen
         }
 
         cardGrid.setCardGroup(cards);
-        EUI.CustomHeader.setGroup(cards);
-        EUI.CustomHeader.setupButtons();
-        EUI.CardFilters.initialize(__ -> {
-            EUI.CustomHeader.updateForFilters();
-            if (CustomModule != null) {
-                CustomModule.open(EUI.CustomHeader.group.group);
+        EUI.customHeader.setGroup(cards);
+        EUI.customHeader.setupButtons();
+        EUI.cardFilters.initialize(__ -> {
+            EUI.customHeader.updateForFilters();
+            if (customModule != null) {
+                customModule.open(EUI.customHeader.group.group);
             }
             cardGrid.forceUpdateCardPositions();
-        }, EUI.CustomHeader.originalGroup, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
-        EUI.CustomHeader.updateForFilters();
+        }, EUI.customHeader.originalGroup, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
+        EUI.customHeader.updateForFilters();
 
         if (EUIGameUtils.inGame())
         {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
 
-        CustomModule = EUI.getCustomCardPoolModule(player);
-        if (CustomModule != null) {
-            CustomModule.setActive(true);
-            CustomModule.open(cardGrid.cards.group);
+        customModule = EUI.getCustomCardPoolModule(player);
+        if (customModule != null) {
+            customModule.setActive(true);
+            customModule.open(cardGrid.cards.group);
         }
 
     }
@@ -119,15 +119,15 @@ public class CardPoolScreen extends AbstractScreen
     @Override
     public void updateImpl()
     {
-        if (!EUI.CardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
+        if (!EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             cardGrid.tryUpdate();
             upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
             colorlessToggle.updateImpl();
             swapScreen.updateImpl();
-            EUI.CustomHeader.update();
-            EUI.OpenCardFiltersButton.tryUpdate();
-            if (CustomModule != null) {
-                CustomModule.tryUpdate();
+            EUI.customHeader.update();
+            EUI.openCardFiltersButton.tryUpdate();
+            if (customModule != null) {
+                customModule.tryUpdate();
             }
         }
     }
@@ -139,12 +139,12 @@ public class CardPoolScreen extends AbstractScreen
         upgradeToggle.renderImpl(sb);
         colorlessToggle.renderImpl(sb);
         swapScreen.renderImpl(sb);
-        EUI.CustomHeader.render(sb);
-        if (!EUI.CardFilters.isActive) {
-            EUI.OpenCardFiltersButton.tryRender(sb);
+        EUI.customHeader.render(sb);
+        if (!EUI.cardFilters.isActive) {
+            EUI.openCardFiltersButton.tryRender(sb);
         }
-        if (CustomModule != null) {
-            CustomModule.tryRender(sb);
+        if (customModule != null) {
+            customModule.tryRender(sb);
         }
     }
 }

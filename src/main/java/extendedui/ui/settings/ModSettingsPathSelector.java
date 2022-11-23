@@ -17,8 +17,8 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
     {
         super(hb);
         this.config = config;
-        this.header.setLabel(title).setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
-        this.filePath.setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
+        this.header.setLabel(title).setFont(EUIFontHelper.carddescriptionfontNormal, 1f);
+        this.filePath.setFont(EUIFontHelper.carddescriptionfontNormal, 1f);
         this.config.addListener(this);
         setOnUpdate(this::onUpdateFile);
     }

@@ -281,7 +281,7 @@ public class EUIButton extends EUIHoverable
             {
                 if (currentClickDelay <= 0)
                 {
-                    if (EUIInputManager.RightClick.isJustPressed())
+                    if (EUIInputManager.rightClick.isJustPressed())
                     {
                         onRightClick();
                     }

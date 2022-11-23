@@ -29,10 +29,10 @@ public class MasterDeckViewScreenPatches
         public static void prefix(MasterDeckViewScreen __instance)
         {
             getFakeMasterDeck();
-            EUI.CardFilters.initialize(__ -> {
+            EUI.cardFilters.initialize(__ -> {
                 updateForFilters();
-                if (CardPoolScreen.CustomModule != null) {
-                    CardPoolScreen.CustomModule.open(fakeMasterDeck.group);
+                if (CardPoolScreen.customModule != null) {
+                    CardPoolScreen.customModule.open(fakeMasterDeck.group);
                 }
             }, fakeMasterDeck.group, AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : AbstractCard.CardColor.COLORLESS, false);
             updateForFilters();
@@ -45,8 +45,8 @@ public class MasterDeckViewScreenPatches
         @SpirePrefixPatch
         public static void prefix(MasterDeckViewScreen __instance)
         {
-            if (!EUI.CardFilters.tryUpdate() && EUI.OpenCardFiltersButton != null) {
-                EUI.OpenCardFiltersButton.tryUpdate();
+            if (!EUI.cardFilters.tryUpdate() && EUI.openCardFiltersButton != null) {
+                EUI.openCardFiltersButton.tryUpdate();
             }
         }
     }
@@ -57,8 +57,8 @@ public class MasterDeckViewScreenPatches
         @SpirePrefixPatch
         public static void prefix(MasterDeckViewScreen __instance, SpriteBatch sb)
         {
-            if (!EUI.CardFilters.isActive) {
-                EUI.OpenCardFiltersButton.tryRender(sb);
+            if (!EUI.cardFilters.isActive) {
+                EUI.openCardFiltersButton.tryRender(sb);
             }
         }
 
@@ -166,23 +166,23 @@ public class MasterDeckViewScreenPatches
     }
 
     public static void updateForFilters() {
-        if (EUI.CardFilters.areFiltersEmpty()) {
+        if (EUI.cardFilters.areFiltersEmpty()) {
             getFakeMasterDeck();
         }
         else {
-            ArrayList<AbstractCard> tempGroup = EUI.CardFilters.applyFilters(AbstractDungeon.player.masterDeck.group);
+            ArrayList<AbstractCard> tempGroup = EUI.cardFilters.applyFilters(AbstractDungeon.player.masterDeck.group);
             if (tempGroup.size() > 0) {
                 fakeMasterDeck.group = tempGroup;
             }
-            else if (!EUI.CardFilters.areFiltersEmpty()) {
-                EUI.CardFilters.currentFilters.clear();
-                tempGroup = EUI.CardFilters.applyFilters(AbstractDungeon.player.masterDeck.group);
+            else if (!EUI.cardFilters.areFiltersEmpty()) {
+                EUI.cardFilters.currentFilters.clear();
+                tempGroup = EUI.cardFilters.applyFilters(AbstractDungeon.player.masterDeck.group);
                 fakeMasterDeck.group = tempGroup.size() > 0 ? tempGroup : getFakeGroup();
             }
             else {
                 fakeMasterDeck.group = getFakeGroup();
             }
         }
-        EUI.CardFilters.refresh(fakeMasterDeck.group);
+        EUI.cardFilters.refresh(fakeMasterDeck.group);
     }
 }

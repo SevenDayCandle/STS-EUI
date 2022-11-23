@@ -33,7 +33,7 @@ public class RelicViewScreenPatches
         {
             reset();
 
-            EUI.RelicFilters.initialize(__ -> updateForFilters()
+            EUI.relicFilters.initialize(__ -> updateForFilters()
                     , allList
                     , AbstractCard.CardColor.COLORLESS
                     , false);
@@ -50,10 +50,10 @@ public class RelicViewScreenPatches
         @SpirePrefixPatch
         public static void prefix(RelicViewScreen __instance)
         {
-            if (!EUI.RelicFilters.isActive && EUI.OpenRelicFiltersButton != null) {
-                EUI.OpenRelicFiltersButton.tryUpdate();
+            if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
+                EUI.openRelicFiltersButton.tryUpdate();
             }
-            if (EUI.RelicFilters.tryUpdate())
+            if (EUI.relicFilters.tryUpdate())
             {
                 EUIClassUtils.setField(__instance, "grabbedScreen", false);
             }
@@ -94,7 +94,7 @@ public class RelicViewScreenPatches
         @SpirePrefixPatch
         public static SpireReturn<AbstractCard> prefix(RelicViewScreen __instance)
         {
-            if (EUI.RelicFilters.isActive) {
+            if (EUI.relicFilters.isActive) {
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();
@@ -107,8 +107,8 @@ public class RelicViewScreenPatches
         @SpirePrefixPatch
         public static void postfix(RelicViewScreen __instance, SpriteBatch sb)
         {
-            if (!EUI.RelicFilters.isActive && EUI.OpenRelicFiltersButton != null) {
-                EUI.OpenRelicFiltersButton.tryRender(sb);
+            if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
+                EUI.openRelicFiltersButton.tryRender(sb);
             }
         }
 
@@ -127,20 +127,20 @@ public class RelicViewScreenPatches
 
     public static void updateForFilters() {
 
-        if (EUI.RelicFilters.areFiltersEmpty()) {
+        if (EUI.relicFilters.areFiltersEmpty()) {
             reset();
         }
         else {
-            starterList = EUI.RelicFilters.applyFilters(RelicLibrary.starterList);
-            commonList = EUI.RelicFilters.applyFilters(RelicLibrary.commonList);
-            uncommonList = EUI.RelicFilters.applyFilters(RelicLibrary.uncommonList);
-            rareList = EUI.RelicFilters.applyFilters(RelicLibrary.rareList);
-            bossList = EUI.RelicFilters.applyFilters(RelicLibrary.bossList);
-            specialList = EUI.RelicFilters.applyFilters(RelicLibrary.specialList);
-            shopList = EUI.RelicFilters.applyFilters(RelicLibrary.shopList);
+            starterList = EUI.relicFilters.applyFilters(RelicLibrary.starterList);
+            commonList = EUI.relicFilters.applyFilters(RelicLibrary.commonList);
+            uncommonList = EUI.relicFilters.applyFilters(RelicLibrary.uncommonList);
+            rareList = EUI.relicFilters.applyFilters(RelicLibrary.rareList);
+            bossList = EUI.relicFilters.applyFilters(RelicLibrary.bossList);
+            specialList = EUI.relicFilters.applyFilters(RelicLibrary.specialList);
+            shopList = EUI.relicFilters.applyFilters(RelicLibrary.shopList);
             resetAllList();
         }
-        EUI.RelicFilters.refresh(allList);
+        EUI.relicFilters.refresh(allList);
     }
 
     private static void reset()

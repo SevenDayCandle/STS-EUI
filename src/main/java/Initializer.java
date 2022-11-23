@@ -19,7 +19,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
-import static extendedui.configuration.EUIConfiguration.ShouldReloadEffekseer;
+import static extendedui.configuration.EUIConfiguration.shouldReloadEffekseer;
 
 @SpireInitializer
 public class Initializer implements PostInitializeSubscriber, EditStringsSubscriber, EditKeywordsSubscriber, EditCardsSubscriber, StartGameSubscriber, OnStartBattleSubscriber, PostUpdateSubscriber
@@ -122,10 +122,10 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     @Override
     public void receiveStartGame()
     {
-        if (EUIConfiguration.FlushOnGameStart.get() || ShouldReloadEffekseer) {
+        if (EUIConfiguration.flushOnGameStart.get() || shouldReloadEffekseer) {
             STSEffekseerManager.reset();
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager. Particles: " + BASE_SPRITES_DEFAULT);
-            ShouldReloadEffekseer = false;
+            shouldReloadEffekseer = false;
         }
         EUITooltip.updateTooltipIcons();
     }
@@ -133,7 +133,7 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     @Override
     public void receiveOnBattleStart(AbstractRoom abstractRoom)
     {
-        if (EUIConfiguration.FlushOnRoomStart.get()) {
+        if (EUIConfiguration.flushOnRoomStart.get()) {
             STSEffekseerManager.reset();
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager");
         }

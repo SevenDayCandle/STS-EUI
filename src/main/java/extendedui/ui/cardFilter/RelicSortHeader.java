@@ -17,7 +17,7 @@ import java.util.ArrayList;
 
 public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
 {
-    public static RelicSortHeader Instance;
+    public static RelicSortHeader instance;
     public static final float START_X = screenW(0.5f) - CardLibSortHeader.SPACE_X * 1.45f;
 
     private SortHeaderButton lastUsedButton;
@@ -35,15 +35,15 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
     public RelicSortHeader(EUIRelicGrid grid)
     {
         this.grid = grid;
-        Instance = this;
+        instance = this;
         float xPosition = START_X;
         this.rarityButton = new SortHeaderButton(CardLibSortHeader.TEXT[0], xPosition, 0.0F, this);
         xPosition += CardLibSortHeader.SPACE_X;
         this.nameButton = new SortHeaderButton(CardLibSortHeader.TEXT[2], xPosition, 0.0F, this);
         xPosition += CardLibSortHeader.SPACE_X;
-        this.colorButton = new SortHeaderButton(EUIRM.Strings.uiColors, xPosition, 0.0F, this);
+        this.colorButton = new SortHeaderButton(EUIRM.strings.uiColors, xPosition, 0.0F, this);
         xPosition += CardLibSortHeader.SPACE_X;
-        this.seenButton = new SortHeaderButton(EUIRM.Strings.uiSeen, xPosition, 0.0F, this);
+        this.seenButton = new SortHeaderButton(EUIRM.strings.uiSeen, xPosition, 0.0F, this);
         this.buttons = new SortHeaderButton[]{this.rarityButton, this.nameButton, this.colorButton, this.seenButton};
     }
 
@@ -60,12 +60,12 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
     }
 
     public RelicSortHeader setGrid(EUIRelicGrid grid) {
-        EUI.RelicFilters.clear(false, true);
+        EUI.relicFilters.clear(false, true);
         this.grid = grid;
         this.originalGroup = new ArrayList<>(grid.relicGroup);
 
-        if (RelicKeywordFilters.CustomModule != null) {
-            RelicKeywordFilters.CustomModule.processGroup(EUIUtils.map(grid.relicGroup, r -> r.relic));
+        if (RelicKeywordFilters.customModule != null) {
+            RelicKeywordFilters.customModule.processGroup(EUIUtils.map(grid.relicGroup, r -> r.relic));
         }
         for (SortHeaderButton button : buttons)
         {
@@ -131,14 +131,14 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
 
     public void updateForFilters() {
         if (this.grid != null) {
-            if (EUI.RelicFilters.areFiltersEmpty()) {
+            if (EUI.relicFilters.areFiltersEmpty()) {
                 this.grid.relicGroup = originalGroup;
             }
             else {
-                this.grid.relicGroup = EUI.RelicFilters.applyInfoFilters(originalGroup);
+                this.grid.relicGroup = EUI.relicFilters.applyInfoFilters(originalGroup);
             }
             didChangeOrder(lastUsedButton, isAscending);
-            EUI.RelicFilters.refresh(EUIUtils.map(grid.relicGroup, group -> group.relic));
+            EUI.relicFilters.refresh(EUIUtils.map(grid.relicGroup, group -> group.relic));
         }
     }
 

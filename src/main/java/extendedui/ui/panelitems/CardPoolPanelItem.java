@@ -34,8 +34,8 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     protected EUIContextMenu<ContextOption> contextMenu;
 
     public CardPoolPanelItem() {
-        super(Loader.isModLoaded("PrideMod") ? EUIRM.Images.cardpoolPride : EUIRM.Images.cardPool, ID);
-        setTooltip(new EUITooltip(EUIRM.Strings.uipoolViewpool, EUIRM.Strings.uipoolViewpooldescription));
+        super(Loader.isModLoaded("PrideMod") ? EUIRM.images.cardpoolPride : EUIRM.images.cardPool, ID);
+        setTooltip(new EUITooltip(EUIRM.strings.uipoolViewpool, EUIRM.strings.uipoolViewpooldescription));
 
         contextMenu = (EUIContextMenu<ContextOption>) new EUIContextMenu<ContextOption>(new AdvancedHitbox(0, 0, 0, 0), ContextOption::getDisplayName)
                 .setOnChange(options -> {
@@ -44,7 +44,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
                         o.onSelect.invoke();
                     }
                 })
-                .setFontForRows(EUIFontHelper.CardTooltipFont, 1f)
+                .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
                 .setItems(ContextOption.values())
                 .setCanAutosizeButton(true);
     }
@@ -53,7 +53,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     protected void onClick() {
         super.onClick();
 
-        EUI.CardsScreen.open(AbstractDungeon.player, getAllCards());
+        EUI.cardsScreen.open(AbstractDungeon.player, getAllCards());
     }
 
     @Override
@@ -69,15 +69,15 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     public void update() {
         super.update();
         if (this.tooltip != null && getHitbox().hovered) {
-            tooltip.setText(EUIRM.Strings.uipoolViewpool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")", getFullDescription());
+            tooltip.setText(EUIRM.strings.uipoolViewpool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")", getFullDescription());
             EUITooltip.queueTooltip(tooltip);
         }
 
-        if (EUIHotkeys.openCardPool.isJustPressed() && EUI.CurrentScreen != EUI.CardsScreen) {
-            EUI.CardsScreen.open(AbstractDungeon.player, getAllCards());
+        if (EUIHotkeys.openCardPool.isJustPressed() && EUI.currentScreen != EUI.cardsScreen) {
+            EUI.cardsScreen.open(AbstractDungeon.player, getAllCards());
         }
-        else if (EUIHotkeys.openRelicPool.isJustPressed() && EUI.CurrentScreen != EUI.RelicScreen) {
-            EUI.RelicScreen.open(AbstractDungeon.player, getAllRelics());
+        else if (EUIHotkeys.openRelicPool.isJustPressed() && EUI.currentScreen != EUI.relicScreen) {
+            EUI.relicScreen.open(AbstractDungeon.player, getAllRelics());
         }
 
         contextMenu.tryUpdate();
@@ -98,7 +98,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
     public String getFullDescription()
     {
-        String base = EUIRM.Strings.uipoolViewpooldescription;
+        String base = EUIRM.strings.uipoolViewpooldescription;
         String addendum = additionalTextFunc != null ? additionalTextFunc.invoke() : null;
         return addendum != null ? base + " || " + addendum : base;
     }
@@ -134,8 +134,8 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
     public enum ContextOption
     {
-        CardPool(EUIRM.Strings.uipoolViewcardpool, EUIHotkeys.openCardPool, () -> EUI.CardsScreen.open(AbstractDungeon.player, getAllCards())),
-        RelicPool(EUIRM.Strings.uipoolViewrelicpool, EUIHotkeys.openRelicPool, () -> EUI.RelicScreen.open(AbstractDungeon.player, getAllRelics()));
+        CardPool(EUIRM.strings.uipoolViewcardpool, EUIHotkeys.openCardPool, () -> EUI.cardsScreen.open(AbstractDungeon.player, getAllCards())),
+        RelicPool(EUIRM.strings.uipoolViewrelicpool, EUIHotkeys.openRelicPool, () -> EUI.relicScreen.open(AbstractDungeon.player, getAllRelics()));
 
         public final String baseName;
         public final InputAction hotkey;

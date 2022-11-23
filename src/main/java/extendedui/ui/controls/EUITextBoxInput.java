@@ -28,7 +28,7 @@ public class EUITextBoxInput extends EUITextBox implements TextReceiver {
 
     public EUITextBoxInput(Texture backgroundTexture, AdvancedHitbox hb) {
         super(backgroundTexture, hb);
-        this.header = new EUILabel(EUIFontHelper.CardTitleFont_Small,
+        this.header = new EUILabel(EUIFontHelper.cardtitlefontSmall,
                 new AdvancedHitbox(hb.x, hb.y + hb.height * headerSpacing, hb.width, hb.height)).setAlignment(0.5f,0.0f,false);
         this.header.setActive(false);
         editTextColor = EUIColors.green(1).cpy();
@@ -105,7 +105,7 @@ public class EUITextBoxInput extends EUITextBox implements TextReceiver {
     public void updateImpl()
     {
         super.updateImpl();
-        if (EUIInputManager.LeftClick.isJustReleased()) {
+        if (EUIInputManager.leftClick.isJustReleased()) {
             if (!isEditing && (hb.hovered || hb.clicked)) {
                 start();
             }

@@ -76,8 +76,8 @@ public class EUITooltip
     private static final Vector2 genericTipPos = new Vector2(0, 0);
 
     public ArrayList<String> descriptions = new ArrayList<>();
-    public BitmapFont headerFont = EUIFontHelper.CardTooltipTitleFont_Normal;
-    public BitmapFont descriptionFont = EUIFontHelper.CardTooltipFont;
+    public BitmapFont headerFont = EUIFontHelper.cardtooltiptitlefontNormal;
+    public BitmapFont descriptionFont = EUIFontHelper.cardTooltipFont;
     public Boolean hideDescription = null;
     public Color backgroundColor;
     public ColoredString modName;
@@ -778,12 +778,12 @@ public class EUITooltip
 
     protected BitmapFont getDescriptionFont()
     {
-        return descriptionFont != null ? descriptionFont : EUIFontHelper.CardTooltipFont;
+        return descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
     }
 
     protected BitmapFont getHeaderFont()
     {
-        return headerFont != null ? headerFont : EUIFontHelper.CardTooltipTitleFont_Normal;
+        return headerFont != null ? headerFont : EUIFontHelper.cardtooltiptitlefontNormal;
     }
 
     public EUITooltip setChild(EUITooltip other)
@@ -978,7 +978,7 @@ public class EUITooltip
     {
         if (backgroundColor != null) {
             sb.setColor(backgroundColor);
-            sb.draw(EUIRM.Images.baseBadge.texture(), x, y, 0f, 0f,
+            sb.draw(EUIRM.images.baseBadge.texture(), x, y, 0f, 0f,
                     width, height, Settings.scale, Settings.scale, 0f,
                     region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
                     region.getRegionHeight(), false, false);
@@ -1008,28 +1008,28 @@ public class EUITooltip
 
     public String past() {
         if (past == null) {
-            past = EUIRM.Strings.past(title);
+            past = EUIRM.strings.past(title);
         }
         return past;
     }
 
     public String plural() {
         if (plural == null) {
-            plural = EUIRM.Strings.plural(title);
+            plural = EUIRM.strings.plural(title);
         }
         return plural;
     }
 
     public String parsePlural(int amount) {
         if (plural == null) {
-            plural = EUIRM.Strings.plural(title);
+            plural = EUIRM.strings.plural(title);
         }
         return useLogic ? EUISmartText.parseLogicString(EUIUtils.format(plural.substring(1), amount)) : plural;
     }
 
     public String present() {
         if (present == null) {
-            present = EUIRM.Strings.present(title);
+            present = EUIRM.strings.present(title);
         }
         return present;
     }
@@ -1048,7 +1048,7 @@ public class EUITooltip
             if (subText == null) {
                 subText = new ColoredString("", Settings.PURPLE_COLOR);
             }
-            subText.setText(EUIRM.Strings.keyToCycle(EUIHotkeys.cycle.getKeyString()) + " (" + (currentDesc + 1) + "/" + descriptions.size() + ")");
+            subText.setText(EUIRM.strings.keyToCycle(EUIHotkeys.cycle.getKeyString()) + " (" + (currentDesc + 1) + "/" + descriptions.size() + ")");
             invalidateHeight();
         }
     }

@@ -16,7 +16,7 @@ import java.util.ArrayList;
 
 public class CustomCardLibSortHeader extends CardLibSortHeader
 {
-    public static CustomCardLibSortHeader Instance;
+    public static CustomCardLibSortHeader instance;
     private static CardGroup falseGroup;
     private static FakeLibraryCard fakeLibraryCard;
 
@@ -46,7 +46,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
     {
         super(group);
 
-        Instance = this;
+        instance = this;
         if (fakeLibraryCard == null) {
             fakeLibraryCard = new FakeLibraryCard();
         }
@@ -75,7 +75,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
                 nameButton = buttons[3];
             }
 
-            amountButton = new SortHeaderButton(EUIRM.Strings.uiAmount, xPosition, 0f, this);
+            amountButton = new SortHeaderButton(EUIRM.strings.uiAmount, xPosition, 0f, this);
 
             float offsetX = -(Settings.scale * 30f);
 
@@ -109,7 +109,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
     @Override
     public void setGroup(CardGroup group)
     {
-        EUI.CardFilters.clear(false, true);
+        EUI.cardFilters.clear(false, true);
         if (this.group != null && this.originalGroup != null) {
             this.group.group = this.originalGroup;
         }
@@ -119,8 +119,8 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             fakeLibraryCard.current_y = group.group.get(0).current_y;
         }
 
-        if (CardKeywordFilters.CustomModule != null) {
-            CardKeywordFilters.CustomModule.processGroup(group);
+        if (CardKeywordFilters.customModule != null) {
+            CardKeywordFilters.customModule.processGroup(group);
         }
 
         super.setGroup(group);
@@ -185,11 +185,11 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
 
     public void updateForFilters() {
         if (this.group != null) {
-            if (EUI.CardFilters.areFiltersEmpty()) {
+            if (EUI.cardFilters.areFiltersEmpty()) {
                 this.group.group = originalGroup;
             }
             else {
-                ArrayList<AbstractCard> tempGroup = EUI.CardFilters.applyFilters(originalGroup);
+                ArrayList<AbstractCard> tempGroup = EUI.cardFilters.applyFilters(originalGroup);
                 if (tempGroup.size() > 0) {
                     this.group.group = tempGroup;
                 }
@@ -198,7 +198,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
                 }
             }
             didChangeOrder(lastUsedButton, isAscending);
-            EUI.CardFilters.refresh(this.group.group);
+            EUI.cardFilters.refresh(this.group.group);
         }
     }
 

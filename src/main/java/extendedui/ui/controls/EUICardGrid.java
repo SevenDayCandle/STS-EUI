@@ -277,7 +277,7 @@ public class EUICardGrid extends EUICanvasGrid
 
         if (hoveredCard != null && EUI.tryHover(hoveredCard.hb))
         {
-            if (EUIInputManager.RightClick.isJustPressed() && onCardRightClick != null)
+            if (EUIInputManager.rightClick.isJustPressed() && onCardRightClick != null)
             {
                 onCardRightClick.invoke(hoveredCard);
                 return;

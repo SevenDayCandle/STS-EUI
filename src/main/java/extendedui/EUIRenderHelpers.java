@@ -62,15 +62,15 @@ public class EUIRenderHelpers
     private static final float BODY_TEXT_WIDTH = 280.0F * Settings.scale;
     private static final float TIP_DESC_LINE_SPACING = 26.0F * Settings.scale;
     private static final float POWER_ICON_OFFSET_X = 40.0F * Settings.scale;
-    protected static ShaderProgram BlurShader;
-    protected static ShaderProgram BrighterShader;
-    protected static ShaderProgram ColorizeShader;
-    protected static ShaderProgram GlitchShader;
-    protected static ShaderProgram GrayscaleShader;
-    protected static ShaderProgram InvertShader;
-    protected static ShaderProgram RainbowShader;
-    protected static ShaderProgram SepiaShader;
-    private static FrameBuffer MaskBuffer;
+    protected static ShaderProgram blurShader;
+    protected static ShaderProgram brighterShader;
+    protected static ShaderProgram colorizeShader;
+    protected static ShaderProgram glitchShader;
+    protected static ShaderProgram grayscaleShader;
+    protected static ShaderProgram invertShader;
+    protected static ShaderProgram rainbowShader;
+    protected static ShaderProgram sepiaShader;
+    private static FrameBuffer maskBuffer;
 
     public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY)
     {
@@ -102,7 +102,7 @@ public class EUIRenderHelpers
 
     public static float getTooltipHeight(EUITooltip tip)
     {
-        return -EUISmartText.getSmartHeight(EUIFontHelper.CardTooltipFont, tip.description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
+        return -EUISmartText.getSmartHeight(EUIFontHelper.cardTooltipFont, tip.description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
     }
 
     public static float calculateToAvoidOffscreen(ArrayList<EUITooltip> tips, float hb_cY)
@@ -199,10 +199,10 @@ public class EUIRenderHelpers
 
     // Not public because blur needs parameters to use properly
     protected static ShaderProgram getBlurShader() {
-        if (BlurShader == null) {
-            BlurShader = initializeShader(SHADER_VERTEX, SHADER_BLUR_FRAGMENT);
+        if (blurShader == null) {
+            blurShader = initializeShader(SHADER_VERTEX, SHADER_BLUR_FRAGMENT);
         }
-        return BlurShader;
+        return blurShader;
     }
 
     public static ShaderProgram initializeShader(String vShaderPath, String fShaderPath) {
@@ -222,10 +222,10 @@ public class EUIRenderHelpers
     }
 
     public static ShaderProgram getBrightShader() {
-        if (BrighterShader == null) {
-            BrighterShader = Shaders.makeRGBAShader();
+        if (brighterShader == null) {
+            brighterShader = Shaders.makeRGBAShader();
         }
-        return BrighterShader;
+        return brighterShader;
     }
 
     public static void drawWithShader(SpriteBatch sb, ShaderProgram shader, ActionT1<SpriteBatch> drawFunc) {
@@ -306,10 +306,10 @@ public class EUIRenderHelpers
     }
 
     public static ShaderProgram getColorizeShader() {
-        if (ColorizeShader == null) {
-            ColorizeShader = new ShaderProgram(Shaders.vertexShader, Shaders.fragmentShaderColorize);
+        if (colorizeShader == null) {
+            colorizeShader = new ShaderProgram(Shaders.vertexShader, Shaders.fragmentShaderColorize);
         }
-        return ColorizeShader;
+        return colorizeShader;
     }
 
     public static void drawColorized(SpriteBatch sb, float color, ActionT1<SpriteBatch> drawFunc) {
@@ -338,10 +338,10 @@ public class EUIRenderHelpers
     }
 
     protected static ShaderProgram getGlitchShader() {
-        if (GlitchShader == null) {
-            GlitchShader = initializeShader(SHADER_VERTEX, SHADER_GLITCH_FRAGMENT);
+        if (glitchShader == null) {
+            glitchShader = initializeShader(SHADER_VERTEX, SHADER_GLITCH_FRAGMENT);
         }
-        return GlitchShader;
+        return glitchShader;
     }
 
     protected static ShaderProgram setGlitchShader(ShaderProgram rs, float xOffset) {
@@ -371,10 +371,10 @@ public class EUIRenderHelpers
     }
 
     public static ShaderProgram getGrayscaleShader() {
-        if (GrayscaleShader == null) {
-            GrayscaleShader = initializeShader(SHADER_VERTEX, SHADER_GRAYSCALE_FRAGMENT);
+        if (grayscaleShader == null) {
+            grayscaleShader = initializeShader(SHADER_VERTEX, SHADER_GRAYSCALE_FRAGMENT);
         }
-        return GrayscaleShader;
+        return grayscaleShader;
     }
 
     public static void drawGrayscale(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
@@ -386,10 +386,10 @@ public class EUIRenderHelpers
     }
 
     public static ShaderProgram getInvertShader() {
-        if (InvertShader == null) {
-            InvertShader = initializeShader(SHADER_VERTEX, SHADER_INVERT_FRAGMENT);
+        if (invertShader == null) {
+            invertShader = initializeShader(SHADER_VERTEX, SHADER_INVERT_FRAGMENT);
         }
-        return InvertShader;
+        return invertShader;
     }
 
     public static void drawInverted(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
@@ -566,10 +566,10 @@ public class EUIRenderHelpers
     }
 
     protected static ShaderProgram getRainbowShader() {
-        if (RainbowShader == null) {
-            RainbowShader = initializeShader(SHADER_VERTEX, SHADER_RAINBOW_FRAGMENT);
+        if (rainbowShader == null) {
+            rainbowShader = initializeShader(SHADER_VERTEX, SHADER_RAINBOW_FRAGMENT);
         }
-        return RainbowShader;
+        return rainbowShader;
     }
 
     protected static ShaderProgram setRainbowShader(ShaderProgram rs, float xOffset, float saturation, float brightness, float opacity) {
@@ -602,10 +602,10 @@ public class EUIRenderHelpers
     }
 
     public static ShaderProgram getSepiaShader() {
-        if (SepiaShader == null) {
-            SepiaShader = initializeShader(SHADER_VERTEX, SHADER_SEPIA_FRAGMENT);
+        if (sepiaShader == null) {
+            sepiaShader = initializeShader(SHADER_VERTEX, SHADER_SEPIA_FRAGMENT);
         }
-        return SepiaShader;
+        return sepiaShader;
     }
 
     public static void drawSepia(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
@@ -615,7 +615,7 @@ public class EUIRenderHelpers
     public static void drawWithMask(SpriteBatch sb, ActionT1<SpriteBatch> maskFunc, ActionT1<SpriteBatch> drawFunc) {
         sb.end();
 
-        MaskBuffer.begin();
+        maskBuffer.begin();
         Gdx.gl.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         Gdx.gl.glColorMask(false, false, false, true);
@@ -624,12 +624,12 @@ public class EUIRenderHelpers
         Gdx.gl20.glColorMask(true, true, true, true);
         drawBlended(sb, BlendingMode.MaskBlend, drawFunc);
         sb.end();
-        MaskBuffer.end();
+        maskBuffer.end();
 
         sb.begin();
-        TextureRegion t = new TextureRegion(MaskBuffer.getColorBufferTexture());
+        TextureRegion t = new TextureRegion(maskBuffer.getColorBufferTexture());
         t.flip(false, true);
-        sb.draw(t, 0, 0, 0, 0, MaskBuffer.getWidth(), MaskBuffer.getHeight(), 1f, 1f, 0f);
+        sb.draw(t, 0, 0, 0, 0, maskBuffer.getWidth(), maskBuffer.getHeight(), 1f, 1f, 0f);
     }
 
     public static EUIImage forTexture(Texture texture)
@@ -714,12 +714,12 @@ public class EUIRenderHelpers
         BitmapFont result;
         if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup())
         {
-            result = EUIFontHelper.CardDescriptionFont_Large;
+            result = EUIFontHelper.carddescriptionfontLarge;
             result.getData().setScale(card.drawScale * scaleModifier * 0.5f);
         }
         else
         {
-            result = EUIFontHelper.CardDescriptionFont_Normal;
+            result = EUIFontHelper.carddescriptionfontNormal;
             result.getData().setScale(card.drawScale * scaleModifier);
         }
 
@@ -745,12 +745,12 @@ public class EUIRenderHelpers
         final float scale = 1 / (Math.max(14f, card.name.length()) / 14f);
         if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup())
         {
-            result = EUIFontHelper.CardTitleFont_Large;
+            result = EUIFontHelper.cardtitlefontLarge;
             result.getData().setScale(card.drawScale * 0.5f * scale);
         }
         else
         {
-            result = EUIFontHelper.CardTitleFont_Normal;
+            result = EUIFontHelper.cardtitlefontNormal;
             result.getData().setScale(card.drawScale * scale);
         }
 
@@ -758,7 +758,7 @@ public class EUIRenderHelpers
     }
 
     public static void initializeBuffers() {
-        MaskBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false);
+        maskBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false);
     }
 
     public static boolean isCharAt(String s, int i, char c) {

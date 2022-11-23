@@ -45,7 +45,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.9f, false))
                 .setAlignment(0.5f,0.5f,false)
                 .setLabel(headerText);
-        this.description = new EUILabel(EUIFontHelper.CardTooltipFont,
+        this.description = new EUILabel(EUIFontHelper.cardTooltipFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.1f, hb.height * 0.7f, false))
                 .setAlignment(0.5f,0.5f,true)
                 .setSmartText(true, false)
@@ -57,7 +57,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
     protected EUIButton getConfirmButton() {
         return new EUIButton(ImageMaster.OPTION_YES,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.1f, hb.height * 0.05f, false))
-                .setFont(EUIFontHelper.CardTitleFont_Normal, 1f)
+                .setFont(EUIFontHelper.cardtitlefontNormal, 1f)
                 .setText(TEXT[2])
                 .setOnClick(() -> {
                     if (onComplete != null) {
@@ -69,7 +69,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
     protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.9f, hb.height * 0.05f, false))
-                .setFont(EUIFontHelper.CardTitleFont_Normal, 1f)
+                .setFont(EUIFontHelper.cardtitlefontNormal, 1f)
                 .setText(TEXT[3])
                 .setOnClick(() -> {
                     if (onComplete != null) {

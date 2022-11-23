@@ -50,8 +50,8 @@ public class CardCrawlGamePatches
         @SpireInsertPatch(locator = Locator.class, localvars = {"sb"})
         public static void insert(CardCrawlGame __instance, SpriteBatch sb)
         {
-            EUI.RelicFilters.tryRender(sb);
-            EUI.CardFilters.tryRender(sb);
+            EUI.relicFilters.tryRender(sb);
+            EUI.cardFilters.tryRender(sb);
             EUI.postRender(sb);
             EUI.priorityPostRender(sb);
         }

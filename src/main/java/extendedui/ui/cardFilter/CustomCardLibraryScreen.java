@@ -29,8 +29,8 @@ public class CustomCardLibraryScreen extends AbstractScreen
 {
     protected static final float ICON_SIZE = scale(40);
     public static final int VISIBLE_BUTTONS = 14;
-    public static AbstractCard.CardColor CurrentColor = AbstractCard.CardColor.COLORLESS;
-    public static CustomCardPoolModule CustomModule;
+    public static AbstractCard.CardColor currentColor = AbstractCard.CardColor.COLORLESS;
+    public static CustomCardPoolModule customModule;
     public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
 
     public final EUICardGrid cardGrid;
@@ -40,7 +40,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
     protected final EUIButtonList colorButtons = new EUIButtonList();
     protected float barY;
     protected int topButtonIndex;
-    protected static boolean Initialized;
+    protected static boolean initialized;
 
     public CustomCardLibraryScreen() {
         final float y = Settings.HEIGHT * 0.92f - (VISIBLE_BUTTONS + 1) * scale(48);
@@ -56,25 +56,25 @@ public class CustomCardLibraryScreen extends AbstractScreen
         });
         upgradeToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setPosition(1450.0F * Settings.xScale, Settings.HEIGHT * 0.8f)
-                .setFont(EUIFontHelper.CardTooltipTitleFont_Large, 1f)
+                .setFont(EUIFontHelper.cardtooltiptitlefontLarge, 1f)
                 .setText(CardLibraryScreen.TEXT[7])
                 .setOnToggle(EUI::toggleViewUpgrades);
         cancelButton = new MenuCancelButton();
 
-        quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.Images.rectangularButton.texture(),
+        quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
                 new AdvancedHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, scale(280), scale(48)))
-                .setOnComplete((v) -> EUI.CardFilters.nameInput.setTextAndCommit(v))
-                .setHeader(EUIFontHelper.CardTitleFont_Small, 0.7f, Settings.GOLD_COLOR, EUIRM.Strings.uiNamesearch)
+                .setOnComplete((v) -> EUI.cardFilters.nameInput.setTextAndCommit(v))
+                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.7f, Settings.GOLD_COLOR, EUIRM.strings.uiNamesearch)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
-                .setFont(EUIFontHelper.CardTitleFont_Small, 0.7f)
-                .setBackgroundTexture(EUIRM.Images.rectangularButton.texture())
+                .setFont(EUIFontHelper.cardtitlefontSmall, 0.7f)
+                .setBackgroundTexture(EUIRM.images.rectangularButton.texture())
                 .setLabel("");
         quickSearch.header.setAlignment(0f, -0.51f);
     }
 
     public void initialize(CardLibraryScreen screen) {
-        if (!Initialized) {
+        if (!initialized) {
             // Let's just re-use the hard sorting work that basemod and the base game has done for us :)
             CardLists.put(AbstractCard.CardColor.RED, EUIClassUtils.getField(screen, "redCards"));
             CardLists.put(AbstractCard.CardColor.GREEN, EUIClassUtils.getField(screen, "greenCards"));
@@ -95,7 +95,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
             // Mod colors are sorted alphabetically
             BaseMod.getCardColors().stream().sorted(Comparator.comparing(EUIGameUtils::getColorName)).forEach(this::makeColorButton);
         }
-        Initialized = true;
+        initialized = true;
     }
 
     public void open() {
@@ -106,8 +106,8 @@ public class CustomCardLibraryScreen extends AbstractScreen
     public void openImpl()
     {
         SingleCardViewPopup.isViewingUpgrade = false;
-        EUI.CustomHeader.setupButtons();
-        setActiveColor(CurrentColor);
+        EUI.customHeader.setupButtons();
+        setActiveColor(currentColor);
         this.cancelButton.show(CardLibraryScreen.TEXT[0]);
     }
 
@@ -116,37 +116,37 @@ public class CustomCardLibraryScreen extends AbstractScreen
     }
 
     public void setActiveColor(AbstractCard.CardColor color, CardGroup cards) {
-        EUI.ActingColor = CurrentColor = color;
+        EUI.actingColor = currentColor = color;
         cardGrid.clear();
         cardGrid.setCardGroup(cards);
-        EUI.CustomHeader.setGroup(cards);
-        EUI.CardFilters.initialize(__ -> {
+        EUI.customHeader.setGroup(cards);
+        EUI.cardFilters.initialize(__ -> {
             cardGrid.moveToTop();
-            quickSearch.setLabel(EUI.CardFilters.currentName != null ? EUI.CardFilters.currentName : "");
-            EUI.CustomHeader.updateForFilters();
-            if (CustomModule != null) {
-                CustomModule.open(EUI.CustomHeader.group.group);
+            quickSearch.setLabel(EUI.cardFilters.currentName != null ? EUI.cardFilters.currentName : "");
+            EUI.customHeader.updateForFilters();
+            if (customModule != null) {
+                customModule.open(EUI.customHeader.group.group);
             }
             cardGrid.forceUpdateCardPositions();
-        }, EUI.CustomHeader.originalGroup, color, false);
-        EUI.CustomHeader.updateForFilters();
+        }, EUI.customHeader.originalGroup, color, false);
+        EUI.customHeader.updateForFilters();
 
-        CustomModule = EUI.getCustomCardLibraryModule(color);
-        if (CustomModule != null) {
-            CustomModule.setActive(true);
-            CustomModule.open(cardGrid.cards.group);
+        customModule = EUI.getCustomCardLibraryModule(color);
+        if (customModule != null) {
+            customModule.setActive(true);
+            customModule.open(cardGrid.cards.group);
         }
     }
 
     @Override
     public void updateImpl()
     {
-        boolean shouldDoStandardUpdate = !EUI.CardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
+        boolean shouldDoStandardUpdate = !EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
         if (shouldDoStandardUpdate) {
-            EUI.OpenCardFiltersButton.tryUpdate();
+            EUI.openCardFiltersButton.tryUpdate();
             colorButtons.tryUpdate();
-            EUI.CustomHeader.update();
-            barY = EUI.CustomHeader.getCenterY();
+            EUI.customHeader.update();
+            barY = EUI.customHeader.getCenterY();
             upgradeToggle.setPosition(upgradeToggle.hb.cX, barY).setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
             quickSearch.tryUpdate();
             cardGrid.tryUpdate();
@@ -156,14 +156,14 @@ public class CustomCardLibraryScreen extends AbstractScreen
                 this.cancelButton.hb.clicked = false;
                 this.cancelButton.hide();
                 CardCrawlGame.mainMenuScreen.panelScreen.refresh();
-                if (EUI.CurrentScreen == this)
+                if (EUI.currentScreen == this)
                 {
                     dispose();
                 }
             }
         }
-        if (CustomModule != null) {
-            CustomModule.tryUpdate(shouldDoStandardUpdate);
+        if (customModule != null) {
+            customModule.tryUpdate(shouldDoStandardUpdate);
         }
     }
 
@@ -171,18 +171,18 @@ public class CustomCardLibraryScreen extends AbstractScreen
     public void renderImpl(SpriteBatch sb)
     {
         colorButtons.tryRender(sb);
-        sb.setColor(EUIGameUtils.getColorColor(CurrentColor));
+        sb.setColor(EUIGameUtils.getColorColor(currentColor));
         sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, barY - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
         sb.setColor(Color.WHITE);
         upgradeToggle.renderImpl(sb);
         quickSearch.tryRender(sb);
-        EUI.CustomHeader.render(sb);
+        EUI.customHeader.render(sb);
         cardGrid.tryRender(sb);
-        if (CustomModule != null) {
-            CustomModule.tryRender(sb);
+        if (customModule != null) {
+            customModule.tryRender(sb);
         }
-        if (!EUI.CardFilters.isActive) {
-            EUI.OpenCardFiltersButton.tryRender(sb);
+        if (!EUI.cardFilters.isActive) {
+            EUI.openCardFiltersButton.tryRender(sb);
         }
         cancelButton.render(sb);
     }

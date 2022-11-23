@@ -28,7 +28,7 @@ public class GridCardSelectScreenHelper
             new AdvancedHitbox(Settings.WIDTH / 4.0F, 96.0F * Settings.scale, Settings.WIDTH / 2.0F, 48.0F * Settings.scale))
             .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
             .setAlignment(0.7f, 0.15f, true, false)
-            .setFont(EUIFontHelper.CardDescriptionFont_Normal, 1f);
+            .setFont(EUIFontHelper.carddescriptionfontNormal, 1f);
     private static GenericCondition<ArrayList<AbstractCard>> condition;
     private static FuncT1<String, ArrayList<AbstractCard>> dynamicString;
     private static ActionT3<CardGroup, ArrayList<AbstractCard>, AbstractCard> onClickCard;

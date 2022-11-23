@@ -80,9 +80,9 @@ public class EUICardPreview implements CardObject
 
         if (isMultiPreview)
         {
-            String cyclePreviewText = EUIRM.Strings.keyToCycle(EUIHotkeys.cycle.getKeyString());
+            String cyclePreviewText = EUIRM.strings.keyToCycle(EUIHotkeys.cycle.getKeyString());
             BitmapFont font = EUIRenderHelpers.getDescriptionFont(preview, 0.9f);
-            EUIRenderHelpers.drawOnCardAuto(sb, preview, EUIRM.Images.panel.texture(), new Vector2(0, -AbstractCard.RAW_H * 0.55f),
+            EUIRenderHelpers.drawOnCardAuto(sb, preview, EUIRM.images.panel.texture(), new Vector2(0, -AbstractCard.RAW_H * 0.55f),
             AbstractCard.IMG_WIDTH * 0.6f, font.getLineHeight() * 1.8f, Color.DARK_GRAY, 0.75f, 1);
             EUIRenderHelpers.writeOnCard(sb, preview, font, cyclePreviewText, 0, -AbstractCard.RAW_H * 0.55f, Color.MAGENTA);
             EUIRenderHelpers.resetFont(font);

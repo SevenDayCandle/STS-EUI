@@ -49,7 +49,7 @@ public class FilterKeywordButton extends EUIHoverable
         this.filters = filters;
         this.tooltip = tooltip;
 
-        backgroundButton = new EUIButton(EUIRM.Images.panelRoundedHalfH.texture(), new RelativeHitbox(hb, 1, 1, 0.5f, 0).setIsPopupCompatible(true))
+        backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), new RelativeHitbox(hb, 1, 1, 0.5f, 0).setIsPopupCompatible(true))
                 .setClickDelay(0.01f)
         .setColor(this.filters.currentFilters.contains(this.tooltip) ? ACTIVE_COLOR
                 : this.filters.currentNegateFilters.contains(this.tooltip) ? NEGATE_COLOR : PANEL_COLOR)
@@ -90,16 +90,16 @@ public class FilterKeywordButton extends EUIHoverable
                     }
                 });
 
-        titleText = new EUILabel(EUIFontHelper.CardTooltipFont,
+        titleText = new EUILabel(EUIFontHelper.cardTooltipFont,
         new RelativeHitbox(hb, 0.5f, 1, baseTextOffsetX, baseTextOffsetY))
-                .setFont(EUIFontHelper.CardTooltipFont, 0.8f)
+                .setFont(EUIFontHelper.cardTooltipFont, 0.8f)
                 .setColor(this.filters.currentFilters.contains(this.tooltip) ? Color.DARK_GRAY : Color.WHITE)
         .setAlignment(0.5f, 0.49f) // 0.1f
         .setLabel(this.tooltip.title);
 
-        countText = new EUILabel(EUIFontHelper.CardDescriptionFont_Normal,
+        countText = new EUILabel(EUIFontHelper.carddescriptionfontNormal,
                 new RelativeHitbox(hb, 0.28f, 1, baseCountOffset, 0f))
-                .setFont(EUIFontHelper.CardDescriptionFont_Normal, 0.8f)
+                .setFont(EUIFontHelper.carddescriptionfontNormal, 0.8f)
                 .setAlignment(0.5f, 0.51f) // 0.1f
                 .setColor(Settings.GOLD_COLOR)
                 .setLabel(this.filters.currentNegateFilters.contains(this.tooltip) ? "X" : cardCount);

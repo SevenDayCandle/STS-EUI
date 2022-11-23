@@ -40,7 +40,7 @@ public abstract class AbstractScreen extends EUIBase
 
         Settings.hideTopBar = hideTopBar;
         Settings.hideRelics = hideRelics;
-        EUI.CurrentScreen = this;
+        EUI.currentScreen = this;
 
         AbstractDungeon.isScreenUp = true;
 
@@ -90,7 +90,7 @@ public abstract class AbstractScreen extends EUIBase
     public void dispose()
     {
         // Modified Logic from AbstractDungeon.closeCurrentScreen and AbstractDungeon.genericScreenOverlayReset
-        EUI.CurrentScreen = null;
+        EUI.currentScreen = null;
         Settings.hideTopBar = false;
         Settings.hideRelics = false;
 
@@ -147,8 +147,8 @@ public abstract class AbstractScreen extends EUIBase
 
     public static EUIButton createHexagonalButton(float x, float y, float width, float height)
     {
-        final Texture buttonTexture = EUIRM.Images.hexagonalButton.texture();
-        final Texture buttonBorderTexture = EUIRM.Images.hexagonalButtonBorder.texture();
+        final Texture buttonTexture = EUIRM.images.hexagonalButton.texture();
+        final Texture buttonBorderTexture = EUIRM.images.hexagonalButtonBorder.texture();
         return new EUIButton(buttonTexture, x, y)
         .setBorder(buttonBorderTexture, Color.WHITE)
         .setClickDelay(0.25f)

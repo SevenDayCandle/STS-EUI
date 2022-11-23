@@ -30,7 +30,7 @@ public class EUIToggle extends EUIHoverable
     public EUIImage untickedImage;
     public EUIImage tickedImage;
     public EUIImage backgroundImage = null;
-    public BitmapFont font = EUIFontHelper.CardTooltipTitleFont_Large;
+    public BitmapFont font = EUIFontHelper.cardtooltiptitlefontLarge;
     public float fontSize = 1;
     public float tickSize = 48;
     public ActionT1<Boolean> onToggle = null;

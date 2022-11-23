@@ -40,7 +40,7 @@ public class EUITutorial extends EUIHoverable
 
     public EUITutorial(String headerText, Collection<String> descriptions)
     {
-        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350F, 720F), EUIRM.Images.panelLarge.texture(), headerText, descriptions);
+        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350F, 720F), EUIRM.images.panelLarge.texture(), headerText, descriptions);
     }
 
     public EUITutorial(AdvancedHitbox hb, Texture backgroundTexture, String headerText, Collection<String> descriptions)
@@ -52,11 +52,11 @@ public class EUITutorial extends EUIHoverable
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.85f, false))
                 .setAlignment(0.5f,0.5f,false)
                 .setLabel(headerText);
-        this.sublabel = new EUILabel(EUIFontHelper.CardTitleFont_Small,
+        this.sublabel = new EUILabel(EUIFontHelper.cardtitlefontSmall,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.75f, false))
                 .setFontScale(0.85f)
                 .setAlignment(0.5f,0.5f,false);
-        this.description = new EUILabel(EUIFontHelper.CardTooltipFont,
+        this.description = new EUILabel(EUIFontHelper.cardTooltipFont,
                 new RelativeHitbox(hb, hb.width * 0.8f, hb.height, hb.width * 0.1f, hb.height * 0.65f, false))
                 .setAlignment(0.5f,0.5f,true)
                 .setSmartText(true, false);

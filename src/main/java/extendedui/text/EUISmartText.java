@@ -442,7 +442,7 @@ public class EUISmartText
                     if (backgroundColor != null)
                     {
                         sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.Images.baseBadge.texture(), x - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
+                        sb.draw(EUIRM.images.baseBadge.texture(), x - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
                                 halfOrbWidth, halfOrbHeight,
                                 orbWidth, orbHeight, scaleX, scaleY, 0f,
                                 icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
@@ -460,7 +460,7 @@ public class EUISmartText
                     if (backgroundColor != null)
                     {
                         sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.Images.baseBadge.texture(), x + curWidth - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
+                        sb.draw(EUIRM.images.baseBadge.texture(), x + curWidth - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
                                 halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f,
                                 icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
                                 icon.getRegionHeight(), false, false);
