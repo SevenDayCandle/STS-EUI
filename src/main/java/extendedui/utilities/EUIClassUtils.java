@@ -1,7 +1,7 @@
 package extendedui.utilities;
 
 import basemod.ReflectionHacks;
-import eatyourbeets.interfaces.delegates.FuncT1;
+import extendedui.interfaces.delegates.FuncT1;
 import extendedui.EUIUtils;
 
 import java.lang.reflect.Field;

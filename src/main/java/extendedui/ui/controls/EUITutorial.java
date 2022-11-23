@@ -6,7 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import eatyourbeets.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.EUIRM;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.AdvancedHitbox;

@@ -1,7 +1,7 @@
 package extendedui.debug;
 
-import eatyourbeets.interfaces.delegates.ActionT1;
-import eatyourbeets.interfaces.delegates.FuncT1;
+import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.FuncT1;
 import imgui.ImGui;
 
 public class DEUIDynamicActionTable<T> extends DEUIDynamicTable<T>

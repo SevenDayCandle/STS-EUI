@@ -1,6 +1,7 @@
 package extendedui.patches.screens;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInstrumentPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -61,6 +62,7 @@ public class MasterDeckViewScreenPatches
             }
         }
 
+        @SpireInstrumentPatch
         public static ExprEditor instrument()
         {
             return new ExprEditor()
@@ -79,7 +81,7 @@ public class MasterDeckViewScreenPatches
     @SpirePatch(clz = MasterDeckViewScreen.class, method = "hideCards")
     public static class MasterDeckViewScreen_HideCards
     {
-
+        @SpireInstrumentPatch
         public static ExprEditor instrument()
         {
             return new ExprEditor()
@@ -99,6 +101,7 @@ public class MasterDeckViewScreenPatches
     public static class MasterDeckViewScreen_UpdatePositions
     {
 
+        @SpireInstrumentPatch
         public static ExprEditor instrument()
         {
             return new ExprEditor()
@@ -117,7 +120,7 @@ public class MasterDeckViewScreenPatches
     @SpirePatch(clz = MasterDeckViewScreen.class, method = "updateControllerInput")
     public static class MasterDeckViewScreen_UpdateControllerInput
     {
-
+        @SpireInstrumentPatch
         public static ExprEditor instrument()
         {
             return new ExprEditor()
@@ -136,7 +139,7 @@ public class MasterDeckViewScreenPatches
     @SpirePatch(clz = MasterDeckViewScreen.class, method = "updateClicking")
     public static class MasterDeckViewScreen_UpdateClicking
     {
-
+        @SpireInstrumentPatch
         public static ExprEditor instrument()
         {
             return new ExprEditor()

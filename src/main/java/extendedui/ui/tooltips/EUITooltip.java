@@ -28,7 +28,7 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import eatyourbeets.interfaces.delegates.FuncT0;
+import extendedui.interfaces.delegates.FuncT0;
 import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;

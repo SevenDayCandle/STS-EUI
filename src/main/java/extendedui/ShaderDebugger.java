@@ -28,11 +28,6 @@ public class ShaderDebugger implements ImGuiSubscriber
     private DEUITextMultilineInput fragmentShader;
     private ShaderProgram shader;
 
-    public static void initialize() {
-        Instance = new ShaderDebugger();
-        BaseMod.subscribe(Instance);
-    }
-
     private ShaderDebugger()
     {
         effectWindow = new DEUIWindow(WINDOW_ID);
@@ -42,6 +37,11 @@ public class ShaderDebugger implements ImGuiSubscriber
         testImage2 = new EUIImage(EUIRM.Images.cardPool.texture());
         testImage.setPosition(EUIBase.screenW(0.5f), EUIBase.screenH(0.5f));
         testImage2.setPosition(EUIBase.screenW(0.7f), EUIBase.screenH(0.7f));
+    }
+
+    public static void initialize() {
+        Instance = new ShaderDebugger();
+        BaseMod.subscribe(Instance);
     }
 
     @Override
@@ -64,16 +64,6 @@ public class ShaderDebugger implements ImGuiSubscriber
         renderShader();
     }
 
-    protected void renderShader()
-    {
-        if (shader != null)
-        {
-            shader.setUniformf("u_time", EUI.time());
-            EUI.addPostRender(s -> EUIRenderHelpers.drawWithShader(s, shader, testImage::tryRender));
-            EUI.addPostRender(s -> EUIRenderHelpers.drawRainbow(s, testImage2::tryRender));
-        }
-    }
-
     protected void compile()
     {
         FileHandle vShader = Gdx.files.internal(EUIRenderHelpers.SHADER_VERTEX);
@@ -90,6 +80,16 @@ public class ShaderDebugger implements ImGuiSubscriber
         {
             System.err.println(program.getLog());
             shader = null;
+        }
+    }
+
+    protected void renderShader()
+    {
+        if (shader != null)
+        {
+            shader.setUniformf("u_time", EUI.time());
+            EUI.addPostRender(s -> EUIRenderHelpers.drawWithShader(s, shader, testImage::tryRender));
+            EUI.addPostRender(s -> EUIRenderHelpers.drawRainbow(s, testImage2::tryRender));
         }
     }
 }

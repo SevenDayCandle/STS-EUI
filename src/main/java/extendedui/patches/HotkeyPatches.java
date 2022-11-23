@@ -52,6 +52,7 @@ public class HotkeyPatches
     )
     public static class Load
     {
+        @SpirePrefixPatch
         public static void prefix()
         {
             EUIHotkeys.load();
@@ -64,6 +65,7 @@ public class HotkeyPatches
     )
     public static class Save
     {
+        @SpirePrefixPatch
         public static void prefix()
         {
             EUIHotkeys.save();
@@ -76,6 +78,7 @@ public class HotkeyPatches
     )
     public static class Reset
     {
+        @SpirePrefixPatch
         public static void prefix()
         {
             EUIHotkeys.resetToDefaults();

@@ -9,7 +9,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import eatyourbeets.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.ui.hitboxes.AdvancedHitbox;

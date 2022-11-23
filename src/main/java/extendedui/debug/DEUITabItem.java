@@ -1,6 +1,6 @@
 package extendedui.debug;
 
-import eatyourbeets.interfaces.delegates.ActionT0;
+import extendedui.interfaces.delegates.ActionT0;
 import imgui.ImGui;
 
 public class DEUITabItem extends DEUIBaseT1<ActionT0>

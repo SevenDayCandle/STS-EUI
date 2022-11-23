@@ -26,6 +26,9 @@ import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
 public class STSEffekseerManager implements ImGuiSubscriber
 {
     public static final float BASE_ANIMATION_SPEED = 60f;
+    protected static final ArrayList<String> AvailablePaths = new ArrayList<>();
+    private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
+    private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
     protected static float AnimationSpeed = BASE_ANIMATION_SPEED;
     protected static float ZPOS = 99;
     protected static String WINDOW_ID = "Effekseer";
@@ -47,9 +50,6 @@ public class STSEffekseerManager implements ImGuiSubscriber
     protected static String EFFECT_LIST_TOGGLE_ID = "Show Playing";
     protected static String TABLE_ID = "Current Playing Effects";
     protected static STSEffekseerManager Instance;
-    protected static final ArrayList<String> AvailablePaths = new ArrayList<>();
-    private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
-    private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
     private static EffekseerManagerCore ManagerCore;
     private static boolean Enabled = false;
 
@@ -112,6 +112,23 @@ public class STSEffekseerManager implements ImGuiSubscriber
     }
 
     /**
+     Force an animation to stop playing
+     */
+    public static void stop(int handle){
+        if (Enabled) {
+            ManagerCore.Stop(handle);
+        }
+    }
+
+    public static void end() {
+        if (Enabled) {
+            clear();
+            EffekseerBackendCore.Terminate();
+            Enabled = false;
+        }
+    }
+
+    /**
      Attempts to initialize the Effekseer system for the current OS and set up the buffer used for rendering
      */
     public static void initialize() {
@@ -129,19 +146,34 @@ public class STSEffekseerManager implements ImGuiSubscriber
         }
     }
 
+    public static boolean modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, Color color)  {
+        return modify(handle, position, rotation, scale, STSEffekSeerUtils.toEffekseerColor(color));
+    }
+
     /**
-     Effects can only play if the manager is loaded and if in-game effects are enabled
+     Edit the attributes of an effect that is currently playing
      */
-    public static boolean canPlay() {
-        return Enabled && !Settings.DISABLE_EFFECTS && !EUIConfiguration.DisableEffekseer.get();
+    public static boolean modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
+        if (Enabled && ManagerCore.Exists(handle)) {
+            if (position != null)         {
+                ManagerCore.SetEffectPosition(handle, position.x, position.y, ZPOS);
+            }
+            if (rotation != null) {
+                ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
+            }
+            if (scale != null) {
+                ManagerCore.SetEffectScale(handle, scale.x, scale.y, scale.z);
+            }
+            if (color != null) {
+                ManagerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
+            }
+            return true;
+        }
+        return false;
     }
 
     public static Integer play(String key, Vector2 position) {
         return play(key, position, null, null, (float[]) null);
-    }
-
-    public static Integer play(String key, Vector2 position, Vector3 rotation, Vector3 scale, Color color) {
-        return play(key, position, rotation, scale, STSEffekSeerUtils.toEffekseerColor(color));
     }
 
     /**
@@ -181,62 +213,15 @@ public class STSEffekseerManager implements ImGuiSubscriber
         return null;
     }
 
-    public static boolean modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, Color color)  {
-        return modify(handle, position, rotation, scale, STSEffekSeerUtils.toEffekseerColor(color));
+    /**
+     Effects can only play if the manager is loaded and if in-game effects are enabled
+     */
+    public static boolean canPlay() {
+        return Enabled && !Settings.DISABLE_EFFECTS && !EUIConfiguration.DisableEffekseer.get();
     }
 
-    /**
-     Edit the attributes of an effect that is currently playing
-     */
-    public static boolean modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
-        if (Enabled && ManagerCore.Exists(handle)) {
-            if (position != null)         {
-                ManagerCore.SetEffectPosition(handle, position.x, position.y, ZPOS);
-            }
-            if (rotation != null) {
-                ManagerCore.SetEffectRotation(handle, rotation.x, rotation.y, rotation.z);
-            }
-            if (scale != null) {
-                ManagerCore.SetEffectScale(handle, scale.x, scale.y, scale.z);
-            }
-            if (color != null) {
-                ManagerCore.SetAllColor(handle, color[0], color[1], color[2], color[3]);
-            }
-            return true;
-        }
-        return false;
-    }
-
-    /**
-     Whether the effect with the given handle is currently playing
-     */
-    public static boolean exists(int handle){
-        return Enabled && ManagerCore.Exists(handle);
-    }
-
-    /**
-     Force an animation to stop playing
-     */
-    public static void stop(int handle){
-        if (Enabled) {
-            ManagerCore.Stop(handle);
-        }
-    }
-
-    /**
-     Force all animations to stop playing
-     */
-    public static void stopAll(){
-        if (Enabled) {
-            ManagerCore.StopAllEffects();
-        }
-    }
-
-    /**
-     Set the global animation speed for ALL animations
-     */
-    public static void setAnimationSpeed(float speed) {
-        AnimationSpeed = Math.max(0, speed);
+    public static Integer play(String key, Vector2 position, Vector3 rotation, Vector3 scale, Color color) {
+        return play(key, position, rotation, scale, STSEffekSeerUtils.toEffekseerColor(color));
     }
 
     /**
@@ -251,13 +236,10 @@ public class STSEffekseerManager implements ImGuiSubscriber
     }
 
     /**
-     Advances the animations of all playing animations.
+     Whether the effect with the given handle is currently playing
      */
-    public static void update() {
-        if (canPlay() && !PlayingHandles.isEmpty()) {
-            ManagerCore.SetViewProjectionMatrixWithSimpleWindowAndUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Gdx.graphics.getDeltaTime() * AnimationSpeed);
-            ManagerCore.Draw();
-        }
+    public static boolean exists(int handle){
+        return Enabled && ManagerCore.Exists(handle);
     }
 
     /* Add Effekseer file paths to the file selector */
@@ -272,20 +254,38 @@ public class STSEffekseerManager implements ImGuiSubscriber
         ManagerCore.Initialize(BASE_SPRITES_DEFAULT);
     }
 
-    public static void end() {
-        if (Enabled) {
-            clear();
-            EffekseerBackendCore.Terminate();
-            Enabled = false;
-        }
-    }
-
     private static void clear() {
         ManagerCore.delete();
         for (EffekseerEffectCore effect : ParticleEffects.values()) {
             effect.delete();
         }
         ParticleEffects.clear();
+    }
+
+    /**
+     Set the global animation speed for ALL animations
+     */
+    public static void setAnimationSpeed(float speed) {
+        AnimationSpeed = Math.max(0, speed);
+    }
+
+    /**
+     Force all animations to stop playing
+     */
+    public static void stopAll(){
+        if (Enabled) {
+            ManagerCore.StopAllEffects();
+        }
+    }
+
+    /**
+     Advances the animations of all playing animations.
+     */
+    public static void update() {
+        if (canPlay() && !PlayingHandles.isEmpty()) {
+            ManagerCore.SetViewProjectionMatrixWithSimpleWindowAndUpdate(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), Gdx.graphics.getDeltaTime() * AnimationSpeed);
+            ManagerCore.Draw();
+        }
     }
 
     @Override

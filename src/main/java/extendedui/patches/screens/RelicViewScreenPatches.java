@@ -1,10 +1,7 @@
 package extendedui.patches.screens;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
+import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -62,6 +59,7 @@ public class RelicViewScreenPatches
             }
         }
 
+        @SpireInstrumentPatch
         public static ExprEditor instrument()
         {
             return new ExprEditor()
@@ -77,6 +75,7 @@ public class RelicViewScreenPatches
     @SpirePatch(clz = RelicViewScreen.class, method = "updateControllerInput")
     public static class RelicViewScreen_UpdateControllerInput
     {
+        @SpireInstrumentPatch
         public static ExprEditor instrument()
         {
             return new ExprEditor()
@@ -113,6 +112,7 @@ public class RelicViewScreenPatches
             }
         }
 
+        @SpireInstrumentPatch
         public static ExprEditor instrument()
         {
             return new ExprEditor()

@@ -5,7 +5,7 @@ import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
-import eatyourbeets.interfaces.delegates.FuncT2;
+import extendedui.interfaces.delegates.FuncT2;
 import extendedui.ui.TextureCache;
 
 import java.util.HashMap;

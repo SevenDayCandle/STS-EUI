@@ -3,7 +3,7 @@ package extendedui.ui.controls;
 import basemod.interfaces.TextReceiver;
 import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
-import eatyourbeets.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
 public class EUITextInput extends EUILabel implements TextReceiver {

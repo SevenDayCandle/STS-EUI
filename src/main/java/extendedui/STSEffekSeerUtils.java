@@ -24,16 +24,6 @@ public class STSEffekSeerUtils {
     private static final String PATH_PREFIX = "STSEffekSeerUtils";
     private static File temporaryDir;
 
-    /* Effekseer color values range from 0-255, whereas LibGDX color values range from 0-1 */
-    public static float[] toEffekseerColor(Color color) {
-        return color != null ?
-                new float[]{color.r * EFFEKSEER_COLOR_RATE,
-                            color.g * EFFEKSEER_COLOR_RATE,
-                            color.b * EFFEKSEER_COLOR_RATE,
-                            color.a * EFFEKSEER_COLOR_RATE}
-                : null;
-    }
-
     public static EffekseerEffectCore loadEffect(String effectPath)
     {
         return loadEffect(effectPath, DEFAULT_MAGNIFICATION);
@@ -185,5 +175,15 @@ public class STSEffekSeerUtils {
             throw new IOException("Failed to create temp directory " + generatedDir.getName());
 
         return generatedDir;
+    }
+
+    /* Effekseer color values range from 0-255, whereas LibGDX color values range from 0-1 */
+    public static float[] toEffekseerColor(Color color) {
+        return color != null ?
+                new float[]{color.r * EFFEKSEER_COLOR_RATE,
+                            color.g * EFFEKSEER_COLOR_RATE,
+                            color.b * EFFEKSEER_COLOR_RATE,
+                            color.a * EFFEKSEER_COLOR_RATE}
+                : null;
     }
 }

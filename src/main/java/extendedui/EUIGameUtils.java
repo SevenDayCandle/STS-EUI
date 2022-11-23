@@ -29,9 +29,9 @@ import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
 public class EUIGameUtils {
+    public static final HashMap<AbstractCard.CardColor, String> CustomColorNames = new HashMap<>();
     private static final HashMap<CodeSource, ModInfo> ModInfoMapping = new HashMap<>();
     private static final HashMap<String, AbstractCard.CardColor> RelicColors = new HashMap<>();
-    public static final HashMap<AbstractCard.CardColor, String> CustomColorNames = new HashMap<>();
 
     public static void addRelicColor(AbstractRelic relic, AbstractCard.CardColor color)
     {
@@ -59,6 +59,16 @@ public class EUIGameUtils {
         copy.targetAngle = original.targetAngle;
     }
 
+    public static ArrayList<String> getAllRelicIDs() {
+        ArrayList<String> result = new ArrayList<>();
+        result.addAll(AbstractDungeon.commonRelicPool);
+        result.addAll(AbstractDungeon.uncommonRelicPool);
+        result.addAll(AbstractDungeon.rareRelicPool);
+        result.addAll(AbstractDungeon.shopRelicPool);
+        result.addAll(AbstractDungeon.bossRelicPool);
+        return result;
+    }
+
     public static Color getColorColor(AbstractCard.CardColor co){
         switch (co) {
             case RED:
@@ -78,18 +88,27 @@ public class EUIGameUtils {
         }
     }
 
-    public static boolean isObjectFromMod(Object o, ModInfo mod) {
-        return getModInfo(o) == mod;
+    public static String getColorName(AbstractCard.CardColor co) {
+        switch (co) {
+            case RED:
+                return CardLibraryScreen.TEXT[1];
+            case GREEN:
+                return CardLibraryScreen.TEXT[2];
+            case BLUE:
+                return CardLibraryScreen.TEXT[3];
+            case PURPLE:
+                return CardLibraryScreen.TEXT[8];
+            case CURSE:
+                return CardLibraryScreen.TEXT[5];
+            case COLORLESS:
+                return CardLibraryScreen.TEXT[4];
+            default:
+                return CustomColorNames.getOrDefault(co, EUIUtils.capitalize(String.valueOf(co)));
+        }
     }
 
-    public static ArrayList<String> getAllRelicIDs() {
-        ArrayList<String> result = new ArrayList<>();
-        result.addAll(AbstractDungeon.commonRelicPool);
-        result.addAll(AbstractDungeon.uncommonRelicPool);
-        result.addAll(AbstractDungeon.rareRelicPool);
-        result.addAll(AbstractDungeon.shopRelicPool);
-        result.addAll(AbstractDungeon.bossRelicPool);
-        return result;
+    public static AbstractCard.CardColor getRelicColor(String relicID) {
+        return RelicColors.getOrDefault(relicID, AbstractCard.CardColor.COLORLESS);
     }
 
     public static ArrayList<CardGroup> getSourceCardPools() {
@@ -100,6 +119,19 @@ public class EUIGameUtils {
         result.add(AbstractDungeon.srcRareCardPool);
         result.add(AbstractDungeon.srcCurseCardPool);
         return result;
+    }
+
+    public static boolean inBattle() {
+        AbstractRoom room = AbstractDungeon.currMapNode == null ? null : AbstractDungeon.currMapNode.getRoom();
+        return room != null && AbstractDungeon.player != null && !room.isBattleOver && !AbstractDungeon.player.isDead && room.phase == AbstractRoom.RoomPhase.COMBAT;
+    }
+
+    public static boolean inGame() {
+        return CardCrawlGame.GameMode.GAMEPLAY.equals(CardCrawlGame.mode);
+    }
+
+    public static boolean isObjectFromMod(Object o, ModInfo mod) {
+        return getModInfo(o) == mod;
     }
 
     public static ModInfo getModInfo(Object o) {
@@ -128,40 +160,13 @@ public class EUIGameUtils {
         return null;
     }
 
-    public static String getColorName(AbstractCard.CardColor co) {
-        switch (co) {
-            case RED:
-                return CardLibraryScreen.TEXT[1];
-            case GREEN:
-                return CardLibraryScreen.TEXT[2];
-            case BLUE:
-                return CardLibraryScreen.TEXT[3];
-            case PURPLE:
-                return CardLibraryScreen.TEXT[8];
-            case CURSE:
-                return CardLibraryScreen.TEXT[5];
-            case COLORLESS:
-                return CardLibraryScreen.TEXT[4];
-            default:
-                return CustomColorNames.getOrDefault(co, EUIUtils.capitalize(String.valueOf(co)));
-        }
-    }
-
-    public static AbstractCard.CardColor getRelicColor(String relicID) {
-        return RelicColors.getOrDefault(relicID, AbstractCard.CardColor.COLORLESS);
-    }
-
-    public static boolean inBattle() {
-        AbstractRoom room = AbstractDungeon.currMapNode == null ? null : AbstractDungeon.currMapNode.getRoom();
-        return room != null && AbstractDungeon.player != null && !room.isBattleOver && !AbstractDungeon.player.isDead && room.phase == AbstractRoom.RoomPhase.COMBAT;
-    }
-
-    public static boolean inGame() {
-        return CardCrawlGame.GameMode.GAMEPLAY.equals(CardCrawlGame.mode);
-    }
-
     public static boolean isPlayerClass(AbstractPlayer.PlayerClass playerClass) {
         return AbstractDungeon.player != null && AbstractDungeon.player.chosenClass == playerClass;
+    }
+
+    public static float scale(float value)
+    {
+        return Settings.scale * value;
     }
 
     public static void scanForTips(String rawDesc, ArrayList<EUITooltip> tips) {
@@ -203,19 +208,14 @@ public class EUIGameUtils {
         while (true);
     }
 
-    public static float scale(float value)
+    public static float screenH(float value)
     {
-        return Settings.scale * value;
+        return Settings.HEIGHT * value;
     }
 
     public static float screenW(float value)
     {
         return Settings.WIDTH * value;
-    }
-
-    public static float screenH(float value)
-    {
-        return Settings.HEIGHT * value;
     }
 
     public static String textForRarity(AbstractCard.CardRarity type) {

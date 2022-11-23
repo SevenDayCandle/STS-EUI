@@ -5,8 +5,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import eatyourbeets.interfaces.delegates.FuncT1;
-import eatyourbeets.interfaces.delegates.FuncT2;
+import extendedui.interfaces.delegates.FuncT1;
+import extendedui.interfaces.delegates.FuncT2;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
 import java.util.ArrayList;

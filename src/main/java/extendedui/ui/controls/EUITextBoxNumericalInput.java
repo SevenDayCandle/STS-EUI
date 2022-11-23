@@ -2,7 +2,7 @@ package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import eatyourbeets.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 import org.apache.commons.lang3.math.NumberUtils;
 

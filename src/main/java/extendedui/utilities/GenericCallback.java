@@ -1,8 +1,8 @@
 package extendedui.utilities;
 
-import eatyourbeets.interfaces.delegates.ActionT0;
-import eatyourbeets.interfaces.delegates.ActionT1;
-import eatyourbeets.interfaces.delegates.ActionT2;
+import extendedui.interfaces.delegates.ActionT0;
+import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.ActionT2;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 

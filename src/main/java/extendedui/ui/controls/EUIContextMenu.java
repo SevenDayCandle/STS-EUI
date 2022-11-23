@@ -3,8 +3,8 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import eatyourbeets.interfaces.delegates.ActionT1;
-import eatyourbeets.interfaces.delegates.FuncT1;
+import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.FuncT1;
 import extendedui.EUI;
 import extendedui.ui.hitboxes.AdvancedHitbox;
 
