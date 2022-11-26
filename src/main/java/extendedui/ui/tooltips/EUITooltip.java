@@ -22,16 +22,18 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import extendedui.interfaces.delegates.FuncT0;
 import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
+import extendedui.interfaces.delegates.FuncT0;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.patches.EUIKeyword;
 import extendedui.text.EUISmartText;
@@ -210,6 +212,26 @@ public class EUITooltip
             provider = null;
             lastProvider = null;
         }
+    }
+
+    public static EUITooltip fromMonsterIntent(AbstractMonster monster)
+    {
+        PowerTip tip = ReflectionHacks.getPrivate(monster, AbstractMonster.class, "intentTip");
+        return tip != null ? fromPowerTip(tip) : null;
+    }
+
+    public static EUITooltip fromPowerTip(PowerTip tip)
+    {
+        EUITooltip newTip = new EUITooltip(tip.header, tip.body);
+        if (tip.imgRegion != null)
+        {
+            newTip.icon = tip.imgRegion;
+        }
+        else if (tip.img != null)
+        {
+            newTip.icon = new TextureRegion(tip.img);
+        }
+        return newTip;
     }
 
     public static void updateTooltipIcons() {
@@ -446,6 +468,8 @@ public class EUITooltip
         {
             return;
         }
+
+        lastProvider = provider;
         List<EUITooltip> pTips = provider.getTips();
 
         float x;
@@ -493,6 +517,7 @@ public class EUITooltip
             return;
         }
 
+        lastProvider = provider;
         List<EUITooltip> pTips = provider.getTips();
 
         float x;
@@ -539,6 +564,7 @@ public class EUITooltip
             return;
         }
 
+        lastProvider = provider;
         List<EUITooltip> pTips = provider.getTips();
 
         float x;
@@ -585,10 +611,49 @@ public class EUITooltip
             return;
         }
 
+        float x;
+        float y = creature.hb.cY + EUIRenderHelpers.calculateAdditionalOffset(tooltips, creature.hb.cY);
+        if ((creature.hb.cX + creature.hb.width * 0.5f) < TIP_X_THRESHOLD)
+        {
+            x = creature.hb.cX + (creature.hb.width / 2.0F) + TIP_OFFSET_R_X;
+        }
+        else
+        {
+            x = creature.hb.cX - (creature.hb.width / 2.0F) + TIP_OFFSET_L_X;
+        }
+
         if (lastHoveredCreature != creature) {
             lastHoveredCreature = creature;
-            lastProvider = null;
+
             tooltips.clear();
+
+            if (creature instanceof TooltipProvider)
+            {
+                lastProvider = provider = (TooltipProvider) creature;
+                EUITooltip intentTip = provider.getIntentTip();
+                if (intentTip != null)
+                {
+                    tooltips.add(intentTip);
+                }
+                EUICardPreview preview = provider.getPreview();
+                if (preview != null)
+                {
+                    float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
+                    preview.render(sb, previewOffset, y, 0.8f, preview.getCard().upgraded);
+                }
+            }
+            else
+            {
+                lastProvider = null;
+                if (creature instanceof AbstractMonster)
+                {
+                    if (((AbstractMonster) creature).intent != AbstractMonster.Intent.NONE && EUIGameUtils.canViewEnemyIntents())
+                    {
+                        tooltips.add(fromMonsterIntent((AbstractMonster) creature));
+                    }
+                }
+            }
+
             for (AbstractPower p : creature.powers)
             {
                 if (p instanceof InvisiblePower)
@@ -613,17 +678,6 @@ public class EUITooltip
 
                 tooltips.add(tip);
             }
-        }
-
-        float x;
-        float y = creature.hb.cY + EUIRenderHelpers.calculateAdditionalOffset(tooltips, creature.hb.cY);
-        if ((creature.hb.cX + creature.hb.width * 0.5f) < TIP_X_THRESHOLD)
-        {
-            x = creature.hb.cX + (creature.hb.width / 2.0F) + TIP_OFFSET_R_X;
-        }
-        else
-        {
-            x = creature.hb.cX - (creature.hb.width / 2.0F) + TIP_OFFSET_L_X;
         }
 
         final float original_y = y;

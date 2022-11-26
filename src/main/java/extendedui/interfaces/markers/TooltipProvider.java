@@ -15,6 +15,7 @@ public interface TooltipProvider {
     default List<EUITooltip> getTipsForFilters() {
         return getTips();
     }
+    default EUITooltip getIntentTip() {return null;}
     default EUICardPreview getPreview() {return null;}
     default boolean isPopup() {return false;}
     default void generateDynamicTooltips(ArrayList<EUITooltip> dynamicTooltips) {}

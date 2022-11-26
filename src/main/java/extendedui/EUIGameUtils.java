@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.RunicDome;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
@@ -44,6 +45,11 @@ public class EUIGameUtils {
                 || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD
                 || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.CARD_REWARD
                 || AbstractDungeon.screen == EUI_SCREEN);
+    }
+
+    public static boolean canViewEnemyIntents()
+    {
+        return AbstractDungeon.player.hasRelic(RunicDome.ID);
     }
 
     public static void copyVisualProperties(AbstractCard copy, AbstractCard original) {

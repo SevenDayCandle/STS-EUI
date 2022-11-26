@@ -58,25 +58,30 @@ public class EUICardPreview implements CardObject
 
     public void render(SpriteBatch sb, AbstractCard card, boolean upgraded, boolean isPopup)
     {
-        AbstractCard preview = getPreview(upgraded);
-
         if (isPopup)
         {
-            preview.current_x = (float) Settings.WIDTH * 0.2f - 10f * Settings.scale;
-            preview.current_y = (float) Settings.HEIGHT * 0.25f;
-            preview.drawScale = 1f;
-            preview.render(sb);
+            float x = (float) Settings.WIDTH * 0.2f - 10f * Settings.scale;
+            float y = (float) Settings.HEIGHT * 0.25f;
+            float scale = 1f;
+            render(sb, x, y, scale, upgraded);
         }
         else if (AbstractDungeon.player == null || !AbstractDungeon.player.isDraggingCard)
         {
-            final float offset_y = (AbstractCard.IMG_HEIGHT * 0.5f - AbstractCard.IMG_HEIGHT * 0.4f) * card.drawScale;
-            final float offset_x = (AbstractCard.IMG_WIDTH * 0.5f + AbstractCard.IMG_WIDTH * 0.4f + 16f) * ((card.current_x > Settings.WIDTH * 0.7f) ? card.drawScale : -card.drawScale);
-
-            preview.current_x = card.current_x + offset_x;
-            preview.current_y = card.current_y + offset_y;
-            preview.drawScale = card.drawScale * 0.8f;
-            preview.render(sb);
+            float x = card.current_x + (AbstractCard.IMG_WIDTH * 0.9f + 16f) * ((card.current_x > Settings.WIDTH * 0.7f) ? card.drawScale : -card.drawScale);
+            float y = card.current_y + (AbstractCard.IMG_HEIGHT * 0.1f) * card.drawScale;
+            float scale = card.drawScale * 0.8f;
+            render(sb, x, y, scale, upgraded);
         }
+    }
+
+    public void render(SpriteBatch sb, float x, float y, float scale, boolean upgraded)
+    {
+        AbstractCard preview = getPreview(upgraded);
+
+        preview.current_x = x;
+        preview.current_y = y;
+        preview.drawScale = scale;
+        preview.render(sb);
 
         if (isMultiPreview)
         {
