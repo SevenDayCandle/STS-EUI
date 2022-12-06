@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
-public class EUIUtils
+public abstract class EUIUtils
 {
     public static final Random RNG = new Random();
     public static final String DOUBLE_SPLIT_LINE = " || ";
@@ -703,7 +703,7 @@ public class EUIUtils
                 N n = predicate.invoke(t);
                 if (n != null)
                 {
-                    res.add(predicate.invoke(t));
+                    res.add(n);
                 }
             }
         }
@@ -721,7 +721,7 @@ public class EUIUtils
                 N n = predicate.invoke(t);
                 if (n != null)
                 {
-                    res.add(predicate.invoke(t));
+                    res.add(n);
                 }
             }
         }

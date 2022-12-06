@@ -14,13 +14,13 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.delegates.FuncT1;
-import extendedui.interfaces.delegates.FuncT2;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.FuncT1;
+import extendedui.interfaces.delegates.FuncT2;
 import extendedui.interfaces.markers.CardObject;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
@@ -326,6 +326,19 @@ public class EUIDropdown<T> extends EUIHoverable
         if (selection != null) {
             for (int i = 0; i < rows.size(); i++) {
                 if (selection.contains(rows.get(i).item)) {
+                    currentIndices.add(i);
+                }
+            }
+        }
+        updateForSelection(shouldInvoke);
+        return this;
+    }
+
+    public <K> EUIDropdown<T> setSelection(Collection<K> selection, FuncT1<K, T> convertFunc, boolean shouldInvoke) {
+        this.currentIndices.clear();
+        if (selection != null) {
+            for (int i = 0; i < rows.size(); i++) {
+                if (selection.contains(convertFunc.invoke(rows.get(i).item))) {
                     currentIndices.add(i);
                 }
             }

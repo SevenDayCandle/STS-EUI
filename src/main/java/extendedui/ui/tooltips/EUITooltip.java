@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
@@ -901,6 +902,33 @@ public class EUITooltip
     {
         this.icon = EUIRenderHelpers.getCroppedRegion(texture, div);
 
+        return this;
+    }
+
+    public EUITooltip setIconFromPath(String imagePath)
+    {
+        if (Gdx.files.internal(imagePath).exists())
+        {
+            setIcon(EUIRM.getTexture(imagePath));
+        }
+        else
+        {
+            EUIUtils.logWarning(this, "Could not load icon at " + imagePath);
+        }
+        return this;
+    }
+
+    public EUITooltip setIconFromPowerRegion(String imagePath)
+    {
+        TextureAtlas.AtlasRegion region = AbstractPower.atlas.findRegion("48/" + imagePath);
+        if (region != null)
+        {
+            setIcon(region);
+        }
+        else
+        {
+            EUIUtils.logWarning(this, "Could not load region at " + imagePath);
+        }
         return this;
     }
 

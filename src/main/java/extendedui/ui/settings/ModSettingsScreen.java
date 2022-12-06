@@ -5,12 +5,14 @@ import basemod.ModPanel;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
+import extendedui.EUIGameUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.STSConfigItem;
 import extendedui.ui.AbstractScreen;
@@ -24,6 +26,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Objects;
 
 public class ModSettingsScreen extends AbstractScreen
 {
@@ -52,6 +55,18 @@ public class ModSettingsScreen extends AbstractScreen
     {
         configCategories.putIfAbsent(cat, new ArrayList<>());
         offsets.putIfAbsent(cat, OFFSET_SIZE);
+    }
+
+    public static Category registerByInfo(ModInfo info)
+    {
+        Category c = new Category(info.Name);
+        addCategory(c);
+        return c;
+    }
+
+    public static Category registerByClass(Class<?> classType)
+    {
+        return registerByInfo(Objects.requireNonNull(EUIGameUtils.getModInfo(classType)));
     }
 
     public static ModSettingsToggle addBoolean(Category cat, STSConfigItem<Boolean> option, String label)

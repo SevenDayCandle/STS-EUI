@@ -124,7 +124,7 @@ public class STSEffekSeerUtils {
 
         // Check if the filename is okay
         if (filename == null || filename.length() < MIN_PREFIX_LENGTH) {
-            throw new IllegalArgumentException("The filename has to be at least 3 characters long.");
+            throw new IllegalArgumentException("The filename has to be at least 3 pinacolada.characters long.");
         }
 
         // Prepare temporary file
