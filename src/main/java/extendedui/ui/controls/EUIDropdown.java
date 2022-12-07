@@ -25,7 +25,7 @@ import extendedui.interfaces.markers.CardObject;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
@@ -79,23 +79,23 @@ public class EUIDropdown<T> extends EUIHoverable
     public boolean wrapOpenDirection;
     public ArrayList<DropdownRow<T>> rows = new ArrayList<>();
 
-    public EUIDropdown(AdvancedHitbox hb) {
+    public EUIDropdown(EUIHitbox hb) {
         this(hb, Object::toString, new ArrayList<>(), EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
     }
 
-    public EUIDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction) {
+    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction) {
         this(hb, labelFunction, new ArrayList<>(), EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
     }
 
-    public EUIDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options) {
+    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options) {
         this(hb, labelFunction, options, EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
     }
 
-    public EUIDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList <T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
+    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList <T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
         this(hb, labelFunction, options, EUIFontHelper.cardTooltipFont, 1, DEFAULT_MAX_ROWS, false);
     }
 
-    public EUIDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList <T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
+    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList <T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
         super(hb);
         this.hb
                 .setIsPopupCompatible(true)
@@ -111,7 +111,7 @@ public class EUIDropdown<T> extends EUIHoverable
             rows.add(makeRow(options, i));
         }
         this.scrollBar = new EUIVerticalScrollBar(
-                new AdvancedHitbox(hb.x + hb.width - SCROLLBAR_PADDING, hb.y + calculateScrollbarOffset(), SCROLLBAR_WIDTH,rowHeight * this.visibleRowCount())
+                new EUIHitbox(hb.x + hb.width - SCROLLBAR_PADDING, hb.y + calculateScrollbarOffset(), SCROLLBAR_WIDTH,rowHeight * this.visibleRowCount())
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnScroll(this::onScroll);
@@ -121,12 +121,12 @@ public class EUIDropdown<T> extends EUIHoverable
                 .setText(currentIndices.size() + " " + EUIRM.strings.uiItemsselected)
                 .setOnClick(this::openOrCloseMenu);
         //noinspection SuspiciousNameCombination
-        this.clearButton = new EUIButton(EUIRM.images.x.texture(), new AdvancedHitbox(hb.x + hb.width, hb.y, hb.height, hb.height)
+        this.clearButton = new EUIButton(EUIRM.images.x.texture(), new EUIHitbox(hb.x + hb.width, hb.y, hb.height, hb.height)
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnClick(() -> {
                     setSelectionIndices(new int[] {}, true);});
-        this.header = new EUILabel(EUIFontHelper.cardtitlefontSmall, new AdvancedHitbox(hb.x, hb.y + hb.height, hb.width, hb.height)).setAlignment(0.5f,0.0f,false);
+        this.header = new EUILabel(EUIFontHelper.cardtitlefontSmall, new EUIHitbox(hb.x, hb.y + hb.height, hb.width, hb.height)).setAlignment(0.5f,0.0f,false);
         this.header.setActive(false);
     }
 
@@ -776,10 +776,10 @@ public class EUIDropdown<T> extends EUIHoverable
     }
 
     public EUIDropdown<T> makeCopy() {
-        return makeCopy(new AdvancedHitbox(hb));
+        return makeCopy(new EUIHitbox(hb));
     }
 
-    public EUIDropdown<T> makeCopy(AdvancedHitbox hb) {
+    public EUIDropdown<T> makeCopy(EUIHitbox hb) {
         return new EUIDropdown<T>(hb, this.labelFunction, getAllItems(), this.font, this.maxRows, this.canAutosizeButton)
                 .setHeader(this.font, this.fontScale, this.header.textColor, this.header.text, this.header.smartText)
                 .setLabelFunctionForButton(this.labelFunctionButton, this.colorFunctionButton, this.button.isSmartText)
@@ -795,13 +795,13 @@ public class EUIDropdown<T> extends EUIHoverable
         protected static final float LABEL_OFFSET = 50;
         public final EUIDropdown<T> dr;
         public T item;
-        public AdvancedHitbox hb;
+        public EUIHitbox hb;
         public EUIImage checkbox;
         public EUILabel label;
         public int index;
         public boolean isSelected;
 
-        public DropdownRow(EUIDropdown<T> dr, AdvancedHitbox hb, T item, FuncT1<String, T> labelFunction, BitmapFont font, float fontScale, int index) {
+        public DropdownRow(EUIDropdown<T> dr, EUIHitbox hb, T item, FuncT1<String, T> labelFunction, BitmapFont font, float fontScale, int index) {
             this.dr = dr;
             this.hb = new RelativeHitbox(hb, 1f, 1f, 0f, 0f).setIsPopupCompatible(true).setParentElement(dr);
             this.item = item;

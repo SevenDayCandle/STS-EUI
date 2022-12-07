@@ -12,17 +12,17 @@ import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.delegates.FuncT1;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUIRelicGrid;
 import extendedui.ui.controls.EUITextBoxInput;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -69,7 +69,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
     {
         super();
 
-        originsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.uiBasegame : c.Name)
+        originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.uiBasegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, null, false)
@@ -78,7 +78,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
 
-        raritiesDropdown = new EUIDropdown<AbstractRelic.RelicTier>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+        raritiesDropdown = new EUIDropdown<AbstractRelic.RelicTier>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForRelicTier)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentRarities, costs))
@@ -88,7 +88,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
                 .setCanAutosizeButton(true)
                 .setItems(AbstractRelic.RelicTier.values());
 
-        colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+        colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::getColorName)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
@@ -96,7 +96,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
                 .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiColors)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
-        seenDropdown = new EUIDropdown<SeenValue>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+        seenDropdown = new EUIDropdown<SeenValue>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , item -> item.name)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentSeen, costs))
@@ -106,7 +106,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
         nameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
-                new AdvancedHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
+                new EUIHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
                 .setOnComplete(s -> {
                     currentName = s;
                     if (onClick != null)

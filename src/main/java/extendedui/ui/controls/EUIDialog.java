@@ -11,7 +11,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.utilities.EUIFontHelper;
 
@@ -34,10 +34,10 @@ public abstract class EUIDialog<T> extends EUIHoverable
 
     public EUIDialog(String headerText, String descriptionText)
     {
-        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 180.0F, Settings.OPTION_Y - 207.0F, 360.0F, 414.0F), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
+        this(new EUIHitbox(Settings.WIDTH / 2.0F - 180.0F, Settings.OPTION_Y - 207.0F, 360.0F, 414.0F), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
     }
 
-    public EUIDialog(AdvancedHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)
+    public EUIDialog(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)
     {
         super(hb);
         this.backgroundImage = new EUIImage(backgroundTexture, hb);

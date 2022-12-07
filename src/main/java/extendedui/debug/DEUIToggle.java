@@ -23,6 +23,11 @@ public class DEUIToggle extends DEUIBaseT0
         return value.get();
     }
 
+    public void set(boolean value)
+    {
+        this.value.set(value);
+    }
+
     public void render()
     {
         ImGui.checkbox(ID, value);

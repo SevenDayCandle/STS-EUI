@@ -8,7 +8,7 @@ import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 public class EUIVerticalScrollBar extends EUIHoverable
 {
@@ -27,7 +27,7 @@ public class EUIVerticalScrollBar extends EUIHoverable
     public float currentScrollPercent;
     public float cursorDrawPosition;
 
-    public EUIVerticalScrollBar(AdvancedHitbox hb)
+    public EUIVerticalScrollBar(EUIHitbox hb)
     {
         super(hb);
         this.isBackgroundVisible = true;

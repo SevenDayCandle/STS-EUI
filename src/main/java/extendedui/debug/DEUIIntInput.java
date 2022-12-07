@@ -1,5 +1,6 @@
 package extendedui.debug;
 
+import com.badlogic.gdx.math.MathUtils;
 import imgui.ImGui;
 import imgui.type.ImInt;
 
@@ -39,6 +40,11 @@ public class DEUIIntInput extends DEUIBaseT0
     public int get()
     {
         return value.get();
+    }
+
+    public void set(int value)
+    {
+        this.value.set(MathUtils.clamp(value, min, max));
     }
 
     public void render()

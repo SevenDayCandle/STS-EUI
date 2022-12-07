@@ -40,8 +40,15 @@ public class ShaderDebugger implements ImGuiSubscriber
     }
 
     public static void initialize() {
-        instance = new ShaderDebugger();
-        BaseMod.subscribe(instance);
+        try
+        {
+            instance = new ShaderDebugger();
+            BaseMod.subscribe(instance);
+        }
+        catch (Exception e)
+        {
+            EUIUtils.logInfoIfDebug(ShaderDebugger.class, "Unable to load shader debugger");
+        }
     }
 
     @Override

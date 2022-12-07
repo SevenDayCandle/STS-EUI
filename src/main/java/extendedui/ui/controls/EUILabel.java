@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
-import extendedui.EUIUtils;
 import extendedui.EUIRenderHelpers;
+import extendedui.EUIUtils;
 import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 public class EUILabel extends EUIHoverable
 {
@@ -26,10 +26,10 @@ public class EUILabel extends EUIHoverable
 
     public EUILabel(BitmapFont font)
     {
-        this(font, new AdvancedHitbox(0, 0));
+        this(font, new EUIHitbox(0, 0));
     }
 
-    public EUILabel(BitmapFont font, AdvancedHitbox hb)
+    public EUILabel(BitmapFont font, EUIHitbox hb)
     {
         super(hb);
         this.smartText = true;
@@ -43,7 +43,7 @@ public class EUILabel extends EUIHoverable
 
     public EUILabel makeCopy()
     {
-        return (EUILabel) new EUILabel(font, new AdvancedHitbox(hb))
+        return (EUILabel) new EUILabel(font, new EUIHitbox(hb))
                 .setAlignment(verticalRatio, horizontalRatio, smartText)
                 .setColor(textColor)
                 .setFont(font, fontScale)

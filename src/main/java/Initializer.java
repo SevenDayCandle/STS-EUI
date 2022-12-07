@@ -9,10 +9,10 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import extendedui.*;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.patches.EUIKeyword;
 import extendedui.ui.tooltips.EUITooltip;
 import org.apache.logging.log4j.LogManager;
-import extendedui.configuration.EUIConfiguration;
 
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
@@ -74,6 +74,7 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
         EUIRenderHelpers.initializeBuffers();
         STSEffekseerManager.initialize();
         ShaderDebugger.initialize();
+        HitboxDebugger.initialize();
         LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
     }
 

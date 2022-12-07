@@ -14,14 +14,14 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.Circlet;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import extendedui.interfaces.delegates.ActionT0;
-import extendedui.interfaces.delegates.FuncT0;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIHotkeys;
+import extendedui.interfaces.delegates.ActionT0;
+import extendedui.interfaces.delegates.FuncT0;
 import extendedui.ui.controls.EUIContextMenu;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
@@ -37,7 +37,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
         super(Loader.isModLoaded("PrideMod") ? EUIRM.images.cardpoolPride : EUIRM.images.cardPool, ID);
         setTooltip(new EUITooltip(EUIRM.strings.uipoolViewpool, EUIRM.strings.uipoolViewpooldescription));
 
-        contextMenu = (EUIContextMenu<ContextOption>) new EUIContextMenu<ContextOption>(new AdvancedHitbox(0, 0, 0, 0), ContextOption::getDisplayName)
+        contextMenu = (EUIContextMenu<ContextOption>) new EUIContextMenu<ContextOption>(new EUIHitbox(0, 0, 0, 0), ContextOption::getDisplayName)
                 .setOnChange(options -> {
                     for (ContextOption o : options)
                     {

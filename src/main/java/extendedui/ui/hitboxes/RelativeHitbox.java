@@ -2,7 +2,7 @@ package extendedui.ui.hitboxes;
 
 import com.megacrit.cardcrawl.helpers.Hitbox;
 
-public class RelativeHitbox extends AdvancedHitbox
+public class RelativeHitbox extends EUIHitbox
 {
     public Hitbox parentHB;
     public float offsetCx;
@@ -33,22 +33,18 @@ public class RelativeHitbox extends AdvancedHitbox
         moveInternal(targetCx, targetCy);
     }
 
-    public RelativeHitbox setOffset(float x, float y)
+    public RelativeHitbox setOffset(float x, float y, boolean percentageOffset)
     {
-        this.percentageOffset = false;
         this.offsetCx = x;
         this.offsetCy = y;
+        this.percentageOffset = percentageOffset;
 
         return this;
     }
 
     public RelativeHitbox setPercentageOffset(float x, float y)
     {
-        this.percentageOffset = true;
-        this.offsetCx = x;
-        this.offsetCy = y;
-
-        return this;
+        return setOffset(x, y, true);
     }
 
     public RelativeHitbox updateTargetPosition()

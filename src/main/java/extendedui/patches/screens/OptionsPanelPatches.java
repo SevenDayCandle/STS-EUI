@@ -14,11 +14,11 @@ import extendedui.EUIInputManager;
 import extendedui.EUIRM;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.EUILabel;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 public class OptionsPanelPatches
 {
-    public static EUILabel modSettings = new EUILabel(FontHelper.panelEndTurnFont, new AdvancedHitbox(Settings.WIDTH * 0.18F, Settings.HEIGHT * 0.021f, 300.0F * Settings.scale, 72.0F * Settings.scale)).setLabel(EUIRM.strings.miscExtrasettings);
+    public static EUILabel modSettings = new EUILabel(FontHelper.panelEndTurnFont, new EUIHitbox(Settings.WIDTH * 0.18F, Settings.HEIGHT * 0.021f, 300.0F * Settings.scale, 72.0F * Settings.scale)).setLabel(EUIRM.strings.miscExtrasettings);
 
     @SpirePatch(clz= OptionsPanel.class, method="update")
     public static class OptionsPanel_Update

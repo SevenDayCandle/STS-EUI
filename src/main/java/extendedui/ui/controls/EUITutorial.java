@@ -6,10 +6,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import extendedui.interfaces.delegates.ActionT1;
 import extendedui.EUIRM;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.utilities.EUIFontHelper;
 
@@ -40,10 +40,10 @@ public class EUITutorial extends EUIHoverable
 
     public EUITutorial(String headerText, Collection<String> descriptions)
     {
-        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350F, 720F), EUIRM.images.panelLarge.texture(), headerText, descriptions);
+        this(new EUIHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350F, 720F), EUIRM.images.panelLarge.texture(), headerText, descriptions);
     }
 
-    public EUITutorial(AdvancedHitbox hb, Texture backgroundTexture, String headerText, Collection<String> descriptions)
+    public EUITutorial(EUIHitbox hb, Texture backgroundTexture, String headerText, Collection<String> descriptions)
     {
         super(hb);
         this.backgroundImage = new EUIImage(backgroundTexture, hb);

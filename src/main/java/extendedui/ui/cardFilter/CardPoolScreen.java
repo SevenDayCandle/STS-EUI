@@ -19,7 +19,7 @@ import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUICardGrid;
 import extendedui.ui.controls.EUIStaticCardGrid;
 import extendedui.ui.controls.EUIToggle;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
 
@@ -43,14 +43,14 @@ public class CardPoolScreen extends AbstractScreen
                 })
                 .setVerticalStart(Settings.HEIGHT * 0.66f);
 
-        upgradeToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
+        upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setBackground(EUIRM.images.panel.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.8f)
                 .setFont(EUIFontHelper.carddescriptionfontLarge, 0.5f)
                 .setText(SingleCardViewPopup.TEXT[6])
                 .setOnToggle(EUI::toggleViewUpgrades);
 
-        colorlessToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
+        colorlessToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setBackground(EUIRM.images.panel.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
                 .setFont(EUIFontHelper.carddescriptionfontLarge, 0.5f)
@@ -61,7 +61,7 @@ public class CardPoolScreen extends AbstractScreen
                 });
 
         this.swapScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
-                new AdvancedHitbox(scale(210), scale(43)))
+                new EUIHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
                 .setFont(FontHelper.buttonLabelFont, 0.8f)
                 .setColor(Color.GRAY)

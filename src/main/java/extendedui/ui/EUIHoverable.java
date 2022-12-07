@@ -1,15 +1,15 @@
 package extendedui.ui;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 
 public abstract class EUIHoverable extends EUIBase
 {
-    public AdvancedHitbox hb;
+    public EUIHitbox hb;
     public EUITooltip tooltip;
 
-    public EUIHoverable(AdvancedHitbox hb) {
+    public EUIHoverable(EUIHitbox hb) {
         this.hb = hb;
     }
 
@@ -32,7 +32,7 @@ public abstract class EUIHoverable extends EUIBase
         }
     }
 
-    public EUIHoverable setHitbox(AdvancedHitbox hb) {
+    public EUIHoverable setHitbox(EUIHitbox hb) {
         this.hb = hb;
         return this;
     }

@@ -6,7 +6,7 @@ import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
 import extendedui.ui.EUIBase;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 public abstract class EUICanvas extends EUIBase
 {
@@ -24,7 +24,7 @@ public abstract class EUICanvas extends EUIBase
 
 
     public EUICanvas() {
-        this.scrollBar = new EUIVerticalScrollBar(new AdvancedHitbox(screenW(0.03f), screenH(0.7f)))
+        this.scrollBar = new EUIVerticalScrollBar(new EUIHitbox(screenW(0.03f), screenH(0.7f)))
                 .setOnScroll(this::onScroll);
     }
 

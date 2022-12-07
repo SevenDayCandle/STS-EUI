@@ -11,7 +11,7 @@ import com.megacrit.cardcrawl.screens.select.GridCardSelectScreen;
 import extendedui.interfaces.delegates.ActionT3;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.ui.controls.EUITextBox;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.GenericCondition;
@@ -25,7 +25,7 @@ public class GridCardSelectScreenHelper
     private static final CardGroup mergedGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
     private static final ArrayList<CardGroup> cardGroups = new ArrayList<>();
     private static final EUITextBox dynamicLabel = new EUITextBox(ImageMaster.WHITE_SQUARE_IMG,
-            new AdvancedHitbox(Settings.WIDTH / 4.0F, 96.0F * Settings.scale, Settings.WIDTH / 2.0F, 48.0F * Settings.scale))
+            new EUIHitbox(Settings.WIDTH / 4.0F, 96.0F * Settings.scale, Settings.WIDTH / 2.0F, 48.0F * Settings.scale))
             .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
             .setAlignment(0.7f, 0.15f, true, false)
             .setFont(EUIFontHelper.carddescriptionfontNormal, 1f);

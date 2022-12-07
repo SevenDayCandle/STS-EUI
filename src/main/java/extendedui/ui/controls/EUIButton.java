@@ -8,15 +8,15 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import extendedui.interfaces.delegates.ActionT0;
-import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.delegates.ActionT2;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.EUIRenderHelpers;
+import extendedui.interfaces.delegates.ActionT0;
+import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.ActionT2;
 import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.GenericCallback;
 import org.apache.commons.lang3.StringUtils;
@@ -45,10 +45,10 @@ public class EUIButton extends EUIHoverable
 
     public EUIButton(Texture buttonTexture, float x, float y)
     {
-        this(buttonTexture, new AdvancedHitbox(x, y, scale(buttonTexture.getWidth()), scale(buttonTexture.getHeight())));
+        this(buttonTexture, new EUIHitbox(x, y, scale(buttonTexture.getWidth()), scale(buttonTexture.getHeight())));
     }
 
-    public EUIButton(Texture buttonTexture, AdvancedHitbox hitbox)
+    public EUIButton(Texture buttonTexture, EUIHitbox hitbox)
     {
         super(hitbox);
         this.background = EUIRenderHelpers.forTexture(buttonTexture, hitbox, Color.WHITE);

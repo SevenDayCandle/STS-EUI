@@ -25,8 +25,8 @@ import extendedui.ui.AbstractScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
 import extendedui.ui.controls.EUIButton;
-import extendedui.ui.hitboxes.AdvancedHitbox;
 import extendedui.ui.hitboxes.DraggableHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.ui.settings.ModSettingsScreen;
 import extendedui.ui.tooltips.EUITooltip;
@@ -238,7 +238,7 @@ public class EUI
         return isDragging;
     }
 
-    public static boolean isInActiveElement(AdvancedHitbox hb) {
+    public static boolean isInActiveElement(EUIHitbox hb) {
         return activeElement == null || activeElement == hb.parentElement;
     }
 

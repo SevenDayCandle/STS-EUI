@@ -8,12 +8,13 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
+import extendedui.HitboxDebugger;
 import extendedui.ui.EUIBase;
 
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
 
-public class AdvancedHitbox extends Hitbox
+public class EUIHitbox extends Hitbox
 {
     public float lerpSpeed;
     public float targetCx;
@@ -21,22 +22,22 @@ public class AdvancedHitbox extends Hitbox
     public EUIBase parentElement;
     public boolean isPopupCompatible;
 
-    public AdvancedHitbox(Hitbox hb)
+    public EUIHitbox(Hitbox hb)
     {
         this(hb.x, hb.y, hb.width, hb.height);
     }
 
-    public AdvancedHitbox(float width, float height)
+    public EUIHitbox(float width, float height)
     {
         this(-9999, -9999, width, height);
     }
 
-    public AdvancedHitbox(Hitbox hb, float width, float height)
+    public EUIHitbox(Hitbox hb, float width, float height)
     {
         this(hb.x, hb.y, width, height);
     }
 
-    public AdvancedHitbox(float x, float y, float width, float height)
+    public EUIHitbox(float x, float y, float width, float height)
     {
         super(x, y, width, height);
 
@@ -45,14 +46,14 @@ public class AdvancedHitbox extends Hitbox
         this.lerpSpeed = 9f;
     }
 
-    public AdvancedHitbox setPosition(float cX, float cY)
+    public EUIHitbox setPosition(float cX, float cY)
     {
         move(cX, cY);
 
         return this;
     }
 
-    public AdvancedHitbox setTargetPosition(float cX, float cY)
+    public EUIHitbox setTargetPosition(float cX, float cY)
     {
         this.targetCx = cX;
         this.targetCy = cY;
@@ -60,13 +61,13 @@ public class AdvancedHitbox extends Hitbox
         return this;
     }
 
-    public AdvancedHitbox setIsPopupCompatible(boolean value) {
+    public EUIHitbox setIsPopupCompatible(boolean value) {
         this.isPopupCompatible = value;
 
         return this;
     }
 
-    public AdvancedHitbox setParentElement(EUIBase element) {
+    public EUIHitbox setParentElement(EUIBase element) {
         this.parentElement = element;
 
         return this;
@@ -79,6 +80,7 @@ public class AdvancedHitbox extends Hitbox
         if (this.clickStarted && InputHelper.justReleasedClickLeft) {
             if (this.hovered) {
                 this.clicked = true;
+                HitboxDebugger.tryRegister(this);
             }
 
             this.clickStarted = false;

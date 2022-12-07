@@ -3,37 +3,37 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import extendedui.EUI;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
-import extendedui.EUI;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class EUIContextMenu<T> extends EUIDropdown<T>
 {
-    public EUIContextMenu(AdvancedHitbox hb) {
+    public EUIContextMenu(EUIHitbox hb) {
         super(hb);
         initialize();
     }
 
-    public EUIContextMenu(AdvancedHitbox hb, FuncT1<String, T> labelFunction) {
+    public EUIContextMenu(EUIHitbox hb, FuncT1<String, T> labelFunction) {
         super(hb, labelFunction);
         initialize();
     }
 
-    public EUIContextMenu(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options) {
+    public EUIContextMenu(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options) {
         super(hb, labelFunction, options);
         initialize();
     }
 
-    public EUIContextMenu(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
+    public EUIContextMenu(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
         super(hb, labelFunction, options, font, maxRows, canAutosizeButton);
         initialize();
     }
 
-    public EUIContextMenu(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
+    public EUIContextMenu(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
         super(hb, labelFunction, options, font, fontScale, maxRows, canAutosizeButton);
         initialize();
     }

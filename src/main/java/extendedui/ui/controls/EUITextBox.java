@@ -6,14 +6,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 public class EUITextBox extends EUIHoverable
 {
     public final EUIImage image;
     public final EUILabel label;
 
-    public EUITextBox(Texture backgroundTexture, AdvancedHitbox hb)
+    public EUITextBox(Texture backgroundTexture, EUIHitbox hb)
     {
         super(hb);
         this.label = new EUILabel(FontHelper.buttonLabelFont);

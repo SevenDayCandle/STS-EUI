@@ -18,7 +18,7 @@ import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIRelicGrid;
 import extendedui.ui.controls.EUIStaticRelicGrid;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 
 import java.util.ArrayList;
@@ -41,7 +41,7 @@ public class RelicPoolScreen extends AbstractScreen
                 .showScrollbar(true);
 
         this.swapScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
-                new AdvancedHitbox(scale(210), scale(43)))
+                new EUIHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
                 .setFont(FontHelper.buttonLabelFont, 0.8f)
                 .setColor(Color.GRAY)

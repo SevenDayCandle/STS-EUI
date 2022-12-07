@@ -8,7 +8,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import extendedui.EUIRenderHelpers;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
 
@@ -37,16 +37,16 @@ public class EUIImage extends EUIHoverable
         this(texture, Color.WHITE);
     }
 
-    public EUIImage(Texture texture, AdvancedHitbox hb)
+    public EUIImage(Texture texture, EUIHitbox hb)
     {
         this(texture, hb, Color.WHITE);
     }
 
     public EUIImage(Texture texture, Color color) {
-        this(texture, new AdvancedHitbox(texture.getWidth(), texture.getHeight()), color);
+        this(texture, new EUIHitbox(texture.getWidth(), texture.getHeight()), color);
     }
 
-    public EUIImage(Texture texture, AdvancedHitbox hb, Color color)
+    public EUIImage(Texture texture, EUIHitbox hb, Color color)
     {
         super(hb);
         this.texture = texture;
@@ -120,7 +120,7 @@ public class EUIImage extends EUIHoverable
         return this;
     }
 
-    public EUIImage setHitbox(AdvancedHitbox hb)
+    public EUIImage setHitbox(EUIHitbox hb)
     {
         this.hb = hb;
 

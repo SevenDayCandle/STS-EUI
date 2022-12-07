@@ -3,13 +3,13 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 public class EUIRelic extends EUIImage
 {
     private final AbstractRelic relic;
 
-    public EUIRelic(AbstractRelic relic, AdvancedHitbox hb)
+    public EUIRelic(AbstractRelic relic, EUIHitbox hb)
     {
         super(relic.img, hb, Color.WHITE);
 

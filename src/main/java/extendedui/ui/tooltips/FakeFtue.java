@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.ui.FtueTip;
 import extendedui.EUIRM;
 import extendedui.ui.controls.EUITutorial;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 import java.util.Arrays;
 
@@ -23,7 +23,7 @@ public class FakeFtue extends FtueTip {
     }
 
     public FakeFtue(String title, String... descriptions) {
-        this(new EUITutorial(new AdvancedHitbox(Settings.WIDTH / 2.0F - WIDTH / 2, Settings.HEIGHT / 2.0F - HEIGHT / 2, WIDTH, HEIGHT), EUIRM.images.panelLarge.texture(), title, Arrays.asList(descriptions)));
+        this(new EUITutorial(new EUIHitbox(Settings.WIDTH / 2.0F - WIDTH / 2, Settings.HEIGHT / 2.0F - HEIGHT / 2, WIDTH, HEIGHT), EUIRM.images.panelLarge.texture(), title, Arrays.asList(descriptions)));
     }
 
     public void openScreen() {

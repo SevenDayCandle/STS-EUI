@@ -23,7 +23,7 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
 import extendedui.ui.controls.EUIImage;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
@@ -642,7 +642,7 @@ public class EUIRenderHelpers
         return new EUIImage(texture, color);
     }
 
-    public static EUIImage forTexture(Texture texture, AdvancedHitbox hb, Color color)
+    public static EUIImage forTexture(Texture texture, EUIHitbox hb, Color color)
     {
         return new EUIImage(texture, hb, color);
     }

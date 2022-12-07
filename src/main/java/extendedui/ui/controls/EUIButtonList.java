@@ -8,7 +8,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIBase;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 import java.util.ArrayList;
 
@@ -46,11 +46,11 @@ public class EUIButtonList extends EUIBase
         this.yPos = yPos;
         this.buttonWidth = buttonWidth;
         this.buttonHeight = buttonHeight;
-        upButton = new EUIButton(ImageMaster.CF_LEFT_ARROW, new AdvancedHitbox(xPos - ICON_SIZE, y + (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE))
+        upButton = new EUIButton(ImageMaster.CF_LEFT_ARROW, new EUIHitbox(xPos - ICON_SIZE, y + (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE))
                 .setOnClick(__ -> setTopButtonIndex(topButtonIndex - 1))
                 .setText(null);
         upButton.background.setRotation(-90);
-        downButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new AdvancedHitbox(upButton.hb.cX + ICON_SIZE, upButton.getY(), ICON_SIZE, ICON_SIZE))
+        downButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new EUIHitbox(upButton.hb.cX + ICON_SIZE, upButton.getY(), ICON_SIZE, ICON_SIZE))
                 .setOnClick(__ -> setTopButtonIndex(topButtonIndex + 1))
                 .setText(null);
         downButton.background.setRotation(-90);
@@ -124,7 +124,7 @@ public class EUIButtonList extends EUIBase
     }
 
     public EUIButton addButton(ActionT1<EUIButton> onClick, String title) {
-        EUIButton button = new EUIButton(ImageMaster.COLOR_TAB_BAR, new AdvancedHitbox(buttonWidth, buttonHeight))
+        EUIButton button = new EUIButton(ImageMaster.COLOR_TAB_BAR, new EUIHitbox(buttonWidth, buttonHeight))
                 .setFont(FontHelper.buttonLabelFont, fontScale)
                 .setButtonScale(1f, 1.2f)
                 .setOnClick((b) -> {

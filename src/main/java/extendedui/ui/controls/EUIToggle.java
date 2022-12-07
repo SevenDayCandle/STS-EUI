@@ -11,11 +11,11 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputAction;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import extendedui.interfaces.delegates.ActionT1;
 import extendedui.EUI;
 import extendedui.EUIRenderHelpers;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIFontHelper;
 
 public class EUIToggle extends EUIHoverable
@@ -35,12 +35,12 @@ public class EUIToggle extends EUIHoverable
     public float tickSize = 48;
     public ActionT1<Boolean> onToggle = null;
 
-    public EUIToggle(AdvancedHitbox hb)
+    public EUIToggle(EUIHitbox hb)
     {
         this(hb, new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED), new EUIImage(ImageMaster.COLOR_TAB_BOX_TICKED));
     }
 
-    public EUIToggle(AdvancedHitbox hb, EUIImage untickedImage, EUIImage tickedImage)
+    public EUIToggle(EUIHitbox hb, EUIImage untickedImage, EUIImage tickedImage)
     {
         super(hb);
         this.untickedImage = untickedImage;

@@ -7,7 +7,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.delegates.FuncT2;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,13 +23,13 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>>
 
     public EUIDialogDropdown(String headerText, String descriptionText)
     {
-        this(new AdvancedHitbox(Settings.WIDTH / 2.0F - 180.0F, Settings.OPTION_Y - 207.0F, 360.0F, 414.0F), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
+        this(new EUIHitbox(Settings.WIDTH / 2.0F - 180.0F, Settings.OPTION_Y - 207.0F, 360.0F, 414.0F), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
     }
 
-    public EUIDialogDropdown(AdvancedHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)
+    public EUIDialogDropdown(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)
     {
         super(hb, backgroundTexture, headerText, descriptionText);
-        this.dropdown = new EUIDropdown<T>(new AdvancedHitbox(hb.x + hb.width / 4, hb.y + hb.height / 4, hb.width / 2, scale(48)))
+        this.dropdown = new EUIDropdown<T>(new EUIHitbox(hb.x + hb.width / 4, hb.y + hb.height / 4, hb.width / 2, scale(48)))
                 .setCanAutosize(false, true);
     }
 

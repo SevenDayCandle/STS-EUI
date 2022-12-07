@@ -3,12 +3,12 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.delegates.FuncT1;
-import extendedui.EUIUtils;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.FuncT1;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 
 import java.util.ArrayList;
@@ -19,27 +19,27 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T>
     public ArrayList<DropdownRow<T>> originalRows;
     protected EUITextInput searchInput;
 
-    public EUISearchableDropdown(AdvancedHitbox hb) {
+    public EUISearchableDropdown(EUIHitbox hb) {
         super(hb);
         initialize();
     }
 
-    public EUISearchableDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction) {
+    public EUISearchableDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction) {
         super(hb, labelFunction);
         initialize();
     }
 
-    public EUISearchableDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options) {
+    public EUISearchableDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options) {
         super(hb, labelFunction, options);
         initialize();
     }
 
-    public EUISearchableDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
+    public EUISearchableDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
         super(hb, labelFunction, options, font, maxRows, canAutosizeButton);
         initialize();
     }
 
-    public EUISearchableDropdown(AdvancedHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
+    public EUISearchableDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
         super(hb, labelFunction, options, font, fontScale, maxRows, canAutosizeButton);
         initialize();
     }

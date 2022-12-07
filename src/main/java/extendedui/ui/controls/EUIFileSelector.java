@@ -5,11 +5,11 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
-import extendedui.interfaces.delegates.ActionT1;
-import extendedui.EUIUtils;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
@@ -37,12 +37,12 @@ public class EUIFileSelector extends EUIHoverable
     public EUIButton selectButton;
     public EUIButton clearButton;
 
-    public EUIFileSelector(AdvancedHitbox hb)
+    public EUIFileSelector(EUIHitbox hb)
     {
         this(hb, EUIRM.images.panel.texture());
     }
 
-    public EUIFileSelector(AdvancedHitbox hb, Texture texture)
+    public EUIFileSelector(EUIHitbox hb, Texture texture)
     {
         super(hb);
         this.header = new EUILabel(EUIFontHelper.cardtitlefontSmall, hb).setAlignment(0.5f,0.0f,false);

@@ -1,5 +1,6 @@
 package extendedui.debug;
 
+import com.badlogic.gdx.math.MathUtils;
 import imgui.ImGui;
 import imgui.type.ImFloat;
 
@@ -39,6 +40,11 @@ public class DEUIFloatInput extends DEUIBaseT0
     public float get()
     {
         return value.get();
+    }
+
+    public void set(float value)
+    {
+        this.value.set(MathUtils.clamp(value, min, max));
     }
 
     public void render()

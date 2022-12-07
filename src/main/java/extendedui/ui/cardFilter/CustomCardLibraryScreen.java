@@ -18,7 +18,7 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.*;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
 
@@ -54,7 +54,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
             c.unhover();
             CardCrawlGame.cardPopup.open(c, cardGrid.cards);
         });
-        upgradeToggle = new EUIToggle(new AdvancedHitbox(Settings.scale * 256f, Settings.scale * 48f))
+        upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setPosition(1450.0F * Settings.xScale, Settings.HEIGHT * 0.8f)
                 .setFont(EUIFontHelper.cardtooltiptitlefontLarge, 1f)
                 .setText(CardLibraryScreen.TEXT[7])
@@ -62,7 +62,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
         cancelButton = new MenuCancelButton();
 
         quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
-                new AdvancedHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, scale(280), scale(48)))
+                new EUIHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, scale(280), scale(48)))
                 .setOnComplete((v) -> EUI.cardFilters.nameInput.setTextAndCommit(v))
                 .setHeader(EUIFontHelper.cardtitlefontSmall, 0.7f, Settings.GOLD_COLOR, EUIRM.strings.uiNamesearch)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)

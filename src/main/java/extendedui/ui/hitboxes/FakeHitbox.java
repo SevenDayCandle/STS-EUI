@@ -3,7 +3,7 @@ package extendedui.ui.hitboxes;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 
-public class FakeHitbox extends AdvancedHitbox
+public class FakeHitbox extends EUIHitbox
 {
     public FakeHitbox(Hitbox hb) {
         super(hb);

@@ -3,7 +3,7 @@ package extendedui.ui.settings;
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.listeners.STSConfigListener;
 import extendedui.ui.controls.EUIFileSelector;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIFontHelper;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -13,7 +13,7 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
 {
     public final STSConfigItem<String> config;
 
-    public ModSettingsPathSelector(AdvancedHitbox hb, STSConfigItem<String> config, String title)
+    public ModSettingsPathSelector(EUIHitbox hb, STSConfigItem<String> config, String title)
     {
         super(hb);
         this.config = config;
@@ -30,7 +30,7 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
 
     public ModSettingsPathSelector makeCopy()
     {
-        ModSettingsPathSelector other = new ModSettingsPathSelector(new AdvancedHitbox(hb), config, this.header.text);
+        ModSettingsPathSelector other = new ModSettingsPathSelector(new EUIHitbox(hb), config, this.header.text);
         other.extensionFilter = new FileNameExtensionFilter(this.extensionFilter.getDescription(), this.extensionFilter.getExtensions());
         other.tooltip = this.tooltip;
         return other;

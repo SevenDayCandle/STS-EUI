@@ -4,7 +4,7 @@ import basemod.interfaces.TextReceiver;
 import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 
 public class EUITextInput extends EUILabel implements TextReceiver {
 
@@ -16,7 +16,7 @@ public class EUITextInput extends EUILabel implements TextReceiver {
         super(font);
     }
 
-    public EUITextInput(BitmapFont font, AdvancedHitbox hb) {
+    public EUITextInput(BitmapFont font, EUIHitbox hb) {
         super(font, hb);
     }
 

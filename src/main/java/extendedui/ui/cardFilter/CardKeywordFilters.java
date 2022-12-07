@@ -12,15 +12,15 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
-import extendedui.interfaces.delegates.ActionT1;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUITextBoxInput;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.FakeLibraryCard;
@@ -73,7 +73,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     {
         super();
 
-        originsDropdown = new EUIDropdown<ModInfo>(new AdvancedHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.uiBasegame : c.Name)
+        originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.uiBasegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, null, false)
@@ -82,7 +82,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
 
-        costDropdown = new EUIDropdown<CostFilter>(new AdvancedHitbox(0, 0, scale(160), scale(48)), c -> c.name)
+        costDropdown = new EUIDropdown<CostFilter>(new EUIHitbox(0, 0, scale(160), scale(48)), c -> c.name)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentCosts, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, null, false)
@@ -91,7 +91,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .setCanAutosize(false, false)
                 .setItems(CostFilter.values());
 
-        raritiesDropdown = new EUIDropdown<AbstractCard.CardRarity>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+        raritiesDropdown = new EUIDropdown<AbstractCard.CardRarity>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForRarity)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentRarities, costs))
@@ -101,7 +101,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .setCanAutosizeButton(true)
                 .setItems(AbstractCard.CardRarity.values());
 
-        typesDropdown = new EUIDropdown<AbstractCard.CardType>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+        typesDropdown = new EUIDropdown<AbstractCard.CardType>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForType)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentTypes, costs))
@@ -111,7 +111,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .setCanAutosizeButton(true)
                 .setItems(AbstractCard.CardType.values());
 
-        colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new AdvancedHitbox(0, 0, scale(240), scale(48))
+        colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::getColorName)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
@@ -120,7 +120,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
         nameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
-                new AdvancedHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
+                new EUIHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
                 .setOnComplete(s -> {
                     currentName = s;
                     if (onClick != null)
@@ -135,7 +135,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .setFont(EUIFontHelper.carddescriptionfontNormal, 0.8f)
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
         descriptionInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
-                new AdvancedHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
+                new EUIHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
                 .setOnComplete(s -> {
                     currentDescription = s;
                     if (onClick != null)

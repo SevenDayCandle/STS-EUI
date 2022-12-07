@@ -2,28 +2,36 @@ package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import extendedui.interfaces.delegates.ActionT1;
-import extendedui.ui.hitboxes.AdvancedHitbox;
+import com.badlogic.gdx.math.MathUtils;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import extendedui.ui.hitboxes.EUIHitbox;
 import org.apache.commons.lang3.math.NumberUtils;
 
-public class EUITextBoxNumericalInput extends EUITextBoxInput
+public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer>
 {
+    protected int cachedValue;
+    protected int min = Integer.MIN_VALUE;
+    protected int max = Integer.MAX_VALUE;
 
-    protected ActionT1<Integer> onUpdateNumber;
-    protected ActionT1<Integer> onCompleteNumber;
-
-    public EUITextBoxNumericalInput(Texture backgroundTexture, AdvancedHitbox hb) {
+    public EUITextBoxNumericalInput(Texture backgroundTexture, EUIHitbox hb) {
         super(backgroundTexture, hb);
     }
 
-    public EUITextBoxNumericalInput setOnCompleteNumber(ActionT1<Integer> onComplete) {
-        this.onCompleteNumber = onComplete;
+    public EUITextBoxNumericalInput setLimits(int min, int max)
+    {
+        this.min = min;
+        this.max = Math.max(max, min);
         return this;
     }
 
-    public EUITextBoxNumericalInput setOnUpdateNumber(ActionT1<Integer> onUpdate) {
-        this.onUpdateNumber = onUpdate;
-        return this;
+    public int getMin()
+    {
+        return min;
+    }
+
+    public int getMax()
+    {
+        return max;
     }
 
     @Override
@@ -36,6 +44,39 @@ public class EUITextBoxNumericalInput extends EUITextBoxInput
         super.start();
         if (!NumberUtils.isCreatable(label.text)) {
             label.text = "";
+            cachedValue = 0;
+        }
+        else
+        {
+            cachedValue = getValue(label.text);
+        }
+    }
+
+    @Override
+    public void setText(String s) {
+        super.setText(s);
+        cachedValue = getValue(label.text);
+    }
+
+    protected void setText(int value)
+    {
+        setText(String.valueOf(value));
+    }
+
+    @Override
+    public void updateImpl()
+    {
+        super.updateImpl();
+        if (isEditing)
+        {
+            if (InputHelper.scrolledDown)
+            {
+                setText(cachedValue - 1);
+            }
+            else if (InputHelper.scrolledUp)
+            {
+                setText(cachedValue + 1);
+            }
         }
     }
 
@@ -45,10 +86,15 @@ public class EUITextBoxNumericalInput extends EUITextBoxInput
     }
 
     @Override
-    public void end(boolean commit) {
-        super.end(commit);
-        if (commit && onCompleteNumber != null && !label.text.isEmpty()) {
-            onCompleteNumber.invoke(Integer.parseInt(label.text));
+    public Integer getValue(String text)
+    {
+        try
+        {
+            return MathUtils.clamp(Integer.parseInt(label.text), min, max);
+        }
+        catch (Exception ignored)
+        {
+            return 0;
         }
     }
 }
