@@ -22,8 +22,6 @@ import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
-import extendedui.ui.controls.EUIImage;
-import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
@@ -630,21 +628,6 @@ public class EUIRenderHelpers
         TextureRegion t = new TextureRegion(maskBuffer.getColorBufferTexture());
         t.flip(false, true);
         sb.draw(t, 0, 0, 0, 0, maskBuffer.getWidth(), maskBuffer.getHeight(), 1f, 1f, 0f);
-    }
-
-    public static EUIImage forTexture(Texture texture)
-    {
-        return forTexture(texture, Color.WHITE);
-    }
-
-    public static EUIImage forTexture(Texture texture, Color color)
-    {
-        return new EUIImage(texture, color);
-    }
-
-    public static EUIImage forTexture(Texture texture, EUIHitbox hb, Color color)
-    {
-        return new EUIImage(texture, hb, color);
     }
 
     private static BitmapFont generateFont(BitmapFont source, float size, float borderWidth, float shadowOffset)

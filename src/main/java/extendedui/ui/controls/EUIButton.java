@@ -51,7 +51,7 @@ public class EUIButton extends EUIHoverable
     public EUIButton(Texture buttonTexture, EUIHitbox hitbox)
     {
         super(hitbox);
-        this.background = EUIRenderHelpers.forTexture(buttonTexture, hitbox, Color.WHITE);
+        this.background = new EUIImage(buttonTexture, hitbox, Color.WHITE);
         this.text = "";
         this.font = FontHelper.buttonLabelFont;
         this.fontScale = 1f;
@@ -70,7 +70,7 @@ public class EUIButton extends EUIHoverable
 
     public EUIButton setBackground(Texture borderTexture)
     {
-        this.background = EUIRenderHelpers.forTexture(borderTexture);
+        this.background = new EUIImage(borderTexture, Color.WHITE);
 
         return this;
     }
@@ -83,7 +83,7 @@ public class EUIButton extends EUIHoverable
         }
         else
         {
-            this.border = EUIRenderHelpers.forTexture(borderTexture, color).setHitbox(hb);
+            this.border = new EUIImage(borderTexture, color).setHitbox(hb);
         }
 
         return this;

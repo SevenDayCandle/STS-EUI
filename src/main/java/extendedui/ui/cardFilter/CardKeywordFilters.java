@@ -88,7 +88,6 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 .setLabelFunctionForButton(this::filterNameFunction, null, false)
                 .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[3])
                 .setIsMultiSelect(true)
-                .setCanAutosize(false, false)
                 .setItems(CostFilter.values());
 
         raritiesDropdown = new EUIDropdown<AbstractCard.CardRarity>(new EUIHitbox(0, 0, scale(240), scale(48))

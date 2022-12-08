@@ -5,13 +5,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import extendedui.interfaces.delegates.ActionT1;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
-import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.ui.hitboxes.PercentageRelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
@@ -49,7 +49,7 @@ public class FilterKeywordButton extends EUIHoverable
         this.filters = filters;
         this.tooltip = tooltip;
 
-        backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), new RelativeHitbox(hb, 1, 1, 0.5f, 0).setIsPopupCompatible(true))
+        backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), new PercentageRelativeHitbox(filters.hb, 1, 1, 0.5f, baseTextOffsetY).setIsPopupCompatible(true))
                 .setClickDelay(0.01f)
         .setColor(this.filters.currentFilters.contains(this.tooltip) ? ACTIVE_COLOR
                 : this.filters.currentNegateFilters.contains(this.tooltip) ? NEGATE_COLOR : PANEL_COLOR)
@@ -91,14 +91,14 @@ public class FilterKeywordButton extends EUIHoverable
                 });
 
         titleText = new EUILabel(EUIFontHelper.cardTooltipFont,
-        new RelativeHitbox(hb, 0.5f, 1, baseTextOffsetX, baseTextOffsetY))
+        new PercentageRelativeHitbox(hb, 0.5f, 1, baseTextOffsetX, baseTextOffsetY))
                 .setFont(EUIFontHelper.cardTooltipFont, 0.8f)
                 .setColor(this.filters.currentFilters.contains(this.tooltip) ? Color.DARK_GRAY : Color.WHITE)
         .setAlignment(0.5f, 0.49f) // 0.1f
         .setLabel(this.tooltip.title);
 
         countText = new EUILabel(EUIFontHelper.carddescriptionfontNormal,
-                new RelativeHitbox(hb, 0.28f, 1, baseCountOffset, 0f))
+                new PercentageRelativeHitbox(hb, 0.28f, 1, baseCountOffset, 0f))
                 .setFont(EUIFontHelper.carddescriptionfontNormal, 0.8f)
                 .setAlignment(0.5f, 0.51f) // 0.1f
                 .setColor(Settings.GOLD_COLOR)
@@ -109,9 +109,9 @@ public class FilterKeywordButton extends EUIHoverable
     {
         offX = (index % CardKeywordFilters.ROW_SIZE) * 1.06f;
         offY = -(Math.floorDiv(index,CardKeywordFilters.ROW_SIZE)) * 0.85f;
-        RelativeHitbox.setPercentageOffset(backgroundButton.hb, offX, offY);
-        RelativeHitbox.setPercentageOffset(titleText.hb, offX + baseTextOffsetX, offY + baseTextOffsetY);
-        RelativeHitbox.setPercentageOffset(countText.hb, offX + baseCountOffset, offY);
+        backgroundButton.hb.setOffset(offX, offY);
+        titleText.hb.setOffset(offX + baseTextOffsetX, offY + baseTextOffsetY);
+        countText.hb.setOffset(offX + baseCountOffset, offY);
 
 
         return this;

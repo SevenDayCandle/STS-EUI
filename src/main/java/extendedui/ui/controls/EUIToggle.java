@@ -116,7 +116,7 @@ public class EUIToggle extends EUIHoverable
 
     public EUIToggle setBackground(Texture texture, Color color)
     {
-        this.backgroundImage = EUIRenderHelpers.forTexture(texture).setHitbox(hb).setColor(color);
+        this.backgroundImage = new EUIImage(texture, Color.WHITE).setHitbox(hb).setColor(color);
 
         return this;
     }

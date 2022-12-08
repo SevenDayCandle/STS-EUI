@@ -46,14 +46,14 @@ public class EUIHitbox extends Hitbox
         this.lerpSpeed = 9f;
     }
 
-    public EUIHitbox setPosition(float cX, float cY)
+    public EUIHitbox setCenter(float cX, float cY)
     {
         move(cX, cY);
 
         return this;
     }
 
-    public EUIHitbox setTargetPosition(float cX, float cY)
+    public EUIHitbox setTargetCenter(float cX, float cY)
     {
         this.targetCx = cX;
         this.targetCy = cY;
@@ -73,6 +73,22 @@ public class EUIHitbox extends Hitbox
         return this;
     }
 
+    // Overridden in child classes
+    public EUIHitbox setOffset(float x, float y)
+    {
+        return this;
+    }
+
+    public EUIHitbox setOffsetX(float x)
+    {
+        return this;
+    }
+
+    public EUIHitbox setOffsetY(float y)
+    {
+        return this;
+    }
+
     @Override
     public void update()
     {
@@ -80,10 +96,14 @@ public class EUIHitbox extends Hitbox
         if (this.clickStarted && InputHelper.justReleasedClickLeft) {
             if (this.hovered) {
                 this.clicked = true;
-                HitboxDebugger.tryRegister(this);
             }
 
             this.clickStarted = false;
+        }
+
+        if (this.hovered && (InputHelper.justReleasedClickRight || InputHelper.justReleasedClickLeft))
+        {
+            HitboxDebugger.tryRegister(this);
         }
 
         if (cX != targetCx || cY != targetCy)

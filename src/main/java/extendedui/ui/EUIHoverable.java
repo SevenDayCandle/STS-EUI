@@ -55,7 +55,7 @@ public abstract class EUIHoverable extends EUIBase
     // The hitbox's center will move towards the designated position
     public EUIHoverable setTargetPosition(float cX, float cY)
     {
-        this.hb.setTargetPosition(cX, cY);
+        this.hb.setTargetCenter(cX, cY);
 
         return this;
     }

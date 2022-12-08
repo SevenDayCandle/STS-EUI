@@ -26,6 +26,7 @@ import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.hitboxes.OriginRelativeHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
@@ -111,7 +112,7 @@ public class EUIDropdown<T> extends EUIHoverable
             rows.add(makeRow(options, i));
         }
         this.scrollBar = new EUIVerticalScrollBar(
-                new EUIHitbox(hb.x + hb.width - SCROLLBAR_PADDING, hb.y + calculateScrollbarOffset(), SCROLLBAR_WIDTH,rowHeight * this.visibleRowCount())
+                new OriginRelativeHitbox(hb, SCROLLBAR_WIDTH, rowHeight * this.visibleRowCount(), hb.x + hb.width - SCROLLBAR_PADDING, hb.y + calculateScrollbarOffset())
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnScroll(this::onScroll);
@@ -121,12 +122,12 @@ public class EUIDropdown<T> extends EUIHoverable
                 .setText(currentIndices.size() + " " + EUIRM.strings.uiItemsselected)
                 .setOnClick(this::openOrCloseMenu);
         //noinspection SuspiciousNameCombination
-        this.clearButton = new EUIButton(EUIRM.images.x.texture(), new EUIHitbox(hb.x + hb.width, hb.y, hb.height, hb.height)
+        this.clearButton = new EUIButton(EUIRM.images.x.texture(), new OriginRelativeHitbox(hb, hb.height, hb.height, hb.width, 0)
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnClick(() -> {
                     setSelectionIndices(new int[] {}, true);});
-        this.header = new EUILabel(EUIFontHelper.cardtitlefontSmall, new EUIHitbox(hb.x, hb.y + hb.height, hb.width, hb.height)).setAlignment(0.5f,0.0f,false);
+        this.header = new EUILabel(EUIFontHelper.cardtitlefontSmall, new OriginRelativeHitbox(hb, hb.width, hb.height, 0, hb.height)).setAlignment(0.5f,0.0f,false);
         this.header.setActive(false);
     }
 
@@ -272,6 +273,24 @@ public class EUIDropdown<T> extends EUIHoverable
         return this;
     }
 
+    public EUIDropdown<T> setOffset(float x, float y) {
+        this.hb.setOffset(x, y);
+        positionClearButton();
+        return this;
+    }
+
+    public EUIDropdown<T> setOffsetX(float x) {
+        this.hb.setOffsetX(x);
+        positionClearButton();
+        return this;
+    }
+
+    public EUIDropdown<T> setOffset(float y) {
+        this.hb.setOffsetY(y);
+        positionClearButton();
+        return this;
+    }
+
     public EUIDropdown<T> setOnChange(ActionT1<List<T>> onChange) {
         this.onChange = onChange;
         return this;
@@ -286,9 +305,6 @@ public class EUIDropdown<T> extends EUIHoverable
 
     public EUIDropdown<T> setPosition(float x, float y) {
         this.hb.translate(x, y);
-        this.button.hb.translate(x, y);
-        this.scrollBar.hb.translate(x + hb.width - SCROLLBAR_PADDING, y + calculateScrollbarOffset());
-        this.header.hb.translate(x, y + hb.height);
         positionClearButton();
         return this;
     }
@@ -371,7 +387,7 @@ public class EUIDropdown<T> extends EUIHoverable
     public DropdownRow<T> makeRow(List<T> options, int index, int offset) {
         return new DropdownRow<T>(
                 this,
-                new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0, false)
+                new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0)
                         .setIsPopupCompatible(true)
                         .setParentElement(this)
                 , options.get(index), labelFunction, font, fontScale, index + offset)
@@ -391,7 +407,7 @@ public class EUIDropdown<T> extends EUIHoverable
         if (canAutosizeButton) {
             hb.resize(rowWidth, hb.height);
             button.hb.resize(rowWidth, hb.height);
-            this.header.hb.translate(hb.x, hb.y + hb.height);
+            this.header.hb.setOffset(0, hb.height);
             positionClearButton();
         }
         if (canAutosizeRows) {
@@ -400,8 +416,15 @@ public class EUIDropdown<T> extends EUIHoverable
                 row.updateAlignment();
             }
         }
+        else
+        {
+            for (DropdownRow<T> row : rows) {
+                row.updateAlignment();
+                row.hb.update();
+            }
+        }
         this.scrollBar.hb.resize(SCROLLBAR_WIDTH, rowHeight * (this.visibleRowCount() - 1));
-        this.scrollBar.hb.translate(hb.x + (canAutosizeRows ? rowWidth : hb.width) - SCROLLBAR_PADDING, hb.y + calculateScrollbarOffset());
+        this.scrollBar.hb.setOffset((canAutosizeRows ? rowWidth : hb.width) - SCROLLBAR_PADDING, calculateScrollbarOffset());
     }
 
     public boolean areAnyItemsHovered() {
@@ -768,10 +791,10 @@ public class EUIDropdown<T> extends EUIHoverable
 
     protected void positionClearButton() {
         if (shouldPositionClearAtTop) {
-            this.clearButton.hb.translate(hb.x + hb.width - clearButton.hb.width, hb.y + hb.height);
+            this.clearButton.hb.setOffset(hb.width - clearButton.hb.width, hb.height);
         }
         else {
-            this.clearButton.hb.translate(hb.x + hb.width, hb.y);
+            this.clearButton.hb.setOffset(hb.width, 0);
         }
     }
 
@@ -806,8 +829,8 @@ public class EUIDropdown<T> extends EUIHoverable
             this.hb = new RelativeHitbox(hb, 1f, 1f, 0f, 0f).setIsPopupCompatible(true).setParentElement(dr);
             this.item = item;
             this.index = index;
-            this.checkbox = new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED,  new RelativeHitbox(hb, 48f, 48f, 0f, -TOGGLE_OFFSET, false));
-            this.label = new EUILabel(font, new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f, false))
+            this.checkbox = new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED,  new RelativeHitbox(hb, 48f, 48f, 0f, -TOGGLE_OFFSET));
+            this.label = new EUILabel(font, new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f))
                     .setFont(font, fontScale)
                     .setLabel(labelFunction.invoke(item))
                     .setAlignment(0.5f, 0f, dr.isOptionSmartText);
@@ -815,7 +838,7 @@ public class EUIDropdown<T> extends EUIHoverable
 
         public DropdownRow<T> updateAlignment() {
             this.label.setAlignment(dr.isOptionSmartText ? 1f : 0.5f, 0f, dr.isOptionSmartText);
-            this.label.setHitbox(new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f, false));
+            this.label.setHitbox(new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f));
             return this;
         }
 

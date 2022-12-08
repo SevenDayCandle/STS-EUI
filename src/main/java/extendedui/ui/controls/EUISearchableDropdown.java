@@ -128,7 +128,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T>
 
     protected void initialize() {
         this.originalRows = this.rows;
-        searchInput = (EUITextInput) new EUITextInput(button.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f, false))
+        searchInput = (EUITextInput) new EUITextInput(button.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f))
                 .setOnUpdate(this::onUpdate)
                 .setLabel("");
     }

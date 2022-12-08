@@ -75,7 +75,7 @@ public class ModSettingsScreen extends AbstractScreen
         float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
         if (list != null)
         {
-            ModSettingsToggle toggle = new ModSettingsToggle(new RelativeHitbox(hb, OPTION_SIZE * 2, OPTION_SIZE, OPTION_SIZE * 3.3f, offY, false), option, label);
+            ModSettingsToggle toggle = new ModSettingsToggle(new RelativeHitbox(hb, OPTION_SIZE * 2, OPTION_SIZE, OPTION_SIZE * 3.3f, offY), option, label);
             list.add(toggle);
             offsets.put(cat, offY -= toggle.hb.height * 1.1f);
             return toggle;
@@ -89,7 +89,7 @@ public class ModSettingsScreen extends AbstractScreen
         float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
         if (list != null)
         {
-            ModSettingsPathSelector selector = new ModSettingsPathSelector(new RelativeHitbox(hb, OPTION_SIZE * 8, OPTION_SIZE, OPTION_SIZE * 7f, offY, false), option, label);
+            ModSettingsPathSelector selector = new ModSettingsPathSelector(new RelativeHitbox(hb, OPTION_SIZE * 8, OPTION_SIZE, OPTION_SIZE * 7f, offY), option, label);
             if (extensions.length > 0)
             {
                 selector.setFileFilters(extensions);
@@ -107,7 +107,7 @@ public class ModSettingsScreen extends AbstractScreen
         float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
         if (list != null)
         {
-            EUILabel label = new EUILabel(font, new RelativeHitbox(hb, OPTION_SIZE * 16, OPTION_SIZE, OPTION_SIZE * 6f, offY, false)).setLabel(text);
+            EUILabel label = new EUILabel(font, new RelativeHitbox(hb, OPTION_SIZE * 16, OPTION_SIZE, OPTION_SIZE * 6f, offY)).setLabel(text);
             list.add(label);
             offsets.put(cat, offY -= label.hb.height * 1.2f);
             return label;

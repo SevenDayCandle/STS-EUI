@@ -4,7 +4,6 @@ import basemod.BaseMod;
 import basemod.interfaces.ImGuiSubscriber;
 import com.megacrit.cardcrawl.core.Settings;
 import extendedui.debug.DEUIFloatInput;
-import extendedui.debug.DEUIToggle;
 import extendedui.debug.DEUIWindow;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
@@ -19,14 +18,12 @@ public class HitboxDebugger implements ImGuiSubscriber
     protected static final String HITBOX_Y_ID = "Y##hbY";
     protected static final String HITBOX_W_ID = "W##hbW";
     protected static final String HITBOX_H_ID = "H##hbH";
-    protected static final String HITBOX_PERCENTAGE = "Is Percentage";
 
     private final DEUIWindow effectWindow;
     private final DEUIFloatInput hbX;
     private final DEUIFloatInput hbY;
     private final DEUIFloatInput hbW;
     private final DEUIFloatInput hbH;
-    private final DEUIToggle hbPercentage;
     private EUIHitbox current;
 
     private HitboxDebugger()
@@ -37,7 +34,6 @@ public class HitboxDebugger implements ImGuiSubscriber
         hbY = new DEUIFloatInput(HITBOX_Y_ID, 0);
         hbW = new DEUIFloatInput(HITBOX_W_ID, 0);
         hbH = new DEUIFloatInput(HITBOX_H_ID, 0);
-        hbPercentage = new DEUIToggle(HITBOX_PERCENTAGE);
     }
 
     public static void tryRegister(EUIHitbox current)
@@ -69,10 +65,6 @@ public class HitboxDebugger implements ImGuiSubscriber
             hbY.renderInline();
             hbW.renderInline();
             hbH.render();
-            if (current instanceof RelativeHitbox)
-            {
-                hbPercentage.render();
-            }
         });
     }
 
@@ -81,11 +73,10 @@ public class HitboxDebugger implements ImGuiSubscriber
         this.current = current;
         if (current instanceof RelativeHitbox)
         {
-            hbX.set(((RelativeHitbox) current).offsetCx);
-            hbY.set(((RelativeHitbox) current).offsetCy);
+            hbX.set(((RelativeHitbox) current).offsetX);
+            hbY.set(((RelativeHitbox) current).offsetY);
             hbW.set(unapplyScale(current.width));
             hbH.set(unapplyScale(current.height));
-            hbPercentage.set(((RelativeHitbox) current).percentageOffset);
         }
         else if (current != null)
         {
@@ -100,7 +91,7 @@ public class HitboxDebugger implements ImGuiSubscriber
     {
         if (this.current instanceof RelativeHitbox)
         {
-            ((RelativeHitbox) this.current).setOffset(hbX.get(), hbY.get(), hbPercentage.get());
+            this.current.setOffset(hbX.get(), hbY.get());
             this.current.width = applyScale(hbW.get());
             this.current.height = applyScale(hbW.get());
         }

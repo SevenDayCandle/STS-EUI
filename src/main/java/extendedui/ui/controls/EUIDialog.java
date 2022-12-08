@@ -42,11 +42,11 @@ public abstract class EUIDialog<T> extends EUIHoverable
         super(hb);
         this.backgroundImage = new EUIImage(backgroundTexture, hb);
         this.header = new EUILabel(FontHelper.buttonLabelFont,
-                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.9f, false))
+                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.9f))
                 .setAlignment(0.5f,0.5f,false)
                 .setLabel(headerText);
         this.description = new EUILabel(EUIFontHelper.cardTooltipFont,
-                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.1f, hb.height * 0.7f, false))
+                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.1f, hb.height * 0.7f))
                 .setAlignment(0.5f,0.5f,true)
                 .setSmartText(true, false)
                 .setLabel(descriptionText);
@@ -56,7 +56,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
 
     protected EUIButton getConfirmButton() {
         return new EUIButton(ImageMaster.OPTION_YES,
-                new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.1f, hb.height * 0.05f, false))
+                new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.1f, hb.height * 0.05f))
                 .setFont(EUIFontHelper.cardtitlefontNormal, 1f)
                 .setText(TEXT[2])
                 .setOnClick(() -> {
@@ -68,7 +68,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
 
     protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
-                new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.9f, hb.height * 0.05f, false))
+                new RelativeHitbox(hb, 173.0F, 74.0F, hb.width * 0.9f, hb.height * 0.05f))
                 .setFont(EUIFontHelper.cardtitlefontNormal, 1f)
                 .setText(TEXT[3])
                 .setOnClick(() -> {

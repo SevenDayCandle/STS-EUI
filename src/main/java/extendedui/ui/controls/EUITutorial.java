@@ -49,15 +49,15 @@ public class EUITutorial extends EUIHoverable
         this.backgroundImage = new EUIImage(backgroundTexture, hb);
 
         this.header = new EUILabel(FontHelper.buttonLabelFont,
-                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.85f, false))
+                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.85f))
                 .setAlignment(0.5f,0.5f,false)
                 .setLabel(headerText);
         this.sublabel = new EUILabel(EUIFontHelper.cardtitlefontSmall,
-                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.75f, false))
+                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.75f))
                 .setFontScale(0.85f)
                 .setAlignment(0.5f,0.5f,false);
         this.description = new EUILabel(EUIFontHelper.cardTooltipFont,
-                new RelativeHitbox(hb, hb.width * 0.8f, hb.height, hb.width * 0.1f, hb.height * 0.65f, false))
+                new RelativeHitbox(hb, hb.width * 0.8f, hb.height, hb.width * 0.1f, hb.height * 0.65f))
                 .setAlignment(0.5f,0.5f,true)
                 .setSmartText(true, false);
 
@@ -65,14 +65,14 @@ public class EUITutorial extends EUIHoverable
         changePage(0);
 
         this.next = new EUIButton(ImageMaster.POPUP_ARROW,
-                new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, hb.width * 1.1f, hb.height * 0.5f, false))
+                new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, hb.width * 1.1f, hb.height * 0.5f))
                 .setOnClick(() -> {
                     changePage(page >= descriptions.size() - 1 ? 0 : page + 1);
                 });
         this.next.background.setFlipping(true, false);
 
         this.prev = new EUIButton(ImageMaster.POPUP_ARROW,
-                new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, hb.width * -0.1f, hb.height * 0.5f, false))
+                new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, hb.width * -0.1f, hb.height * 0.5f))
                 .setOnClick(() -> {
                     changePage(page <= 0 ? descriptions.size() - 1 : page - 1);
                 });
