@@ -196,10 +196,10 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         currentNegateFilters.clear();
         currentRarities.clear();
         currentName = null;
-        originsDropdown.setSelectionIndices(null, false);
-        raritiesDropdown.setSelectionIndices(null, false);
-        colorsDropdown.setSelectionIndices(null, false);
-        seenDropdown.setSelectionIndices(null, false);
+        originsDropdown.setSelectionIndices((int[]) null, false);
+        raritiesDropdown.setSelectionIndices((int[]) null, false);
+        colorsDropdown.setSelectionIndices((int[]) null, false);
+        seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         if (customModule != null)
         {

@@ -2,6 +2,7 @@ package extendedui.ui.hitboxes;
 
 import com.megacrit.cardcrawl.helpers.Hitbox;
 
+@Deprecated
 public class PercentageRelativeHitbox extends RelativeHitbox
 {
     public PercentageRelativeHitbox(Hitbox hb, float percentWidth, float percentHeight)

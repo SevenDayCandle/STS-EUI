@@ -169,7 +169,7 @@ public class EUIRelicGrid extends EUICanvasGrid
 
         updateRelics();
 
-        if (hoveredRelic != null && EUI.tryHover(hoveredRelic.relic.hb))
+        if (hoveredRelic != null && hoveredRelic.relic.hb.hovered)
         {
             if (EUIInputManager.rightClick.isJustPressed() && onRelicRightClick != null)
             {

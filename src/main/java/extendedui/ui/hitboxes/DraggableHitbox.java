@@ -51,6 +51,17 @@ public class DraggableHitbox extends EUIHitbox
         this.maxY = Settings.HEIGHT + (height * 0.25f);
     }
 
+    public DraggableHitbox makeCopy()
+    {
+        DraggableHitbox copy = new DraggableHitbox(x, y, width, height, canDrag);
+        copy.lerpSpeed = this.lerpSpeed;
+        copy.parentElement = this.parentElement;
+        copy.isPopupCompatible = this.isPopupCompatible;
+        copy.onDragFinish = this.onDragFinish;
+
+        return copy;
+    }
+
     public DraggableHitbox setCenter(float cX, float cY)
     {
         move(cX, cY);

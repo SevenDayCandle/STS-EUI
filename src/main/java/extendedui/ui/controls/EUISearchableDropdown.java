@@ -16,7 +16,7 @@ import java.util.List;
 
 public class EUISearchableDropdown<T> extends EUIDropdown<T>
 {
-    public ArrayList<DropdownRow<T>> originalRows;
+    public ArrayList<EUIDropdownRow<T>> originalRows;
     protected EUITextInput searchInput;
 
     public EUISearchableDropdown(EUIHitbox hb) {

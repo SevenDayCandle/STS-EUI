@@ -168,17 +168,14 @@ public class EUIToggle extends EUIHoverable
             return;
         }
 
-        if (EUI.tryHover(hb))
+        if (hb.justHovered)
         {
-            if (hb.justHovered)
-            {
-                CardCrawlGame.sound.playA("UI_HOVER", -0.3f);
-            }
+            CardCrawlGame.sound.playA("UI_HOVER", -0.3f);
+        }
 
-            if (hb.hovered && InputHelper.justClickedLeft)
-            {
-                hb.clickStarted = true;
-            }
+        if (hb.hovered && InputHelper.justClickedLeft)
+        {
+            hb.clickStarted = true;
         }
 
         if (hb.clicked)

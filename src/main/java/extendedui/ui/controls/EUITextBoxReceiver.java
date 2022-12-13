@@ -106,7 +106,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
     {
         super.updateImpl();
         if (EUIInputManager.leftClick.isJustReleased()) {
-            if (!isEditing && (hb.hovered || hb.clicked)) {
+            if (!isEditing && (hb.hovered || hb.clicked) && EUI.tryClick(this.hb)) {
                 start();
             }
             else if (isEditing && !hb.hovered && !hb.clicked) {
@@ -167,7 +167,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
 
     public void start() {
         isEditing = true;
-        EUI.tryToggleActiveElement(this, true);
+        EUI.setActiveElement(this);
         TextInput.startTextReceiver(this);
         label.setColor(editTextColor);
         originalValue = label.text;
@@ -175,9 +175,14 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
 
     public void end(boolean commit) {
         isEditing = false;
-        EUI.tryToggleActiveElement(this, false);
+        EUI.setActiveElement(null);
         TextInput.stopTextReceiver(this);
         label.setColor(originalTextColor);
+        commit(commit);
+    }
+
+    protected void commit(boolean commit)
+    {
         if (commit) {
             if (onComplete != null) {
                 onComplete.invoke(getValue(label.text));

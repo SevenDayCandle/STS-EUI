@@ -71,8 +71,7 @@ public class EUI
     private static float timer = 0;
     private static int imguiIndex = 0;
     private static boolean isDragging;
-    private static Hitbox lastHovered;
-    private static Hitbox lastHoveredTemp;
+    private static Hitbox lastClicked;
 
     public static void addBattleSubscriber(EUIBase element) {
         BattleSubscribers.add(element);
@@ -116,7 +115,7 @@ public class EUI
         }
 
         currentScreen = null;
-        lastHovered = null;
+        lastClicked = null;
     }
 
     public static boolean doesActiveElementExist() {
@@ -238,6 +237,10 @@ public class EUI
         return isDragging;
     }
 
+    public static boolean isActiveElement(EUIBase element) {
+        return activeElement == element;
+    }
+
     public static boolean isInActiveElement(EUIHitbox hb) {
         return activeElement == null || activeElement == hb.parentElement;
     }
@@ -250,7 +253,6 @@ public class EUI
     {
         activeElement = null;
         currentScreen = null;
-        lastHovered = null;
     }
 
     public static void postRender(SpriteBatch sb)
@@ -265,11 +267,6 @@ public class EUI
             toRender.invoke(sb);
             i.remove();
         }
-    }
-
-    public static void postUpdate()
-    {
-        lastHovered = lastHoveredTemp;
     }
 
     public static void preRender(SpriteBatch sb)
@@ -287,7 +284,7 @@ public class EUI
         delta = Gdx.graphics.getRawDeltaTime();
         timer += delta;
         isDragging = false;
-        lastHoveredTemp = null;
+        lastClicked = null;
     }
 
     public static void priorityPostRender(SpriteBatch sb)
@@ -470,6 +467,16 @@ public class EUI
         SingleCardViewPopup.isViewingUpgrade = value;
     }
 
+    public static boolean tryClick(Hitbox hitbox)
+    {
+        if (lastClicked == null || lastClicked == hitbox)
+        {
+            lastClicked = hitbox;
+            return true;
+        }
+        return false;
+    }
+
     public static boolean tryDragging()
     {
         final boolean drag = !CardCrawlGame.isPopupOpen && (currentScreen == null || !isDragging) && (isDragging = true);
@@ -481,30 +488,8 @@ public class EUI
         return drag;
     }
 
-    public static boolean tryHover(Hitbox hitbox)
-    {
-        if (hitbox != null && hitbox.justHovered && hitbox != lastHovered)
-        {
-            hitbox.hovered = hitbox.justHovered = false;
-            lastHoveredTemp = hitbox;
-            return false;
-        }
-
-        if (hitbox == null || hitbox.hovered)
-        {
-            lastHoveredTemp = hitbox;
-            return hitbox == lastHovered;
-        }
-
-        return false;
-    }
-
-    public static boolean tryToggleActiveElement(EUIBase element, boolean setActive) {
-        if (activeElement == null || activeElement == element) {
-            activeElement = setActive ? element : null;
-            return true;
-        }
-        return false;
+    public static void setActiveElement(EUIBase element) {
+        activeElement = element;
     }
 
     public static void update()

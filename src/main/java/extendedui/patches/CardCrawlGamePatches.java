@@ -75,12 +75,6 @@ public class CardCrawlGamePatches
             EUI.preUpdate();
         }
 
-        @SpirePostfixPatch
-        public static void postfix(CardCrawlGame __instance)
-        {
-            EUI.postUpdate();
-        }
-
         @SpireInsertPatch(locator = Locator.class)
         public static void insert(CardCrawlGame __instance)
         {

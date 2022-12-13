@@ -46,6 +46,15 @@ public class EUIHitbox extends Hitbox
         this.lerpSpeed = 9f;
     }
 
+    public EUIHitbox makeCopy()
+    {
+        EUIHitbox copy = new EUIHitbox(this);
+        copy.lerpSpeed = this.lerpSpeed;
+        copy.parentElement = this.parentElement;
+        copy.isPopupCompatible = this.isPopupCompatible;
+        return copy;
+    }
+
     public EUIHitbox setCenter(float cX, float cY)
     {
         move(cX, cY);

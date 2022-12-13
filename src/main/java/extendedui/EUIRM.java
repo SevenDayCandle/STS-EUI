@@ -182,6 +182,7 @@ public class EUIRM
         public final String uiBasic = stringsUIFilter.TEXT[12];
         public final String uiSeen = stringsUIFilter.TEXT[13];
         public final String uiUnseen = stringsUIFilter.TEXT[14];
+        public final String na = stringsUIFilter.TEXT[15];
 
         public final String keyToCycle(String keyName) {
             return EUIUtils.format(miscKeytocycle, keyName);

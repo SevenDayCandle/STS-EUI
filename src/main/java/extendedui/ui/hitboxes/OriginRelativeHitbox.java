@@ -19,6 +19,16 @@ public class OriginRelativeHitbox extends RelativeHitbox
         super(hb, width, height, offsetX, offsetY);
     }
 
+    public RelativeHitbox makeCopy()
+    {
+        OriginRelativeHitbox copy = new OriginRelativeHitbox(this.parentHB, width, height, offsetX, offsetY);
+        copy.lerpSpeed = this.lerpSpeed;
+        copy.parentElement = this.parentElement;
+        copy.isPopupCompatible = this.isPopupCompatible;
+
+        return copy;
+    }
+
     public OriginRelativeHitbox setOffset(float x, float y)
     {
         super.setOffset(x, y);

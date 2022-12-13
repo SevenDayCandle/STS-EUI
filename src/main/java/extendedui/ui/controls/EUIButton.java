@@ -37,6 +37,7 @@ public class EUIButton extends EUIHoverable
     public GenericCallback<EUIButton> onRightClick;
     public String text;
     public Color textColor = Color.WHITE.cpy();
+    public Color hoverBlendColor;
 
     protected BitmapFont font;
     protected EUILabel label;
@@ -98,6 +99,12 @@ public class EUIButton extends EUIHoverable
 
         this.fontScale = fontScale;
 
+        return this;
+    }
+
+    public EUIButton setHoverBlendColor(Color color)
+    {
+        this.hoverBlendColor = color;
         return this;
     }
 
@@ -270,7 +277,7 @@ public class EUIButton extends EUIHoverable
         super.updateImpl();
         background.updateColor();
 
-        if (isInteractable() && EUI.tryHover(hb))
+        if (isInteractable())
         {
             if (this.hb.justHovered)
             {
@@ -281,7 +288,7 @@ public class EUIButton extends EUIHoverable
             {
                 if (currentClickDelay <= 0)
                 {
-                    if (EUIInputManager.rightClick.isJustPressed())
+                    if (EUIInputManager.rightClick.isJustPressed() && EUI.tryClick(this.hb))
                     {
                         onRightClick();
                     }
@@ -292,7 +299,7 @@ public class EUIButton extends EUIHoverable
                 }
             }
 
-            if (this.hb.clicked)
+            if (this.hb.clicked && EUI.tryClick(this.hb))
             {
                 onLeftClick();
             }
@@ -395,7 +402,7 @@ public class EUIButton extends EUIHoverable
 
         if (interactable && this.hb.hovered && !this.hb.clickStarted)
         {
-            background.render(sb, EUIRenderHelpers.ShaderMode.Bright, hb, HOVER_BLEND_COLOR);
+            background.render(sb, EUIRenderHelpers.ShaderMode.Bright, hb, hoverBlendColor != null ? hoverBlendColor : HOVER_BLEND_COLOR);
         }
     }
 
@@ -410,7 +417,7 @@ public class EUIButton extends EUIHoverable
 
         if (interactable && this.hb.hovered && !this.hb.clickStarted)
         {
-            background.renderCentered(sb, EUIRenderHelpers.ShaderMode.Bright, hb, HOVER_BLEND_COLOR);
+            background.renderCentered(sb, EUIRenderHelpers.ShaderMode.Bright, hb, hoverBlendColor != null ? hoverBlendColor : HOVER_BLEND_COLOR);
         }
     }
 

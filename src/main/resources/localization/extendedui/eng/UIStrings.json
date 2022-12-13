@@ -1,100 +1,94 @@
 {
-  "extendedui:config":
-  {
-	"TEXT": [
-	  "Use Vanilla Card Library Screen",
-	  "Disable Effekseer Effects",
-	  "Flush Effekseer Cache when Starting a Run",
-	  "Flush Effekseer Cache when Entering a New Room",
-	  "Show All Mod Settings in Extra Settings (Warning: unstable)",
-	  "Use Separate Fonts",
-	  "Override Vanilla Fonts",
-	  "Main Font",
-	  "Card Description Font",
-	  "Card Title Font",
-	  "Tip Description Font",
-	  "Tip Title Font",
-	  "Banner Font"
-	]
-  },
-  "extendedui:grammar":
-  {
-	"TEXT": [
-	  "{0} {1}",
-	  "{0} {1}",
-	  "{0} {1}",
-	  "{0} {1}",
-	  "{0} {1}",
-	  "{0} {1} {2}",
-	  "{0} {1} {2}",
-	  "{0} {1} {2}",
-	  "{0} {1} {2}",
-	  "{0} {1} {2}",
-	  "{0} {1} {2} {3}",
-	  "{0} {1} {2} {3}",
-	  "{0} {1} {2} {3} {4}",
-	  "{0} and {1}",
-	  "{0} or {1}",
-	  "Not {0}"
-	],
-	"EXTRA_TEXT":
-	[
-	  "{0}s",
-	  "{0}(s)",
-	  "{0}ed",
-	  "{0}ing"
-	]
-  },
-  "extendedui:hotkeys":
-  {
-	"TEXT": [
-	  "Cycle Previews",
-	  "Open Card Pool",
-	  "Toggle Filters"
-	]
-  },
-  "extendedui:misc":
-  {
-	"TEXT": [
-	  "{0} to cycle",
-	  "Type to Search",
-	  "Sort by {0}",
-	  "Clear",
-	  "Extra Settings",
-	  "Effekseer",
-	  "Fonts",
-	  "Requires restart",
-	  "This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well."
-	]
-  },
-  "extendedui:ui_pool":
-  {
-	"TEXT": [
-	  "Run Compendium",
-	  "View all cards or relics available in this run",
-	  "Card Pool",
-	  "Relic Pool",
-	  "Show Colorless"
-	]
-  },
-  "extendedui:ui_filters":
-  {
-	"TEXT": [
-	  "Item(s)",
-	  "Keywords",
-	  "Amount",
-	  "Origin",
-	  "Color",
-	  "Results",
-	  "Filters",
-	  "Any",
-	  "No cards match the current filters.",
-	  "Base Game",
-	  "Name Search",
-	  "Description",
-	  "Basic",
-	  "Seen",
-	  "Unseen"
-	]
-  }
+				"extendedui:config": {
+								"TEXT": [
+												"Use Vanilla Card Library Screen",
+												"Disable Effekseer Effects",
+												"Flush Effekseer Cache when Starting a Run",
+												"Flush Effekseer Cache when Entering a New Room",
+												"Show All Mod Settings in Extra Settings (Warning: unstable)",
+												"Use Separate Fonts",
+												"Override Vanilla Fonts",
+												"Main Font",
+												"Card Description Font",
+												"Card Title Font",
+												"Tip Description Font",
+												"Tip Title Font",
+												"Banner Font"
+								]
+				},
+				"extendedui:grammar": {
+								"TEXT": [
+												"{0} {1}",
+												"{0} {1}",
+												"{0} {1}",
+												"{0} {1}",
+												"{0} {1}",
+												"{0} {1} {2}",
+												"{0} {1} {2}",
+												"{0} {1} {2}",
+												"{0} {1} {2}",
+												"{0} {1} {2}",
+												"{0} {1} {2} {3}",
+												"{0} {1} {2} {3}",
+												"{0} {1} {2} {3} {4}",
+												"{0} and {1}",
+												"{0} or {1}",
+												"Not {0}"
+								],
+								"EXTRA_TEXT":	[
+												"{0}s",
+												"{0}(s)",
+												"{0}ed",
+												"{0}ing"
+								]
+				},
+				"extendedui:hotkeys": {
+								"TEXT": [
+												"Cycle Previews",
+												"Open Card Pool",
+												"Toggle Filters"
+								]
+				},
+				"extendedui:misc": {
+								"TEXT": [
+												"{0} to cycle",
+												"Type to Search",
+												"Sort by {0}",
+												"Clear",
+												"Extra Settings",
+												"Effekseer",
+												"Fonts",
+												"Requires restart",
+												"This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well."
+								]
+				},
+				"extendedui:ui_pool": {
+								"TEXT": [
+												"Run Compendium",
+												"View all cards or relics available in this run",
+												"Card Pool",
+												"Relic Pool",
+												"Show Colorless"
+								]
+				},
+				"extendedui:ui_filters": {
+								"TEXT": [
+												"Item(s)",
+												"Keywords",
+												"Amount",
+												"Origin",
+												"Color",
+												"Results",
+												"Filters",
+												"Any",
+												"No cards match the current filters.",
+												"Base Game",
+												"Name Search",
+												"Description",
+												"Basic",
+												"Seen",
+												"Unseen",
+												"N/A"
+								]
+				}
 }

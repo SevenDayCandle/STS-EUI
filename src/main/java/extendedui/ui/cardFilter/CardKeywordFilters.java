@@ -39,7 +39,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         Cost1("1", 1, 1),
         Cost2("2", 2, 2),
         Cost3Plus("3+", 3, 9999),
-        Unplayable(GameDictionary.UNPLAYABLE.NAMES[0], -9999, -2);
+        Unplayable(EUIRM.strings.na, -9999, -2);
 
         public final int lowerBound;
         public final int upperBound;
@@ -259,10 +259,10 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         currentTypes.clear();
         currentName = null;
         currentDescription = null;
-        costDropdown.setSelectionIndices(null, false);
-        originsDropdown.setSelectionIndices(null, false);
-        typesDropdown.setSelectionIndices(null, false);
-        raritiesDropdown.setSelectionIndices(null, false);
+        costDropdown.setSelectionIndices((int[]) null, false);
+        originsDropdown.setSelectionIndices((int[]) null, false);
+        typesDropdown.setSelectionIndices((int[]) null, false);
+        raritiesDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
         if (customModule != null)

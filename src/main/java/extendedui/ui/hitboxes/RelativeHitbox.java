@@ -8,6 +8,26 @@ public class RelativeHitbox extends EUIHitbox
     public float offsetX;
     public float offsetY;
 
+    public static RelativeHitbox fromPercentages(Hitbox hb, float percentWidth, float percentHeight)
+    {
+        return new RelativeHitbox(hb, percentWidth * hb.width, percentHeight * hb.height);
+    }
+
+    public static RelativeHitbox fromPercentages(Hitbox hb, float percentWidth, float percentHeight, float percentOffsetX, float percentOffsetY)
+    {
+        return new RelativeHitbox(hb, percentWidth * hb.width, percentHeight * hb.height, percentOffsetX * hb.width, percentOffsetY * hb.height);
+    }
+
+    public RelativeHitbox makeCopy()
+    {
+        RelativeHitbox copy = new RelativeHitbox(this.parentHB, width, height, offsetX, offsetY);
+        copy.lerpSpeed = this.lerpSpeed;
+        copy.parentElement = this.parentElement;
+        copy.isPopupCompatible = this.isPopupCompatible;
+
+        return copy;
+    }
+
     public RelativeHitbox(Hitbox hb)
     {
         this(hb, hb.width, hb.height, 0, 0);

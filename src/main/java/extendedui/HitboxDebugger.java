@@ -4,6 +4,7 @@ import basemod.BaseMod;
 import basemod.interfaces.ImGuiSubscriber;
 import com.megacrit.cardcrawl.core.Settings;
 import extendedui.debug.DEUIFloatInput;
+import extendedui.debug.DEUIUtils;
 import extendedui.debug.DEUIWindow;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
@@ -61,10 +62,10 @@ public class HitboxDebugger implements ImGuiSubscriber
     {
         effectWindow.render(() -> {
             ImGui.text(HITBOX_ADDRESS + ": " + (current != null ? current.toString() : ""));
-            hbX.renderInline();
-            hbY.renderInline();
-            hbW.renderInline();
-            hbH.render();
+            DEUIUtils.withWidth(90, hbX::renderInline);
+            DEUIUtils.withWidth(90, hbY::renderInline);
+            DEUIUtils.withWidth(90, hbW::renderInline);
+            DEUIUtils.withWidth(90, hbH::render);
         });
     }
 

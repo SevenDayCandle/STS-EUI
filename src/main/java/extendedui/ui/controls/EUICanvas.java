@@ -24,7 +24,7 @@ public abstract class EUICanvas extends EUIBase
 
 
     public EUICanvas() {
-        this.scrollBar = new EUIVerticalScrollBar(new EUIHitbox(screenW(0.03f), screenH(0.7f)))
+        this.scrollBar = new EUIVerticalScrollBar(new EUIHitbox(screenW(0.93f), screenH(0.15f), screenW(0.03f), screenH(0.7f)))
                 .setOnScroll(this::onScroll);
     }
 

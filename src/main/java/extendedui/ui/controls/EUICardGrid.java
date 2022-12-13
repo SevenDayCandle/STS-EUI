@@ -275,7 +275,7 @@ public class EUICardGrid extends EUICanvasGrid
         updateCards();
         updateNonMouseInput();
 
-        if (hoveredCard != null && EUI.tryHover(hoveredCard.hb))
+        if (hoveredCard != null && hoveredCard.hb.hovered)
         {
             if (EUIInputManager.rightClick.isJustPressed() && onCardRightClick != null)
             {
