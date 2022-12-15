@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIBase;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
@@ -125,7 +126,7 @@ public class EUIButtonList extends EUIBase
 
     public EUIButton addButton(ActionT1<EUIButton> onClick, String title) {
         EUIButton button = new EUIButton(ImageMaster.COLOR_TAB_BAR, new EUIHitbox(buttonWidth, buttonHeight))
-                .setFont(FontHelper.buttonLabelFont, fontScale)
+                .setFont(EUIFontHelper.buttonFont, fontScale)
                 .setButtonScale(1f, 1.2f)
                 .setOnClick((b) -> {
                     selectButton(b);

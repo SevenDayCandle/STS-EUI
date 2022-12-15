@@ -20,6 +20,7 @@ import extendedui.ui.controls.EUIRelicGrid;
 import extendedui.ui.controls.EUIStaticRelicGrid;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
+import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
@@ -43,7 +44,7 @@ public class RelicPoolScreen extends AbstractScreen
         this.swapScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
-                .setFont(FontHelper.buttonLabelFont, 0.8f)
+                .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
                 .setOnClick(() -> EUI.cardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))

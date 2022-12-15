@@ -20,7 +20,7 @@ import static extendedui.ui.cardFilter.CustomCardLibSortHeader.getFakeGroup;
 
 public class MasterDeckViewScreenPatches
 {
-    private static final CardGroup fakeMasterDeck = new CardGroup(CardGroup.CardGroupType.MASTER_DECK);
+    public static final CardGroup fakeMasterDeck = new CardGroup(CardGroup.CardGroupType.MASTER_DECK);
 
     @SpirePatch(clz = MasterDeckViewScreen.class, method = "open")
     public static class MasterDeckViewScreen_Open

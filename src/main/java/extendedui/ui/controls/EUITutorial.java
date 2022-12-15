@@ -48,7 +48,7 @@ public class EUITutorial extends EUIHoverable
         super(hb);
         this.backgroundImage = new EUIImage(backgroundTexture, hb);
 
-        this.header = new EUILabel(FontHelper.buttonLabelFont,
+        this.header = new EUILabel(EUIFontHelper.buttonFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.85f))
                 .setAlignment(0.5f,0.5f,false)
                 .setLabel(headerText);

@@ -59,6 +59,7 @@ public class EUIConfiguration
     private static final String CARD_TITLE_FONT = getFullKey("CardTitleFont");
     private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
     private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
+    private static final String BUTTON_FONT = getFullKey("ButtonFont");
 
     public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
     public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
@@ -72,6 +73,7 @@ public class EUIConfiguration
     public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT,"");
     public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT,"");
     public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT,"");
+    public static STSStringConfigItem buttonFont = new STSStringConfigItem(BUTTON_FONT,"");
 
     //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
 
@@ -92,6 +94,7 @@ public class EUIConfiguration
             cardTitleFont.addConfig(config);
             tipDescFont.addConfig(config);
             tipTitleFont.addConfig(config);
+            buttonFont.addConfig(config);
         }
         catch (IOException e)
         {
@@ -117,6 +120,7 @@ public class EUIConfiguration
         ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardTitleFont, EUIRM.strings.configCardtitlefont, FONT_EXTS).setTooltip(restartTip);
         ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipDescFont, EUIRM.strings.configTipdescfont, FONT_EXTS).setTooltip(restartTip);
         ModSettingsPathSelector tipTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipTitleFont, EUIRM.strings.configTiptitlefont, FONT_EXTS).setTooltip(restartTip);
+        ModSettingsPathSelector buttonFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, buttonFont, EUIRM.strings.configButtonfont, FONT_EXTS).setTooltip(restartTip);
 
 
         // Add basemod options
@@ -140,6 +144,8 @@ public class EUIConfiguration
         yPos = addGenericElement(panel, tipDescFontSelector2, yPos);
         ModSettingsPathSelector tipTitleFontSelector2 = (ModSettingsPathSelector) tipTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(panel, tipTitleFontSelector2, yPos);
+        ModSettingsPathSelector buttonFontSelector2 = (ModSettingsPathSelector) buttonFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = addGenericElement(panel, buttonFontSelector2, yPos);
         BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
 
         // Sub-font settings should only show up if UseSeparateFonts is true
@@ -148,6 +154,7 @@ public class EUIConfiguration
         cardTitleFontSelector.setActive(showOtherSelectors);
         tipDescFontSelector.setActive(showOtherSelectors);
         tipTitleFontSelector.setActive(showOtherSelectors);
+        buttonFontSelector.setActive(showOtherSelectors);
         cardTitleFontSelector2.setActive(showOtherSelectors);
         tipDescFontSelector2.setActive(showOtherSelectors);
         tipTitleFontSelector2.setActive(showOtherSelectors);
@@ -156,9 +163,11 @@ public class EUIConfiguration
             cardTitleFontSelector.setActive(newValue);
             tipDescFontSelector.setActive(newValue);
             tipTitleFontSelector.setActive(newValue);
+            buttonFontSelector.setActive(newValue);
             cardTitleFontSelector2.setActive(newValue);
             tipDescFontSelector2.setActive(newValue);
             tipTitleFontSelector2.setActive(newValue);
+            buttonFontSelector2.setActive(newValue);
         });
     }
 

@@ -18,6 +18,7 @@ import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.GenericCallback;
 import org.apache.commons.lang3.StringUtils;
 
@@ -54,7 +55,7 @@ public class EUIButton extends EUIHoverable
         super(hitbox);
         this.background = new EUIImage(buttonTexture, hitbox, Color.WHITE);
         this.text = "";
-        this.font = FontHelper.buttonLabelFont;
+        this.font = EUIFontHelper.buttonFont;
         this.fontScale = 1f;
     }
 

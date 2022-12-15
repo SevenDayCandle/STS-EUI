@@ -144,8 +144,9 @@ public class EUIRM
         public final String configCardtitlefont = stringsConfig.TEXT[9];
         public final String configTipdescfont = stringsConfig.TEXT[10];
         public final String configTiptitlefont = stringsConfig.TEXT[11];
-        //public final String Config_BannerFont = StringsConfig.TEXT[12];
-        //public final String Config_ResetTooltips = StringsConfig.TEXT[13];
+        public final String configButtonfont = stringsConfig.TEXT[12];
+        //public final String Config_BannerFont = StringsConfig.TEXT[13];
+        //public final String Config_ResetTooltips = StringsConfig.TEXT[14];
 
         public final String hotkeyCycle = stringsHotkeys.TEXT[0];
         public final String hotkeyOpencardpool = stringsHotkeys.TEXT[1];

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.utilities.EUIFontHelper;
 
 public class EUITextBox extends EUIHoverable
 {
@@ -16,7 +17,7 @@ public class EUITextBox extends EUIHoverable
     public EUITextBox(Texture backgroundTexture, EUIHitbox hb)
     {
         super(hb);
-        this.label = new EUILabel(FontHelper.buttonLabelFont);
+        this.label = new EUILabel(EUIFontHelper.buttonFont);
         this.image = new EUIImage(backgroundTexture);
     }
 
