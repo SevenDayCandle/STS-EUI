@@ -13,6 +13,7 @@ import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
 
@@ -60,7 +61,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         return this;
     }
 
-    public EUITextBox setColors(Color backgroundColor, Color textColor)
+    public EUITextBoxReceiver<T> setColors(Color backgroundColor, Color textColor)
     {
         this.image.setColor(backgroundColor);
         this.label.setColor(textColor);
@@ -69,7 +70,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         return this;
     }
 
-    public EUITextBox setFontColor(Color textColor)
+    public EUITextBoxReceiver<T> setFontColor(Color textColor)
     {
         this.label.setColor(textColor);
         originalTextColor = textColor.cpy();
@@ -77,7 +78,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         return this;
     }
 
-    public EUITextBox setFontColor(Color textColor, Color editTextColor)
+    public EUITextBoxReceiver<T> setFontColor(Color textColor, Color editTextColor)
     {
         setFontColor(textColor);
         this.editTextColor = editTextColor.cpy();
@@ -86,7 +87,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
     }
 
     @Override
-    public EUITextBox setPosition(float x, float y)
+    public EUITextBoxReceiver<T> setPosition(float x, float y)
     {
         this.hb.move(x, y);
         this.header.hb.move(x, y + hb.height * headerSpacing);
@@ -99,6 +100,16 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         if (onComplete != null) {
             onComplete.invoke(getValue(text));
         }
+    }
+
+    public EUITextBoxReceiver<T> setTooltip(EUITooltip tip) {
+        super.setTooltip(tip);
+        return this;
+    }
+
+    public EUITextBoxReceiver<T>setTooltip(String name, String desc) {
+        super.setTooltip(name, desc);
+        return this;
     }
 
     @Override

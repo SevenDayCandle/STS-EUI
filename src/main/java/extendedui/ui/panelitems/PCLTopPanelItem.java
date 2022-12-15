@@ -10,9 +10,9 @@ import extendedui.utilities.GenericCallback;
 
 public abstract class PCLTopPanelItem extends TopPanelItem
 {
-    public GenericCallback<PCLTopPanelItem> onLeftClick;
-    public GenericCallback<PCLTopPanelItem> onRightClick;
     public EUITooltip tooltip;
+    protected GenericCallback<PCLTopPanelItem> onLeftClick;
+    protected GenericCallback<PCLTopPanelItem> onRightClick;
     private boolean rightClickable = true;
 
 

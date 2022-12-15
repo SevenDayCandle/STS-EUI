@@ -15,10 +15,10 @@ import imgui.ImGui;
 public class ShaderDebugger implements ImGuiSubscriber
 {
     protected static ShaderDebugger instance;
-    protected static final String WINDOW_ID = "Shaders";
-    protected static final String INPUT_ID = "##FragmentShader";
-    protected static final String RENDER_ID = "Render";
-    protected static final String STOP_ID = "Stop";
+    private static final String WINDOW_ID = "Shaders";
+    private static final String INPUT_ID = "##FragmentShader";
+    private static final String RENDER_ID = "Render";
+    private static final String STOP_ID = "Stop";
 
     private final DEUIWindow effectWindow;
     private final DEUIButton effectRender;
@@ -63,10 +63,7 @@ public class ShaderDebugger implements ImGuiSubscriber
             fragmentShader.render();
             ImGui.separator();
             effectRender.renderInline(this::compile);
-            effectStop.render(() -> {
-                        shader = null;
-                    }
-            );
+            effectStop.render(() -> shader = null);
         });
         renderShader();
     }

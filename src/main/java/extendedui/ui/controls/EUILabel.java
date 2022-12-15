@@ -11,6 +11,7 @@ import extendedui.EUIUtils;
 import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.tooltips.EUITooltip;
 
 public class EUILabel extends EUIHoverable
 {
@@ -43,7 +44,7 @@ public class EUILabel extends EUIHoverable
 
     public EUILabel makeCopy()
     {
-        return (EUILabel) new EUILabel(font, new EUIHitbox(hb))
+        return new EUILabel(font, new EUIHitbox(hb))
                 .setAlignment(verticalRatio, horizontalRatio, smartText)
                 .setColor(textColor)
                 .setFont(font, fontScale)
@@ -139,6 +140,18 @@ public class EUILabel extends EUIHoverable
     public EUILabel setColor(Color textColor)
     {
         this.textColor = textColor.cpy();
+
+        return this;
+    }
+
+    public EUILabel setTooltip(String title, String description)
+    {
+        return setTooltip(new EUITooltip(title, description));
+    }
+
+    public EUILabel setTooltip(EUITooltip tooltip)
+    {
+        super.setTooltip(tooltip);
 
         return this;
     }

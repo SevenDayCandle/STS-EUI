@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import extendedui.EUIRenderHelpers;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
 
@@ -202,6 +203,18 @@ public class EUIImage extends EUIHoverable
     public EUIImage setRotation(float rotation)
     {
         this.rotation = rotation;
+
+        return this;
+    }
+
+    public EUIImage setTooltip(String title, String description)
+    {
+        return setTooltip(new EUITooltip(title, description));
+    }
+
+    public EUIImage setTooltip(EUITooltip tooltip)
+    {
+        super.setTooltip(tooltip);
 
         return this;
     }

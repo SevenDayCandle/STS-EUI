@@ -94,14 +94,12 @@ public class STSEffekseerManager implements ImGuiSubscriber
         handleToggle = new DEUIToggle(EFFECT_LIST_TOGGLE_ID);
         handleWindow = new DEUICloseableWindow(WINDOW_TABLE_ID).link(handleToggle);
         handleTable = new DEUIDynamicActionTable<Integer>(TABLE_ID, 4);
-        handleTable.setItems(PlayingHandles, handle -> {
-                    return EUIUtils.array(
-                            String.valueOf(handle),
-                            String.valueOf(managerCore.GetFrame(handle)),
-                            String.valueOf(managerCore.GetInstanceCount(handle)),
-                            String.valueOf(managerCore.GetLayer(handle))
-                    );
-                })
+        handleTable.setItems(PlayingHandles, handle -> EUIUtils.array(
+                String.valueOf(handle),
+                String.valueOf(managerCore.GetFrame(handle)),
+                String.valueOf(managerCore.GetInstanceCount(handle)),
+                String.valueOf(managerCore.GetLayer(handle))
+        ))
                 .setClick(STSEffekseerManager::stop, "Stop")
                 .setColumnAction(() -> {
                     ImGui.tableSetupColumn("Handle", ImGuiTableColumnFlags.WidthStretch);

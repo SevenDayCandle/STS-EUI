@@ -151,19 +151,14 @@ public class EUIConfiguration
         cardTitleFontSelector2.setActive(showOtherSelectors);
         tipDescFontSelector2.setActive(showOtherSelectors);
         tipTitleFontSelector2.setActive(showOtherSelectors);
-        useSeparateFonts.addListener(new STSConfigListener<Boolean>()
-        {
-            @Override
-            public void onChange(Boolean newValue)
-            {
-                cardDescFontSelector2.setHeaderText(newValue ? EUIRM.strings.configCarddescfont : EUIRM.strings.configMainfont);
-                cardTitleFontSelector.setActive(newValue);
-                tipDescFontSelector.setActive(newValue);
-                tipTitleFontSelector.setActive(newValue);
-                cardTitleFontSelector2.setActive(newValue);
-                tipDescFontSelector2.setActive(newValue);
-                tipTitleFontSelector2.setActive(newValue);
-            }
+        useSeparateFonts.addListener(newValue -> {
+            cardDescFontSelector2.setHeaderText(newValue ? EUIRM.strings.configCarddescfont : EUIRM.strings.configMainfont);
+            cardTitleFontSelector.setActive(newValue);
+            tipDescFontSelector.setActive(newValue);
+            tipTitleFontSelector.setActive(newValue);
+            cardTitleFontSelector2.setActive(newValue);
+            tipDescFontSelector2.setActive(newValue);
+            tipTitleFontSelector2.setActive(newValue);
         });
     }
 

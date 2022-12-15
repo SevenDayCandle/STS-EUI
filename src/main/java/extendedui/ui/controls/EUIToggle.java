@@ -11,7 +11,6 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputAction;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import extendedui.EUI;
 import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;

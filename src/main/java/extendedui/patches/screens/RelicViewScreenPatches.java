@@ -17,13 +17,13 @@ import java.util.ArrayList;
 public class RelicViewScreenPatches
 {
     private static ArrayList<AbstractRelic> allList = new ArrayList<>();
-    public static ArrayList<AbstractRelic> starterList = new ArrayList<>();
-    public static ArrayList<AbstractRelic> commonList = new ArrayList<>();
-    public static ArrayList<AbstractRelic> uncommonList = new ArrayList<>();
-    public static ArrayList<AbstractRelic> rareList = new ArrayList<>();
-    public static ArrayList<AbstractRelic> bossList = new ArrayList<>();
-    public static ArrayList<AbstractRelic> specialList = new ArrayList<>();
-    public static ArrayList<AbstractRelic> shopList = new ArrayList<>();
+    private static ArrayList<AbstractRelic> starterList = new ArrayList<>();
+    private static ArrayList<AbstractRelic> commonList = new ArrayList<>();
+    private static ArrayList<AbstractRelic> uncommonList = new ArrayList<>();
+    private static ArrayList<AbstractRelic> rareList = new ArrayList<>();
+    private static ArrayList<AbstractRelic> bossList = new ArrayList<>();
+    private static ArrayList<AbstractRelic> specialList = new ArrayList<>();
+    private static ArrayList<AbstractRelic> shopList = new ArrayList<>();
 
     @SpirePatch(clz = RelicViewScreen.class, method = "open")
     public static class RelicViewScreen_Open
@@ -125,7 +125,7 @@ public class RelicViewScreenPatches
         }
     }
 
-    public static void updateForFilters() {
+    private static void updateForFilters() {
 
         if (EUI.relicFilters.areFiltersEmpty()) {
             reset();

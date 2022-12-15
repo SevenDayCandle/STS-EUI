@@ -1,11 +1,9 @@
 package extendedui.ui.controls;
 
-import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import extendedui.EUI;
 import extendedui.ui.hitboxes.EUIHitbox;
 import org.apache.commons.lang3.math.NumberUtils;
 

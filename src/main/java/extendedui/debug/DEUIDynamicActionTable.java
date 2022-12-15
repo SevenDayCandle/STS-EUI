@@ -41,8 +41,7 @@ public class DEUIDynamicActionTable<T> extends DEUIDynamicTable<T>
             {
                 String[] labels = stringsFunc.invoke(item);
                 ImGui.tableNextRow();
-                int i = 0;
-                for (i = 0; i < Math.min(labels.length, columns); i++)
+                for (int i = 0; i < Math.min(labels.length, columns); i++)
                 {
                     ImGui.tableSetColumnIndex(i);
                     ImGui.text(labels[i]);

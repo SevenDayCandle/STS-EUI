@@ -322,12 +322,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         }
 
         //Module check
-        if (customModule != null && !customModule.isRelicValid(c))
-        {
-            return false;
-        }
-
-        return true;
+        return customModule == null || customModule.isRelicValid(c);
     }
 
     public void toggleFilters()

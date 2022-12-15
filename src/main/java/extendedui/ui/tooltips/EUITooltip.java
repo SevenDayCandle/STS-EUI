@@ -324,7 +324,7 @@ public class EUITooltip
     {
         if (tryRender())
         {
-            provider = (TooltipProvider) source;
+            provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromPotion);
         }
     }

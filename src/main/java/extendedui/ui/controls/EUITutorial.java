@@ -66,16 +66,12 @@ public class EUITutorial extends EUIHoverable
 
         this.next = new EUIButton(ImageMaster.POPUP_ARROW,
                 new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, hb.width * 1.1f, hb.height * 0.5f))
-                .setOnClick(() -> {
-                    changePage(page >= descriptions.size() - 1 ? 0 : page + 1);
-                });
+                .setOnClick(() -> changePage(page >= descriptions.size() - 1 ? 0 : page + 1));
         this.next.background.setFlipping(true, false);
 
         this.prev = new EUIButton(ImageMaster.POPUP_ARROW,
                 new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, hb.width * -0.1f, hb.height * 0.5f))
-                .setOnClick(() -> {
-                    changePage(page <= 0 ? descriptions.size() - 1 : page - 1);
-                });
+                .setOnClick(() -> changePage(page <= 0 ? descriptions.size() - 1 : page - 1));
 
         this.next.setActive(this.descriptions.size() > 1);
         this.prev.setActive(this.descriptions.size() > 1);

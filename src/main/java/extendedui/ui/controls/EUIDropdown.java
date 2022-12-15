@@ -409,6 +409,16 @@ public class EUIDropdown<T> extends EUIHoverable
         return this;
     }
 
+    public EUIDropdown<T> setTooltip(EUITooltip tip) {
+        super.setTooltip(tip);
+        return this;
+    }
+
+    public EUIDropdown<T> setTooltip(String name, String desc) {
+        super.setTooltip(name, desc);
+        return this;
+    }
+
     public EUIDropdown<T> toggleSelection(T selection, boolean value, boolean shouldInvoke) {
         for (int i = 0; i < rows.size(); i++) {
             if (selection.equals(rows.get(i).item)) {
