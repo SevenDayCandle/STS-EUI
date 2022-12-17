@@ -1,3 +1,5 @@
+package extendedui;
+
 import basemod.BaseMod;
 import basemod.interfaces.*;
 import com.badlogic.gdx.Gdx;
@@ -8,7 +10,6 @@ import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.patches.EUIKeyword;
 import extendedui.ui.tooltips.EUITooltip;

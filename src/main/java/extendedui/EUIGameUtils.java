@@ -49,7 +49,7 @@ public class EUIGameUtils {
 
     public static boolean canViewEnemyIntents()
     {
-        return AbstractDungeon.player.hasRelic(RunicDome.ID);
+        return !AbstractDungeon.player.hasRelic(RunicDome.ID);
     }
 
     public static void copyVisualProperties(AbstractCard copy, AbstractCard original) {

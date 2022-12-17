@@ -650,7 +650,11 @@ public class EUITooltip
                 {
                     if (((AbstractMonster) creature).intent != AbstractMonster.Intent.NONE && EUIGameUtils.canViewEnemyIntents())
                     {
-                        tooltips.add(fromMonsterIntent((AbstractMonster) creature));
+                        EUITooltip tip = fromMonsterIntent((AbstractMonster) creature);
+                        if (tip != null)
+                        {
+                            tooltips.add(tip);
+                        }
                     }
                 }
             }
