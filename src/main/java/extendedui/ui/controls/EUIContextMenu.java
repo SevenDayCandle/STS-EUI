@@ -73,16 +73,20 @@ public class EUIContextMenu<T> extends EUIDropdown<T>
     protected void renderArrows(SpriteBatch sb) {
     }
 
+    // No-op
+    @Override
+    protected void updateButtons()
+    {
+    }
+
     @Override
     public void renderImpl(SpriteBatch sb) {
 
         this.hb.render(sb);
-        this.button.tryRender(sb);
-        this.header.tryRender(sb);
         if ((this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0) {
             this.clearButton.renderImpl(sb);
         }
-        if (this.rows.size() > 0) {
+        if (this.rows.size() > 0 && this.isOpen) {
             EUI.addPriorityPostRender(this::renderRowContent);
         }
     }

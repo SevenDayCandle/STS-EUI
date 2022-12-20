@@ -224,6 +224,10 @@ public class EUITooltip
     public static EUITooltip fromPowerTip(PowerTip tip)
     {
         EUITooltip newTip = new EUITooltip(tip.header, tip.body);
+        if (newTip.title == null)
+        {
+            newTip.title = "";
+        }
         if (tip.imgRegion != null)
         {
             newTip.icon = tip.imgRegion;
@@ -648,7 +652,7 @@ public class EUITooltip
                 lastProvider = null;
                 if (creature instanceof AbstractMonster)
                 {
-                    if (((AbstractMonster) creature).intent != AbstractMonster.Intent.NONE && EUIGameUtils.canViewEnemyIntents())
+                    if (EUIGameUtils.canViewEnemyIntents((AbstractMonster) creature))
                     {
                         EUITooltip tip = fromMonsterIntent((AbstractMonster) creature);
                         if (tip != null)

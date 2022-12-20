@@ -7,9 +7,11 @@ import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.RunicDome;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
@@ -47,9 +49,9 @@ public class EUIGameUtils {
                 || AbstractDungeon.screen == EUI_SCREEN);
     }
 
-    public static boolean canViewEnemyIntents()
+    public static boolean canViewEnemyIntents(AbstractMonster mo)
     {
-        return !AbstractDungeon.player.hasRelic(RunicDome.ID);
+        return mo.intent != AbstractMonster.Intent.NONE && !AbstractDungeon.player.hasRelic(RunicDome.ID);
     }
 
     public static void copyVisualProperties(AbstractCard copy, AbstractCard original) {

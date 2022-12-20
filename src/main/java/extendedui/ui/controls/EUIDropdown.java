@@ -339,6 +339,7 @@ public class EUIDropdown<T> extends EUIHoverable
     public EUIDropdown<T> setPosition(float x, float y) {
         this.hb.translate(x, y);
         positionClearButton();
+        updateRowPositions();
         return this;
     }
 
@@ -584,11 +585,22 @@ public class EUIDropdown<T> extends EUIHoverable
     @Override
     public void updateImpl() {
         super.updateImpl();
+        updateButtons();
+        updateRows();
+        justOpened = false;
+    }
+
+    protected void updateButtons()
+    {
         this.button.updateImpl();
         this.header.tryUpdate();
         if ((this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0) {
             this.clearButton.updateImpl();
         }
+    }
+
+    protected void updateRows()
+    {
         if (this.rows.size() != 0 && this.isOpen) {
             updateRowPositions();
             if (EUI.isActiveElement(this))
@@ -661,8 +673,6 @@ public class EUIDropdown<T> extends EUIHoverable
                 }
             }
         }
-        justOpened = false;
-
     }
 
     protected boolean isUsingNonMouseControl() {
