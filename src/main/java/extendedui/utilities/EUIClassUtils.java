@@ -22,6 +22,8 @@ public class EUIClassUtils
         return getField(o, fieldName);
     }
 
+    // DO NOT USE. Dangerous as this method masks subclasses
+    @Deprecated
     public static <T> T getField(Object o, String fieldName)
     {
         return ReflectionHacks.getPrivate(o, o.getClass(), fieldName);

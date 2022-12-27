@@ -8,9 +8,11 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.TupleT2;
 import org.apache.commons.lang3.StringUtils;
@@ -319,7 +321,17 @@ public class EUISmartText
                 {
                     // Symbol
                     case '[':
+                        if (!EUIConfiguration.disableDescrptionIcons.get())
+                        {
+                            writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize);
+                        }
+                        break;
+                    // Force symbol, ignoring user config settings
+                    case '†':
                         writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize);
+                        break;
+                    // End of symbol, needs to be manually ignored when icons are disabled
+                    case ']':
                         break;
                     // Color
                     case '#':

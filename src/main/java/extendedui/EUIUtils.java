@@ -10,6 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -112,11 +113,11 @@ public abstract class EUIUtils
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] arrayMap(T[] list, FuncT1<N, T> predicate)
+    public static <T, N> N[] arrayMap(T[] list, Class<N> listClass, FuncT1<N, T> predicate)
     {
         if (list != null)
         {
-            final N[] res = (N[]) new Object[list.length];
+            final N[] res = (N[]) Array.newInstance(listClass, list.length);
             for (int i = 0; i < list.length; i++)
             {
                 res[i] = predicate.invoke(list[i]);
@@ -124,15 +125,15 @@ public abstract class EUIUtils
             return res;
         }
 
-        return (N[]) new Object[]{};
+        return (N[]) Array.newInstance(listClass, 0);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] arrayMap(List<T> list, FuncT1<N, T> predicate)
+    public static <T, N> N[] arrayMap(List<T> list, Class<N> listClass, FuncT1<N, T> predicate)
     {
         if (list != null)
         {
-            final N[] res = (N[]) new Object[list.size()];
+            final N[] res = (N[]) Array.newInstance(listClass, list.size());
             for (int i = 0; i < list.size(); i++)
             {
                 res[i] = predicate.invoke(list.get(i));
@@ -140,15 +141,15 @@ public abstract class EUIUtils
             return res;
         }
 
-        return (N[]) new Object[]{};
+        return (N[]) Array.newInstance(listClass, 0);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] arrayMapAsNonnull(T[] list, FuncT1<N, T> predicate)
+    public static <T, N> N[] arrayMapAsNonnull(T[] list, Class<N> listClass, FuncT1<N, T> predicate)
     {
         if (list != null)
         {
-            final N[] res = (N[]) new Object[list.length];
+            final N[] res = (N[]) Array.newInstance(listClass, list.length);
             for (int i = 0; i < list.length; i++)
             {
                 T t = list[i];
@@ -160,15 +161,15 @@ public abstract class EUIUtils
             return res;
         }
 
-        return (N[]) new Object[]{};
+        return (N[]) Array.newInstance(listClass, 0);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] arrayMapAsNonnull(List<T> list, FuncT1<N, T> predicate)
+    public static <T, N> N[] arrayMapAsNonnull(List<T> list, Class<N> listClass, FuncT1<N, T> predicate)
     {
         if (list != null)
         {
-            final N[] res = (N[]) new Object[list.size()];
+            final N[] res = (N[]) Array.newInstance(listClass, list.size());
             for (int i = 0; i < list.size(); i++)
             {
                 T t = list.get(i);
@@ -180,7 +181,7 @@ public abstract class EUIUtils
             return res;
         }
 
-        return (N[]) new Object[]{};
+        return (N[]) Array.newInstance(listClass, 0);
     }
 
     public static String capitalize(String text)

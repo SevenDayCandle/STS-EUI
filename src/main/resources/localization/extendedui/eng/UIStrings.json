@@ -2,6 +2,7 @@
 				"extendedui:config": {
 								"TEXT": [
 												"Use Vanilla Card Library Screen",
+								  				"Disable description icons",
 												"Disable Effekseer Effects",
 												"Flush Effekseer Cache when Starting a Run",
 												"Flush Effekseer Cache when Entering a New Room",
@@ -57,8 +58,8 @@
 												"Sort by {0}",
 												"Clear",
 												"Extra Settings",
-												"Effekseer",
-												"Fonts",
+												"EUI",
+												"EUI Fonts",
 												"Requires restart",
 												"This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well."
 								]

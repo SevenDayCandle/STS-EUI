@@ -132,20 +132,21 @@ public class EUIRM
         private final UIStrings stringsUIPool = getUIStrings("ui_pool");
         private final UIStrings stringsUIFilter = getUIStrings("ui_filters");
 
-        public final String configUsevanillacompendium = stringsConfig.TEXT[0];
-        public final String configDisableeffekseer = stringsConfig.TEXT[1];
-        public final String configFlushongamestart = stringsConfig.TEXT[2];
-        public final String configFlushonroomstart = stringsConfig.TEXT[3];
-        public final String configShowmodsettings = stringsConfig.TEXT[4];
-        public final String configUseseparatefonts = stringsConfig.TEXT[5];
-        public final String configOverridegamefont = stringsConfig.TEXT[6];
-        public final String configMainfont = stringsConfig.TEXT[7];
-        public final String configCarddescfont = stringsConfig.TEXT[8];
-        public final String configCardtitlefont = stringsConfig.TEXT[9];
-        public final String configTipdescfont = stringsConfig.TEXT[10];
-        public final String configTiptitlefont = stringsConfig.TEXT[11];
-        public final String configButtonfont = stringsConfig.TEXT[12];
-        //public final String Config_BannerFont = StringsConfig.TEXT[13];
+        public final String configUseVanillaCompendium = stringsConfig.TEXT[0];
+        public final String configDisableDescriptionIcons = stringsConfig.TEXT[1];
+        public final String configDisableEffekseer = stringsConfig.TEXT[2];
+        public final String configFlushOnGameStart = stringsConfig.TEXT[3];
+        public final String configFlushOnRoomStart = stringsConfig.TEXT[4];
+        public final String configShowModSettings = stringsConfig.TEXT[5];
+        public final String configUseSeparateFonts = stringsConfig.TEXT[6];
+        public final String configOverridegamefont = stringsConfig.TEXT[7];
+        public final String configMainfont = stringsConfig.TEXT[8];
+        public final String configCarddescfont = stringsConfig.TEXT[9];
+        public final String configCardtitlefont = stringsConfig.TEXT[10];
+        public final String configTipdescfont = stringsConfig.TEXT[11];
+        public final String configTiptitlefont = stringsConfig.TEXT[12];
+        public final String configButtonfont = stringsConfig.TEXT[13];
+        //public final String Config_BannerFont = StringsConfig.TEXT[14];
         //public final String Config_ResetTooltips = StringsConfig.TEXT[14];
 
         public final String hotkeyCycle = stringsHotkeys.TEXT[0];

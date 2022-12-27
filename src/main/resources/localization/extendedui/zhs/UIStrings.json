@@ -3,6 +3,7 @@
   {
 	"TEXT": [
 	  "使用原版卡牌总览界面",
+	  "Disable description icons",
 	  "禁用Effekseer特效",
 	  "开始游戏时清空Effekseer缓存",
 	  "进入新房间时清空Effekseer缓存",
@@ -62,8 +63,8 @@
 	  "按 {0} 排序",
 	  "重置",
 	  "其他设置",
-	  "Effekseer",
-	  "字体",
+	  "EUI",
+	  "EUI Fonts",
 	  "需要重启",
 	  "本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。"
 	]

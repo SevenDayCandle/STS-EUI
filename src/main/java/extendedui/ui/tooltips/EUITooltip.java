@@ -1096,6 +1096,10 @@ public class EUITooltip
         return (ID != null) ? "[" + ID + "]" : title;
     }
 
+    public String getTitleOrIconForced() {
+        return this.ID != null ? "†" + this.ID + "]" : this.title;
+    }
+
     public String past() {
         if (past == null) {
             past = EUIRM.strings.past(title);

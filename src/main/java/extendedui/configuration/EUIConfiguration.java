@@ -11,7 +11,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
-import extendedui.interfaces.listeners.STSConfigListener;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.settings.ModSettingsPathSelector;
@@ -48,6 +47,7 @@ public class EUIConfiguration
     }
 
     private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
+    private static final String DISABLE_DESCRIPTION_ICONS = getFullKey("DisableDescriptionIcons");
     private static final String DISABLE_EFFEKSEER = getFullKey("DisableEffekseer");
     private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
     private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
@@ -62,6 +62,7 @@ public class EUIConfiguration
     private static final String BUTTON_FONT = getFullKey("ButtonFont");
 
     public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
+    public static STSConfigItem<Boolean> disableDescrptionIcons = new STSConfigItem<>(DISABLE_DESCRIPTION_ICONS, false);
     public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
     public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(FLUSH_ON_GAME_START, false);
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
@@ -84,6 +85,7 @@ public class EUIConfiguration
         {
             config = new SpireConfig(PREFIX, PREFIX);
             useVanillaCompendium.addConfig(config);
+            disableDescrptionIcons.addConfig(config);
             disableEffekseer.addConfig(config);
             flushOnGameStart.addConfig(config);
             flushOnRoomStart.addConfig(config);
@@ -111,10 +113,11 @@ public class EUIConfiguration
         fontCategory = new ModSettingsScreen.Category(EUIRM.strings.miscFontsettings);
         ModSettingsScreen.addCategory(effekseerCategory);
         ModSettingsScreen.addCategory(fontCategory);
-        makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.configDisableeffekseer);
-        makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.configFlushongamestart);
-        makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.configFlushonroomstart);
-        makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.configUseseparatefonts).setTooltip(restartTip);
+        makeModToggle(effekseerCategory, disableDescrptionIcons, EUIRM.strings.configDisableDescriptionIcons);
+        makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.configDisableEffekseer);
+        makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.configFlushOnGameStart);
+        makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.configFlushOnRoomStart);
+        makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.configUseSeparateFonts).setTooltip(restartTip);
         makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.configOverridegamefont).setTooltip(new EUITooltip(EUIRM.strings.miscFontdescription + " | " + EUIRM.strings.miscRestartrequired));
         ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardDescFont, EUIRM.strings.configCarddescfont, FONT_EXTS).setTooltip(restartTip);
         ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardTitleFont, EUIRM.strings.configCardtitlefont, FONT_EXTS).setTooltip(restartTip);
@@ -127,12 +130,13 @@ public class EUIConfiguration
         int yPos = BASE_OPTION_OFFSET_Y;
         ModPanel panel = new ModPanel();
 
-        yPos = addToggle(panel, useVanillaCompendium, EUIRM.strings.configUsevanillacompendium, yPos);
-        yPos = addToggle(panel, disableEffekseer, EUIRM.strings.configDisableeffekseer, yPos);
-        yPos = addToggle(panel, flushOnGameStart, EUIRM.strings.configFlushongamestart, yPos);
-        yPos = addToggle(panel, flushOnRoomStart, EUIRM.strings.configFlushonroomstart, yPos);
-        yPos = addToggle(panel, showModSettings, EUIRM.strings.configShowmodsettings, yPos);
-        yPos = addToggle(panel, useSeparateFonts, EUIRM.strings.configUseseparatefonts, yPos, EUIRM.strings.miscRestartrequired);
+        yPos = addToggle(panel, useVanillaCompendium, EUIRM.strings.configUseVanillaCompendium, yPos);
+        yPos = addToggle(panel, disableDescrptionIcons, EUIRM.strings.configDisableDescriptionIcons, yPos);
+        yPos = addToggle(panel, disableEffekseer, EUIRM.strings.configDisableEffekseer, yPos);
+        yPos = addToggle(panel, flushOnGameStart, EUIRM.strings.configFlushOnGameStart, yPos);
+        yPos = addToggle(panel, flushOnRoomStart, EUIRM.strings.configFlushOnRoomStart, yPos);
+        yPos = addToggle(panel, showModSettings, EUIRM.strings.configShowModSettings, yPos);
+        yPos = addToggle(panel, useSeparateFonts, EUIRM.strings.configUseSeparateFonts, yPos, EUIRM.strings.miscRestartrequired);
         yPos = addToggle(panel, overrideGameFont, EUIRM.strings.configOverridegamefont, yPos, EUIRM.strings.miscFontdescription + " NL NL " + EUIRM.strings.miscRestartrequired);
 
         yPos = (BASE_OPTION_OFFSET_Y + yPos) / 2;
