@@ -3,7 +3,7 @@
   {
 	"TEXT": [
 	  "使用原版卡牌总览界面",
-	  "Disable description icons",
+	  "禁用提示描述图标",
 	  "禁用Effekseer特效",
 	  "开始游戏时清空Effekseer缓存",
 	  "进入新房间时清空Effekseer缓存",
@@ -15,7 +15,7 @@
 	  "卡牌标题字体",
 	  "提示描述字体",
 	  "提示标题字体",
-	  "Button Font",
+	  "按钮字体",
 	  "Banner Font"
 	]
   },
