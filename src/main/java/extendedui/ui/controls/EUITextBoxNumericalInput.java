@@ -14,6 +14,7 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer>
     protected int max = Integer.MAX_VALUE;
     public boolean hasEntered;
     public boolean showNegativeAsInfinity;
+    public boolean clearOnInitialEntry = true;
 
     public EUITextBoxNumericalInput(Texture backgroundTexture, EUIHitbox hb) {
         super(backgroundTexture, hb);
@@ -75,7 +76,7 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer>
 
     @Override
     public String getCurrentText() {
-        return hasEntered ? "" : label.text;
+        return !hasEntered && clearOnInitialEntry ? "" : label.text;
     }
 
     @Override
