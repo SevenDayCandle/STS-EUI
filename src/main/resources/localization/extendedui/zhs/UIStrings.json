@@ -1,6 +1,5 @@
 {
-  "extendedui:config":
-  {
+  "extendedui:config": {
 	"TEXT": [
 	  "使用原版卡牌总览界面",
 	  "禁用提示描述中的图标",
@@ -19,8 +18,7 @@
 	  "Banner Font"
 	]
   },
-  "extendedui:grammar":
-  {
+  "extendedui:grammar": {
 	"TEXT": [
 	  "{0} {1}",
 	  "{0} {1}",
@@ -39,24 +37,21 @@
 	  "{0} or {1}",
 	  "Not {0}"
 	],
-	"EXTRA_TEXT":
-	[
+	"EXTRA_TEXT": [
 	  "{0}s",
 	  "{0}(s)",
 	  "{0}ed",
 	  "{0}ing"
 	]
   },
-  "extendedui:hotkeys":
-  {
+  "extendedui:hotkeys": {
 	"TEXT": [
 	  "循环预览",
 	  "运行百科大全",
 	  "打开/关闭筛选器"
 	]
   },
-  "extendedui:misc":
-  {
+  "extendedui:misc": {
 	"TEXT": [
 	  "{0} to cycle",
 	  "输入以查找",
@@ -69,8 +64,7 @@
 	  "本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。"
 	]
   },
-  "extendedui:ui_pool":
-  {
+  "extendedui:ui_pool": {
 	"TEXT": [
 	  "运行百科大全",
 	  "查看本局游戏中所有可获得的卡牌和遗物。",
@@ -79,8 +73,7 @@
 	  "显示无色牌"
 	]
   },
-  "extendedui:ui_filters":
-  {
+  "extendedui:ui_filters": {
 	"TEXT": [
 	  "项目",
 	  "关键字",
@@ -97,7 +90,7 @@
 	  "基本",
 	  "已见过",
 	  "未见过",
-	  "N/A"
+	  "不适用"
 	]
   }
 }
