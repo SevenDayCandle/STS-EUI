@@ -57,7 +57,7 @@ public class EUIDropdown<T> extends EUIHoverable
     protected FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton;
     protected FuncT1<String, T> labelFunction;
     protected FuncT1<List<EUITooltip>, T> tooltipFunction;
-    protected EUIBase headerRow;
+    protected EUIHoverable headerRow;
     protected EUILabel header;
     protected EUIVerticalScrollBar scrollBar;
     protected boolean isOpen;
@@ -157,7 +157,7 @@ public class EUIDropdown<T> extends EUIHoverable
         return this;
     }
 
-    public EUIDropdown<T> setHeaderRow(EUIBase headerRow) {
+    public EUIDropdown<T> setHeaderRow(EUIHoverable headerRow) {
         this.headerRow = headerRow;
 
         return this;
@@ -541,6 +541,11 @@ public class EUIDropdown<T> extends EUIHoverable
         return currentIndices.isEmpty() || currentIndices.first() >= this.rows.size() ? 0 : currentIndices.first();
     }
 
+    public float getRowHeight()
+    {
+        return rowHeight;
+    }
+
     public void openOrCloseMenu() {
         if (this.isOpen) {
             EUI.setActiveElement(null);
@@ -701,7 +706,7 @@ public class EUIDropdown<T> extends EUIHoverable
         }
         else {
             this.layoutRowsBelow(hb.x, hb.y);
-            this.scrollBar.hb.setOffsetY(-this.visibleRowCount() * this.rowHeight);
+            this.scrollBar.hb.setOffsetY(-this.visibleRowCount() * this.rowHeight - (headerRow != null ? headerRow.hb.height : 0));
         }
     }
 
@@ -775,11 +780,18 @@ public class EUIDropdown<T> extends EUIHoverable
     }
 
     protected void renderRowContent(SpriteBatch sb) {
-        this.renderBorder(sb, hb.x, bottomY, hb.width, topY - bottomY);
+        if (headerRow != null)
+        {
+            this.renderBorder(sb, hb.x, bottomY, hb.width, topY - bottomY + headerRow.hb.height);
+            headerRow.renderImpl(sb);
+        }
+        else
+        {
+            this.renderBorder(sb, hb.x, bottomY, hb.width, topY - bottomY);
+        }
         for(int i = 0; i < this.visibleRowCount(); ++i) {
             this.rows.get(i + this.topVisibleRowIndex).renderRow(sb);
         }
-
         if (this.shouldShowSlider()) {
             this.scrollBar.tryRender(sb);
         }
@@ -792,7 +804,7 @@ public class EUIDropdown<T> extends EUIHoverable
     }
 
     protected void layoutRowsBelow(float originX, float originY) {
-        for(int i = headerRow != null ? 1 : 0; i < this.visibleRowCount(); ++i) {
+        for(int i = 0; i < this.visibleRowCount(); ++i) {
             if (this.topVisibleRowIndex + i < this.rows.size()) {
                 this.rows.get(this.topVisibleRowIndex + i).move(originX, this.yPositionForRowBelow(originY, i + 1));
             }
@@ -887,6 +899,10 @@ public class EUIDropdown<T> extends EUIHoverable
 
     protected float yPositionForRowBelow(float originY, int rowIndex) {
         float extraHeight = rowIndex > 0 ? BORDER_SIZE : 0.0F;
+        if (headerRow != null)
+        {
+            extraHeight += headerRow.hb.height;
+        }
         return originY - rowHeight * (float)rowIndex - extraHeight;
     }
 
