@@ -192,6 +192,11 @@ public class EUITooltip
         return null;
     }
 
+    public static boolean canRenderPower(AbstractPower po)
+    {
+        return po.name != null;
+    }
+
     public static boolean canRenderTooltips()
     {
         return !EUIClassUtils.getFieldStatic(TipHelper.class, "renderedTipThisFrame", Boolean.class);
@@ -665,27 +670,26 @@ public class EUITooltip
 
             for (AbstractPower p : creature.powers)
             {
-                if (p instanceof InvisiblePower)
+                if (canRenderPower(p))
                 {
-                    continue;
-                }
-                else if (p instanceof TooltipProvider) {
-                    tooltips.add(((TooltipProvider) p).getTooltip());
-                    continue;
-                }
+                    if (p instanceof TooltipProvider) {
+                        tooltips.add(((TooltipProvider) p).getTooltip());
+                        continue;
+                    }
 
-                final EUITooltip tip = new EUITooltip(p.name, p.description);
-                if (p.region48 != null)
-                {
-                    tip.icon = p.region48;
-                }
+                    final EUITooltip tip = new EUITooltip(p.name, p.description);
+                    if (p.region48 != null)
+                    {
+                        tip.icon = p.region48;
+                    }
 
-                if (tip.icon == null && p.img != null)
-                {
-                    tip.setIcon(p.img, 6);
-                }
+                    if (tip.icon == null && p.img != null)
+                    {
+                        tip.setIcon(p.img, 6);
+                    }
 
-                tooltips.add(tip);
+                    tooltips.add(tip);
+                }
             }
         }
 

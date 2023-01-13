@@ -313,7 +313,7 @@ public class EUIDropdown<T> extends EUIHoverable
         return this;
     }
 
-    public EUIDropdown<T> setOffset(float y) {
+    public EUIDropdown<T> setOffsetY(float y) {
         this.hb.setOffsetY(y);
         positionClearButton();
         return this;

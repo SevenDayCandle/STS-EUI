@@ -13,12 +13,14 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT1;
+import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIFontHelper;
 
 public class EUIToggle extends EUIHoverable
 {
+    public static final float DEFAULT_TICK = 48;
     public String text = "";
     public boolean toggled = false;
     public boolean interactable = true;
@@ -31,19 +33,25 @@ public class EUIToggle extends EUIHoverable
     public EUIImage backgroundImage = null;
     public BitmapFont font = EUIFontHelper.cardtooltiptitlefontLarge;
     public float fontSize = 1;
-    public float tickSize = 48;
+    public float tickSize = DEFAULT_TICK;
     public ActionT1<Boolean> onToggle = null;
 
     public EUIToggle(EUIHitbox hb)
     {
-        this(hb, new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED), new EUIImage(ImageMaster.COLOR_TAB_BOX_TICKED));
+        this(hb, new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED), new EUIImage(ImageMaster.COLOR_TAB_BOX_TICKED), DEFAULT_TICK);
     }
 
     public EUIToggle(EUIHitbox hb, EUIImage untickedImage, EUIImage tickedImage)
     {
+        this(hb, untickedImage, tickedImage, untickedImage.srcWidth);
+    }
+
+    public EUIToggle(EUIHitbox hb, EUIImage untickedImage, EUIImage tickedImage, float tickSize)
+    {
         super(hb);
         this.untickedImage = untickedImage;
         this.tickedImage = tickedImage;
+        this.tickSize = tickSize;
     }
 
     public EUIToggle setFontColors(Color defaultColor, Color hoveredColor)
@@ -59,6 +67,11 @@ public class EUIToggle extends EUIHoverable
         this.controllerAction = action;
 
         return this;
+    }
+
+    public EUIToggle setTickImage(EUIImage unticked, EUIImage ticked)
+    {
+        return setTickImage(unticked, ticked, unticked.srcWidth);
     }
 
     public EUIToggle setTickImage(EUIImage unticked, EUIImage ticked, float size)
@@ -152,6 +165,29 @@ public class EUIToggle extends EUIHoverable
         }
     }
 
+    public EUIToggle autosize() {
+        return autosize(1f, 1f);
+    }
+
+    public EUIToggle autosize(Float resizeMultiplier, Float resizeHeight) {
+        if (resizeMultiplier != null) {
+            this.hb.width = getAutoWidth();
+        }
+        if (resizeHeight != null) {
+            this.hb.height = getAutoHeight();
+        }
+
+        return this;
+    }
+
+    public float getAutoHeight() {
+        return EUISmartText.getSmartHeight(font, text, Settings.WIDTH);
+    }
+
+    public float getAutoWidth() {
+        return tickSize * Settings.scale + EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
+    }
+
     public boolean isToggled()
     {
         return toggled;
@@ -218,22 +254,22 @@ public class EUIToggle extends EUIHoverable
         if (fontSize != 1)
         {
             font.getData().setScale(fontSize);
-            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.3f * Settings.scale), hb.cY, fontColor);
+            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f * Settings.scale), hb.cY, fontColor);
             EUIRenderHelpers.resetFont(font);
         }
         else
         {
-            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.3f * Settings.scale), hb.cY, fontColor);
+            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f * Settings.scale), hb.cY, fontColor);
         }
 
         EUIImage image = toggled ? tickedImage : untickedImage;
         if (image != null)
         {
             image.renderCentered(sb, hb.x + (tickSize / 6f), hb.cY - (tickSize / 2f), tickSize, tickSize);
-
-//            sb.setColor(fontColor);
-//            sb.draw(image, hb.x + (tickSize / 6f) * Settings.scale, hb.cY - tickSize / 2f, tickSize / 2f, tickSize / 2f, tickSize, tickSize,
-//                    Settings.scale, Settings.scale, 0f, 0, 0, 48, 48, false, false);
+            if (hb.hovered)
+            {
+                image.renderCentered(sb, EUIRenderHelpers.BlendingMode.Glowing, hb.x + (tickSize / 6f), hb.cY - (tickSize / 2f), tickSize, tickSize);
+            }
         }
 
         hb.render(sb);

@@ -819,6 +819,10 @@ public class EUIRenderHelpers
         {
             sb.setBlendFunction(srcFunc, dstFunc);
         }
+
+        public void draw(SpriteBatch sb, ActionT1<SpriteBatch> drawImpl) {
+            EUIRenderHelpers.drawBlended(sb, this, drawImpl);
+        }
     }
 
     public enum ShaderMode {

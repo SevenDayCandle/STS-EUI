@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.mod.stslib.StSLib;
 import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
 import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -19,6 +20,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.patches.EUIKeyword;
 import extendedui.ui.AbstractScreen;
@@ -374,31 +376,34 @@ public class EUI
         }
     }
 
-    // Add CommonKeywordIcon pictures to keywords
+    // Add CommonKeywordIcon pictures to keywords. This REQUIRES stslib to run
     public static void registerKeywordIcons() {
-        for (EUITooltip tooltip : EUIUtils.map(EUITooltip.getEntries(), Map.Entry::getValue)) {
-            String title = tooltip.title;
-            // Add CommonKeywordIcon pictures to keywords
-            if (title.equals(GameDictionary.INNATE.NAMES[0])) {
-                tooltip.setIcon(StSLib.BADGE_INNATE);
-            }
-            else if (title.equals(GameDictionary.ETHEREAL.NAMES[0]))
-            {
-                tooltip.setIcon(StSLib.BADGE_ETHEREAL);
-            }
-            else if (title.equals(GameDictionary.RETAIN.NAMES[0]))
-            {
-                tooltip.setIcon(StSLib.BADGE_RETAIN);
-            }
-            else if (title.equals(GameDictionary.EXHAUST.NAMES[0]))
-            {
-                tooltip.setIcon(StSLib.BADGE_EXHAUST);
-            }
-            else {
-                // Add Custom Icons
-                AbstractCustomIcon icon = CustomIconHelper.getIcon(title);
-                if (icon != null) {
-                    tooltip.setIcon(icon.region);
+        if (Loader.isModLoaded("stslib"))
+        {
+            for (EUITooltip tooltip : EUIUtils.map(EUITooltip.getEntries(), Map.Entry::getValue)) {
+                String title = tooltip.title;
+                // Add CommonKeywordIcon pictures to keywords
+                if (title.equals(GameDictionary.INNATE.NAMES[0])) {
+                    tooltip.setIcon(StSLib.BADGE_INNATE);
+                }
+                else if (title.equals(GameDictionary.ETHEREAL.NAMES[0]))
+                {
+                    tooltip.setIcon(StSLib.BADGE_ETHEREAL);
+                }
+                else if (title.equals(GameDictionary.RETAIN.NAMES[0]))
+                {
+                    tooltip.setIcon(StSLib.BADGE_RETAIN);
+                }
+                else if (title.equals(GameDictionary.EXHAUST.NAMES[0]))
+                {
+                    tooltip.setIcon(StSLib.BADGE_EXHAUST);
+                }
+                else {
+                    // Add Custom Icons
+                    AbstractCustomIcon icon = CustomIconHelper.getIcon(title);
+                    if (icon != null) {
+                        tooltip.setIcon(icon.region);
+                    }
                 }
             }
         }

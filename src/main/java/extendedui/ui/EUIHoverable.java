@@ -37,6 +37,21 @@ public abstract class EUIHoverable extends EUIBase
         return this;
     }
 
+    public EUIHoverable setOffset(float x, float y) {
+        this.hb.setOffset(x, y);
+        return this;
+    }
+
+    public EUIHoverable setOffsetX(float x) {
+        this.hb.setOffsetX(x);
+        return this;
+    }
+
+    public EUIHoverable setOffsetY(float y) {
+        this.hb.setOffsetY(y);
+        return this;
+    }
+
     public EUIHoverable setDimensions(float width, float height)
     {
         this.hb.resize(width, height);

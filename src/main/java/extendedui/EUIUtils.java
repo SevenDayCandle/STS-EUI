@@ -406,24 +406,6 @@ public abstract class EUIUtils
         return map;
     }
 
-    public static int incrementMapElement(Map map, Object key)
-    {
-        //noinspection unchecked
-        return (int) map.compute(key, (k, v) -> v == null ? 1 : (int) v + 1);
-    }
-
-    public static int incrementMapElement(Map map, Object key, int amount)
-    {
-        if (map.containsKey(key))
-        {
-            amount += (int) map.get(key);
-        }
-
-        //noinspection unchecked
-        map.put(key, amount);
-        return amount;
-    }
-
     public static <T> String invokeBuilder(StringBuilder stringBuilder)
     {
         String result = stringBuilder.toString();
@@ -431,12 +413,12 @@ public abstract class EUIUtils
         return result;
     }
 
-    public static boolean isNotEmpty(List list)
+    public static boolean isNotEmpty(List<?> list)
     {
         return list != null && list.size() > 0;
     }
 
-    public static boolean isNullOrEmpty(List list)
+    public static boolean isNullOrEmpty(List<?> list)
     {
         return list == null || list.isEmpty();
     }
@@ -517,7 +499,7 @@ public abstract class EUIUtils
             return LogManager.getLogger();
         }
 
-        return LogManager.getLogger((source instanceof Class) ? ((Class) source).getName() : source.getClass().getName());
+        return LogManager.getLogger((source instanceof Class) ? ((Class<?>) source).getName() : source.getClass().getName());
     }
 
     // Simple string Formatting in which integers inside curly braces are replaced by args[B].
@@ -1038,7 +1020,7 @@ public abstract class EUIUtils
         return result.toArray(arr);
     }
 
-    public static <T> Constructor<T> tryGetConstructor(Class<T> type, Class... paramTypes)
+    public static <T> Constructor<T> tryGetConstructor(Class<T> type, Class<?>... paramTypes)
     {
         try
         {
