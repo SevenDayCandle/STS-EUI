@@ -219,7 +219,7 @@ public class EUISmartText
                     else
                     {
                         String condOutput = EUIUtils.popBuilder(buffer);
-                        current.value = StringUtils.isNumeric(condOutput) ? Integer.parseInt(condOutput) : evaluated;
+                        current.value = EUIUtils.parseInt(condOutput, evaluated);
                         currentBlock.conditions.add(current);
                     }
                     current = new LogicCondition(LogicComparison.typeFor(c));
@@ -235,7 +235,7 @@ public class EUISmartText
                         current = new LogicCondition(LogicComparison.True);
                     }
                     String condOutput = EUIUtils.popBuilder(buffer);
-                    current.value = StringUtils.isNumeric(condOutput) ? Integer.parseInt(condOutput) : evaluated;
+                    current.value = EUIUtils.parseInt(condOutput, evaluated);
                     currentBlock.conditions.add(current);
                     break;
                 // @ $ signals end of block. If there was no conditionBlock, this goes into evaluated

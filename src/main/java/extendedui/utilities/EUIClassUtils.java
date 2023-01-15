@@ -5,6 +5,7 @@ import extendedui.interfaces.delegates.FuncT1;
 import extendedui.EUIUtils;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
@@ -50,6 +51,11 @@ public class EUIClassUtils
         return ReflectionHacks.privateMethod(o.getClass(), methodName, parameterTypes);
     }
 
+    public static <T> T getRFieldStatic(String className, String fieldName) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException
+    {
+        return (T) Class.forName(className).getField(fieldName).get(null);
+    }
+
     public static <T> T invoke(Class<?> className, String methodName, Object... parameters)
     {
         return ReflectionHacks.privateStaticMethod(className, methodName, EUIUtils.map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(parameters);
@@ -60,12 +66,30 @@ public class EUIClassUtils
         return getMethod(o, methodName, EUIUtils.map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(o, parameters);
     }
 
+    public static <T> T invokeRStatic(String className, String methodName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
+    {
+        Method m = Class.forName(className).getMethod(methodName);
+        return (T) m.invoke(null);
+    }
+
+    public static <T> T invokeRStatic(String className, String methodName, Object... parameters) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
+    {
+        Class<?>[] classList = EUIUtils.arrayMap(parameters, Class.class, Object::getClass);
+        Method m = Class.forName(className).getMethod(methodName, classList);
+        return (T) m.invoke(null, parameters);
+    }
+
     public static boolean isFieldFinal(Field f) {
         return Modifier.isFinal(f.getModifiers());
     }
 
     public static boolean isFieldStatic(Field f) {
         return Modifier.isStatic(f.getModifiers());
+    }
+
+    public static boolean isInstance(Object o, String className) throws ClassNotFoundException
+    {
+        return Class.forName(className).isInstance(o);
     }
 
     public static boolean isMethodFinal(Method m) {

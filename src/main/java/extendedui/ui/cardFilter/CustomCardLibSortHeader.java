@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import extendedui.EUI;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.utilities.CardAmountComparator;
 import extendedui.utilities.FakeLibraryCard;
 
@@ -78,20 +79,12 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             amountButton = new SortHeaderButton(EUIRM.strings.uiAmount, xPosition, 0f, this);
 
             float offsetX = -(Settings.scale * 30f);
-
-            setupButton(rarityButton, offsetX, 0);
-            setupButton(typeButton, offsetX, 1);
-            setupButton(costButton, offsetX, 2);
-
-            if (nameButton != null)
+            int i = 0;
+            for (i = 0; i < buttons.length; i++)
             {
-                setupButton(nameButton, offsetX, 3);
-                setupButton(amountButton, offsetX, 4);
+                setupButton(buttons[i], offsetX, i);
             }
-            else
-            {
-                setupButton(amountButton, offsetX, 3);
-            }
+            setupButton(amountButton, offsetX, i);
         }
 
         this.buttons = override;
