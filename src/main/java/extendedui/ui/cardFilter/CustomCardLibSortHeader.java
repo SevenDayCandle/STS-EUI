@@ -17,6 +17,8 @@ import java.util.ArrayList;
 
 public class CustomCardLibSortHeader extends CardLibSortHeader
 {
+    public static final float SPACE_X = 166f * Settings.scale;
+    public static final float WIDTH_DEC = 30 * Settings.scale;
     public static CustomCardLibSortHeader instance;
     private static CardGroup falseGroup;
     private static FakeLibraryCard fakeLibraryCard;
@@ -53,50 +55,44 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         }
     }
 
+    // Ignore custom sorting for now because the sort header can't recognize them without reflection
     public void setupButtons()
     {
         if (override == null)
         {
-            final float START_X = 430f * Settings.scale;
-            final float SPACE_X = (226f * Settings.scale);
-            final float xPosition = START_X + (SPACE_X * buttons.length);
-
-            override = new SortHeaderButton[buttons.length + 1];
-
+            final float START = buttons[0].hb.cX;
             rarityButton = buttons[0];
             typeButton = buttons[1];
             costButton = buttons[2];
+            amountButton = new SortHeaderButton(EUIRM.strings.uiAmount, 0f, 0f, this);
 
             if (Settings.removeAtoZSort)
             {
                 nameButton = null;
+                override = EUIUtils.array(rarityButton, typeButton, costButton, amountButton);
             }
             else
             {
                 nameButton = buttons[3];
+                override = EUIUtils.array(rarityButton, typeButton, costButton, nameButton, amountButton);
             }
 
-            amountButton = new SortHeaderButton(EUIRM.strings.uiAmount, xPosition, 0f, this);
 
-            float offsetX = -(Settings.scale * 30f);
-            int i = 0;
-            for (i = 0; i < buttons.length; i++)
+            for (int i = 0; i < override.length; i++)
             {
-                setupButton(buttons[i], offsetX, i);
+                setupButton(override[i], START, i);
             }
-            setupButton(amountButton, offsetX, i);
         }
 
         this.buttons = override;
     }
 
-    private void setupButton(SortHeaderButton button, float offsetX, int index)
+    private void setupButton(SortHeaderButton button, float start, int index)
     {
         override[index] = button;
-
         Hitbox hitbox = button.hb;
-        hitbox.resize(hitbox.width + offsetX, hitbox.height);
-        hitbox.move(hitbox.cX + (offsetX * index), hitbox.cY);
+        hitbox.resize(hitbox.width - WIDTH_DEC, hitbox.height);
+        hitbox.move(start + (CustomCardLibSortHeader.SPACE_X * index), hitbox.cY);
     }
 
     @Override

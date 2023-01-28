@@ -568,6 +568,7 @@ public class EUIDropdown<T> extends EUIHoverable
     protected void onScroll(float newPercent)
     {
         this.topVisibleRowIndex = (int) MathUtils.clamp(newPercent * (this.rows.size() - this.visibleRowCount()), 0, this.rows.size() - this.visibleRowCount());
+        updateRowPositions();
     }
 
     public void refreshText()
@@ -650,11 +651,13 @@ public class EUIDropdown<T> extends EUIHoverable
                 if (InputHelper.scrolledDown)
                 {
                     this.topVisibleRowIndex = Integer.min(this.topVisibleRowIndex + 1, this.rows.size() - this.visibleRowCount());
+                    updateRowPositions();
                     this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
                 }
                 else if (InputHelper.scrolledUp)
                 {
                     this.topVisibleRowIndex = Integer.max(0, this.topVisibleRowIndex - 1);
+                    updateRowPositions();
                     this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
                 }
 
@@ -913,6 +916,7 @@ public class EUIDropdown<T> extends EUIHoverable
         else {
             this.clearButton.hb.setOffset(hb.width, 0);
         }
+        this.clearButton.update();
     }
 
     public EUIDropdown<T> makeCopy() {

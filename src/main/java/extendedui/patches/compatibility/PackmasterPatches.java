@@ -3,6 +3,7 @@ package extendedui.patches.compatibility;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import extendedui.EUI;
 import extendedui.EUIUtils;
@@ -21,7 +22,7 @@ public class PackmasterPatches
             try
             {
                 AbstractCard.CardColor packMasterColor = AbstractCard.CardColor.valueOf("PACKMASTER_RAINBOW");
-                UIStrings uiStrings = EUIClassUtils.getRFieldStatic("thePackmaster.packs.AbstractPackPreviewCard", "UI_STRINGS");
+                UIStrings uiStrings = CardCrawlGame.languagePack.getUIString(EUIClassUtils.getRFieldStatic("thePackmaster.packs.AbstractPackPreviewCard", "ID"));
                 EUI.setCustomCardFilter(packMasterColor,
                         new SimpleCardFilterModule<Object>(EUI.cardFilters, uiStrings.TEXT[1], t -> {
                             try
