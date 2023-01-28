@@ -18,7 +18,7 @@ This mod also comes with the following features:
 
 You can find Effekseer, along with some sample animations, at https://effekseer.github.io/en/.
 
-These components are based off of code from the Animator. You can find updates on the Animator as well as this mod at the Animator discord: https://discord.gg/SmHMmJR
+If you would like to request features or give feedback on this mod, you can do so in this Discord server: https://discord.gg/he76RmsuYZ
 
 ## **Requirements**
 - BaseMod (5.37.1+)
@@ -28,7 +28,8 @@ These components are based off of code from the Animator. You can find updates o
 In addition, this library only works on Windows and Linux machines.
 
 ## **Credits**
-- Code adapted from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SrJohnathan/gdx-effekseer
+- Code adapted from https://github.com/EatYourBeetS/STS-AnimatorMod. Discord link: https://discord.gg/SmHMmJR
+- Code adapted from https://github.com/SrJohnathan/gdx-effekseer
 - DLL Libraries created from https://github.com/effekseer/EffekseerForMultiLanguages
 - Uses functions from https://github.com/tommyettinger/colorful-gdx and https://github.com/rkalla/imgscalr/
 
