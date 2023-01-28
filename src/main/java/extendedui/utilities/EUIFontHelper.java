@@ -46,6 +46,9 @@ public class EUIFontHelper
     protected static FreeTypeFontGenerator.FreeTypeBitmapFontData data = new FreeTypeFontGenerator.FreeTypeBitmapFontData();
     protected static HashMap<String, FreeTypeFontGenerator> generators = new HashMap<>();
     protected static FileHandle mainFont = null;
+    public static BitmapFont bannerFont;
+    public static BitmapFont bannerFontLarge;
+    public static BitmapFont bannerFontExtraLarge;
     public static BitmapFont buttonFont;
     public static BitmapFont buttonFontSmall;
     public static BitmapFont buttonFontLarge;
@@ -66,6 +69,8 @@ public class EUIFontHelper
     public static BitmapFont cardiconfontSmall;
     public static BitmapFont cardiconfontLarge;
     public static BitmapFont cardiconfontVerylarge;
+    public static BitmapFont energyFont;
+    public static BitmapFont energyFontLarge;
 
     /* Because EUIFontHelper creates its fonts separately from the base game, mods that alter the game's font will not affect it.
     * Thus, EUIFontHelper requires its own version of a font configuration to allow users to make changes to them */
@@ -117,15 +122,29 @@ public class EUIFontHelper
         param.borderColor = Settings.QUARTER_TRANSPARENT_BLACK_COLOR;
         EUIFontHelper.buttonFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.buttonFont, fontFile) : mainFont,32.0F, true);
 
+        FileHandle boldFile = EUIConfiguration.cardDescFont.get().isEmpty() ? fontFileBold : mainFont;
+
+        param.borderStraight = true;
+        param.borderWidth = 4.0F * Settings.scale;
+        param.borderColor = new Color(0.3F, 0.3F, 0.3F, 1.0F);
+        EUIFontHelper.energyFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.energyFont, fontFileBold) : boldFile, 38.0F, true);
+
         param.shadowColor = new Color(0.0F, 0.0F, 0.0F, 0.33F);
         param.gamma = 2.0F;
         param.borderGamma = 2.0F;
-        param.borderStraight = true;
         param.borderColor = Color.DARK_GRAY;
         param.borderWidth = 2.0F * Settings.scale;
         param.shadowOffsetX = 1;
         param.shadowOffsetY = 1;
-        EUIFontHelper.cardTipTitleFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.tipTitleFont, fontFileBold) : EUIConfiguration.cardDescFont.get().isEmpty() ? fontFileBold : mainFont,23, true);
+        EUIFontHelper.cardTipTitleFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.tipTitleFont, fontFileBold) : boldFile,23, true);
+
+        param.gamma = 1.2F;
+        param.borderGamma = 1.2F;
+        param.borderWidth = 0.0F;
+        param.shadowColor = new Color(0.0F, 0.0F, 0.0F, 0.12F);
+        param.shadowOffsetX = (int)(5.0F * Settings.scale);
+        param.shadowOffsetY = (int)(4.0F * Settings.scale);
+        EUIFontHelper.bannerFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.bannerFont, fontFileBold) : boldFile,38, true);
 
 
         Color bc1 = new Color(0.35F, 0.35F, 0.35F, 1.0F);
@@ -144,6 +163,9 @@ public class EUIFontHelper
         EUIFontHelper.cardtooltiptitlefontLarge = prepFont(cardTipTitleFont, 26, 0f, 2f);
         EUIFontHelper.buttonFontSmall = prepFont(buttonFont, 20, 4f, 3f);
         EUIFontHelper.buttonFontLarge = prepFont(buttonFont, 46, 4f, 3f);
+        EUIFontHelper.bannerFontLarge = prepFont(bannerFont, 72, 4f, 0f);
+        EUIFontHelper.bannerFontExtraLarge = prepFont(bannerFont, 115.0F, 6f, 0f);
+        EUIFontHelper.energyFontLarge = prepFont(energyFont, 76.0F, 8f, 3f);
     }
 
     public static void overwriteBaseFonts()
@@ -156,6 +178,11 @@ public class EUIFontHelper
         FontHelper.tipHeaderFont = EUIFontHelper.cardtooltiptitlefontNormal;
         FontHelper.topPanelInfoFont = EUIFontHelper.cardtooltiptitlefontLarge;
         FontHelper.buttonLabelFont = EUIFontHelper.buttonFont;
+        FontHelper.cardEnergyFont_L = EUIFontHelper.energyFont;
+        FontHelper.SCP_cardEnergyFont = EUIFontHelper.energyFontLarge;
+        FontHelper.menuBannerFont = EUIFontHelper.bannerFont;
+        FontHelper.bannerNameFont = EUIFontHelper.bannerFontLarge;
+        FontHelper.dungeonTitleFont = EUIFontHelper.bannerFontExtraLarge;
     }
 
     private static FreeTypeFontGenerator getGenerator(FileHandle fontFile)

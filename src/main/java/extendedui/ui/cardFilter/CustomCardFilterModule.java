@@ -8,6 +8,13 @@ import java.util.Collection;
 
 public abstract class CustomCardFilterModule extends EUIBase
 {
+    protected CardKeywordFilters filters;
+
+    public CustomCardFilterModule(CardKeywordFilters filters)
+    {
+        this.filters = filters;
+    }
+
     public abstract boolean isCardValid(AbstractCard c);
     public abstract boolean isEmpty();
     public abstract boolean isHovered();

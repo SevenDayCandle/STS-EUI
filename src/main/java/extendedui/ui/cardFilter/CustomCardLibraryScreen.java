@@ -40,7 +40,6 @@ public class CustomCardLibraryScreen extends AbstractScreen
     protected final EUIButtonList colorButtons = new EUIButtonList();
     protected float barY;
     protected int topButtonIndex;
-    protected static boolean initialized;
 
     public CustomCardLibraryScreen() {
         final float y = Settings.HEIGHT * 0.92f - (VISIBLE_BUTTONS + 1) * scale(48);
@@ -74,28 +73,29 @@ public class CustomCardLibraryScreen extends AbstractScreen
     }
 
     public void initialize(CardLibraryScreen screen) {
-        if (!initialized) {
-            // Let's just re-use the hard sorting work that basemod and the base game has done for us :)
-            CardLists.put(AbstractCard.CardColor.RED, EUIClassUtils.getField(screen, "redCards"));
-            CardLists.put(AbstractCard.CardColor.GREEN, EUIClassUtils.getField(screen, "greenCards"));
-            CardLists.put(AbstractCard.CardColor.BLUE, EUIClassUtils.getField(screen, "blueCards"));
-            CardLists.put(AbstractCard.CardColor.PURPLE, EUIClassUtils.getField(screen, "purpleCards"));
-            CardLists.put(AbstractCard.CardColor.CURSE, EUIClassUtils.getField(screen, "curseCards"));
-            CardLists.put(AbstractCard.CardColor.COLORLESS, EUIClassUtils.getField(screen, "colorlessCards"));
-            CardLists.putAll(EverythingFix.Fields.cardGroupMap);
+        // CardLibraryScreen needs to be re-initialized whenever the save slot changes
+        CardLists.clear();
+        colorButtons.clear();
 
-            // Add custom buttons. Base game colors come first.
-            makeColorButton(AbstractCard.CardColor.COLORLESS);
-            makeColorButton(AbstractCard.CardColor.CURSE);
-            makeColorButton(AbstractCard.CardColor.RED);
-            makeColorButton(AbstractCard.CardColor.GREEN);
-            makeColorButton(AbstractCard.CardColor.BLUE);
-            makeColorButton(AbstractCard.CardColor.PURPLE);
+        // Let's just re-use the hard sorting work that basemod and the base game has done for us :)
+        CardLists.put(AbstractCard.CardColor.RED, EUIClassUtils.getField(screen, "redCards"));
+        CardLists.put(AbstractCard.CardColor.GREEN, EUIClassUtils.getField(screen, "greenCards"));
+        CardLists.put(AbstractCard.CardColor.BLUE, EUIClassUtils.getField(screen, "blueCards"));
+        CardLists.put(AbstractCard.CardColor.PURPLE, EUIClassUtils.getField(screen, "purpleCards"));
+        CardLists.put(AbstractCard.CardColor.CURSE, EUIClassUtils.getField(screen, "curseCards"));
+        CardLists.put(AbstractCard.CardColor.COLORLESS, EUIClassUtils.getField(screen, "colorlessCards"));
+        CardLists.putAll(EverythingFix.Fields.cardGroupMap);
 
-            // Mod colors are sorted alphabetically
-            BaseMod.getCardColors().stream().sorted(Comparator.comparing(EUIGameUtils::getColorName)).forEach(this::makeColorButton);
-        }
-        initialized = true;
+        // Add custom buttons. Base game colors come first.
+        makeColorButton(AbstractCard.CardColor.COLORLESS);
+        makeColorButton(AbstractCard.CardColor.CURSE);
+        makeColorButton(AbstractCard.CardColor.RED);
+        makeColorButton(AbstractCard.CardColor.GREEN);
+        makeColorButton(AbstractCard.CardColor.BLUE);
+        makeColorButton(AbstractCard.CardColor.PURPLE);
+
+        // Mod colors are sorted alphabetically
+        BaseMod.getCardColors().stream().sorted(Comparator.comparing(EUIGameUtils::getColorName)).forEach(this::makeColorButton);
     }
 
     public void open() {

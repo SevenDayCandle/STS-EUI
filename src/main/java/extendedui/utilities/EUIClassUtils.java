@@ -51,6 +51,11 @@ public class EUIClassUtils
         return ReflectionHacks.privateMethod(o.getClass(), methodName, parameterTypes);
     }
 
+    public static <T> T getRField(String className, String fieldName, Object object) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException
+    {
+        return (T) Class.forName(className).getField(fieldName).get(object);
+    }
+
     public static <T> T getRFieldStatic(String className, String fieldName) throws ClassNotFoundException, NoSuchFieldException, IllegalAccessException
     {
         return (T) Class.forName(className).getField(fieldName).get(null);
@@ -64,6 +69,12 @@ public class EUIClassUtils
     public static <T> T invoke(Object o, String methodName, Object... parameters)
     {
         return getMethod(o, methodName, EUIUtils.map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(o, parameters);
+    }
+
+    public static <T> T invokeR(String className, String methodName, Object object) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
+    {
+        Method m = Class.forName(className).getMethod(methodName);
+        return (T) m.invoke(object);
     }
 
     public static <T> T invokeRStatic(String className, String methodName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException

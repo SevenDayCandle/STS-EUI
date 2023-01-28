@@ -60,6 +60,8 @@ public class EUIConfiguration
     private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
     private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
     private static final String BUTTON_FONT = getFullKey("ButtonFont");
+    private static final String BANNER_FONT = getFullKey("BannerFont");
+    private static final String ENERGY_FONT = getFullKey("EnergyFont");
 
     public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
     public static STSConfigItem<Boolean> disableDescrptionIcons = new STSConfigItem<>(DISABLE_DESCRIPTION_ICONS, false);
@@ -75,6 +77,8 @@ public class EUIConfiguration
     public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT,"");
     public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT,"");
     public static STSStringConfigItem buttonFont = new STSStringConfigItem(BUTTON_FONT,"");
+    public static STSStringConfigItem bannerFont = new STSStringConfigItem(BANNER_FONT,"");
+    public static STSStringConfigItem energyFont = new STSStringConfigItem(ENERGY_FONT,"");
 
     //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
 
@@ -97,6 +101,8 @@ public class EUIConfiguration
             tipDescFont.addConfig(config);
             tipTitleFont.addConfig(config);
             buttonFont.addConfig(config);
+            bannerFont.addConfig(config);
+            energyFont.addConfig(config);
         }
         catch (IOException e)
         {
@@ -124,6 +130,8 @@ public class EUIConfiguration
         ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipDescFont, EUIRM.strings.configTipdescfont, FONT_EXTS).setTooltip(restartTip);
         ModSettingsPathSelector tipTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipTitleFont, EUIRM.strings.configTiptitlefont, FONT_EXTS).setTooltip(restartTip);
         ModSettingsPathSelector buttonFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, buttonFont, EUIRM.strings.configButtonfont, FONT_EXTS).setTooltip(restartTip);
+        ModSettingsPathSelector bannerFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, bannerFont, EUIRM.strings.configBannerFont, FONT_EXTS).setTooltip(restartTip);
+        ModSettingsPathSelector energyFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, energyFont, EUIRM.strings.configEnergyFont, FONT_EXTS).setTooltip(restartTip);
 
 
         // Add basemod options
@@ -150,6 +158,10 @@ public class EUIConfiguration
         yPos = addGenericElement(panel, tipTitleFontSelector2, yPos);
         ModSettingsPathSelector buttonFontSelector2 = (ModSettingsPathSelector) buttonFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(panel, buttonFontSelector2, yPos);
+        ModSettingsPathSelector bannerFontSelector2 = (ModSettingsPathSelector) bannerFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = addGenericElement(panel, buttonFontSelector2, yPos);
+        ModSettingsPathSelector energyFontSelector2 = (ModSettingsPathSelector) energyFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = addGenericElement(panel, buttonFontSelector2, yPos);
         BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
 
         // Sub-font settings should only show up if UseSeparateFonts is true
@@ -159,19 +171,29 @@ public class EUIConfiguration
         tipDescFontSelector.setActive(showOtherSelectors);
         tipTitleFontSelector.setActive(showOtherSelectors);
         buttonFontSelector.setActive(showOtherSelectors);
+        bannerFontSelector.setActive(showOtherSelectors);
+        energyFontSelector.setActive(showOtherSelectors);
         cardTitleFontSelector2.setActive(showOtherSelectors);
         tipDescFontSelector2.setActive(showOtherSelectors);
         tipTitleFontSelector2.setActive(showOtherSelectors);
+        buttonFontSelector2.setActive(showOtherSelectors);
+        bannerFontSelector2.setActive(showOtherSelectors);
+        energyFontSelector2.setActive(showOtherSelectors);
         useSeparateFonts.addListener(newValue -> {
             cardDescFontSelector2.setHeaderText(newValue ? EUIRM.strings.configCarddescfont : EUIRM.strings.configMainfont);
             cardTitleFontSelector.setActive(newValue);
             tipDescFontSelector.setActive(newValue);
             tipTitleFontSelector.setActive(newValue);
             buttonFontSelector.setActive(newValue);
+            bannerFontSelector.setActive(newValue);
+            energyFontSelector.setActive(newValue);
             cardTitleFontSelector2.setActive(newValue);
             tipDescFontSelector2.setActive(newValue);
             tipTitleFontSelector2.setActive(newValue);
             buttonFontSelector2.setActive(newValue);
+            buttonFontSelector2.setActive(newValue);
+            bannerFontSelector2.setActive(newValue);
+            energyFontSelector2.setActive(newValue);
         });
     }
 
