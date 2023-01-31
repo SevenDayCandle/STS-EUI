@@ -104,11 +104,13 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
 
     public EUITextBoxReceiver<T> setTooltip(EUITooltip tip) {
         super.setTooltip(tip);
+        this.header.setTooltip(tip);
         return this;
     }
 
     public EUITextBoxReceiver<T>setTooltip(String name, String desc) {
         super.setTooltip(name, desc);
+        this.header.setTooltip(this.tooltip);
         return this;
     }
 

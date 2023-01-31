@@ -412,11 +412,13 @@ public class EUIDropdown<T> extends EUIHoverable
 
     public EUIDropdown<T> setTooltip(EUITooltip tip) {
         super.setTooltip(tip);
+        this.header.setTooltip(tip);
         return this;
     }
 
     public EUIDropdown<T> setTooltip(String name, String desc) {
         super.setTooltip(name, desc);
+        this.header.setTooltip(this.tooltip);
         return this;
     }
 
