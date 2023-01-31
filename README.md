@@ -11,10 +11,11 @@ This mod adds the following features:
 
 Both the card pool and the card filters components come with hooks that allow modders to render custom components within those screens. The card filter also allows modders to define their own custom filters for their custom cards.
 
-This mod also comes with the following features:
+This mod also comes with a number of tools for modders:
 - Support for playing Effekseer animations in Slay the Spire.
 - Support for colorizing Effekseer animations and images in general with the colorful-gdx library, which offers a greater degree of freedom with color manipulation.
 - Support for setting up your own fonts.
+- Wrappers for quickly deploying and keeping track of ImGUI components.
 
 You can find Effekseer, along with some sample animations, at https://effekseer.github.io/en/.
 
@@ -25,7 +26,7 @@ If you would like to request features or give feedback on this mod, you can do s
 - ModTheSpire (3.2.2+)
 - STSLib (2.0.0+)
 
-In addition, this library only works on Windows and Linux machines.
+Effekseer effects will currently only run on Windows and Linux machines. Macs will require me to build a DLL library specifically for Macs, but I don't have a Mac to do this :(
 
 ## **Credits**
 - Code adapted from https://github.com/EatYourBeetS/STS-AnimatorMod. Discord link: https://discord.gg/SmHMmJR
