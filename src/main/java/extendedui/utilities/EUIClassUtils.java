@@ -1,8 +1,8 @@
 package extendedui.utilities;
 
 import basemod.ReflectionHacks;
-import extendedui.interfaces.delegates.FuncT1;
 import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.FuncT1;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;

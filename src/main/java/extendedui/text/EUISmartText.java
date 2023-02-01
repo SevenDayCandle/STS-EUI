@@ -8,7 +8,6 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;

@@ -4,6 +4,7 @@ import extendedui.interfaces.delegates.ActionT0;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCond;
+import imgui.flag.ImGuiWindowFlags;
 
 import static extendedui.ui.EUIBase.scale;
 
@@ -14,13 +15,14 @@ public class DEUIWindow extends DEUIBaseT1<ActionT0>
     protected float x;
     protected float y;
     protected int setMode = ImGuiCond.FirstUseEver;
+    protected int windowMode = ImGuiWindowFlags.None;
 
     public DEUIWindow(String id)
     {
-        this(id, 0, 0, scale(100), scale(100), ImGuiCond.FirstUseEver);
+        this(id, 0, 0, scale(100), scale(100), ImGuiCond.FirstUseEver, ImGuiWindowFlags.None);
     }
 
-    public DEUIWindow(String id, float x, float y, float width, float height, int setMode)
+    public DEUIWindow(String id, float x, float y, float width, float height, int setMode, int windowMode)
     {
         super(id);
         this.x = x;
@@ -28,6 +30,7 @@ public class DEUIWindow extends DEUIBaseT1<ActionT0>
         this.width = width;
         this.height = height;
         this.setMode = setMode;
+        this.windowMode = windowMode;
     }
 
     public DEUIWindow setDimensions(float x, float y, float width, float height)
@@ -45,17 +48,23 @@ public class DEUIWindow extends DEUIBaseT1<ActionT0>
         return this;
     }
 
-    public void render(ActionT0 onRender)
+    public DEUIWindow setWindowMode(int mode)
     {
-        render(onRender, x, y, width, height, setMode);
+        this.windowMode = mode;
+        return this;
     }
 
-    public void render(ActionT0 onRender, float x, float y, float width, float height, int setMode)
+    public void render(ActionT0 onRender)
+    {
+        render(onRender, x, y, width, height, setMode, windowMode);
+    }
+
+    public void render(ActionT0 onRender, float x, float y, float width, float height, int setMode, int windowMode)
     {
         ImVec2 wPos = ImGui.getMainViewport().getPos();
         ImGui.setNextWindowPos(wPos.x + x, wPos.y + y, setMode);
         ImGui.setNextWindowSize(width, height, setMode);
-        if (ImGui.begin(ID))
+        if (ImGui.begin(ID, windowMode))
         {
             onRender.invoke();
         }

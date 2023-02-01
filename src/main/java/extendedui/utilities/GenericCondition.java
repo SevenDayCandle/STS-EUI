@@ -1,9 +1,9 @@
 package extendedui.utilities;
 
+import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.FuncT0;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.delegates.FuncT2;
-import extendedui.EUIUtils;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 

@@ -20,7 +20,6 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
-import com.sun.org.apache.xpath.internal.operations.Mod;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.patches.EUIKeyword;
 import extendedui.ui.AbstractScreen;

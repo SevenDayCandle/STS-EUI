@@ -4,6 +4,7 @@ import extendedui.interfaces.delegates.ActionT0;
 import imgui.ImGui;
 import imgui.ImVec2;
 import imgui.flag.ImGuiCond;
+import imgui.flag.ImGuiWindowFlags;
 import imgui.type.ImBoolean;
 
 import static extendedui.ui.EUIBase.scale;
@@ -14,12 +15,12 @@ public class DEUICloseableWindow extends DEUIWindow
 
     public DEUICloseableWindow(String id)
     {
-        this(id, 0, 0, scale(100), scale(100), ImGuiCond.FirstUseEver);
+        this(id, 0, 0, scale(100), scale(100), ImGuiCond.FirstUseEver, ImGuiWindowFlags.None);
     }
 
-    public DEUICloseableWindow(String id, float x, float y, float width, float height, int setMode)
+    public DEUICloseableWindow(String id, float x, float y, float width, float height, int setMode, int windowMode)
     {
-        super(id, x, y, width, height, setMode);
+        super(id, x, y, width, height, setMode, windowMode);
     }
 
     public DEUICloseableWindow setDimensions(float x, float y, float width, float height)

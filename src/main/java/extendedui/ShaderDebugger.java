@@ -11,6 +11,7 @@ import extendedui.debug.DEUIWindow;
 import extendedui.ui.EUIBase;
 import extendedui.ui.controls.EUIImage;
 import imgui.ImGui;
+import imgui.flag.ImGuiInputTextFlags;
 
 public class ShaderDebugger implements ImGuiSubscriber
 {
@@ -24,7 +25,6 @@ public class ShaderDebugger implements ImGuiSubscriber
     private final DEUIButton effectRender;
     private final DEUIButton effectStop;
     private final EUIImage testImage;
-    private final EUIImage testImage2;
     private DEUITextMultilineInput fragmentShader;
     private ShaderProgram shader;
 
@@ -33,10 +33,8 @@ public class ShaderDebugger implements ImGuiSubscriber
         effectWindow = new DEUIWindow(WINDOW_ID);
         effectRender = new DEUIButton(RENDER_ID);
         effectStop = new DEUIButton(STOP_ID);
-        testImage = new EUIImage(EUIRM.images.cardPool.texture());
-        testImage2 = new EUIImage(EUIRM.images.cardPool.texture());
+        testImage = new EUIImage(EUIRM.images.baseBadge.texture());
         testImage.setPosition(EUIBase.screenW(0.5f), EUIBase.screenH(0.5f));
-        testImage2.setPosition(EUIBase.screenW(0.7f), EUIBase.screenH(0.7f));
     }
 
     public static void initialize() {
@@ -55,15 +53,14 @@ public class ShaderDebugger implements ImGuiSubscriber
     public void receiveImGui()
     {
         effectWindow.render(() -> {
-            // Buffers can be expensive so we only create this if we have to
-            if (fragmentShader == null)
-            {
-                fragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 700, 3000);
-            }
-            fragmentShader.render();
-            ImGui.separator();
             effectRender.renderInline(this::compile);
             effectStop.render(() -> shader = null);
+            ImGui.separator();
+            if (fragmentShader == null)
+            {
+                fragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 0, 3000, ImGuiInputTextFlags.AllowTabInput);
+            }
+            fragmentShader.render();
         });
         renderShader();
     }
@@ -93,7 +90,6 @@ public class ShaderDebugger implements ImGuiSubscriber
         {
             shader.setUniformf("u_time", EUI.time());
             EUI.addPostRender(s -> EUIRenderHelpers.drawWithShader(s, shader, testImage::tryRender));
-            EUI.addPostRender(s -> EUIRenderHelpers.drawRainbow(s, testImage2::tryRender));
         }
     }
 }
