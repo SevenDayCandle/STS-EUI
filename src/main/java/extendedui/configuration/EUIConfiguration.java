@@ -114,7 +114,6 @@ public class EUIConfiguration
     {
 
         // Add EUI options
-        EUITooltip restartTip = new EUITooltip(EUIRM.strings.miscRestartrequired).setHeaderFont(EUIFontHelper.carddescriptionfontNormal);
         effekseerCategory = new ModSettingsScreen.Category(EUIRM.strings.miscEffekseersettings);
         fontCategory = new ModSettingsScreen.Category(EUIRM.strings.miscFontsettings);
         ModSettingsScreen.addCategory(effekseerCategory);
@@ -123,15 +122,15 @@ public class EUIConfiguration
         makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.configDisableEffekseer);
         makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.configFlushOnGameStart);
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.configFlushOnRoomStart);
-        makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.configUseSeparateFonts).setTooltip(restartTip);
-        makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.configOverridegamefont).setTooltip(new EUITooltip(EUIRM.strings.miscFontdescription + " | " + EUIRM.strings.miscRestartrequired));
-        ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardDescFont, EUIRM.strings.configCarddescfont, FONT_EXTS).setTooltip(restartTip);
-        ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardTitleFont, EUIRM.strings.configCardtitlefont, FONT_EXTS).setTooltip(restartTip);
-        ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipDescFont, EUIRM.strings.configTipdescfont, FONT_EXTS).setTooltip(restartTip);
-        ModSettingsPathSelector tipTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipTitleFont, EUIRM.strings.configTiptitlefont, FONT_EXTS).setTooltip(restartTip);
-        ModSettingsPathSelector buttonFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, buttonFont, EUIRM.strings.configButtonfont, FONT_EXTS).setTooltip(restartTip);
-        ModSettingsPathSelector bannerFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, bannerFont, EUIRM.strings.configBannerFont, FONT_EXTS).setTooltip(restartTip);
-        ModSettingsPathSelector energyFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, energyFont, EUIRM.strings.configEnergyFont, FONT_EXTS).setTooltip(restartTip);
+        makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.configUseSeparateFonts).setTooltip(EUIRM.strings.configUseSeparateFonts, EUIRM.strings.miscRestartrequired);
+        makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.configOverridegamefont).setTooltip(EUIRM.strings.configOverridegamefont,EUIRM.strings.miscFontdescription + " | " + EUIRM.strings.miscRestartrequired);
+        ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardDescFont, EUIRM.strings.configCarddescfont, FONT_EXTS).setTooltip(EUIRM.strings.configCarddescfont, EUIRM.strings.miscRestartrequired);
+        ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardTitleFont, EUIRM.strings.configCardtitlefont, FONT_EXTS).setTooltip(EUIRM.strings.configCardtitlefont, EUIRM.strings.miscRestartrequired);
+        ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipDescFont, EUIRM.strings.configTipdescfont, FONT_EXTS).setTooltip(EUIRM.strings.configTipdescfont, EUIRM.strings.miscRestartrequired);
+        ModSettingsPathSelector tipTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipTitleFont, EUIRM.strings.configTiptitlefont, FONT_EXTS).setTooltip(EUIRM.strings.configTiptitlefont, EUIRM.strings.miscRestartrequired);
+        ModSettingsPathSelector buttonFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, buttonFont, EUIRM.strings.configButtonfont, FONT_EXTS).setTooltip(EUIRM.strings.configButtonfont, EUIRM.strings.miscRestartrequired);
+        ModSettingsPathSelector bannerFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, bannerFont, EUIRM.strings.configBannerFont, FONT_EXTS).setTooltip(EUIRM.strings.configBannerFont, EUIRM.strings.miscRestartrequired);
+        ModSettingsPathSelector energyFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, energyFont, EUIRM.strings.configEnergyFont, FONT_EXTS).setTooltip(EUIRM.strings.configEnergyFont, EUIRM.strings.miscRestartrequired);
 
 
         // Add basemod options
