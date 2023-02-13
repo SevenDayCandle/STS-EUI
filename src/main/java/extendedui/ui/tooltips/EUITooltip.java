@@ -37,6 +37,7 @@ import extendedui.interfaces.delegates.FuncT0;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.patches.EUIKeyword;
 import extendedui.text.EUISmartText;
+import extendedui.ui.TextureCache;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
@@ -900,6 +901,11 @@ public class EUITooltip
         this.icon = new TextureRegion(region.getTexture(), x + (w / div), y + (h / div), w - (w / half_div), h - (h / half_div));
 
         return this;
+    }
+
+    public EUITooltip setIcon(TextureCache texture)
+    {
+        return setIcon(texture.texture());
     }
 
     public EUITooltip setIcon(Texture texture)
