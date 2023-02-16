@@ -12,6 +12,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -47,9 +48,9 @@ import java.util.*;
 
 public class EUITooltip
 {
-    protected static final HashMap<String, EUITooltip> RegisteredIDs = new HashMap<>();
-    protected static final HashMap<String, EUITooltip> RegisteredNames = new HashMap<>();
-    protected static final HashSet<EUITooltip> IconUpdatingList = new HashSet<>();
+    protected static final HashMap<String, EUITooltip> REGISTERED_IDS = new HashMap<>();
+    protected static final HashMap<String, EUITooltip> REGISTERED_NAMES = new HashMap<>();
+    protected static final HashSet<EUITooltip> ICON_UPDATING_LIST = new HashSet<>();
 
     public static final Color BASE_COLOR = new Color(1f, 0.9725f, 0.8745f, 1f);
     public static final float CARD_TIP_PAD = 12f * Settings.scale;
@@ -70,8 +71,6 @@ public class EUITooltip
 
     private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
-    private static final String ALT_STRING = Input.Keys.toString(Input.Keys.ALT_LEFT) + "+";
-    private static boolean inHand;
     private static TooltipProvider provider;
     private static TooltipProvider lastProvider;
     private static AbstractCreature creature;
@@ -98,6 +97,7 @@ public class EUITooltip
     public boolean canRender = true;
     public boolean renderBg = true;
     public boolean useLogic = false;
+    public float width = BOX_W;
     public float iconmultiH = 1;
     public float iconmultiW = 1;
     protected int currentDesc;
@@ -156,34 +156,34 @@ public class EUITooltip
 
     public static void registerID(String id, EUITooltip tooltip)
     {
-        RegisteredIDs.put(id, tooltip);
+        REGISTERED_IDS.put(id, tooltip);
         tooltip.ID = id;
     }
 
     public static void registerName(String name, EUITooltip tooltip)
     {
-        RegisteredNames.put(name, tooltip);
+        REGISTERED_NAMES.put(name, tooltip);
     }
 
     public static Set<Map.Entry<String, EUITooltip>> getEntries() {
-        return RegisteredIDs.entrySet();
+        return REGISTERED_IDS.entrySet();
     }
 
     public static EUITooltip findByName(String name)
     {
-        return RegisteredNames.get(name);
+        return REGISTERED_NAMES.get(name);
     }
 
     public static EUITooltip findByID(String id)
     {
-        return RegisteredIDs.get(id);
+        return REGISTERED_IDS.get(id);
     }
 
     public static String findName(EUITooltip tooltip)
     {
-        for (String key : RegisteredNames.keySet())
+        for (String key : REGISTERED_NAMES.keySet())
         {
-            if (RegisteredNames.get(key) == tooltip)
+            if (REGISTERED_NAMES.get(key) == tooltip)
             {
                 return key;
             }
@@ -245,7 +245,7 @@ public class EUITooltip
     }
 
     public static void updateTooltipIcons() {
-        for (EUITooltip tip : IconUpdatingList) {
+        for (EUITooltip tip : ICON_UPDATING_LIST) {
             tip.icon = tip.iconFunc.invoke();
         }
     }
@@ -265,7 +265,7 @@ public class EUITooltip
     {
         float x = InputHelper.mX;
         float y = InputHelper.mY;
-        x += (x < Settings.WIDTH * 0.75f) ? (Settings.scale * 40f) : -(BOX_W + (Settings.scale * 40f));
+        x += (x < Settings.WIDTH * 0.75f) ? (Settings.scale * 40f) : -(tooltip.width + (Settings.scale * 40f));
         y += (y < Settings.HEIGHT * 0.9f) ? (Settings.scale * 40f) : -(Settings.scale * 50f);
         queueTooltip(tooltip, x, y);
     }
@@ -288,10 +288,11 @@ public class EUITooltip
 
     public static void queueTooltips(Collection<EUITooltip> tips)
     {
+        float maxWidth = tips.size() > 0 ? EUIUtils.max(tips, tip -> tip.width) : BOX_W;
         float estHeight = EUIUtils.sum(tips, EUITooltip::height);
         float x = InputHelper.mX;
         float y = InputHelper.mY;
-        x += (x < Settings.WIDTH * 0.75f) ? (Settings.scale * 40f) : -(BOX_W + (Settings.scale * 40f));
+        x += (x < Settings.WIDTH * 0.75f) ? (Settings.scale * 40f) : -(maxWidth + (Settings.scale * 40f));
         y += (y < Settings.HEIGHT * 0.9f) ? (Settings.scale * 40f) : -(Settings.scale * 50f);
         if (y - estHeight < 0) {
             y += estHeight;
@@ -364,8 +365,6 @@ public class EUITooltip
             return;
         }
 
-        inHand = AbstractDungeon.player != null && AbstractDungeon.player.hand.contains(card);
-
         if (lastProvider != provider) {
             lastProvider = provider;
             List<EUITooltip> pTips = provider.getTips();
@@ -381,20 +380,13 @@ public class EUITooltip
             }
         }
 
-        final boolean alt = Gdx.input.isKeyPressed(Input.Keys.ALT_LEFT) || Gdx.input.isKeyPressed(Input.Keys.ALT_RIGHT);
-        for (int i = 0; i < tooltips.size(); i++)
+        for (EUITooltip tip : tooltips)
         {
-            EUITooltip tip = tooltips.get(i);
             if (StringUtils.isNotEmpty(tip.ID))
             {
                 if (tip.hideDescription == null)
                 {
                     tip.hideDescription = EUIConfiguration.hideTipDescription(tip.ID);
-                }
-
-                if (!inHand && alt && Gdx.input.isKeyJustPressed(Input.Keys.NUM_1 + i))
-                {
-                    EUIConfiguration.hideTipDescription(tip.ID, (tip.hideDescription ^= true), true);
                 }
             }
 
@@ -420,21 +412,14 @@ public class EUITooltip
             }
             else
             {
-                x -= AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD + BOX_W;
+                x -= AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD + tooltips.size() > 0 ? EUIUtils.max(tooltips, tip -> tip.width) : BOX_W;
             }
 
             y = card.current_y - BOX_EDGE_H;
             float size = 0;
             for (EUITooltip tip : tooltips)
             {
-                if (tip.hideDescription || StringUtils.isEmpty(tip.description()))
-                {
-                    if (!inHand)
-                    {
-                        size += 0.2f;
-                    }
-                }
-                else
+                if (!tip.hideDescription && !StringUtils.isEmpty(tip.description()))
                 {
                     size += 1f;
                 }
@@ -456,7 +441,7 @@ public class EUITooltip
         for (int i = 0; i < tooltips.size(); i++)
         {
             EUITooltip tip = tooltips.get(i);
-            if (inHand && (tip.hideDescription || StringUtils.isEmpty(tip.description())))
+            if ((tip.hideDescription || StringUtils.isEmpty(tip.description())))
             {
                 continue;
             }
@@ -613,7 +598,6 @@ public class EUITooltip
         renderTipsImpl(sb, pTips, x, y);
     }
 
-    // TODO rework
     public static void renderFromCreature(SpriteBatch sb)
     {
         if (creature == null)
@@ -632,6 +616,8 @@ public class EUITooltip
             x = creature.hb.cX - (creature.hb.width / 2.0F) + TIP_OFFSET_L_X;
         }
 
+        float maxWidth = tooltips.size() > 0 ? EUIUtils.max(tooltips, tip -> tip.width) : BOX_W;
+
         if (lastHoveredCreature != creature) {
             lastHoveredCreature = creature;
 
@@ -648,7 +634,7 @@ public class EUITooltip
                 EUICardPreview preview = provider.getPreview();
                 if (preview != null)
                 {
-                    float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
+                    float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + maxWidth : x - AbstractCard.IMG_WIDTH;
                     preview.render(sb, previewOffset, y, 0.8f, preview.getCard().upgraded);
                 }
             }
@@ -694,7 +680,7 @@ public class EUITooltip
         }
 
         final float original_y = y;
-        final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
+        final float offset_x = (x > TIP_X_THRESHOLD) ? maxWidth : -maxWidth;
         float offset = 0.0F;
 
         float offsetChange;
@@ -793,13 +779,13 @@ public class EUITooltip
         if (renderBg)
         {
             sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
-            sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, BOX_W, BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BODY, x + SHADOW_DIST_X, y - h - BOX_EDGE_H - SHADOW_DIST_Y, BOX_W, h + BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BOT, x + SHADOW_DIST_X, y - h - BOX_BODY_H - SHADOW_DIST_Y, BOX_W, BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, width, BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_BODY, x + SHADOW_DIST_X, y - h - BOX_EDGE_H - SHADOW_DIST_Y, width, h + BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_BOT, x + SHADOW_DIST_X, y - h - BOX_BODY_H - SHADOW_DIST_Y, width, BOX_EDGE_H);
             sb.setColor(Color.WHITE);
-            sb.draw(ImageMaster.KEYWORD_TOP, x, y, BOX_W, BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BODY, x, y - h - BOX_EDGE_H, BOX_W, h + BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, BOX_W, BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_TOP, x, y, width, BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_BODY, x, y - h - BOX_EDGE_H, width, h + BOX_EDGE_H);
+            sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, width, BOX_EDGE_H);
         }
 
         if (icon != null)
@@ -815,11 +801,7 @@ public class EUITooltip
 
         if (!StringUtils.isEmpty(desc))
         {
-            if (provider != null && StringUtils.isNotEmpty(ID) && !inHand && index >= 0)
-            {
-                FontHelper.renderFontRightTopAligned(sb, descFont, ALT_STRING + (index + 1), x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, Settings.PURPLE_COLOR);
-            }
-            else if (subText != null)
+            if (subText != null)
             {
                 FontHelper.renderFontRightTopAligned(sb, descFont, subText.text, x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, subText.color);
             }
@@ -951,7 +933,7 @@ public class EUITooltip
 
     public EUITooltip setIconFunc(FuncT0<TextureRegion> iconFunc) {
         this.iconFunc = iconFunc;
-        IconUpdatingList.add(this);
+        ICON_UPDATING_LIST.add(this);
 
         return this;
     }
@@ -1005,6 +987,22 @@ public class EUITooltip
     public EUITooltip setTitle(String title)
     {
         this.title = title;
+        invalidateHeight();
+
+        return this;
+    }
+
+    public EUITooltip setWidth(float width)
+    {
+        this.width = width;
+        invalidateHeight();
+
+        return this;
+    }
+
+    public EUITooltip setAutoWidth()
+    {
+        this.width = Math.max(BOX_W, EUISmartText.getSmartWidth(headerFont, title) + BOX_EDGE_H);
         invalidateHeight();
 
         return this;

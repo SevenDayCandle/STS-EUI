@@ -2,7 +2,8 @@
   "extendedui:config": {
 	"TEXT": [
 	  "使用原版卡牌总览界面",
-	  "禁用提示描述中的图标",
+			"Disable compendium top panel button",
+			"禁用提示描述中的图标",
 	  "禁用Effekseer特效",
 	  "开始游戏时清空Effekseer缓存",
 	  "进入新房间时清空Effekseer缓存",
@@ -16,7 +17,10 @@
 	  "提示标题字体",
 	  "按钮字体",
 			"能量字体",
-	  "横幅字体"
+	  "横幅字体",
+			"Re-enable Tooltips",
+			"Disable Tooltip",
+			"Enable Tooltip"
 	]
   },
   "extendedui:grammar": {
@@ -62,7 +66,14 @@
 	  "EUI",
 	  "EUI字体",
 	  "需要重启",
-	  "本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。"
+	  "本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。",
+			"If checked, different text types (e.g. button text, tip title text) will use different fonts, and text types without any font specified will fall back on the default font. Otherwise, all text types will use the font you specify below.",
+			"By default, only settings registered with EUI will appear in this mod's additional settings menu. Checking this option will allow ANY setting registered with BaseMod to appear in this menu. | WARNING: Some mod settings may not render properly or may produce unintended consequences when toggled during a run",
+			"Check this option to remove the compendium button on the top of the screen during runs.",
+			"Check this option to use the base game's method of rendering the various compendium screens. Filters will still be available.",
+			"Check this option to replace keyword icons in descrptions with their titles.",
+			"Check this option to disable the playing of VFX rendered with Effekseer.",
+			"Only check this option if you are running into memory issues or if Effekseer VFX do not render properly."
 	]
   },
   "extendedui:ui_pool": {

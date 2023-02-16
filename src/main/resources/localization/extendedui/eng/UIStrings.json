@@ -2,11 +2,12 @@
   "extendedui:config": {
 	"TEXT": [
 	  "Use Vanilla Card Library Screen",
+			"Disable compendium top panel button",
 	  "Disable description icons",
 	  "Disable Effekseer Effects",
 	  "Flush Effekseer Cache when Starting a Run",
 	  "Flush Effekseer Cache when Entering a New Room",
-	  "Show All Mod Settings in Extra Settings (Warning: unstable)",
+	  "Show All Mod Settings in Extra Settings",
 	  "Use Separate Fonts",
 	  "Override Vanilla Fonts",
 	  "Main Font",
@@ -16,7 +17,10 @@
 	  "Tip Title Font",
 	  "Button Font",
 			"Energy Font",
-	  "Banner Font"
+	  "Banner Font",
+			"Re-enable Tooltips",
+			"Disable Tooltip",
+			"Enable Tooltip"
 	]
   },
   "extendedui:grammar": {
@@ -62,7 +66,14 @@
 	  "EUI",
 	  "EUI Fonts",
 	  "Requires restart",
-	  "This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well."
+	  "This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well.",
+			"If checked, different text types (e.g. button text, tip title text) will use different fonts, and text types without any font specified will fall back on the default font. Otherwise, all text types will use the font you specify below.",
+			"By default, only settings registered with EUI will appear in this mod's additional settings menu. Checking this option will allow ANY setting registered with BaseMod to appear in this menu. | WARNING: Some mod settings may not render properly or may produce unintended consequences when toggled during a run",
+			"Check this option to remove the compendium button on the top of the screen during runs.",
+			"Check this option to use the base game's method of rendering the various compendium screens. Filters will still be available.",
+			"Check this option to replace keyword icons in descrptions with their titles.",
+			"Check this option to disable the playing of VFX rendered with Effekseer.",
+			"Only check this option if you are running into memory issues or if Effekseer VFX do not render properly."
 	]
   },
   "extendedui:ui_pool": {

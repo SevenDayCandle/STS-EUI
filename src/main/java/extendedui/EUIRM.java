@@ -133,21 +133,22 @@ public class EUIRM
         private final UIStrings stringsUIFilter = getUIStrings("ui_filters");
 
         public final String configUseVanillaCompendium = stringsConfig.TEXT[0];
-        public final String configDisableDescriptionIcons = stringsConfig.TEXT[1];
-        public final String configDisableEffekseer = stringsConfig.TEXT[2];
-        public final String configFlushOnGameStart = stringsConfig.TEXT[3];
-        public final String configFlushOnRoomStart = stringsConfig.TEXT[4];
-        public final String configShowModSettings = stringsConfig.TEXT[5];
-        public final String configUseSeparateFonts = stringsConfig.TEXT[6];
-        public final String configOverridegamefont = stringsConfig.TEXT[7];
-        public final String configMainfont = stringsConfig.TEXT[8];
-        public final String configCarddescfont = stringsConfig.TEXT[9];
-        public final String configCardtitlefont = stringsConfig.TEXT[10];
-        public final String configTipdescfont = stringsConfig.TEXT[11];
-        public final String configTiptitlefont = stringsConfig.TEXT[12];
-        public final String configButtonfont = stringsConfig.TEXT[13];
-        public final String configEnergyFont = stringsConfig.TEXT[14];
-        public final String configBannerFont = stringsConfig.TEXT[15];
+        public final String configDisableCompendiumButton = stringsConfig.TEXT[1];
+        public final String configDisableDescriptionIcons = stringsConfig.TEXT[2];
+        public final String configDisableEffekseer = stringsConfig.TEXT[3];
+        public final String configFlushOnGameStart = stringsConfig.TEXT[4];
+        public final String configFlushOnRoomStart = stringsConfig.TEXT[5];
+        public final String configShowModSettings = stringsConfig.TEXT[6];
+        public final String configUseSeparateFonts = stringsConfig.TEXT[7];
+        public final String configOverridegamefont = stringsConfig.TEXT[8];
+        public final String configMainfont = stringsConfig.TEXT[9];
+        public final String configCarddescfont = stringsConfig.TEXT[10];
+        public final String configCardtitlefont = stringsConfig.TEXT[11];
+        public final String configTipdescfont = stringsConfig.TEXT[12];
+        public final String configTiptitlefont = stringsConfig.TEXT[13];
+        public final String configButtonfont = stringsConfig.TEXT[14];
+        public final String configEnergyFont = stringsConfig.TEXT[15];
+        public final String configBannerFont = stringsConfig.TEXT[16];
 
         public final String hotkeyCycle = stringsHotkeys.TEXT[0];
         public final String hotkeyOpencardpool = stringsHotkeys.TEXT[1];
@@ -162,6 +163,13 @@ public class EUIRM
         public final String miscFontsettings = stringsMisc.TEXT[6];
         public final String miscRestartrequired = stringsMisc.TEXT[7];
         public final String miscFontdescription = stringsMisc.TEXT[8];
+        public final String miscFontSeparateDescription = stringsMisc.TEXT[9];
+        public final String miscModSettingsDescription = stringsMisc.TEXT[10];
+        public final String miscCompendiumButtonDescription = stringsMisc.TEXT[11];
+        public final String miscVanillaLibraryDescription = stringsMisc.TEXT[12];
+        public final String miscDisableDescriptionIconDescription = stringsMisc.TEXT[13];
+        public final String miscDisableEffekseerDescription = stringsMisc.TEXT[14];
+        public final String miscFlushEffekseerDescription = stringsMisc.TEXT[15];
 
         public final String uipoolViewpool = stringsUIPool.TEXT[0];
         public final String uipoolViewpooldescription = stringsUIPool.TEXT[1];

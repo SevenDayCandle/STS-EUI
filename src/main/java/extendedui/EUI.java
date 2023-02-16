@@ -20,6 +20,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.patches.EUIKeyword;
 import extendedui.ui.AbstractScreen;
@@ -67,6 +68,7 @@ public class EUI
     public static RelicKeywordFilters relicFilters;
     public static RelicPoolScreen relicScreen;
     public static RelicSortHeader relicHeader;
+    public static CardPoolPanelItem compendiumButton;
     protected static EUIBase activeElement;
     private static float delta = 0;
     private static float timer = 0;
@@ -218,8 +220,11 @@ public class EUI
         relicFilters = new RelicKeywordFilters();
         relicHeader = new RelicSortHeader(null);
         relicScreen = new RelicPoolScreen();
+        compendiumButton = new CardPoolPanelItem();
 
-        BaseMod.addTopPanelItem(new CardPoolPanelItem());
+        // Toggling the compendium button requires us to immediately update the top panel
+        // This needs to be added here instead of the config initialization because we would throw in a null item into the top panel if we did the latter
+        EUIConfiguration.disableCompendiumButton.addListener(EUI::toggleCompendiumButton);
 
         openCardFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
             .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
@@ -231,6 +236,18 @@ public class EUI
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
                 .setOnClick(() -> EUI.relicFilters.toggleFilters())
                 .setColor(Color.GRAY);
+    }
+
+    public static void toggleCompendiumButton(boolean hide)
+    {
+        if (hide)
+        {
+            BaseMod.removeTopPanelItem(compendiumButton);
+        }
+        else
+        {
+            BaseMod.addTopPanelItem(compendiumButton);
+        }
     }
 
     public static boolean isDragging()
