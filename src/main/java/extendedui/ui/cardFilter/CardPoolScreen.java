@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
+import extendedui.ui.AbstractDungeonScreen;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUICardGrid;
@@ -22,7 +23,7 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
 
-public class CardPoolScreen extends AbstractScreen
+public class CardPoolScreen extends AbstractDungeonScreen
 {
     public static CustomCardPoolModule customModule;
 
@@ -118,6 +119,7 @@ public class CardPoolScreen extends AbstractScreen
     @Override
     public void updateImpl()
     {
+        super.updateImpl();
         if (!EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             cardGrid.tryUpdate();
             upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();

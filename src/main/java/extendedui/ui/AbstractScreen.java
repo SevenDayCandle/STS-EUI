@@ -7,6 +7,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
@@ -19,6 +20,7 @@ public abstract class AbstractScreen extends EUIBase
 {
     @SpireEnum
     public static AbstractDungeon.CurrentScreen EUI_SCREEN;
+
     @SpireEnum
     public static MainMenuScreen.CurScreen EUI_MENU;
 
@@ -29,18 +31,10 @@ public abstract class AbstractScreen extends EUIBase
         return isNullOrNone(AbstractDungeon.previousScreen) && !CardCrawlGame.isPopupOpen;
     }
 
-    protected void open() {
-        open(true, true);
-    }
-
-    protected void open(boolean hideTopBar, boolean hideRelics)
+    protected void open()
     {
-
-        updateDungeonScreen();
-
-        Settings.hideTopBar = hideTopBar;
-        Settings.hideRelics = hideRelics;
         EUI.currentScreen = this;
+        updateDungeonPreviousScreen();
 
         AbstractDungeon.isScreenUp = true;
 
@@ -64,10 +58,33 @@ public abstract class AbstractScreen extends EUIBase
             previousMainScreen = CardCrawlGame.mainMenuScreen.screen;
             CardCrawlGame.mainMenuScreen.screen = EUI_MENU;
         }
-
     }
 
     protected void updateDungeonScreen()
+    {
+        updateDungeonPreviousScreen();
+
+        AbstractDungeon.isScreenUp = true;
+
+        if (EUIGameUtils.inBattle())
+        {
+            AbstractDungeon.player.releaseCard();
+            AbstractDungeon.overlayMenu.hideCombatPanels();
+        }
+
+        if (EUIGameUtils.inGame())
+        {
+            AbstractDungeon.topPanel.unhoverHitboxes();
+            AbstractDungeon.topPanel.potionUi.isHidden = true;
+
+            AbstractDungeon.dynamicBanner.hide();
+            AbstractDungeon.overlayMenu.proceedButton.hide();
+            AbstractDungeon.overlayMenu.cancelButton.hide();
+            AbstractDungeon.overlayMenu.showBlackScreen(0.7f);
+        }
+    }
+
+    protected void updateDungeonPreviousScreen()
     {
         if (AbstractDungeon.screen != EUI_SCREEN) {
 
@@ -83,7 +100,21 @@ public abstract class AbstractScreen extends EUIBase
         }
     }
 
-    public void reopen() {
+    protected void updateMainScreen()
+    {
+        if (CardCrawlGame.mainMenuScreen != null && CardCrawlGame.mainMenuScreen.screen != EUI_MENU) {
+            previousMainScreen = CardCrawlGame.mainMenuScreen.screen;
+            CardCrawlGame.mainMenuScreen.screen = EUI_MENU;
+        }
+    }
+
+    public void onEscape()
+    {
+        InputHelper.pressedEscape = false;
+    }
+
+    public void reopen()
+    {
 
     }
 
@@ -133,6 +164,10 @@ public abstract class AbstractScreen extends EUIBase
 
     public void updateImpl()
     {
+        if (InputHelper.pressedEscape)
+        {
+            onEscape();
+        }
     }
 
     public void preRender(SpriteBatch sb)

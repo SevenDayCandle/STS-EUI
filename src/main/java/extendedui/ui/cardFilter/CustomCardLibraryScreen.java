@@ -16,6 +16,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
+import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -25,7 +26,7 @@ import extendedui.utilities.EUIFontHelper;
 import java.util.Comparator;
 import java.util.HashMap;
 
-public class CustomCardLibraryScreen extends AbstractScreen
+public class CustomCardLibraryScreen extends AbstractMenuScreen
 {
     protected static final float ICON_SIZE = scale(40);
     public static final int VISIBLE_BUTTONS = 14;
@@ -103,6 +104,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
         openImpl();
     }
 
+    // Also called by the card filter component
     public void openImpl()
     {
         SingleCardViewPopup.isViewingUpgrade = false;
@@ -141,6 +143,7 @@ public class CustomCardLibraryScreen extends AbstractScreen
     @Override
     public void updateImpl()
     {
+        super.updateImpl();
         boolean shouldDoStandardUpdate = !EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
         if (shouldDoStandardUpdate) {
             EUI.openCardFiltersButton.tryUpdate();
@@ -151,15 +154,10 @@ public class CustomCardLibraryScreen extends AbstractScreen
             quickSearch.tryUpdate();
             cardGrid.tryUpdate();
             cancelButton.update();
-            if (this.cancelButton.hb.clicked || InputHelper.pressedEscape) {
-                InputHelper.pressedEscape = false;
+            if (this.cancelButton.hb.clicked) {
                 this.cancelButton.hb.clicked = false;
                 this.cancelButton.hide();
-                CardCrawlGame.mainMenuScreen.panelScreen.refresh();
-                if (EUI.currentScreen == this)
-                {
-                    dispose();
-                }
+                onEscape();
             }
         }
         if (customModule != null) {

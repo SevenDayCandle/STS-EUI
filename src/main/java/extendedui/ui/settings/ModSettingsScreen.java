@@ -133,7 +133,7 @@ public class ModSettingsScreen extends AbstractScreen
     }
 
     public void open() {
-        super.open(false, false);
+        super.open();
         SingleCardViewPopup.isViewingUpgrade = false;
         this.button.show(MasterDeckViewScreen.TEXT[1]);
 
@@ -152,7 +152,7 @@ public class ModSettingsScreen extends AbstractScreen
     }
 
     @Override
-    protected void updateDungeonScreen()
+    protected void updateDungeonPreviousScreen()
     {
         // Allow settings screens to be previous
         if (AbstractDungeon.screen != EUI_SCREEN) {
@@ -172,17 +172,21 @@ public class ModSettingsScreen extends AbstractScreen
         this.button.show(MasterDeckViewScreen.TEXT[1]);
     }
 
-    public void setActiveItem(Category info)
+    public void onEscape()
     {
-        if (getCategories().containsKey(info))
+        InputHelper.pressedEscape = false;
+        AbstractDungeon.CurrentScreen prevScreen = AbstractDungeon.previousScreen;
+        AbstractDungeon.closeCurrentScreen();
+        if (prevScreen == AbstractDungeon.CurrentScreen.SETTINGS)
         {
-            activeMod = info;
+            AbstractDungeon.settingsScreen.open();
         }
     }
 
     @Override
     public void updateImpl()
     {
+        super.updateImpl();
         background.tryUpdate();
         buttons.updateImpl();
 
@@ -196,16 +200,10 @@ public class ModSettingsScreen extends AbstractScreen
         }
 
         button.update();
-        if (this.button.hb.clicked || InputHelper.pressedEscape) {
-            InputHelper.pressedEscape = false;
+        if (this.button.hb.clicked) {
             this.button.hb.clicked = false;
             this.button.hide();
-            AbstractDungeon.CurrentScreen prevScreen = AbstractDungeon.previousScreen;
-            AbstractDungeon.closeCurrentScreen();
-            if (prevScreen == AbstractDungeon.CurrentScreen.SETTINGS)
-            {
-                AbstractDungeon.settingsScreen.open();
-            }
+            onEscape();
         }
     }
 
@@ -226,6 +224,14 @@ public class ModSettingsScreen extends AbstractScreen
         }
 
         button.render(sb);
+    }
+
+    public void setActiveItem(Category info)
+    {
+        if (getCategories().containsKey(info))
+        {
+            activeMod = info;
+        }
     }
 
     protected void makeButton(Category info) {

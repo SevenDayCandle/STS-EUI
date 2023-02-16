@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -23,7 +24,7 @@ public class OptionsPanelPatches
     @SpirePatch(clz= OptionsPanel.class, method="update")
     public static class OptionsPanel_Update
     {
-        @SpirePostfixPatch
+        @SpirePrefixPatch
         public static SpireReturn<Void> prefix(OptionsPanel __instance)
         {
             if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && EUI.currentScreen == EUI.modSettingsScreen)

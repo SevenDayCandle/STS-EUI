@@ -13,6 +13,7 @@ import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
+import extendedui.ui.AbstractDungeonScreen;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIRelicGrid;
@@ -23,7 +24,7 @@ import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
-public class RelicPoolScreen extends AbstractScreen
+public class RelicPoolScreen extends AbstractDungeonScreen
 {
     public static CustomRelicPoolModule CustomModule;
 
@@ -97,6 +98,7 @@ public class RelicPoolScreen extends AbstractScreen
     @Override
     public void updateImpl()
     {
+        super.updateImpl();
         if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             relicGrid.tryUpdate();
             swapScreen.updateImpl();
