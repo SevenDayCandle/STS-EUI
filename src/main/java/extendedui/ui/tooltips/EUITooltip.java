@@ -3,7 +3,6 @@ package extendedui.ui.tooltips;
 import basemod.ReflectionHacks;
 import basemod.patches.whatmod.WhatMod;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -12,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -250,6 +248,15 @@ public class EUITooltip
         }
     }
 
+    public static void invalidateHideDescription(String id)
+    {
+        EUITooltip tooltip = findByID(id);
+        if (tooltip != null)
+        {
+            tooltip.hideDescription = null;
+        }
+    }
+
     private static boolean tryRender()
     {
         final boolean canRender = canRenderTooltips();
@@ -386,7 +393,7 @@ public class EUITooltip
             {
                 if (tip.hideDescription == null)
                 {
-                    tip.hideDescription = EUIConfiguration.hideTipDescription(tip.ID);
+                    tip.hideDescription = EUIConfiguration.getIsTipDescriptionHidden(tip.ID);
                 }
             }
 
@@ -697,7 +704,7 @@ public class EUITooltip
 
             if (tip.hideDescription == null)
             {
-                tip.hideDescription = !StringUtils.isEmpty(tip.ID) && EUIConfiguration.hideTipDescription(tip.ID);
+                tip.hideDescription = !StringUtils.isEmpty(tip.ID) && EUIConfiguration.getIsTipDescriptionHidden(tip.ID);
             }
 
             y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
@@ -717,7 +724,7 @@ public class EUITooltip
             final EUITooltip tip = tips.get(i);
             if (tip.hideDescription == null)
             {
-                tip.hideDescription = !StringUtils.isEmpty(tip.ID) && EUIConfiguration.hideTipDescription(tip.ID);
+                tip.hideDescription = !StringUtils.isEmpty(tip.ID) && EUIConfiguration.getIsTipDescriptionHidden(tip.ID);
             }
 
             if (!tip.hideDescription && tip.canRender)
@@ -730,7 +737,7 @@ public class EUITooltip
     public boolean hideDescription() {
         if (hideDescription == null)
         {
-            hideDescription = !StringUtils.isEmpty(ID) && EUIConfiguration.hideTipDescription(ID);
+            hideDescription = !StringUtils.isEmpty(ID) && EUIConfiguration.getIsTipDescriptionHidden(ID);
         }
         return hideDescription;
     }

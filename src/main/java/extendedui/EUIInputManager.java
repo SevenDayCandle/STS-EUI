@@ -39,6 +39,12 @@ public class EUIInputManager
     public static KeyState rightClick = KeyState.Released;
     public static KeyState leftClick = KeyState.Released;
 
+    // TODO utility mapping for mapping InputActionSet to CInputActionSet
+    public static boolean isHoldingPeek()
+    {
+        return CInputActionSet.peek.isPressed() || InputActionSet.peek.isPressed();
+    }
+
     public static boolean didInputDown()
     {
         return CInputActionSet.down.isJustPressed() || CInputActionSet.altDown.isJustPressed() || InputActionSet.down.isJustPressed();

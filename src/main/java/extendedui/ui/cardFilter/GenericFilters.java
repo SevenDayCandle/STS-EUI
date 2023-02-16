@@ -7,12 +7,14 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
@@ -24,6 +26,9 @@ import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+
+import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
+import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
 
 public abstract class GenericFilters<T> extends EUICanvasGrid
 {
@@ -43,9 +48,11 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     protected ArrayList<T> referenceItems;
     public final EUIButton closeButton;
     public final EUIButton clearButton;
+    public final EUIContextMenu<TooltipOption> contextMenu;
     public final EUILabel currentTotalHeaderLabel;
     public final EUILabel currentTotalLabel;
     public final EUILabel keywordsSectionLabel;
+    public final EUILabel keywordsInstructionLabel;
     public final EUIToggle sortTypeToggle;
     public final EUIToggle sortDirectionToggle;
     public final HashSet<EUITooltip> currentFilters = new HashSet<>();
@@ -53,6 +60,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     protected float drawX;
     protected boolean invalidated;
     protected boolean isAccessedFromCardPool;
+    private FilterKeywordButton selectedButton;
     private boolean shouldSortByCount;
     private boolean sortDesc;
 
@@ -73,21 +81,33 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
                 .setText(EUIRM.strings.miscClear)
                 .setOnClick(() -> this.clear(true, isAccessedFromCardPool));
 
+        contextMenu = (EUIContextMenu<TooltipOption>) new EUIContextMenu<TooltipOption>(new EUIHitbox(0, 0, 0, 0), t -> t.baseName)
+                .setOnChange(options -> {
+                    for (TooltipOption o : options)
+                    {
+                        o.onAct.invoke(this);
+                    }
+                })
+                .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
+                .setItems(TooltipOption.values())
+                .setCanAutosizeButton(true);
+
         keywordsSectionLabel = new EUILabel(EUIFontHelper.cardtitlefontSmall,
-                new EUIHitbox(0, 0, scale(48), scale(48)))
-                .setFont(EUIFontHelper.cardtitlefontSmall, 0.8f)
+                new EUIHitbox(0, 0, scale(48), scale(48)), 0.8f)
                 .setLabel(EUIRM.strings.uiKeywords)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
+        keywordsInstructionLabel = new EUILabel(EUIFontHelper.cardTooltipFont,
+                new EUIHitbox(0, 0, Settings.WIDTH * 0.48f, scale(48)), 0.9f)
+                .setLabel(EUIRM.strings.miscKeywordInstructions)
+                .setAlignment(0.5f, 0, true);
         currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardtitlefontNormal,
-                new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)))
-                .setFont(EUIFontHelper.cardtitlefontSmall, 1f)
+                new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)), 1f)
                 .setLabel(EUIRM.strings.uiTotal)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
         currentTotalLabel = new EUILabel(EUIFontHelper.cardtitlefontNormal,
-                new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.906f, scale(48), scale(48)))
-                .setFont(EUIFontHelper.cardtitlefontSmall, 1f)
+                new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.906f, scale(48), scale(48)), 1f)
                 .setColor(Settings.BLUE_TEXT_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
 
@@ -127,9 +147,12 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         for (Map.Entry<EUITooltip, Integer> filter : currentFilterCounts.entrySet())
         {
             int cardCount = filter.getValue();
-            filterButtons.add(new FilterKeywordButton(this, filter.getKey()).setOnClick(onClick).setCardCount(cardCount));
+            filterButtons.add(new FilterKeywordButton(this, filter.getKey()).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(cardCount));
         }
         currentTotalLabel.setLabel(currentTotal);
+
+        // Update instructions according to current settings
+        keywordsInstructionLabel.setLabel(EUIUtils.format(EUIRM.strings.miscKeywordInstructions, InputActionSet.peek.getKeyString()));
 
         return this;
     }
@@ -222,6 +245,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         super.updateImpl();
         hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
         keywordsSectionLabel.setPosition(hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 7).updateImpl();
+        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.23f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 9).updateImpl();
         sortTypeToggle.setPosition(keywordsSectionLabel.hb.x + SPACING * 10, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
         sortDirectionToggle.setPosition(sortTypeToggle.hb.x + SPACING * 7, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
         currentTotalHeaderLabel.updateImpl();
@@ -246,6 +270,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         }
 
         updateFilters();
+        contextMenu.tryUpdate();
     }
 
     @Override
@@ -259,6 +284,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         closeButton.tryRender(sb);
         clearButton.tryRender(sb);
         keywordsSectionLabel.renderImpl(sb);
+        keywordsInstructionLabel.renderImpl(sb);
         currentTotalHeaderLabel.renderImpl(sb);
         currentTotalLabel.renderImpl(sb);
         sortTypeToggle.tryRender(sb);
@@ -270,6 +296,16 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         }
 
         renderFilters(sb);
+        contextMenu.tryRender(sb);
+    }
+
+    private void hideKeyword(boolean value)
+    {
+        if (selectedButton != null)
+        {
+            EUIConfiguration.hideTipDescription(selectedButton.tooltip.ID, value, true);
+            selectedButton.afterToggleRight();
+        }
     }
 
     private void updateInput()
@@ -288,8 +324,6 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
             {
                 if (c.backgroundButton.hb.hovered)
                 {
-                    //CardCrawlGame.sound.play("UI_CLICK_1");
-                    //c.background_button.onLeftClick.Complete(c.background_button);
                     return;
                 }
             }
@@ -312,6 +346,25 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         }
     }
 
+    public void buttonRightClick(FilterKeywordButton button)
+    {
+        selectedButton = button;
+        contextMenu.setItems(EUIConfiguration.getIsTipDescriptionHidden(button.tooltip.ID) ? TooltipOption.EnableTooltip : TooltipOption.DisableTooltip);
+        float actualMX;
+        float actualMY;
+        if (CardCrawlGame.isPopupOpen) {
+            actualMX = popupMX;
+            actualMY = popupMY;
+        }
+        else {
+            actualMX = InputHelper.mX;
+            actualMY = InputHelper.mY;
+        }
+        contextMenu.setPosition(actualMX > Settings.WIDTH * 0.75f ? actualMX - contextMenu.hb.width : actualMX, actualMY);
+        contextMenu.refreshText();
+        contextMenu.openOrCloseMenu();
+    }
+
     @Override
     public int currentSize()
     {
@@ -325,7 +378,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
 
     public void addManualKeyword(EUITooltip tooltip, int count)
     {
-        filterButtons.add(new FilterKeywordButton(this, tooltip).setOnClick(onClick).setCardCount(count));
+        filterButtons.add(new FilterKeywordButton(this, tooltip).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(count));
         currentFilterCounts.merge(tooltip, count, Integer::sum);
     }
 
@@ -385,4 +438,19 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     abstract public ArrayList<EUITooltip> getAllTooltips(T c);
     abstract public ArrayList<T> applyFilters(ArrayList<T> input);
     abstract protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
+
+    public enum TooltipOption
+    {
+        DisableTooltip(EUIRM.strings.uiDisableTooltip, filters -> filters.hideKeyword(true)),
+        EnableTooltip(EUIRM.strings.uiEnableTooltip, filters -> filters.hideKeyword(false));
+
+        public final String baseName;
+        public final ActionT1<GenericFilters<?>> onAct;
+
+        TooltipOption(String name, ActionT1<GenericFilters<?>> onAct)
+        {
+            this.baseName = name;
+            this.onAct = onAct;
+        }
+    }
 }

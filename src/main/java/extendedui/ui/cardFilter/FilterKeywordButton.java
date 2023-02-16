@@ -4,14 +4,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import extendedui.EUIInputManager;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
-import extendedui.ui.hitboxes.PercentageRelativeHitbox;
+import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
@@ -25,14 +28,15 @@ public class FilterKeywordButton extends EUIHoverable
     private static final Color ACTIVE_COLOR = new Color(0.76f, 0.76f, 0.76f, 1f);
     private static final Color NEGATE_COLOR = new Color(0.62f, 0.32f, 0.28f, 1f);
     private static final Color PANEL_COLOR = new Color(0.3f, 0.3f, 0.3f, 1f);
-    private ActionT1<FilterKeywordButton> onClick;
+    private static final float BASE_OFFSET_X = -0.10f;
+    private static final float BASE_OFFSET_Y = -0.8f;
+    private ActionT1<FilterKeywordButton> onToggle;
+    private ActionT1<FilterKeywordButton> onRightClick;
 
     public final GenericFilters<?> filters;
     public final float baseCountOffset = -0.17f;
     public final float baseImageOffsetX = -0.27f;
     public final float baseImageOffsetY = -0.2f;
-    public final float baseTextOffsetX = -0.10f;
-    public final float baseTextOffsetY = 0f;
     public int cardCount = -1;
 
     public EUIButton backgroundButton;
@@ -49,56 +53,28 @@ public class FilterKeywordButton extends EUIHoverable
         this.filters = filters;
         this.tooltip = tooltip;
 
-        backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), new PercentageRelativeHitbox(filters.hb, 1, 1, 0.5f, baseTextOffsetY).setIsPopupCompatible(true))
+        backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), RelativeHitbox.fromPercentages(filters.hb, 1, 1, 0.5f, BASE_OFFSET_Y).setIsPopupCompatible(true))
                 .setClickDelay(0.01f)
         .setColor(this.filters.currentFilters.contains(this.tooltip) ? ACTIVE_COLOR
                 : this.filters.currentNegateFilters.contains(this.tooltip) ? NEGATE_COLOR : PANEL_COLOR)
                 .setOnClick(button -> {
-                    if (this.filters.currentFilters.contains(this.tooltip))
-                    {
-                        this.filters.currentFilters.remove(this.tooltip);
-                        backgroundButton.setColor(PANEL_COLOR);
-                        titleText.setColor(Color.WHITE);
-                    }
-                    else
-                    {
-                        this.filters.currentFilters.add(this.tooltip);
-                        backgroundButton.setColor(ACTIVE_COLOR);
-                        titleText.setColor(Color.DARK_GRAY);
-                    }
-
-                    if (this.onClick != null) {
-                        this.onClick.invoke(this);
-                    }
+                    doToggle();
                 })
                 .setOnRightClick(button -> {
-                    if (this.filters.currentNegateFilters.contains(this.tooltip))
-                    {
-                        this.filters.currentNegateFilters.remove(this.tooltip);
-                        backgroundButton.setColor(PANEL_COLOR);
-                    }
-                    else
-                    {
-                        //CardKeywordFilters.CurrentFilters.remove(Tooltip);
-                        this.filters.currentNegateFilters.add(this.tooltip);
-                        backgroundButton.setColor(NEGATE_COLOR);
-                    }
-                    titleText.setColor(Color.WHITE);
-
-                    if (this.onClick != null) {
-                        this.onClick.invoke(this);
+                    if (this.onRightClick != null) {
+                        this.onRightClick.invoke(this);
                     }
                 });
 
         titleText = new EUILabel(EUIFontHelper.cardTooltipFont,
-        new PercentageRelativeHitbox(hb, 0.5f, 1, baseTextOffsetX, baseTextOffsetY))
+                RelativeHitbox.fromPercentages(hb, 0.5f, 1, BASE_OFFSET_X, BASE_OFFSET_Y))
                 .setFont(EUIFontHelper.cardTooltipFont, 0.8f)
                 .setColor(this.filters.currentFilters.contains(this.tooltip) ? Color.DARK_GRAY : Color.WHITE)
         .setAlignment(0.5f, 0.49f) // 0.1f
         .setLabel(this.tooltip.title);
 
         countText = new EUILabel(EUIFontHelper.carddescriptionfontNormal,
-                new PercentageRelativeHitbox(hb, 0.28f, 1, baseCountOffset, 0f))
+                RelativeHitbox.fromPercentages(hb, 0.28f, 1, baseCountOffset, 0f))
                 .setFont(EUIFontHelper.carddescriptionfontNormal, 0.8f)
                 .setAlignment(0.5f, 0.51f) // 0.1f
                 .setColor(Settings.GOLD_COLOR)
@@ -108,10 +84,10 @@ public class FilterKeywordButton extends EUIHoverable
     public FilterKeywordButton setIndex(int index)
     {
         offX = (index % CardKeywordFilters.ROW_SIZE) * 1.06f;
-        offY = -(Math.floorDiv(index,CardKeywordFilters.ROW_SIZE)) * 0.85f;
-        backgroundButton.hb.setOffset(offX, offY);
-        titleText.hb.setOffset(offX + baseTextOffsetX, offY + baseTextOffsetY);
-        countText.hb.setOffset(offX + baseCountOffset, offY);
+        offY = BASE_OFFSET_Y - (Math.floorDiv(index,CardKeywordFilters.ROW_SIZE)) * 0.85f;
+        backgroundButton.hb.setOffset(filters.hb.width * offX, hb.height * offY);
+        titleText.hb.setOffset(hb.width * (offX + BASE_OFFSET_X), hb.height * offY);
+        countText.hb.setOffset(hb.width * (offX + baseCountOffset), hb.height * offY);
 
 
         return this;
@@ -133,9 +109,74 @@ public class FilterKeywordButton extends EUIHoverable
         return this;
     }
 
-    public FilterKeywordButton setOnClick(ActionT1<FilterKeywordButton> onClick)
+    public void doToggle()
     {
-        this.onClick = onClick;
+        if (EUIInputManager.isHoldingPeek())
+        {
+            reverseToggle();
+        }
+        else
+        {
+            normalToggle();
+        }
+    }
+
+    public void normalToggle()
+    {
+        this.filters.currentNegateFilters.remove(this.tooltip);
+        if (this.filters.currentFilters.contains(this.tooltip))
+        {
+            this.filters.currentFilters.remove(this.tooltip);
+            backgroundButton.setColor(PANEL_COLOR);
+            titleText.setColor(Color.WHITE);
+        }
+        else
+        {
+            this.filters.currentFilters.add(this.tooltip);
+            backgroundButton.setColor(ACTIVE_COLOR);
+            titleText.setColor(Color.DARK_GRAY);
+        }
+
+        if (this.onToggle != null) {
+            this.onToggle.invoke(this);
+        }
+    }
+
+    public void reverseToggle()
+    {
+        this.filters.currentFilters.remove(this.tooltip);
+        if (this.filters.currentNegateFilters.contains(this.tooltip))
+        {
+            this.filters.currentNegateFilters.remove(this.tooltip);
+            backgroundButton.setColor(PANEL_COLOR);
+        }
+        else
+        {
+            this.filters.currentNegateFilters.add(this.tooltip);
+            backgroundButton.setColor(NEGATE_COLOR);
+        }
+        titleText.setColor(Color.WHITE);
+
+        if (this.onToggle != null) {
+            this.onToggle.invoke(this);
+        }
+    }
+
+    // TODO
+    public void afterToggleRight()
+    {
+
+    }
+
+    public FilterKeywordButton setOnToggle(ActionT1<FilterKeywordButton> onToggle)
+    {
+        this.onToggle = onToggle;
+        return this;
+    }
+
+    public FilterKeywordButton setOnRightClick(ActionT1<FilterKeywordButton> onToggle)
+    {
+        this.onRightClick = onToggle;
         return this;
     }
 

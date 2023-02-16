@@ -17,6 +17,7 @@ import extendedui.ui.controls.EUILabel;
 import extendedui.ui.settings.ModSettingsPathSelector;
 import extendedui.ui.settings.ModSettingsScreen;
 import extendedui.ui.settings.ModSettingsToggle;
+import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
 import java.io.IOException;
@@ -203,7 +204,7 @@ public class EUIConfiguration
             energyFontSelector2.setActive(newValue);
         });
 
-        // NOTE: disableCompendiumButton listener is added in EUI.initialize to avoid throwing a null top panel item into the top panel
+        // NOTE: DISABLE_COMPENDIUM_BUTTON and HIDE_TIP_DESCRIPTION listeners are added in EUI.initialize to avoid errors from initializing too early
     }
 
     public static void save() {
@@ -267,7 +268,7 @@ public class EUIConfiguration
         return (int) (ypos - renderable.hb.height);
     }
 
-    public static boolean hideTipDescription(String id)
+    public static boolean getIsTipDescriptionHidden(String id)
     {
         if (tips == null)
         {
@@ -307,5 +308,7 @@ public class EUIConfiguration
         {
             save();
         }
+
+        EUITooltip.invalidateHideDescription(id);
     }
 }

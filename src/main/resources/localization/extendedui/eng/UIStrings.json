@@ -73,7 +73,8 @@
 			"Check this option to use the base game's method of rendering the various compendium screens. Filters will still be available.",
 			"Check this option to replace keyword icons in descrptions with their titles.",
 			"Check this option to disable the playing of VFX rendered with Effekseer.",
-			"Only check this option if you are running into memory issues or if Effekseer VFX do not render properly."
+			"Only check this option if you are running into memory issues or if Effekseer VFX do not render properly.",
+			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options."
 	]
   },
   "extendedui:ui_pool": {
@@ -102,7 +103,9 @@
 	  "Basic",
 	  "Seen",
 	  "Unseen",
-	  "N/A"
+	  "N/A",
+			"Disable Tooltip",
+			"Enable Tooltip"
 	]
   }
 }

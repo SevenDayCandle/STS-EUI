@@ -32,12 +32,17 @@ public class EUILabel extends EUIHoverable
 
     public EUILabel(BitmapFont font, EUIHitbox hb)
     {
+        this(font, hb, 1);
+    }
+
+    public EUILabel(BitmapFont font, EUIHitbox hb, float scale)
+    {
         super(hb);
         this.smartText = true;
         this.verticalRatio = 0.85f;
         this.horizontalRatio = 0.1f;
         this.textColor = Color.WHITE;
-        this.fontScale = 1;
+        this.fontScale = scale;
         this.font = font;
         this.text = "";
     }

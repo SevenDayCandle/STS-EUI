@@ -149,6 +149,7 @@ public class EUIRM
         public final String configButtonfont = stringsConfig.TEXT[14];
         public final String configEnergyFont = stringsConfig.TEXT[15];
         public final String configBannerFont = stringsConfig.TEXT[16];
+        public final String configReenableTooltips = stringsConfig.TEXT[17];
 
         public final String hotkeyCycle = stringsHotkeys.TEXT[0];
         public final String hotkeyOpencardpool = stringsHotkeys.TEXT[1];
@@ -170,6 +171,7 @@ public class EUIRM
         public final String miscDisableDescriptionIconDescription = stringsMisc.TEXT[13];
         public final String miscDisableEffekseerDescription = stringsMisc.TEXT[14];
         public final String miscFlushEffekseerDescription = stringsMisc.TEXT[15];
+        public final String miscKeywordInstructions = stringsMisc.TEXT[16];
 
         public final String uipoolViewpool = stringsUIPool.TEXT[0];
         public final String uipoolViewpooldescription = stringsUIPool.TEXT[1];
@@ -193,6 +195,8 @@ public class EUIRM
         public final String uiSeen = stringsUIFilter.TEXT[13];
         public final String uiUnseen = stringsUIFilter.TEXT[14];
         public final String na = stringsUIFilter.TEXT[15];
+        public final String uiDisableTooltip = stringsUIFilter.TEXT[16];
+        public final String uiEnableTooltip = stringsUIFilter.TEXT[17];
 
         public final String keyToCycle(String keyName) {
             return EUIUtils.format(miscKeytocycle, keyName);

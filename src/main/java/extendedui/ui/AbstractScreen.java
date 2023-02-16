@@ -162,9 +162,11 @@ public abstract class AbstractScreen extends EUIBase
 
     }
 
+    // Prevent escaping behavior when a pop-up is open to prevent softlocks and graphical glitches
+    // TODO have a better way of capturing cardFilters being active
     public void updateImpl()
     {
-        if (InputHelper.pressedEscape)
+        if (InputHelper.pressedEscape && !CardCrawlGame.isPopupOpen && !EUI.cardFilters.isActive)
         {
             onEscape();
         }
