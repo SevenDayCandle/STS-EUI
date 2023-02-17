@@ -419,7 +419,7 @@ public class EUITooltip
             }
             else
             {
-                x -= AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD + tooltips.size() > 0 ? EUIUtils.max(tooltips, tip -> tip.width) : BOX_W;
+                x -= AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD + BOX_W;
             }
 
             y = card.current_y - BOX_EDGE_H;
@@ -623,8 +623,6 @@ public class EUITooltip
             x = creature.hb.cX - (creature.hb.width / 2.0F) + TIP_OFFSET_L_X;
         }
 
-        float maxWidth = tooltips.size() > 0 ? EUIUtils.max(tooltips, tip -> tip.width) : BOX_W;
-
         if (lastHoveredCreature != creature) {
             lastHoveredCreature = creature;
 
@@ -641,7 +639,7 @@ public class EUITooltip
                 EUICardPreview preview = provider.getPreview();
                 if (preview != null)
                 {
-                    float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + maxWidth : x - AbstractCard.IMG_WIDTH;
+                    float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
                     preview.render(sb, previewOffset, y, 0.8f, preview.getCard().upgraded);
                 }
             }
@@ -687,7 +685,7 @@ public class EUITooltip
         }
 
         final float original_y = y;
-        final float offset_x = (x > TIP_X_THRESHOLD) ? maxWidth : -maxWidth;
+        final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
         float offset = 0.0F;
 
         float offsetChange;
