@@ -268,6 +268,12 @@ public class EUIConfiguration
         return (int) (ypos - renderable.hb.height);
     }
 
+    public static boolean getIsTipDescriptionHiddenByName(String name)
+    {
+        EUITooltip tip = EUITooltip.findByName(name);
+        return tip != null && getIsTipDescriptionHidden(tip.ID);
+    }
+
     public static boolean getIsTipDescriptionHidden(String id)
     {
         if (tips == null)
