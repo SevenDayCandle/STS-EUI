@@ -172,6 +172,11 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         return this.group != null ? this.group.group : new ArrayList<>();
     }
 
+    public boolean isHovered()
+    {
+        return buttons != null && EUIUtils.any(buttons, button -> button.hb.hovered);
+    }
+
     public void updateForFilters() {
         if (this.group != null) {
             if (EUI.cardFilters.areFiltersEmpty()) {

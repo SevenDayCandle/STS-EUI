@@ -85,6 +85,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
         cardGrid.setCardGroup(cards);
         EUI.customHeader.setGroup(cards);
         EUI.customHeader.setupButtons();
+
         EUI.cardFilters.initialize(__ -> {
             EUI.customHeader.updateForFilters();
             if (customModule != null) {

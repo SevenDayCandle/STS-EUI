@@ -8,6 +8,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
@@ -230,6 +231,46 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         {
             colorsDropdown.setSelection(EUIUtils.filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE), true);
         }
+    }
+
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    {
+        EUI.customHeader.setGroup(group);
+        EUI.customHeader.setupButtons();
+        initialize((button) ->
+        {
+            EUI.customHeader.updateForFilters();
+        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
+        EUI.customHeader.updateForFilters();
+        return this;
+    }
+
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, CustomCardPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    {
+        EUI.customHeader.setGroup(group);
+        EUI.customHeader.setupButtons();
+        initialize((button) ->
+        {
+            EUI.customHeader.updateForFilters();
+            if (module != null) {
+                module.open(EUI.customHeader.group.group);
+            }
+        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
+        EUI.customHeader.updateForFilters();
+        return this;
+    }
+
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    {
+        EUI.customHeader.setGroup(group);
+        EUI.customHeader.setupButtons();
+        initialize((button) ->
+        {
+            EUI.customHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
+        EUI.customHeader.updateForFilters();
+        return this;
     }
 
     @Override

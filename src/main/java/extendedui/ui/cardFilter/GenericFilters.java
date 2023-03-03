@@ -52,7 +52,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     public final EUILabel currentTotalHeaderLabel;
     public final EUILabel currentTotalLabel;
     public final EUILabel keywordsSectionLabel;
-    public final EUILabel keywordsInstructionLabel;
+    public final EUITextBox keywordsInstructionLabel;
     public final EUIToggle sortTypeToggle;
     public final EUIToggle sortDirectionToggle;
     public final HashSet<EUITooltip> currentFilters = new HashSet<>();
@@ -97,10 +97,10 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
                 .setLabel(EUIRM.strings.uiKeywords)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
-        keywordsInstructionLabel = new EUILabel(EUIFontHelper.cardTooltipFont,
-                new EUIHitbox(0, 0, Settings.WIDTH * 0.48f, scale(48)), 0.9f)
+        keywordsInstructionLabel = new EUITextBox(EUIRM.images.panel.texture(), new EUIHitbox(0, 0, Settings.WIDTH * 0.48f, scale(64)), EUIFontHelper.cardTooltipFont, 0.85f)
+                .setColors(Color.DARK_GRAY, Settings.CREAM_COLOR)
                 .setLabel(EUIRM.strings.miscKeywordInstructions)
-                .setAlignment(0.5f, 0, true);
+                .setAlignment(0.75f, 0.05f, true);
         currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardtitlefontNormal,
                 new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)), 1f)
                 .setLabel(EUIRM.strings.uiTotal)
@@ -245,7 +245,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         super.updateImpl();
         hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
         keywordsSectionLabel.setPosition(hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 7).updateImpl();
-        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.23f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 9).updateImpl();
+        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.21f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 9).updateImpl();
         sortTypeToggle.setPosition(keywordsSectionLabel.hb.x + SPACING * 10, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
         sortDirectionToggle.setPosition(sortTypeToggle.hb.x + SPACING * 7, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
         currentTotalHeaderLabel.updateImpl();

@@ -15,9 +15,14 @@ public class EUITextBox extends EUIHoverable
 
     public EUITextBox(Texture backgroundTexture, EUIHitbox hb)
     {
+        this(backgroundTexture, hb, EUIFontHelper.buttonFont, 1f);
+    }
+
+    public EUITextBox(Texture backgroundTexture, EUIHitbox hb, BitmapFont font, float fontscale)
+    {
         super(hb);
-        this.label = new EUILabel(EUIFontHelper.buttonFont);
-        this.image = new EUIImage(backgroundTexture);
+        this.label = new EUILabel(font, hb, fontscale);
+        this.image = new EUIImage(backgroundTexture, hb);
     }
 
     public EUITextBox setLabel(Object value)
@@ -107,8 +112,8 @@ public class EUITextBox extends EUIHoverable
         return autosize(1f, 1f);
     }
 
-    public EUITextBox autosize(Float resizeMultiplier, Float resizeHeight) {
-        if (resizeMultiplier != null) {
+    public EUITextBox autosize(Float resizeWidth, Float resizeHeight) {
+        if (resizeWidth != null) {
             this.hb.width = label.getAutoWidth();
         }
         if (resizeHeight != null) {
@@ -121,8 +126,8 @@ public class EUITextBox extends EUIHoverable
     @Override
     public void renderImpl(SpriteBatch sb)
     {
-        image.render(sb, hb);
-        label.render(sb, hb);
+        image.render(sb);
+        label.render(sb);
 
         hb.render(sb);
     }

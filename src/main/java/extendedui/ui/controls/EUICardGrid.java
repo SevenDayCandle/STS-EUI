@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import extendedui.EUIInputManager;
+import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CacheableCard;
@@ -222,16 +223,24 @@ public class EUICardGrid extends EUICanvasGrid
 
     protected void addUpgrade(AbstractCard card) {
         if (canRenderUpgrades) {
-            AbstractCard copy;
-            if (card instanceof CacheableCard) {
-                copy = ((CacheableCard) card).getCachedUpgrade();
+            try
+            {
+                AbstractCard copy;
+                if (card instanceof CacheableCard) {
+                    copy = ((CacheableCard) card).getCachedUpgrade();
+                }
+                else {
+                    copy = card.makeSameInstanceOf();
+                    copy.upgrade();
+                    copy.displayUpgrades();
+                }
+                upgradeCards.put(card, copy);
             }
-            else {
-                copy = card.makeSameInstanceOf();
-                copy.upgrade();
-                copy.displayUpgrades();
+            catch (Exception e)
+            {
+                EUIUtils.logError(this, "Card upgrade cannot be rendered: " + card.getClass());
+                upgradeCards.put(card, card);
             }
-            upgradeCards.put(card, copy);
         }
     }
 
@@ -340,7 +349,7 @@ public class EUICardGrid extends EUICanvasGrid
         {
             AbstractCard card = cards.group.get(i);
             card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * padX);
-            card.current_y = card.target_y = drawTopY + scrollDelta - (row * padY);
+            card.current_y = card.target_y = drawTopY - (row * padY);
             card.drawScale = card.targetDrawScale = targetScale;
             card.hb.move(card.current_x, card.current_y);
 
