@@ -58,7 +58,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
                 .setPosition(1450.0F * Settings.xScale, Settings.HEIGHT * 0.8f)
                 .setFont(EUIFontHelper.cardtooltiptitlefontLarge, 1f)
                 .setText(CardLibraryScreen.TEXT[7])
-                .setOnToggle(EUI::toggleViewUpgrades);
+                .setOnToggle(this::toggleUpgrades);
         cancelButton = new MenuCancelButton();
 
         quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
@@ -107,7 +107,8 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     // Also called by the card filter component
     public void openImpl()
     {
-        SingleCardViewPopup.isViewingUpgrade = false;
+        EUI.toggleViewUpgrades(false);
+        upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
         EUI.customHeader.setupButtons();
         setActiveColor(currentColor);
         this.cancelButton.show(CardLibraryScreen.TEXT[0]);
@@ -115,6 +116,12 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
 
     public void setActiveColor(AbstractCard.CardColor color) {
         setActiveColor(color, CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED)));
+    }
+
+    protected void toggleUpgrades(boolean value)
+    {
+        EUI.toggleViewUpgrades(value);
+        upgradeToggle.setToggle(value);
     }
 
     public void setActiveColor(AbstractCard.CardColor color, CardGroup cards) {
@@ -150,7 +157,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
             colorButtons.tryUpdate();
             EUI.customHeader.update();
             barY = EUI.customHeader.getCenterY();
-            upgradeToggle.setPosition(upgradeToggle.hb.cX, barY).setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
+            upgradeToggle.setPosition(upgradeToggle.hb.cX, barY).updateImpl();
             quickSearch.tryUpdate();
             cardGrid.tryUpdate();
             cancelButton.update();

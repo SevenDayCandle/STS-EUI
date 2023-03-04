@@ -221,6 +221,11 @@ public class EUICardGrid extends EUICanvasGrid
         return this;
     }
 
+    public AbstractCard getUpgrade(AbstractCard card)
+    {
+        return upgradeCards.get(card);
+    }
+
     protected void addUpgrade(AbstractCard card) {
         if (canRenderUpgrades) {
             try
@@ -428,6 +433,7 @@ public class EUICardGrid extends EUICanvasGrid
                 upgrade.current_x = card.current_x;
                 upgrade.current_y = card.current_y;
                 upgrade.drawScale = card.drawScale;
+                upgrade.transparency = card.transparency;
                 upgrade.render(sb);
             }
         }
