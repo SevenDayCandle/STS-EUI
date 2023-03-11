@@ -12,11 +12,11 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.patches.EUIKeyword;
+import extendedui.text.EUISmartText;
 import extendedui.ui.tooltips.EUITooltip;
 import org.apache.logging.log4j.LogManager;
 
 import java.nio.charset.StandardCharsets;
-import java.util.HashMap;
 import java.util.Map;
 
 import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
@@ -53,8 +53,8 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     {
         EUI.registerBasegameKeywords();
         String language = Settings.language.name().toLowerCase();
-        this.loadKeywordStrings("eng");
-        this.loadKeywordStrings(language);
+        this.registerKeywords("eng");
+        this.registerKeywords(language);
     }
 
     @Override
@@ -80,29 +80,12 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
     }
 
     private Map<String, EUIKeyword> loadKeywords(String language, String path) {
-        FileHandle handle = Gdx.files.internal(PATH + language + path);
-        if (handle.exists()) {
-            return EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
-        }
-        return new HashMap<>();
+        return EUI.loadKeywords(Gdx.files.internal(PATH + language + path));
     }
 
-    private void loadKeywordStrings(String language)
+    private void registerKeywords(String language)
     {
-        FileHandle handle = Gdx.files.internal(PATH + language + JSON_KEYWORD);
-        if (handle.exists()) {
-            Map<String, EUIKeyword> keywords = EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
-            // Find standard tooltips. These tooltips only appear in the filters screen
-            for (Map.Entry<String, EUIKeyword> pair : keywords.entrySet()) {
-                EUIKeyword keyword = pair.getValue();
-                EUITooltip tooltip = new EUITooltip(keyword).canHighlight(false).showText(false);
-                EUITooltip.registerID(pair.getKey(), tooltip);
-                for (String name : keyword.NAMES)
-                {
-                    EUITooltip.registerName(name, tooltip);
-                }
-            }
-        }
+        EUI.registerKeywords(Gdx.files.internal(PATH + language + JSON_KEYWORD));
     }
 
     private void loadUIStrings(String language)

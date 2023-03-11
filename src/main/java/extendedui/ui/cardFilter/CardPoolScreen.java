@@ -14,7 +14,6 @@ import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.ui.AbstractDungeonScreen;
-import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUICardGrid;
 import extendedui.ui.controls.EUIStaticCardGrid;
@@ -83,17 +82,14 @@ public class CardPoolScreen extends AbstractDungeonScreen
         }
 
         cardGrid.setCardGroup(cards);
-        EUI.customHeader.setGroup(cards);
-        EUI.customHeader.setupButtons();
 
-        EUI.cardFilters.initialize(__ -> {
-            EUI.customHeader.updateForFilters();
-            if (customModule != null) {
+        EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
+            if (customModule != null)
+            {
                 customModule.open(EUI.customHeader.group.group);
             }
             cardGrid.forceUpdateCardPositions();
-        }, EUI.customHeader.originalGroup, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
-        EUI.customHeader.updateForFilters();
+        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
 
         if (EUIGameUtils.inGame())
         {

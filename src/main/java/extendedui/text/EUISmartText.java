@@ -182,6 +182,11 @@ public class EUISmartText
         }
     }
 
+    public static String parseKeywordLogicWithAmount(String logicString, int amount)
+    {
+        return parseLogicString(EUIUtils.format(logicString.substring(1), amount));
+    }
+
     /* Interprets the string as a logic statement and returns the subset that matches the evaluated value
      *
      * A: Integer value to be evaluated.

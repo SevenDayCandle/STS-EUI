@@ -9,7 +9,6 @@ import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
@@ -17,7 +16,6 @@ import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.ui.AbstractMenuScreen;
-import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIClassUtils;
@@ -109,7 +107,6 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     {
         EUI.toggleViewUpgrades(false);
         upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
-        EUI.customHeader.setupButtons();
         setActiveColor(currentColor);
         this.cancelButton.show(CardLibraryScreen.TEXT[0]);
     }
@@ -128,17 +125,15 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         EUI.actingColor = currentColor = color;
         cardGrid.clear();
         cardGrid.setCardGroup(cards);
-        EUI.customHeader.setGroup(cards);
-        EUI.cardFilters.initialize(__ -> {
-            cardGrid.moveToTop();
+
+        EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
             quickSearch.setLabel(EUI.cardFilters.currentName != null ? EUI.cardFilters.currentName : "");
-            EUI.customHeader.updateForFilters();
             if (customModule != null) {
                 customModule.open(EUI.customHeader.group.group);
             }
+            cardGrid.moveToTop();
             cardGrid.forceUpdateCardPositions();
-        }, EUI.customHeader.originalGroup, color, false);
-        EUI.customHeader.updateForFilters();
+        }, color, false);
 
         customModule = EUI.getCustomCardLibraryModule(color);
         if (customModule != null) {

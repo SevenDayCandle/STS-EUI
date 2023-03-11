@@ -88,6 +88,7 @@ public class EUITooltip
     public String past;
     public String plural;
     public String present;
+    public String progressive;
     public String title;
     public TextureRegion icon;
     public boolean canHighlight = true;
@@ -141,10 +142,11 @@ public class EUITooltip
 
     public EUITooltip(EUIKeyword keyword)
     {
-        this.title = keyword.PROPER_NAME;
+        this.title = keyword.NAME;
         this.descriptions.add(keyword.DESCRIPTION);
         this.past = keyword.PAST;
         this.present = keyword.PRESENT;
+        this.progressive = keyword.PROGRESSIVE;
         this.plural = keyword.PLURAL;
         // If the plural starts with $, use logic mode
         if (keyword.PLURAL != null && !keyword.PLURAL.isEmpty() && keyword.PLURAL.charAt(0) == '$') {
@@ -1130,7 +1132,7 @@ public class EUITooltip
         if (plural == null) {
             plural = EUIRM.strings.plural(title);
         }
-        return useLogic ? EUISmartText.parseLogicString(EUIUtils.format(plural.substring(1), amount)) : plural;
+        return useLogic ? EUISmartText.parseKeywordLogicWithAmount(plural, amount) : plural;
     }
 
     public String present() {
@@ -1138,6 +1140,14 @@ public class EUITooltip
             present = EUIRM.strings.present(title);
         }
         return present;
+    }
+
+    // If progressive is not present, assume present tense works for it as well
+    public String progressive() {
+        if (progressive == null) {
+            return present();
+        }
+        return progressive;
     }
 
     public String setIndex(int index) {

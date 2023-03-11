@@ -2,6 +2,7 @@ package extendedui;
 
 import basemod.BaseMod;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
@@ -10,6 +11,7 @@ import com.evacipated.cardcrawl.mod.stslib.StSLib;
 import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
 import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
 import com.evacipated.cardcrawl.modthespire.Loader;
+import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -23,6 +25,7 @@ import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.patches.EUIKeyword;
+import extendedui.text.EUISmartText;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
@@ -36,6 +39,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -388,6 +392,7 @@ public class EUI
                 existing.past = grammar.PAST;
                 existing.plural = grammar.PLURAL;
                 existing.present = grammar.PRESENT;
+                existing.progressive = grammar.PROGRESSIVE;
             }
         }
     }
@@ -422,6 +427,46 @@ public class EUI
                     }
                 }
             }
+        }
+    }
+
+    public static Map<String, EUIKeyword> loadKeywords(FileHandle handle) {
+        if (handle.exists()) {
+            return EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
+        }
+        return new HashMap<>();
+    }
+
+    public static void registerKeywords(FileHandle handle)
+    {
+        registerKeywords(loadKeywords(handle));
+    }
+
+    public static void registerKeywords(Map<String, EUIKeyword> keywords)
+    {
+        for (Map.Entry<String, EUIKeyword> pair : keywords.entrySet()) {
+            EUIKeyword keyword = pair.getValue();
+            EUITooltip tooltip = new EUITooltip(keyword).canHighlight(false).showText(false);
+            EUITooltip.registerID(pair.getKey(), tooltip);
+            if (keyword.PLURAL != null)
+            {
+                // Emulate a plural parsing
+                // TODO account for languages that have multiple plural forms
+                EUITooltip.registerName(EUISmartText.parseKeywordLogicWithAmount(keyword.PLURAL, 2).toLowerCase(), tooltip);
+            }
+            if (keyword.PAST != null)
+            {
+                EUITooltip.registerName(keyword.PAST.toLowerCase(), tooltip);
+            }
+            if (keyword.PRESENT != null)
+            {
+                EUITooltip.registerName(keyword.PRESENT.toLowerCase(), tooltip);
+            }
+            if (keyword.PROGRESSIVE != null)
+            {
+                EUITooltip.registerName(keyword.PROGRESSIVE.toLowerCase(), tooltip);
+            }
+            EUITooltip.registerName(keyword.NAME.toLowerCase(), tooltip);
         }
     }
 

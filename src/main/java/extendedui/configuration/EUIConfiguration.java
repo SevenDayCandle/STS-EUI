@@ -9,7 +9,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.ui.EUIHoverable;
@@ -153,7 +152,7 @@ public class EUIConfiguration
         yPos = addToggle(panel, useSeparateFonts, EUIRM.strings.configUseSeparateFonts, yPos, EUIRM.strings.miscFontSeparateDescription + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.miscRestartrequired);
         yPos = addToggle(panel, overrideGameFont, EUIRM.strings.configOverridegamefont, yPos, EUIRM.strings.miscFontdescription + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.miscRestartrequired);
 
-        yPos = (BASE_OPTION_OFFSET_Y + yPos) / 2;
+        yPos = ((BASE_OPTION_OFFSET_Y + yPos) / 2) - 10;
         ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(panel, cardDescFontSelector2, yPos);
         ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);

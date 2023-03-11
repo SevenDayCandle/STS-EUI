@@ -2,12 +2,12 @@ package extendedui.patches;
 
 public class EUIKeyword
 {
+    public String NAME;
+    public String DESCRIPTION;
     public String PAST;
     public String PLURAL;
     public String PRESENT;
-    public String PROPER_NAME;
-    public String[] NAMES;
-    public String DESCRIPTION;
+    public String PROGRESSIVE;
 
     public EUIKeyword() {
     }
