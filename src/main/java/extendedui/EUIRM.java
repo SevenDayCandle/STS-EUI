@@ -25,11 +25,11 @@ public class EUIRM
     }
 
     public static Texture getTexture(String path) {
-        return getTexture(path, false);
+        return getTexture(path, true);
     }
 
     public static Texture getTexture(String path, boolean useMipMap) {
-        return getTexture(path, true, false, false);
+        return getTexture(path, useMipMap, false, false);
     }
 
     public static Texture getTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {
@@ -43,11 +43,11 @@ public class EUIRM
     }
 
     public static Texture getLocalTexture(String path) {
-        return getLocalTexture(path, false);
+        return getLocalTexture(path, true);
     }
 
     public static Texture getLocalTexture(String path, boolean useMipMap) {
-        return getLocalTexture(path, true, false, false);
+        return getLocalTexture(path, useMipMap, false, false);
     }
 
     public static Texture getLocalTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {

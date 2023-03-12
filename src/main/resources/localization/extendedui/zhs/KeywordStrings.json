@@ -3,6 +3,7 @@
 	{
 		"DESCRIPTION": "Attacks deal direct damage to opponents.",
 		"NAME": "Attack",
+		"PAST": "attacked",
 		"PRESENT": "attacks",
 		"PROGRESSIVE": "attacking",
 		"PLURAL": "${0}@>1:Attacks@:Attack$"
@@ -12,14 +13,16 @@
 		"DESCRIPTION": "Move cards to your discard pile.",
 		"NAME": "Discard",
 		"PAST": "discarded",
-		"PRESENT": "discards"
+		"PRESENT": "discards",
+		"PROGRESSIVE": "discarding"
 	},
 	"Draw":
 	{
 		"DESCRIPTION": "Move cards to your hand.",
 		"NAME": "Draw",
 		"PAST": "drawn",
-		"PRESENT": "draws"
+		"PRESENT": "draws",
+		"PROGRESSIVE": "drawing"
 	},
 	"Orb":
 	{

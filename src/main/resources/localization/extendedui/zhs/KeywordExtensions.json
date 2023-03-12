@@ -1,45 +1,45 @@
 {
-  "Channel": {
-	"PAST": "Channeled",
-	"PRESENT": "Channels"
-  },
-  "Curse": {
-	"PLURAL": "${0}@>1:Curses@:Curse$"
-  },
-  "Exhaust": {
-	"PAST": "Exhausted",
-	"PRESENT": "Exhausts"
-  },
-  "Evoke": {
-	"PAST": "Evoked",
-	"PRESENT": "Evokes"
-  },
-  "Fetch":
-  {
-	"PAST": "Fetched",
-	"PRESENT": "Fetches"
-  },
-  "Purge": {
-	"PAST": "Purged",
-	"PRESENT": "Purges"
-  },
-  "Retain": {
-	"PAST": "Retained",
-	"PRESENT": "Retains"
-  },
-  "Scry": {
-	"PAST": "Scried",
-	"PRESENT": "Scries"
-  },
-  "Status": {
-	"PLURAL": "${0}@>1:Statuses@:Status$"
-  },
-  "Transform": {
-	"PAST": "Transformed",
-	"PRESENT": "Transforms"
-  },
-  "Upgrade": {
-	"PAST": "Upgraded",
-	"PRESENT": "Upgrades"
-  }
+	"Channel": {
+		"PAST": "Channeled",
+		"PRESENT": "Channels"
+	},
+	"Curse": {
+		"PLURAL": "${0}@>1:Curses@:Curse$"
+	},
+	"Exhaust": {
+		"PAST": "Exhausted",
+		"PRESENT": "Exhausts"
+	},
+	"Evoke": {
+		"PAST": "Evoked",
+		"PRESENT": "Evokes"
+	},
+	"Fetch":
+	{
+		"PAST": "Fetched",
+		"PRESENT": "Fetches"
+	},
+	"Purge": {
+		"PAST": "Purged",
+		"PRESENT": "Purges"
+	},
+	"Retain": {
+		"PAST": "Retained",
+		"PRESENT": "Retains"
+	},
+	"Scry": {
+		"PAST": "Scried",
+		"PRESENT": "Scries"
+	},
+	"Status": {
+		"PLURAL": "${0}@>1:Statuses@:Status$"
+	},
+	"Transform": {
+		"PAST": "Transformed",
+		"PRESENT": "Transforms"
+	},
+	"Upgrade": {
+		"PAST": "Upgraded",
+		"PRESENT": "Upgrades"
+	}
 }
