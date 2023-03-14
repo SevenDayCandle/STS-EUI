@@ -1,5 +1,6 @@
 package extendedui.ui.controls;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -16,7 +17,6 @@ import extendedui.interfaces.delegates.ActionT2;
 
 import java.util.ArrayList;
 
-// TODO controller/keyboard support
 public class EUIRelicGrid extends EUICanvasGrid
 {
     protected static final float PAD = scale(80);
@@ -167,6 +167,7 @@ public class EUIRelicGrid extends EUICanvasGrid
         super.updateImpl();
 
         updateRelics();
+        updateNonMouseInput();
 
         if (hoveredRelic != null && hoveredRelic.relic.hb.hovered)
         {
@@ -251,6 +252,62 @@ public class EUIRelicGrid extends EUICanvasGrid
         }
     }
 
+    protected void updateNonMouseInput()
+    {
+        if (EUIInputManager.isUsingNonMouseControl())
+        {
+            int targetIndex = hoveredIndex;
+            if (EUIInputManager.didInputDown())
+            {
+                targetIndex += rowSize;
+            }
+            if (EUIInputManager.didInputUp())
+            {
+                targetIndex -= rowSize;
+            }
+            if (EUIInputManager.didInputLeft())
+            {
+                targetIndex -= 1;
+            }
+            if (EUIInputManager.didInputRight())
+            {
+                targetIndex += 1;
+            }
+
+            if (targetIndex != hoveredIndex)
+            {
+                targetIndex = MathUtils.clamp(targetIndex, 0, relicGroup.size() - 1);
+                RelicInfo relic = relicGroup.get(targetIndex);
+                if (relic != null)
+                {
+                    float distance = getScrollDistance(relic.relic, targetIndex);
+                    if (distance != 0)
+                    {
+                        this.scrollBar.scroll(scrollBar.currentScrollPercent + distance, true);
+                    }
+                    EUIInputManager.setCursor(relic.relic.hb.cX, distance == 0 ? Settings.HEIGHT - relic.relic.hb.cY : Gdx.input.getY());
+                }
+            }
+        }
+    }
+
+    protected float getScrollDistance(AbstractRelic relic, int index)
+    {
+        if (relic != null)
+        {
+            float scrollDistance = 1f / getRowCount();
+            if (relic.targetY > drawTopY)
+            {
+                return -scrollDistance;
+            }
+            else if (relic.targetY < 0)
+            {
+                return scrollDistance;
+            }
+        }
+        return 0;
+    }
+
     @Override
     public void renderImpl(SpriteBatch sb)
     {
@@ -270,9 +327,9 @@ public class EUIRelicGrid extends EUICanvasGrid
     }
 
     protected void renderRelics(SpriteBatch sb) {
-        for (int i = 0; i < relicGroup.size(); i++)
+        for (RelicInfo relicInfo : relicGroup)
         {
-            renderRelic(sb, relicGroup.get(i));
+            renderRelic(sb, relicInfo);
         }
     }
 
@@ -345,6 +402,10 @@ public class EUIRelicGrid extends EUICanvasGrid
     public int currentSize()
     {
         return relicGroup.size();
+    }
+
+    public int getRowCount() {
+        return (relicGroup.size() - 1) / rowSize;
     }
 
     public static class RelicInfo

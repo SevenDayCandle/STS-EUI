@@ -2,6 +2,8 @@ package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 
 public class EUIStaticRelicGrid extends EUIRelicGrid
 {
@@ -47,6 +49,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
         }
     }
 
+    @Override
     public void forceUpdateRelicPositions()
     {
         int row = 0;
@@ -66,6 +69,24 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
                 row += 1;
             }
         }
+    }
+
+    @Override
+    protected float getScrollDistance(AbstractRelic relic, int index)
+    {
+        if (relic != null)
+        {
+            float scrollDistance = 1f / getRowCount();
+            if (relic.targetY > drawTopY || index < currentRow * rowSize)
+            {
+                return -scrollDistance;
+            }
+            else if (relic.targetY < 0 || index > (currentRow + visibleRowCount) * rowSize)
+            {
+                return scrollDistance;
+            }
+        }
+        return 0;
     }
 
     @Override
