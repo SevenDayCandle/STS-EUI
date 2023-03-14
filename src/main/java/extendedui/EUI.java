@@ -437,17 +437,19 @@ public class EUI
         return new HashMap<>();
     }
 
-    public static void registerKeywords(FileHandle handle)
+    public static ArrayList<EUITooltip> registerKeywords(FileHandle handle)
     {
-        registerKeywords(loadKeywords(handle));
+        return registerKeywords(loadKeywords(handle));
     }
 
-    public static void registerKeywords(Map<String, EUIKeyword> keywords)
+    public static ArrayList<EUITooltip> registerKeywords(Map<String, EUIKeyword> keywords)
     {
+        ArrayList<EUITooltip> tooltips = new ArrayList<>();
         for (Map.Entry<String, EUIKeyword> pair : keywords.entrySet()) {
             EUIKeyword keyword = pair.getValue();
-            EUITooltip tooltip = new EUITooltip(keyword).canHighlight(false).showText(false);
+            EUITooltip tooltip = new EUITooltip(keyword);
             EUITooltip.registerID(pair.getKey(), tooltip);
+            EUITooltip.registerName(keyword.NAME.toLowerCase(), tooltip);
             if (keyword.PLURAL != null)
             {
                 // Emulate a plural parsing
@@ -466,8 +468,9 @@ public class EUI
             {
                 EUITooltip.registerName(keyword.PROGRESSIVE.toLowerCase(), tooltip);
             }
-            EUITooltip.registerName(keyword.NAME.toLowerCase(), tooltip);
+            tooltips.add(tooltip);
         }
+        return tooltips;
     }
 
     public static void render(SpriteBatch sb)

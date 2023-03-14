@@ -29,9 +29,9 @@ public class HotkeyPatches
         public static void insert(InputSettingsScreen __instance, ArrayList<RemapInputElement> elements)
         {
             if (!Settings.isControllerMode) {
-                elements.add(new RemapInputElement(__instance, EUIRM.strings.hotkeyCycle, EUIHotkeys.cycle));
-                elements.add(new RemapInputElement(__instance, EUIRM.strings.hotkeyOpencardpool, EUIHotkeys.openCardPool));
-                elements.add(new RemapInputElement(__instance, EUIRM.strings.hotkeyToggle, EUIHotkeys.toggleFilters));
+                elements.add(new RemapInputElement(__instance, EUIRM.strings.hotkey_cycle, EUIHotkeys.cycle));
+                elements.add(new RemapInputElement(__instance, EUIRM.strings.hotkey_openCardPool, EUIHotkeys.openCardPool));
+                elements.add(new RemapInputElement(__instance, EUIRM.strings.hotkey_toggle, EUIHotkeys.toggleFilters));
             }
         }
 

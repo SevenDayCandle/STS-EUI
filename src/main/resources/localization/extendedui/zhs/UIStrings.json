@@ -18,6 +18,7 @@
 			"按钮字体",
 			"能量字体",
 			"横幅字体",
+			"Enable debug functionality",
 			"Re-enable Tooltips"
 		]
 	},
@@ -72,7 +73,9 @@
 			"Check this option to replace keyword icons in descrptions with their titles.",
 			"Check this option to disable the playing of VFX rendered with Effekseer.",
 			"Only check this option if you are running into memory issues or if Effekseer VFX do not render properly.",
-			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options."
+			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options.",
+			"Re-enable all tooltips that were turned off by this mod.",
+			"If checked, enables various debugging functions to be used in the card pool screen by right-clicking cards in its grid."
 		]
 	},
 	"extendedui:ui_pool": {
@@ -81,7 +84,11 @@
 			"查看本局游戏中所有可获得的卡牌和遗物。",
 			"卡牌池",
 			"遗物池",
-			"显示无色牌"
+			"显示无色牌",
+			"View Popup",
+			"Add Card to Hand",
+			"Add Card to Deck",
+			"Obtain Relic"
 		]
 	},
 	"extendedui:ui_filters": {

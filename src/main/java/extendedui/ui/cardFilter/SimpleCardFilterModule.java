@@ -48,7 +48,7 @@ public class SimpleCardFilterModule<T> extends CustomCardFilterModule
     @Override
     public boolean isCardValid(AbstractCard c)
     {
-        return currentSeries.contains(objectFunc.invoke(c));
+        return currentSeries.isEmpty() || currentSeries.contains(objectFunc.invoke(c));
     }
 
     @Override

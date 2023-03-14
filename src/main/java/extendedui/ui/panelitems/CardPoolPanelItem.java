@@ -35,7 +35,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
     public CardPoolPanelItem() {
         super(Loader.isModLoaded("PrideMod") ? EUIRM.images.cardpoolPride : EUIRM.images.cardPool, ID);
-        setTooltip(new EUITooltip(EUIRM.strings.uipoolViewpool, EUIRM.strings.uipoolViewpooldescription));
+        setTooltip(new EUITooltip(EUIRM.strings.uipool_viewPool, EUIRM.strings.uipool_viewPoolDescription));
 
         contextMenu = (EUIContextMenu<ContextOption>) new EUIContextMenu<ContextOption>(new EUIHitbox(0, 0, 0, 0), ContextOption::getDisplayName)
                 .setOnChange(options -> {
@@ -69,7 +69,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     public void update() {
         super.update();
         if (this.tooltip != null && getHitbox().hovered) {
-            tooltip.setText(EUIRM.strings.uipoolViewpool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")", getFullDescription());
+            tooltip.setText(EUIRM.strings.uipool_viewPool + " (" + EUIHotkeys.openCardPool.getKeyString() + ")", getFullDescription());
             EUITooltip.queueTooltip(tooltip);
         }
 
@@ -98,14 +98,14 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
     public String getFullDescription()
     {
-        String base = EUIRM.strings.uipoolViewpooldescription;
+        String base = EUIRM.strings.uipool_viewPoolDescription;
         String addendum = additionalTextFunc != null ? additionalTextFunc.invoke() : null;
         return addendum != null ? base + " || " + addendum : base;
     }
 
     public static CardGroup getAllCards() {
         CardGroup cardGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        for (CardGroup cg: EUIGameUtils.getSourceCardPools()) {
+        for (CardGroup cg: EUIGameUtils.getGameCardPools()) {
             for (AbstractCard c : cg.group) {
                 cardGroup.addToTop(c);
             }
@@ -134,8 +134,8 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
     public enum ContextOption
     {
-        CardPool(EUIRM.strings.uipoolViewcardpool, EUIHotkeys.openCardPool, () -> EUI.cardsScreen.open(AbstractDungeon.player, getAllCards())),
-        RelicPool(EUIRM.strings.uipoolViewrelicpool, EUIHotkeys.openRelicPool, () -> EUI.relicScreen.open(AbstractDungeon.player, getAllRelics()));
+        CardPool(EUIRM.strings.uipool_viewCardPool, EUIHotkeys.openCardPool, () -> EUI.cardsScreen.open(AbstractDungeon.player, getAllCards())),
+        RelicPool(EUIRM.strings.uipool_viewRelicPool, EUIHotkeys.openRelicPool, () -> EUI.relicScreen.open(AbstractDungeon.player, getAllRelics()));
 
         public final String baseName;
         public final InputAction hotkey;

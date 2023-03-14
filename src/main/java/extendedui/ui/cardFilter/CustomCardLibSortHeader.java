@@ -55,7 +55,6 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         }
     }
 
-    // Ignore custom sorting for now because the sort header can't recognize them without reflection
     public void setupButtons()
     {
         if (override == null)

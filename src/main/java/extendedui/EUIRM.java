@@ -132,52 +132,60 @@ public class EUIRM
         private final UIStrings stringsUIPool = getUIStrings("ui_pool");
         private final UIStrings stringsUIFilter = getUIStrings("ui_filters");
 
-        public final String configUseVanillaCompendium = stringsConfig.TEXT[0];
-        public final String configDisableCompendiumButton = stringsConfig.TEXT[1];
-        public final String configDisableDescriptionIcons = stringsConfig.TEXT[2];
-        public final String configDisableEffekseer = stringsConfig.TEXT[3];
-        public final String configFlushOnGameStart = stringsConfig.TEXT[4];
-        public final String configFlushOnRoomStart = stringsConfig.TEXT[5];
-        public final String configShowModSettings = stringsConfig.TEXT[6];
-        public final String configUseSeparateFonts = stringsConfig.TEXT[7];
-        public final String configOverridegamefont = stringsConfig.TEXT[8];
-        public final String configMainfont = stringsConfig.TEXT[9];
-        public final String configCarddescfont = stringsConfig.TEXT[10];
-        public final String configCardtitlefont = stringsConfig.TEXT[11];
-        public final String configTipdescfont = stringsConfig.TEXT[12];
-        public final String configTiptitlefont = stringsConfig.TEXT[13];
-        public final String configButtonfont = stringsConfig.TEXT[14];
-        public final String configEnergyFont = stringsConfig.TEXT[15];
-        public final String configBannerFont = stringsConfig.TEXT[16];
-        public final String configReenableTooltips = stringsConfig.TEXT[17];
 
-        public final String hotkeyCycle = stringsHotkeys.TEXT[0];
-        public final String hotkeyOpencardpool = stringsHotkeys.TEXT[1];
-        public final String hotkeyToggle = stringsHotkeys.TEXT[2];
+        public final String config_useVanillaCompendium = stringsConfig.TEXT[0];
+        public final String config_disableCompendiumButton = stringsConfig.TEXT[1];
+        public final String config_disableDescriptionIcons = stringsConfig.TEXT[2];
+        public final String config_disableEffekseer = stringsConfig.TEXT[3];
+        public final String config_flushOnGameStart = stringsConfig.TEXT[4];
+        public final String config_flushOnRoomStart = stringsConfig.TEXT[5];
+        public final String config_showModSettings = stringsConfig.TEXT[6];
+        public final String config_useSeparateFonts = stringsConfig.TEXT[7];
+        public final String config_overrideGameFont = stringsConfig.TEXT[8];
+        public final String config_mainFont = stringsConfig.TEXT[9];
+        public final String config_cardDescFont = stringsConfig.TEXT[10];
+        public final String config_cardTitleFont = stringsConfig.TEXT[11];
+        public final String config_tipDescFont = stringsConfig.TEXT[12];
+        public final String config_tipTitleFont = stringsConfig.TEXT[13];
+        public final String config_buttonFont = stringsConfig.TEXT[14];
+        public final String config_energyFont = stringsConfig.TEXT[15];
+        public final String config_bannerFont = stringsConfig.TEXT[16];
+        public final String config_enableDebug = stringsConfig.TEXT[17];
+        public final String config_reenableTooltips = stringsConfig.TEXT[18];
 
-        public final String miscKeytocycle = stringsMisc.TEXT[0];
-        public final String miscTypetosearch = stringsMisc.TEXT[1];
-        public final String miscSortbycount = stringsMisc.TEXT[2];
-        public final String miscClear = stringsMisc.TEXT[3];
-        public final String miscExtrasettings = stringsMisc.TEXT[4];
-        public final String miscEffekseersettings = stringsMisc.TEXT[5];
-        public final String miscFontsettings = stringsMisc.TEXT[6];
-        public final String miscRestartrequired = stringsMisc.TEXT[7];
-        public final String miscFontdescription = stringsMisc.TEXT[8];
-        public final String miscFontSeparateDescription = stringsMisc.TEXT[9];
-        public final String miscModSettingsDescription = stringsMisc.TEXT[10];
-        public final String miscCompendiumButtonDescription = stringsMisc.TEXT[11];
-        public final String miscVanillaLibraryDescription = stringsMisc.TEXT[12];
-        public final String miscDisableDescriptionIconDescription = stringsMisc.TEXT[13];
-        public final String miscDisableEffekseerDescription = stringsMisc.TEXT[14];
-        public final String miscFlushEffekseerDescription = stringsMisc.TEXT[15];
-        public final String miscKeywordInstructions = stringsMisc.TEXT[16];
+        public final String hotkey_cycle = stringsHotkeys.TEXT[0];
+        public final String hotkey_openCardPool = stringsHotkeys.TEXT[1];
+        public final String hotkey_toggle = stringsHotkeys.TEXT[2];
 
-        public final String uipoolViewpool = stringsUIPool.TEXT[0];
-        public final String uipoolViewpooldescription = stringsUIPool.TEXT[1];
-        public final String uipoolViewcardpool = stringsUIPool.TEXT[2];
-        public final String uipoolViewrelicpool = stringsUIPool.TEXT[3];
-        public final String uicardpoolShowcolorless = stringsUIPool.TEXT[4];
+        public final String misc_KeyToCycle = stringsMisc.TEXT[0];
+        public final String misc_TypeToSearch = stringsMisc.TEXT[1];
+        public final String misc_sortByCount = stringsMisc.TEXT[2];
+        public final String misc_clear = stringsMisc.TEXT[3];
+        public final String misc_extraSettings = stringsMisc.TEXT[4];
+        public final String misc_effekseerSettings = stringsMisc.TEXT[5];
+        public final String misc_fontSettings = stringsMisc.TEXT[6];
+        public final String misc_restartRequired = stringsMisc.TEXT[7];
+        public final String misc_fontDescription = stringsMisc.TEXT[8];
+        public final String misc_fontSeparateDescription = stringsMisc.TEXT[9];
+        public final String misc_modSettingsDescription = stringsMisc.TEXT[10];
+        public final String misc_compendiumButtonDescription = stringsMisc.TEXT[11];
+        public final String misc_vanillaLibraryDescription = stringsMisc.TEXT[12];
+        public final String misc_disableDescriptionIconDescription = stringsMisc.TEXT[13];
+        public final String misc_disableEffekseerDescription = stringsMisc.TEXT[14];
+        public final String misc_flushEffekseerDescription = stringsMisc.TEXT[15];
+        public final String misc_keywordInstructions = stringsMisc.TEXT[16];
+        public final String misc_debugDescription = stringsMisc.TEXT[17];
+        public final String misc_reenableTooltips = stringsMisc.TEXT[18];
+
+        public final String uipool_viewPool = stringsUIPool.TEXT[0];
+        public final String uipool_viewPoolDescription = stringsUIPool.TEXT[1];
+        public final String uipool_viewCardPool = stringsUIPool.TEXT[2];
+        public final String uipool_viewRelicPool = stringsUIPool.TEXT[3];
+        public final String uipool_showColorless = stringsUIPool.TEXT[4];
+        public final String uipool_enlarge = stringsUIPool.TEXT[5];
+        public final String uipool_addToHand = stringsUIPool.TEXT[6];
+        public final String uipool_addToDeck = stringsUIPool.TEXT[7];
+        public final String uipool_obtainRelic = stringsUIPool.TEXT[8];
 
         public final String uiItemsselected = stringsUIFilter.TEXT[0];
         public final String uiKeywords = stringsUIFilter.TEXT[1];
@@ -199,10 +207,10 @@ public class EUIRM
         public final String uiEnableTooltip = stringsUIFilter.TEXT[17];
 
         public final String keyToCycle(String keyName) {
-            return EUIUtils.format(miscKeytocycle, keyName);
+            return EUIUtils.format(misc_KeyToCycle, keyName);
         }
         public final String sortBy(String item) {
-            return EUIUtils.format(miscSortbycount, item);
+            return EUIUtils.format(misc_sortByCount, item);
         }
 
         // e.g. English: Red Card -> 0 1, Spanish: Carta roja -> 1 0

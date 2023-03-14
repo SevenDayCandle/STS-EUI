@@ -18,6 +18,7 @@
 			"Button Font",
 			"Energy Font",
 			"Banner Font",
+			"Enable debug functionality",
 			"Re-enable Tooltips"
 		]
 	},
@@ -72,7 +73,9 @@
 			"Check this option to replace icons in tooltip descriptions with the keywords they represent (excluding #yEnergy icons).",
 			"Check this option to disable the playing of VFX rendered with Effekseer.",
 			"Only check this option if you are running into memory issues or if Effekseer VFX do not render properly.",
-			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options."
+			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options.",
+			"Re-enable all tooltips that were turned off by this mod.",
+			"If checked, enables various debugging functions to be used in the card pool screen by right-clicking cards in its grid."
 		]
 	},
 	"extendedui:ui_pool": {
@@ -81,7 +84,11 @@
 			"View all cards or relics available in this run",
 			"Card Pool",
 			"Relic Pool",
-			"Show Colorless"
+			"Show Colorless",
+			"View Popup",
+			"Add Card to Hand",
+			"Add Card to Deck",
+			"Obtain Relic"
 		]
 	},
 	"extendedui:ui_filters": {

@@ -468,6 +468,16 @@ public class EUIRenderHelpers
         drawOnCardAuto(sb, card, img, offset, width, height, color, alpha, imgScale, 0f);
     }
 
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, float drawX, float drawY, float width, float height)
+    {
+        drawOnCardAuto(sb, card, img, new Vector2(drawX, drawY), width, height, Color.WHITE, card.transparency, 1);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, Vector2 offset, float width, float height)
+    {
+        drawOnCardAuto(sb, card, img, offset, width, height, Color.WHITE, card.transparency, 1);
+    }
+
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale)
     {
         if (card.angle != 0)

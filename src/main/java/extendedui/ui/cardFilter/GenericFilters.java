@@ -78,7 +78,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setColor(Color.FIREBRICK)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.13f)
-                .setText(EUIRM.strings.miscClear)
+                .setText(EUIRM.strings.misc_clear)
                 .setOnClick(() -> this.clear(true, isAccessedFromCardPool));
 
         contextMenu = (EUIContextMenu<TooltipOption>) new EUIContextMenu<TooltipOption>(new EUIHitbox(0, 0, 0, 0), t -> t.baseName)
@@ -99,7 +99,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
                 .setAlignment(0.5f, 0.0f, false);
         keywordsInstructionLabel = new EUITextBox(EUIRM.images.panel.texture(), new EUIHitbox(0, 0, Settings.WIDTH * 0.48f, scale(64)), EUIFontHelper.cardTooltipFont, 0.85f)
                 .setColors(Color.DARK_GRAY, Settings.CREAM_COLOR)
-                .setLabel(EUIRM.strings.miscKeywordInstructions)
+                .setLabel(EUIRM.strings.misc_keywordInstructions)
                 .setAlignment(0.75f, 0.05f, true);
         currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardtitlefontNormal,
                 new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)), 1f)
@@ -115,7 +115,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
                 .setBackground(EUIRM.images.rectangularButton.texture(), Color.DARK_GRAY)
                 .setTickImage(null, null, 10)
                 .setFont(EUIFontHelper.carddescriptionfontNormal, 0.7f)
-                .setText(EUIRM.strings.miscSortbycount)
+                .setText(EUIRM.strings.misc_sortByCount)
                 .setOnToggle(val -> {
                     shouldSortByCount = val;
                     refreshButtonOrder();
@@ -152,7 +152,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         currentTotalLabel.setLabel(currentTotal);
 
         // Update instructions according to current settings
-        keywordsInstructionLabel.setLabel(EUIUtils.format(EUIRM.strings.miscKeywordInstructions, InputActionSet.peek.getKeyString()));
+        keywordsInstructionLabel.setLabel(EUIUtils.format(EUIRM.strings.misc_keywordInstructions, InputActionSet.peek.getKeyString()));
 
         return this;
     }

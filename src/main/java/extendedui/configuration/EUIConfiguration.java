@@ -46,23 +46,24 @@ public class EUIConfiguration
         return PREFIX + "_" + base;
     }
 
-    private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
+    private static final String BANNER_FONT = getFullKey("BannerFont");
+    private static final String BUTTON_FONT = getFullKey("ButtonFont");
+    private static final String CARD_DESC_FONT = getFullKey("CardDescFont");
+    private static final String CARD_TITLE_FONT = getFullKey("CardTitleFont");
     private static final String DISABLE_COMPENDIUM_BUTTON = getFullKey("DisableCompendiumButton");
     private static final String DISABLE_DESCRIPTION_ICONS = getFullKey("DisableDescriptionIcons");
     private static final String DISABLE_EFFEKSEER = getFullKey("DisableEffekseer");
+    private static final String ENABLE_CARD_POOL_DEBUG = getFullKey("EnableCardPoolDebug");
+    private static final String ENERGY_FONT = getFullKey("EnergyFont");
     private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
     private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
-    private static final String SHOW_MOD_SETTINGS = getFullKey("ShowModSettings");
-    private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
-    private static final String OVERRIDE_GAME_FONT = getFullKey("OverrideGameFont");
     private static final String HIDE_TIP_DESCRIPTION = getFullKey("HideTipDescription");
-    private static final String CARD_DESC_FONT = getFullKey("CardDescFont");
-    private static final String CARD_TITLE_FONT = getFullKey("CardTitleFont");
+    private static final String OVERRIDE_GAME_FONT = getFullKey("OverrideGameFont");
+    private static final String SHOW_MOD_SETTINGS = getFullKey("ShowModSettings");
     private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
     private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
-    private static final String BUTTON_FONT = getFullKey("ButtonFont");
-    private static final String BANNER_FONT = getFullKey("BannerFont");
-    private static final String ENERGY_FONT = getFullKey("EnergyFont");
+    private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
+    private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
 
     public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
     public static STSConfigItem<Boolean> disableCompendiumButton = new STSConfigItem<>(DISABLE_COMPENDIUM_BUTTON, false);
@@ -73,6 +74,7 @@ public class EUIConfiguration
     public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(SHOW_MOD_SETTINGS, false);
     public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(USE_SEPARATE_FONTS, false);
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
+    public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(ENABLE_CARD_POOL_DEBUG, false);
 
     public static STSStringConfigItem cardDescFont = new STSStringConfigItem(CARD_DESC_FONT,"");
     public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT,"");
@@ -106,6 +108,7 @@ public class EUIConfiguration
             buttonFont.addConfig(config);
             bannerFont.addConfig(config);
             energyFont.addConfig(config);
+            enableCardPoolDebug.addConfig(config);
         }
         catch (IOException e)
         {
@@ -117,61 +120,62 @@ public class EUIConfiguration
     {
 
         // Add EUI options
-        effekseerCategory = new ModSettingsScreen.Category(EUIRM.strings.miscEffekseersettings);
-        fontCategory = new ModSettingsScreen.Category(EUIRM.strings.miscFontsettings);
+        effekseerCategory = new ModSettingsScreen.Category(EUIRM.strings.misc_effekseerSettings);
+        fontCategory = new ModSettingsScreen.Category(EUIRM.strings.misc_fontSettings);
 
         ModSettingsScreen.addCategory(effekseerCategory);
         ModSettingsScreen.addCategory(fontCategory);
-        makeModToggle(effekseerCategory, disableCompendiumButton, EUIRM.strings.configDisableCompendiumButton, EUIRM.strings.miscCompendiumButtonDescription);
-        makeModToggle(effekseerCategory, disableDescrptionIcons, EUIRM.strings.configDisableDescriptionIcons, EUIRM.strings.miscDisableDescriptionIconDescription);
-        makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.configDisableEffekseer, EUIRM.strings.miscDisableEffekseerDescription);
-        makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.configFlushOnGameStart, EUIRM.strings.miscFlushEffekseerDescription);
-        makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.configFlushOnRoomStart, EUIRM.strings.miscFlushEffekseerDescription);
-        makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.configUseSeparateFonts, EUIRM.strings.miscFontSeparateDescription + EUIUtils.SPLIT_LINE + EUIRM.strings.miscRestartrequired);
-        makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.configOverridegamefont,EUIRM.strings.miscFontdescription + EUIUtils.SPLIT_LINE + EUIRM.strings.miscRestartrequired);
-        ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardDescFont, EUIRM.strings.configCarddescfont, FONT_EXTS).setTooltip(EUIRM.strings.configCarddescfont, EUIRM.strings.miscRestartrequired);
-        ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardTitleFont, EUIRM.strings.configCardtitlefont, FONT_EXTS).setTooltip(EUIRM.strings.configCardtitlefont, EUIRM.strings.miscRestartrequired);
-        ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipDescFont, EUIRM.strings.configTipdescfont, FONT_EXTS).setTooltip(EUIRM.strings.configTipdescfont, EUIRM.strings.miscRestartrequired);
-        ModSettingsPathSelector tipTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipTitleFont, EUIRM.strings.configTiptitlefont, FONT_EXTS).setTooltip(EUIRM.strings.configTiptitlefont, EUIRM.strings.miscRestartrequired);
-        ModSettingsPathSelector buttonFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, buttonFont, EUIRM.strings.configButtonfont, FONT_EXTS).setTooltip(EUIRM.strings.configButtonfont, EUIRM.strings.miscRestartrequired);
-        ModSettingsPathSelector bannerFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, bannerFont, EUIRM.strings.configBannerFont, FONT_EXTS).setTooltip(EUIRM.strings.configBannerFont, EUIRM.strings.miscRestartrequired);
-        ModSettingsPathSelector energyFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, energyFont, EUIRM.strings.configEnergyFont, FONT_EXTS).setTooltip(EUIRM.strings.configEnergyFont, EUIRM.strings.miscRestartrequired);
+        makeModToggle(effekseerCategory, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, EUIRM.strings.misc_compendiumButtonDescription);
+        makeModToggle(effekseerCategory, disableDescrptionIcons, EUIRM.strings.config_disableDescriptionIcons, EUIRM.strings.misc_disableDescriptionIconDescription);
+        makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.config_disableEffekseer, EUIRM.strings.misc_disableEffekseerDescription);
+        makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, EUIRM.strings.misc_flushEffekseerDescription);
+        makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.misc_flushEffekseerDescription);
+        makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, EUIRM.strings.misc_fontSeparateDescription + EUIUtils.SPLIT_LINE + EUIRM.strings.misc_restartRequired);
+        makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.config_overrideGameFont,EUIRM.strings.misc_fontDescription + EUIUtils.SPLIT_LINE + EUIRM.strings.misc_restartRequired);
+        ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardDescFont, EUIRM.strings.config_cardDescFont, FONT_EXTS).setTooltip(EUIRM.strings.config_cardDescFont, EUIRM.strings.misc_restartRequired);
+        ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardTitleFont, EUIRM.strings.config_cardTitleFont, FONT_EXTS).setTooltip(EUIRM.strings.config_cardTitleFont, EUIRM.strings.misc_restartRequired);
+        ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipDescFont, EUIRM.strings.config_tipDescFont, FONT_EXTS).setTooltip(EUIRM.strings.config_tipDescFont, EUIRM.strings.misc_restartRequired);
+        ModSettingsPathSelector tipTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipTitleFont, EUIRM.strings.config_tipTitleFont, FONT_EXTS).setTooltip(EUIRM.strings.config_tipTitleFont, EUIRM.strings.misc_restartRequired);
+        ModSettingsPathSelector buttonFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, buttonFont, EUIRM.strings.config_buttonFont, FONT_EXTS).setTooltip(EUIRM.strings.config_buttonFont, EUIRM.strings.misc_restartRequired);
+        ModSettingsPathSelector bannerFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, bannerFont, EUIRM.strings.config_bannerFont, FONT_EXTS).setTooltip(EUIRM.strings.config_bannerFont, EUIRM.strings.misc_restartRequired);
+        ModSettingsPathSelector energyFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, energyFont, EUIRM.strings.config_energyFont, FONT_EXTS).setTooltip(EUIRM.strings.config_energyFont, EUIRM.strings.misc_restartRequired);
 
 
         // Add basemod options
         int yPos = BASE_OPTION_OFFSET_Y;
         ModPanel panel = new ModPanel();
 
-        yPos = addToggle(panel, useVanillaCompendium, EUIRM.strings.configUseVanillaCompendium, yPos, EUIRM.strings.miscVanillaLibraryDescription);
-        yPos = addToggle(panel, disableCompendiumButton, EUIRM.strings.configDisableCompendiumButton, yPos, EUIRM.strings.miscCompendiumButtonDescription);
-        yPos = addToggle(panel, disableDescrptionIcons, EUIRM.strings.configDisableDescriptionIcons, yPos, EUIRM.strings.miscDisableDescriptionIconDescription);
-        yPos = addToggle(panel, disableEffekseer, EUIRM.strings.configDisableEffekseer, yPos, EUIRM.strings.miscDisableEffekseerDescription);
-        yPos = addToggle(panel, flushOnGameStart, EUIRM.strings.configFlushOnGameStart, yPos, EUIRM.strings.miscFlushEffekseerDescription);
-        yPos = addToggle(panel, flushOnRoomStart, EUIRM.strings.configFlushOnRoomStart, yPos, EUIRM.strings.miscFlushEffekseerDescription);
-        yPos = addToggle(panel, showModSettings, EUIRM.strings.configShowModSettings, yPos, EUIRM.strings.miscModSettingsDescription);
-        yPos = addToggle(panel, useSeparateFonts, EUIRM.strings.configUseSeparateFonts, yPos, EUIRM.strings.miscFontSeparateDescription + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.miscRestartrequired);
-        yPos = addToggle(panel, overrideGameFont, EUIRM.strings.configOverridegamefont, yPos, EUIRM.strings.miscFontdescription + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.miscRestartrequired);
+        yPos = addToggle(panel, useVanillaCompendium, EUIRM.strings.config_useVanillaCompendium, yPos, EUIRM.strings.misc_vanillaLibraryDescription);
+        yPos = addToggle(panel, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, yPos, EUIRM.strings.misc_compendiumButtonDescription);
+        yPos = addToggle(panel, disableDescrptionIcons, EUIRM.strings.config_disableDescriptionIcons, yPos, EUIRM.strings.misc_disableDescriptionIconDescription);
+        yPos = addToggle(panel, disableEffekseer, EUIRM.strings.config_disableEffekseer, yPos, EUIRM.strings.misc_disableEffekseerDescription);
+        yPos = addToggle(panel, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, yPos, EUIRM.strings.misc_flushEffekseerDescription);
+        yPos = addToggle(panel, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.misc_flushEffekseerDescription);
+        yPos = addToggle(panel, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.misc_modSettingsDescription);
+        yPos = addToggle(panel, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.misc_fontSeparateDescription + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.misc_restartRequired);
+        yPos = addToggle(panel, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.misc_fontDescription + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.misc_restartRequired);
+        yPos = addToggle(panel, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.misc_debugDescription);
 
-        yPos = ((BASE_OPTION_OFFSET_Y + yPos) / 2) - 10;
+        yPos = ((BASE_OPTION_OFFSET_Y + yPos) / 2) - 40;
         ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(panel, cardDescFontSelector2, yPos);
+        yPos = addGenericElement(panel, cardDescFontSelector2, yPos) + 2;
         ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(panel, cardTitleFontSelector2, yPos);
+        yPos = addGenericElement(panel, cardTitleFontSelector2, yPos) + 2;
         ModSettingsPathSelector tipDescFontSelector2 = (ModSettingsPathSelector) tipDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(panel, tipDescFontSelector2, yPos);
+        yPos = addGenericElement(panel, tipDescFontSelector2, yPos) + 2;
         ModSettingsPathSelector tipTitleFontSelector2 = (ModSettingsPathSelector) tipTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(panel, tipTitleFontSelector2, yPos);
+        yPos = addGenericElement(panel, tipTitleFontSelector2, yPos) + 2;
         ModSettingsPathSelector buttonFontSelector2 = (ModSettingsPathSelector) buttonFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(panel, buttonFontSelector2, yPos);
+        yPos = addGenericElement(panel, buttonFontSelector2, yPos) + 2;
         ModSettingsPathSelector bannerFontSelector2 = (ModSettingsPathSelector) bannerFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(panel, buttonFontSelector2, yPos);
+        yPos = addGenericElement(panel, buttonFontSelector2, yPos) + 2;
         ModSettingsPathSelector energyFontSelector2 = (ModSettingsPathSelector) energyFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(panel, buttonFontSelector2, yPos);
+        yPos = addGenericElement(panel, buttonFontSelector2, yPos) + 2;
         BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
 
         // Sub-font settings should only show up if UseSeparateFonts is true
         boolean showOtherSelectors = useSeparateFonts.get();
-        cardDescFontSelector2.setHeaderText(showOtherSelectors ? EUIRM.strings.configCarddescfont : EUIRM.strings.configMainfont);
+        cardDescFontSelector2.setHeaderText(showOtherSelectors ? EUIRM.strings.config_cardDescFont : EUIRM.strings.config_mainFont);
         cardTitleFontSelector.setActive(showOtherSelectors);
         tipDescFontSelector.setActive(showOtherSelectors);
         tipTitleFontSelector.setActive(showOtherSelectors);
@@ -187,7 +191,7 @@ public class EUIConfiguration
 
         // Toggling the fonts icon requires us to update the visibility of all font selectors
         useSeparateFonts.addListener(newValue -> {
-            cardDescFontSelector2.setHeaderText(newValue ? EUIRM.strings.configCarddescfont : EUIRM.strings.configMainfont);
+            cardDescFontSelector2.setHeaderText(newValue ? EUIRM.strings.config_cardDescFont : EUIRM.strings.config_mainFont);
             cardTitleFontSelector.setActive(newValue);
             tipDescFontSelector.setActive(newValue);
             tipTitleFontSelector.setActive(newValue);

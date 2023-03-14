@@ -88,7 +88,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T>
         super.renderImpl(sb);
         this.searchInput.tryRender(sb);
         if (isOpen && searchInput.text.isEmpty()) {
-            EUIRenderHelpers.writeCentered(sb, font, EUIRM.strings.miscTypetosearch, hb, Color.GRAY);
+            EUIRenderHelpers.writeCentered(sb, font, EUIRM.strings.misc_TypeToSearch, hb, Color.GRAY);
         }
     }
 

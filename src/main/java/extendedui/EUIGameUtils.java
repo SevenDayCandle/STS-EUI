@@ -114,6 +114,16 @@ public class EUIGameUtils {
         }
     }
 
+    public static ArrayList<CardGroup> getGameCardPools() {
+        ArrayList<CardGroup> result = new ArrayList<>();
+        result.add(AbstractDungeon.colorlessCardPool);
+        result.add(AbstractDungeon.commonCardPool);
+        result.add(AbstractDungeon.uncommonCardPool);
+        result.add(AbstractDungeon.rareCardPool);
+        result.add(AbstractDungeon.curseCardPool);
+        return result;
+    }
+
     public static AbstractCard.CardColor getRelicColor(String relicID) {
         return RelicColors.getOrDefault(relicID, AbstractCard.CardColor.COLORLESS);
     }

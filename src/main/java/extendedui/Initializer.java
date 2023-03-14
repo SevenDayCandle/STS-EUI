@@ -17,6 +17,7 @@ import extendedui.ui.tooltips.EUITooltip;
 import org.apache.logging.log4j.LogManager;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Map;
 
 import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
@@ -83,9 +84,14 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
         return EUI.loadKeywords(Gdx.files.internal(PATH + language + path));
     }
 
+    // EUI's own tooltips should not be highlighted
     private void registerKeywords(String language)
     {
-        EUI.registerKeywords(Gdx.files.internal(PATH + language + JSON_KEYWORD));
+        ArrayList<EUITooltip> tips = EUI.registerKeywords(Gdx.files.internal(PATH + language + JSON_KEYWORD));
+        for (EUITooltip tip : tips)
+        {
+            tip.canHighlight(false).showText(false);
+        }
     }
 
     private void loadUIStrings(String language)
