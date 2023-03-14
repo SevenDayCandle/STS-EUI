@@ -16,6 +16,7 @@ import java.util.ArrayList;
 
 public class RelicViewScreenPatches
 {
+    // THESE NAMES MUST MATCH THE NAMES OF THE RELICLIBRARY LISTS OR THIS PATCH WILL GO BOOM
     private static ArrayList<AbstractRelic> allList = new ArrayList<>();
     public static ArrayList<AbstractRelic> starterList = new ArrayList<>();
     public static ArrayList<AbstractRelic> commonList = new ArrayList<>();
