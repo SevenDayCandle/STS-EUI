@@ -20,7 +20,7 @@ import java.util.ArrayList;
 
 public class EUIPotionGrid extends EUICanvasGrid
 {
-    protected static final float PAD = scale(80);
+    protected static final float PAD = scale(64);
     protected static final float DRAW_START_X = Settings.WIDTH - (3f * scale(AbstractRelic.RAW_W)) - (4f * PAD);
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
     public static final int ROW_SIZE = 10;
@@ -315,6 +315,11 @@ public class EUIPotionGrid extends EUICanvasGrid
         super.renderImpl(sb);
 
         renderPotions(sb);
+
+        if (hoveredPotion != null)
+        {
+            EUIGameUtils.renderPotionTip(hoveredPotion.potion);
+        }
 
         if (message != null)
         {

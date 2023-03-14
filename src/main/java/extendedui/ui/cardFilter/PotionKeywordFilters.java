@@ -8,8 +8,6 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
@@ -22,7 +20,7 @@ import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUIPotionGrid;
-import extendedui.ui.controls.EUIRelicGrid;
+import extendedui.ui.controls.EUIPotionGrid;
 import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
@@ -122,7 +120,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion>
 
                 availableMods.add(EUIGameUtils.getModInfo(potion));
                 availableRarities.add(potion.rarity);
-                availableColors.add(EUIGameUtils.getRelicColor(potion.ID));
+                availableColors.add(EUIGameUtils.getPotionColor(potion.ID));
             }
             if (customModule != null)
             {
@@ -222,7 +220,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion>
         {
             for (PowerTip sk : c.tips)
             {
-                EUITooltip tip = EUITooltip.findByName(sk.header);
+                EUITooltip tip = EUITooltip.findByName(sk.header.toLowerCase());
                 if (tip != null && !dynamicTooltips.contains(tip))
                 {
                     dynamicTooltips.add(tip);
@@ -287,13 +285,13 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion>
 
     public void toggleFilters()
     {
-        if (EUI.relicFilters.isActive)
+        if (EUI.potionFilters.isActive)
         {
-            EUI.relicFilters.close();
+            EUI.potionFilters.close();
         }
         else
         {
-            EUI.relicFilters.open();
+            EUI.potionFilters.open();
         }
     }
 }

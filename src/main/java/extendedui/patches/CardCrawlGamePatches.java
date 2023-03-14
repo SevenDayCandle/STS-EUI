@@ -51,6 +51,7 @@ public class CardCrawlGamePatches
         public static void insert(CardCrawlGame __instance, SpriteBatch sb)
         {
             EUI.relicFilters.tryRender(sb);
+            EUI.potionFilters.tryRender(sb);
             EUI.cardFilters.tryRender(sb);
             EUI.postRender(sb);
             EUI.priorityPostRender(sb);

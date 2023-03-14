@@ -10,8 +10,10 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.potions.*;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.RunicDome;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
@@ -20,6 +22,7 @@ import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.compendium.PotionViewScreen;
 import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
+import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
 import org.lwjgl.opencl.CL;
 
@@ -140,6 +143,26 @@ public class EUIGameUtils {
     }
 
     public static AbstractCard.CardColor getPotionColor(String potionID) {
+        // These are hardcoded in PotionHelper -_-
+        switch (potionID)
+        {
+            case BloodPotion.POTION_ID:
+            case Elixir.POTION_ID:
+            case HeartOfIron.POTION_ID:
+                return AbstractCard.CardColor.RED;
+            case PoisonPotion.POTION_ID:
+            case CunningPotion.POTION_ID:
+            case GhostInAJar.POTION_ID:
+                return AbstractCard.CardColor.GREEN;
+            case FocusPotion.POTION_ID:
+            case PotionOfCapacity.POTION_ID:
+            case EssenceOfDarkness.POTION_ID:
+                return AbstractCard.CardColor.BLUE;
+            case BottledMiracle.POTION_ID:
+            case StancePotion.POTION_ID:
+            case Ambrosia.POTION_ID:
+                return AbstractCard.CardColor.PURPLE;
+        }
         AbstractPlayer.PlayerClass pc = BaseMod.getPotionPlayerClass(potionID);
         return CLASS_TO_COLOR.getOrDefault(pc, AbstractCard.CardColor.COLORLESS);
     }
@@ -210,6 +233,18 @@ public class EUIGameUtils {
     {
         EUIGameUtils.COLOR_TO_CLASS.put(co, pc);
         EUIGameUtils.CLASS_TO_COLOR.put(pc, co);
+    }
+
+    public static void renderPotionTip(AbstractPotion po)
+    {
+        if (po instanceof TooltipProvider)
+        {
+            EUITooltip.queueTooltips((AbstractPotion & TooltipProvider) po);
+        }
+        else
+        {
+            TipHelper.queuePowerTips(InputHelper.mX + 50.0F * Settings.scale, InputHelper.mY + 50.0F * Settings.scale, po.tips);
+        }
     }
 
     public static float scale(float value)

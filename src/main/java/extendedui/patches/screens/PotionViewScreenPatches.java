@@ -156,9 +156,13 @@ public class PotionViewScreenPatches
 
     private static void editImpl(javassist.expr.FieldAccess m) throws CannotCompileException
     {
-        if (m.getClassName().equals(PotionViewScreen.class.getName()))
+        switch(m.getFieldName())
         {
-            m.replace("{ $_ = extendedui.patches.screens.PotionViewScreenPatches." + m.getFieldName() + "; }");
+            case "commonPotions":
+            case "uncommonPotions":
+            case "rarePotions":
+                m.replace("{ $_ = extendedui.patches.screens.PotionViewScreenPatches." + m.getFieldName() + "; }");
+                break;
         }
     }
 
