@@ -70,8 +70,12 @@ public class EUI
     public static CustomCardLibSortHeader customHeader;
     public static CustomCardLibraryScreen customLibraryScreen;
     public static EUIButton openCardFiltersButton;
+    public static EUIButton openPotionFiltersButton;
     public static EUIButton openRelicFiltersButton;
     public static ModSettingsScreen modSettingsScreen;
+    public static PotionKeywordFilters potionFilters;
+    public static PotionPoolScreen potionScreen;
+    public static PotionSortHeader potionHeader;
     public static RelicKeywordFilters relicFilters;
     public static RelicPoolScreen relicScreen;
     public static RelicSortHeader relicHeader;
@@ -245,6 +249,9 @@ public class EUI
         customHeader = new CustomCardLibSortHeader(null);
         customLibraryScreen = new CustomCardLibraryScreen();
         modSettingsScreen = new ModSettingsScreen();
+        potionFilters = new PotionKeywordFilters();
+        potionHeader = new PotionSortHeader(null);
+        potionScreen = new PotionPoolScreen();
         relicFilters = new RelicKeywordFilters();
         relicHeader = new RelicSortHeader(null);
         relicScreen = new RelicPoolScreen();
@@ -259,6 +266,11 @@ public class EUI
             .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
             .setOnClick(() -> EUI.cardFilters.toggleFilters())
             .setColor(Color.GRAY);
+        openPotionFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
+                .setOnClick(() -> EUI.potionFilters.toggleFilters())
+                .setColor(Color.GRAY);
         openRelicFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)

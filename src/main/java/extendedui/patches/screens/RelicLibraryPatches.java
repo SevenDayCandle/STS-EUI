@@ -17,7 +17,7 @@ public class RelicLibraryPatches
         @SpirePostfixPatch
         public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.RED);
+            EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.RED);
         }
     }
 
@@ -28,7 +28,7 @@ public class RelicLibraryPatches
         @SpirePostfixPatch
         public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.GREEN);
+            EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.GREEN);
         }
     }
 
@@ -39,7 +39,7 @@ public class RelicLibraryPatches
         @SpirePostfixPatch
         public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.BLUE);
+            EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.BLUE);
         }
     }
 
@@ -50,7 +50,7 @@ public class RelicLibraryPatches
         @SpirePostfixPatch
         public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.PURPLE);
+            EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.PURPLE);
         }
     }
 
@@ -61,7 +61,7 @@ public class RelicLibraryPatches
         @SpirePostfixPatch
         public static void postfix(AbstractRelic relic)
         {
-            EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.COLORLESS);
+            EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.COLORLESS);
         }
     }
 }

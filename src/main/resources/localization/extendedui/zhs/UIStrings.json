@@ -84,11 +84,13 @@
 			"查看本局游戏中所有可获得的卡牌和遗物。",
 			"卡牌池",
 			"遗物池",
+			"Potion Pool",
 			"显示无色牌",
 			"View Popup",
 			"Add Card to Hand",
 			"Add Card to Deck",
-			"Obtain Relic"
+			"Obtain Relic",
+			"Obtain Potion"
 		]
 	},
 	"extendedui:ui_filters": {

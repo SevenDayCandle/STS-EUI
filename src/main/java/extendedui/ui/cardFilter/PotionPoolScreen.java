@@ -8,7 +8,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
@@ -19,8 +19,8 @@ import extendedui.interfaces.delegates.ActionT2;
 import extendedui.ui.AbstractDungeonScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
-import extendedui.ui.controls.EUIRelicGrid;
-import extendedui.ui.controls.EUIStaticRelicGrid;
+import extendedui.ui.controls.EUIPotionGrid;
+import extendedui.ui.controls.EUIStaticPotionGrid;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
@@ -28,19 +28,19 @@ import extendedui.utilities.EUIFontHelper;
 import java.util.ArrayList;
 import java.util.List;
 
-public class RelicPoolScreen extends AbstractDungeonScreen
+public class PotionPoolScreen extends AbstractDungeonScreen
 {
-    public static CustomRelicPoolModule customModule;
+    public static CustomPotionPoolModule customModule;
 
-    public EUIRelicGrid relicGrid;
-    protected final EUIContextMenu<RelicPoolScreen.DebugOption> contextMenu;
+    public EUIPotionGrid potionGrid;
+    protected final EUIContextMenu<PotionPoolScreen.DebugOption> contextMenu;
     protected final EUIButton swapScreen;
-    private AbstractRelic selected;
+    private AbstractPotion selected;
 
-    public RelicPoolScreen()
+    public PotionPoolScreen()
     {
-        relicGrid = (EUIRelicGrid) new EUIStaticRelicGrid()
-                .setOnRelicRightClick(this::onRightClick)
+        potionGrid = (EUIPotionGrid) new EUIStaticPotionGrid()
+                .setOnPotionRightClick(this::onRightClick)
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);
 
@@ -50,12 +50,12 @@ public class RelicPoolScreen extends AbstractDungeonScreen
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.potionScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllPotions()))
-                .setText(EUIRM.strings.uipool_viewPotionPool);
+                .setOnClick(() -> EUI.cardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
+                .setText(EUIRM.strings.uipool_viewCardPool);
 
-        contextMenu = (EUIContextMenu<RelicPoolScreen.DebugOption>) new EUIContextMenu<RelicPoolScreen.DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
+        contextMenu = (EUIContextMenu<PotionPoolScreen.DebugOption>) new EUIContextMenu<PotionPoolScreen.DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
                 .setOnChange(options -> {
-                    for (RelicPoolScreen.DebugOption o : options)
+                    for (PotionPoolScreen.DebugOption o : options)
                     {
                         o.onSelect.invoke(this, selected);
                     }
@@ -65,37 +65,37 @@ public class RelicPoolScreen extends AbstractDungeonScreen
                 .setCanAutosizeButton(true);
     }
 
-    public void open(AbstractPlayer player, ArrayList<AbstractRelic> relics)
+    public void open(AbstractPlayer player, ArrayList<AbstractPotion> potions)
     {
         super.open(false, true);
 
-        relicGrid.clear();
-        if (relics.isEmpty())
+        potionGrid.clear();
+        if (potions.isEmpty())
         {
             AbstractDungeon.closeCurrentScreen();
             return;
         }
 
-        relicGrid.setRelics(relics);
-        EUI.relicHeader.setGrid(relicGrid).snapToGroup(false);
-        EUI.relicFilters.initialize(__ -> {
-            EUI.relicHeader.updateForFilters();
+        potionGrid.setPotions(potions);
+        EUI.potionHeader.setGrid(potionGrid).snapToGroup(false);
+        EUI.potionFilters.initialize(__ -> {
+            EUI.potionHeader.updateForFilters();
             if (customModule != null) {
-                customModule.open(EUI.relicHeader.getRelics());
+                customModule.open(EUI.potionHeader.getPotions());
             }
-            relicGrid.forceUpdateRelicPositions();
-        }, EUI.relicHeader.getOriginalRelics(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
-        EUI.relicHeader.updateForFilters();
+            potionGrid.forceUpdatePotionPositions();
+        }, EUI.potionHeader.getOriginalPotions(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
+        EUI.potionHeader.updateForFilters();
 
         if (EUIGameUtils.inGame())
         {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
 
-        customModule = EUI.getCustomRelicPoolModule(player);
+        customModule = EUI.getCustomPotionPoolModule(player);
         if (customModule != null) {
             customModule.setActive(true);
-            customModule.open(EUIUtils.map(relicGrid.relicGroup, r -> r.relic));
+            customModule.open(EUIUtils.map(potionGrid.potionGroup, r -> r.potion));
         }
 
     }
@@ -113,11 +113,11 @@ public class RelicPoolScreen extends AbstractDungeonScreen
     public void updateImpl()
     {
         super.updateImpl();
-        if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
-            relicGrid.tryUpdate();
+        if (!EUI.potionFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
+            potionGrid.tryUpdate();
             swapScreen.updateImpl();
-            EUI.relicHeader.updateImpl();
-            EUI.openRelicFiltersButton.tryUpdate();
+            EUI.potionHeader.updateImpl();
+            EUI.openPotionFiltersButton.tryUpdate();
             if (customModule != null) {
                 customModule.tryUpdate();
             }
@@ -128,11 +128,11 @@ public class RelicPoolScreen extends AbstractDungeonScreen
     @Override
     public void renderImpl(SpriteBatch sb)
     {
-        relicGrid.tryRender(sb);
+        potionGrid.tryRender(sb);
         swapScreen.renderImpl(sb);
-        EUI.relicHeader.renderImpl(sb);
-        if (!EUI.relicFilters.isActive) {
-            EUI.openRelicFiltersButton.tryRender(sb);
+        EUI.potionHeader.renderImpl(sb);
+        if (!EUI.potionFilters.isActive) {
+            EUI.openPotionFiltersButton.tryRender(sb);
         }
         if (customModule != null) {
             customModule.tryRender(sb);
@@ -140,7 +140,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen
         contextMenu.tryRender(sb);
     }
 
-    protected void onRightClick(AbstractRelic c)
+    protected void onRightClick(AbstractPotion c)
     {
         if (EUIConfiguration.enableCardPoolDebug.get())
         {
@@ -149,41 +149,29 @@ public class RelicPoolScreen extends AbstractDungeonScreen
             contextMenu.refreshText();
             contextMenu.openOrCloseMenu();
         }
-        else
+    }
+
+    protected void obtain(AbstractPotion c)
+    {
+        if (c != null && AbstractDungeon.player != null)
         {
-            openPopup(c);
+            AbstractDungeon.player.obtainPotion(c);
         }
     }
 
-    protected void openPopup(AbstractRelic c)
+    public static List<PotionPoolScreen.DebugOption> getOptions()
     {
-        c.hb.unhover();
-        CardCrawlGame.relicPopup.open(c);
-    }
-
-    protected void obtain(AbstractRelic c)
-    {
-        if (c != null)
-        {
-            AbstractRelic copy = c.makeCopy();
-            copy.instantObtain();
-        }
-    }
-
-    public static List<RelicPoolScreen.DebugOption> getOptions()
-    {
-        return EUIUtils.list(RelicPoolScreen.DebugOption.enlarge, RelicPoolScreen.DebugOption.obtain);
+        return EUIUtils.list(PotionPoolScreen.DebugOption.obtain);
     }
 
     public static class DebugOption
     {
-        public static RelicPoolScreen.DebugOption enlarge = new RelicPoolScreen.DebugOption(EUIRM.strings.uipool_enlarge, RelicPoolScreen::openPopup);
-        public static RelicPoolScreen.DebugOption obtain = new RelicPoolScreen.DebugOption(EUIRM.strings.uipool_obtainRelic, RelicPoolScreen::obtain);
+        public static PotionPoolScreen.DebugOption obtain = new PotionPoolScreen.DebugOption(EUIRM.strings.uipool_obtainPotion, PotionPoolScreen::obtain);
 
         public final String name;
-        public final ActionT2<RelicPoolScreen, AbstractRelic> onSelect;
+        public final ActionT2<PotionPoolScreen, AbstractPotion> onSelect;
 
-        DebugOption(String name, ActionT2<RelicPoolScreen, AbstractRelic> onSelect)
+        DebugOption(String name, ActionT2<PotionPoolScreen, AbstractPotion> onSelect)
         {
             this.name = name;
             this.onSelect = onSelect;

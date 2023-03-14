@@ -34,7 +34,6 @@ import java.util.HashSet;
 
 public class PotionKeywordFilters extends GenericFilters<AbstractPotion>
 {
-
     public static CustomPotionFilterModule customModule;
     public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();

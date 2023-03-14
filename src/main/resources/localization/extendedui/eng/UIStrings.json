@@ -84,11 +84,13 @@
 			"View all cards or relics available in this run",
 			"Card Pool",
 			"Relic Pool",
+			"Potion Pool",
 			"Show Colorless",
 			"View Popup",
 			"Add Card to Hand",
 			"Add Card to Deck",
-			"Obtain Relic"
+			"Obtain Relic",
+			"Obtain Potion"
 		]
 	},
 	"extendedui:ui_filters": {

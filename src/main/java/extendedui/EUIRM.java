@@ -181,11 +181,13 @@ public class EUIRM
         public final String uipool_viewPoolDescription = stringsUIPool.TEXT[1];
         public final String uipool_viewCardPool = stringsUIPool.TEXT[2];
         public final String uipool_viewRelicPool = stringsUIPool.TEXT[3];
-        public final String uipool_showColorless = stringsUIPool.TEXT[4];
-        public final String uipool_enlarge = stringsUIPool.TEXT[5];
-        public final String uipool_addToHand = stringsUIPool.TEXT[6];
-        public final String uipool_addToDeck = stringsUIPool.TEXT[7];
-        public final String uipool_obtainRelic = stringsUIPool.TEXT[8];
+        public final String uipool_viewPotionPool = stringsUIPool.TEXT[4];
+        public final String uipool_showColorless = stringsUIPool.TEXT[5];
+        public final String uipool_enlarge = stringsUIPool.TEXT[6];
+        public final String uipool_addToHand = stringsUIPool.TEXT[7];
+        public final String uipool_addToDeck = stringsUIPool.TEXT[8];
+        public final String uipool_obtainRelic = stringsUIPool.TEXT[9];
+        public final String uipool_obtainPotion = stringsUIPool.TEXT[10];
 
         public final String uiItemsselected = stringsUIFilter.TEXT[0];
         public final String uiKeywords = stringsUIFilter.TEXT[1];

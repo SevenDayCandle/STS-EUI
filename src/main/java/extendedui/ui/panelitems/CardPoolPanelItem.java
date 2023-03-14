@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import com.megacrit.cardcrawl.helpers.PotionHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -18,6 +19,7 @@ import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.FuncT0;
@@ -115,6 +117,10 @@ public class CardPoolPanelItem extends PCLTopPanelItem
         return cardGroup;
     }
 
+    public static ArrayList<AbstractPotion> getAllPotions() {
+        return EUIUtils.mapAsNonnull(PotionHelper.getPotions(AbstractDungeon.player != null ? AbstractDungeon.player.chosenClass : null, true), PotionHelper::getPotion);
+    }
+
     public static ArrayList<AbstractRelic> getAllRelics() {
         ArrayList<AbstractRelic> newRelics = new ArrayList<>();
         for (String relicID : EUIGameUtils.getAllRelicIDs())
@@ -136,7 +142,8 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     public enum ContextOption
     {
         CardPool(EUIRM.strings.uipool_viewCardPool, EUIHotkeys.openCardPool, () -> EUI.cardsScreen.open(AbstractDungeon.player, getAllCards())),
-        RelicPool(EUIRM.strings.uipool_viewRelicPool, EUIHotkeys.openRelicPool, () -> EUI.relicScreen.open(AbstractDungeon.player, getAllRelics()));
+        RelicPool(EUIRM.strings.uipool_viewRelicPool, EUIHotkeys.openRelicPool, () -> EUI.relicScreen.open(AbstractDungeon.player, getAllRelics())),
+        PotionPool(EUIRM.strings.uipool_viewPotionPool, EUIHotkeys.openPotionPool, () -> EUI.potionScreen.open(AbstractDungeon.player, getAllPotions()));
 
         public final String baseName;
         public final InputAction hotkey;
