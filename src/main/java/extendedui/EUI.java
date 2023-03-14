@@ -57,6 +57,9 @@ public class EUI
     private static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customCardFilters = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardLibraryModules = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardPoolModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomPotionFilterModule> customPotionFilters = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomPotionPoolModule> customPotionLibraryModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomPotionPoolModule> customPotionPoolModules = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomRelicFilterModule> customRelicFilters = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicLibraryModules = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicPoolModules = new HashMap<>();
@@ -174,6 +177,26 @@ public class EUI
         return customCardPoolModules.get(cardColor);
     }
 
+    public static CustomPotionFilterModule getCustomPotionFilter(AbstractPlayer player) {
+        return player != null ? getCustomPotionFilter(player.getCardColor()) : null;
+    }
+
+    public static CustomPotionFilterModule getCustomPotionFilter(AbstractCard.CardColor cardColor) {
+        return customPotionFilters.get(cardColor);
+    }
+
+    public static CustomPotionPoolModule getCustomPotionLibraryModule(AbstractCard.CardColor cardColor) {
+        return customPotionLibraryModules.get(cardColor);
+    }
+
+    public static CustomPotionPoolModule getCustomPotionPoolModule(AbstractPlayer player) {
+        return player != null ? getCustomPotionPoolModule(player.getCardColor()) : null;
+    }
+
+    public static CustomPotionPoolModule getCustomPotionPoolModule(AbstractCard.CardColor cardColor) {
+        return customPotionPoolModules.get(cardColor);
+    }
+
     public static CustomRelicFilterModule getCustomRelicFilter(AbstractPlayer player) {
         return player != null ? getCustomRelicFilter(player.getCardColor()) : null;
     }
@@ -211,9 +234,10 @@ public class EUI
             e.printStackTrace();
         }
 
-        // Save custom mod color names
+        // Save custom mod color names and class mappings for playerclasses
         for (AbstractPlayer p : CardCrawlGame.characterManager.getAllCharacters()) {
-            EUIGameUtils.CustomColorNames.put(p.getCardColor(), p.getLocalizedCharacterName());
+            EUIGameUtils.registerCustomColorName(p.getCardColor(), p.getLocalizedCharacterName());
+            EUIGameUtils.registerColorPlayer(p.getCardColor(), p.chosenClass);
         }
 
         cardsScreen = new CardPoolScreen();
@@ -497,6 +521,18 @@ public class EUI
 
     public static void setCustomCardPoolModule(AbstractCard.CardColor cardColor, CustomCardPoolModule element) {
         customCardPoolModules.put(cardColor, element);
+    }
+
+    public static void setCustomPotionFilter(AbstractCard.CardColor cardColor, CustomPotionFilterModule element) {
+        customPotionFilters.put(cardColor, element);
+    }
+
+    public static void setCustomPotionLibraryModule(AbstractCard.CardColor cardColor, CustomPotionPoolModule element) {
+        customPotionLibraryModules.put(cardColor, element);
+    }
+
+    public static void setCustomPotionPoolModule(AbstractCard.CardColor cardColor, CustomPotionPoolModule element) {
+        customPotionPoolModules.put(cardColor, element);
     }
 
     public static void setCustomRelicFilter(AbstractCard.CardColor cardColor, CustomRelicFilterModule element) {

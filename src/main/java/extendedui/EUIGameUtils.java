@@ -11,14 +11,17 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.relics.RunicDome;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
+import com.megacrit.cardcrawl.screens.compendium.PotionViewScreen;
 import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
 import extendedui.ui.tooltips.EUITooltip;
+import org.lwjgl.opencl.CL;
 
 import java.net.URL;
 import java.security.CodeSource;
@@ -31,13 +34,15 @@ import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
 public class EUIGameUtils {
-    public static final HashMap<AbstractCard.CardColor, String> CustomColorNames = new HashMap<>();
-    private static final HashMap<CodeSource, ModInfo> ModInfoMapping = new HashMap<>();
-    private static final HashMap<String, AbstractCard.CardColor> RelicColors = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, String> CUSTOM_COLOR_NAMES = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, AbstractPlayer.PlayerClass> COLOR_TO_CLASS = new HashMap<>();
+    private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();
+    private static final HashMap<CodeSource, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
+    private static final HashMap<String, AbstractCard.CardColor> RELIC_COLORS = new HashMap<>();
 
-    public static void addRelicColor(AbstractRelic relic, AbstractCard.CardColor color)
+    public static void addRelicColor(String relicID, AbstractCard.CardColor color)
     {
-        RelicColors.put(relic.relicId, color);
+        RELIC_COLORS.put(relicID, color);
     }
 
     public static boolean canShowUpgrades(boolean isLibrary)
@@ -76,6 +81,11 @@ public class EUIGameUtils {
         return result;
     }
 
+    public static AbstractCard.CardColor getCardColorForPlayer(AbstractPlayer.PlayerClass pc)
+    {
+        return CLASS_TO_COLOR.getOrDefault(pc, AbstractCard.CardColor.COLORLESS);
+    }
+
     public static Color getColorColor(AbstractCard.CardColor co){
         switch (co) {
             case RED:
@@ -110,7 +120,7 @@ public class EUIGameUtils {
             case COLORLESS:
                 return CardLibraryScreen.TEXT[4];
             default:
-                return CustomColorNames.getOrDefault(co, EUIUtils.capitalize(String.valueOf(co)));
+                return CUSTOM_COLOR_NAMES.getOrDefault(co, EUIUtils.capitalize(String.valueOf(co)));
         }
     }
 
@@ -124,8 +134,18 @@ public class EUIGameUtils {
         return result;
     }
 
+    public static AbstractPlayer.PlayerClass getPlayerClassForCardColor(AbstractCard.CardColor pc)
+    {
+        return COLOR_TO_CLASS.get(pc);
+    }
+
+    public static AbstractCard.CardColor getPotionColor(String potionID) {
+        AbstractPlayer.PlayerClass pc = BaseMod.getPotionPlayerClass(potionID);
+        return CLASS_TO_COLOR.getOrDefault(pc, AbstractCard.CardColor.COLORLESS);
+    }
+
     public static AbstractCard.CardColor getRelicColor(String relicID) {
-        return RelicColors.getOrDefault(relicID, AbstractCard.CardColor.COLORLESS);
+        return RELIC_COLORS.getOrDefault(relicID, AbstractCard.CardColor.COLORLESS);
     }
 
     public static ArrayList<CardGroup> getSourceCardPools() {
@@ -157,7 +177,7 @@ public class EUIGameUtils {
 
     public static ModInfo getModInfo(Class<?> objectClass) {
         CodeSource source = objectClass.getProtectionDomain().getCodeSource();
-        ModInfo info = ModInfoMapping.get(source);
+        ModInfo info = MOD_INFO_MAPPING.get(source);
         if (info != null) {
             return info;
         }
@@ -166,7 +186,7 @@ public class EUIGameUtils {
             URL jarURL = source.getLocation().toURI().toURL();
             for (ModInfo loadedInfo : Loader.MODINFOS) {
                 if (jarURL.equals(loadedInfo.jarURL)) {
-                    ModInfoMapping.put(source, loadedInfo);
+                    MOD_INFO_MAPPING.put(source, loadedInfo);
                     return loadedInfo;
                 }
             }
@@ -179,6 +199,17 @@ public class EUIGameUtils {
 
     public static boolean isPlayerClass(AbstractPlayer.PlayerClass playerClass) {
         return AbstractDungeon.player != null && AbstractDungeon.player.chosenClass == playerClass;
+    }
+
+    public static void registerCustomColorName(AbstractCard.CardColor co, String name)
+    {
+        EUIGameUtils.CUSTOM_COLOR_NAMES.put(co, name);
+    }
+
+    public static void registerColorPlayer(AbstractCard.CardColor co, AbstractPlayer.PlayerClass pc)
+    {
+        EUIGameUtils.COLOR_TO_CLASS.put(co, pc);
+        EUIGameUtils.CLASS_TO_COLOR.put(pc, co);
     }
 
     public static float scale(float value)
@@ -234,6 +265,25 @@ public class EUIGameUtils {
     {
         return Settings.WIDTH * value;
     }
+
+    // Potion rarities use the same names as card rarities
+    public static String textForPotionRarity(AbstractPotion.PotionRarity type) {
+        switch (type)
+        {
+            case COMMON:
+                return RunHistoryScreen.TEXT[12];
+
+            case UNCOMMON:
+                return RunHistoryScreen.TEXT[13];
+
+            case RARE:
+                return RunHistoryScreen.TEXT[14];
+
+            default:
+                return AbstractCard.TEXT[5];
+        }
+    }
+
 
     public static String textForRarity(AbstractCard.CardRarity type) {
         switch (type)

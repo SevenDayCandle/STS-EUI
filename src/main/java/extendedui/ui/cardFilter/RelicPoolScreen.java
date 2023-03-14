@@ -124,6 +124,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen
                 CustomModule.tryUpdate();
             }
         }
+        contextMenu.tryUpdate();
     }
 
     @Override
@@ -138,6 +139,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen
         if (CustomModule != null) {
             CustomModule.tryRender(sb);
         }
+        contextMenu.tryRender(sb);
     }
 
     protected void onRightClick(AbstractRelic c)

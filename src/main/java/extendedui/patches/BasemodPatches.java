@@ -42,19 +42,19 @@ public class BasemodPatches
             switch (type)
             {
                 case RED:
-                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.RED);
+                    EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.RED);
                     return;
                 case GREEN:
-                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.GREEN);
+                    EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.GREEN);
                     return;
                 case BLUE:
-                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.BLUE);
+                    EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.BLUE);
                     return;
                 case PURPLE:
-                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.PURPLE);
+                    EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.PURPLE);
                     return;
                 default:
-                    EUIGameUtils.addRelicColor(relic, AbstractCard.CardColor.COLORLESS);
+                    EUIGameUtils.addRelicColor(relic.relicId, AbstractCard.CardColor.COLORLESS);
             }
         }
     }
@@ -67,7 +67,7 @@ public class BasemodPatches
         @SpirePostfixPatch
         public static void postfix(AbstractRelic relic, AbstractCard.CardColor color)
         {
-            EUIGameUtils.addRelicColor(relic, color);
+            EUIGameUtils.addRelicColor(relic.relicId, color);
         }
     }
 
