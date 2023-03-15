@@ -23,8 +23,7 @@ public class EUIClassUtils
         return getField(o, fieldName);
     }
 
-    // DO NOT USE. Dangerous as this method masks subclasses
-    @Deprecated
+    /** Get a field from the object, assuming that the field type is on the object's immediate class. Note that this method masks subclasses */
     public static <T> T getField(Object o, String fieldName)
     {
         return ReflectionHacks.getPrivate(o, o.getClass(), fieldName);
@@ -61,6 +60,11 @@ public class EUIClassUtils
         return (T) Class.forName(className).getField(fieldName).get(null);
     }
 
+    public static Method getRMethod(String className, String methodName, Class<?>... parameterTypes) throws ClassNotFoundException, IllegalAccessException, NoSuchMethodException
+    {
+        return Class.forName(className).getMethod(methodName, parameterTypes);
+    }
+
     public static <T> T invoke(Class<?> className, String methodName, Object... parameters)
     {
         return ReflectionHacks.privateStaticMethod(className, methodName, EUIUtils.map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(parameters);
@@ -71,22 +75,25 @@ public class EUIClassUtils
         return getMethod(o, methodName, EUIUtils.map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(o, parameters);
     }
 
-    public static <T> T invokeR(String className, String methodName, Object object) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
+    public static <T> T invokeR(String className, String methodName, Object source, Object... parameters) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
     {
-        Method m = Class.forName(className).getMethod(methodName);
-        return (T) m.invoke(object);
+        return invokeRForTypes(className, methodName, source, EUIUtils.arrayMap(parameters, Class.class, Object::getClass), parameters);
     }
 
-    public static <T> T invokeRStatic(String className, String methodName) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
+    public static <T> T invokeRForTypes(String className, String methodName, Object source, Class<?>[] classList, Object... parameters) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
     {
-        Method m = Class.forName(className).getMethod(methodName);
-        return (T) m.invoke(null);
+        Method m = getRMethod(className, methodName, classList);
+        return (T) m.invoke(source, parameters);
     }
 
     public static <T> T invokeRStatic(String className, String methodName, Object... parameters) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
     {
-        Class<?>[] classList = EUIUtils.arrayMap(parameters, Class.class, Object::getClass);
-        Method m = Class.forName(className).getMethod(methodName, classList);
+        return invokeRStaticForTypes(className, methodName, EUIUtils.arrayMap(parameters, Class.class, Object::getClass), parameters);
+    }
+
+    public static <T> T invokeRStaticForTypes(String className, String methodName, Class<?>[] classList, Object... parameters) throws ClassNotFoundException, NoSuchMethodException, InvocationTargetException, IllegalAccessException
+    {
+        Method m = getRMethod(className, methodName, classList);
         return (T) m.invoke(null, parameters);
     }
 

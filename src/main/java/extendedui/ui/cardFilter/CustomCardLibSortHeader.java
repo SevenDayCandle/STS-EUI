@@ -11,6 +11,7 @@ import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.utilities.CardAmountComparator;
+import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.FakeLibraryCard;
 
 import java.util.ArrayList;
@@ -63,19 +64,10 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             rarityButton = buttons[0];
             typeButton = buttons[1];
             costButton = buttons[2];
+            nameButton = Settings.removeAtoZSort ? null : buttons[3];
             amountButton = new SortHeaderButton(EUIRM.strings.uiAmount, 0f, 0f, this);
 
-            if (Settings.removeAtoZSort)
-            {
-                nameButton = null;
-                override = EUIUtils.array(rarityButton, typeButton, costButton, amountButton);
-            }
-            else
-            {
-                nameButton = buttons[3];
-                override = EUIUtils.array(rarityButton, typeButton, costButton, nameButton, amountButton);
-            }
-
+            override = EUIUtils.arrayAppend(buttons, amountButton);
 
             for (int i = 0; i < override.length; i++)
             {
@@ -149,6 +141,14 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             }
             else
             {
+                // Packmaster compatibility
+                // TODO Animator compatibility
+                SortHeaderButton packButton = getPackmasterButton();
+                if (packButton != null)
+                {
+                    sortWithPackmaster(isAscending);
+                    this.group.sortByStatus(false);
+                }
                 return;
             }
 
@@ -159,6 +159,29 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
 
         if (button != null) {
             button.setActive(true);
+        }
+    }
+
+    protected void sortWithPackmaster(boolean isAscending)
+    {
+        try
+        {
+            EUIClassUtils.invokeRStaticForTypes("thePackmaster.patches.CompendiumPatches", "packSort", EUIUtils.array(CardLibSortHeader.class, boolean.class), this, isAscending);
+        }
+        catch (Exception ignored)
+        {
+        }
+    }
+
+    protected SortHeaderButton getPackmasterButton()
+    {
+        try
+        {
+            return EUIClassUtils.getRFieldStatic("thePackmaster.patches.CompendiumPatches", "packButton");
+        }
+        catch (Exception ignored)
+        {
+            return null;
         }
     }
 

@@ -34,7 +34,8 @@ public class RelicPoolScreen extends AbstractDungeonScreen
 
     public EUIRelicGrid relicGrid;
     protected final EUIContextMenu<RelicPoolScreen.DebugOption> contextMenu;
-    protected final EUIButton swapScreen;
+    protected final EUIButton swapCardScreen;
+    protected final EUIButton swapPotionScreen;
     private AbstractRelic selected;
 
     public RelicPoolScreen()
@@ -44,9 +45,18 @@ public class RelicPoolScreen extends AbstractDungeonScreen
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);
 
-        swapScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
+        swapCardScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
-                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.9f)
+                .setFont(EUIFontHelper.buttonFont, 0.8f)
+                .setColor(Color.GRAY)
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
+                .setOnClick(() -> EUI.cardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
+                .setText(EUIRM.strings.uipool_viewCardPool);
+
+        swapPotionScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
+                new EUIHitbox(scale(210), scale(43)))
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.85f)
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
@@ -115,7 +125,8 @@ public class RelicPoolScreen extends AbstractDungeonScreen
         super.updateImpl();
         if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             relicGrid.tryUpdate();
-            swapScreen.updateImpl();
+            swapCardScreen.updateImpl();
+            swapPotionScreen.updateImpl();
             EUI.relicHeader.updateImpl();
             EUI.openRelicFiltersButton.tryUpdate();
             if (customModule != null) {
@@ -129,7 +140,8 @@ public class RelicPoolScreen extends AbstractDungeonScreen
     public void renderImpl(SpriteBatch sb)
     {
         relicGrid.tryRender(sb);
-        swapScreen.renderImpl(sb);
+        swapCardScreen.renderImpl(sb);
+        swapPotionScreen.renderImpl(sb);
         EUI.relicHeader.renderImpl(sb);
         if (!EUI.relicFilters.isActive) {
             EUI.openRelicFiltersButton.tryRender(sb);

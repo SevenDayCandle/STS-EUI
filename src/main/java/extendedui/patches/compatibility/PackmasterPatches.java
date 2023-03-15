@@ -15,7 +15,6 @@ public class PackmasterPatches
     @SpirePatch(cls = "thePackmaster.SpireAnniversary5Mod", method = "receivePostInitialize", requiredModId = "anniv5", optional = true)
     public static class PackmasterPatches_PostInitialize
     {
-
         @SpirePostfixPatch
         public static void postfix()
         {

@@ -184,6 +184,22 @@ public abstract class EUIUtils
         return (N[]) Array.newInstance(listClass, 0);
     }
 
+    public static <T> T[] arrayAppend(T[] base, T item)
+    {
+        final T[] res = (T[]) Array.newInstance(base.getClass().getComponentType(), base.length + 1);
+        System.arraycopy(base, 0, res, 0, base.length);
+        res[base.length] = item;
+        return res;
+    }
+
+    public static <T> T[] arrayConcat(T[] base, T[] secondary)
+    {
+        final T[] res = (T[]) Array.newInstance(base.getClass().getComponentType(), base.length + secondary.length);
+        System.arraycopy(base, 0, res, 0, base.length);
+        System.arraycopy(secondary, 0, res, base.length, base.length + secondary.length);
+        return res;
+    }
+
     public static String capitalize(String text)
     {
         return text.length() <= 1 ? text.toUpperCase() : TipHelper.capitalize(text);

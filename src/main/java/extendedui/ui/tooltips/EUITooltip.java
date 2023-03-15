@@ -1105,6 +1105,17 @@ public class EUITooltip
         return currentDesc < descriptions.size() ? descriptions.get(currentDesc) : "";
     }
 
+    public String formatDescription(Object... items)
+    {
+        if (currentDesc < descriptions.size())
+        {
+            String newDesc = EUIUtils.format(descriptions.get(currentDesc), items);
+            descriptions.set(currentDesc, newDesc);
+            return newDesc;
+        }
+        return "";
+    }
+
     public String getTitleOrIcon()
     {
         return (ID != null) ? "[" + ID + "]" : title;

@@ -131,6 +131,13 @@ public class EUIButton extends EUIHoverable
         return this;
     }
 
+    public EUIButton setButtonRotation(float angle)
+    {
+        this.background.setRotation(angle);
+
+        return this;
+    }
+
     public EUIButton setButtonScale(float scaleX, float scaleY)
     {
         this.background.setScale(scaleX, scaleY);

@@ -67,8 +67,8 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer>
     @Override
     public void setText(String s) {
         hasEntered = true;
-        label.text = s;
         cachedValue = getValue(label.text);
+        label.text = s;
         if (onUpdate != null) {
             onUpdate.invoke(cachedValue);
         }
@@ -86,19 +86,38 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer>
             if (onComplete != null) {
                 onComplete.invoke(cachedValue);
             }
-            if (showNegativeAsInfinity && cachedValue < 0)
-            {
-                label.text = label.font.getData().hasGlyph('∞') ? "∞" : "Inf";
-            }
+            forceUpdateText();
         }
         else {
             label.text = originalValue;
         }
     }
 
-    public void setValue(int value)
+    protected void setValue(int value)
     {
         setText(String.valueOf(MathUtils.clamp(value, min, max)));
+    }
+
+    public void forceSetValue(int value, boolean invoke)
+    {
+        cachedValue = MathUtils.clamp(value, min, max);
+        forceUpdateText();
+        if (invoke && onComplete != null) {
+            onComplete.invoke(cachedValue);
+        }
+    }
+
+    public void forceUpdateText()
+    {
+        if (showNegativeAsInfinity && cachedValue < 0)
+        {
+            label.text = label.font.getData().hasGlyph('∞') ? "∞" : "Inf";
+        }
+        else
+        {
+            // Ensure parity between label and cachedValue, in case getText is overwritten
+            label.text = String.valueOf(cachedValue);
+        }
     }
 
     @Override

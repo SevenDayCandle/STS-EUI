@@ -34,7 +34,8 @@ public class PotionPoolScreen extends AbstractDungeonScreen
 
     public EUIPotionGrid potionGrid;
     protected final EUIContextMenu<PotionPoolScreen.DebugOption> contextMenu;
-    protected final EUIButton swapScreen;
+    protected final EUIButton swapCardScreen;
+    protected final EUIButton swapRelicScreen;
     private AbstractPotion selected;
 
     public PotionPoolScreen()
@@ -44,14 +45,23 @@ public class PotionPoolScreen extends AbstractDungeonScreen
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);
 
-        swapScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
+        swapCardScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
-                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.9f)
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
                 .setOnClick(() -> EUI.cardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
                 .setText(EUIRM.strings.uipool_viewCardPool);
+
+        swapRelicScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
+                new EUIHitbox(scale(210), scale(43)))
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.85f)
+                .setFont(EUIFontHelper.buttonFont, 0.8f)
+                .setColor(Color.GRAY)
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
+                .setOnClick(() -> EUI.relicScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
+                .setText(EUIRM.strings.uipool_viewRelicPool);
 
         contextMenu = (EUIContextMenu<PotionPoolScreen.DebugOption>) new EUIContextMenu<PotionPoolScreen.DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
                 .setOnChange(options -> {
@@ -115,7 +125,8 @@ public class PotionPoolScreen extends AbstractDungeonScreen
         super.updateImpl();
         if (!EUI.potionFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             potionGrid.tryUpdate();
-            swapScreen.updateImpl();
+            swapCardScreen.updateImpl();
+            swapRelicScreen.updateImpl();
             EUI.potionHeader.updateImpl();
             EUI.openPotionFiltersButton.tryUpdate();
             if (customModule != null) {
@@ -129,7 +140,8 @@ public class PotionPoolScreen extends AbstractDungeonScreen
     public void renderImpl(SpriteBatch sb)
     {
         potionGrid.tryRender(sb);
-        swapScreen.renderImpl(sb);
+        swapCardScreen.renderImpl(sb);
+        swapRelicScreen.renderImpl(sb);
         EUI.potionHeader.renderImpl(sb);
         if (!EUI.potionFilters.isActive) {
             EUI.openPotionFiltersButton.tryRender(sb);

@@ -34,7 +34,8 @@ public class CardPoolScreen extends AbstractDungeonScreen
 
     protected final EUIToggle upgradeToggle;
     protected final EUIToggle colorlessToggle;
-    protected final EUIButton swapScreen;
+    protected final EUIButton swapRelicScreen;
+    protected final EUIButton swapPotionScreen;
     protected final EUIContextMenu<DebugOption> contextMenu;
     public EUICardGrid cardGrid;
     private AbstractCard selected;
@@ -64,14 +65,23 @@ public class CardPoolScreen extends AbstractDungeonScreen
                     EUI.cardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.CURSE, val, true);
                 });
 
-        swapScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
+        swapRelicScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
-                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.88f)
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.9f)
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
                 .setOnClick(() -> EUI.relicScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
                 .setText(EUIRM.strings.uipool_viewRelicPool);
+
+        swapPotionScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
+                new EUIHitbox(scale(210), scale(43)))
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.85f)
+                .setFont(EUIFontHelper.buttonFont, 0.8f)
+                .setColor(Color.GRAY)
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
+                .setOnClick(() -> EUI.potionScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllPotions()))
+                .setText(EUIRM.strings.uipool_viewPotionPool);
 
         contextMenu = (EUIContextMenu<DebugOption>) new EUIContextMenu<DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
                 .setOnChange(options -> {
@@ -137,7 +147,8 @@ public class CardPoolScreen extends AbstractDungeonScreen
             cardGrid.tryUpdate();
             upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
             colorlessToggle.updateImpl();
-            swapScreen.updateImpl();
+            swapRelicScreen.updateImpl();
+            swapPotionScreen.updateImpl();
             EUI.customHeader.update();
             EUI.openCardFiltersButton.tryUpdate();
             if (customModule != null) {
@@ -153,7 +164,8 @@ public class CardPoolScreen extends AbstractDungeonScreen
         cardGrid.tryRender(sb);
         upgradeToggle.renderImpl(sb);
         colorlessToggle.renderImpl(sb);
-        swapScreen.renderImpl(sb);
+        swapRelicScreen.renderImpl(sb);
+        swapPotionScreen.renderImpl(sb);
         EUI.customHeader.render(sb);
         if (!EUI.cardFilters.isActive) {
             EUI.openCardFiltersButton.tryRender(sb);
