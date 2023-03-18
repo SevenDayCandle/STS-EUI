@@ -10,9 +10,9 @@ import extendedui.interfaces.markers.CountingPanelItem;
 public class CardRarityPanelFilterItem implements CountingPanelItem
 {
     protected static final CardRarityPanelFilterItem COMMON = new CardRarityPanelFilterItem(AbstractCard.CardRarity.COMMON);
-    protected static final CardRarityPanelFilterItem UNCOMMON = new CardRarityPanelFilterItem(AbstractCard.CardRarity.COMMON);
-    protected static final CardRarityPanelFilterItem RARE = new CardRarityPanelFilterItem(AbstractCard.CardRarity.COMMON);
-    protected static final CardRarityPanelFilterItem SPECIAL = new CardRarityPanelFilterItem(AbstractCard.CardRarity.COMMON);
+    protected static final CardRarityPanelFilterItem UNCOMMON = new CardRarityPanelFilterItem(AbstractCard.CardRarity.UNCOMMON);
+    protected static final CardRarityPanelFilterItem RARE = new CardRarityPanelFilterItem(AbstractCard.CardRarity.RARE);
+    protected static final CardRarityPanelFilterItem SPECIAL = new CardRarityPanelFilterItem(AbstractCard.CardRarity.SPECIAL);
     public final AbstractCard.CardRarity rarity;
 
     public static CardRarityPanelFilterItem get(AbstractCard.CardRarity rarity)
