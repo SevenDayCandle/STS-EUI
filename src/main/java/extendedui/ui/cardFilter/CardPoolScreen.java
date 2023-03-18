@@ -19,6 +19,7 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT2;
+import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.AbstractDungeonScreen;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -122,9 +123,10 @@ public class CardPoolScreen extends AbstractDungeonScreen
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
 
+        EUI.countingPanel.open(cardGrid.cards.group);
+
         customModule = EUI.getCustomCardPoolModule(player);
         if (customModule != null) {
-            customModule.setActive(true);
             customModule.open(cardGrid.cards.group);
         }
 
@@ -135,8 +137,8 @@ public class CardPoolScreen extends AbstractDungeonScreen
     {
         if (EUIGameUtils.inGame())
         {
-        }
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
+        }
     }
 
     @Override
@@ -151,8 +153,9 @@ public class CardPoolScreen extends AbstractDungeonScreen
             swapPotionScreen.updateImpl();
             EUI.customHeader.update();
             EUI.openCardFiltersButton.tryUpdate();
+            EUI.countingPanel.tryUpdate();
             if (customModule != null) {
-                customModule.tryUpdate();
+                customModule.update();
             }
         }
         contextMenu.tryUpdate();
@@ -167,13 +170,23 @@ public class CardPoolScreen extends AbstractDungeonScreen
         swapRelicScreen.renderImpl(sb);
         swapPotionScreen.renderImpl(sb);
         EUI.customHeader.render(sb);
+        EUI.countingPanel.tryRender(sb);
         if (!EUI.cardFilters.isActive) {
             EUI.openCardFiltersButton.tryRender(sb);
         }
         if (customModule != null) {
-            customModule.tryRender(sb);
+            customModule.render(sb);
         }
         contextMenu.tryRender(sb);
+    }
+
+    @Override
+    public void onEscape()
+    {
+        super.onEscape();
+        if (customModule != null) {
+            customModule.onClose();
+        }
     }
 
     protected void onRightClick(AbstractCard c)

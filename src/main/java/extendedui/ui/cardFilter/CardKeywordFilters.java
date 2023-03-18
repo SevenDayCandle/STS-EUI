@@ -18,6 +18,8 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.markers.CustomCardFilterModule;
+import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUITextBoxInput;
@@ -324,7 +326,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
 
         if (customModule != null)
         {
-            customModule.tryRender(sb);
+            customModule.render(sb);
         }
     }
 
@@ -340,7 +342,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
 
         if (customModule != null)
         {
-            customModule.tryUpdate();
+            customModule.update();
         }
     }
 

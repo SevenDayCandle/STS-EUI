@@ -245,7 +245,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         super.updateImpl();
         hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
         keywordsSectionLabel.setPosition(hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 7).updateImpl();
-        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.21f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 9).updateImpl();
+        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.21f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 9.1f).updateImpl();
         sortTypeToggle.setPosition(keywordsSectionLabel.hb.x + SPACING * 10, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
         sortDirectionToggle.setPosition(sortTypeToggle.hb.x + SPACING * 7, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
         currentTotalHeaderLabel.updateImpl();

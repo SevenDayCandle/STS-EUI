@@ -6,6 +6,8 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.FuncT1;
+import extendedui.interfaces.markers.CustomCardFilterModule;
+import extendedui.ui.EUIBase;
 import extendedui.ui.controls.EUISearchableDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIFontHelper;
@@ -19,8 +21,9 @@ import java.util.Objects;
 import static extendedui.ui.cardFilter.GenericFilters.DRAW_START_Y;
 import static extendedui.ui.cardFilter.GenericFilters.SPACING;
 
-public class SimpleCardFilterModule<T> extends CustomCardFilterModule
+public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilterModule
 {
+    public CardKeywordFilters filters;
     public HashSet<T> currentSeries = new HashSet<>();
     public EUISearchableDropdown<T> seriesDropdown;
     protected FuncT1<String, T> nameFunc;
@@ -28,7 +31,7 @@ public class SimpleCardFilterModule<T> extends CustomCardFilterModule
 
     public SimpleCardFilterModule(CardKeywordFilters filters, String title, FuncT1<String, T> nameFunc, FuncT1<T, AbstractCard> objectFunc)
     {
-        super(filters);
+        this.filters = filters;
         this.nameFunc = nameFunc;
         this.objectFunc = objectFunc;
         seriesDropdown = (EUISearchableDropdown<T>) new EUISearchableDropdown<T>(new EUIHitbox(0, 0, scale(240), scale(48)), nameFunc)

@@ -142,7 +142,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             else
             {
                 // Packmaster compatibility
-                // TODO Animator compatibility
+                // TODO general series button
                 SortHeaderButton packButton = getPackmasterButton();
                 if (packButton != null)
                 {

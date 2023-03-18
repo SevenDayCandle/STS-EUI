@@ -18,6 +18,7 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
+import extendedui.interfaces.markers.CustomRelicFilterModule;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUIRelicGrid;
@@ -218,7 +219,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
 
         if (customModule != null)
         {
-            customModule.tryRender(sb);
+            customModule.render(sb);
         }
     }
 
@@ -233,7 +234,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
 
         if (customModule != null)
         {
-            customModule.tryUpdate();
+            customModule.update();
         }
     }
 

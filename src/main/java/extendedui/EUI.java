@@ -24,6 +24,7 @@ import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.markers.*;
 import extendedui.patches.EUIKeyword;
 import extendedui.text.EUISmartText;
 import extendedui.ui.AbstractScreen;
@@ -67,6 +68,7 @@ public class EUI
     public static AbstractScreen currentScreen;
     public static CardKeywordFilters cardFilters;
     public static CardPoolScreen cardsScreen;
+    public static CountingPanel countingPanel;
     public static CustomCardLibSortHeader customHeader;
     public static CustomCardLibraryScreen customLibraryScreen;
     public static EUIButton openCardFiltersButton;
@@ -246,6 +248,7 @@ public class EUI
 
         cardsScreen = new CardPoolScreen();
         cardFilters = new CardKeywordFilters();
+        countingPanel = new CountingPanel();
         customHeader = new CustomCardLibSortHeader(null);
         customLibraryScreen = new CustomCardLibraryScreen();
         modSettingsScreen = new ModSettingsScreen();

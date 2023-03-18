@@ -1,24 +1,19 @@
-package extendedui.ui.cardFilter;
+package extendedui.interfaces.markers;
 
+import basemod.IUIElement;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import extendedui.ui.EUIBase;
+import extendedui.ui.cardFilter.CardKeywordFilters;
 
 import java.util.Collection;
 
-public abstract class CustomCardFilterModule extends EUIBase
+public interface CustomCardFilterModule extends IUIElement
 {
-    protected CardKeywordFilters filters;
-
-    public CustomCardFilterModule(CardKeywordFilters filters)
-    {
-        this.filters = filters;
-    }
-
     public abstract boolean isCardValid(AbstractCard c);
     public abstract boolean isEmpty();
     public abstract boolean isHovered();
     public abstract void initializeSelection(Collection<AbstractCard> cards);
     public abstract void reset();
-    public void processGroup(CardGroup group) {}
+    public default void processGroup(CardGroup group) {}
 }

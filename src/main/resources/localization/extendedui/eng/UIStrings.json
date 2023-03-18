@@ -1,6 +1,7 @@
 {
 	"extendedui:config": {
 		"TEXT": [
+			"Show counting panel",
 			"Use Vanilla Card Library Screen",
 			"Disable compendium top panel button",
 			"Disable description icons",
@@ -20,6 +21,22 @@
 			"Banner Font",
 			"Enable debug functionality",
 			"Re-enable Tooltips"
+		]
+	},
+	"extendedui:config_desc": {
+		"TEXT": [
+			"Requires restart",
+			"Enables a widget in certain card grids that displays card metrics over various properties such as card type and rarity.",
+			"Check this option to use the base game's method of rendering the various compendium screens. Filters will still be available.",
+			"Check this option to remove the compendium button on the top of the screen during runs.",
+			"Check this option to replace icons in tooltip descriptions with the keywords they represent (excluding energy icons).",
+			"Check this option to disable the playing of VFX rendered with Effekseer.",
+			"Only check this option if you are running into memory issues or if Effekseer VFX do not render properly.",
+			"By default, only settings registered with EUI will appear in this mod's additional settings menu. Checking this option will allow ANY setting registered with BaseMod to appear in this menu. | WARNING: Some mod settings may not render properly or may produce unintended consequences when toggled during a run",
+			"If checked, different text types (e.g. button text, tip title text) will use different fonts, and text types without any font specified will fall back on the default font. Otherwise, all text types will use the font you specify below.",
+			"This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well.",
+			"If checked, enables various debugging functions to be used in the card pool screen by right-clicking cards in its grid.",
+			"Re-enable all tooltips that were turned off by this mod."
 		]
 	},
 	"extendedui:grammar": {
@@ -64,18 +81,7 @@
 			"Extra Settings",
 			"EUI",
 			"EUI Fonts",
-			"Requires restart",
-			"This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well.",
-			"If checked, different text types (e.g. button text, tip title text) will use different fonts, and text types without any font specified will fall back on the default font. Otherwise, all text types will use the font you specify below.",
-			"By default, only settings registered with EUI will appear in this mod's additional settings menu. Checking this option will allow ANY setting registered with BaseMod to appear in this menu. | WARNING: Some mod settings may not render properly or may produce unintended consequences when toggled during a run",
-			"Check this option to remove the compendium button on the top of the screen during runs.",
-			"Check this option to use the base game's method of rendering the various compendium screens. Filters will still be available.",
-			"Check this option to replace icons in tooltip descriptions with the keywords they represent (excluding #yEnergy icons).",
-			"Check this option to disable the playing of VFX rendered with Effekseer.",
-			"Only check this option if you are running into memory issues or if Effekseer VFX do not render properly.",
-			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options.",
-			"Re-enable all tooltips that were turned off by this mod.",
-			"If checked, enables various debugging functions to be used in the card pool screen by right-clicking cards in its grid."
+			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options."
 		]
 	},
 	"extendedui:ui_pool": {

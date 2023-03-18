@@ -21,6 +21,7 @@ import static extendedui.ui.cardFilter.CustomCardLibSortHeader.getFakeGroup;
 public class MasterDeckViewScreenPatches
 {
     public static final CardGroup fakeMasterDeck = new CardGroup(CardGroup.CardGroupType.MASTER_DECK);
+    public static MasterDeckViewScreen screen; // Can be used for card pool modules to reference
 
     @SpirePatch(clz = MasterDeckViewScreen.class, method = "open")
     public static class MasterDeckViewScreen_Open
@@ -28,6 +29,7 @@ public class MasterDeckViewScreenPatches
         @SpirePrefixPatch
         public static void prefix(MasterDeckViewScreen __instance)
         {
+            screen = __instance;
             getFakeMasterDeck();
             EUI.cardFilters.initialize(__ -> {
                 updateForFilters();
@@ -36,6 +38,7 @@ public class MasterDeckViewScreenPatches
                 }
             }, fakeMasterDeck.group, AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : AbstractCard.CardColor.COLORLESS, false);
             updateForFilters();
+            EUI.countingPanel.open(AbstractDungeon.player.masterDeck.group);
         }
     }
 
@@ -47,6 +50,7 @@ public class MasterDeckViewScreenPatches
         {
             if (!EUI.cardFilters.tryUpdate() && EUI.openCardFiltersButton != null) {
                 EUI.openCardFiltersButton.tryUpdate();
+                EUI.countingPanel.tryUpdate();
             }
         }
     }
@@ -59,6 +63,7 @@ public class MasterDeckViewScreenPatches
         {
             if (!EUI.cardFilters.isActive) {
                 EUI.openCardFiltersButton.tryRender(sb);
+                EUI.countingPanel.tryRender(sb);
             }
         }
 

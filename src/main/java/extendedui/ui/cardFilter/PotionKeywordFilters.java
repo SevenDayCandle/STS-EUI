@@ -10,16 +10,14 @@ import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
-import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.delegates.FuncT1;
+import extendedui.interfaces.markers.CustomPotionFilterModule;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
-import extendedui.ui.controls.EUIPotionGrid;
 import extendedui.ui.controls.EUIPotionGrid;
 import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -183,7 +181,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion>
 
         if (customModule != null)
         {
-            customModule.tryRender(sb);
+            customModule.render(sb);
         }
     }
 
@@ -197,7 +195,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion>
 
         if (customModule != null)
         {
-            customModule.tryUpdate();
+            customModule.update();
         }
     }
 

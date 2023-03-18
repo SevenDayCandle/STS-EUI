@@ -42,6 +42,11 @@ public class EUIGameUtils {
     private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();
     private static final HashMap<CodeSource, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
     private static final HashMap<String, AbstractCard.CardColor> RELIC_COLORS = new HashMap<>();
+    public static final Color COLOR_COMMON = new Color(0.65f, 0.65f, 0.65f, 1f);
+    public static final Color COLOR_CURSE = new Color(0.37f, 0.37f, 0.27f, 1);
+    public static final Color COLOR_RARE = new Color(0.99f, 0.8f, 0.35f, 1f);
+    public static final Color COLOR_SPECIAL = new Color(1f, 1f, 1f, 1f);
+    public static final Color COLOR_UNCOMMON = new Color(0.5f, 0.85f, 0.95f, 1f);
 
     public static void addRelicColor(String relicID, AbstractCard.CardColor color)
     {
@@ -59,6 +64,23 @@ public class EUIGameUtils {
     public static boolean canViewEnemyIntents(AbstractMonster mo)
     {
         return mo.intent != AbstractMonster.Intent.NONE && !AbstractDungeon.player.hasRelic(RunicDome.ID);
+    }
+
+    public static Color colorForRarity(AbstractCard.CardRarity rarity){
+        switch (rarity) {
+            case SPECIAL:
+                return COLOR_SPECIAL;
+            case UNCOMMON:
+                return COLOR_UNCOMMON;
+            case RARE:
+                return COLOR_RARE;
+            case CURSE:
+                return COLOR_CURSE;
+            case BASIC:
+            case COMMON:
+            default:
+                return COLOR_COMMON;
+        }
     }
 
     public static void copyVisualProperties(AbstractCard copy, AbstractCard original) {

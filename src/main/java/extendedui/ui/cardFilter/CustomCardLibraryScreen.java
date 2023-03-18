@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
+import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -137,7 +138,6 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
 
         customModule = EUI.getCustomCardLibraryModule(color);
         if (customModule != null) {
-            customModule.setActive(true);
             customModule.open(cardGrid.cards.group);
         }
     }
@@ -161,9 +161,9 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
                 this.cancelButton.hide();
                 onEscape();
             }
-        }
-        if (customModule != null) {
-            customModule.tryUpdate(shouldDoStandardUpdate);
+            if (customModule != null) {
+                customModule.update();
+            }
         }
     }
 
@@ -179,7 +179,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         EUI.customHeader.render(sb);
         cardGrid.tryRender(sb);
         if (customModule != null) {
-            customModule.tryRender(sb);
+            customModule.render(sb);
         }
         if (!EUI.cardFilters.isActive) {
             EUI.openCardFiltersButton.tryRender(sb);
@@ -187,9 +187,17 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         cancelButton.render(sb);
     }
 
+    @Override
+    public void onEscape()
+    {
+        super.onEscape();
+        if (customModule != null) {
+            customModule.onClose();
+        }
+    }
+
     protected void makeColorButton(AbstractCard.CardColor co) {
         colorButtons.addButton(button -> setActiveColor(co), EUIGameUtils.getColorName(co))
                 .setColor(EUIGameUtils.getColorColor(co));
     }
-
 }

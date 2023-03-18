@@ -16,6 +16,7 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT2;
+import extendedui.interfaces.markers.CustomRelicPoolModule;
 import extendedui.ui.AbstractDungeonScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
@@ -104,7 +105,6 @@ public class RelicPoolScreen extends AbstractDungeonScreen
 
         customModule = EUI.getCustomRelicPoolModule(player);
         if (customModule != null) {
-            customModule.setActive(true);
             customModule.open(EUIUtils.map(relicGrid.relicGroup, r -> r.relic));
         }
 
@@ -130,7 +130,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen
             EUI.relicHeader.updateImpl();
             EUI.openRelicFiltersButton.tryUpdate();
             if (customModule != null) {
-                customModule.tryUpdate();
+                customModule.update();
             }
         }
         contextMenu.tryUpdate();
@@ -147,7 +147,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen
             EUI.openRelicFiltersButton.tryRender(sb);
         }
         if (customModule != null) {
-            customModule.tryRender(sb);
+            customModule.render(sb);
         }
         contextMenu.tryRender(sb);
     }
