@@ -87,7 +87,6 @@ public class FilterKeywordButton extends EUIHoverable
         titleText.hb.setOffset(hb.width * (offX + BASE_OFFSET_X), hb.height * offY);
         countText.hb.setOffset(hb.width * (offX + baseCountOffset), hb.height * offY);
 
-
         return this;
     }
 

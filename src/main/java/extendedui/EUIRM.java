@@ -97,6 +97,13 @@ public class EUIRM
     public static class Images {
         public final TextureCache baseBadge = new TextureCache("images/extendedui/tooltip/Base_Badge.png");
         public final TextureCache baseBorder = new TextureCache("images/extendedui/tooltip/Base_Border.png");
+
+        public final TextureCache typeAttack = new TextureCache("images/extendedui/types/Attack.png");
+        public final TextureCache typeCurse = new TextureCache("images/extendedui/types/Curse.png");
+        public final TextureCache typePower = new TextureCache("images/extendedui/types/Power.png");
+        public final TextureCache typeSkill = new TextureCache("images/extendedui/types/Skill.png");
+        public final TextureCache typeStatus = new TextureCache("images/extendedui/types/Status.png");
+
         public final TextureCache arrow = new TextureCache("images/extendedui/ui/Arrow.png");
         public final TextureCache border = new TextureCache("images/extendedui/ui/Border.png");
         public final TextureCache cardPool = new TextureCache("images/extendedui/ui/CardPool.png");
@@ -120,6 +127,7 @@ public class EUIRM
         public final TextureCache plus = new TextureCache("images/extendedui/ui/Plus.png");
         public final TextureCache rectangularButton = new TextureCache("images/extendedui/ui/RectangularButton.png");
         public final TextureCache squaredButton = new TextureCache("images/extendedui/ui/SquaredButton.png");
+        public final TextureCache squaredButton2 = new TextureCache("images/extendedui/ui/SquaredButton2.png");
         public final TextureCache swap = new TextureCache("images/extendedui/ui/Swap.png");
         public final TextureCache tag = new TextureCache("images/extendedui/ui/Tag.png");
         public final TextureCache x = new TextureCache("images/extendedui/ui/X.png");

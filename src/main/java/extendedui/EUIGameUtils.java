@@ -23,6 +23,7 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.compendium.PotionViewScreen;
 import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
 import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.ui.TextureCache;
 import extendedui.ui.tooltips.EUITooltip;
 import org.lwjgl.opencl.CL;
 
@@ -201,6 +202,22 @@ public class EUIGameUtils {
         result.add(AbstractDungeon.srcRareCardPool);
         result.add(AbstractDungeon.srcCurseCardPool);
         return result;
+    }
+
+    public static TextureCache iconForType(AbstractCard.CardType type)
+    {
+        switch (type) {
+            case ATTACK:
+                return EUIRM.images.typeAttack;
+            case CURSE:
+                return EUIRM.images.typeCurse;
+            case POWER:
+                return EUIRM.images.typePower;
+            case SKILL:
+                return EUIRM.images.typeSkill;
+            default:
+                return EUIRM.images.typeStatus;
+        }
     }
 
     public static boolean inBattle() {

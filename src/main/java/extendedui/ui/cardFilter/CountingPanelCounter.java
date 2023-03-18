@@ -6,6 +6,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import extendedui.EUIRM;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.CountingPanelItem;
+import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.EUIBase;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIImage;
@@ -29,6 +30,10 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase
         backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), RelativeHitbox.fromPercentages(hb, 1, 1, 0.5f, 0))
                 .setColor(PANEL_COLOR)
                 .setOnClick(onClick == null ? null : () -> onClick.invoke(this));
+        if (type instanceof TooltipProvider)
+        {
+            backgroundButton.setTooltip(((TooltipProvider) type).getTooltip());
+        }
 
         counterImage = new EUIImage(type.getIcon(), type.getColor())
                 .setHitbox(new RelativeHitbox(hb, CountingPanel.ICON_SIZE, CountingPanel.ICON_SIZE, -0.5f * (CountingPanel.ICON_SIZE / hb.width), 0));

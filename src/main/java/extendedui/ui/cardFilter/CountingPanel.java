@@ -11,6 +11,7 @@ import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.cardFilter.filters.CardRarityPaneFilter;
+import extendedui.ui.cardFilter.filters.CardTypePaneFilter;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIImage;
 import extendedui.ui.controls.EUIToggle;
@@ -24,7 +25,7 @@ import java.util.ArrayList;
 public class CountingPanel extends EUIHoverable implements CustomCardPoolModule
 {
     public static final float ICON_SIZE = scale(40);
-    protected static final RotatingList<CountingPanelCardFilter> FILTERS = new RotatingList<>(new CardRarityPaneFilter());
+    protected static final RotatingList<CountingPanelCardFilter> FILTERS = new RotatingList<>(new CardTypePaneFilter(), new CardRarityPaneFilter());
     protected ArrayList<? extends CountingPanelCounter<?>> counters;
     protected ArrayList<AbstractCard> cards;
     protected EUIButton swapButton;
@@ -38,7 +39,7 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule
     public CountingPanel()
     {
         super(new DraggableHitbox(screenW(0.025f), screenH(0.65f), scale(140), scale(50), false));
-        swapButton = new EUIButton(EUIRM.images.swap.texture(), new RelativeHitbox(hb, scale(48), scale(48), scale(48), 0))
+        swapButton = new EUIButton(EUIRM.images.swap.texture(), new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, ICON_SIZE, 0))
                 .setOnClick(this::swap);
     }
 

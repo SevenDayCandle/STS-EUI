@@ -917,7 +917,6 @@ public class EUIDropdown<T> extends EUIHoverable
         else {
             this.clearButton.hb.setOffset(hb.width, 0);
         }
-        this.clearButton.update();
     }
 
     public EUIDropdown<T> makeCopy() {
