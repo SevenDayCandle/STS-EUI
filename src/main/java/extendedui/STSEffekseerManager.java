@@ -139,7 +139,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
             instance = new STSEffekseerManager();
             BaseMod.subscribe(instance);
         }
-        catch (Exception e) {
+        catch (Error | Exception e) {
             e.printStackTrace();
         }
     }

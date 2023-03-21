@@ -108,11 +108,11 @@ public class STSEffekSeerUtils {
         return effectCore;
     }
 
-    protected static void loadLibraryFromJar() throws IOException {
+    protected static void loadLibraryFromJar() throws Exception, UnsatisfiedLinkError {
         loadLibraryFromJar(getEffekseerPath());
     }
 
-    protected static void loadLibraryFromJar(String path) throws IOException {
+    protected static void loadLibraryFromJar(String path) throws Exception, UnsatisfiedLinkError {
 
         if (null == path || !path.startsWith("/")) {
             throw new IllegalArgumentException("The path has to be absolute (start with '/').");
