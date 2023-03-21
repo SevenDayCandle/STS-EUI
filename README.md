@@ -1,5 +1,10 @@
 # EUI (Compendium Filters + STSEffekseer)
 
+NOTE: Please use the Steam link to get the latest updates! The version on Github may not always be up to date with the Steam release.
+https://steamcommunity.com/sharedfiles/filedetails/?id=2788071529
+
+-----
+
 This mod adds the following features:
 
 - An in-game top panel button that opens a card pool screen with a grid of the cards currently available in your run. You may view upgrades for these cards and show/hide the available colorless cards.
