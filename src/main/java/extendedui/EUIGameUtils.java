@@ -43,10 +43,11 @@ public class EUIGameUtils {
     private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();
     private static final HashMap<CodeSource, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
     private static final HashMap<String, AbstractCard.CardColor> RELIC_COLORS = new HashMap<>();
-    public static final Color COLOR_COMMON = new Color(0.65f, 0.65f, 0.65f, 1f);
-    public static final Color COLOR_CURSE = new Color(0.37f, 0.37f, 0.27f, 1);
-    public static final Color COLOR_RARE = new Color(0.99f, 0.8f, 0.35f, 1f);
-    public static final Color COLOR_SPECIAL = new Color(1f, 1f, 1f, 1f);
+    public static final Color COLOR_BASIC = new Color(0.61f, 0.61f, 0.61f, 1f);
+    public static final Color COLOR_COMMON = new Color(0.72f, 0.72f, 0.72f, 1f);
+    public static final Color COLOR_CURSE = new Color(0.45f, 0.45f, 0.45f, 1);
+    public static final Color COLOR_RARE = new Color(1f, 0.8f, 0.35f, 1f);
+    public static final Color COLOR_SPECIAL = new Color(0.7f, 1f, 0.5f, 1f);
     public static final Color COLOR_UNCOMMON = new Color(0.5f, 0.85f, 0.95f, 1f);
 
     public static void addRelicColor(String relicID, AbstractCard.CardColor color)
@@ -78,6 +79,7 @@ public class EUIGameUtils {
             case CURSE:
                 return COLOR_CURSE;
             case BASIC:
+                return COLOR_BASIC;
             case COMMON:
             default:
                 return COLOR_COMMON;
