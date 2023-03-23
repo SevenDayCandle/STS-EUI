@@ -77,7 +77,6 @@ public class Initializer implements PostInitializeSubscriber, EditStringsSubscri
         STSEffekseerManager.initialize();
         ShaderDebugger.initialize();
         HitboxDebugger.initialize();
-        LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
     }
 
     private Map<String, EUIKeyword> loadKeywords(String language, String path) {

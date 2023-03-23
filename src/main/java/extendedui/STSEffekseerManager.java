@@ -15,6 +15,7 @@ import extendedui.swig.EffekseerEffectCore;
 import extendedui.swig.EffekseerManagerCore;
 import imgui.ImGui;
 import imgui.flag.ImGuiTableColumnFlags;
+import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -141,7 +142,9 @@ public class STSEffekseerManager implements ImGuiSubscriber
         }
         catch (Error | Exception e) {
             e.printStackTrace();
+            LogManager.getLogger(STSEffekseerManager.class.getName()).error("Failed to initialize STSEffekseerManager");
         }
+        LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
     }
 
     public static boolean modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, Color color)  {

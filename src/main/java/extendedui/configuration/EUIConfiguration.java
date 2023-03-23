@@ -29,7 +29,7 @@ public class EUIConfiguration
 {
     private static final int BASE_OPTION_OFFSET_X = 400;
     private static final int BASE_OPTION_OFFSET_X2 = 580;
-    private static final int BASE_OPTION_OFFSET_Y = 700;
+    private static final int BASE_OPTION_OFFSET_Y = 720;
     private static final int BASE_OPTION_OPTION_HEIGHT = 32;
     public static final int BASE_SPRITES_DEFAULT = 6000;
     //public static final int BASE_SPRITES_MIN = 6000;
@@ -161,7 +161,7 @@ public class EUIConfiguration
         yPos = addToggle(panel, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         yPos = addToggle(panel, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
 
-        yPos = ((BASE_OPTION_OFFSET_Y + yPos) / 2) - 40;
+        yPos = ((BASE_OPTION_OFFSET_Y + yPos) / 2) - 70;
         ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(panel, cardDescFontSelector2, yPos) + 2;
         ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);

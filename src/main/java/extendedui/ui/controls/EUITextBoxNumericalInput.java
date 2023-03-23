@@ -67,8 +67,8 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer>
     @Override
     public void setText(String s) {
         hasEntered = true;
-        cachedValue = getValue(label.text);
         label.text = s;
+        cachedValue = getValue(label.text);
         if (onUpdate != null) {
             onUpdate.invoke(cachedValue);
         }
