@@ -102,9 +102,10 @@ public class CardPoolScreen extends AbstractDungeonScreen
     public void open(AbstractPlayer player, CardGroup cards)
     {
         super.open(false, true);
+        boolean canSeeAllColors = EUIGameUtils.canReceiveAnyColorCard();
 
         cardGrid.clear();
-        colorlessToggle.setToggle(false);
+        colorlessToggle.setToggle(false).setActive(!canSeeAllColors);
         if (cards.isEmpty())
         {
             AbstractDungeon.closeCurrentScreen();
@@ -119,7 +120,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
                 customModule.open(EUI.customHeader.group.group);
             }
             cardGrid.forceUpdateCardPositions();
-        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
+        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, !canSeeAllColors);
 
         if (EUIGameUtils.inGame())
         {
@@ -151,7 +152,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
         if (!EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             cardGrid.tryUpdate();
             upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
-            colorlessToggle.updateImpl();
+            colorlessToggle.update();
             swapRelicScreen.updateImpl();
             swapPotionScreen.updateImpl();
             EUI.customHeader.update();
@@ -169,7 +170,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
     {
         cardGrid.tryRender(sb);
         upgradeToggle.renderImpl(sb);
-        colorlessToggle.renderImpl(sb);
+        colorlessToggle.render(sb);
         swapRelicScreen.renderImpl(sb);
         swapPotionScreen.renderImpl(sb);
         EUI.customHeader.render(sb);

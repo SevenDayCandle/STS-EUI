@@ -212,7 +212,12 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         colorsDropdown.setItems(colorsItems);
         if (isAccessedFromCardPool)
         {
-            colorsDropdown.setSelection(EUIUtils.filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE), true);
+            ArrayList<AbstractCard.CardColor> filteredColors = EUIUtils.filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE);
+            colorsDropdown.setSelection(filteredColors, true).setActive(false);
+        }
+        else
+        {
+            colorsDropdown.setActive(colorsItems.size() > 1);
         }
     }
 
@@ -260,6 +265,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     public boolean isHoveredImpl()
     {
         return originsDropdown.areAnyItemsHovered()
+                || colorsDropdown.areAnyItemsHovered()
                 || costDropdown.areAnyItemsHovered()
                 || raritiesDropdown.areAnyItemsHovered()
                 || typesDropdown.areAnyItemsHovered()
@@ -299,6 +305,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     public void renderFilters(SpriteBatch sb)
     {
         originsDropdown.tryRender(sb);
+        colorsDropdown.tryRender(sb);
         costDropdown.tryRender(sb);
         raritiesDropdown.tryRender(sb);
         typesDropdown.tryRender(sb);
@@ -315,9 +322,18 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     public void updateFilters()
     {
         originsDropdown.setPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
-        costDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        if (colorsDropdown.isActive)
+        {
+            colorsDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+            costDropdown.setPosition(colorsDropdown.hb.x + colorsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        }
+        else
+        {
+            costDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        }
         raritiesDropdown.setPosition(costDropdown.hb.x + costDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
         typesDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+
         nameInput.setPosition(hb.x + SPACING * 2.05f, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
         descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
 

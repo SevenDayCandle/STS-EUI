@@ -111,6 +111,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
         if (EUIGameUtils.canReceiveAnyColorCard())
         {
             cardGroup.group = EUIGameUtils.getEveryColorCard();
+            cardGroup.group.sort(CardPoolPanelItem::compareCardFromAllColors);
         }
         else
         {
@@ -122,6 +123,13 @@ public class CardPoolPanelItem extends PCLTopPanelItem
         }
 
         return cardGroup;
+    }
+
+    protected static int compareCardFromAllColors(AbstractCard c1, AbstractCard c2)
+    {
+        int c1val = c1.color.ordinal() * 100 + c1.rarity.ordinal();
+        int c2val = c2.color.ordinal() * 100 + c2.rarity.ordinal();
+        return c2val - c1val;
     }
 
     public static ArrayList<AbstractPotion> getAllPotions() {
