@@ -199,8 +199,9 @@ public class EUIRM
         public final String uipool_enlarge = stringsUIPool.TEXT[6];
         public final String uipool_addToHand = stringsUIPool.TEXT[7];
         public final String uipool_addToDeck = stringsUIPool.TEXT[8];
-        public final String uipool_obtainRelic = stringsUIPool.TEXT[9];
-        public final String uipool_obtainPotion = stringsUIPool.TEXT[10];
+        public final String uipool_removeFromPool = stringsUIPool.TEXT[9];
+        public final String uipool_obtainRelic = stringsUIPool.TEXT[10];
+        public final String uipool_obtainPotion = stringsUIPool.TEXT[11];
 
         public final String uiItemsselected = stringsUIFilter.TEXT[0];
         public final String uiKeywords = stringsUIFilter.TEXT[1];

@@ -25,6 +25,7 @@ import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.utilities.CostFilter;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.FakeLibraryCard;
 import org.apache.commons.lang3.StringUtils;
@@ -35,26 +36,6 @@ import java.util.List;
 
 public class CardKeywordFilters extends GenericFilters<AbstractCard>
 {
-    public enum CostFilter
-    {
-        CostX("X", -1, -1),
-        Cost0("0", 0, 0),
-        Cost1("1", 1, 1),
-        Cost2("2", 2, 2),
-        Cost3Plus("3+", 3, 9999),
-        Unplayable(EUIRM.strings.na, -9999, -2);
-
-        public final int lowerBound;
-        public final int upperBound;
-        public final String name;
-
-        CostFilter(String name, int lowerBound, int upperBound)
-        {
-            this.lowerBound = lowerBound;
-            this.upperBound = upperBound;
-            this.name = name;
-        }
-    }
 
     public static CustomCardFilterModule customModule;
     public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
@@ -195,7 +176,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 availableMods.add(EUIGameUtils.getModInfo(card));
                 availableRarities.add(card.rarity);
                 availableTypes.add(card.type);
-                availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost3Plus.lowerBound));
+                availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost4Plus.lowerBound));
                 availableColors.add(card.color);
             }
             if (customModule != null)
@@ -481,7 +462,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 boolean passes = false;
                 for (CostFilter cf : currentCosts)
                 {
-                    if (c.cost >= cf.lowerBound && c.cost <= cf.upperBound)
+                    if (cf.check(c))
                     {
                         passes = true;
                         break;

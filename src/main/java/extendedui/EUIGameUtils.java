@@ -9,12 +9,16 @@ import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.daily.mods.Diverse;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.ModHelper;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.*;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.relics.PrismaticShard;
 import com.megacrit.cardcrawl.relics.RunicDome;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
@@ -22,6 +26,7 @@ import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.compendium.PotionViewScreen;
 import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
+import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.TextureCache;
 import extendedui.ui.tooltips.EUITooltip;
@@ -33,6 +38,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
+import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.player;
 import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
@@ -53,6 +59,18 @@ public class EUIGameUtils {
     public static void addRelicColor(String relicID, AbstractCard.CardColor color)
     {
         RELIC_COLORS.put(relicID, color);
+    }
+
+    public static boolean canReceiveAnyColorCard()
+    {
+        return (player != null && player.hasRelic(PrismaticShard.ID)) || ModHelper.isModEnabled(Diverse.ID);
+    }
+
+    // Imitate getAnyColorCard logic
+    public static boolean canSeeAnyColorCard(AbstractCard c)
+    {
+        return (Settings.treatEverythingAsUnlocked() || !UnlockTracker.isCardLocked(c.cardID))
+                && c.type != AbstractCard.CardType.CURSE && c.type != AbstractCard.CardType.STATUS;
     }
 
     public static boolean canShowUpgrades(boolean isLibrary)
@@ -150,6 +168,11 @@ public class EUIGameUtils {
             default:
                 return CUSTOM_COLOR_NAMES.getOrDefault(co, EUIUtils.capitalize(String.valueOf(co)));
         }
+    }
+
+    public static ArrayList<AbstractCard> getEveryColorCard()
+    {
+        return EUIUtils.filter(CardLibrary.cards.values(), EUIGameUtils::canSeeAnyColorCard);
     }
 
     public static ArrayList<CardGroup> getGameCardPools() {

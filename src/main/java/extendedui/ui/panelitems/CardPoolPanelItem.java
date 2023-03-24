@@ -108,9 +108,16 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
     public static CardGroup getAllCards() {
         CardGroup cardGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        for (CardGroup cg: EUIGameUtils.getGameCardPools()) {
-            for (AbstractCard c : cg.group) {
-                cardGroup.addToTop(c);
+        if (EUIGameUtils.canReceiveAnyColorCard())
+        {
+            cardGroup.group = EUIGameUtils.getEveryColorCard();
+        }
+        else
+        {
+            for (CardGroup cg: EUIGameUtils.getGameCardPools()) {
+                for (AbstractCard c : cg.group) {
+                    cardGroup.addToTop(c);
+                }
             }
         }
 

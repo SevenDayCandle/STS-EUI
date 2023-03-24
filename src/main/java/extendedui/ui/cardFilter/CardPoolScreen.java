@@ -86,9 +86,12 @@ public class CardPoolScreen extends AbstractDungeonScreen
 
         contextMenu = (EUIContextMenu<DebugOption>) new EUIContextMenu<DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
                 .setOnChange(options -> {
-                    for (DebugOption o : options)
+                    if (selected != null)
                     {
-                        o.onSelect.invoke(this, selected);
+                        for (DebugOption o : options)
+                        {
+                            o.onSelect.invoke(this, selected);
+                        }
                     }
                 })
                 .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
@@ -212,7 +215,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
 
     protected void addCopyToHand(AbstractCard c)
     {
-        if (c != null && EUIGameUtils.inBattle())
+        if (EUIGameUtils.inBattle())
         {
             AbstractDungeon.effectList.add(new ShowCardAndAddToHandEffect(c.makeStatEquivalentCopy(), Settings.WIDTH * 0.5f, Settings.HEIGHT * 0.5f));
         }
@@ -220,30 +223,25 @@ public class CardPoolScreen extends AbstractDungeonScreen
 
     protected void addCopyToDeck(AbstractCard c)
     {
-        if (c != null)
-        {
-            AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c.makeStatEquivalentCopy(), Settings.WIDTH * 0.5f, Settings.HEIGHT * 0.5f));
-        }
+        AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c.makeStatEquivalentCopy(), Settings.WIDTH * 0.5f, Settings.HEIGHT * 0.5f));
     }
 
     protected void removeCardFromPool(AbstractCard c)
     {
-        if (c != null)
+        final ArrayList<CardGroup> groups = new ArrayList<>();
+        groups.addAll(EUIGameUtils.getGameCardPools());
+        groups.addAll(EUIGameUtils.getSourceCardPools());
+        for (CardGroup group : groups)
         {
-            final ArrayList<CardGroup> groups = new ArrayList<>();
-            groups.addAll(EUIGameUtils.getGameCardPools());
-            groups.addAll(EUIGameUtils.getSourceCardPools());
-            for (CardGroup group : groups)
-            {
-                group.removeCard(c.cardID);
-            }
-            cardGrid.removeCard(c);
+            group.removeCard(c.cardID);
         }
+        cardGrid.removeCard(c);
+        EUI.countingPanel.open(cardGrid.cards.group);
     }
 
     public static List<DebugOption> getOptions()
     {
-        return EUIUtils.list(DebugOption.enlargeCard, DebugOption.addToHand, DebugOption.addToDeck);
+        return EUIUtils.list(DebugOption.enlargeCard, DebugOption.addToHand, DebugOption.addToDeck, DebugOption.removeFromPool);
     }
 
     public static class DebugOption
@@ -251,6 +249,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
         public static DebugOption enlargeCard = new DebugOption(EUIRM.strings.uipool_enlarge, CardPoolScreen::openPopup);
         public static DebugOption addToHand = new DebugOption(EUIRM.strings.uipool_addToHand, CardPoolScreen::addCopyToHand);
         public static DebugOption addToDeck = new DebugOption(EUIRM.strings.uipool_addToDeck, CardPoolScreen::addCopyToDeck);
+        public static DebugOption removeFromPool = new DebugOption(EUIRM.strings.uipool_removeFromPool, CardPoolScreen::removeCardFromPool);
 
         public final String name;
         public final ActionT2<CardPoolScreen, AbstractCard> onSelect;
