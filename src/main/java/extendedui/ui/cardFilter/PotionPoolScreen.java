@@ -27,6 +27,8 @@ import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class PotionPoolScreen extends AbstractDungeonScreen
@@ -72,7 +74,6 @@ public class PotionPoolScreen extends AbstractDungeonScreen
                     }
                 })
                 .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
-                .setItems(getOptions())
                 .setCanAutosizeButton(true);
     }
 
@@ -159,6 +160,7 @@ public class PotionPoolScreen extends AbstractDungeonScreen
             selected = c;
             contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
             contextMenu.refreshText();
+            contextMenu.setItems(getOptions(c));
             contextMenu.openOrCloseMenu();
         }
     }
@@ -171,9 +173,9 @@ public class PotionPoolScreen extends AbstractDungeonScreen
         }
     }
 
-    public static List<PotionPoolScreen.DebugOption> getOptions()
+    public static ArrayList<PotionPoolScreen.DebugOption> getOptions(AbstractPotion p)
     {
-        return EUIUtils.list(PotionPoolScreen.DebugOption.obtain);
+        return EUIUtils.arrayList(DebugOption.obtain);
     }
 
     public static class DebugOption

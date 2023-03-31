@@ -12,10 +12,10 @@ import java.util.Collections;
 public class CardTypePaneFilter implements CountingPanelCardFilter
 {
     @Override
-    public ArrayList<? extends CountingPanelCounter<?>> generateCounters(Iterable<AbstractCard> cards, Hitbox hb)
+    public ArrayList<? extends CountingPanelCounter<?>> generateCounters(ArrayList<AbstractCard> cards, Hitbox hb)
     {
         return CountingPanelStats.basic(c ->
                 Collections.singleton(CardTypePanelFilterItem.get(c.type)),
-                cards).generateCounters(hb, null);
+                cards).generateCounters(hb, panel -> cards.sort(panel.type));
     }
 }

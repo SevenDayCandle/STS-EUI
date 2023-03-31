@@ -3,14 +3,13 @@ package extendedui.ui.cardFilter.filters;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
-import extendedui.EUIUtils;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -56,8 +55,15 @@ public class CardRarityPanelFilterItem implements CountingPanelItem, TooltipProv
     }
 
     @Override
+    public int getRank(AbstractCard c)
+    {
+        int ordinal = c.rarity.ordinal();
+        return c.rarity == rarity ? ordinal + 1000 : ordinal;
+    }
+
+    @Override
     public List<EUITooltip> getTips()
     {
-        return EUIUtils.list(new EUITooltip(EUIGameUtils.textForRarity(rarity)));
+        return Collections.singletonList(new EUITooltip(EUIGameUtils.textForRarity(rarity)));
     }
 }

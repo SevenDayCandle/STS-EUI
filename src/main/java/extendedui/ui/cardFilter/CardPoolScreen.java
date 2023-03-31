@@ -27,6 +27,7 @@ import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class CardPoolScreen extends AbstractDungeonScreen
@@ -95,7 +96,6 @@ public class CardPoolScreen extends AbstractDungeonScreen
                     }
                 })
                 .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
-                .setItems(getOptions())
                 .setCanAutosizeButton(true);
     }
 
@@ -200,6 +200,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
             selected = c;
             contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
             contextMenu.refreshText();
+            contextMenu.setItems(getOptions(c));
             contextMenu.openOrCloseMenu();
         }
         else
@@ -240,9 +241,10 @@ public class CardPoolScreen extends AbstractDungeonScreen
         EUI.countingPanel.open(cardGrid.cards.group);
     }
 
-    public static List<DebugOption> getOptions()
+    // This method can be patched to add additional debug options
+    public static ArrayList<DebugOption> getOptions(AbstractCard c)
     {
-        return EUIUtils.list(DebugOption.enlargeCard, DebugOption.addToHand, DebugOption.addToDeck, DebugOption.removeFromPool);
+        return EUIUtils.arrayList(DebugOption.enlargeCard, DebugOption.addToHand, DebugOption.addToDeck, DebugOption.removeFromPool);
     }
 
     public static class DebugOption
@@ -255,7 +257,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
         public final String name;
         public final ActionT2<CardPoolScreen, AbstractCard> onSelect;
 
-        DebugOption(String name, ActionT2<CardPoolScreen, AbstractCard> onSelect)
+        public DebugOption(String name, ActionT2<CardPoolScreen, AbstractCard> onSelect)
         {
             this.name = name;
             this.onSelect = onSelect;

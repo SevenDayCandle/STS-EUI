@@ -27,6 +27,7 @@ import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 public class RelicPoolScreen extends AbstractDungeonScreen
@@ -72,7 +73,6 @@ public class RelicPoolScreen extends AbstractDungeonScreen
                     }
                 })
                 .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
-                .setItems(getOptions())
                 .setCanAutosizeButton(true);
     }
 
@@ -159,6 +159,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen
             selected = c;
             contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
             contextMenu.refreshText();
+            contextMenu.setItems(getOptions(c));
             contextMenu.openOrCloseMenu();
         }
         else
@@ -182,9 +183,9 @@ public class RelicPoolScreen extends AbstractDungeonScreen
         }
     }
 
-    public static List<RelicPoolScreen.DebugOption> getOptions()
+    public static ArrayList<RelicPoolScreen.DebugOption> getOptions(AbstractRelic r)
     {
-        return EUIUtils.list(RelicPoolScreen.DebugOption.enlarge, RelicPoolScreen.DebugOption.obtain);
+        return EUIUtils.arrayList(DebugOption.enlarge, DebugOption.obtain);
     }
 
     public static class DebugOption

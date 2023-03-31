@@ -10,5 +10,5 @@ import java.util.ArrayList;
 
 public interface CountingPanelCardFilter
 {
-    public abstract ArrayList<? extends CountingPanelCounter<?>> generateCounters(Iterable<AbstractCard> cards, Hitbox hb);
+    public abstract ArrayList<? extends CountingPanelCounter<?>> generateCounters(ArrayList<AbstractCard> cards, Hitbox hb);
 }

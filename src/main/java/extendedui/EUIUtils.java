@@ -112,6 +112,12 @@ public abstract class EUIUtils
         return items;
     }
 
+    @SafeVarargs
+    public static <T> ArrayList<T> arrayList(T... items)
+    {
+        return new ArrayList<>(Arrays.asList(items));
+    }
+
     @SuppressWarnings("unchecked")
     public static <T, N> N[] arrayMap(T[] list, Class<N> listClass, FuncT1<N, T> predicate)
     {
@@ -398,9 +404,9 @@ public abstract class EUIUtils
         }
     }
 
-    public static <K, V> Map<K, List<V>> group(Iterable<V> list, FuncT1<K, V> getKey)
+    public static <K, V> HashMap<K, List<V>> group(Iterable<V> list, FuncT1<K, V> getKey)
     {
-        final Map<K, List<V>> map = new HashMap<>();
+        final HashMap<K, List<V>> map = new HashMap<>();
         for (V v : list)
         {
             K k = getKey.invoke(v);
@@ -410,13 +416,24 @@ public abstract class EUIUtils
         return map;
     }
 
-    public static <K, V, C> Map<K, C> group(Iterable<V> list, FuncT1<K, V> getKey, ActionT3<K, V, C> add)
+    public static <K, V, C> HashMap<K, C> group(Iterable<V> list, FuncT1<K, V> getKey, ActionT3<K, V, C> add)
     {
-        final Map<K, C> map = new HashMap<>();
+        final HashMap<K, C> map = new HashMap<>();
         for (V v : list)
         {
             K k = getKey.invoke(v);
             add.invoke(k, v, map.get(k));
+        }
+
+        return map;
+    }
+
+    public static <K, V> HashMap<K, V> hashMap(Iterable<K> list, FuncT1<V, K> getVal)
+    {
+        final HashMap<K, V> map = new HashMap<>();
+        for (K k : list)
+        {
+            map.putIfAbsent(k, getVal.invoke(k));
         }
 
         return map;
@@ -495,12 +512,6 @@ public abstract class EUIUtils
         }
 
         return sj.toString();
-    }
-
-    @SafeVarargs
-    public static <T> List<T> list(T... items)
-    {
-        return Arrays.asList(items);
     }
 
     public static void logError(Object source, String format, Object... values)

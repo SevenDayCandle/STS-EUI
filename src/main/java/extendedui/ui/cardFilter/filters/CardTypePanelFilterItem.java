@@ -1,15 +1,14 @@
 package extendedui.ui.cardFilter.filters;
 
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIGameUtils;
-import extendedui.EUIRM;
-import extendedui.EUIUtils;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvider
@@ -51,8 +50,15 @@ public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvid
     }
 
     @Override
+    public int getRank(AbstractCard c)
+    {
+        int ordinal = c.type.ordinal();
+        return c.type == type ? ordinal + 1000 : ordinal;
+    }
+
+    @Override
     public List<EUITooltip> getTips()
     {
-        return EUIUtils.list(new EUITooltip(EUIGameUtils.textForType(type)));
+        return Collections.singletonList(new EUITooltip(EUIGameUtils.textForType(type)));
     }
 }
