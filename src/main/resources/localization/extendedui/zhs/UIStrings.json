@@ -1,9 +1,9 @@
 {
 	"extendedui:config": {
 		"TEXT": [
-			"Show counting panel",
+			"显示计数面板",
 			"使用原版卡牌总览界面",
-			"Disable compendium top panel button",
+			"禁用游戏内百科大全",
 			"禁用提示描述中的图标",
 			"禁用Effekseer特效",
 			"开始游戏时清空Effekseer缓存",
@@ -19,24 +19,24 @@
 			"按钮字体",
 			"能量字体",
 			"横幅字体",
-			"Enable debug functionality",
-			"Re-enable Tooltips"
+			"启用debug功能",
+			"重新启用提示描述"
 		]
 	},
 	"extendedui:config_desc": {
 		"TEXT": [
 			"需要重启",
-			"Enables a widget in certain card grids that displays card metrics over various properties such as card type and rarity.",
-			"Check this option to use the base game's method of rendering the various compendium screens. Filters will still be available.",
-			"Check this option to remove the compendium button on the top of the screen during runs.",
-			"Check this option to replace icons in tooltip descriptions with the keywords they represent (excluding energy icons).",
-			"Check this option to disable the playing of VFX rendered with Effekseer.",
-			"Only check this option if you are running into memory issues or if Effekseer VFX do not render properly.",
-			"By default, only settings registered with EUI will appear in this mod's additional settings menu. Checking this option will allow ANY setting registered with BaseMod to appear in this menu. | WARNING: Some mod settings may not render properly or may produce unintended consequences when toggled during a run",
-			"If checked, different text types (e.g. button text, tip title text) will use different fonts, and text types without any font specified will fall back on the default font. Otherwise, all text types will use the font you specify below.",
+			"在某些卡牌界面中启用一个控件，可以根据特性（如类型和稀有度）统计和展示卡牌。",
+			"让卡牌总览界面保持原版风格，但不影响筛选器的使用。",
+			"禁用游戏内的百科大全并清除屏幕顶部的入口图标。",
+			"将提示描述中的图标替换为它们所代表的关键字（能量图标除外）。",
+			"禁用基于Effekseer的视觉特效。",
+			"遇到内存问题或是Effekseer视觉特效出错时，再考虑勾选此选项。",
+			"默认情况下，只有EUI的设置会出现在“其他设置”菜单中。勾选此选项将使得任何BaseMod登记在册的设置都可以在该菜单中出现。|警告：在游戏内变动某些mod设置，可能会显示不正常，也可能会引起非预期的后果。",
+			"为不同的文本类型分别指定字体，未指定的类型将使用默认字体。如果不勾选，所有的文本类型都将使用唯一指定字体。",
 			"本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。",
-			"If checked, enables various debugging functions to be used in the card pool screen by right-clicking cards in its grid.",
-			"Re-enable all tooltips that were turned off by this mod."
+			"启用游戏内百科大全中的多种debug功能（右击项目访问）。",
+			"重新启用所有被本mod关闭的提示描述。"
 		]
 	},
 	"extendedui:grammar": {
@@ -74,30 +74,30 @@
 	},
 	"extendedui:misc": {
 		"TEXT": [
-			"{0} to cycle",
+			"{0} 以循环",
 			"输入以查找",
 			"按 {0} 排序",
 			"重置",
 			"其他设置",
 			"EUI",
 			"EUI字体",
-			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options."
+			"#o{Left-Click} 关键字以添加/取消准入必要条件。在按住 #o{{0}} 的情况下 #o{Left-Click} 关键字以添加/取消排除充分条件。 #o{Right-Click} 关键字以访问更多选项。"
 		]
 	},
 	"extendedui:ui_pool": {
 		"TEXT": [
 			"运行百科大全",
-			"查看本局游戏中所有可获得的卡牌和遗物。",
+			"查看本局游戏中所有可获得的卡牌、遗物和药水。",
 			"卡牌池",
 			"遗物池",
-			"Potion Pool",
+			"药水池",
 			"显示无色牌",
-			"View Popup",
-			"Add Card to Hand",
-			"Add Card to Deck",
-			"Remove from Pool",
-			"Obtain Relic",
-			"Obtain Potion"
+			"突出查看",
+			"增加到手牌",
+			"增加到牌组",
+			"从池中移除",
+			"获得该遗物",
+			"获得该药水"
 		]
 	},
 	"extendedui:ui_filters": {
@@ -118,8 +118,8 @@
 			"已见过",
 			"未见过",
 			"N/A",
-			"Disable Tooltip",
-			"Enable Tooltip"
+			"禁用提示描述",
+			"启用提示描述"
 		]
 	}
 }
