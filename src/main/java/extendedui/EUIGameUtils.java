@@ -1,7 +1,11 @@
 package extendedui;
 
 import basemod.BaseMod;
+import basemod.ReflectionHacks;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -127,6 +131,11 @@ public class EUIGameUtils {
         return result;
     }
 
+    public static OrthographicCamera getCamera()
+    {
+        return ReflectionHacks.getPrivate(Gdx.app.getApplicationListener(), CardCrawlGame.class, "camera");
+    }
+
     public static AbstractCard.CardColor getCardColorForPlayer(AbstractPlayer.PlayerClass pc)
     {
         return CLASS_TO_COLOR.getOrDefault(pc, AbstractCard.CardColor.COLORLESS);
@@ -227,6 +236,11 @@ public class EUIGameUtils {
         result.add(AbstractDungeon.srcRareCardPool);
         result.add(AbstractDungeon.srcCurseCardPool);
         return result;
+    }
+
+    public static SpriteBatch getSpriteBatch()
+    {
+        return ReflectionHacks.getPrivate(Gdx.app.getApplicationListener(), CardCrawlGame.class, "sb");
     }
 
     public static TextureCache iconForType(AbstractCard.CardType type)

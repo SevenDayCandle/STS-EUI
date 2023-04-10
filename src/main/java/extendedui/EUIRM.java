@@ -145,7 +145,7 @@ public class EUIRM
 
         public final String config_showCountingPanel = stringsConfig.TEXT[0];
         public final String config_useVanillaCompendium = stringsConfig.TEXT[1];
-        public final String config_useSmoothScrolling = stringsConfig.TEXT[2];
+        public final String config_useSnapScrolling = stringsConfig.TEXT[2];
         public final String config_disableCompendiumButton = stringsConfig.TEXT[3];
         public final String config_disableDescriptionIcons = stringsConfig.TEXT[4];
         public final String config_disableEffekseer = stringsConfig.TEXT[5];
@@ -168,7 +168,7 @@ public class EUIRM
         public final String configdesc_restartRequired = stringsConfigDesc.TEXT[0];
         public final String configdesc_showCountingPanel = stringsConfigDesc.TEXT[1];
         public final String configdesc_useVanillaCompendium = stringsConfigDesc.TEXT[2];
-        public final String configdesc_useSmoothScrolling = stringsConfigDesc.TEXT[3];
+        public final String configdesc_useSnapScrolling = stringsConfigDesc.TEXT[3];
         public final String configdesc_disableCompendiumButton = stringsConfigDesc.TEXT[4];
         public final String configdesc_disableDescriptionIcons = stringsConfigDesc.TEXT[5];
         public final String configdesc_disableEffekseer = stringsConfigDesc.TEXT[6];

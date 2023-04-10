@@ -4,6 +4,8 @@ import basemod.BaseMod;
 import basemod.patches.com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen.EverythingFix;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -12,6 +14,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
+import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
@@ -41,6 +44,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     protected final EUIButtonList colorButtons = new EUIButtonList();
     protected float barY;
     protected int topButtonIndex;
+    protected Rectangle scissors;
 
     public CustomCardLibraryScreen() {
         final float y = Settings.HEIGHT * 0.92f - (VISIBLE_BUTTONS + 1) * scale(48);
@@ -63,11 +67,15 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture())
                 .setLabel("");
         quickSearch.header.setAlignment(0f, -0.51f);
+
+        scissors = new Rectangle();
+        Rectangle clipBounds = new Rectangle(0, 0, Settings.WIDTH, EUI.customHeader.getCenterY());
+        ScissorStack.calculateScissors(EUIGameUtils.getCamera(), EUIGameUtils.getSpriteBatch().getTransformMatrix(), clipBounds, scissors);
     }
 
     public void resetGrid()
     {
-        cardGrid = EUIConfiguration.useSmoothScrolling.get() ? new EUICardGrid() : new EUIStaticCardGrid();
+        cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
         cardGrid.showScrollbar(true)
                 .canRenderUpgrades(true)
                 .setVerticalStart(Settings.HEIGHT * 0.65f)
@@ -104,6 +112,24 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         BaseMod.getCardColors().stream().sorted(Comparator.comparing(EUIGameUtils::getColorName)).forEach(this::makeColorButton);
     }
 
+    protected void refreshGroups()
+    {
+        for (CardGroup group : CardLists.values())
+        {
+            for (AbstractCard c : group.group)
+            {
+                if (UnlockTracker.isCardLocked(c.cardID))
+                {
+                    c.setLocked();
+                }
+                else if (c.isLocked)
+                {
+                    c.unlock();
+                }
+            }
+        }
+    }
+
     public void open() {
         super.open();
         openImpl();
@@ -112,6 +138,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     // Also called by the card filter component
     public void openImpl()
     {
+        refreshGroups();
         EUI.toggleViewUpgrades(false);
         upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
         setActiveColor(currentColor);
@@ -146,6 +173,8 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         if (customModule != null) {
             customModule.open(cardGrid.cards.group);
         }
+
+        EUI.customHeader.resetSort();
     }
 
     @Override
@@ -170,6 +199,11 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
             if (customModule != null) {
                 customModule.update();
             }
+            if (EUI.customHeader.justSorted)
+            {
+                cardGrid.forceUpdateCardPositions();
+                EUI.customHeader.justSorted = false;
+            }
         }
     }
 
@@ -177,13 +211,15 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     public void renderImpl(SpriteBatch sb)
     {
         colorButtons.tryRender(sb);
+        cardGrid.renderWithScissors(sb, scissors);
         sb.setColor(EUIGameUtils.getColorColor(currentColor));
         sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, barY - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
         sb.setColor(Color.WHITE);
         upgradeToggle.renderImpl(sb);
-        quickSearch.tryRender(sb);
+
         EUI.customHeader.render(sb);
-        cardGrid.tryRender(sb);
+        quickSearch.tryRender(sb);
+
         if (customModule != null) {
             customModule.render(sb);
         }

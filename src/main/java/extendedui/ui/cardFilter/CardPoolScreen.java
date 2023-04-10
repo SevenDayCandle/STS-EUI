@@ -27,8 +27,6 @@ import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 
 public class CardPoolScreen extends AbstractDungeonScreen
 {
@@ -97,7 +95,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
 
     public void resetGrid()
     {
-        cardGrid = EUIConfiguration.useSmoothScrolling.get() ? new EUICardGrid() : new EUIStaticCardGrid();
+        cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
         cardGrid.showScrollbar(true)
                 .canRenderUpgrades(true)
                 .setOnCardRightClick(this::onRightClick)
@@ -165,6 +163,12 @@ public class CardPoolScreen extends AbstractDungeonScreen
             EUI.countingPanel.tryUpdate();
             if (customModule != null) {
                 customModule.update();
+            }
+            // TODO tie this to the custom header to ensure that the source grid is always updated instantly
+            if (EUI.customHeader.justSorted)
+            {
+                cardGrid.forceUpdateCardPositions();
+                EUI.customHeader.justSorted = false;
             }
         }
         contextMenu.tryUpdate();

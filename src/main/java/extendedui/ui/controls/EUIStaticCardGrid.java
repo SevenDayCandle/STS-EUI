@@ -67,7 +67,7 @@ public class EUIStaticCardGrid extends EUICardGrid
             AbstractCard card = cards.group.get(i);
             card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * PAD_X);
             card.current_y = card.target_y = drawTopY - (row * padY);
-            card.drawScale = card.targetDrawScale = targetScale;
+            //card.drawScale = card.targetDrawScale = targetScale;
             card.hb.move(card.current_x, card.current_y);
 
             column += 1;

@@ -83,7 +83,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         override[index] = button;
         Hitbox hitbox = button.hb;
         hitbox.resize(hitbox.width - WIDTH_DEC, hitbox.height);
-        hitbox.move(start + (CustomCardLibSortHeader.SPACE_X * index), hitbox.cY);
+        hitbox.move(start + (CustomCardLibSortHeader.SPACE_X * index), getCenterY());
     }
 
     @Override
@@ -103,7 +103,21 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             CardKeywordFilters.customModule.processGroup(group);
         }
 
-        super.setGroup(group);
+        this.group = group;
+        resetSort();
+    }
+
+    public void resetSort()
+    {
+        this.justSorted = true;
+        group.sortAlphabetically(true);
+        group.sortByRarity(true);
+        group.sortByStatus(true);
+
+        for (SortHeaderButton button : buttons)
+        {
+            button.reset();
+        }
     }
 
     @Override
@@ -130,14 +144,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             }
             else if (button == this.amountButton)
             {
-                if (!isAscending)
-                {
-                    this.group.group.sort(new CardAmountComparator(false));
-                }
-                else
-                {
-                    this.group.group.sort(new CardAmountComparator(true));
-                }
+                this.group.group.sort(new CardAmountComparator(isAscending));
             }
             else
             {
@@ -187,7 +194,8 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
 
     @Override
     public void render(SpriteBatch sb) {
-        super.render(sb);
+        this.renderButtons(sb);
+        this.renderSelection(sb);
     }
 
     public ArrayList<AbstractCard> getVisibleCards() {
@@ -219,9 +227,6 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
     }
 
     public float getCenterY() {
-        if (buttons.length > 0) {
-            return buttons[0].hb.cY;
-        }
-        return Settings.HEIGHT * 0.75f;
+        return Settings.HEIGHT * 0.88f;
     }
 }

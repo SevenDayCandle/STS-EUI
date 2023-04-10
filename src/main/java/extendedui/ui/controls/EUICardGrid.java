@@ -3,6 +3,8 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
@@ -253,9 +255,7 @@ public class EUICardGrid extends EUICanvasGrid
     public void renderImpl(SpriteBatch sb)
     {
         super.renderImpl(sb);
-
         renderCards(sb);
-
         if (hoveredCard != null)
         {
             hoveredCard.renderHoverShadow(sb);
@@ -268,6 +268,30 @@ public class EUICardGrid extends EUICanvasGrid
             FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
         }
     }
+
+    public void renderWithScissors(SpriteBatch sb, Rectangle scissors)
+    {
+        super.renderImpl(sb);
+        if (ScissorStack.pushScissors(scissors)) {
+            renderCards(sb);
+            if (hoveredCard != null)
+            {
+                hoveredCard.renderHoverShadow(sb);
+                renderCard(sb, hoveredCard);
+            }
+            ScissorStack.popScissors();
+        }
+        if (hoveredCard != null)
+        {
+            hoveredCard.renderCardTip(sb);
+        }
+
+        if (message != null)
+        {
+            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
+        }
+    }
+
 
     protected void renderCards(SpriteBatch sb) {
         for (int i = 0; i < cards.group.size(); i++)
@@ -354,8 +378,8 @@ public class EUICardGrid extends EUICanvasGrid
         {
             AbstractCard card = cards.group.get(i);
             card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * padX);
-            card.current_y = card.target_y = drawTopY - (row * padY);
-            card.drawScale = card.targetDrawScale = targetScale;
+            card.current_y = card.target_y = drawTopY + scrollDelta - (row * padY);
+            //card.drawScale = card.targetDrawScale = targetScale;
             card.hb.move(card.current_x, card.current_y);
 
             column += 1;

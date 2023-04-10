@@ -23,7 +23,7 @@ public class PackmasterPatches
                 AbstractCard.CardColor packMasterColor = AbstractCard.CardColor.valueOf("PACKMASTER_RAINBOW");
                 UIStrings uiStrings = CardCrawlGame.languagePack.getUIString(EUIClassUtils.getRFieldStatic("thePackmaster.packs.AbstractPackPreviewCard", "ID"));
                 EUI.setCustomCardFilter(packMasterColor,
-                        new SimpleCardFilterModule<Object>(EUI.cardFilters, uiStrings.TEXT[1], t -> {
+                        new SimpleCardFilterModule<Object>(uiStrings.TEXT[1], t -> {
                             try
                             {
                                 return EUIClassUtils.getRField("thePackmaster.packs.AbstractCardPack", "name", t);

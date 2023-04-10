@@ -281,7 +281,7 @@ public class EUI
                 .setColor(Color.GRAY);
 
         // Toggling smooth scrolling requires updating the library and card pool screens
-        EUIConfiguration.useSmoothScrolling.addListener(newValue -> {
+        EUIConfiguration.useSnapScrolling.addListener(newValue -> {
             EUI.customLibraryScreen.resetGrid();
             EUI.cardsScreen.resetGrid();
         });

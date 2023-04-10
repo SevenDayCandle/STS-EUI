@@ -218,7 +218,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion>
         {
             for (PowerTip sk : c.tips)
             {
-                EUITooltip tip = EUITooltip.findByName(sk.header.toLowerCase());
+                EUITooltip tip = EUITooltip.findByName(StringUtils.lowerCase(sk.header));
                 if (tip != null && !dynamicTooltips.contains(tip))
                 {
                     dynamicTooltips.add(tip);

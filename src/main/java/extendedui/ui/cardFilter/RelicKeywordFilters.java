@@ -257,7 +257,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic>
         {
             for (PowerTip sk : c.tips)
             {
-                EUITooltip tip = EUITooltip.findByName(sk.header);
+                EUITooltip tip = EUITooltip.findByName(StringUtils.lowerCase(sk.header));
                 if (tip != null && !dynamicTooltips.contains(tip))
                 {
                     dynamicTooltips.add(tip);

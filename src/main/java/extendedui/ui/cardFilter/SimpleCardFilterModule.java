@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import extendedui.EUI;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomCardFilterModule;
@@ -23,15 +24,13 @@ import static extendedui.ui.cardFilter.GenericFilters.SPACING;
 
 public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilterModule
 {
-    public CardKeywordFilters filters;
     public HashSet<T> currentSeries = new HashSet<>();
     public final EUISearchableDropdown<T> seriesDropdown;
     protected FuncT1<String, T> nameFunc;
     protected FuncT1<T, AbstractCard> objectFunc;
 
-    public SimpleCardFilterModule(CardKeywordFilters filters, String title, FuncT1<String, T> nameFunc, FuncT1<T, AbstractCard> objectFunc)
+    public SimpleCardFilterModule(String title, FuncT1<String, T> nameFunc, FuncT1<T, AbstractCard> objectFunc)
     {
-        this.filters = filters;
         this.nameFunc = nameFunc;
         this.objectFunc = objectFunc;
         seriesDropdown = (EUISearchableDropdown<T>) new EUISearchableDropdown<T>(new EUIHitbox(0, 0, scale(240), scale(48)), nameFunc)
@@ -41,7 +40,7 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
                 .setOnChange(selectedSeries -> {
                     currentSeries.clear();
                     currentSeries.addAll(selectedSeries);
-                    filters.invoke(null);
+                    EUI.cardFilters.invoke(null);
                 })
                 .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, title)
                 .setIsMultiSelect(true)
@@ -89,7 +88,7 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     @Override
     public void updateImpl()
     {
-        this.seriesDropdown.setPosition(filters.typesDropdown.hb.x + filters.typesDropdown.hb.width + SPACING * 2, DRAW_START_Y + filters.getScrollDelta()).tryUpdate();
+        this.seriesDropdown.setPosition(EUI.cardFilters.typesDropdown.hb.x + EUI.cardFilters.typesDropdown.hb.width + SPACING * 2, DRAW_START_Y + EUI.cardFilters.getScrollDelta()).tryUpdate();
     }
 
     @Override
