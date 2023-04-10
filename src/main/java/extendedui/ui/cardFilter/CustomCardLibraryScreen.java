@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.*;
@@ -33,7 +34,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     public static CustomCardPoolModule customModule;
     public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
 
-    public final EUICardGrid cardGrid;
+    public EUICardGrid cardGrid;
     public final EUITextBoxInput quickSearch;
     public final EUIToggle upgradeToggle;
     public final MenuCancelButton cancelButton;
@@ -44,15 +45,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     public CustomCardLibraryScreen() {
         final float y = Settings.HEIGHT * 0.92f - (VISIBLE_BUTTONS + 1) * scale(48);
 
-        cardGrid = new EUIStaticCardGrid()
-                .showScrollbar(true)
-                .canRenderUpgrades(true)
-                .setVerticalStart(Settings.HEIGHT * 0.65f)
-                .setCardScale(0.6f, 0.75f);
-        cardGrid.setOnCardRightClick(c -> {
-            c.unhover();
-            CardCrawlGame.cardPopup.open(c, cardGrid.cards);
-        });
+        resetGrid();
         upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setPosition(1450.0F * Settings.xScale, Settings.HEIGHT * 0.8f)
                 .setFont(EUIFontHelper.cardtooltiptitlefontLarge, 1f)
@@ -70,6 +63,19 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture())
                 .setLabel("");
         quickSearch.header.setAlignment(0f, -0.51f);
+    }
+
+    public void resetGrid()
+    {
+        cardGrid = EUIConfiguration.useSmoothScrolling.get() ? new EUICardGrid() : new EUIStaticCardGrid();
+        cardGrid.showScrollbar(true)
+                .canRenderUpgrades(true)
+                .setVerticalStart(Settings.HEIGHT * 0.65f)
+                .setCardScale(0.6f, 0.75f)
+                .setOnCardRightClick(c -> {
+                    c.unhover();
+                    CardCrawlGame.cardPopup.open(c, cardGrid.cards);
+                });
     }
 
     public void initialize(CardLibraryScreen screen) {

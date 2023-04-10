@@ -3,6 +3,7 @@
 		"TEXT": [
 			"Show counting panel",
 			"Use Vanilla Card Library Screen",
+			"Use scrolling animation in card grids",
 			"Disable compendium top panel button",
 			"Disable description icons",
 			"Disable Effekseer Effects",
@@ -28,6 +29,7 @@
 			"Requires restart",
 			"Enables a widget in certain card grids that displays card metrics over various properties such as card type and rarity.",
 			"Check this option to use the base game's method of rendering the various compendium screens. Filters will still be available.",
+			"Check this option to have the grids in the compendium and card pool screens use a smooth scrolling animation. Note that this setting will cause the grid filter buttons to scroll upwards as well.",
 			"Check this option to remove the compendium button on the top of the screen during runs.",
 			"Check this option to replace icons in tooltip descriptions with the keywords they represent (excluding energy icons).",
 			"Check this option to disable the playing of VFX rendered with Effekseer.",

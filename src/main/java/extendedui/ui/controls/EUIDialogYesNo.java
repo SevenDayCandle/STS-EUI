@@ -17,6 +17,11 @@ public class EUIDialogYesNo extends EUIDialog<Boolean>
         super(headerText, descriptionText);
     }
 
+    public EUIDialogYesNo(String headerText, String descriptionText, float w, float h)
+    {
+        super(headerText, descriptionText, w, h);
+    }
+
     public EUIDialogYesNo(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)
     {
         super(hb, backgroundTexture, headerText, descriptionText);

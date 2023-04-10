@@ -23,7 +23,12 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>>
 
     public EUIDialogDropdown(String headerText, String descriptionText)
     {
-        this(new EUIHitbox(Settings.WIDTH / 2.0F - scale(300), Settings.HEIGHT / 2.0F - scale(390), scale(300), scale(390)), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
+        this(headerText, descriptionText, scale(300), scale(390));
+    }
+
+    public EUIDialogDropdown(String headerText, String descriptionText, float w, float h)
+    {
+        this(new EUIHitbox(Settings.WIDTH / 2.0F - w / 2f, Settings.HEIGHT / 2.0F - h / 2f, w, h), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
     }
 
     public EUIDialogDropdown(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)

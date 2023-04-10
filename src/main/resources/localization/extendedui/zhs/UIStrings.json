@@ -3,6 +3,7 @@
 		"TEXT": [
 			"显示计数面板",
 			"使用原版卡牌总览界面",
+			"Use scrolling animation in card grids",
 			"禁用游戏内百科大全",
 			"禁用提示描述中的图标",
 			"禁用Effekseer特效",
@@ -28,6 +29,7 @@
 			"需要重启",
 			"在某些卡牌界面中启用一个控件，可以根据特性（如类型和稀有度）统计和展示卡牌。",
 			"让卡牌总览界面保持原版风格，但不影响筛选器的使用。",
+			"Check this option to have the grids in the compendium and card pool screens use a smooth scrolling animation. Note that this setting will cause the grid filter buttons to scroll upwards as well.",
 			"禁用游戏内的百科大全并清除屏幕顶部的入口图标。",
 			"将提示描述中的图标替换为它们所代表的关键字（能量图标除外）。",
 			"禁用基于Effekseer的视觉特效。",

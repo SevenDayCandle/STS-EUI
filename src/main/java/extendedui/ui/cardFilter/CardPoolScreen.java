@@ -44,11 +44,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
 
     public CardPoolScreen()
     {
-        cardGrid = new EUIStaticCardGrid()
-                .showScrollbar(true)
-                .canRenderUpgrades(true)
-                .setOnCardRightClick(this::onRightClick)
-                .setVerticalStart(Settings.HEIGHT * 0.66f);
+        resetGrid();
 
         upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setBackground(EUIRM.images.panel.texture(), Color.DARK_GRAY)
@@ -97,6 +93,15 @@ public class CardPoolScreen extends AbstractDungeonScreen
                 })
                 .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
                 .setCanAutosizeButton(true);
+    }
+
+    public void resetGrid()
+    {
+        cardGrid = EUIConfiguration.useSmoothScrolling.get() ? new EUICardGrid() : new EUIStaticCardGrid();
+        cardGrid.showScrollbar(true)
+                .canRenderUpgrades(true)
+                .setOnCardRightClick(this::onRightClick)
+                .setVerticalStart(Settings.HEIGHT * 0.66f);
     }
 
     public void open(AbstractPlayer player, CardGroup cards)
@@ -166,14 +171,20 @@ public class CardPoolScreen extends AbstractDungeonScreen
     }
 
     @Override
+    public void preRender(SpriteBatch sb)
+    {
+        super.preRender(sb);
+        cardGrid.tryRender(sb);
+        EUI.customHeader.render(sb);
+    }
+
+    @Override
     public void renderImpl(SpriteBatch sb)
     {
-        cardGrid.tryRender(sb);
         upgradeToggle.renderImpl(sb);
         colorlessToggle.render(sb);
         swapRelicScreen.renderImpl(sb);
         swapPotionScreen.renderImpl(sb);
-        EUI.customHeader.render(sb);
         EUI.countingPanel.tryRender(sb);
         if (!EUI.cardFilters.isActive) {
             EUI.openCardFiltersButton.tryRender(sb);

@@ -25,7 +25,7 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
 {
     public CardKeywordFilters filters;
     public HashSet<T> currentSeries = new HashSet<>();
-    public EUISearchableDropdown<T> seriesDropdown;
+    public final EUISearchableDropdown<T> seriesDropdown;
     protected FuncT1<String, T> nameFunc;
     protected FuncT1<T, AbstractCard> objectFunc;
 

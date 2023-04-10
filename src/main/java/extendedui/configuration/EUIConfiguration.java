@@ -9,6 +9,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.ui.EUIHoverable;
@@ -32,8 +33,6 @@ public class EUIConfiguration
     private static final int BASE_OPTION_OFFSET_Y = 720;
     private static final int BASE_OPTION_OPTION_HEIGHT = 32;
     public static final int BASE_SPRITES_DEFAULT = 6000;
-    //public static final int BASE_SPRITES_MIN = 6000;
-    //public static final int BASE_SPRITES_MAX = 6000;
     private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "fnt");
     private static final String PREFIX = "EUI";
     private static SpireConfig config;
@@ -64,6 +63,7 @@ public class EUIConfiguration
     private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
     private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
     private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
+    private static final String USE_SMOOTH_SCROLLING = getFullKey("UseSmoothScrolling");
     private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
 
     public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
@@ -74,6 +74,7 @@ public class EUIConfiguration
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
     public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(SHOW_COUNTING_PANEL, false);
     public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(SHOW_MOD_SETTINGS, false);
+    public static STSConfigItem<Boolean> useSmoothScrolling = new STSConfigItem<>(USE_SMOOTH_SCROLLING, false);
     public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(USE_SEPARATE_FONTS, false);
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
     public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(ENABLE_CARD_POOL_DEBUG, false);
@@ -102,6 +103,7 @@ public class EUIConfiguration
             flushOnGameStart.addConfig(config);
             flushOnRoomStart.addConfig(config);
             showModSettings.addConfig(config);
+            useSmoothScrolling.addConfig(config);
             useSeparateFonts.addConfig(config);
             overrideGameFont.addConfig(config);
             cardDescFont.addConfig(config);
@@ -129,6 +131,7 @@ public class EUIConfiguration
         ModSettingsScreen.addCategory(effekseerCategory);
         ModSettingsScreen.addCategory(fontCategory);
         makeModToggle(effekseerCategory, showCountingPanel, EUIRM.strings.config_showCountingPanel, EUIRM.strings.configdesc_showCountingPanel);
+        makeModToggle(effekseerCategory, useSmoothScrolling, EUIRM.strings.config_useSmoothScrolling, EUIRM.strings.configdesc_useSmoothScrolling);
         makeModToggle(effekseerCategory, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, EUIRM.strings.configdesc_disableCompendiumButton);
         makeModToggle(effekseerCategory, disableDescrptionIcons, EUIRM.strings.config_disableDescriptionIcons, EUIRM.strings.configdesc_disableDescriptionIcons);
         makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.config_disableEffekseer, EUIRM.strings.configdesc_disableEffekseer);
@@ -151,6 +154,7 @@ public class EUIConfiguration
 
         yPos = addToggle(panel, showCountingPanel, EUIRM.strings.config_showCountingPanel, yPos, EUIRM.strings.configdesc_showCountingPanel);
         yPos = addToggle(panel, useVanillaCompendium, EUIRM.strings.config_useVanillaCompendium, yPos, EUIRM.strings.configdesc_useVanillaCompendium);
+        yPos = addToggle(panel, useSmoothScrolling, EUIRM.strings.config_useSmoothScrolling, yPos, EUIRM.strings.configdesc_useSmoothScrolling);
         yPos = addToggle(panel, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, yPos, EUIRM.strings.configdesc_disableCompendiumButton);
         yPos = addToggle(panel, disableDescrptionIcons, EUIRM.strings.config_disableDescriptionIcons, yPos, EUIRM.strings.configdesc_disableDescriptionIcons);
         yPos = addToggle(panel, disableEffekseer, EUIRM.strings.config_disableEffekseer, yPos, EUIRM.strings.configdesc_disableEffekseer);
@@ -212,7 +216,7 @@ public class EUIConfiguration
             energyFontSelector2.setActive(newValue);
         });
 
-        // NOTE: DISABLE_COMPENDIUM_BUTTON and HIDE_TIP_DESCRIPTION listeners are added in EUI.initialize to avoid errors from initializing too early
+        // NOTE: DISABLE_COMPENDIUM_BUTTON, HIDE_TIP_DESCRIPTION, and USE_SMOOTH_SCROLLING listeners are added in EUI.initialize to avoid errors from initializing too early
     }
 
     public static void save() {

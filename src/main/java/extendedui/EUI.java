@@ -279,6 +279,12 @@ public class EUI
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
                 .setOnClick(() -> EUI.relicFilters.toggleFilters())
                 .setColor(Color.GRAY);
+
+        // Toggling smooth scrolling requires updating the library and card pool screens
+        EUIConfiguration.useSmoothScrolling.addListener(newValue -> {
+            EUI.customLibraryScreen.resetGrid();
+            EUI.cardsScreen.resetGrid();
+        });
     }
 
     public static void toggleCompendiumButton(boolean hide)

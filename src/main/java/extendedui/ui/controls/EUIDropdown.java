@@ -589,6 +589,13 @@ public class EUIDropdown<T> extends EUIHoverable
         }
     }
 
+    public void sortByLabel()
+    {
+        ArrayList<T> current = getCurrentItems();
+        rows.sort((a, b) -> StringUtils.compare(a.label.text, b.label.text));
+        setSelection(current, false);
+    }
+
     @Override
     public void updateImpl() {
         super.updateImpl();

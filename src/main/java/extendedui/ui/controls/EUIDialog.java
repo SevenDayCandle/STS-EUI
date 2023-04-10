@@ -33,7 +33,12 @@ public abstract class EUIDialog<T> extends EUIHoverable
 
     public EUIDialog(String headerText, String descriptionText)
     {
-        this(new EUIHitbox(Settings.WIDTH / 2.0F - scale(300), Settings.HEIGHT / 2.0F - scale(390), scale(300), scale(390)), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
+        this(headerText, descriptionText, scale(300), scale(390));
+    }
+
+    public EUIDialog(String headerText, String descriptionText, float w, float h)
+    {
+        this(new EUIHitbox(Settings.WIDTH / 2.0F - w / 2f, Settings.HEIGHT / 2.0F - h / 2f, w, h), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
     }
 
     public EUIDialog(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText)
@@ -55,7 +60,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
 
     protected EUIButton getConfirmButton() {
         return new EUIButton(ImageMaster.OPTION_YES,
-                new RelativeHitbox(hb, scale(160), scale(70), hb.width * 0.15f, hb.height * 0.15f))
+                new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.15f, hb.height * 0.15f))
                 .setFont(EUIFontHelper.cardtitlefontNormal, 1f)
                 .setText(TEXT[2])
                 .setOnClick(() -> {
@@ -67,7 +72,7 @@ public abstract class EUIDialog<T> extends EUIHoverable
 
     protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
-                new RelativeHitbox(hb, scale(160), scale(70), hb.width * 0.85f, hb.height * 0.15f))
+                new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.85f, hb.height * 0.15f))
                 .setFont(EUIFontHelper.cardtitlefontNormal, 1f)
                 .setText(TEXT[3])
                 .setOnClick(() -> {
