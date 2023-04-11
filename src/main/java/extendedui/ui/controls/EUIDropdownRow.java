@@ -38,6 +38,10 @@ public class EUIDropdownRow<T>
                 .setFont(dr.font, dr.fontScale)
                 .setLabel(dr.labelFunction.invoke(item))
                 .setAlignment(0.5f, 0f, dr.isOptionSmartText);
+        if (dr.colorFunctionOption != null)
+        {
+            this.label.setColor(dr.colorFunctionOption.invoke(item));
+        }
     }
 
     public EUIDropdownRow<T> updateAlignment()
@@ -58,6 +62,11 @@ public class EUIDropdownRow<T>
         this.label.setSmartText(isSmartText);
         setLabelText(labelFunction);
         return this;
+    }
+
+    public void setLabelColor(FuncT1<Color, T> colorFunction)
+    {
+        this.label.setColor(colorFunction.invoke(item));
     }
 
     public void setLabelText(FuncT1<String, T> labelFunction)
@@ -116,7 +125,7 @@ public class EUIDropdownRow<T>
         }
         else
         {
-            this.label.setColor(Color.WHITE);
+            this.label.setColor(dr.colorFunctionOption != null ? dr.colorFunctionOption.invoke(this.item) : Color.WHITE);
             this.checkbox.setTexture(ImageMaster.COLOR_TAB_BOX_UNTICKED);
         }
 

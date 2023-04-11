@@ -62,7 +62,7 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>>
     }
 
     public EUIDialogDropdown<T> setLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, FuncT1<Color, List<T>> colorFunctionButton, boolean isSmartText) {
-        this.dropdown.setLabelFunctionForButton(labelFunctionButton, colorFunctionButton, isSmartText);
+        this.dropdown.setLabelFunctionForButton(labelFunctionButton, isSmartText);
         return this;
     }
 
