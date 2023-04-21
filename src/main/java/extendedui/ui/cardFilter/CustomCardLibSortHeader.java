@@ -20,6 +20,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
 {
     public static final float SPACE_X = 166f * Settings.scale;
     public static final float WIDTH_DEC = 30 * Settings.scale;
+    public static final float CENTER_Y = Settings.HEIGHT * 0.88f;
     public static CustomCardLibSortHeader instance;
     private static CardGroup falseGroup;
     private static FakeLibraryCard fakeLibraryCard;
@@ -33,6 +34,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
     private SortHeaderButton costButton;
     private SortHeaderButton lastUsedButton;
     private boolean isAscending;
+    private boolean isFixedPosition;
 
     // The fake group tells players that nothing can be found. It also prevents crashing from empty cardGroups without the need for patching
     public static ArrayList<AbstractCard> getFakeGroup() {
@@ -56,11 +58,13 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         }
     }
 
-    public void setupButtons()
+    public void setupButtons(boolean isFixedPosition)
     {
+        this.isFixedPosition = isFixedPosition;
+
         if (override == null)
         {
-            final float START = buttons[0].hb.cX;
+            final float start = buttons[0].hb.cX;
             rarityButton = buttons[0];
             typeButton = buttons[1];
             costButton = buttons[2];
@@ -71,7 +75,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
 
             for (int i = 0; i < override.length; i++)
             {
-                setupButton(override[i], START, i);
+                setupButton(override[i], start, i);
             }
         }
 
@@ -83,7 +87,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         override[index] = button;
         Hitbox hitbox = button.hb;
         hitbox.resize(hitbox.width - WIDTH_DEC, hitbox.height);
-        hitbox.move(start + (CustomCardLibSortHeader.SPACE_X * index), getCenterY());
+        hitbox.move(start + (CustomCardLibSortHeader.SPACE_X * index), isFixedPosition ? CENTER_Y : hitbox.cY);
     }
 
     @Override
@@ -194,8 +198,16 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
 
     @Override
     public void render(SpriteBatch sb) {
-        this.renderButtons(sb);
-        this.renderSelection(sb);
+        // The bar position should remain static when viewing the custom library screen or the card pool
+        if (isFixedPosition)
+        {
+            this.renderButtons(sb);
+            this.renderSelection(sb);
+        }
+        else
+        {
+            super.render(sb);
+        }
     }
 
     public ArrayList<AbstractCard> getVisibleCards() {
@@ -224,9 +236,5 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             didChangeOrder(lastUsedButton, isAscending);
             EUI.cardFilters.refresh(this.group.group);
         }
-    }
-
-    public float getCenterY() {
-        return Settings.HEIGHT * 0.88f;
     }
 }

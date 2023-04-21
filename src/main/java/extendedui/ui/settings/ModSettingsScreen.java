@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUIGameUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.STSConfigItem;
+import extendedui.text.EUISmartText;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.TextureCache;
 import extendedui.ui.controls.EUIButtonList;
@@ -22,6 +23,7 @@ import extendedui.ui.controls.EUIImage;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -75,7 +77,8 @@ public class ModSettingsScreen extends AbstractScreen
         float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
         if (list != null)
         {
-            ModSettingsToggle toggle = new ModSettingsToggle(new RelativeHitbox(hb, OPTION_SIZE * 2, OPTION_SIZE, OPTION_SIZE * 3.3f, offY), option, label);
+            float baseWidth = EUISmartText.getSmartWidth(EUIFontHelper.carddescriptionfontNormal, label);
+            ModSettingsToggle toggle = new ModSettingsToggle(new RelativeHitbox(hb, OPTION_SIZE * 2 + baseWidth, OPTION_SIZE, OPTION_SIZE * 3.3f + baseWidth / 2f, offY), option, label);
             list.add(toggle);
             offsets.put(cat, offY -= toggle.hb.height * 1.1f);
             return toggle;

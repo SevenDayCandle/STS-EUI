@@ -123,7 +123,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
                 customModule.open(EUI.customHeader.group.group);
             }
             cardGrid.forceUpdateCardPositions();
-        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, !canSeeAllColors);
+        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, !canSeeAllColors, true);
 
         if (EUIGameUtils.inGame())
         {

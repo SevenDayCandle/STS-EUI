@@ -36,7 +36,6 @@ import java.util.List;
 
 public class CardKeywordFilters extends GenericFilters<AbstractCard>
 {
-
     public static CustomCardFilterModule customModule;
     public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
@@ -221,10 +220,10 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         }
     }
 
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition)
     {
         EUI.customHeader.setGroup(group);
-        EUI.customHeader.setupButtons();
+        EUI.customHeader.setupButtons(isFixedPosition);
         initialize((button) ->
         {
             EUI.customHeader.updateForFilters();
@@ -233,10 +232,10 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         return this;
     }
 
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, CustomCardPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, CustomCardPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition)
     {
         EUI.customHeader.setGroup(group);
-        EUI.customHeader.setupButtons();
+        EUI.customHeader.setupButtons(isFixedPosition);
         initialize((button) ->
         {
             EUI.customHeader.updateForFilters();
@@ -248,10 +247,10 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         return this;
     }
 
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition)
     {
         EUI.customHeader.setGroup(group);
-        EUI.customHeader.setupButtons();
+        EUI.customHeader.setupButtons(isFixedPosition);
         initialize((button) ->
         {
             EUI.customHeader.updateForFilters();

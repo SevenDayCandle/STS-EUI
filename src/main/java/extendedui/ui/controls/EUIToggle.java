@@ -16,6 +16,7 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
 public class EUIToggle extends EUIHoverable
@@ -143,6 +144,13 @@ public class EUIToggle extends EUIHoverable
     public EUIToggle setToggle(boolean value)
     {
         this.toggled = value;
+
+        return this;
+    }
+
+    public EUIToggle setTooltip(EUITooltip tooltip)
+    {
+        super.setTooltip(tooltip);
 
         return this;
     }

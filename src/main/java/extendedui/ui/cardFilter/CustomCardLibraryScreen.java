@@ -29,6 +29,8 @@ import extendedui.utilities.EUIFontHelper;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import static extendedui.ui.cardFilter.CustomCardLibSortHeader.CENTER_Y;
+
 public class CustomCardLibraryScreen extends AbstractMenuScreen
 {
     protected static final float ICON_SIZE = scale(40);
@@ -42,7 +44,6 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     public final EUIToggle upgradeToggle;
     public final MenuCancelButton cancelButton;
     protected final EUIButtonList colorButtons = new EUIButtonList();
-    protected float barY;
     protected int topButtonIndex;
     protected Rectangle scissors;
 
@@ -69,7 +70,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         quickSearch.header.setAlignment(0f, -0.51f);
 
         scissors = new Rectangle();
-        Rectangle clipBounds = new Rectangle(0, 0, Settings.WIDTH, EUI.customHeader.getCenterY());
+        Rectangle clipBounds = new Rectangle(0, 0, Settings.WIDTH, CENTER_Y);
         ScissorStack.calculateScissors(EUIGameUtils.getCamera(), EUIGameUtils.getSpriteBatch().getTransformMatrix(), clipBounds, scissors);
     }
 
@@ -167,7 +168,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
             }
             cardGrid.moveToTop();
             cardGrid.forceUpdateCardPositions();
-        }, color, false);
+        }, color, false, true);
 
         customModule = EUI.getCustomCardLibraryModule(color);
         if (customModule != null) {
@@ -186,8 +187,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
             EUI.openCardFiltersButton.tryUpdate();
             colorButtons.tryUpdate();
             EUI.customHeader.update();
-            barY = EUI.customHeader.getCenterY();
-            upgradeToggle.setPosition(upgradeToggle.hb.cX, barY).updateImpl();
+            upgradeToggle.setPosition(upgradeToggle.hb.cX, CENTER_Y).updateImpl();
             quickSearch.tryUpdate();
             cardGrid.tryUpdate();
             cancelButton.update();
@@ -213,7 +213,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         colorButtons.tryRender(sb);
         cardGrid.renderWithScissors(sb, scissors);
         sb.setColor(EUIGameUtils.getColorColor(currentColor));
-        sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, barY - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
+        sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, CENTER_Y - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
         sb.setColor(Color.WHITE);
         upgradeToggle.renderImpl(sb);
 

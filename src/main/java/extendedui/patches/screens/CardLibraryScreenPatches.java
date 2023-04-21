@@ -74,7 +74,7 @@ public class CardLibraryScreenPatches
                 EUIClassUtils.setField(screen, "sortHeader", EUI.customHeader);
             }
 
-            EUI.customHeader.setupButtons();
+            EUI.customHeader.setupButtons(false);
         }
 
         @SpirePostfixPatch
