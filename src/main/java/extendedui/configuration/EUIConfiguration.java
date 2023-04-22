@@ -70,53 +70,54 @@ public class EUIConfiguration
     private static final String USE_SNAP_SCROLLING = getFullKey("UseSnapScrolling");
     private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
 
-    public static STSConfigItem<Boolean> useVanillaCompendium = registerConfig(USE_VANILLA_COMPENDIUM, false);
-    public static STSConfigItem<Boolean> disableCompendiumButton = registerConfig(DISABLE_COMPENDIUM_BUTTON, false);
-    public static STSConfigItem<Boolean> disableDescrptionIcons = registerConfig(DISABLE_DESCRIPTION_ICONS, false);
-    public static STSConfigItem<Boolean> disableEffekseer = registerConfig(DISABLE_EFFEKSEER, false);
-    public static STSConfigItem<Boolean> flushOnGameStart = registerConfig(FLUSH_ON_GAME_START, false);
-    public static STSConfigItem<Boolean> flushOnRoomStart = registerConfig(FLUSH_ON_ROOM_START, false);
-    public static STSConfigItem<Boolean> showCountingPanel = registerConfig(SHOW_COUNTING_PANEL, false);
-    public static STSConfigItem<Boolean> showModSettings = registerConfig(SHOW_MOD_SETTINGS, false);
-    public static STSConfigItem<Boolean> useSnapScrolling = registerConfig(USE_SNAP_SCROLLING, false);
-    public static STSConfigItem<Boolean> useSeparateFonts = registerConfig(USE_SEPARATE_FONTS, false);
-    public static STSConfigItem<Boolean> overrideGameFont = registerConfig(OVERRIDE_GAME_FONT, false);
-    public static STSConfigItem<Boolean> enableCardPoolDebug = registerConfig(ENABLE_CARD_POOL_DEBUG, false);
+    public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
+    public static STSConfigItem<Boolean> disableCompendiumButton = new STSConfigItem<>(DISABLE_COMPENDIUM_BUTTON, false);
+    public static STSConfigItem<Boolean> disableDescrptionIcons = new STSConfigItem<>(DISABLE_DESCRIPTION_ICONS, false);
+    public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
+    public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(FLUSH_ON_GAME_START, false);
+    public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
+    public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(SHOW_COUNTING_PANEL, false);
+    public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(SHOW_MOD_SETTINGS, false);
+    public static STSConfigItem<Boolean> useSnapScrolling = new STSConfigItem<>(USE_SNAP_SCROLLING, false);
+    public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(USE_SEPARATE_FONTS, false);
+    public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
+    public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(ENABLE_CARD_POOL_DEBUG, false);
 
-    public static STSStringConfigItem cardDescFont = registerStringConfig(CARD_DESC_FONT,"");
-    public static STSStringConfigItem cardTitleFont = registerStringConfig(CARD_TITLE_FONT,"");
-    public static STSStringConfigItem tipDescFont = registerStringConfig(TIP_DESC_FONT,"");
-    public static STSStringConfigItem tipTitleFont = registerStringConfig(TITLE_TITLE_FONT,"");
-    public static STSStringConfigItem buttonFont = registerStringConfig(BUTTON_FONT,"");
-    public static STSStringConfigItem bannerFont = registerStringConfig(BANNER_FONT,"");
-    public static STSStringConfigItem energyFont = registerStringConfig(ENERGY_FONT,"");
+    public static STSStringConfigItem cardDescFont = new STSStringConfigItem(CARD_DESC_FONT,"");
+    public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT,"");
+    public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT,"");
+    public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT,"");
+    public static STSStringConfigItem buttonFont = new STSStringConfigItem(BUTTON_FONT,"");
+    public static STSStringConfigItem bannerFont = new STSStringConfigItem(BANNER_FONT,"");
+    public static STSStringConfigItem energyFont = new STSStringConfigItem(ENERGY_FONT,"");
 
     //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
 
     private static HashSet<String> tips = null;
 
-    public static <T> STSConfigItem<T> registerConfig(String key, T defaultvalue)
-    {
-        STSConfigItem<T> item = new STSConfigItem<T>(key, defaultvalue);
-        CONFIG_ITEMS.add(item);
-        return item;
-    }
-
-    public static STSStringConfigItem registerStringConfig(String key, String defaultvalue)
-    {
-        STSStringConfigItem item = new STSStringConfigItem(key, defaultvalue);
-        CONFIG_ITEMS.add(item);
-        return item;
-    }
-
     public static void load() {
         try
         {
             config = new SpireConfig(PREFIX, PREFIX);
-            for (STSConfigItem<?> option : CONFIG_ITEMS)
-            {
-                option.addConfig(config);
-            }
+            showCountingPanel.addConfig(config);
+            useVanillaCompendium.addConfig(config);
+            disableCompendiumButton.addConfig(config);
+            disableDescrptionIcons.addConfig(config);
+            disableEffekseer.addConfig(config);
+            flushOnGameStart.addConfig(config);
+            flushOnRoomStart.addConfig(config);
+            showModSettings.addConfig(config);
+            useSnapScrolling.addConfig(config);
+            useSeparateFonts.addConfig(config);
+            overrideGameFont.addConfig(config);
+            cardDescFont.addConfig(config);
+            cardTitleFont.addConfig(config);
+            tipDescFont.addConfig(config);
+            tipTitleFont.addConfig(config);
+            buttonFont.addConfig(config);
+            bannerFont.addConfig(config);
+            energyFont.addConfig(config);
+            enableCardPoolDebug.addConfig(config);
         }
         catch (IOException e)
         {
