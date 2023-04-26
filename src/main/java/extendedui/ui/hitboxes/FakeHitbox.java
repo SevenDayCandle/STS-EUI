@@ -3,8 +3,7 @@ package extendedui.ui.hitboxes;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 
-public class FakeHitbox extends EUIHitbox
-{
+public class FakeHitbox extends EUIHitbox {
     public FakeHitbox(Hitbox hb) {
         super(hb);
     }
@@ -14,11 +13,9 @@ public class FakeHitbox extends EUIHitbox
     }
 
     @Override
-    public void update()
-    {
+    public void update() {
         this.update(this.x, this.y);
-        if (cX != targetCx || cY != targetCy)
-        {
+        if (cX != targetCx || cY != targetCy) {
             moveInternal(lerp(cX, targetCx), lerp(cY, targetCy));
         }
     }

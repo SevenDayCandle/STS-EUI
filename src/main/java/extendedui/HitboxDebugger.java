@@ -10,16 +10,14 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import imgui.ImGui;
 
-public class HitboxDebugger implements ImGuiSubscriber
-{
-    protected static HitboxDebugger instance;
+public class HitboxDebugger implements ImGuiSubscriber {
     protected static final String WINDOW_ID = "Hitbox";
     protected static final String HITBOX_ADDRESS = "Address";
     protected static final String HITBOX_X_ID = "X##hbX";
     protected static final String HITBOX_Y_ID = "Y##hbY";
     protected static final String HITBOX_W_ID = "W##hbW";
     protected static final String HITBOX_H_ID = "H##hbH";
-
+    protected static HitboxDebugger instance;
     private final DEUIWindow effectWindow;
     private final DEUIFloatInput hbX;
     private final DEUIFloatInput hbY;
@@ -27,8 +25,7 @@ public class HitboxDebugger implements ImGuiSubscriber
     private final DEUIFloatInput hbH;
     private EUIHitbox current;
 
-    private HitboxDebugger()
-    {
+    private HitboxDebugger() {
         effectWindow = new DEUIWindow(WINDOW_ID);
 
         hbX = new DEUIFloatInput(HITBOX_X_ID, 0);
@@ -37,29 +34,44 @@ public class HitboxDebugger implements ImGuiSubscriber
         hbH = new DEUIFloatInput(HITBOX_H_ID, 0);
     }
 
-    public static void tryRegister(EUIHitbox current)
-    {
-        if (instance != null)
-        {
-            instance.register(current);
-        }
-    }
-
     public static void initialize() {
-        try
-        {
+        try {
             instance = new HitboxDebugger();
             BaseMod.subscribe(instance);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             EUIUtils.logInfoIfDebug(HitboxDebugger.class, "Unable to load hitbox debugger");
         }
     }
 
+    public static void tryRegister(EUIHitbox current) {
+        if (instance != null) {
+            instance.register(current);
+        }
+    }
+
+    public void register(EUIHitbox current) {
+        this.current = current;
+        if (current instanceof RelativeHitbox) {
+            hbX.set(((RelativeHitbox) current).offsetX);
+            hbY.set(((RelativeHitbox) current).offsetY);
+            hbW.set(unapplyScale(current.width));
+            hbH.set(unapplyScale(current.height));
+        }
+        else if (current != null) {
+            hbX.set(unapplyScale(current.x));
+            hbY.set(unapplyScale(current.y));
+            hbW.set(unapplyScale(current.width));
+            hbH.set(unapplyScale(current.height));
+        }
+    }
+
+    protected float unapplyScale(float v) {
+        return v / Settings.scale;
+    }
+
     @Override
-    public void receiveImGui()
-    {
+    public void receiveImGui() {
         effectWindow.render(() -> {
             ImGui.text(HITBOX_ADDRESS + ": " + (current != null ? current.toString() : ""));
             DEUIUtils.withWidth(90, hbX::renderInline);
@@ -69,41 +81,20 @@ public class HitboxDebugger implements ImGuiSubscriber
         });
     }
 
-    public void register(EUIHitbox current)
-    {
-        this.current = current;
-        if (current instanceof RelativeHitbox)
-        {
-            hbX.set(((RelativeHitbox) current).offsetX);
-            hbY.set(((RelativeHitbox) current).offsetY);
-            hbW.set(unapplyScale(current.width));
-            hbH.set(unapplyScale(current.height));
-        }
-        else if (current != null)
-        {
-            hbX.set(unapplyScale(current.x));
-            hbY.set(unapplyScale(current.y));
-            hbW.set(unapplyScale(current.width));
-            hbH.set(unapplyScale(current.height));
-        }
-    }
-
-    public void updateHitbox()
-    {
-        if (this.current instanceof RelativeHitbox)
-        {
+    public void updateHitbox() {
+        if (this.current instanceof RelativeHitbox) {
             this.current.setOffset(hbX.get(), hbY.get());
             this.current.width = applyScale(hbW.get());
             this.current.height = applyScale(hbW.get());
         }
-        else if (this.current != null)
-        {
+        else if (this.current != null) {
             this.current.translate(hbX.get(), hbY.get());
             this.current.width = applyScale(hbW.get());
             this.current.height = applyScale(hbW.get());
         }
     }
 
-    protected float applyScale(float v) {return v * Settings.scale;}
-    protected float unapplyScale(float v) {return v / Settings.scale;}
+    protected float applyScale(float v) {
+        return v * Settings.scale;
+    }
 }

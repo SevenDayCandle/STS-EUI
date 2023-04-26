@@ -30,22 +30,14 @@ import java.util.*;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
 
-public abstract class GenericFilters<T> extends EUICanvasGrid
-{
-    protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
+public abstract class GenericFilters<T> extends EUICanvasGrid {
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
     public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.87f;
     public static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
     public static final float PAD_Y = scale(45);
     public static final float SPACING = Settings.scale * 22.5f;
     public static final int ROW_SIZE = 8;
-
-    protected final HashMap<EUITooltip, Integer> currentFilterCounts = new HashMap<>();
-    protected final ArrayList<FilterKeywordButton> filterButtons = new ArrayList<>();
-    protected final EUIHitbox hb;
-    protected int currentTotal;
-    protected ActionT1<FilterKeywordButton> onClick;
-    protected ArrayList<T> referenceItems;
+    protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
     public final EUIButton closeButton;
     public final EUIButton clearButton;
     public final EUIContextMenu<TooltipOption> contextMenu;
@@ -57,6 +49,12 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     public final EUIToggle sortDirectionToggle;
     public final HashSet<EUITooltip> currentFilters = new HashSet<>();
     public final HashSet<EUITooltip> currentNegateFilters = new HashSet<>();
+    protected final HashMap<EUITooltip, Integer> currentFilterCounts = new HashMap<>();
+    protected final ArrayList<FilterKeywordButton> filterButtons = new ArrayList<>();
+    protected final EUIHitbox hb;
+    protected int currentTotal;
+    protected ActionT1<FilterKeywordButton> onClick;
+    protected ArrayList<T> referenceItems;
     protected float drawX;
     protected boolean invalidated;
     protected boolean isAccessedFromCardPool;
@@ -64,8 +62,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
     private boolean shouldSortByCount;
     private boolean sortDesc;
 
-    public GenericFilters()
-    {
+    public GenericFilters() {
         super(ROW_SIZE, PAD_Y);
         isActive = false;
         hb = new EUIHitbox(DRAW_START_X, DRAW_START_Y, scale(180), scale(70)).setIsPopupCompatible(true);
@@ -83,8 +80,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
 
         contextMenu = (EUIContextMenu<TooltipOption>) new EUIContextMenu<TooltipOption>(new EUIHitbox(0, 0, 0, 0), t -> t.baseName)
                 .setOnChange(options -> {
-                    for (TooltipOption o : options)
-                    {
+                    for (TooltipOption o : options) {
                         o.onAct.invoke(this);
                     }
                 })
@@ -111,7 +107,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
                 .setColor(Settings.BLUE_TEXT_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
 
-        sortTypeToggle = new EUIToggle( new EUIHitbox(0, 0, scale(170), scale(32)).setIsPopupCompatible(true))
+        sortTypeToggle = new EUIToggle(new EUIHitbox(0, 0, scale(170), scale(32)).setIsPopupCompatible(true))
                 .setBackground(EUIRM.images.rectangularButton.texture(), Color.DARK_GRAY)
                 .setTickImage(null, null, 10)
                 .setFont(EUIFontHelper.carddescriptionfontNormal, 0.7f)
@@ -121,7 +117,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
                     refreshButtonOrder();
                 });
 
-        sortDirectionToggle = new EUIToggle( new EUIHitbox(0, 0, scale(48), scale(48)).setIsPopupCompatible(true))
+        sortDirectionToggle = new EUIToggle(new EUIHitbox(0, 0, scale(48), scale(48)).setIsPopupCompatible(true))
                 .setTickImage(new EUIImage(EUIRM.images.arrow.texture()), new EUIImage(EUIRM.images.arrow.texture()).setRotation(180f), 32)
                 .setOnToggle(val -> {
                     sortDesc = val;
@@ -129,8 +125,85 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
                 });
     }
 
-    public final GenericFilters<T> initialize(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
-    {
+    public final void close() {
+        closeButton.hb.hovered = false;
+        closeButton.hb.clicked = false;
+        closeButton.hb.justHovered = false;
+        InputHelper.justReleasedClickLeft = false;
+        CardCrawlGame.isPopupOpen = false;
+        setActive(false);
+    }
+
+    public final void clear(boolean shouldInvoke, boolean shouldClearColors) {
+        clearFilters(shouldInvoke, shouldClearColors);
+        if (shouldInvoke && onClick != null) {
+            onClick.invoke(null);
+        }
+    }
+
+    public final void refreshButtonOrder() {
+        sortTypeToggle.setText(EUIRM.strings.sortBy(shouldSortByCount ? EUIRM.strings.uiAmount : CardLibSortHeader.TEXT[2]));
+        filterButtons.sort((a, b) -> (shouldSortByCount ? a.cardCount - b.cardCount : StringUtils.compare(a.tooltip.title, b.tooltip.title)) * (sortDesc ? -1 : 1));
+
+        int index = 0;
+        for (FilterKeywordButton c : filterButtons) {
+            if (c.isActive) {
+                c.setIndex(index);
+                index += 1;
+            }
+        }
+    }
+
+    abstract public void clearFilters(boolean shouldInvoke, boolean shouldClearColors);
+
+    public void addManualKeyword(EUITooltip tooltip, int count) {
+        filterButtons.add(new FilterKeywordButton(this, tooltip).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(count));
+        currentFilterCounts.merge(tooltip, count, Integer::sum);
+    }
+
+    abstract public ArrayList<T> applyFilters(ArrayList<T> input);
+
+    abstract public boolean areFiltersEmpty();
+
+    @Override
+    public int currentSize() {
+        return filterButtons.size();
+    }
+
+    // Shorthand function to be fed to all dropdown filters
+    protected <K> boolean evaluateItem(HashSet<K> set, FuncT1<Boolean, K> evalFunc) {
+        boolean passes = true;
+        if (!set.isEmpty()) {
+            passes = false;
+            for (K opt : set) {
+                if (evalFunc.invoke(opt)) {
+                    passes = true;
+                    break;
+                }
+            }
+        }
+        return passes;
+    }
+
+    // Shorthand function to be fed to all dropdown filters
+    protected <K> String filterNameFunction(List<K> items, FuncT1<String, K> originalFunction) {
+        if (items.size() == 0) {
+            return EUIRM.strings.uiAny;
+        }
+        if (items.size() > 1) {
+            return items.size() + " " + EUIRM.strings.uiItemsselected;
+        }
+        return StringUtils.join(EUIUtils.map(items, originalFunction), ", ");
+    }
+
+    private void hideKeyword(boolean value) {
+        if (selectedButton != null) {
+            EUIConfiguration.hideTipDescription(selectedButton.tooltip.ID, value, true);
+            selectedButton.afterToggleRight();
+        }
+    }
+
+    public final GenericFilters<T> initialize(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
         clear(false, true);
         currentFilterCounts.clear();
         filterButtons.clear();
@@ -144,8 +217,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         initializeImpl(onClick, items, color, isAccessedFromCardPool);
 
         // InitializeImpl should set up the CurrentFilterCounts set
-        for (Map.Entry<EUITooltip, Integer> filter : currentFilterCounts.entrySet())
-        {
+        for (Map.Entry<EUITooltip, Integer> filter : currentFilterCounts.entrySet()) {
             int cardCount = filter.getValue();
             filterButtons.add(new FilterKeywordButton(this, filter.getKey()).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(cardCount));
         }
@@ -157,197 +229,9 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         return this;
     }
 
-    public final void open()
-    {
-        CardCrawlGame.isPopupOpen = true;
-        setActive(true);
-    }
+    abstract protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
 
-    public final void close()
-    {
-        closeButton.hb.hovered = false;
-        closeButton.hb.clicked = false;
-        closeButton.hb.justHovered = false;
-        InputHelper.justReleasedClickLeft = false;
-        CardCrawlGame.isPopupOpen = false;
-        setActive(false);
-    }
-
-    public final void clear(boolean shouldInvoke, boolean shouldClearColors)
-    {
-        clearFilters(shouldInvoke, shouldClearColors);
-        if (shouldInvoke && onClick != null)
-        {
-            onClick.invoke(null);
-        }
-    }
-
-    public final void refresh(ArrayList<T> items)
-    {
-        referenceItems = items;
-        invalidated = true;
-    }
-
-    public final void refreshButtons()
-    {
-        currentFilterCounts.clear();
-        currentTotal = 0;
-
-        if (referenceItems != null)
-        {
-            currentTotal = getReferenceCount();
-            for (T card : referenceItems)
-            {
-                for (EUITooltip tooltip : getAllTooltips(card))
-                {
-                    currentFilterCounts.merge(tooltip, 1, Integer::sum);
-                }
-            }
-        }
-        for (FilterKeywordButton c : filterButtons)
-        {
-            c.setCardCount(currentFilterCounts.getOrDefault(c.tooltip, 0));
-        }
-
-        currentTotalLabel.setLabel(currentTotal);
-
-        refreshButtonOrder();
-    }
-
-    public final void refreshButtonOrder()
-    {
-        sortTypeToggle.setText(EUIRM.strings.sortBy(shouldSortByCount ? EUIRM.strings.uiAmount : CardLibSortHeader.TEXT[2]));
-        filterButtons.sort((a, b) -> (shouldSortByCount ? a.cardCount - b.cardCount : StringUtils.compare(a.tooltip.title, b.tooltip.title)) * (sortDesc ? -1 : 1));
-
-        int index = 0;
-        for (FilterKeywordButton c : filterButtons)
-        {
-            if (c.isActive)
-            {
-                c.setIndex(index);
-                index += 1;
-            }
-        }
-    }
-
-    @Override
-    public final boolean tryUpdate() {
-        super.tryUpdate();
-        if (EUIHotkeys.toggleFilters.isJustPressed()) {
-            toggleFilters();
-        }
-        return isActive;
-    }
-
-    @Override
-    public final void updateImpl()
-    {
-        super.updateImpl();
-        hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
-        keywordsSectionLabel.setPosition(hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 7).updateImpl();
-        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.21f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 9.1f).updateImpl();
-        sortTypeToggle.setPosition(keywordsSectionLabel.hb.x + SPACING * 10, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
-        sortDirectionToggle.setPosition(sortTypeToggle.hb.x + SPACING * 7, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
-        currentTotalHeaderLabel.updateImpl();
-        currentTotalLabel.updateImpl();
-        hb.update();
-        closeButton.tryUpdate();
-        clearButton.tryUpdate();
-        if (invalidated)
-        {
-            invalidated = false;
-            refreshButtons();
-        }
-
-        if (!EUI.doesActiveElementExist())
-        {
-            for (FilterKeywordButton c : filterButtons)
-            {
-                c.tryUpdate();
-            }
-
-            updateInput();
-        }
-
-        updateFilters();
-        contextMenu.tryUpdate();
-    }
-
-    @Override
-    public final void renderImpl(SpriteBatch sb)
-    {
-        super.renderImpl(sb);
-        sb.setColor(FADE_COLOR);
-        sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float) Settings.WIDTH, (float) Settings.HEIGHT);
-        sb.setColor(Color.WHITE);
-        hb.render(sb);
-        closeButton.tryRender(sb);
-        clearButton.tryRender(sb);
-        keywordsSectionLabel.renderImpl(sb);
-        keywordsInstructionLabel.renderImpl(sb);
-        currentTotalHeaderLabel.renderImpl(sb);
-        currentTotalLabel.renderImpl(sb);
-        sortTypeToggle.tryRender(sb);
-        sortDirectionToggle.tryRender(sb);
-
-        for (FilterKeywordButton c : filterButtons)
-        {
-            c.tryRender(sb);
-        }
-
-        renderFilters(sb);
-        contextMenu.tryRender(sb);
-    }
-
-    private void hideKeyword(boolean value)
-    {
-        if (selectedButton != null)
-        {
-            EUIConfiguration.hideTipDescription(selectedButton.tooltip.ID, value, true);
-            selectedButton.afterToggleRight();
-        }
-    }
-
-    private void updateInput()
-    {
-        if (InputHelper.justClickedLeft)
-        {
-            if (closeButton.hb.hovered
-                    || clearButton.hb.hovered
-                    || sortTypeToggle.hb.hovered
-                    || sortDirectionToggle.hb.hovered
-                    || isHoveredImpl())
-            {
-                return;
-            }
-            for (FilterKeywordButton c : filterButtons)
-            {
-                if (c.backgroundButton.hb.hovered)
-                {
-                    return;
-                }
-            }
-            close();
-            InputHelper.justClickedLeft = false;
-        }
-        else if (InputHelper.pressedEscape || CInputActionSet.cancel.isJustPressed())
-        {
-            CInputActionSet.cancel.unpress();
-            InputHelper.pressedEscape = false;
-            close();
-        }
-    }
-
-    public void invoke(FilterKeywordButton button)
-    {
-        if (onClick != null)
-        {
-            onClick.invoke(button);
-        }
-    }
-
-    public void buttonRightClick(FilterKeywordButton button)
-    {
+    public void buttonRightClick(FilterKeywordButton button) {
         selectedButton = button;
         contextMenu.setItems(EUIConfiguration.getIsTipDescriptionHidden(button.tooltip.ID) ? TooltipOption.EnableTooltip : TooltipOption.DisableTooltip);
         float actualMX;
@@ -365,90 +249,166 @@ public abstract class GenericFilters<T> extends EUICanvasGrid
         contextMenu.openOrCloseMenu();
     }
 
-    @Override
-    public int currentSize()
-    {
-        return filterButtons.size();
-    }
-
-    public int getReferenceCount()
-    {
-        return referenceItems.size();
-    }
-
-    public void addManualKeyword(EUITooltip tooltip, int count)
-    {
-        filterButtons.add(new FilterKeywordButton(this, tooltip).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(count));
-        currentFilterCounts.merge(tooltip, count, Integer::sum);
+    public void invoke(FilterKeywordButton button) {
+        if (onClick != null) {
+            onClick.invoke(button);
+        }
     }
 
     // Shorthand function to be fed to all dropdown filters
-    protected void updateActive(boolean whatever) {CardCrawlGame.isPopupOpen = this.isActive;}
-
-    // Shorthand function to be fed to all dropdown filters
-    protected <K> void onFilterChanged(HashSet<K> set, List<K> items)
-    {
+    protected <K> void onFilterChanged(HashSet<K> set, List<K> items) {
         set.clear();
         set.addAll(items);
-        if (onClick != null)
-        {
+        if (onClick != null) {
             onClick.invoke(null);
         }
     }
 
-    // Shorthand function to be fed to all dropdown filters
-    protected <K> String filterNameFunction(List<K> items, FuncT1<String, K> originalFunction)
-    {
-        if (items.size() == 0)
-        {
-            return EUIRM.strings.uiAny;
-        }
-        if (items.size() > 1)
-        {
-            return items.size() + " " + EUIRM.strings.uiItemsselected;
-        }
-        return StringUtils.join(EUIUtils.map(items, originalFunction), ", ");
+    public final void open() {
+        CardCrawlGame.isPopupOpen = true;
+        setActive(true);
     }
 
+    public final void refresh(ArrayList<T> items) {
+        referenceItems = items;
+        invalidated = true;
+    }
+
+    @Override
+    public final boolean tryUpdate() {
+        super.tryUpdate();
+        if (EUIHotkeys.toggleFilters.isJustPressed()) {
+            toggleFilters();
+        }
+        return isActive;
+    }
+
+    abstract public void toggleFilters();
+
     // Shorthand function to be fed to all dropdown filters
-    protected <K> boolean evaluateItem(HashSet<K> set, FuncT1<Boolean, K> evalFunc)
-    {
-        boolean passes = true;
-        if (!set.isEmpty())
-        {
-            passes = false;
-            for (K opt : set)
-            {
-                if (evalFunc.invoke(opt))
-                {
-                    passes = true;
-                    break;
+    protected void updateActive(boolean whatever) {
+        CardCrawlGame.isPopupOpen = this.isActive;
+    }
+
+    @Override
+    public final void updateImpl() {
+        super.updateImpl();
+        hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
+        keywordsSectionLabel.setPosition(hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 7).updateImpl();
+        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.21f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 9.1f).updateImpl();
+        sortTypeToggle.setPosition(keywordsSectionLabel.hb.x + SPACING * 10, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
+        sortDirectionToggle.setPosition(sortTypeToggle.hb.x + SPACING * 7, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
+        currentTotalHeaderLabel.updateImpl();
+        currentTotalLabel.updateImpl();
+        hb.update();
+        closeButton.tryUpdate();
+        clearButton.tryUpdate();
+        if (invalidated) {
+            invalidated = false;
+            refreshButtons();
+        }
+
+        if (!EUI.doesActiveElementExist()) {
+            for (FilterKeywordButton c : filterButtons) {
+                c.tryUpdate();
+            }
+
+            updateInput();
+        }
+
+        updateFilters();
+        contextMenu.tryUpdate();
+    }
+
+    public final void refreshButtons() {
+        currentFilterCounts.clear();
+        currentTotal = 0;
+
+        if (referenceItems != null) {
+            currentTotal = getReferenceCount();
+            for (T card : referenceItems) {
+                for (EUITooltip tooltip : getAllTooltips(card)) {
+                    currentFilterCounts.merge(tooltip, 1, Integer::sum);
                 }
             }
         }
-        return passes;
+        for (FilterKeywordButton c : filterButtons) {
+            c.setCardCount(currentFilterCounts.getOrDefault(c.tooltip, 0));
+        }
+
+        currentTotalLabel.setLabel(currentTotal);
+
+        refreshButtonOrder();
     }
 
-    abstract public boolean areFiltersEmpty();
-    abstract public boolean isHoveredImpl();
-    abstract public void clearFilters(boolean shouldInvoke, boolean shouldClearColors);
-    abstract public void renderFilters(SpriteBatch sb);
-    abstract public void toggleFilters();
-    abstract public void updateFilters();
-    abstract public ArrayList<EUITooltip> getAllTooltips(T c);
-    abstract public ArrayList<T> applyFilters(ArrayList<T> input);
-    abstract protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
+    private void updateInput() {
+        if (InputHelper.justClickedLeft) {
+            if (closeButton.hb.hovered
+                    || clearButton.hb.hovered
+                    || sortTypeToggle.hb.hovered
+                    || sortDirectionToggle.hb.hovered
+                    || isHoveredImpl()) {
+                return;
+            }
+            for (FilterKeywordButton c : filterButtons) {
+                if (c.backgroundButton.hb.hovered) {
+                    return;
+                }
+            }
+            close();
+            InputHelper.justClickedLeft = false;
+        }
+        else if (InputHelper.pressedEscape || CInputActionSet.cancel.isJustPressed()) {
+            CInputActionSet.cancel.unpress();
+            InputHelper.pressedEscape = false;
+            close();
+        }
+    }
 
-    public enum TooltipOption
-    {
+    abstract public void updateFilters();
+
+    public int getReferenceCount() {
+        return referenceItems.size();
+    }
+
+    abstract public ArrayList<EUITooltip> getAllTooltips(T c);
+
+    abstract public boolean isHoveredImpl();
+
+    @Override
+    public final void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
+        sb.setColor(FADE_COLOR);
+        sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float) Settings.WIDTH, (float) Settings.HEIGHT);
+        sb.setColor(Color.WHITE);
+        hb.render(sb);
+        closeButton.tryRender(sb);
+        clearButton.tryRender(sb);
+        keywordsSectionLabel.renderImpl(sb);
+        keywordsInstructionLabel.renderImpl(sb);
+        currentTotalHeaderLabel.renderImpl(sb);
+        currentTotalLabel.renderImpl(sb);
+        sortTypeToggle.tryRender(sb);
+        sortDirectionToggle.tryRender(sb);
+
+        for (FilterKeywordButton c : filterButtons) {
+            c.tryRender(sb);
+        }
+
+        renderFilters(sb);
+        contextMenu.tryRender(sb);
+    }
+
+    abstract public void renderFilters(SpriteBatch sb);
+
+    public enum TooltipOption {
         DisableTooltip(EUIRM.strings.uiDisableTooltip, filters -> filters.hideKeyword(true)),
         EnableTooltip(EUIRM.strings.uiEnableTooltip, filters -> filters.hideKeyword(false));
 
         public final String baseName;
         public final ActionT1<GenericFilters<?>> onAct;
 
-        TooltipOption(String name, ActionT1<GenericFilters<?>> onAct)
-        {
+        TooltipOption(String name, ActionT1<GenericFilters<?>> onAct) {
             this.baseName = name;
             this.onAct = onAct;
         }

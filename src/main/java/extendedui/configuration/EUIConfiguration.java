@@ -27,8 +27,7 @@ import java.util.HashSet;
 
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
-public class EUIConfiguration
-{
+public class EUIConfiguration {
     public static final int BASE_OPTION_OFFSET_X = 400;
     public static final int BASE_OPTION_OFFSET_X2 = 580;
     public static final int BASE_OPTION_OFFSET_Y = 720;
@@ -36,68 +35,123 @@ public class EUIConfiguration
     public static final int BASE_SPRITES_DEFAULT = 6000;
     private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "fnt");
     private static final String PREFIX = "EUI";
-    private static SpireConfig config;
-    private static int counter;
+    private static final ArrayList<STSConfigItem<?>> CONFIG_ITEMS = new ArrayList<>();
+    private static final String BANNER_FONT = getFullKey("BannerFont");
+    public static STSStringConfigItem bannerFont = new STSStringConfigItem(BANNER_FONT, "");
+    private static final String BUTTON_FONT = getFullKey("ButtonFont");
+    public static STSStringConfigItem buttonFont = new STSStringConfigItem(BUTTON_FONT, "");
+    private static final String CARD_DESC_FONT = getFullKey("CardDescFont");
+    public static STSStringConfigItem cardDescFont = new STSStringConfigItem(CARD_DESC_FONT, "");
+    private static final String CARD_TITLE_FONT = getFullKey("CardTitleFont");
+    public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT, "");
+    private static final String DISABLE_COMPENDIUM_BUTTON = getFullKey("DisableCompendiumButton");
+    public static STSConfigItem<Boolean> disableCompendiumButton = new STSConfigItem<>(DISABLE_COMPENDIUM_BUTTON, false);
+    private static final String DISABLE_DESCRIPTION_ICONS = getFullKey("DisableDescriptionIcons");
+    public static STSConfigItem<Boolean> disableDescrptionIcons = new STSConfigItem<>(DISABLE_DESCRIPTION_ICONS, false);
+    private static final String DISABLE_EFFEKSEER = getFullKey("DisableEffekseer");
+    public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
+    private static final String ENABLE_CARD_POOL_DEBUG = getFullKey("EnableCardPoolDebug");
+    public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(ENABLE_CARD_POOL_DEBUG, false);
+    private static final String ENERGY_FONT = getFullKey("EnergyFont");
+    public static STSStringConfigItem energyFont = new STSStringConfigItem(ENERGY_FONT, "");
+    private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
+    public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(FLUSH_ON_GAME_START, false);
+    private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
+    public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
+    private static final String HIDE_TIP_DESCRIPTION = getFullKey("HideTipDescription");
+    private static final String OVERRIDE_GAME_FONT = getFullKey("OverrideGameFont");
+    public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
+    private static final String SHOW_COUNTING_PANEL = getFullKey("ShowCountingPanel");
+    public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(SHOW_COUNTING_PANEL, false);
+    private static final String SHOW_MOD_SETTINGS = getFullKey("ShowModSettings");
+    public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(SHOW_MOD_SETTINGS, false);
+    private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
+    public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT, "");
+    private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
+    public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT, "");
+    private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
+    public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(USE_SEPARATE_FONTS, false);
+    private static final String USE_SNAP_SCROLLING = getFullKey("UseSnapScrolling");
+    public static STSConfigItem<Boolean> useSnapScrolling = new STSConfigItem<>(USE_SNAP_SCROLLING, false);
+    private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
+    public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
     public static ModSettingsScreen.Category effekseerCategory;
     public static ModSettingsScreen.Category fontCategory;
     public static BasemodSettingsPage settingsBlock;
     public static boolean shouldReloadEffekseer;
+    private static SpireConfig config;
+    private static int counter;
+    private static HashSet<String> tips = null;
+
+    //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
+
+    protected static int addSlider(int page, ModPanel panel, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
+        settingsBlock.addUIElement(page, new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.get(), "%d", panel, (c) -> {
+            option.set(MathUtils.round(c.getValue()), true);
+            shouldReloadEffekseer = true;
+        }));
+        return ypos - BASE_OPTION_OPTION_HEIGHT;
+    }
+
+    protected static int addToggle(int page, ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {
+        return addToggle(page, panel, option, label, ypos, null);
+    }
 
     public static String getFullKey(String base) {
         return PREFIX + "_" + base;
     }
 
-    private static final ArrayList<STSConfigItem<?>> CONFIG_ITEMS = new ArrayList<>();
+    public static boolean getIsTipDescriptionHiddenByName(String name) {
+        EUITooltip tip = EUITooltip.findByName(name);
+        return tip != null && getIsTipDescriptionHidden(tip.ID);
+    }
 
-    private static final String BANNER_FONT = getFullKey("BannerFont");
-    private static final String BUTTON_FONT = getFullKey("ButtonFont");
-    private static final String CARD_DESC_FONT = getFullKey("CardDescFont");
-    private static final String CARD_TITLE_FONT = getFullKey("CardTitleFont");
-    private static final String DISABLE_COMPENDIUM_BUTTON = getFullKey("DisableCompendiumButton");
-    private static final String DISABLE_DESCRIPTION_ICONS = getFullKey("DisableDescriptionIcons");
-    private static final String DISABLE_EFFEKSEER = getFullKey("DisableEffekseer");
-    private static final String ENABLE_CARD_POOL_DEBUG = getFullKey("EnableCardPoolDebug");
-    private static final String ENERGY_FONT = getFullKey("EnergyFont");
-    private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
-    private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
-    private static final String HIDE_TIP_DESCRIPTION = getFullKey("HideTipDescription");
-    private static final String OVERRIDE_GAME_FONT = getFullKey("OverrideGameFont");
-    private static final String SHOW_COUNTING_PANEL = getFullKey("ShowCountingPanel");
-    private static final String SHOW_MOD_SETTINGS = getFullKey("ShowModSettings");
-    private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
-    private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
-    private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
-    private static final String USE_SNAP_SCROLLING = getFullKey("UseSnapScrolling");
-    private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
+    public static boolean getIsTipDescriptionHidden(String id) {
+        if (tips == null) {
+            tips = new HashSet<>();
 
-    public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
-    public static STSConfigItem<Boolean> disableCompendiumButton = new STSConfigItem<>(DISABLE_COMPENDIUM_BUTTON, false);
-    public static STSConfigItem<Boolean> disableDescrptionIcons = new STSConfigItem<>(DISABLE_DESCRIPTION_ICONS, false);
-    public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
-    public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(FLUSH_ON_GAME_START, false);
-    public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
-    public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(SHOW_COUNTING_PANEL, false);
-    public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(SHOW_MOD_SETTINGS, false);
-    public static STSConfigItem<Boolean> useSnapScrolling = new STSConfigItem<>(USE_SNAP_SCROLLING, false);
-    public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(USE_SEPARATE_FONTS, false);
-    public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
-    public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(ENABLE_CARD_POOL_DEBUG, false);
+            if (config.has(HIDE_TIP_DESCRIPTION)) {
+                Collections.addAll(tips, config.getString(HIDE_TIP_DESCRIPTION).split("\\|"));
+            }
+        }
 
-    public static STSStringConfigItem cardDescFont = new STSStringConfigItem(CARD_DESC_FONT,"");
-    public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT,"");
-    public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT,"");
-    public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT,"");
-    public static STSStringConfigItem buttonFont = new STSStringConfigItem(BUTTON_FONT,"");
-    public static STSStringConfigItem bannerFont = new STSStringConfigItem(BANNER_FONT,"");
-    public static STSStringConfigItem energyFont = new STSStringConfigItem(ENERGY_FONT,"");
+        return tips.contains(id);
+    }
 
-    //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
+    public static void hideTipDescription(String id, boolean value, boolean flush) {
+        if (tips == null) {
+            tips = new HashSet<>();
+        }
 
-    private static HashSet<String> tips = null;
+        if (value) {
+            if (id != null) {
+                tips.add(id);
+            }
+        }
+        else {
+            tips.remove(id);
+        }
+
+        config.setString(HIDE_TIP_DESCRIPTION, EUIUtils.joinStrings("|", tips));
+
+        if (flush) {
+            save();
+        }
+
+        EUITooltip.invalidateHideDescription(id);
+    }
+
+    public static void save() {
+        try {
+            config.save();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static void load() {
-        try
-        {
+        try {
             config = new SpireConfig(PREFIX, PREFIX);
             showCountingPanel.addConfig(config);
             useVanillaCompendium.addConfig(config);
@@ -119,14 +173,16 @@ public class EUIConfiguration
             energyFont.addConfig(config);
             enableCardPoolDebug.addConfig(config);
         }
-        catch (IOException e)
-        {
+        catch (IOException e) {
             throw new RuntimeException(e);
         }
     }
 
-    public static void postInitialize()
-    {
+    protected static EUILabel makeModLabel(ModSettingsScreen.Category category, String label, BitmapFont font) {
+        return ModSettingsScreen.addLabel(category, label, font);
+    }
+
+    public static void postInitialize() {
         settingsBlock = new BasemodSettingsPage();
 
         // Add EUI options
@@ -143,7 +199,7 @@ public class EUIConfiguration
         makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
-        makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.config_overrideGameFont,EUIRM.strings.configdesc_overrideGameFont + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
+        makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.config_overrideGameFont, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardDescFont, EUIRM.strings.config_cardDescFont, FONT_EXTS).setTooltip(EUIRM.strings.config_cardDescFont, EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardTitleFont, EUIRM.strings.config_cardTitleFont, FONT_EXTS).setTooltip(EUIRM.strings.config_cardTitleFont, EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipDescFont, EUIRM.strings.config_tipDescFont, FONT_EXTS).setTooltip(EUIRM.strings.config_tipDescFont, EUIRM.strings.configdesc_restartRequired);
@@ -173,19 +229,19 @@ public class EUIConfiguration
         yPos = addToggle(1, panel, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         yPos = addToggle(1, panel, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1,panel, cardDescFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, panel, cardDescFontSelector2, yPos) + 2;
         ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1,panel, cardTitleFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, panel, cardTitleFontSelector2, yPos) + 2;
         ModSettingsPathSelector tipDescFontSelector2 = (ModSettingsPathSelector) tipDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1,panel, tipDescFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, panel, tipDescFontSelector2, yPos) + 2;
         ModSettingsPathSelector tipTitleFontSelector2 = (ModSettingsPathSelector) tipTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1,panel, tipTitleFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, panel, tipTitleFontSelector2, yPos) + 2;
         ModSettingsPathSelector buttonFontSelector2 = (ModSettingsPathSelector) buttonFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1,panel, buttonFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, panel, buttonFontSelector2, yPos) + 2;
         ModSettingsPathSelector bannerFontSelector2 = (ModSettingsPathSelector) bannerFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1,panel, buttonFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, panel, buttonFontSelector2, yPos) + 2;
         ModSettingsPathSelector energyFontSelector2 = (ModSettingsPathSelector) energyFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1,panel, buttonFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, panel, buttonFontSelector2, yPos) + 2;
         BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
 
         // Sub-font settings should only show up if UseSeparateFonts is true
@@ -225,45 +281,17 @@ public class EUIConfiguration
         // NOTE: DISABLE_COMPENDIUM_BUTTON, HIDE_TIP_DESCRIPTION, and USE_SMOOTH_SCROLLING listeners are added in EUI.initialize to avoid errors from initializing too early
     }
 
-    public static void save() {
-        try
-        {
-            config.save();
-        }
-        catch (IOException e)
-        {
-            e.printStackTrace();
-        }
-    }
-
-    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label)
-    {
-        return ModSettingsScreen.addBoolean(category, option, label);
-    }
-
-    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label, String tip)
-    {
+    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label, String tip) {
         ModSettingsToggle toggle = makeModToggle(category, option, label);
-        if (toggle != null)
-        {
+        if (toggle != null) {
             toggle.setTooltip(label, tip);
             toggle.tooltip.setAutoWidth();
         }
         return toggle;
     }
 
-    protected static ModSettingsPathSelector makeModPathSelection(ModSettingsScreen.Category category, STSConfigItem<String> option, String label, String... exts)
-    {
+    protected static ModSettingsPathSelector makeModPathSelection(ModSettingsScreen.Category category, STSConfigItem<String> option, String label, String... exts) {
         return ModSettingsScreen.addPathSelection(category, option, label, exts);
-    }
-
-    protected static EUILabel makeModLabel(ModSettingsScreen.Category category, String label, BitmapFont font)
-    {
-        return ModSettingsScreen.addLabel(category, label, font);
-    }
-
-    protected static int addToggle(int page, ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {
-        return addToggle(page, panel, option, label, ypos, null);
     }
 
     protected static int addToggle(int page, ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos, String tip) {
@@ -272,67 +300,12 @@ public class EUIConfiguration
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }
 
-    protected static int addSlider(int page, ModPanel panel, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
-        settingsBlock.addUIElement(page, new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.get(), "%d", panel, (c) -> {
-            option.set(MathUtils.round(c.getValue()), true);
-            shouldReloadEffekseer = true;
-        }));
-        return ypos - BASE_OPTION_OPTION_HEIGHT;
-    }
-
-    protected static int addGenericElement(int page, ModPanel panel, EUIHoverable renderable, int ypos)
-    {
+    protected static int addGenericElement(int page, ModPanel panel, EUIHoverable renderable, int ypos) {
         settingsBlock.addUIElement(page, renderable);
         return (int) (ypos - renderable.hb.height);
     }
 
-    public static boolean getIsTipDescriptionHiddenByName(String name)
-    {
-        EUITooltip tip = EUITooltip.findByName(name);
-        return tip != null && getIsTipDescriptionHidden(tip.ID);
-    }
-
-    public static boolean getIsTipDescriptionHidden(String id)
-    {
-        if (tips == null)
-        {
-            tips = new HashSet<>();
-
-            if (config.has(HIDE_TIP_DESCRIPTION))
-            {
-                Collections.addAll(tips, config.getString(HIDE_TIP_DESCRIPTION).split("\\|"));
-            }
-        }
-
-        return tips.contains(id);
-    }
-
-    public static void hideTipDescription(String id, boolean value, boolean flush)
-    {
-        if (tips == null)
-        {
-            tips = new HashSet<>();
-        }
-
-        if (value)
-        {
-            if (id != null)
-            {
-                tips.add(id);
-            }
-        }
-        else
-        {
-            tips.remove(id);
-        }
-
-        config.setString(HIDE_TIP_DESCRIPTION, EUIUtils.joinStrings("|", tips));
-
-        if (flush)
-        {
-            save();
-        }
-
-        EUITooltip.invalidateHideDescription(id);
+    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label) {
+        return ModSettingsScreen.addBoolean(category, option, label);
     }
 }

@@ -4,22 +4,18 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 
 // Variant of AbstractScreen to be used for screens that can be opened in dungeons
-public abstract class AbstractDungeonScreen extends AbstractScreen
-{
-    protected void open()
-    {
+public abstract class AbstractDungeonScreen extends AbstractScreen {
+    protected void open() {
         open(true, true);
     }
 
-    protected void open(boolean hideTopBar, boolean hideRelics)
-    {
+    protected void open(boolean hideTopBar, boolean hideRelics) {
         Settings.hideTopBar = hideTopBar;
         Settings.hideRelics = hideRelics;
         super.open();
     }
 
-    public void onEscape()
-    {
+    public void onEscape() {
         super.onEscape();
         AbstractDungeon.closeCurrentScreen();
     }

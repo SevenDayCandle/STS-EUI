@@ -14,10 +14,7 @@ import javassist.expr.ExprEditor;
 
 import java.util.ArrayList;
 
-public class RelicViewScreenPatches
-{
-    // THESE NAMES MUST MATCH THE NAMES OF THE RELICLIBRARY LISTS OR THIS PATCH WILL GO BOOM
-    private static ArrayList<AbstractRelic> allList = new ArrayList<>();
+public class RelicViewScreenPatches {
     public static ArrayList<AbstractRelic> starterList = new ArrayList<>();
     public static ArrayList<AbstractRelic> commonList = new ArrayList<>();
     public static ArrayList<AbstractRelic> uncommonList = new ArrayList<>();
@@ -25,104 +22,12 @@ public class RelicViewScreenPatches
     public static ArrayList<AbstractRelic> bossList = new ArrayList<>();
     public static ArrayList<AbstractRelic> specialList = new ArrayList<>();
     public static ArrayList<AbstractRelic> shopList = new ArrayList<>();
+    // THESE NAMES MUST MATCH THE NAMES OF THE RELICLIBRARY LISTS OR THIS PATCH WILL GO BOOM
+    private static ArrayList<AbstractRelic> allList = new ArrayList<>();
 
-    @SpirePatch(clz = RelicViewScreen.class, method = "open")
-    public static class RelicViewScreen_Open
-    {
-        @SpirePostfixPatch
-        public static SpireReturn<Void> postfix(RelicViewScreen screen)
-        {
-            reset();
-
-            EUI.relicFilters.initialize(__ -> updateForFilters()
-                    , allList
-                    , AbstractCard.CardColor.COLORLESS
-                    , false);
-            updateForFilters();
-
-            return SpireReturn.Continue();
-        }
-    }
-    
-    @SpirePatch(clz= RelicViewScreen.class, method="update")
-    public static class RelicViewScreen_Update
-    {
-
-        @SpirePrefixPatch
-        public static void prefix(RelicViewScreen __instance)
-        {
-            if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
-                EUI.openRelicFiltersButton.tryUpdate();
-            }
-            if (EUI.relicFilters.tryUpdate())
-            {
-                EUIClassUtils.setField(__instance, "grabbedScreen", false);
-            }
-        }
-
-        @SpireInstrumentPatch
-        public static ExprEditor instrument()
-        {
-            return new ExprEditor()
-            {
-                public void edit(javassist.expr.FieldAccess m) throws CannotCompileException
-                {
-                    editImpl(m);
-                }
-            };
-        }
-    }
-
-    @SpirePatch(clz = RelicViewScreen.class, method = "updateControllerInput")
-    public static class RelicViewScreen_UpdateControllerInput
-    {
-        @SpireInstrumentPatch
-        public static ExprEditor instrument()
-        {
-            return new ExprEditor()
-            {
-                public void edit(javassist.expr.FieldAccess m) throws CannotCompileException
-                {
-                    editImpl(m);
-                }
-            };
-        }
-    }
-
-    @SpirePatch(clz = RelicViewScreen.class, method = "updateScrolling")
-    public static class RelicViewScreen_UpdateScrolling
-    {
-        @SpirePrefixPatch
-        public static SpireReturn<AbstractCard> prefix(RelicViewScreen __instance)
-        {
-            if (EUI.relicFilters.isActive) {
-                return SpireReturn.Return(null);
-            }
-            return SpireReturn.Continue();
-        }
-    }
-
-    @SpirePatch(clz= RelicViewScreen.class, method="render", paramtypez = {SpriteBatch.class})
-    public static class RelicViewScreen_Render
-    {
-        @SpirePrefixPatch
-        public static void postfix(RelicViewScreen __instance, SpriteBatch sb)
-        {
-            if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
-                EUI.openRelicFiltersButton.tryRender(sb);
-            }
-        }
-
-        @SpireInstrumentPatch
-        public static ExprEditor instrument()
-        {
-            return new ExprEditor()
-            {
-                public void edit(javassist.expr.FieldAccess m) throws CannotCompileException
-                {
-                    editImpl(m);
-                }
-            };
+    private static void editImpl(javassist.expr.FieldAccess m) throws CannotCompileException {
+        if (m.getClassName().equals(RelicLibrary.class.getName())) {
+            m.replace("{ $_ = extendedui.patches.screens.RelicViewScreenPatches." + m.getFieldName() + "; }");
         }
     }
 
@@ -144,8 +49,7 @@ public class RelicViewScreenPatches
         EUI.relicFilters.refresh(allList);
     }
 
-    private static void reset()
-    {
+    private static void reset() {
         starterList.clear();
         commonList.clear();
         uncommonList.clear();
@@ -165,16 +69,88 @@ public class RelicViewScreenPatches
         resetAllList();
     }
 
-    private static void resetAllList()
-    {
+    private static void resetAllList() {
         allList = EUIUtils.flatten(starterList, commonList, uncommonList, rareList, bossList, specialList, shopList);
     }
 
-    private static void editImpl(javassist.expr.FieldAccess m) throws CannotCompileException
-    {
-        if (m.getClassName().equals(RelicLibrary.class.getName()))
-        {
-            m.replace("{ $_ = extendedui.patches.screens.RelicViewScreenPatches." + m.getFieldName() + "; }");
+    @SpirePatch(clz = RelicViewScreen.class, method = "open")
+    public static class RelicViewScreen_Open {
+        @SpirePostfixPatch
+        public static SpireReturn<Void> postfix(RelicViewScreen screen) {
+            reset();
+
+            EUI.relicFilters.initialize(__ -> updateForFilters()
+                    , allList
+                    , AbstractCard.CardColor.COLORLESS
+                    , false);
+            updateForFilters();
+
+            return SpireReturn.Continue();
+        }
+    }
+
+    @SpirePatch(clz = RelicViewScreen.class, method = "update")
+    public static class RelicViewScreen_Update {
+
+        @SpireInstrumentPatch
+        public static ExprEditor instrument() {
+            return new ExprEditor() {
+                public void edit(javassist.expr.FieldAccess m) throws CannotCompileException {
+                    editImpl(m);
+                }
+            };
+        }
+
+        @SpirePrefixPatch
+        public static void prefix(RelicViewScreen __instance) {
+            if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
+                EUI.openRelicFiltersButton.tryUpdate();
+            }
+            if (EUI.relicFilters.tryUpdate()) {
+                EUIClassUtils.setField(__instance, "grabbedScreen", false);
+            }
+        }
+    }
+
+    @SpirePatch(clz = RelicViewScreen.class, method = "updateControllerInput")
+    public static class RelicViewScreen_UpdateControllerInput {
+        @SpireInstrumentPatch
+        public static ExprEditor instrument() {
+            return new ExprEditor() {
+                public void edit(javassist.expr.FieldAccess m) throws CannotCompileException {
+                    editImpl(m);
+                }
+            };
+        }
+    }
+
+    @SpirePatch(clz = RelicViewScreen.class, method = "updateScrolling")
+    public static class RelicViewScreen_UpdateScrolling {
+        @SpirePrefixPatch
+        public static SpireReturn<AbstractCard> prefix(RelicViewScreen __instance) {
+            if (EUI.relicFilters.isActive) {
+                return SpireReturn.Return(null);
+            }
+            return SpireReturn.Continue();
+        }
+    }
+
+    @SpirePatch(clz = RelicViewScreen.class, method = "render", paramtypez = {SpriteBatch.class})
+    public static class RelicViewScreen_Render {
+        @SpireInstrumentPatch
+        public static ExprEditor instrument() {
+            return new ExprEditor() {
+                public void edit(javassist.expr.FieldAccess m) throws CannotCompileException {
+                    editImpl(m);
+                }
+            };
+        }
+
+        @SpirePrefixPatch
+        public static void postfix(RelicViewScreen __instance, SpriteBatch sb) {
+            if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
+                EUI.openRelicFiltersButton.tryRender(sb);
+            }
         }
     }
 

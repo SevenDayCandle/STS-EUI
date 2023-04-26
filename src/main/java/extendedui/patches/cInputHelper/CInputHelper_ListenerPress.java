@@ -5,12 +5,10 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.megacrit.cardcrawl.helpers.controller.CInputHelper;
 import extendedui.EUIInputManager;
 
-@SpirePatch(clz= CInputHelper.class, method="listenerPress")
-public class CInputHelper_ListenerPress
-{
+@SpirePatch(clz = CInputHelper.class, method = "listenerPress")
+public class CInputHelper_ListenerPress {
     @SpirePrefixPatch
-    public static void method(int keycode)
-    {
+    public static void method(int keycode) {
         EUIInputManager.onControllerKeyPress(keycode);
     }
 }

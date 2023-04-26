@@ -7,61 +7,33 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.ui.hitboxes.EUIHitbox;
 import org.apache.commons.lang3.math.NumberUtils;
 
-public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer>
-{
-    protected int cachedValue;
-    protected int min = Integer.MIN_VALUE;
-    protected int max = Integer.MAX_VALUE;
+public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     public boolean hasEntered;
     public boolean showNegativeAsInfinity;
     public boolean clearOnInitialEntry = true;
+    protected int cachedValue;
+    protected int min = Integer.MIN_VALUE;
+    protected int max = Integer.MAX_VALUE;
 
     public EUITextBoxNumericalInput(Texture backgroundTexture, EUIHitbox hb) {
         super(backgroundTexture, hb);
     }
 
-    public EUITextBoxNumericalInput setLimits(int min, int max)
-    {
-        this.min = min;
-        this.max = Math.max(max, min);
-        return this;
+    public void forceSetValue(int value, boolean invoke) {
+        cachedValue = MathUtils.clamp(value, min, max);
+        forceUpdateText();
+        if (invoke && onComplete != null) {
+            onComplete.invoke(cachedValue);
+        }
     }
 
-    public EUITextBoxNumericalInput showNegativeAsInfinity(boolean val)
-    {
-        showNegativeAsInfinity = val;
-        return this;
-    }
-
-    public int getMin()
-    {
-        return min;
-    }
-
-    public int getMax()
-    {
-        return max;
-    }
-
-    public int getCachedValue() {return cachedValue;}
-
-    @Override
-    public boolean acceptCharacter(char c) {
-        return Character.isDigit(c) || c == '-';
+    public int getCachedValue() {
+        return cachedValue;
     }
 
     @Override
-    public void start() {
-        super.start();
-        if (!NumberUtils.isCreatable(label.text)) {
-            label.text = "";
-            cachedValue = 0;
-        }
-        else
-        {
-            cachedValue = getValue(label.text);
-        }
-        hasEntered = false;
+    public String getCurrentText() {
+        return !hasEntered && clearOnInitialEntry ? "" : label.text;
     }
 
     @Override
@@ -75,13 +47,53 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer>
     }
 
     @Override
-    public String getCurrentText() {
-        return !hasEntered && clearOnInitialEntry ? "" : label.text;
+    public boolean acceptCharacter(char c) {
+        return Character.isDigit(c) || c == '-';
     }
 
     @Override
-    protected void commit(boolean commit)
-    {
+    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
+        // Do not render
+    }
+
+    @Override
+    public Integer getValue(String text) {
+        try {
+            return MathUtils.clamp(Integer.parseInt(label.text), min, max);
+        }
+        catch (Exception ignored) {
+            return 0;
+        }
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        if (isEditing) {
+            if (InputHelper.scrolledDown) {
+                setValue(cachedValue - 1);
+            }
+            else if (InputHelper.scrolledUp) {
+                setValue(cachedValue + 1);
+            }
+        }
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        if (!NumberUtils.isCreatable(label.text)) {
+            label.text = "";
+            cachedValue = 0;
+        }
+        else {
+            cachedValue = getValue(label.text);
+        }
+        hasEntered = false;
+    }
+
+    @Override
+    protected void commit(boolean commit) {
         if (commit) {
             if (onComplete != null) {
                 onComplete.invoke(cachedValue);
@@ -93,65 +105,36 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer>
         }
     }
 
-    protected void setValue(int value)
-    {
-        setText(String.valueOf(MathUtils.clamp(value, min, max)));
-    }
-
-    public void forceSetValue(int value, boolean invoke)
-    {
-        cachedValue = MathUtils.clamp(value, min, max);
-        forceUpdateText();
-        if (invoke && onComplete != null) {
-            onComplete.invoke(cachedValue);
-        }
-    }
-
-    public void forceUpdateText()
-    {
-        if (showNegativeAsInfinity && cachedValue < 0)
-        {
+    public void forceUpdateText() {
+        if (showNegativeAsInfinity && cachedValue < 0) {
             label.text = label.font.getData().hasGlyph('∞') ? "∞" : "Inf";
         }
-        else
-        {
+        else {
             // Ensure parity between label and cachedValue, in case getText is overwritten
             label.text = String.valueOf(cachedValue);
         }
     }
 
-    @Override
-    public void updateImpl()
-    {
-        super.updateImpl();
-        if (isEditing)
-        {
-            if (InputHelper.scrolledDown)
-            {
-                setValue(cachedValue - 1);
-            }
-            else if (InputHelper.scrolledUp)
-            {
-                setValue(cachedValue + 1);
-            }
-        }
+    protected void setValue(int value) {
+        setText(String.valueOf(MathUtils.clamp(value, min, max)));
     }
 
-    @Override
-    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
-        // Do not render
+    public int getMax() {
+        return max;
     }
 
-    @Override
-    public Integer getValue(String text)
-    {
-        try
-        {
-            return MathUtils.clamp(Integer.parseInt(label.text), min, max);
-        }
-        catch (Exception ignored)
-        {
-            return 0;
-        }
+    public int getMin() {
+        return min;
+    }
+
+    public EUITextBoxNumericalInput setLimits(int min, int max) {
+        this.min = min;
+        this.max = Math.max(max, min);
+        return this;
+    }
+
+    public EUITextBoxNumericalInput showNegativeAsInfinity(boolean val) {
+        showNegativeAsInfinity = val;
+        return this;
     }
 }

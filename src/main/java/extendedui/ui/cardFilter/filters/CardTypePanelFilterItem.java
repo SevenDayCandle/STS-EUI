@@ -7,12 +7,10 @@ import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
 
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvider
-{
+public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvider {
     protected static final CardTypePanelFilterItem ATTACK = new CardTypePanelFilterItem(AbstractCard.CardType.ATTACK);
     protected static final CardTypePanelFilterItem CURSE = new CardTypePanelFilterItem(AbstractCard.CardType.CURSE);
     protected static final CardTypePanelFilterItem POWER = new CardTypePanelFilterItem(AbstractCard.CardType.POWER);
@@ -21,10 +19,12 @@ public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvid
 
     public final AbstractCard.CardType type;
 
-    public static CardTypePanelFilterItem get(AbstractCard.CardType type)
-    {
-        switch (type)
-        {
+    public CardTypePanelFilterItem(AbstractCard.CardType type) {
+        this.type = type;
+    }
+
+    public static CardTypePanelFilterItem get(AbstractCard.CardType type) {
+        switch (type) {
             case ATTACK:
                 return ATTACK;
             case CURSE:
@@ -38,27 +38,19 @@ public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvid
         }
     }
 
-    public CardTypePanelFilterItem(AbstractCard.CardType type)
-    {
-        this.type = type;
-    }
-
     @Override
-    public Texture getIcon()
-    {
+    public Texture getIcon() {
         return EUIGameUtils.iconForType(type).texture();
     }
 
     @Override
-    public int getRank(AbstractCard c)
-    {
+    public int getRank(AbstractCard c) {
         int ordinal = c.type.ordinal();
         return c.type == type ? ordinal + 1000 : ordinal;
     }
 
     @Override
-    public List<EUITooltip> getTips()
-    {
+    public List<EUITooltip> getTips() {
         return Collections.singletonList(new EUITooltip(EUIGameUtils.textForType(type)));
     }
 }

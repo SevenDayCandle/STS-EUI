@@ -2,8 +2,7 @@ package extendedui.configuration;
 
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
-public class STSStringConfigItem extends STSConfigItem<String>
-{
+public class STSStringConfigItem extends STSConfigItem<String> {
 
     public STSStringConfigItem(String Key, String defaultValue) {
         super(Key, defaultValue);

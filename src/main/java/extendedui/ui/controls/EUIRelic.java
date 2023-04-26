@@ -5,24 +5,20 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.ui.hitboxes.EUIHitbox;
 
-public class EUIRelic extends EUIImage
-{
+public class EUIRelic extends EUIImage {
     private final AbstractRelic relic;
 
-    public EUIRelic(AbstractRelic relic, EUIHitbox hb)
-    {
+    public EUIRelic(AbstractRelic relic, EUIHitbox hb) {
         super(relic.img, hb, Color.WHITE);
 
         this.relic = relic;
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb)
-    {
+    public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
 
-        if (hb.hovered)
-        {
+        if (hb.hovered) {
             relic.renderTip(sb);
         }
     }

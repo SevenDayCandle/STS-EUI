@@ -8,29 +8,24 @@ import java.util.ArrayList;
 
 import static extendedui.ui.EUIBase.scale;
 
-public class DEUISuffixListBox<T> extends DEUIListBox<T>
-{
-    protected FuncT1<String, T> suffixFunc;
+public class DEUISuffixListBox<T> extends DEUIListBox<T> {
     protected final ImVec2 textSize = new ImVec2();
+    protected FuncT1<String, T> suffixFunc;
 
-    public DEUISuffixListBox(String id, ArrayList<T> items, FuncT1<String, T> stringFunc, FuncT1<String, T> suffixFunc)
-    {
+    public DEUISuffixListBox(String id, ArrayList<T> items, FuncT1<String, T> stringFunc, FuncT1<String, T> suffixFunc) {
         this(id, items, stringFunc, suffixFunc, -1, scale(200));
     }
 
-    public DEUISuffixListBox(String id, ArrayList<T> items, FuncT1<String, T> stringFunc, FuncT1<String, T> suffixFunc, float width, float height)
-    {
+    public DEUISuffixListBox(String id, ArrayList<T> items, FuncT1<String, T> stringFunc, FuncT1<String, T> suffixFunc, float width, float height) {
         super(id, items, stringFunc, width, height);
         this.suffixFunc = suffixFunc;
     }
 
-    public void render()
-    {
+    public void render() {
         render(width, height);
     }
 
-    public void render(float width, float height)
-    {
+    public void render(float width, float height) {
         if (ImGui.beginListBox(ID, width, height)) {
             for (T item : items) {
                 boolean isSelected = item.equals(selected);

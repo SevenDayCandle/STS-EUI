@@ -4,45 +4,25 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import imgui.ImGui;
 
-public class DEUIDynamicActionTable<T> extends DEUIDynamicTable<T>
-{
+public class DEUIDynamicActionTable<T> extends DEUIDynamicTable<T> {
     protected ActionT1<T> clickFunc;
     protected String clickText = "";
 
-    public DEUIDynamicActionTable(String id, int columns)
-    {
+    public DEUIDynamicActionTable(String id, int columns) {
         this(id, columns, 0);
     }
 
-    public DEUIDynamicActionTable(String id, int columns, int flags)
-    {
+    public DEUIDynamicActionTable(String id, int columns, int flags) {
         super(id, columns, flags);
     }
 
-    public DEUIDynamicActionTable<T> setClick(ActionT1<T> clickFunc, String text)
-    {
-        this.clickFunc = clickFunc;
-        this.clickText = text;
-        return this;
-    }
-
-    public DEUIDynamicActionTable<T> setItems(Iterable<? extends T> items, FuncT1<String[], T> renderFunc)
-    {
-        super.setItems(items, renderFunc);
-        return this;
-    }
-
-    public void onRender()
-    {
-        if (this.items != null && this.stringsFunc != null)
-        {
+    public void onRender() {
+        if (this.items != null && this.stringsFunc != null) {
             int j = 0;
-            for (T item : items)
-            {
+            for (T item : items) {
                 String[] labels = stringsFunc.invoke(item);
                 ImGui.tableNextRow();
-                for (int i = 0; i < Math.min(labels.length, columns); i++)
-                {
+                for (int i = 0; i < Math.min(labels.length, columns); i++) {
                     ImGui.tableSetColumnIndex(i);
                     ImGui.text(labels[i]);
                 }
@@ -53,5 +33,16 @@ public class DEUIDynamicActionTable<T> extends DEUIDynamicTable<T>
                 j += 1;
             }
         }
+    }
+
+    public DEUIDynamicActionTable<T> setItems(Iterable<? extends T> items, FuncT1<String[], T> renderFunc) {
+        super.setItems(items, renderFunc);
+        return this;
+    }
+
+    public DEUIDynamicActionTable<T> setClick(ActionT1<T> clickFunc, String text) {
+        this.clickFunc = clickFunc;
+        this.clickText = text;
+        return this;
     }
 }

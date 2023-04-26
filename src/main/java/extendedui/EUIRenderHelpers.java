@@ -35,8 +35,7 @@ import java.util.ArrayList;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
-public class EUIRenderHelpers
-{
+public class EUIRenderHelpers {
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.5F);
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     protected static final String SHADER_GLITCH_FRAGMENT = "shaders/glitchFragment.glsl";
@@ -70,27 +69,22 @@ public class EUIRenderHelpers
     protected static ShaderProgram sepiaShader;
     private static FrameBuffer maskBuffer;
 
-    public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY)
-    {
+    public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY) {
         return tips.isEmpty() ? 0f : (1f - hb_cY / (float) Settings.HEIGHT) * getTallestOffset(tips) - (getTooltipHeight(tips.get(0)) + BOX_EDGE_H * 3.15f) * 0.5f;
     }
 
-    private static float getTallestOffset(ArrayList<EUITooltip> tips)
-    {
+    private static float getTallestOffset(ArrayList<EUITooltip> tips) {
         float currentOffset = 0f;
         float maxOffset = 0f;
 
-        for (EUITooltip p : tips)
-        {
+        for (EUITooltip p : tips) {
             float offsetChange = getTooltipHeight(p) + BOX_EDGE_H * 3.15F;
-            if ((currentOffset + offsetChange) >= (float) Settings.HEIGHT * 0.7F)
-            {
+            if ((currentOffset + offsetChange) >= (float) Settings.HEIGHT * 0.7F) {
                 currentOffset = 0f;
             }
 
             currentOffset += offsetChange;
-            if (currentOffset > maxOffset)
-            {
+            if (currentOffset > maxOffset) {
                 maxOffset = currentOffset;
             }
         }
@@ -98,33 +92,27 @@ public class EUIRenderHelpers
         return maxOffset;
     }
 
-    public static float getTooltipHeight(EUITooltip tip)
-    {
+    public static float getTooltipHeight(EUITooltip tip) {
         return -EUISmartText.getSmartHeight(EUIFontHelper.cardTooltipFont, tip.description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
     }
 
-    public static float calculateToAvoidOffscreen(ArrayList<EUITooltip> tips, float hb_cY)
-    {
+    public static float calculateToAvoidOffscreen(ArrayList<EUITooltip> tips, float hb_cY) {
         return tips.isEmpty() ? 0f : Math.max(0.0F, getTallestOffset(tips) - hb_cY);
     }
 
-    public static Color copyColor(Color color, float a)
-    {
+    public static Color copyColor(Color color, float a) {
         return new Color(color.r, color.g, color.b, a);
     }
 
-    public static Color copyColor(AbstractCard card, Color color)
-    {
+    public static Color copyColor(AbstractCard card, Color color) {
         return new Color(color.r, color.g, color.b, card.transparency);
     }
 
-    public static void draw(SpriteBatch sb, Texture img, float drawX, float drawY, float size)
-    {
+    public static void draw(SpriteBatch sb, Texture img, float drawX, float drawY, float size) {
         draw(sb, img, Color.WHITE, drawX, drawY, size, size);
     }
 
-    public static void draw(SpriteBatch sb, Texture img, Color color, float x, float y, float width, float height)
-    {
+    public static void draw(SpriteBatch sb, Texture img, Color color, float x, float y, float width, float height) {
         final int srcWidth = img.getWidth();
         final int srcHeight = img.getHeight();
 
@@ -133,8 +121,7 @@ public class EUIRenderHelpers
                 srcWidth, srcHeight, false, false);
     }
 
-    public static void draw(SpriteBatch sb, Texture img, float x, float y, float width, float height)
-    {
+    public static void draw(SpriteBatch sb, Texture img, float x, float y, float width, float height) {
         draw(sb, img, Color.WHITE, x, y, width, height);
     }
 
@@ -143,20 +130,18 @@ public class EUIRenderHelpers
     }
 
     public static void drawWithShader(SpriteBatch sb, ShaderMode shader, ActionT1<SpriteBatch> drawFunc) {
-        if (shader != null)
-        {
+        if (shader != null) {
             shader.draw(sb, drawFunc);
         }
-        else
-        {
+        else {
             drawFunc.invoke(sb);
         }
     }
 
     public static void drawBlended(SpriteBatch sb, BlendingMode mode, ActionT1<SpriteBatch> drawFunc) {
-        sb.setBlendFunction(mode.srcFunc,mode.dstFunc);
+        sb.setBlendFunction(mode.srcFunc, mode.dstFunc);
         drawFunc.invoke(sb);
-        sb.setBlendFunction(BlendingMode.Normal.srcFunc,BlendingMode.Normal.dstFunc);
+        sb.setBlendFunction(BlendingMode.Normal.srcFunc, BlendingMode.Normal.dstFunc);
     }
 
     public static void drawBlendedWithShader(PolygonSpriteBatch sb, BlendingMode mode, ShaderMode shaderMode, ActionT1<PolygonSpriteBatch> drawFunc) {
@@ -164,20 +149,18 @@ public class EUIRenderHelpers
     }
 
     public static void drawWithShader(PolygonSpriteBatch sb, ShaderMode shader, ActionT1<PolygonSpriteBatch> drawFunc) {
-        if (shader != null)
-        {
+        if (shader != null) {
             shader.draw(sb, drawFunc);
         }
-        else
-        {
+        else {
             drawFunc.invoke(sb);
         }
     }
 
     public static void drawBlended(PolygonSpriteBatch sb, BlendingMode mode, ActionT1<PolygonSpriteBatch> drawFunc) {
-        sb.setBlendFunction(mode.srcFunc,mode.dstFunc);
+        sb.setBlendFunction(mode.srcFunc, mode.dstFunc);
         drawFunc.invoke(sb);
-        sb.setBlendFunction(BlendingMode.Normal.srcFunc,BlendingMode.Normal.dstFunc);
+        sb.setBlendFunction(BlendingMode.Normal.srcFunc, BlendingMode.Normal.dstFunc);
     }
 
     public static void drawBlur(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
@@ -190,7 +173,7 @@ public class EUIRenderHelpers
         sb.setShader(bs);
         bs.setUniformf("u_radius", radius);
         bs.setUniformf("u_resolution", resolution);
-        bs.setUniform2fv("u_dir", new float[] {xDir, yDir}, 0, 2);
+        bs.setUniform2fv("u_dir", new float[]{xDir, yDir}, 0, 2);
         drawFunc.invoke(sb);
         sb.setShader(defaultShader);
     }
@@ -258,13 +241,11 @@ public class EUIRenderHelpers
         pb.setShader(defaultShader);
     }
 
-    public static void drawCentered(SpriteBatch sb, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation)
-    {
+    public static void drawCentered(SpriteBatch sb, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation) {
         drawCentered(sb, color, img, drawX, drawY, width, height, imgScale, imgRotation, false, false);
     }
 
-    public static void drawCentered(SpriteBatch sb, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation, boolean flipX, boolean flipY)
-    {
+    public static void drawCentered(SpriteBatch sb, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation, boolean flipX, boolean flipY) {
         final float scale = Settings.scale * imgScale;
 
         sb.setColor(color);
@@ -273,8 +254,7 @@ public class EUIRenderHelpers
         sb.setColor(Color.WHITE);
     }
 
-    public static void drawCentered(SpriteBatch sb, Color color, TextureRegion img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation)
-    {
+    public static void drawCentered(SpriteBatch sb, Color color, TextureRegion img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation) {
         final float scale = Settings.scale * imgScale;
 
         sb.setColor(color);
@@ -282,8 +262,7 @@ public class EUIRenderHelpers
         sb.setColor(Color.WHITE);
     }
 
-    public static void drawCentered(SpriteBatch sb, Color color, TextureRegion img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation, boolean flipX, boolean flipY)
-    {
+    public static void drawCentered(SpriteBatch sb, Color color, TextureRegion img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation, boolean flipX, boolean flipY) {
         final float scale = Settings.scale * imgScale;
 
         img.flip(flipX, flipY);
@@ -322,7 +301,7 @@ public class EUIRenderHelpers
         drawWithShader(sb, getColorizeShader(), drawFunc);
     }
 
-    public static void drawGlitched(SpriteBatch sb, ActionT1<SpriteBatch>  drawFunc) {
+    public static void drawGlitched(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         drawGlitched(sb, EUI.time(), drawFunc);
     }
 
@@ -347,7 +326,7 @@ public class EUIRenderHelpers
         return rs;
     }
 
-    public static void drawGlitched(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch>  drawFunc) {
+    public static void drawGlitched(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch> drawFunc) {
         drawGlitched(pb, EUI.time(), drawFunc);
     }
 
@@ -394,13 +373,11 @@ public class EUIRenderHelpers
         drawWithShader(sb, getInvertShader(), drawFunc);
     }
 
-    public static void drawOnCard(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float size)
-    {
+    public static void drawOnCard(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float size) {
         drawOnCard(sb, card, EUIColors.white(card.transparency), img, drawX, drawY, size, size);
     }
 
-    public static void drawOnCard(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float width, float height)
-    {
+    public static void drawOnCard(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float width, float height) {
         final int srcWidth = img.getWidth();
         final int srcHeight = img.getHeight();
 
@@ -411,25 +388,20 @@ public class EUIRenderHelpers
     }
     //
 
-    public static void drawOnCard(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY)
-    {
+    public static void drawOnCard(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY) {
         drawOnCard(sb, card, color, img, drawX, drawY, img.getWidth(), img.getHeight());
     }
 
-    public static void drawOnCard(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float size)
-    {
+    public static void drawOnCard(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float size) {
         drawOnCard(sb, card, color, img, drawX, drawY, size, size);
     }
 
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Color color, float drawX, float drawY, float width, float height)
-    {
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Color color, float drawX, float drawY, float width, float height) {
         drawOnCardAuto(sb, card, img, new Vector2(drawX, drawY), width, height, color, color.a, 1, 0);
     }
 
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale, float imgRotation)
-    {
-        if (card.angle != 0)
-        {
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale, float imgRotation) {
+        if (card.angle != 0) {
             offset.rotate(card.angle);
         }
 
@@ -438,112 +410,11 @@ public class EUIRenderHelpers
         drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + offset.x, card.current_y + offset.y, width, height, imgScale, imgRotation);
     }
 
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height)
-    {
-        drawOnCardAuto(sb, card, img, new Vector2(drawX, drawY), width, height, Color.WHITE, card.transparency, 1, 0);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height)
-    {
-        drawOnCardAuto(sb, card, img, offset, width, height, Color.WHITE, card.transparency, 1, 0);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, float drawX, float drawY, float width, float height)
-    {
-        drawOnCardAuto(sb, card, img.texture, new Vector2(drawX, drawY), width, height, img.color, img.color.a * card.transparency, 1, 0);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, float drawX, float drawY, float width, float height, float scale)
-    {
-        drawOnCardAuto(sb, card, img.texture, new Vector2(drawX, drawY), width, height, img.color, img.color.a * card.transparency, scale, 0);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, Vector2 offset, float width, float height)
-    {
-        drawOnCardAuto(sb, card, img.texture, offset, width, height, img.color, img.color.a * card.transparency, 1, 0);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale)
-    {
-        drawOnCardAuto(sb, card, img, offset, width, height, color, alpha, imgScale, 0f);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, float drawX, float drawY, float width, float height)
-    {
-        drawOnCardAuto(sb, card, img, new Vector2(drawX, drawY), width, height, Color.WHITE, card.transparency, 1);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, Vector2 offset, float width, float height)
-    {
-        drawOnCardAuto(sb, card, img, offset, width, height, Color.WHITE, card.transparency, 1);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale)
-    {
-        if (card.angle != 0)
-        {
-            offset.rotate(card.angle);
-        }
-
-        offset.scl(Settings.scale * card.drawScale);
-
-        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + offset.x, card.current_y + offset.y, width, height, imgScale);
-    }
-
-    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, TextureRegion img, float drawX, float drawY, float width, float height, float imgScale)
-    {
-        final float scale = card.drawScale * Settings.scale * imgScale;
-
-        sb.setColor(color);
-        sb.draw(img, drawX - (width / 2f), drawY - (height / 2f), width / 2f, height / 2f, width, height, scale, scale, card.angle);
-        sb.setColor(Color.WHITE);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale, float imgRotation, boolean flipX, boolean flipY)
-    {
-        if (card.angle != 0)
-        {
-            offset.rotate(card.angle);
-        }
-
-        offset.scl(Settings.scale * card.drawScale);
-
-        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + offset.x, card.current_y + offset.y, width, height, imgScale, imgRotation, flipX, flipY);
-    }
-
-    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, TextureAtlas.AtlasRegion img, float drawX, float drawY)
-    {
-        sb.setColor(color);
-        sb.draw(img, drawX + img.offsetX - img.originalWidth / 2f, drawY + img.offsetY - img.originalHeight / 2f,
-                img.originalWidth / 2f - img.offsetX, img.originalHeight / 2f - img.offsetY,
-                img.packedWidth, img.packedHeight, card.drawScale * Settings.scale, card.drawScale * Settings.scale, card.angle);
-        sb.setColor(Color.WHITE);
-    }
-
-    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY)
-    {
-        final int width = img.getWidth();
-        final int height = img.getHeight();
-
-        sb.setColor(color);
-        sb.draw(img, drawX - (width / 2f), drawY - (height / 2f), width / 2f, height / 2f, width, height,
-                card.drawScale * Settings.scale, card.drawScale * Settings.scale,
-                card.angle, 0, 0, width, height, false, false);
-        sb.setColor(Color.WHITE);
-    }
-
-    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale)
-    {
-        drawOnCardCentered(sb, card, color, img, drawX, drawY, width, height, imgScale, 0);
-    }
-
-    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation)
-    {
+    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation) {
         drawOnCardCentered(sb, card, color, img, drawX, drawY, width, height, imgScale, imgRotation, false, false);
     }
 
-    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation, boolean flipX, boolean flipY)
-    {
+    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation, boolean flipX, boolean flipY) {
         if (img == null) {
             EUIUtils.logWarning(card, "Image was null:");
             return;
@@ -556,11 +427,94 @@ public class EUIRenderHelpers
         sb.setColor(Color.WHITE);
     }
 
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height) {
+        drawOnCardAuto(sb, card, img, new Vector2(drawX, drawY), width, height, Color.WHITE, card.transparency, 1, 0);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height) {
+        drawOnCardAuto(sb, card, img, offset, width, height, Color.WHITE, card.transparency, 1, 0);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, float drawX, float drawY, float width, float height) {
+        drawOnCardAuto(sb, card, img.texture, new Vector2(drawX, drawY), width, height, img.color, img.color.a * card.transparency, 1, 0);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, float drawX, float drawY, float width, float height, float scale) {
+        drawOnCardAuto(sb, card, img.texture, new Vector2(drawX, drawY), width, height, img.color, img.color.a * card.transparency, scale, 0);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, Vector2 offset, float width, float height) {
+        drawOnCardAuto(sb, card, img.texture, offset, width, height, img.color, img.color.a * card.transparency, 1, 0);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale) {
+        drawOnCardAuto(sb, card, img, offset, width, height, color, alpha, imgScale, 0f);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, float drawX, float drawY, float width, float height) {
+        drawOnCardAuto(sb, card, img, new Vector2(drawX, drawY), width, height, Color.WHITE, card.transparency, 1);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale) {
+        if (card.angle != 0) {
+            offset.rotate(card.angle);
+        }
+
+        offset.scl(Settings.scale * card.drawScale);
+
+        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + offset.x, card.current_y + offset.y, width, height, imgScale);
+    }
+
+    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, TextureRegion img, float drawX, float drawY, float width, float height, float imgScale) {
+        final float scale = card.drawScale * Settings.scale * imgScale;
+
+        sb.setColor(color);
+        sb.draw(img, drawX - (width / 2f), drawY - (height / 2f), width / 2f, height / 2f, width, height, scale, scale, card.angle);
+        sb.setColor(Color.WHITE);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, Vector2 offset, float width, float height) {
+        drawOnCardAuto(sb, card, img, offset, width, height, Color.WHITE, card.transparency, 1);
+    }
+
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale, float imgRotation, boolean flipX, boolean flipY) {
+        if (card.angle != 0) {
+            offset.rotate(card.angle);
+        }
+
+        offset.scl(Settings.scale * card.drawScale);
+
+        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + offset.x, card.current_y + offset.y, width, height, imgScale, imgRotation, flipX, flipY);
+    }
+
+    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, TextureAtlas.AtlasRegion img, float drawX, float drawY) {
+        sb.setColor(color);
+        sb.draw(img, drawX + img.offsetX - img.originalWidth / 2f, drawY + img.offsetY - img.originalHeight / 2f,
+                img.originalWidth / 2f - img.offsetX, img.originalHeight / 2f - img.offsetY,
+                img.packedWidth, img.packedHeight, card.drawScale * Settings.scale, card.drawScale * Settings.scale, card.angle);
+        sb.setColor(Color.WHITE);
+    }
+
+    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY) {
+        final int width = img.getWidth();
+        final int height = img.getHeight();
+
+        sb.setColor(color);
+        sb.draw(img, drawX - (width / 2f), drawY - (height / 2f), width / 2f, height / 2f, width, height,
+                card.drawScale * Settings.scale, card.drawScale * Settings.scale,
+                card.angle, 0, 0, width, height, false, false);
+        sb.setColor(Color.WHITE);
+    }
+
+    public static void drawOnCardCentered(SpriteBatch sb, AbstractCard card, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale) {
+        drawOnCardCentered(sb, card, color, img, drawX, drawY, width, height, imgScale, 0);
+    }
+
     public static void drawOverlay(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         drawBlended(sb, BlendingMode.Overlay, drawFunc);
     }
 
-    public static void drawRainbow(SpriteBatch sb, ActionT1<SpriteBatch>  drawFunc) {
+    public static void drawRainbow(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         drawRainbow(sb, EUI.time(), 1, 1, 0.5f, drawFunc);
     }
 
@@ -588,7 +542,7 @@ public class EUIRenderHelpers
         return rs;
     }
 
-    public static void drawRainbow(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch>  drawFunc) {
+    public static void drawRainbow(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch> drawFunc) {
         drawRainbow(pb, EUI.time(), 1, 1, 0.5f, drawFunc);
     }
 
@@ -640,13 +594,11 @@ public class EUIRenderHelpers
         sb.draw(t, 0, 0, 0, 0, maskBuffer.getWidth(), maskBuffer.getHeight(), 1f, 1f, 0f);
     }
 
-    private static BitmapFont generateFont(BitmapFont source, float size, float borderWidth, float shadowOffset)
-    {
+    private static BitmapFont generateFont(BitmapFont source, float size, float borderWidth, float shadowOffset) {
         return generateFont(source, size, borderWidth, new Color(0f, 0f, 0f, 1f), shadowOffset, new Color(0f, 0f, 0f, 0.5f));
     }
 
-    private static BitmapFont generateFont(BitmapFont source, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor)
-    {
+    private static BitmapFont generateFont(BitmapFont source, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
         param.minFilter = Texture.TextureFilter.Linear;
         param.magFilter = Texture.TextureFilter.Linear;
@@ -669,8 +621,7 @@ public class EUIRenderHelpers
         BitmapFont font = g.generateFont(param);
         font.setUseIntegerPositions(false);
         font.getData().markupEnabled = false;
-        if (LocalizedStrings.break_chars != null)
-        {
+        if (LocalizedStrings.break_chars != null) {
             font.getData().breakChars = LocalizedStrings.break_chars.toCharArray();
         }
 
@@ -684,34 +635,28 @@ public class EUIRenderHelpers
         return new TextureAtlas.AtlasRegion(texture, (w - section) / 2, 0, section, section);
     }
 
-    public static float getAngleDegrees(float aX, float aY, float bX, float bY)
-    {
+    public static float getAngleDegrees(float aX, float aY, float bX, float bY) {
         return MathUtils.radiansToDegrees * (float) Math.atan2(bY - aY, bX - aX);
     }
 
-    public static float getAngleRadians(float aX, float aY, float bX, float bY)
-    {
+    public static float getAngleRadians(float aX, float aY, float bX, float bY) {
         return (float) Math.atan2(bY - aY, bX - aX);
     }
 
-    public static TextureRegion getCroppedRegion(Texture texture, int div)
-    {
+    public static TextureRegion getCroppedRegion(Texture texture, int div) {
         final int w = texture.getWidth();
         final int h = texture.getHeight();
         final int half_div = div / 2;
         return new TextureRegion(texture, w / div, h / div, w - (w / half_div), h - (h / half_div));
     }
 
-    public static BitmapFont getDescriptionFont(AbstractCard card, float scaleModifier)
-    {
+    public static BitmapFont getDescriptionFont(AbstractCard card, float scaleModifier) {
         BitmapFont result;
-        if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup())
-        {
+        if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup()) {
             result = EUIFontHelper.carddescriptionfontLarge;
             result.getData().setScale(card.drawScale * scaleModifier * 0.5f);
         }
-        else
-        {
+        else {
             result = EUIFontHelper.carddescriptionfontNormal;
             result.getData().setScale(card.drawScale * scaleModifier);
         }
@@ -732,17 +677,14 @@ public class EUIRenderHelpers
         }
     }
 
-    public static BitmapFont getTitleFont(AbstractCard card)
-    {
+    public static BitmapFont getTitleFont(AbstractCard card) {
         BitmapFont result;
         final float scale = 1 / (Math.max(14f, card.name.length()) / 14f);
-        if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup())
-        {
+        if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup()) {
             result = EUIFontHelper.cardtitlefontLarge;
             result.getData().setScale(card.drawScale * 0.5f * scale);
         }
-        else
-        {
+        else {
             result = EUIFontHelper.cardtitlefontNormal;
             result.getData().setScale(card.drawScale * scale);
         }
@@ -768,33 +710,27 @@ public class EUIRenderHelpers
         return initial;
     }
 
-    public static void resetFont(BitmapFont font)
-    {
+    public static void resetFont(BitmapFont font) {
         font.getData().setScale(1);
     }
 
-    public static void writeCentered(SpriteBatch sb, BitmapFont font, String text, float cX, float cY, Color color)
-    {
+    public static void writeCentered(SpriteBatch sb, BitmapFont font, String text, float cX, float cY, Color color) {
         FontHelper.renderFontCentered(sb, font, text, cX, cY, color);
     }
 
-    public static void writeCentered(SpriteBatch sb, BitmapFont font, String text, Hitbox hb, Color color)
-    {
+    public static void writeCentered(SpriteBatch sb, BitmapFont font, String text, Hitbox hb, Color color) {
         FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.cY, color);
     }
 
-    public static void writeCentered(SpriteBatch sb, BitmapFont font, String text, Hitbox hb, Color color, float scale)
-    {
+    public static void writeCentered(SpriteBatch sb, BitmapFont font, String text, Hitbox hb, Color color, float scale) {
         FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.cY, color, scale);
     }
 
-    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color)
-    {
+    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color) {
         writeOnCard(sb, card, font, text, x, y, color, false);
     }
 
-    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color, boolean roundY)
-    {
+    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color, boolean roundY) {
         final float scale = card.drawScale * Settings.scale;
 
         color = EUIColors.copy(color, color.a * card.transparency);
@@ -820,13 +756,11 @@ public class EUIRenderHelpers
             this.dstFunc = dstFunc;
         }
 
-        public void apply(SpriteBatch sb)
-        {
+        public void apply(SpriteBatch sb) {
             sb.setBlendFunction(srcFunc, dstFunc);
         }
 
-        public void apply(PolygonSpriteBatch sb)
-        {
+        public void apply(PolygonSpriteBatch sb) {
             sb.setBlendFunction(srcFunc, dstFunc);
         }
 
@@ -862,10 +796,8 @@ public class EUIRenderHelpers
             drawImpl.invoke(sb);
         }
 
-        public ShaderProgram getShaderProgram()
-        {
-            switch (this)
-            {
+        public ShaderProgram getShaderProgram() {
+            switch (this) {
                 case Grayscale:
                     return getGrayscaleShader();
                 case Invert:

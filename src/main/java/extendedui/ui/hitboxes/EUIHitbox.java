@@ -14,31 +14,18 @@ import extendedui.ui.EUIBase;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
 
-public class EUIHitbox extends Hitbox
-{
+public class EUIHitbox extends Hitbox {
     public float lerpSpeed;
     public float targetCx;
     public float targetCy;
     public EUIBase parentElement;
     public boolean isPopupCompatible;
 
-    public EUIHitbox(Hitbox hb)
-    {
+    public EUIHitbox(Hitbox hb) {
         this(hb.x, hb.y, hb.width, hb.height);
     }
 
-    public EUIHitbox(float width, float height)
-    {
-        this(-9999, -9999, width, height);
-    }
-
-    public EUIHitbox(Hitbox hb, float width, float height)
-    {
-        this(hb.x, hb.y, width, height);
-    }
-
-    public EUIHitbox(float x, float y, float width, float height)
-    {
+    public EUIHitbox(float x, float y, float width, float height) {
         super(x, y, width, height);
 
         this.targetCx = cX;
@@ -46,8 +33,31 @@ public class EUIHitbox extends Hitbox
         this.lerpSpeed = 9f;
     }
 
-    public EUIHitbox makeCopy()
-    {
+    public EUIHitbox(float width, float height) {
+        this(-9999, -9999, width, height);
+    }
+
+    public EUIHitbox(Hitbox hb, float width, float height) {
+        this(hb.x, hb.y, width, height);
+    }
+
+    public float getOffsetX() {
+        return 0;
+    }
+
+    public EUIHitbox setOffsetX(float x) {
+        return this;
+    }
+
+    public float getOffsetY() {
+        return 0;
+    }
+
+    public EUIHitbox setOffsetY(float y) {
+        return this;
+    }
+
+    public EUIHitbox makeCopy() {
         EUIHitbox copy = new EUIHitbox(this);
         copy.lerpSpeed = this.lerpSpeed;
         copy.parentElement = this.parentElement;
@@ -55,17 +65,8 @@ public class EUIHitbox extends Hitbox
         return copy;
     }
 
-    public EUIHitbox setCenter(float cX, float cY)
-    {
+    public EUIHitbox setCenter(float cX, float cY) {
         move(cX, cY);
-
-        return this;
-    }
-
-    public EUIHitbox setTargetCenter(float cX, float cY)
-    {
-        this.targetCx = cX;
-        this.targetCy = cY;
 
         return this;
     }
@@ -76,41 +77,26 @@ public class EUIHitbox extends Hitbox
         return this;
     }
 
+    // Overridden in child classes
+    public EUIHitbox setOffset(float x, float y) {
+        return this;
+    }
+
     public EUIHitbox setParentElement(EUIBase element) {
         this.parentElement = element;
 
         return this;
     }
 
-    public float getOffsetX()
-    {
-        return 0;
-    }
+    public EUIHitbox setTargetCenter(float cX, float cY) {
+        this.targetCx = cX;
+        this.targetCy = cY;
 
-    public float getOffsetY()
-    {
-        return 0;
-    }
-
-    // Overridden in child classes
-    public EUIHitbox setOffset(float x, float y)
-    {
-        return this;
-    }
-
-    public EUIHitbox setOffsetX(float x)
-    {
-        return this;
-    }
-
-    public EUIHitbox setOffsetY(float y)
-    {
         return this;
     }
 
     @Override
-    public void update()
-    {
+    public void update() {
         this.update(this.x, this.y);
         if (this.clickStarted && InputHelper.justReleasedClickLeft) {
             if (this.hovered) {
@@ -120,13 +106,11 @@ public class EUIHitbox extends Hitbox
             this.clickStarted = false;
         }
 
-        if (this.hovered && (InputHelper.justReleasedClickRight || InputHelper.justReleasedClickLeft))
-        {
+        if (this.hovered && (InputHelper.justReleasedClickRight || InputHelper.justReleasedClickLeft)) {
             HitboxDebugger.tryRegister(this);
         }
 
-        if (cX != targetCx || cY != targetCy)
-        {
+        if (cX != targetCx || cY != targetCy) {
             moveInternal(lerp(cX, targetCx), lerp(cY, targetCy));
         }
     }
@@ -161,7 +145,8 @@ public class EUIHitbox extends Hitbox
                 if (this.hovered) {
                     this.justHovered = true;
                 }
-            } else {
+            }
+            else {
                 this.hovered = actualMX > x && actualMX < x + this.width && actualMY > y && actualMY < y + this.height;
             }
 
@@ -169,8 +154,15 @@ public class EUIHitbox extends Hitbox
     }
 
     @Override
-    public void translate(float x, float y)
-    {
+    public void move(float cX, float cY) {
+        this.targetCx = this.cX = cX;
+        this.targetCy = this.cY = cY;
+        this.x = cX - this.width / 2f;
+        this.y = cY - this.height / 2f;
+    }
+
+    @Override
+    public void translate(float x, float y) {
         this.x = x;
         this.y = y;
         this.targetCx = this.cX = x + this.width / 2f;
@@ -178,35 +170,22 @@ public class EUIHitbox extends Hitbox
     }
 
     @Override
-    public void resize(float w, float h)
-    {
+    public void resize(float w, float h) {
         this.width = w;
         this.height = h;
         this.targetCx = this.cX = x + this.width / 2f;
         this.targetCy = this.cY = y + this.height / 2f;
     }
 
-    @Override
-    public void move(float cX, float cY)
-    {
-        this.targetCx = this.cX = cX;
-        this.targetCy = this.cY = cY;
-        this.x = cX - this.width / 2f;
-        this.y = cY - this.height / 2f;
-    }
-
-    protected void moveInternal(float cX, float cY)
-    {
+    protected void moveInternal(float cX, float cY) {
         this.cX = cX;
         this.cY = cY;
         this.x = cX - this.width / 2f;
         this.y = cY - this.height / 2f;
     }
 
-    protected float lerp(float current, float target)
-    {
-        if (lerpSpeed < 0 || Math.abs(current - target) < Settings.UI_SNAP_THRESHOLD)
-        {
+    protected float lerp(float current, float target) {
+        if (lerpSpeed < 0 || Math.abs(current - target) < Settings.UI_SNAP_THRESHOLD) {
             return target;
         }
 

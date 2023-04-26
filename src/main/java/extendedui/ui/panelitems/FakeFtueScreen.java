@@ -9,63 +9,58 @@ import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.interfaces.delegates.ActionT0;
-import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.AbstractScreen;
 import extendedui.ui.controls.EUITutorial;
 
-public class FakeFtueScreen extends AbstractScreen
-{
+public class FakeFtueScreen extends AbstractScreen {
     public final MenuCancelButton button;
     protected EUITutorial current;
     protected ActionT0 onClose;
 
-    public FakeFtueScreen()
-    {
+    public FakeFtueScreen() {
         super();
         button = new MenuCancelButton();
     }
 
-    @Override
-    public void onEscape()
-    {
+    public void open(EUITutorial ftue, ActionT0 onClose) {
+        open(ftue);
+        this.onClose = onClose;
+    }    @Override
+    public void onEscape() {
         super.onEscape();
-        if (EUIGameUtils.inGame())
-        {
+        if (EUIGameUtils.inGame()) {
             AbstractDungeon.closeCurrentScreen();
         }
-        else
-        {
+        else {
             CardCrawlGame.mainMenuScreen.panelScreen.refresh();
-            if (EUI.currentScreen == this)
-            {
+            if (EUI.currentScreen == this) {
                 dispose();
             }
         }
         EUI.setActiveElement(null);
         CardCrawlGame.isPopupOpen = false;
 
-        if (onClose != null)
-        {
+        if (onClose != null) {
             onClose.invoke();
         }
     }
 
-    @Override
-    public void updateImpl()
-    {
+    public void open(EUITutorial ftue) {
+        super.open();
+        current = ftue;
+        this.button.show(CardLibraryScreen.TEXT[0]);
+    }    @Override
+    public void updateImpl() {
         super.updateImpl();
-        if (current != null)
-        {
+        if (current != null) {
             current.updateImpl();
         }
 
         button.update();
-        if (this.button.hb.clicked || InputHelper.pressedEscape)
-        {
+        if (this.button.hb.clicked || InputHelper.pressedEscape) {
             this.button.hb.clicked = false;
             this.button.hide();
-            if (current != null)
-            {
+            if (current != null) {
                 current.close();
             }
             onEscape();
@@ -73,28 +68,17 @@ public class FakeFtueScreen extends AbstractScreen
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb)
-    {
+    public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
-        if (current != null)
-        {
+        if (current != null) {
             current.renderImpl(sb);
         }
         button.render(sb);
     }
 
-    public void open(EUITutorial ftue)
-    {
-        super.open();
-        current = ftue;
-        this.button.show(CardLibraryScreen.TEXT[0]);
-    }
 
-    public void open(EUITutorial ftue, ActionT0 onClose)
-    {
-        open(ftue);
-        this.onClose = onClose;
-    }
+
+
 
 
 }

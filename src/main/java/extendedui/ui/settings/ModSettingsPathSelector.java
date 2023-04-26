@@ -9,12 +9,10 @@ import extendedui.utilities.EUIFontHelper;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
-public class ModSettingsPathSelector extends EUIFileSelector implements STSConfigListener<String>
-{
+public class ModSettingsPathSelector extends EUIFileSelector implements STSConfigListener<String> {
     public final STSConfigItem<String> config;
 
-    public ModSettingsPathSelector(EUIHitbox hb, STSConfigItem<String> config, String title)
-    {
+    public ModSettingsPathSelector(EUIHitbox hb, STSConfigItem<String> config, String title) {
         super(hb);
         this.config = config;
         this.header.setLabel(title).setFont(EUIFontHelper.carddescriptionfontNormal, 1f);
@@ -23,13 +21,11 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
         setOnUpdate(this::onUpdateFile);
     }
 
-    public ModSettingsPathSelector setFileFilters(String... filters) {
-        super.setFileFilters(filters);
-        return this;
+    private void onUpdateFile(File file) {
+        config.set(file != null && file.exists() ? file.getAbsolutePath() : "", true);
     }
 
-    public ModSettingsPathSelector makeCopy()
-    {
+    public ModSettingsPathSelector makeCopy() {
         ModSettingsPathSelector other = new ModSettingsPathSelector(new EUIHitbox(hb), config, this.header.text);
         other.extensionFilter = new FileNameExtensionFilter(this.extensionFilter.getDescription(), this.extensionFilter.getExtensions());
         other.tooltip = this.tooltip;
@@ -37,13 +33,12 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
     }
 
     @Override
-    public void onChange(String newValue)
-    {
+    public void onChange(String newValue) {
         selectFile(new File(newValue), false);
     }
 
-    private void onUpdateFile(File file)
-    {
-        config.set(file != null && file.exists() ? file.getAbsolutePath() : "", true);
+    public ModSettingsPathSelector setFileFilters(String... filters) {
+        super.setFileFilters(filters);
+        return this;
     }
 }

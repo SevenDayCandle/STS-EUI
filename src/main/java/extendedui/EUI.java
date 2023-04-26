@@ -48,8 +48,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public class EUI
-{
+public class EUI {
     public static final ArrayList<EUIBase> BattleSubscribers = new ArrayList<>();
     public static final ArrayList<EUIBase> Subscribers = new ArrayList<>();
     private static final String[] ENERGY_STRINGS = {"[E]", "[R]", "[G]", "[B]", "[W]"};
@@ -95,18 +94,15 @@ public class EUI
         BattleSubscribers.add(element);
     }
 
-    public static void addPostRender(ActionT1<SpriteBatch> toRender)
-    {
+    public static void addPostRender(ActionT1<SpriteBatch> toRender) {
         postRenderList.add(toRender);
     }
 
-    public static void addPreRender(ActionT1<SpriteBatch> toRender)
-    {
+    public static void addPreRender(ActionT1<SpriteBatch> toRender) {
         preRenderList.add(toRender);
     }
 
-    public static void addPriorityPostRender(ActionT1<SpriteBatch> toRender)
-    {
+    public static void addPriorityPostRender(ActionT1<SpriteBatch> toRender) {
         priorityPostRenderList.add(toRender);
     }
 
@@ -114,20 +110,16 @@ public class EUI
         Subscribers.add(element);
     }
 
-    public static float delta()
-    {
+    public static float delta() {
         return delta;
     }
 
-    public static float delta(float multiplier)
-    {
+    public static float delta(float multiplier) {
         return delta * multiplier;
     }
 
-    public static void dispose()
-    {
-        if (currentScreen != null)
-        {
+    public static void dispose() {
+        if (currentScreen != null) {
             currentScreen.dispose();
             activeElement = null;
         }
@@ -140,28 +132,23 @@ public class EUI
         return activeElement != null;
     }
 
-    public static boolean elapsed100()
-    {
+    public static boolean elapsed100() {
         return elapsed(1.00f);
     }
 
-    public static boolean elapsed(float value)
-    {
+    public static boolean elapsed(float value) {
         return (delta >= value) || (((timer % value) - delta) < 0);
     }
 
-    public static boolean elapsed25()
-    {
+    public static boolean elapsed25() {
         return elapsed(0.25f);
     }
 
-    public static boolean elapsed50()
-    {
+    public static boolean elapsed50() {
         return elapsed(0.50f);
     }
 
-    public static boolean elapsed75()
-    {
+    public static boolean elapsed75() {
         return elapsed(0.75f);
     }
 
@@ -225,20 +212,16 @@ public class EUI
         return customRelicPoolModules.get(cardColor);
     }
 
-    public static int getImguiIndex()
-    {
+    public static int getImguiIndex() {
         return imguiIndex++;
     }
 
-    public static void initialize()
-    {
+    public static void initialize() {
         // Set UI theming for file selector
-        try
-        {
+        try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -268,10 +251,10 @@ public class EUI
         EUIConfiguration.disableCompendiumButton.addListener(EUI::toggleCompendiumButton);
 
         openCardFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-            .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-            .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
-            .setOnClick(() -> EUI.cardFilters.toggleFilters())
-            .setColor(Color.GRAY);
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
+                .setOnClick(() -> EUI.cardFilters.toggleFilters())
+                .setColor(Color.GRAY);
         openPotionFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
@@ -290,25 +273,21 @@ public class EUI
         });
     }
 
-    public static void toggleCompendiumButton(boolean hide)
-    {
-        if (hide)
-        {
+    public static void toggleCompendiumButton(boolean hide) {
+        if (hide) {
             BaseMod.removeTopPanelItem(compendiumButton);
         }
-        else
-        {
+        else {
             BaseMod.addTopPanelItem(compendiumButton);
         }
     }
 
-    public static boolean isDragging()
-    {
-        return isDragging;
-    }
-
     public static boolean isActiveElement(EUIBase element) {
         return activeElement == element;
+    }
+
+    public static boolean isDragging() {
+        return isDragging;
     }
 
     public static boolean isInActiveElement(EUIHitbox hb) {
@@ -319,19 +298,16 @@ public class EUI
         return cardsScreen != null; // This will be null before the UI has loaded
     }
 
-    public static void postDispose()
-    {
+    public static void postDispose() {
         activeElement = null;
         currentScreen = null;
     }
 
-    public static void postRender(SpriteBatch sb)
-    {
+    public static void postRender(SpriteBatch sb) {
         renderImpl(sb, postRenderList.iterator());
     }
 
-    private static void renderImpl(SpriteBatch sb, Iterator<ActionT1<SpriteBatch>> i)
-    {
+    private static void renderImpl(SpriteBatch sb, Iterator<ActionT1<SpriteBatch>> i) {
         while (i.hasNext()) {
             ActionT1<SpriteBatch> toRender = i.next();
             toRender.invoke(sb);
@@ -339,33 +315,29 @@ public class EUI
         }
     }
 
-    public static void preRender(SpriteBatch sb)
-    {
-        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null)
-        {
+    public static void preRender(SpriteBatch sb) {
+        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null) {
             currentScreen.preRender(sb);
         }
 
         renderImpl(sb, preRenderList.iterator());
     }
 
-    public static void preUpdate()
-    {
+    public static void preUpdate() {
         delta = Gdx.graphics.getRawDeltaTime();
         timer += delta;
         isDragging = false;
         lastClicked = null;
     }
 
-    public static void priorityPostRender(SpriteBatch sb)
-    {
+    public static void priorityPostRender(SpriteBatch sb) {
         renderImpl(sb, priorityPostRenderList.iterator());
     }
 
     /* Create EUITooltips for all basegame keywords
-    *  For basegame keywords, we use the properly capitalized version of its key as its ID and the first name value as its name
-    *  Modded keywords are added via BasemodPatches
-    * */
+     *  For basegame keywords, we use the properly capitalized version of its key as its ID and the first name value as its name
+     *  Modded keywords are added via BasemodPatches
+     * */
     public static void registerBasegameKeywords() {
 
         // Energy tooltips are not present in GameDictionary
@@ -373,18 +345,14 @@ public class EUI
         EUITooltip.registerName(StringUtils.lowerCase(TipHelper.TEXT[0]), energyTooltip);
 
         // Read directly from fields to obtain the actual IDs to use, which are language-invariant
-        for (Field field : GameDictionary.class.getDeclaredFields())
-        {
-            if (field.getType() == com.megacrit.cardcrawl.localization.Keyword.class)
-            {
-                try
-                {
+        for (Field field : GameDictionary.class.getDeclaredFields()) {
+            if (field.getType() == com.megacrit.cardcrawl.localization.Keyword.class) {
+                try {
                     final com.megacrit.cardcrawl.localization.Keyword k = (Keyword) field.get(null);
                     String id = EUIUtils.capitalize(field.getName());
                     tryRegisterTooltip(EUIUtils.capitalize(id), k.DESCRIPTION, k.NAMES);
                 }
-                catch (IllegalAccessException ex)
-                {
+                catch (IllegalAccessException ex) {
                     ex.printStackTrace();
                 }
             }
@@ -447,24 +415,20 @@ public class EUI
 
     // Add CommonKeywordIcon pictures to keywords. This REQUIRES stslib to run
     public static void registerKeywordIcons() {
-        if (Loader.isModLoaded("stslib"))
-        {
+        if (Loader.isModLoaded("stslib")) {
             for (EUITooltip tooltip : EUIUtils.map(EUITooltip.getEntries(), Map.Entry::getValue)) {
                 String title = tooltip.title;
                 // Add CommonKeywordIcon pictures to keywords
                 if (title.equals(GameDictionary.INNATE.NAMES[0])) {
                     tooltip.setIcon(StSLib.BADGE_INNATE);
                 }
-                else if (title.equals(GameDictionary.ETHEREAL.NAMES[0]))
-                {
+                else if (title.equals(GameDictionary.ETHEREAL.NAMES[0])) {
                     tooltip.setIcon(StSLib.BADGE_ETHEREAL);
                 }
-                else if (title.equals(GameDictionary.RETAIN.NAMES[0]))
-                {
+                else if (title.equals(GameDictionary.RETAIN.NAMES[0])) {
                     tooltip.setIcon(StSLib.BADGE_RETAIN);
                 }
-                else if (title.equals(GameDictionary.EXHAUST.NAMES[0]))
-                {
+                else if (title.equals(GameDictionary.EXHAUST.NAMES[0])) {
                     tooltip.setIcon(StSLib.BADGE_EXHAUST);
                 }
                 else {
@@ -478,42 +442,29 @@ public class EUI
         }
     }
 
-    public static Map<String, EUIKeyword> loadKeywords(FileHandle handle) {
-        if (handle.exists()) {
-            return EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>(){}.getType());
-        }
-        return new HashMap<>();
-    }
-
-    public static ArrayList<EUITooltip> registerKeywords(FileHandle handle)
-    {
+    public static ArrayList<EUITooltip> registerKeywords(FileHandle handle) {
         return registerKeywords(loadKeywords(handle));
     }
 
-    public static ArrayList<EUITooltip> registerKeywords(Map<String, EUIKeyword> keywords)
-    {
+    public static ArrayList<EUITooltip> registerKeywords(Map<String, EUIKeyword> keywords) {
         ArrayList<EUITooltip> tooltips = new ArrayList<>();
         for (Map.Entry<String, EUIKeyword> pair : keywords.entrySet()) {
             EUIKeyword keyword = pair.getValue();
             EUITooltip tooltip = new EUITooltip(keyword);
             EUITooltip.registerID(pair.getKey(), tooltip);
             EUITooltip.registerName(keyword.NAME.toLowerCase(), tooltip);
-            if (keyword.PLURAL != null)
-            {
+            if (keyword.PLURAL != null) {
                 // Emulate a plural parsing
                 // TODO account for languages that have multiple plural forms
                 EUITooltip.registerName(EUISmartText.parseKeywordLogicWithAmount(keyword.PLURAL, 2).toLowerCase(), tooltip);
             }
-            if (keyword.PAST != null)
-            {
+            if (keyword.PAST != null) {
                 EUITooltip.registerName(keyword.PAST.toLowerCase(), tooltip);
             }
-            if (keyword.PRESENT != null)
-            {
+            if (keyword.PRESENT != null) {
                 EUITooltip.registerName(keyword.PRESENT.toLowerCase(), tooltip);
             }
-            if (keyword.PROGRESSIVE != null)
-            {
+            if (keyword.PROGRESSIVE != null) {
                 EUITooltip.registerName(keyword.PROGRESSIVE.toLowerCase(), tooltip);
             }
             tooltips.add(tooltip);
@@ -521,10 +472,16 @@ public class EUI
         return tooltips;
     }
 
-    public static void render(SpriteBatch sb)
-    {
-        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null)
-        {
+    public static Map<String, EUIKeyword> loadKeywords(FileHandle handle) {
+        if (handle.exists()) {
+            return EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>() {
+            }.getType());
+        }
+        return new HashMap<>();
+    }
+
+    public static void render(SpriteBatch sb) {
+        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null) {
             currentScreen.renderImpl(sb);
         }
 
@@ -533,6 +490,10 @@ public class EUI
         }
 
         // Battle subscribers are rendered in the energy panel patch
+    }
+
+    public static void setActiveElement(EUIBase element) {
+        activeElement = element;
     }
 
     public static void setCustomCardFilter(AbstractCard.CardColor cardColor, CustomCardFilterModule element) {
@@ -571,60 +532,45 @@ public class EUI
         customRelicPoolModules.put(cardColor, element);
     }
 
-    public static float time()
-    {
+    public static float time() {
         return timer;
     }
 
-    public static float timeCos(float distance, float speed)
-    {
+    public static float timeCos(float distance, float speed) {
         return MathUtils.cos(timer * speed) * distance;
     }
 
-    public static float timeMulti(float value)
-    {
+    public static float timeMulti(float value) {
         return timer * value;
     }
 
-    public static float timeSin(float distance, float speed)
-    {
+    public static float timeSin(float distance, float speed) {
         return MathUtils.sin(timer * speed) * distance;
     }
 
-    public static void toggleViewUpgrades(boolean value)
-    {
+    public static void toggleViewUpgrades(boolean value) {
         SingleCardViewPopup.isViewingUpgrade = value;
     }
 
-    public static boolean tryClick(Hitbox hitbox)
-    {
-        if (lastClicked == null || lastClicked == hitbox)
-        {
+    public static boolean tryClick(Hitbox hitbox) {
+        if (lastClicked == null || lastClicked == hitbox) {
             lastClicked = hitbox;
             return true;
         }
         return false;
     }
 
-    public static boolean tryDragging()
-    {
+    public static boolean tryDragging() {
         final boolean drag = !CardCrawlGame.isPopupOpen && (currentScreen == null || !isDragging) && (isDragging = true);
-        if (drag)
-        {
+        if (drag) {
             EUITooltip.canRenderTooltips(false);
         }
 
         return drag;
     }
 
-    public static void setActiveElement(EUIBase element) {
-        activeElement = element;
-    }
-
-    public static void update()
-    {
-        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null)
-        {
+    public static void update() {
+        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null) {
             currentScreen.updateImpl();
         }
 

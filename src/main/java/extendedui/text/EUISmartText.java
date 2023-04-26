@@ -18,8 +18,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
-public class EUISmartText
-{
+public class EUISmartText {
     public static final Color ORANGE_TEXT_COLOR = new Color(1.0F, 0.5F, 0.25F, 1F);
     public static final Color INDIGO_TEXT_COLOR = new Color(0.65F, 0.37F, 1.F, 1F);
     public static final Color PINK_TEXT_COLOR = new Color(1.0F, 0.37F, 0.65F, 1F);
@@ -39,10 +38,120 @@ public class EUISmartText
     private static float curHeight;
     private static int index;
 
-    private static boolean getAndMove()
-    {
-        if (index < currentText.length())
-        {
+    public static float getSmartHeight(BitmapFont font, String text, float lineWidth) {
+        return getSmartHeight(font, text, lineWidth, font.getLineHeight());
+    }
+
+    public static float getSmartHeight(BitmapFont font, String text, float lineWidth, float lineSpacing) {
+        return write(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).v2;
+    }
+
+    public static TupleT2<Float, Float> write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor) {
+        return write(sb, font, text, x, y, lineWidth, lineSpacing, baseColor, false);
+    }
+
+    public static TupleT2<Float, Float> write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor, boolean applyFontScaling) {
+        index = 0;
+        if (text != null) {
+            builder.setLength(0);
+            curWidth = 0f;
+            curHeight = 0f;
+            mainColor = baseColor;
+            currentText = text;
+
+            float fontScale = 0;
+            try {
+                fontScale = font.getScaleX();
+            }
+            catch (Exception e) {
+                EUIUtils.logError(null, "OH NOES, " + text + " with font " + font);
+                throw e;
+            }
+
+
+            if (currentFont != font || currentFontScale != fontScale) {
+                currentFontScale = fontScale;
+                currentFont = font;
+                layout.setText(font, " ");
+                spaceWidth = layout.width;
+            }
+
+            final float sizeMultiplier = applyFontScaling ? (0.667f + (currentFont.getScaleX() / 3f)) : 1;
+            final float imgSize = sizeMultiplier * CARD_ENERGY_IMG_WIDTH;
+
+            while (getAndMove()) {
+                switch (currentChar) {
+                    // Symbol
+                    case '[':
+                        if (!EUIConfiguration.disableDescrptionIcons.get()) {
+                            writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize);
+                        }
+                        break;
+                    // Force symbol, ignoring user config settings
+                    case '†':
+                        writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize);
+                        break;
+                    // End of symbol, needs to be manually ignored when icons are disabled
+                    case ']':
+                        break;
+                    // Color
+                    case '#':
+                        obtainWordColor();
+                        break;
+                    // Logic Block
+                    case '$':
+                        writeLogic(sb, x, y, lineWidth, lineSpacing);
+                        break;
+                    // Color Block
+                    case '{':
+                        obtainBlockColor();
+                        break;
+                    // End Color Block
+                    case '}':
+                        String o = EUIUtils.popBuilder(builder);
+                        if (!o.isEmpty()) {
+                            writeWord(sb, o, x, y, lineWidth, lineSpacing);
+                        }
+                        blockColor = null;
+                        break;
+                    // Newline
+                    case '|':
+                        writeNewline(lineSpacing);
+                        break;
+                    // Tab
+                    case '^':
+                        writeTab(lineSpacing);
+                        break;
+                    default:
+                        if (Character.isWhitespace(currentChar)) {
+                            String output = EUIUtils.popBuilder(builder);
+                            if (!output.isEmpty()) {
+                                // Base game newlines
+                                if (NEWLINE.equals(output)) {
+                                    writeNewline(lineSpacing);
+                                }
+                                else {
+                                    writeWord(sb, output, x, y, lineWidth, lineSpacing);
+                                }
+                            }
+                        }
+                        else {
+                            builder.append(currentChar);
+                        }
+                }
+            }
+            String output = EUIUtils.popBuilder(builder);
+            if (!output.isEmpty()) {
+                writeWord(sb, output, x, y, lineWidth, lineSpacing);
+            }
+
+            return new TupleT2<>(curWidth, curHeight);
+        }
+        return new TupleT2<>(0f, 0f);
+    }
+
+    private static boolean getAndMove() {
+        if (index < currentText.length()) {
             currentChar = currentText.charAt(index);
             index++;
             return true;
@@ -50,30 +159,155 @@ public class EUISmartText
         return false;
     }
 
-    // Possible color formats:
-    // #c: Single color
-    // #AABBCCDD: RGBA
-    public static Color getColor(String s)
-    {
-        if (s.length() == 1)
-        {
-            return getColor(s.charAt(0));
+    private static void writeToken(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing, float iconScaling, float imageSize) {
+        StringBuilder subBuilder = new StringBuilder();
+        while (getAndMove() && currentChar != ']') {
+            subBuilder.append(currentChar);
         }
-        try
-        {
-            return Color.valueOf(s);
-        }
-        catch (NumberFormatException e)
-        {
-            EUIUtils.logWarning(EUIRenderHelpers.class, "Invalid color: #" + s);
-            return mainColor;
+
+        String iconID = EUIUtils.popBuilder(subBuilder);
+        Color backgroundColor = getTooltipBackgroundColor(iconID);
+        TextureRegion icon = getSmallIcon(iconID);
+        if (icon != null) {
+            final float orbWidth = icon.getRegionWidth();
+            final float orbHeight = icon.getRegionHeight();
+            final float halfOrbWidth = orbWidth / 2f;
+            final float halfOrbHeight = orbHeight / 2f;
+            final float scaleX = imageSize / orbWidth;
+            final float scaleY = imageSize / orbHeight;
+
+            //sb.setColor(1f, 1f, 1f, baseColor.a);
+            if (curWidth + imageSize > lineWidth) {
+                curHeight -= lineSpacing;
+                if (sb != null) {
+                    if (backgroundColor != null) {
+                        sb.setColor(backgroundColor);
+                        sb.draw(EUIRM.images.baseBadge.texture(), x - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
+                                halfOrbWidth, halfOrbHeight,
+                                orbWidth, orbHeight, scaleX, scaleY, 0f,
+                                icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
+                                icon.getRegionHeight(), false, false);
+                    }
+                    sb.setColor(mainColor);
+                    sb.draw(icon, x - halfOrbWidth + 13f * Settings.scale, y + curHeight - halfOrbHeight - 8f * Settings.scale, halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f);
+                }
+                curWidth = imageSize + spaceWidth;
+            }
+            else {
+                if (sb != null) {
+                    if (backgroundColor != null) {
+                        sb.setColor(backgroundColor);
+                        sb.draw(EUIRM.images.baseBadge.texture(), x + curWidth - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
+                                halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f,
+                                icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
+                                icon.getRegionHeight(), false, false);
+                    }
+                    sb.setColor(mainColor);
+                    sb.draw(icon, x + curWidth - halfOrbWidth + 13f * Settings.scale, y + curHeight - halfOrbHeight - 8f * Settings.scale, halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f);
+                }
+
+                curWidth += imageSize + spaceWidth;
+            }
         }
     }
 
-    public static Color getColor(Character c)
-    {
-        switch (c)
-        {
+    private static void obtainWordColor() {
+        if (getAndMove()) {
+            wordColor = getColor(currentChar);
+        }
+    }
+
+    private static void writeLogic(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing) {
+        StringBuilder subBuilder = new StringBuilder();
+        while (getAndMove()) {
+            subBuilder.append(currentChar);
+            if (currentChar == '$') {
+                break;
+            }
+        }
+        String output = parseLogicString(EUIUtils.popBuilder(subBuilder));
+        if (output != null && !output.isEmpty()) {
+            writeWord(sb, output, x, y, lineWidth, lineSpacing);
+        }
+    }
+
+    private static void obtainBlockColor() {
+        if (getAndMove() && currentChar == '#') {
+            StringBuilder subBuilder = new StringBuilder();
+            while (getAndMove() && currentChar != ':') {
+                subBuilder.append(currentChar);
+            }
+            blockColor = getColor(EUIUtils.popBuilder(subBuilder));
+        }
+        else if (currentChar != null) {
+            blockColor = Settings.GOLD_COLOR;
+            builder.append(currentChar);
+        }
+    }
+
+    private static void writeWord(SpriteBatch sb, String word, float x, float y, float lineWidth, float lineSpacing) {
+        if (wordColor != null) {
+            currentFont.setColor(wordColor);
+            wordColor = null;
+        }
+        else if (blockColor != null) {
+            currentFont.setColor(blockColor);
+        }
+        else {
+            currentFont.setColor(mainColor);
+        }
+
+        layout.setText(currentFont, word);
+        if (curWidth + layout.width > lineWidth) {
+            curHeight -= lineSpacing;
+            if (sb != null) {
+                currentFont.draw(sb, word, x, y + curHeight);
+            }
+            curWidth = layout.width + spaceWidth;
+        }
+        else {
+            if (sb != null) {
+                currentFont.draw(sb, word, x + curWidth, y + curHeight);
+            }
+            curWidth += layout.width + spaceWidth;
+        }
+    }
+
+    private static void writeNewline(float lineSpacing) {
+        curWidth = 0f;
+        curHeight -= lineSpacing;
+    }
+
+    private static void writeTab(float spaceWidth) {
+        curWidth += spaceWidth * 5.0f;
+    }
+
+    private static Color getTooltipBackgroundColor(String id) {
+        EUITooltip tooltip = EUITooltip.findByID(id);
+        return (tooltip != null) ? tooltip.backgroundColor : null;
+    }
+
+    public static TextureRegion getSmallIcon(String id) {
+        switch (id) {
+            case "E":
+                return AbstractDungeon.player != null ? AbstractDungeon.player.getOrb() : AbstractCard.orb_red;
+            case "CARD":
+                return AbstractCard.orb_card;
+            case "POTION":
+                return AbstractCard.orb_potion;
+            case "RELIC":
+                return AbstractCard.orb_relic;
+            case "SPECIAL":
+                return AbstractCard.orb_special;
+
+            default:
+                EUITooltip tooltip = EUITooltip.findByID(id);
+                return (tooltip != null) ? tooltip.icon : null;
+        }
+    }
+
+    public static Color getColor(Character c) {
+        switch (c) {
             case 'c':
                 return Settings.CREAM_COLOR;
             case 'e':
@@ -104,89 +338,6 @@ public class EUISmartText
         }
     }
 
-    public static TextureRegion getSmallIcon(String id)
-    {
-        switch (id)
-        {
-            case "E":
-                return AbstractDungeon.player != null ? AbstractDungeon.player.getOrb() : AbstractCard.orb_red;
-            case "CARD":
-                return AbstractCard.orb_card;
-            case "POTION":
-                return AbstractCard.orb_potion;
-            case "RELIC":
-                return AbstractCard.orb_relic;
-            case "SPECIAL":
-                return AbstractCard.orb_special;
-
-            default:
-                EUITooltip tooltip = EUITooltip.findByID(id);
-                return (tooltip != null) ? tooltip.icon : null;
-        }
-    }
-
-    public static float getSmartHeight(BitmapFont font, String text, float lineWidth)
-    {
-        return getSmartHeight(font, text, lineWidth, font.getLineHeight());
-    }
-
-    public static float getSmartHeight(BitmapFont font, String text, float lineWidth, float lineSpacing)
-    {
-        return write(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).v2;
-    }
-
-    public static float getSmartWidth(BitmapFont font, String text)
-    {
-        return getSmartWidth(font, text, Integer.MAX_VALUE, font.getLineHeight());
-    }
-
-    public static float getSmartWidth(BitmapFont font, String text, float lineSpacing)
-    {
-        return getSmartWidth(font, text, Integer.MAX_VALUE, lineSpacing);
-    }
-
-    public static float getSmartWidth(BitmapFont font, String text, float lineWidth, float lineSpacing)
-    {
-        return write(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).v1;
-    }
-
-    private static Color getTooltipBackgroundColor(String id)
-    {
-        EUITooltip tooltip = EUITooltip.findByID(id);
-        return (tooltip != null) ? tooltip.backgroundColor : null;
-    }
-
-    private static void obtainBlockColor()
-    {
-        if (getAndMove() && currentChar == '#')
-        {
-            StringBuilder subBuilder = new StringBuilder();
-            while (getAndMove() && currentChar != ':')
-            {
-                subBuilder.append(currentChar);
-            }
-            blockColor = getColor(EUIUtils.popBuilder(subBuilder));
-        }
-        else if (currentChar != null)
-        {
-            blockColor = Settings.GOLD_COLOR;
-            builder.append(currentChar);
-        }
-    }
-
-    private static void obtainWordColor()
-    {
-        if (getAndMove())
-        {
-            wordColor = getColor(currentChar);
-        }
-    }
-
-    public static String parseKeywordLogicWithAmount(String logicString, int amount)
-    {
-        return parseLogicString(EUIUtils.format(logicString.substring(1), amount));
-    }
-
     /* Interprets the string as a logic statement and returns the subset that matches the evaluated value
      *
      * A: Integer value to be evaluated.
@@ -195,20 +346,17 @@ public class EUISmartText
      *
      * Example: A@>1:times@:time
      * */
-    public static String parseLogicString(String input)
-    {
+    public static String parseLogicString(String input) {
         int evaluated = 0;
         ArrayList<LogicBlock> conditions = new ArrayList<>();
         StringBuilder buffer = new StringBuilder();
         LogicBlock currentBlock = null;
         LogicCondition current = null;
 
-        for (int i = 0; i < input.length(); i++)
-        {
+        for (int i = 0; i < input.length(); i++) {
             char c = input.charAt(i);
 
-            switch (c)
-            {
+            switch (c) {
                 // < > signals start of condition. If there already was one, add it to the block and make a new one
                 case '<':
                 case '>':
@@ -216,12 +364,10 @@ public class EUISmartText
                 case '&':
                 case '!':
                 case '?':
-                    if (currentBlock == null)
-                    {
+                    if (currentBlock == null) {
                         currentBlock = new LogicBlock();
                     }
-                    else
-                    {
+                    else {
                         String condOutput = EUIUtils.popBuilder(buffer);
                         current.value = EUIUtils.parseInt(condOutput, evaluated);
                         currentBlock.conditions.add(current);
@@ -230,12 +376,10 @@ public class EUISmartText
                     break;
                 // : signals end of condition definition. An empty condition means that this block always returns
                 case ':':
-                    if (currentBlock == null)
-                    {
+                    if (currentBlock == null) {
                         currentBlock = new LogicBlock();
                     }
-                    if (current == null)
-                    {
+                    if (current == null) {
                         current = new LogicCondition(LogicComparison.True);
                     }
                     String condOutput = EUIUtils.popBuilder(buffer);
@@ -246,15 +390,13 @@ public class EUISmartText
                 case '$':
                 case '@':
                     String output = EUIUtils.popBuilder(buffer);
-                    if (currentBlock != null)
-                    {
+                    if (currentBlock != null) {
                         currentBlock.text = output;
                         conditions.add(currentBlock);
                         currentBlock = null;
                         current = null;
                     }
-                    else if (StringUtils.isNumeric(output))
-                    {
+                    else if (StringUtils.isNumeric(output)) {
                         evaluated = Integer.parseInt(output);
                     }
                     break;
@@ -264,10 +406,8 @@ public class EUISmartText
         }
 
         // Return the first block that passes
-        for (LogicBlock block : conditions)
-        {
-            if (block.evaluate(evaluated))
-            {
+        for (LogicBlock block : conditions) {
+            if (block.evaluate(evaluated)) {
                 return block.text;
             }
         }
@@ -275,259 +415,43 @@ public class EUISmartText
         return "";
     }
 
-    public static TupleT2<Float, Float> write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, Color baseColor)
-    {
+    // Possible color formats:
+    // #c: Single color
+    // #AABBCCDD: RGBA
+    public static Color getColor(String s) {
+        if (s.length() == 1) {
+            return getColor(s.charAt(0));
+        }
+        try {
+            return Color.valueOf(s);
+        }
+        catch (NumberFormatException e) {
+            EUIUtils.logWarning(EUIRenderHelpers.class, "Invalid color: #" + s);
+            return mainColor;
+        }
+    }
+
+    public static float getSmartWidth(BitmapFont font, String text) {
+        return getSmartWidth(font, text, Integer.MAX_VALUE, font.getLineHeight());
+    }
+
+    public static float getSmartWidth(BitmapFont font, String text, float lineWidth, float lineSpacing) {
+        return write(null, font, text, 0, 0, lineWidth, lineSpacing, Color.WHITE).v1;
+    }
+
+    public static float getSmartWidth(BitmapFont font, String text, float lineSpacing) {
+        return getSmartWidth(font, text, Integer.MAX_VALUE, lineSpacing);
+    }
+
+    public static String parseKeywordLogicWithAmount(String logicString, int amount) {
+        return parseLogicString(EUIUtils.format(logicString.substring(1), amount));
+    }
+
+    public static TupleT2<Float, Float> write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, Color baseColor) {
         return write(sb, font, text, x, y, lineWidth, font.getLineHeight() * Settings.scale, baseColor);
     }
 
-    public static TupleT2<Float, Float> write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor)
-    {
-        return write(sb, font, text, x, y, lineWidth, lineSpacing, baseColor, false);
-    }
-
-    public static TupleT2<Float, Float> write(SpriteBatch sb, BitmapFont font, String text, float x, float y, float lineWidth, float lineSpacing, Color baseColor, boolean applyFontScaling)
-    {
-        index = 0;
-        if (text != null)
-        {
-            builder.setLength(0);
-            curWidth = 0f;
-            curHeight = 0f;
-            mainColor = baseColor;
-            currentText = text;
-
-            float fontScale = 0;
-            try
-            {
-                fontScale = font.getScaleX();
-            }
-            catch (Exception e)
-            {
-                EUIUtils.logError(null, "OH NOES, " + text + " with font " + font);
-                throw e;
-            }
-
-
-            if (currentFont != font || currentFontScale != fontScale)
-            {
-                currentFontScale = fontScale;
-                currentFont = font;
-                layout.setText(font, " ");
-                spaceWidth = layout.width;
-            }
-
-            final float sizeMultiplier = applyFontScaling ? (0.667f + (currentFont.getScaleX() / 3f)) : 1;
-            final float imgSize = sizeMultiplier * CARD_ENERGY_IMG_WIDTH;
-
-            while (getAndMove())
-            {
-                switch (currentChar)
-                {
-                    // Symbol
-                    case '[':
-                        if (!EUIConfiguration.disableDescrptionIcons.get())
-                        {
-                            writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize);
-                        }
-                        break;
-                    // Force symbol, ignoring user config settings
-                    case '†':
-                        writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize);
-                        break;
-                    // End of symbol, needs to be manually ignored when icons are disabled
-                    case ']':
-                        break;
-                    // Color
-                    case '#':
-                        obtainWordColor();
-                        break;
-                    // Logic Block
-                    case '$':
-                        writeLogic(sb, x, y, lineWidth, lineSpacing);
-                        break;
-                    // Color Block
-                    case '{':
-                        obtainBlockColor();
-                        break;
-                    // End Color Block
-                    case '}':
-                        String o = EUIUtils.popBuilder(builder);
-                        if (!o.isEmpty())
-                        {
-                            writeWord(sb, o, x, y, lineWidth, lineSpacing);
-                        }
-                        blockColor = null;
-                        break;
-                    // Newline
-                    case '|':
-                        writeNewline(lineSpacing);
-                        break;
-                    // Tab
-                    case '^':
-                        writeTab(lineSpacing);
-                        break;
-                    default:
-                        if (Character.isWhitespace(currentChar))
-                        {
-                            String output = EUIUtils.popBuilder(builder);
-                            if (!output.isEmpty())
-                            {
-                                // Base game newlines
-                                if (NEWLINE.equals(output))
-                                {
-                                    writeNewline(lineSpacing);
-                                }
-                                else
-                                {
-                                    writeWord(sb, output, x, y, lineWidth, lineSpacing);
-                                }
-                            }
-                        }
-                        else
-                        {
-                            builder.append(currentChar);
-                        }
-                }
-            }
-            String output = EUIUtils.popBuilder(builder);
-            if (!output.isEmpty())
-            {
-                writeWord(sb, output, x, y, lineWidth, lineSpacing);
-            }
-
-            return new TupleT2<>(curWidth, curHeight);
-        }
-        return new TupleT2<>(0f, 0f);
-    }
-
-    private static void writeLogic(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing)
-    {
-        StringBuilder subBuilder = new StringBuilder();
-        while (getAndMove())
-        {
-            subBuilder.append(currentChar);
-            if (currentChar == '$')
-            {
-                break;
-            }
-        }
-        String output = parseLogicString(EUIUtils.popBuilder(subBuilder));
-        if (output != null && !output.isEmpty())
-        {
-            writeWord(sb, output, x, y, lineWidth, lineSpacing);
-        }
-    }
-
-    private static void writeNewline(float lineSpacing)
-    {
-        curWidth = 0f;
-        curHeight -= lineSpacing;
-    }
-
-    private static void writeTab(float spaceWidth)
-    {
-        curWidth += spaceWidth * 5.0f;
-    }
-
-    private static void writeToken(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing, float iconScaling, float imageSize)
-    {
-        StringBuilder subBuilder = new StringBuilder();
-        while (getAndMove() && currentChar != ']')
-        {
-            subBuilder.append(currentChar);
-        }
-
-        String iconID = EUIUtils.popBuilder(subBuilder);
-        Color backgroundColor = getTooltipBackgroundColor(iconID);
-        TextureRegion icon = getSmallIcon(iconID);
-        if (icon != null)
-        {
-            final float orbWidth = icon.getRegionWidth();
-            final float orbHeight = icon.getRegionHeight();
-            final float halfOrbWidth = orbWidth / 2f;
-            final float halfOrbHeight = orbHeight / 2f;
-            final float scaleX = imageSize / orbWidth;
-            final float scaleY = imageSize / orbHeight;
-
-            //sb.setColor(1f, 1f, 1f, baseColor.a);
-            if (curWidth + imageSize > lineWidth)
-            {
-                curHeight -= lineSpacing;
-                if (sb != null)
-                {
-                    if (backgroundColor != null)
-                    {
-                        sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.images.baseBadge.texture(), x - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
-                                halfOrbWidth, halfOrbHeight,
-                                orbWidth, orbHeight, scaleX, scaleY, 0f,
-                                icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
-                                icon.getRegionHeight(), false, false);
-                    }
-                    sb.setColor(mainColor);
-                    sb.draw(icon, x - halfOrbWidth + 13f * Settings.scale, y + curHeight - halfOrbHeight - 8f * Settings.scale, halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f);
-                }
-                curWidth = imageSize + spaceWidth;
-            }
-            else
-            {
-                if (sb != null)
-                {
-                    if (backgroundColor != null)
-                    {
-                        sb.setColor(backgroundColor);
-                        sb.draw(EUIRM.images.baseBadge.texture(), x + curWidth - halfOrbWidth + iconScaling * 13f * Settings.scale, y + curHeight - iconScaling * halfOrbHeight - 8f * Settings.scale,
-                                halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f,
-                                icon.getRegionX(), icon.getRegionY(), icon.getRegionWidth(),
-                                icon.getRegionHeight(), false, false);
-                    }
-                    sb.setColor(mainColor);
-                    sb.draw(icon, x + curWidth - halfOrbWidth + 13f * Settings.scale, y + curHeight - halfOrbHeight - 8f * Settings.scale, halfOrbWidth, halfOrbHeight, orbWidth, orbHeight, scaleX, scaleY, 0f);
-                }
-
-                curWidth += imageSize + spaceWidth;
-            }
-        }
-    }
-
-    private static void writeWord(SpriteBatch sb, String word, float x, float y, float lineWidth, float lineSpacing)
-    {
-        if (wordColor != null)
-        {
-            currentFont.setColor(wordColor);
-            wordColor = null;
-        }
-        else if (blockColor != null)
-        {
-            currentFont.setColor(blockColor);
-        }
-        else
-        {
-            currentFont.setColor(mainColor);
-        }
-
-        layout.setText(currentFont, word);
-        if (curWidth + layout.width > lineWidth)
-        {
-            curHeight -= lineSpacing;
-            if (sb != null)
-            {
-                currentFont.draw(sb, word, x, y + curHeight);
-            }
-            curWidth = layout.width + spaceWidth;
-        }
-        else
-        {
-            if (sb != null)
-            {
-                currentFont.draw(sb, word, x + curWidth, y + curHeight);
-            }
-            curWidth += layout.width + spaceWidth;
-        }
-    }
-
-    public enum LogicComparison
-    {
+    public enum LogicComparison {
         Greater,
         Less,
         Modulo,
@@ -536,10 +460,8 @@ public class EUISmartText
         Equal,
         True;
 
-        public static LogicComparison typeFor(char c)
-        {
-            switch (c)
-            {
+        public static LogicComparison typeFor(char c) {
+            switch (c) {
                 case '>':
                     return LogicComparison.Greater;
                 case '<':
@@ -557,36 +479,29 @@ public class EUISmartText
         }
     }
 
-    public static class LogicBlock
-    {
+    public static class LogicBlock {
         final public ArrayList<LogicCondition> conditions;
         public String text;
 
-        public LogicBlock()
-        {
+        public LogicBlock() {
             conditions = new ArrayList<>();
         }
 
-        public boolean evaluate(int input)
-        {
+        public boolean evaluate(int input) {
             return EUIUtils.any(conditions, block -> block.evaluate(input));
         }
     }
 
-    public static class LogicCondition
-    {
+    public static class LogicCondition {
         public int value = 0;
         public LogicComparison type;
 
-        public LogicCondition(LogicComparison type)
-        {
+        public LogicCondition(LogicComparison type) {
             this.type = type;
         }
 
-        public boolean evaluate(int input)
-        {
-            switch (type)
-            {
+        public boolean evaluate(int input) {
+            switch (type) {
                 case Greater:
                     return input > value;
                 case Less:
@@ -595,8 +510,7 @@ public class EUISmartText
                     return input % value == 0;
                 case EndsWith:
                     int denominator = 10;
-                    while (denominator < value)
-                    {
+                    while (denominator < value) {
                         denominator *= 10;
                     }
                     return input % denominator == value;

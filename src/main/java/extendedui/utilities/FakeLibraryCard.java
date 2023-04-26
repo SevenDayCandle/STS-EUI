@@ -9,60 +9,25 @@ import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import extendedui.EUIRM;
 import extendedui.ui.hitboxes.FakeHitbox;
 
-public class FakeLibraryCard extends AbstractCard
-{
-    @Override
-    public void upgrade()
-    {
-
-    }
-
-    public FakeLibraryCard()
-    {
-        super("","", "", "", 0, EUIRM.strings.uiNomatch, CardType.SKILL, CardColor.COLORLESS, CardRarity.SPECIAL, CardTarget.NONE);
+public class FakeLibraryCard extends AbstractCard {
+    public FakeLibraryCard() {
+        super("", "", "", "", 0, EUIRM.strings.uiNomatch, CardType.SKILL, CardColor.COLORLESS, CardRarity.SPECIAL, CardTarget.NONE);
         this.hb = new FakeHitbox(hb);
     }
 
     @Override
-    public void use(AbstractPlayer abstractPlayer, AbstractMonster abstractMonster)
-    {
+    public void initializeDescription() {
 
     }
 
     @Override
-    public void renderUpgradePreview(SpriteBatch sb)
-    {
+    public void upgrade() {
 
     }
 
     @Override
-    public void initializeDescription()
-    {
+    public void use(AbstractPlayer abstractPlayer, AbstractMonster abstractMonster) {
 
-    }
-
-    @Override
-    public void calculateCardDamage(AbstractMonster mo)
-    {
-
-    }
-
-    @Override
-    public AbstractCard makeCopy() {
-        return new FakeLibraryCard();
-    }
-
-    @Override
-    public void renderCardPreview(SpriteBatch sb) {
-    }
-
-    @Override
-    public void renderCardPreviewInSingleView(SpriteBatch sb) {
-    }
-
-    @Override
-    public void renderWithSelections(SpriteBatch sb) {
-        renderImpl(sb);
     }
 
     @Override
@@ -71,9 +36,36 @@ public class FakeLibraryCard extends AbstractCard
     }
 
     @Override
-    public void render(SpriteBatch sb, boolean selected)
-    {
+    public void render(SpriteBatch sb, boolean selected) {
         renderImpl(sb);
+    }
+
+    @Override
+    public void renderUpgradePreview(SpriteBatch sb) {
+
+    }
+
+    @Override
+    public void renderWithSelections(SpriteBatch sb) {
+        renderImpl(sb);
+    }
+
+    @Override
+    public void renderCardPreviewInSingleView(SpriteBatch sb) {
+    }
+
+    @Override
+    public void renderCardPreview(SpriteBatch sb) {
+    }
+
+    @Override
+    public void calculateCardDamage(AbstractMonster mo) {
+
+    }
+
+    @Override
+    public AbstractCard makeCopy() {
+        return new FakeLibraryCard();
     }
 
     private void renderImpl(SpriteBatch sb) {

@@ -10,41 +10,32 @@ import extendedui.EUIUtils;
 import extendedui.ui.cardFilter.SimpleCardFilterModule;
 import extendedui.utilities.EUIClassUtils;
 
-public class PackmasterPatches
-{
+public class PackmasterPatches {
     @SpirePatch(cls = "thePackmaster.SpireAnniversary5Mod", method = "receivePostInitialize", requiredModId = "anniv5", optional = true)
-    public static class PackmasterPatches_PostInitialize
-    {
+    public static class PackmasterPatches_PostInitialize {
         @SpirePostfixPatch
-        public static void postfix()
-        {
-            try
-            {
+        public static void postfix() {
+            try {
                 AbstractCard.CardColor packMasterColor = AbstractCard.CardColor.valueOf("PACKMASTER_RAINBOW");
                 UIStrings uiStrings = CardCrawlGame.languagePack.getUIString(EUIClassUtils.getRFieldStatic("thePackmaster.packs.AbstractPackPreviewCard", "ID"));
                 EUI.setCustomCardFilter(packMasterColor,
                         new SimpleCardFilterModule<Object>(uiStrings.TEXT[1], t -> {
-                            try
-                            {
+                            try {
                                 return EUIClassUtils.getRField("thePackmaster.packs.AbstractCardPack", "name", t);
                             }
-                            catch (Exception ignored)
-                            {
+                            catch (Exception ignored) {
                                 return "";
                             }
                         }, card -> {
-                            try
-                            {
+                            try {
                                 return EUIClassUtils.invokeR("thePackmaster.cards.AbstractPackmasterCard", "getParent", card);
                             }
-                            catch (Exception ignored)
-                            {
+                            catch (Exception ignored) {
                                 return null;
                             }
                         }));
             }
-            catch (Exception e)
-            {
+            catch (Exception e) {
                 EUIUtils.logWarning(null, "OH NOES");
                 e.printStackTrace();
             }

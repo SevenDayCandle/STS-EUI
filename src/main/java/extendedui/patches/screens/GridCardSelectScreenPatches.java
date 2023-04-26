@@ -11,45 +11,35 @@ import java.util.ArrayList;
 
 public class GridCardSelectScreenPatches {
 
-    @SpirePatch(clz= GridCardSelectScreen.class, method="calculateScrollBounds")
-    public static class GridCardSelectScreen_CalculateScrollBounds
-    {
+    @SpirePatch(clz = GridCardSelectScreen.class, method = "calculateScrollBounds")
+    public static class GridCardSelectScreen_CalculateScrollBounds {
         @SpirePrefixPatch
-        public static SpireReturn prefix(GridCardSelectScreen __instance)
-        {
-            if (GridCardSelectScreenHelper.calculateScrollBounds(__instance))
-            {
+        public static SpireReturn prefix(GridCardSelectScreen __instance) {
+            if (GridCardSelectScreenHelper.calculateScrollBounds(__instance)) {
                 return SpireReturn.Return(null);
             }
-            else
-            {
+            else {
                 return SpireReturn.Continue();
             }
         }
     }
 
-    @SpirePatch(clz= GridCardSelectScreen.class, method="callOnOpen")
-    public static class GridCardSelectScreen_CallOnOpen
-    {
+    @SpirePatch(clz = GridCardSelectScreen.class, method = "callOnOpen")
+    public static class GridCardSelectScreen_CallOnOpen {
         @SpirePostfixPatch
-        public static void postfix(GridCardSelectScreen __instance)
-        {
+        public static void postfix(GridCardSelectScreen __instance) {
             GridCardSelectScreenHelper.open(__instance);
         }
     }
 
-    @SpirePatch(clz= GridCardSelectScreen.class, method="updateCardPositionsAndHoverLogic")
-    public static class GridCardSelectScreen_UpdateCardPositionsAndHoverLogic
-    {
+    @SpirePatch(clz = GridCardSelectScreen.class, method = "updateCardPositionsAndHoverLogic")
+    public static class GridCardSelectScreen_UpdateCardPositionsAndHoverLogic {
         @SpirePrefixPatch
-        public static SpireReturn prefix(GridCardSelectScreen __instance)
-        {
-            if (GridCardSelectScreenHelper.updateCardPositionAndHover(__instance))
-            {
+        public static SpireReturn prefix(GridCardSelectScreen __instance) {
+            if (GridCardSelectScreenHelper.updateCardPositionAndHover(__instance)) {
                 return SpireReturn.Return(null);
             }
-            else
-            {
+            else {
                 return SpireReturn.Continue();
             }
         }
@@ -72,6 +62,18 @@ public class GridCardSelectScreenPatches {
             }
         }
 
+        @SpireInsertPatch(
+                locator = Locator2.class
+        )
+        public static void insert3(GridCardSelectScreen __instance) {
+            GridCardSelectScreenHelper.invokeOnClick(__instance);
+        }
+
+        @SpirePostfixPatch
+        public static void postfix(GridCardSelectScreen __instance) {
+            GridCardSelectScreenHelper.updateDynamicString();
+        }
+
         private static class Locator extends SpireInsertLocator {
             private Locator() {
             }
@@ -81,13 +83,6 @@ public class GridCardSelectScreenPatches {
                 int[] found = LineFinder.findAllInOrder(ctMethodToPatch, finalMatcher);
                 return new int[]{found[found.length - 1]};
             }
-        }
-
-        @SpireInsertPatch(
-                locator = Locator2.class
-        )
-        public static void insert3(GridCardSelectScreen __instance) {
-            GridCardSelectScreenHelper.invokeOnClick(__instance);
         }
 
         private static class Locator2 extends SpireInsertLocator {
@@ -100,12 +95,6 @@ public class GridCardSelectScreenPatches {
                 return new int[]{found[0] - 1};
             }
         }
-
-        @SpirePostfixPatch
-        public static void postfix(GridCardSelectScreen __instance)
-        {
-            GridCardSelectScreenHelper.updateDynamicString();
-        }
     }
 
     @SpirePatch(
@@ -117,8 +106,7 @@ public class GridCardSelectScreenPatches {
         }
 
         @SpirePostfixPatch
-        public static void postfix(GridCardSelectScreen __instance, SpriteBatch sb)
-        {
+        public static void postfix(GridCardSelectScreen __instance, SpriteBatch sb) {
             GridCardSelectScreenHelper.renderDynamicString(sb);
         }
     }

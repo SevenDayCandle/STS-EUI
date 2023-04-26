@@ -7,18 +7,33 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface TooltipProvider {
-    List<EUITooltip> getTips();
+    default void generateDynamicTooltips(ArrayList<EUITooltip> dynamicTooltips) {
+    }
+
+    default EUITooltip getIntentTip() {
+        return null;
+    }
+
+    default EUICardPreview getPreview() {
+        return null;
+    }
+
+    default List<EUITooltip> getTipsForFilters() {
+        return getTips();
+    }
+
     default EUITooltip getTooltip() {
         List<EUITooltip> tooltips = getTips();
         return tooltips != null && tooltips.size() > 0 ? getTips().get(0) : null;
     }
-    default List<EUITooltip> getTipsForFilters() {
-        return getTips();
+
+    List<EUITooltip> getTips();
+
+    default boolean isPopup() {
+        return false;
     }
-    default EUITooltip getIntentTip() {return null;}
-    default EUICardPreview getPreview() {return null;}
-    default boolean isPopup() {return false;}
-    default void generateDynamicTooltips(ArrayList<EUITooltip> dynamicTooltips) {}
+
     // For use with cards that should act differently when rendered through EUICardPreview
-    default void setIsPreview(boolean value) {}
+    default void setIsPreview(boolean value) {
+    }
 }

@@ -14,8 +14,7 @@ import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.utilities.EUIFontHelper;
 
-public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase
-{
+public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase {
     private static final Color PANEL_COLOR = new Color(0.05f, 0.05f, 0.05f, 1f);
     public final T type;
     public EUIButton backgroundButton;
@@ -23,15 +22,13 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase
     public EUILabel counterText;
     public EUILabel counterpercentageText;
 
-    public CountingPanelCounter(CountingPanelStats<T, ?, ?> panel, Hitbox hb, T type, ActionT1<CountingPanelCounter<T>> onClick)
-    {
+    public CountingPanelCounter(CountingPanelStats<T, ?, ?> panel, Hitbox hb, T type, ActionT1<CountingPanelCounter<T>> onClick) {
         this.type = type;
 
         backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), RelativeHitbox.fromPercentages(hb, 1, 1, 0.5f, 0))
                 .setColor(PANEL_COLOR)
                 .setOnClick(onClick == null ? null : () -> onClick.invoke(this));
-        if (type instanceof TooltipProvider)
-        {
+        if (type instanceof TooltipProvider) {
             backgroundButton.setTooltip(((TooltipProvider) type).getTooltip());
         }
 
@@ -49,8 +46,7 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase
                 .setLabel(panel.getPercentageString(type));
     }
 
-    public CountingPanelCounter<T> setIndex(int index)
-    {
+    public CountingPanelCounter<T> setIndex(int index) {
         float y = -(index + 1) * backgroundButton.hb.height * 1.05f;
         backgroundButton.hb.setOffsetY(y);
         counterText.hb.setOffsetY(y);
@@ -61,8 +57,7 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase
     }
 
     @Override
-    public void updateImpl()
-    {
+    public void updateImpl() {
         backgroundButton.updateImpl();
         counterText.updateImpl();
         counterpercentageText.updateImpl();
@@ -70,8 +65,7 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb)
-    {
+    public void renderImpl(SpriteBatch sb) {
         backgroundButton.renderImpl(sb);
         counterpercentageText.renderImpl(sb);
         counterText.renderImpl(sb);

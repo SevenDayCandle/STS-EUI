@@ -8,24 +8,40 @@ import extendedui.EUI;
 import extendedui.ui.EUIBase;
 import extendedui.ui.hitboxes.EUIHitbox;
 
-public abstract class EUICanvas extends EUIBase
-{
+public abstract class EUICanvas extends EUIBase {
     private static final float SCROLL_BAR_THRESHOLD = 500f * Settings.scale;
-
+    public final EUIVerticalScrollBar scrollBar;
+    public boolean autoShowScrollbar = true;
+    public boolean draggingScreen;
+    public boolean instantSnap;
     protected boolean canDragScreen = true;
     protected float lowerScrollBound = -Settings.DEFAULT_SCROLL_LIMIT;
     protected float scrollDelta;
     protected float scrollStart;
     protected float upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
-    public boolean autoShowScrollbar = true;
-    public boolean draggingScreen;
-    public boolean instantSnap;
-    public final EUIVerticalScrollBar scrollBar;
 
 
     public EUICanvas() {
         this.scrollBar = new EUIVerticalScrollBar(new EUIHitbox(screenW(0.93f), screenH(0.15f), screenW(0.03f), screenH(0.7f)))
                 .setOnScroll(this::onScroll);
+    }
+
+    protected void onScroll(float newPercent) {
+        if (!EUI.doesActiveElementExist()) {
+            scrollDelta = MathHelper.valueFromPercentBetween(lowerScrollBound, upperScrollBound, newPercent);
+        }
+    }
+
+    public float getScrollDelta() {
+        return scrollDelta;
+    }
+
+    public boolean isHovered() {
+        return scrollBar.hb.hovered;
+    }
+
+    public void moveToTop() {
+        scrollBar.scroll(0, true);
     }
 
     public EUICanvas setScrollBounds(float lowerScrollBound, float upperScrollBound) {
@@ -34,105 +50,68 @@ public abstract class EUICanvas extends EUIBase
         return this;
     }
 
-    public EUICanvas showScrollbar(boolean showScrollbar)
-    {
+    public EUICanvas showScrollbar(boolean showScrollbar) {
         this.autoShowScrollbar = showScrollbar;
 
         return this;
     }
 
     @Override
-    public void updateImpl()
-    {
+    public void updateImpl() {
         if (!EUI.doesActiveElementExist()) {
-            if (shouldShowScrollbar())
-            {
+            if (shouldShowScrollbar()) {
                 scrollBar.updateImpl();
                 updateScrolling(scrollBar.isDragging);
             }
-            else
-            {
+            else {
                 updateScrolling(false);
             }
         }
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb)
-    {
-        if (shouldShowScrollbar())
-        {
+    public void renderImpl(SpriteBatch sb) {
+        if (shouldShowScrollbar()) {
             scrollBar.renderImpl(sb);
         }
     }
 
-    protected void updateScrolling(boolean isDraggingScrollBar)
-    {
-        if (!isDraggingScrollBar)
-        {
-            if (draggingScreen)
-            {
-                if (InputHelper.isMouseDown && EUI.tryDragging())
-                {
+    protected boolean shouldShowScrollbar() {
+        return autoShowScrollbar && upperScrollBound > SCROLL_BAR_THRESHOLD;
+    }
+
+    protected void updateScrolling(boolean isDraggingScrollBar) {
+        if (!isDraggingScrollBar) {
+            if (draggingScreen) {
+                if (InputHelper.isMouseDown && EUI.tryDragging()) {
                     scrollDelta = InputHelper.mY - scrollStart;
                 }
-                else
-                {
+                else {
                     draggingScreen = false;
                 }
             }
-            else
-            {
-                if (InputHelper.scrolledDown)
-                {
+            else {
+                if (InputHelper.scrolledDown) {
                     scrollDelta += Settings.SCROLL_SPEED;
                 }
-                else if (InputHelper.scrolledUp)
-                {
+                else if (InputHelper.scrolledUp) {
                     scrollDelta -= Settings.SCROLL_SPEED;
                 }
 
-                if (canDragScreen && InputHelper.justClickedLeft && EUI.tryDragging())
-                {
+                if (canDragScreen && InputHelper.justClickedLeft && EUI.tryDragging()) {
                     draggingScreen = true;
                     scrollStart = InputHelper.mY - scrollDelta;
                 }
             }
         }
 
-        if (scrollDelta < lowerScrollBound)
-        {
+        if (scrollDelta < lowerScrollBound) {
             scrollDelta = instantSnap ? lowerScrollBound : MathHelper.scrollSnapLerpSpeed(scrollDelta, lowerScrollBound);
         }
-        else if (scrollDelta > upperScrollBound)
-        {
+        else if (scrollDelta > upperScrollBound) {
             scrollDelta = instantSnap ? upperScrollBound : MathHelper.scrollSnapLerpSpeed(scrollDelta, upperScrollBound);
         }
 
         scrollBar.scroll(MathHelper.percentFromValueBetween(lowerScrollBound, upperScrollBound, scrollDelta), false);
-    }
-
-    public float getScrollDelta()
-    {
-        return scrollDelta;
-    }
-
-    public void moveToTop() {
-        scrollBar.scroll(0, true);
-    }
-
-    public boolean isHovered() {return scrollBar.hb.hovered;}
-
-    protected void onScroll(float newPercent)
-    {
-        if (!EUI.doesActiveElementExist())
-        {
-            scrollDelta = MathHelper.valueFromPercentBetween(lowerScrollBound, upperScrollBound, newPercent);
-        }
-    }
-
-    protected boolean shouldShowScrollbar()
-    {
-        return autoShowScrollbar && upperScrollBound > SCROLL_BAR_THRESHOLD;
     }
 }

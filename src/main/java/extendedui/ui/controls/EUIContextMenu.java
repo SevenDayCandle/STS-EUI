@@ -11,11 +11,14 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EUIContextMenu<T> extends EUIDropdown<T>
-{
+public class EUIContextMenu<T> extends EUIDropdown<T> {
     public EUIContextMenu(EUIHitbox hb) {
         super(hb);
         initialize();
+    }
+
+    protected void initialize() {
+        this.button.setActive(false);
     }
 
     public EUIContextMenu(EUIHitbox hb, FuncT1<String, T> labelFunction) {
@@ -33,24 +36,15 @@ public class EUIContextMenu<T> extends EUIDropdown<T>
         initialize();
     }
 
+
     public EUIContextMenu(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
         super(hb, labelFunction, options, font, fontScale, maxRows, canAutosizeButton);
         initialize();
     }
 
-
-    protected void initialize() {
-        this.button.setActive(false);
-    }
-
-    public EUIContextMenu<T> setCanAutosizeButton(boolean value) {
-        super.setCanAutosizeButton(value);
-        return this;
-    }
-
-    public EUIContextMenu<T> setOnChange(ActionT1<List<T>> onChange) {
-        super.setOnChange(onChange);
-        return this;
+    public void positionToOpen() {
+        this.setPosition(InputHelper.mX, InputHelper.mY);
+        openOrCloseMenu();
     }
 
     public EUIContextMenu<T> setOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
@@ -58,25 +52,9 @@ public class EUIContextMenu<T> extends EUIDropdown<T>
         return this;
     }
 
-    public EUIContextMenu<T> setPosition(float x, float y) {
-        super.setPosition(x, y);
+    public EUIContextMenu<T> setOnChange(ActionT1<List<T>> onChange) {
+        super.setOnChange(onChange);
         return this;
-    }
-
-    public void positionToOpen()
-    {
-        this.setPosition(InputHelper.mX, InputHelper.mY);
-        openOrCloseMenu();
-    }
-
-    @Override
-    protected void renderArrows(SpriteBatch sb) {
-    }
-
-    // No-op
-    @Override
-    protected void updateButtons()
-    {
     }
 
     @Override
@@ -89,6 +67,25 @@ public class EUIContextMenu<T> extends EUIDropdown<T>
         if (this.rows.size() > 0 && this.isOpen) {
             EUI.addPriorityPostRender(this::renderRowContent);
         }
+    }
+
+    @Override
+    protected void renderArrows(SpriteBatch sb) {
+    }
+
+    public EUIContextMenu<T> setCanAutosizeButton(boolean value) {
+        super.setCanAutosizeButton(value);
+        return this;
+    }
+
+    // No-op
+    @Override
+    protected void updateButtons() {
+    }
+
+    public EUIContextMenu<T> setPosition(float x, float y) {
+        super.setPosition(x, y);
+        return this;
     }
 
 }

@@ -30,8 +30,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class ModSettingsScreen extends AbstractScreen
-{
+public class ModSettingsScreen extends AbstractScreen {
     protected static final float OPTION_SIZE = scale(40);
     protected static final float OFFSET_SIZE = scale(640);
     protected static final float COLOR_BUTTON_SIZE = scale(51);
@@ -40,43 +39,21 @@ public class ModSettingsScreen extends AbstractScreen
     protected static final HashMap<Category, ArrayList<IUIElement>> configCategories = new HashMap<>();
     protected static final HashMap<Category, Float> offsets = new HashMap<>();
     protected static final EUIHitbox hb = new EUIHitbox(screenW(0.5f) - scale(700), Settings.OPTION_Y - scale(400), scale(1400), scale(800));
-    protected final EUIButtonList buttons = new EUIButtonList(7, screenW(0.077f), hb.y + scale(800), scale(205), scale(42)).setFontScale(0.6f);
     public final MenuCancelButton button;
+    protected final EUIButtonList buttons = new EUIButtonList(7, screenW(0.077f), hb.y + scale(800), scale(205), scale(42)).setFontScale(0.6f);
     private final EUIImage background;
     private Category activeMod;
 
-    public static void addModList(Category cat, ModPanel panel)
-    {
-        if (panel != null)
-        {
-            modListCategories.putIfAbsent(cat, panel.getUIElements());
-        }
+    public ModSettingsScreen() {
+        super();
+        background = new EUIImage(modPanel.texture(), hb);
+        button = new MenuCancelButton();
     }
 
-    public static void addCategory(Category cat)
-    {
-        configCategories.putIfAbsent(cat, new ArrayList<>());
-        offsets.putIfAbsent(cat, OFFSET_SIZE);
-    }
-
-    public static Category registerByInfo(ModInfo info)
-    {
-        Category c = new Category(info.Name);
-        addCategory(c);
-        return c;
-    }
-
-    public static Category registerByClass(Class<?> classType)
-    {
-        return registerByInfo(Objects.requireNonNull(EUIGameUtils.getModInfo(classType)));
-    }
-
-    public static ModSettingsToggle addBoolean(Category cat, STSConfigItem<Boolean> option, String label)
-    {
+    public static ModSettingsToggle addBoolean(Category cat, STSConfigItem<Boolean> option, String label) {
         ArrayList<IUIElement> list = configCategories.get(cat);
         float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
-        if (list != null)
-        {
+        if (list != null) {
             float baseWidth = EUISmartText.getSmartWidth(EUIFontHelper.carddescriptionfontNormal, label);
             ModSettingsToggle toggle = new ModSettingsToggle(new RelativeHitbox(hb, OPTION_SIZE * 2 + baseWidth, OPTION_SIZE, OPTION_SIZE * 3.3f + baseWidth / 2f, offY), option, label);
             list.add(toggle);
@@ -86,15 +63,37 @@ public class ModSettingsScreen extends AbstractScreen
         return null;
     }
 
-    public static ModSettingsPathSelector addPathSelection(Category cat, STSConfigItem<String> option, String label, String... extensions)
-    {
+    public static void addIUI(Category cat, IUIElement option, String label) {
+        ArrayList<IUIElement> list = configCategories.get(cat);
+        if (list != null) {
+            list.add(option);
+        }
+    }
+
+    public static EUILabel addLabel(Category cat, String text, BitmapFont font) {
         ArrayList<IUIElement> list = configCategories.get(cat);
         float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
-        if (list != null)
-        {
+        if (list != null) {
+            EUILabel label = new EUILabel(font, new RelativeHitbox(hb, OPTION_SIZE * 16, OPTION_SIZE, OPTION_SIZE * 6f, offY)).setLabel(text);
+            list.add(label);
+            offsets.put(cat, offY -= label.hb.height * 1.2f);
+            return label;
+        }
+        return null;
+    }
+
+    public static void addModList(Category cat, ModPanel panel) {
+        if (panel != null) {
+            modListCategories.putIfAbsent(cat, panel.getUIElements());
+        }
+    }
+
+    public static ModSettingsPathSelector addPathSelection(Category cat, STSConfigItem<String> option, String label, String... extensions) {
+        ArrayList<IUIElement> list = configCategories.get(cat);
+        float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
+        if (list != null) {
             ModSettingsPathSelector selector = new ModSettingsPathSelector(new RelativeHitbox(hb, OPTION_SIZE * 8, OPTION_SIZE, OPTION_SIZE * 7f, offY), option, label);
-            if (extensions.length > 0)
-            {
+            if (extensions.length > 0) {
                 selector.setFileFilters(extensions);
             }
             list.add(selector);
@@ -104,35 +103,24 @@ public class ModSettingsScreen extends AbstractScreen
         return null;
     }
 
-    public static EUILabel addLabel(Category cat, String text, BitmapFont font)
-    {
-        ArrayList<IUIElement> list = configCategories.get(cat);
-        float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
-        if (list != null)
-        {
-            EUILabel label = new EUILabel(font, new RelativeHitbox(hb, OPTION_SIZE * 16, OPTION_SIZE, OPTION_SIZE * 6f, offY)).setLabel(text);
-            list.add(label);
-            offsets.put(cat, offY -= label.hb.height * 1.2f);
-            return label;
-        }
-        return null;
+    public static Category registerByClass(Class<?> classType) {
+        return registerByInfo(Objects.requireNonNull(EUIGameUtils.getModInfo(classType)));
     }
 
-
-    public static void addIUI(Category cat, IUIElement option, String label)
-    {
-        ArrayList<IUIElement> list = configCategories.get(cat);
-        if (list != null)
-        {
-            list.add(option);
-        }
+    public static Category registerByInfo(ModInfo info) {
+        Category c = new Category(info.Name);
+        addCategory(c);
+        return c;
     }
 
-    public ModSettingsScreen()
-    {
-        super();
-        background = new EUIImage(modPanel.texture(), hb);
-        button = new MenuCancelButton();
+    public static void addCategory(Category cat) {
+        configCategories.putIfAbsent(cat, new ArrayList<>());
+        offsets.putIfAbsent(cat, OFFSET_SIZE);
+    }
+
+    protected void makeButton(Category info) {
+        buttons.addButton(button -> setActiveItem(info), info.name)
+                .setColor(Color.GRAY);
     }
 
     public void open() {
@@ -143,20 +131,17 @@ public class ModSettingsScreen extends AbstractScreen
         buttons.clear();
         ArrayList<Category> infos = new ArrayList<>(getCategories().keySet());
         infos.sort((a, b) -> StringUtils.compare(a.name, b.name));
-        for (Category info : infos)
-        {
+        for (Category info : infos) {
             makeButton(info);
         }
 
-        if (infos.size() > 0)
-        {
+        if (infos.size() > 0) {
             setActiveItem(infos.get(0));
         }
     }
 
     @Override
-    protected void updateDungeonPreviousScreen()
-    {
+    protected void updateDungeonPreviousScreen() {
         // Allow settings screens to be previous
         if (AbstractDungeon.screen != EUI_SCREEN) {
 
@@ -169,35 +154,29 @@ public class ModSettingsScreen extends AbstractScreen
         }
     }
 
-    @Override
-    public void reopen()
-    {
-        this.button.show(MasterDeckViewScreen.TEXT[1]);
-    }
-
-    public void onEscape()
-    {
+    public void onEscape() {
         InputHelper.pressedEscape = false;
         AbstractDungeon.CurrentScreen prevScreen = AbstractDungeon.previousScreen;
         AbstractDungeon.closeCurrentScreen();
-        if (prevScreen == AbstractDungeon.CurrentScreen.SETTINGS)
-        {
+        if (prevScreen == AbstractDungeon.CurrentScreen.SETTINGS) {
             AbstractDungeon.settingsScreen.open();
         }
     }
 
     @Override
-    public void updateImpl()
-    {
+    public void reopen() {
+        this.button.show(MasterDeckViewScreen.TEXT[1]);
+    }
+
+    @Override
+    public void updateImpl() {
         super.updateImpl();
         background.tryUpdate();
         buttons.updateImpl();
 
         ArrayList<IUIElement> list = getCategories().get(activeMod);
-        if (list != null)
-        {
-            for (IUIElement option : list)
-            {
+        if (list != null) {
+            for (IUIElement option : list) {
                 option.update();
             }
         }
@@ -210,18 +189,15 @@ public class ModSettingsScreen extends AbstractScreen
         }
     }
 
-    public void renderImpl(SpriteBatch sb)
-    {
+    public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
 
         background.tryRender(sb);
         buttons.renderImpl(sb);
 
         ArrayList<IUIElement> list = getCategories().get(activeMod);
-        if (list != null)
-        {
-            for (IUIElement option : list)
-            {
+        if (list != null) {
+            for (IUIElement option : list) {
                 option.render(sb);
             }
         }
@@ -229,30 +205,20 @@ public class ModSettingsScreen extends AbstractScreen
         button.render(sb);
     }
 
-    public void setActiveItem(Category info)
-    {
-        if (getCategories().containsKey(info))
-        {
+    protected HashMap<Category, ArrayList<IUIElement>> getCategories() {
+        return EUIConfiguration.showModSettings.get() ? modListCategories : configCategories;
+    }
+
+    public void setActiveItem(Category info) {
+        if (getCategories().containsKey(info)) {
             activeMod = info;
         }
     }
 
-    protected void makeButton(Category info) {
-        buttons.addButton(button -> setActiveItem(info), info.name)
-                .setColor(Color.GRAY);
-    }
-
-    protected HashMap<Category, ArrayList<IUIElement>> getCategories()
-    {
-        return EUIConfiguration.showModSettings.get() ? modListCategories : configCategories;
-    }
-
-    public static class Category
-    {
+    public static class Category {
         public String name;
 
-        public Category(String name)
-        {
+        public Category(String name) {
             this.name = name;
         }
     }

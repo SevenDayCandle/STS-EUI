@@ -16,8 +16,7 @@ import extendedui.utilities.FakeLibraryCard;
 
 import java.util.ArrayList;
 
-public class CustomCardLibSortHeader extends CardLibSortHeader
-{
+public class CustomCardLibSortHeader extends CardLibSortHeader {
     public static final float SPACE_X = 166f * Settings.scale;
     public static final float WIDTH_DEC = 30 * Settings.scale;
     public static final float CENTER_Y = Settings.HEIGHT * 0.88f;
@@ -36,20 +35,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
     private boolean isAscending;
     private boolean isFixedPosition;
 
-    // The fake group tells players that nothing can be found. It also prevents crashing from empty cardGroups without the need for patching
-    public static ArrayList<AbstractCard> getFakeGroup() {
-        if (fakeLibraryCard == null) {
-            fakeLibraryCard = new FakeLibraryCard();
-        }
-        if (falseGroup == null) {
-            falseGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-            falseGroup.addToBottom(fakeLibraryCard);
-        }
-        return falseGroup.group;
-    }
-
-    public CustomCardLibSortHeader(CardGroup group)
-    {
+    public CustomCardLibSortHeader(CardGroup group) {
         super(group);
 
         instance = this;
@@ -58,41 +44,16 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         }
     }
 
-    public void setupButtons(boolean isFixedPosition)
-    {
-        this.isFixedPosition = isFixedPosition;
-
-        if (override == null)
-        {
-            final float start = buttons[0].hb.cX;
-            rarityButton = buttons[0];
-            typeButton = buttons[1];
-            costButton = buttons[2];
-            nameButton = Settings.removeAtoZSort ? null : buttons[3];
-            amountButton = new SortHeaderButton(EUIRM.strings.uiAmount, 0f, 0f, this);
-
-            override = EUIUtils.arrayAppend(buttons, amountButton);
-
-            for (int i = 0; i < override.length; i++)
-            {
-                setupButton(override[i], start, i);
-            }
-        }
-
-        this.buttons = override;
+    public ArrayList<AbstractCard> getVisibleCards() {
+        return this.group != null ? this.group.group : new ArrayList<>();
     }
 
-    private void setupButton(SortHeaderButton button, float start, int index)
-    {
-        override[index] = button;
-        Hitbox hitbox = button.hb;
-        hitbox.resize(hitbox.width - WIDTH_DEC, hitbox.height);
-        hitbox.move(start + (CustomCardLibSortHeader.SPACE_X * index), isFixedPosition ? CENTER_Y : hitbox.cY);
+    public boolean isHovered() {
+        return buttons != null && EUIUtils.any(buttons, button -> button.hb.hovered);
     }
 
     @Override
-    public void setGroup(CardGroup group)
-    {
+    public void setGroup(CardGroup group) {
         EUI.cardFilters.clear(false, true);
         if (this.group != null && this.originalGroup != null) {
             this.group.group = this.originalGroup;
@@ -111,52 +72,42 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         resetSort();
     }
 
-    public void resetSort()
-    {
+    public void resetSort() {
         this.justSorted = true;
         group.sortAlphabetically(true);
         group.sortByRarity(true);
         group.sortByStatus(true);
 
-        for (SortHeaderButton button : buttons)
-        {
+        for (SortHeaderButton button : buttons) {
             button.reset();
         }
     }
 
     @Override
-    public void didChangeOrder(SortHeaderButton button, boolean isAscending)
-    {
+    public void didChangeOrder(SortHeaderButton button, boolean isAscending) {
         this.lastUsedButton = button;
         this.isAscending = isAscending;
         if (!this.group.group.isEmpty()) {
-            if (button == this.rarityButton)
-            {
+            if (button == this.rarityButton) {
                 this.group.sortByRarity(isAscending);
             }
-            else if (button == this.typeButton)
-            {
+            else if (button == this.typeButton) {
                 this.group.sortByType(isAscending);
             }
-            else if (button == this.costButton)
-            {
+            else if (button == this.costButton) {
                 this.group.sortByCost(isAscending);
             }
-            else if (button == this.nameButton)
-            {
+            else if (button == this.nameButton) {
                 this.group.sortAlphabetically(isAscending);
             }
-            else if (button == this.amountButton)
-            {
+            else if (button == this.amountButton) {
                 this.group.group.sort(new CardAmountComparator(isAscending));
             }
-            else
-            {
+            else {
                 // Packmaster compatibility
                 // TODO general series button
                 SortHeaderButton packButton = getPackmasterButton();
-                if (packButton != null)
-                {
+                if (packButton != null) {
                     sortWithPackmaster(isAscending);
                     this.group.sortByStatus(false);
                 }
@@ -173,50 +124,44 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
         }
     }
 
-    protected void sortWithPackmaster(boolean isAscending)
-    {
-        try
-        {
-            EUIClassUtils.invokeRStaticForTypes("thePackmaster.patches.CompendiumPatches", "packSort", EUIUtils.array(CardLibSortHeader.class, boolean.class), this, isAscending);
-        }
-        catch (Exception ignored)
-        {
-        }
-    }
-
-    protected SortHeaderButton getPackmasterButton()
-    {
-        try
-        {
-            return EUIClassUtils.getRFieldStatic("thePackmaster.patches.CompendiumPatches", "packButton");
-        }
-        catch (Exception ignored)
-        {
-            return null;
-        }
-    }
-
     @Override
     public void render(SpriteBatch sb) {
         // The bar position should remain static when viewing the custom library screen or the card pool
-        if (isFixedPosition)
-        {
+        if (isFixedPosition) {
             this.renderButtons(sb);
             this.renderSelection(sb);
         }
-        else
-        {
+        else {
             super.render(sb);
         }
     }
 
-    public ArrayList<AbstractCard> getVisibleCards() {
-        return this.group != null ? this.group.group : new ArrayList<>();
+    public void setupButtons(boolean isFixedPosition) {
+        this.isFixedPosition = isFixedPosition;
+
+        if (override == null) {
+            final float start = buttons[0].hb.cX;
+            rarityButton = buttons[0];
+            typeButton = buttons[1];
+            costButton = buttons[2];
+            nameButton = Settings.removeAtoZSort ? null : buttons[3];
+            amountButton = new SortHeaderButton(EUIRM.strings.uiAmount, 0f, 0f, this);
+
+            override = EUIUtils.arrayAppend(buttons, amountButton);
+
+            for (int i = 0; i < override.length; i++) {
+                setupButton(override[i], start, i);
+            }
+        }
+
+        this.buttons = override;
     }
 
-    public boolean isHovered()
-    {
-        return buttons != null && EUIUtils.any(buttons, button -> button.hb.hovered);
+    private void setupButton(SortHeaderButton button, float start, int index) {
+        override[index] = button;
+        Hitbox hitbox = button.hb;
+        hitbox.resize(hitbox.width - WIDTH_DEC, hitbox.height);
+        hitbox.move(start + (CustomCardLibSortHeader.SPACE_X * index), isFixedPosition ? CENTER_Y : hitbox.cY);
     }
 
     public void updateForFilters() {
@@ -235,6 +180,35 @@ public class CustomCardLibSortHeader extends CardLibSortHeader
             }
             didChangeOrder(lastUsedButton, isAscending);
             EUI.cardFilters.refresh(this.group.group);
+        }
+    }
+
+    // The fake group tells players that nothing can be found. It also prevents crashing from empty cardGroups without the need for patching
+    public static ArrayList<AbstractCard> getFakeGroup() {
+        if (fakeLibraryCard == null) {
+            fakeLibraryCard = new FakeLibraryCard();
+        }
+        if (falseGroup == null) {
+            falseGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+            falseGroup.addToBottom(fakeLibraryCard);
+        }
+        return falseGroup.group;
+    }
+
+    protected SortHeaderButton getPackmasterButton() {
+        try {
+            return EUIClassUtils.getRFieldStatic("thePackmaster.patches.CompendiumPatches", "packButton");
+        }
+        catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    protected void sortWithPackmaster(boolean isAscending) {
+        try {
+            EUIClassUtils.invokeRStaticForTypes("thePackmaster.patches.CompendiumPatches", "packSort", EUIUtils.array(CardLibSortHeader.class, boolean.class), this, isAscending);
+        }
+        catch (Exception ignored) {
         }
     }
 }

@@ -9,8 +9,7 @@ public class EUITextBoxInput extends EUITextBoxReceiver<String> {
     }
 
     @Override
-    String getValue(String text)
-    {
+    String getValue(String text) {
         return text;
     }
 }

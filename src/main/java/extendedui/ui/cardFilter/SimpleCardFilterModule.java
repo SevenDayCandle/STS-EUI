@@ -22,15 +22,13 @@ import java.util.Objects;
 import static extendedui.ui.cardFilter.GenericFilters.DRAW_START_Y;
 import static extendedui.ui.cardFilter.GenericFilters.SPACING;
 
-public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilterModule
-{
-    public HashSet<T> currentSeries = new HashSet<>();
+public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilterModule {
     public final EUISearchableDropdown<T> seriesDropdown;
+    public HashSet<T> currentSeries = new HashSet<>();
     protected FuncT1<String, T> nameFunc;
     protected FuncT1<T, AbstractCard> objectFunc;
 
-    public SimpleCardFilterModule(String title, FuncT1<String, T> nameFunc, FuncT1<T, AbstractCard> objectFunc)
-    {
+    public SimpleCardFilterModule(String title, FuncT1<String, T> nameFunc, FuncT1<T, AbstractCard> objectFunc) {
         this.nameFunc = nameFunc;
         this.objectFunc = objectFunc;
         seriesDropdown = (EUISearchableDropdown<T>) new EUISearchableDropdown<T>(new EUIHitbox(0, 0, scale(240), scale(48)), nameFunc)
@@ -48,29 +46,24 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     }
 
     @Override
-    public boolean isCardValid(AbstractCard c)
-    {
+    public boolean isCardValid(AbstractCard c) {
         return currentSeries.isEmpty() || currentSeries.contains(objectFunc.invoke(c));
     }
 
     @Override
-    public boolean isEmpty()
-    {
+    public boolean isEmpty() {
         return currentSeries.isEmpty();
     }
 
     @Override
-    public boolean isHovered()
-    {
+    public boolean isHovered() {
         return seriesDropdown.hb.hovered;
     }
 
     @Override
-    public void initializeSelection(Collection<AbstractCard> cards)
-    {
+    public void initializeSelection(Collection<AbstractCard> cards) {
         HashSet<T> availableSeries = new HashSet<>();
-        for (AbstractCard card : cards)
-        {
+        for (AbstractCard card : cards) {
             availableSeries.add(objectFunc.invoke(card));
         }
         ArrayList<T> seriesItems = EUIUtils.filter(availableSeries, Objects::nonNull);
@@ -79,21 +72,18 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     }
 
     @Override
-    public void reset()
-    {
+    public void reset() {
         currentSeries.clear();
         seriesDropdown.setSelectionIndices((int[]) null, false);
     }
 
     @Override
-    public void updateImpl()
-    {
+    public void updateImpl() {
         this.seriesDropdown.setPosition(EUI.cardFilters.typesDropdown.hb.x + EUI.cardFilters.typesDropdown.hb.width + SPACING * 2, DRAW_START_Y + EUI.cardFilters.getScrollDelta()).tryUpdate();
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb)
-    {
+    public void renderImpl(SpriteBatch sb) {
         this.seriesDropdown.tryRender(sb);
     }
 }

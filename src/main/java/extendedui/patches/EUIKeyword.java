@@ -1,7 +1,6 @@
 package extendedui.patches;
 
-public class EUIKeyword
-{
+public class EUIKeyword {
     public String NAME;
     public String DESCRIPTION;
     public String PAST;

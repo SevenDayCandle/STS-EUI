@@ -5,52 +5,51 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import extendedui.EUIGameUtils;
 
-public abstract class EUIBase implements IUIElement
-{
+public abstract class EUIBase implements IUIElement {
     public static final Color HOVER_BLEND_COLOR = new Color(1f, 1f, 1f, 0.3f);
     public static final Color TEXT_DISABLED_COLOR = new Color(0.6f, 0.6f, 0.6f, 1f);
 
     public boolean isActive = true;
 
-    public abstract void updateImpl();
-    public abstract void renderImpl(SpriteBatch sb);
+    public static float scale(float value) {
+        return EUIGameUtils.scale(value);
+    }
 
-    public boolean tryRender(SpriteBatch sb)
-    {
-        if (isActive)
-        {
+    public static float screenH(float value) {
+        return EUIGameUtils.screenH(value);
+    }
+
+    public static float screenW(float value) {
+        return EUIGameUtils.screenW(value);
+    }
+
+    public void render(SpriteBatch sb) {
+        tryRender(sb);
+    }
+
+    public boolean tryRender(SpriteBatch sb) {
+        if (isActive) {
             renderImpl(sb);
         }
 
         return isActive;
     }
 
-    public boolean tryUpdate()
-    {
-        if (isActive)
-        {
+    public abstract void renderImpl(SpriteBatch sb);
+
+    public void update() {
+        tryUpdate();
+    }
+
+    public boolean tryUpdate() {
+        if (isActive) {
             updateImpl();
         }
 
         return isActive;
     }
 
-    public EUIBase setActive(boolean active)
-    {
-        this.isActive = active;
-
-        return this;
-    }
-
-    public void update()
-    {
-        tryUpdate();
-    }
-
-    public void render(SpriteBatch sb)
-    {
-        tryRender(sb);
-    }
+    public abstract void updateImpl();
 
     public int renderLayer() {
         return 1;
@@ -60,18 +59,9 @@ public abstract class EUIBase implements IUIElement
         return 1;
     }
 
-    public static float scale(float value)
-    {
-        return EUIGameUtils.scale(value);
-    }
+    public EUIBase setActive(boolean active) {
+        this.isActive = active;
 
-    public static float screenW(float value)
-    {
-        return EUIGameUtils.screenW(value);
-    }
-
-    public static float screenH(float value)
-    {
-        return EUIGameUtils.screenH(value);
+        return this;
     }
 }

@@ -4,31 +4,22 @@ import com.badlogic.gdx.math.MathUtils;
 import imgui.ImGui;
 import imgui.type.ImInt;
 
-public class DEUIIntInput extends DEUIBaseT0
-{
+public class DEUIIntInput extends DEUIBaseT0 {
     protected ImInt value;
     protected int step = 1;
     protected int stepFast = 100;
     protected int min = Integer.MIN_VALUE;
     protected int max = Integer.MAX_VALUE;
 
-    public DEUIIntInput(String id)
-    {
+    public DEUIIntInput(String id) {
         this(id, 0);
     }
 
-    public DEUIIntInput(String id, int defaultValue)
-    {
+    public DEUIIntInput(String id, int defaultValue) {
         this(id, defaultValue, Integer.MIN_VALUE, Integer.MAX_VALUE, 1, 100);
     }
 
-    public DEUIIntInput(String id, int defaultValue, int min, int max)
-    {
-        this(id, defaultValue, min, max, 1, 100);
-    }
-
-    public DEUIIntInput(String id, int defaultValue, int min, int max, int step, int stepFast)
-    {
+    public DEUIIntInput(String id, int defaultValue, int min, int max, int step, int stepFast) {
         super(id);
         value = new ImInt(defaultValue);
         this.min = min;
@@ -37,18 +28,15 @@ public class DEUIIntInput extends DEUIBaseT0
         this.stepFast = stepFast;
     }
 
-    public int get()
-    {
+    public DEUIIntInput(String id, int defaultValue, int min, int max) {
+        this(id, defaultValue, min, max, 1, 100);
+    }
+
+    public int get() {
         return value.get();
     }
 
-    public void set(int value)
-    {
-        this.value.set(MathUtils.clamp(value, min, max));
-    }
-
-    public void render()
-    {
+    public void render() {
         ImGui.inputInt(ID, value, step, stepFast);
         int result = value.get();
         if (result < min) {
@@ -57,5 +45,9 @@ public class DEUIIntInput extends DEUIBaseT0
         else if (result > max) {
             value.set(max);
         }
+    }
+
+    public void set(int value) {
+        this.value.set(MathUtils.clamp(value, min, max));
     }
 }

@@ -3,8 +3,7 @@ package extendedui.utilities;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIRM;
 
-public enum CostFilter
-{
+public enum CostFilter {
     CostX("X", -1, -1),
     Cost0("0", 0, 0),
     Cost1("1", 1, 1),
@@ -17,15 +16,13 @@ public enum CostFilter
     public final int upperBound;
     public final String name;
 
-    CostFilter(String name, int lowerBound, int upperBound)
-    {
+    CostFilter(String name, int lowerBound, int upperBound) {
         this.lowerBound = lowerBound;
         this.upperBound = upperBound;
         this.name = name;
     }
 
-    public boolean check(AbstractCard c)
-    {
+    public boolean check(AbstractCard c) {
         return (c.cost >= lowerBound && c.cost <= upperBound);
     }
 }

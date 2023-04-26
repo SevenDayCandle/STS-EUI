@@ -34,8 +34,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class CardKeywordFilters extends GenericFilters<AbstractCard>
-{
+public class CardKeywordFilters extends GenericFilters<AbstractCard> {
     public static CustomCardFilterModule customModule;
     public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
@@ -52,8 +51,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     public String currentDescription;
     public String currentName;
 
-    public CardKeywordFilters()
-    {
+    public CardKeywordFilters() {
         super();
 
         originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.uiBasegame : c.Name)
@@ -105,8 +103,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 new EUIHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
                 .setOnComplete(s -> {
                     currentName = s;
-                    if (onClick != null)
-                    {
+                    if (onClick != null) {
                         onClick.invoke(null);
                     }
                 })
@@ -120,8 +117,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 new EUIHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
                 .setOnComplete(s -> {
                     currentDescription = s;
-                    if (onClick != null)
-                    {
+                    if (onClick != null) {
                         onClick.invoke(null);
                     }
                 })
@@ -134,14 +130,98 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     }
 
     @Override
-    public int getReferenceCount()
-    {
-        return (referenceItems.size() == 1 && referenceItems.get(0) instanceof FakeLibraryCard) ? 0 : referenceItems.size();
+    public void clearFilters(boolean shouldInvoke, boolean shouldClearColors) {
+        if (shouldClearColors) {
+            currentColors.clear();
+        }
+        currentOrigins.clear();
+        currentFilters.clear();
+        currentNegateFilters.clear();
+        currentCosts.clear();
+        currentRarities.clear();
+        currentTypes.clear();
+        currentName = null;
+        currentDescription = null;
+        costDropdown.setSelectionIndices((int[]) null, false);
+        originsDropdown.setSelectionIndices((int[]) null, false);
+        typesDropdown.setSelectionIndices((int[]) null, false);
+        raritiesDropdown.setSelectionIndices((int[]) null, false);
+        nameInput.setLabel("");
+        descriptionInput.setLabel("");
+        if (customModule != null) {
+            customModule.reset();
+        }
+    }
+
+    public ArrayList<AbstractCard> applyFilters(ArrayList<AbstractCard> input) {
+        return EUIUtils.filter(input, c -> {
+            //Name check
+            if (currentName != null && !currentName.isEmpty()) {
+                if (c.name == null || !c.name.toLowerCase().contains(currentName.toLowerCase())) {
+                    return false;
+                }
+            }
+
+            //Description check
+            if (currentDescription != null && !currentDescription.isEmpty()) {
+                if (c.rawDescription == null || !c.rawDescription.toLowerCase().contains(currentDescription.toLowerCase())) {
+                    return false;
+                }
+            }
+
+            //Colors check
+            if (!currentColors.isEmpty() && !currentColors.contains(c.color)) {
+                return false;
+            }
+
+            //Origin check
+            if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt))) {
+                return false;
+            }
+
+            //Tooltips check
+            if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
+                return false;
+            }
+
+            //Negate Tooltips check
+            if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
+                return false;
+            }
+
+            //Rarities check
+            if (!currentRarities.isEmpty() && !currentRarities.contains(c.rarity)) {
+                return false;
+            }
+
+            //Types check
+            if (!currentTypes.isEmpty() && !currentTypes.contains(c.type)) {
+                return false;
+            }
+
+            //Module check
+            if (customModule != null && !customModule.isCardValid(c)) {
+                return false;
+            }
+
+            //Cost check
+            if (!currentCosts.isEmpty()) {
+                boolean passes = false;
+                for (CostFilter cf : currentCosts) {
+                    if (cf.check(c)) {
+                        passes = true;
+                        break;
+                    }
+                }
+                return passes;
+            }
+
+            return true;
+        });
     }
 
     @Override
-    public boolean areFiltersEmpty()
-    {
+    public boolean areFiltersEmpty() {
         return (currentName == null || currentName.isEmpty())
                 && (currentDescription == null || currentDescription.isEmpty())
                 && currentColors.isEmpty() && currentOrigins.isEmpty()
@@ -151,8 +231,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
     }
 
     @Override
-    protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<AbstractCard> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool)
-    {
+    protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<AbstractCard> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
         customModule = EUI.getCustomCardFilter(color);
 
         HashSet<ModInfo> availableMods = new HashSet<>();
@@ -160,13 +239,10 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         HashSet<AbstractCard.CardColor> availableColors = new HashSet<>();
         HashSet<AbstractCard.CardRarity> availableRarities = new HashSet<>();
         HashSet<AbstractCard.CardType> availableTypes = new HashSet<>();
-        if (referenceItems != null)
-        {
+        if (referenceItems != null) {
             currentTotal = getReferenceCount();
-            for (AbstractCard card : referenceItems)
-            {
-                for (EUITooltip tooltip : getAllTooltips(card))
-                {
+            for (AbstractCard card : referenceItems) {
+                for (EUITooltip tooltip : getAllTooltips(card)) {
                     if (tooltip.canFilter) {
                         currentFilterCounts.merge(tooltip, 1, Integer::sum);
                     }
@@ -178,8 +254,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
                 availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost4Plus.lowerBound));
                 availableColors.add(card.color);
             }
-            if (customModule != null)
-            {
+            if (customModule != null) {
                 customModule.initializeSelection(referenceItems);
             }
         }
@@ -197,10 +272,8 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         typesDropdown.setItems(typesItems);
 
         ArrayList<CostFilter> costItems = new ArrayList<>();
-        for (CostFilter c : CostFilter.values())
-        {
-            if (availableCosts.contains(c.lowerBound) || availableCosts.contains(c.upperBound))
-            {
+        for (CostFilter c : CostFilter.values()) {
+            if (availableCosts.contains(c.lowerBound) || availableCosts.contains(c.upperBound)) {
                 costItems.add(c);
             }
         }
@@ -209,31 +282,136 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         ArrayList<AbstractCard.CardColor> colorsItems = new ArrayList<>(availableColors);
         colorsItems.sort((a, b) -> a == AbstractCard.CardColor.COLORLESS ? -1 : a == AbstractCard.CardColor.CURSE ? -2 : StringUtils.compare(a.name(), b.name()));
         colorsDropdown.setItems(colorsItems);
-        if (isAccessedFromCardPool)
-        {
+        if (isAccessedFromCardPool) {
             ArrayList<AbstractCard.CardColor> filteredColors = EUIUtils.filter(colorsItems, c -> c != AbstractCard.CardColor.COLORLESS && c != AbstractCard.CardColor.CURSE);
             colorsDropdown.setSelection(filteredColors, true).setActive(false);
         }
-        else
-        {
+        else {
             colorsDropdown.setActive(colorsItems.size() > 1);
         }
     }
 
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition)
-    {
-        EUI.customHeader.setGroup(group);
-        EUI.customHeader.setupButtons(isFixedPosition);
-        initialize((button) ->
-        {
-            EUI.customHeader.updateForFilters();
-        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
-        EUI.customHeader.updateForFilters();
-        return this;
+    public void toggleFilters() {
+        if (isActive) {
+            close();
+        }
+        else {
+            open();
+        }
     }
 
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, CustomCardPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition)
-    {
+    @Override
+    public void updateFilters() {
+        originsDropdown.setPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        if (colorsDropdown.isActive) {
+            colorsDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+            costDropdown.setPosition(colorsDropdown.hb.x + colorsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        }
+        else {
+            costDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        }
+        raritiesDropdown.setPosition(costDropdown.hb.x + costDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        typesDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+
+        nameInput.setPosition(hb.x + SPACING * 2.05f, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
+        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
+
+        if (customModule != null) {
+            customModule.update();
+        }
+    }
+
+    @Override
+    public int getReferenceCount() {
+        return (referenceItems.size() == 1 && referenceItems.get(0) instanceof FakeLibraryCard) ? 0 : referenceItems.size();
+    }
+
+    public ArrayList<EUITooltip> getAllTooltips(AbstractCard c) {
+        ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
+        TooltipProvider eC = EUIUtils.safeCast(c, TooltipProvider.class);
+        if (eC != null) {
+            eC.generateDynamicTooltips(dynamicTooltips);
+            for (EUITooltip tip : eC.getTipsForFilters()) {
+                if (!dynamicTooltips.contains(tip)) {
+                    dynamicTooltips.add(tip);
+                }
+            }
+        }
+        else {
+            if (c.isInnate) {
+                EUITooltip tip = EUITooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
+                if (tip != null) {
+                    dynamicTooltips.add(tip);
+                }
+            }
+            if (c.isEthereal) {
+                EUITooltip tip = EUITooltip.findByID(GameDictionary.ETHEREAL.NAMES[0]);
+                if (tip != null) {
+                    dynamicTooltips.add(tip);
+                }
+            }
+            if (c.selfRetain) {
+                EUITooltip tip = EUITooltip.findByID(GameDictionary.RETAIN.NAMES[0]);
+                if (tip != null) {
+                    dynamicTooltips.add(tip);
+                }
+            }
+            if (c.exhaust) {
+                EUITooltip tip = EUITooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
+                if (tip != null) {
+                    dynamicTooltips.add(tip);
+                }
+            }
+            for (String sk : c.keywords) {
+                EUITooltip tip = EUITooltip.findByName(sk);
+                if (tip != null && !dynamicTooltips.contains(tip)) {
+                    dynamicTooltips.add(tip);
+                }
+            }
+            if (c instanceof CustomCard) {
+                List<TooltipInfo> infos = ((CustomCard) c).getCustomTooltips();
+                ModInfo mi = EUIGameUtils.getModInfo(c);
+                if (infos != null && mi != null) {
+                    for (TooltipInfo info : infos) {
+                        EUITooltip tip = EUITooltip.findByName(mi.ID.toLowerCase() + ":" + info.title);
+                        if (tip != null && !dynamicTooltips.contains(tip)) {
+                            dynamicTooltips.add(tip);
+                        }
+                    }
+                }
+            }
+        }
+        return dynamicTooltips;
+    }
+
+    @Override
+    public boolean isHoveredImpl() {
+        return originsDropdown.areAnyItemsHovered()
+                || colorsDropdown.areAnyItemsHovered()
+                || costDropdown.areAnyItemsHovered()
+                || raritiesDropdown.areAnyItemsHovered()
+                || typesDropdown.areAnyItemsHovered()
+                || nameInput.hb.hovered
+                || descriptionInput.hb.hovered
+                || (customModule != null && customModule.isHovered());
+    }
+
+    @Override
+    public void renderFilters(SpriteBatch sb) {
+        originsDropdown.tryRender(sb);
+        colorsDropdown.tryRender(sb);
+        costDropdown.tryRender(sb);
+        raritiesDropdown.tryRender(sb);
+        typesDropdown.tryRender(sb);
+        nameInput.tryRender(sb);
+        descriptionInput.tryRender(sb);
+
+        if (customModule != null) {
+            customModule.render(sb);
+        }
+    }
+
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, CustomCardPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition) {
         EUI.customHeader.setGroup(group);
         EUI.customHeader.setupButtons(isFixedPosition);
         initialize((button) ->
@@ -247,8 +425,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         return this;
     }
 
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition)
-    {
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition) {
         EUI.customHeader.setGroup(group);
         EUI.customHeader.setupButtons(isFixedPosition);
         initialize((button) ->
@@ -260,245 +437,14 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard>
         return this;
     }
 
-    @Override
-    public boolean isHoveredImpl()
-    {
-        return originsDropdown.areAnyItemsHovered()
-                || colorsDropdown.areAnyItemsHovered()
-                || costDropdown.areAnyItemsHovered()
-                || raritiesDropdown.areAnyItemsHovered()
-                || typesDropdown.areAnyItemsHovered()
-                || nameInput.hb.hovered
-                || descriptionInput.hb.hovered
-                || (customModule != null && customModule.isHovered());
-    }
-
-    @Override
-    public void clearFilters(boolean shouldInvoke, boolean shouldClearColors)
-    {
-        if (shouldClearColors)
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition) {
+        EUI.customHeader.setGroup(group);
+        EUI.customHeader.setupButtons(isFixedPosition);
+        initialize((button) ->
         {
-            currentColors.clear();
-        }
-        currentOrigins.clear();
-        currentFilters.clear();
-        currentNegateFilters.clear();
-        currentCosts.clear();
-        currentRarities.clear();
-        currentTypes.clear();
-        currentName = null;
-        currentDescription = null;
-        costDropdown.setSelectionIndices((int[]) null, false);
-        originsDropdown.setSelectionIndices((int[]) null, false);
-        typesDropdown.setSelectionIndices((int[]) null, false);
-        raritiesDropdown.setSelectionIndices((int[]) null, false);
-        nameInput.setLabel("");
-        descriptionInput.setLabel("");
-        if (customModule != null)
-        {
-            customModule.reset();
-        }
-    }
-
-    @Override
-    public void renderFilters(SpriteBatch sb)
-    {
-        originsDropdown.tryRender(sb);
-        colorsDropdown.tryRender(sb);
-        costDropdown.tryRender(sb);
-        raritiesDropdown.tryRender(sb);
-        typesDropdown.tryRender(sb);
-        nameInput.tryRender(sb);
-        descriptionInput.tryRender(sb);
-
-        if (customModule != null)
-        {
-            customModule.render(sb);
-        }
-    }
-
-    @Override
-    public void updateFilters()
-    {
-        originsDropdown.setPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
-        if (colorsDropdown.isActive)
-        {
-            colorsDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-            costDropdown.setPosition(colorsDropdown.hb.x + colorsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-        }
-        else
-        {
-            costDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-        }
-        raritiesDropdown.setPosition(costDropdown.hb.x + costDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-        typesDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-
-        nameInput.setPosition(hb.x + SPACING * 2.05f, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
-        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
-
-        if (customModule != null)
-        {
-            customModule.update();
-        }
-    }
-
-    public ArrayList<EUITooltip> getAllTooltips(AbstractCard c)
-    {
-        ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
-        TooltipProvider eC = EUIUtils.safeCast(c, TooltipProvider.class);
-        if (eC != null)
-        {
-            eC.generateDynamicTooltips(dynamicTooltips);
-            for (EUITooltip tip : eC.getTipsForFilters())
-            {
-                if (!dynamicTooltips.contains(tip))
-                {
-                    dynamicTooltips.add(tip);
-                }
-            }
-        }
-        else
-        {
-            if (c.isInnate) {
-                EUITooltip tip = EUITooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
-                if (tip != null)
-                {
-                    dynamicTooltips.add(tip);
-                }
-            }
-            if (c.isEthereal) {
-                EUITooltip tip = EUITooltip.findByID(GameDictionary.ETHEREAL.NAMES[0]);
-                if (tip != null)
-                {
-                    dynamicTooltips.add(tip);
-                }
-            }
-            if (c.selfRetain) {
-                EUITooltip tip = EUITooltip.findByID(GameDictionary.RETAIN.NAMES[0]);
-                if (tip != null)
-                {
-                    dynamicTooltips.add(tip);
-                }
-            }
-            if (c.exhaust) {
-                EUITooltip tip = EUITooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
-                if (tip != null)
-                {
-                    dynamicTooltips.add(tip);
-                }
-            }
-            for (String sk : c.keywords)
-            {
-                EUITooltip tip = EUITooltip.findByName(sk);
-                if (tip != null && !dynamicTooltips.contains(tip))
-                {
-                    dynamicTooltips.add(tip);
-                }
-            }
-            if (c instanceof CustomCard) {
-                List<TooltipInfo> infos = ((CustomCard) c).getCustomTooltips();
-                ModInfo mi = EUIGameUtils.getModInfo(c);
-                if (infos != null && mi != null) {
-                    for (TooltipInfo info : infos) {
-                        EUITooltip tip = EUITooltip.findByName(mi.ID.toLowerCase() + ":" + info.title);
-                        if (tip != null && !dynamicTooltips.contains(tip))
-                        {
-                            dynamicTooltips.add(tip);
-                        }
-                    }
-                }
-            }
-        }
-        return dynamicTooltips;
-    }
-
-    public ArrayList<AbstractCard> applyFilters(ArrayList<AbstractCard> input)
-    {
-        return EUIUtils.filter(input, c -> {
-            //Name check
-            if (currentName != null && !currentName.isEmpty()) {
-                if (c.name == null || !c.name.toLowerCase().contains(currentName.toLowerCase())) {
-                    return false;
-                }
-            }
-
-            //Description check
-            if (currentDescription != null && !currentDescription.isEmpty()) {
-                if (c.rawDescription == null || !c.rawDescription.toLowerCase().contains(currentDescription.toLowerCase())) {
-                    return false;
-                }
-            }
-
-            //Colors check
-            if (!currentColors.isEmpty() && !currentColors.contains(c.color))
-            {
-                return false;
-            }
-
-            //Origin check
-            if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt)))
-            {
-                return false;
-            }
-
-            //Tooltips check
-            if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters)))
-            {
-                return false;
-            }
-
-            //Negate Tooltips check
-            if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains)))
-            {
-                return false;
-            }
-
-            //Rarities check
-            if (!currentRarities.isEmpty() && !currentRarities.contains(c.rarity))
-            {
-                return false;
-            }
-
-            //Types check
-            if (!currentTypes.isEmpty() && !currentTypes.contains(c.type))
-            {
-                return false;
-            }
-
-            //Module check
-            if (customModule != null && !customModule.isCardValid(c))
-            {
-                return false;
-            }
-
-            //Cost check
-            if (!currentCosts.isEmpty())
-            {
-                boolean passes = false;
-                for (CostFilter cf : currentCosts)
-                {
-                    if (cf.check(c))
-                    {
-                        passes = true;
-                        break;
-                    }
-                }
-                return passes;
-            }
-
-            return true;
-        });
-    }
-
-    public void toggleFilters()
-    {
-        if (isActive)
-        {
-            close();
-        }
-        else
-        {
-            open();
-        }
+            EUI.customHeader.updateForFilters();
+        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
+        EUI.customHeader.updateForFilters();
+        return this;
     }
 }

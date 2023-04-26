@@ -28,8 +28,7 @@ import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
-public class CardPoolScreen extends AbstractDungeonScreen
-{
+public class CardPoolScreen extends AbstractDungeonScreen {
     public static CustomCardPoolModule customModule;
 
     protected final EUIToggle upgradeToggle;
@@ -40,8 +39,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
     public EUICardGrid cardGrid;
     private AbstractCard selected;
 
-    public CardPoolScreen()
-    {
+    public CardPoolScreen() {
         resetGrid();
 
         upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
@@ -81,10 +79,8 @@ public class CardPoolScreen extends AbstractDungeonScreen
 
         contextMenu = (EUIContextMenu<DebugOption>) new EUIContextMenu<DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
                 .setOnChange(options -> {
-                    if (selected != null)
-                    {
-                        for (DebugOption o : options)
-                        {
+                    if (selected != null) {
+                        for (DebugOption o : options) {
                             o.onSelect.invoke(this, selected);
                         }
                     }
@@ -93,8 +89,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
                 .setCanAutosizeButton(true);
     }
 
-    public void resetGrid()
-    {
+    public void resetGrid() {
         cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
         cardGrid.showScrollbar(true)
                 .canRenderUpgrades(true)
@@ -102,15 +97,54 @@ public class CardPoolScreen extends AbstractDungeonScreen
                 .setVerticalStart(Settings.HEIGHT * 0.66f);
     }
 
-    public void open(AbstractPlayer player, CardGroup cards)
-    {
+    protected void onRightClick(AbstractCard c) {
+        if (EUIConfiguration.enableCardPoolDebug.get()) {
+            selected = c;
+            contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
+            contextMenu.refreshText();
+            contextMenu.setItems(getOptions(c));
+            contextMenu.openOrCloseMenu();
+        }
+        else {
+            openPopup(c);
+        }
+    }
+
+    // This method can be patched to add additional debug options
+    public static ArrayList<DebugOption> getOptions(AbstractCard c) {
+        return EUIUtils.arrayList(DebugOption.enlargeCard, DebugOption.addToHand, DebugOption.addToDeck, DebugOption.removeFromPool);
+    }
+
+    protected void openPopup(AbstractCard c) {
+        c.unhover();
+        CardCrawlGame.cardPopup.open(c, cardGrid.cards);
+    }
+
+    protected void addCopyToDeck(AbstractCard c) {
+        AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c.makeStatEquivalentCopy(), Settings.WIDTH * 0.5f, Settings.HEIGHT * 0.5f));
+    }
+
+    protected void addCopyToHand(AbstractCard c) {
+        if (EUIGameUtils.inBattle()) {
+            AbstractDungeon.effectList.add(new ShowCardAndAddToHandEffect(c.makeStatEquivalentCopy(), Settings.WIDTH * 0.5f, Settings.HEIGHT * 0.5f));
+        }
+    }
+
+    @Override
+    public void onEscape() {
+        super.onEscape();
+        if (customModule != null) {
+            customModule.onClose();
+        }
+    }
+
+    public void open(AbstractPlayer player, CardGroup cards) {
         super.open(false, true);
         boolean canSeeAllColors = EUIGameUtils.canReceiveAnyColorCard();
 
         cardGrid.clear();
         colorlessToggle.setToggle(false).setActive(!canSeeAllColors);
-        if (cards.isEmpty())
-        {
+        if (cards.isEmpty()) {
             AbstractDungeon.closeCurrentScreen();
             return;
         }
@@ -118,15 +152,13 @@ public class CardPoolScreen extends AbstractDungeonScreen
         cardGrid.setCardGroup(cards);
 
         EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
-            if (customModule != null)
-            {
+            if (customModule != null) {
                 customModule.open(EUI.customHeader.group.group);
             }
             cardGrid.forceUpdateCardPositions();
         }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, !canSeeAllColors, true);
 
-        if (EUIGameUtils.inGame())
-        {
+        if (EUIGameUtils.inGame()) {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
 
@@ -139,18 +171,26 @@ public class CardPoolScreen extends AbstractDungeonScreen
 
     }
 
+    protected void removeCardFromPool(AbstractCard c) {
+        final ArrayList<CardGroup> groups = new ArrayList<>();
+        groups.addAll(EUIGameUtils.getGameCardPools());
+        groups.addAll(EUIGameUtils.getSourceCardPools());
+        for (CardGroup group : groups) {
+            group.removeCard(c.cardID);
+        }
+        cardGrid.removeCard(c);
+        EUI.countingPanel.open(cardGrid.cards.group);
+    }
+
     @Override
-    public void reopen()
-    {
-        if (EUIGameUtils.inGame())
-        {
+    public void reopen() {
+        if (EUIGameUtils.inGame()) {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
     }
 
     @Override
-    public void updateImpl()
-    {
+    public void updateImpl() {
         super.updateImpl();
         if (!EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             cardGrid.tryUpdate();
@@ -165,8 +205,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
                 customModule.update();
             }
             // TODO tie this to the custom header to ensure that the source grid is always updated instantly
-            if (EUI.customHeader.justSorted)
-            {
+            if (EUI.customHeader.justSorted) {
                 cardGrid.forceUpdateCardPositions();
                 EUI.customHeader.justSorted = false;
             }
@@ -175,16 +214,14 @@ public class CardPoolScreen extends AbstractDungeonScreen
     }
 
     @Override
-    public void preRender(SpriteBatch sb)
-    {
+    public void preRender(SpriteBatch sb) {
         super.preRender(sb);
         cardGrid.tryRender(sb);
         EUI.customHeader.render(sb);
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb)
-    {
+    public void renderImpl(SpriteBatch sb) {
         upgradeToggle.renderImpl(sb);
         colorlessToggle.render(sb);
         swapRelicScreen.renderImpl(sb);
@@ -199,71 +236,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
         contextMenu.tryRender(sb);
     }
 
-    @Override
-    public void onEscape()
-    {
-        super.onEscape();
-        if (customModule != null) {
-            customModule.onClose();
-        }
-    }
-
-    protected void onRightClick(AbstractCard c)
-    {
-        if (EUIConfiguration.enableCardPoolDebug.get())
-        {
-            selected = c;
-            contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
-            contextMenu.refreshText();
-            contextMenu.setItems(getOptions(c));
-            contextMenu.openOrCloseMenu();
-        }
-        else
-        {
-            openPopup(c);
-        }
-    }
-
-    protected void openPopup(AbstractCard c)
-    {
-        c.unhover();
-        CardCrawlGame.cardPopup.open(c, cardGrid.cards);
-    }
-
-    protected void addCopyToHand(AbstractCard c)
-    {
-        if (EUIGameUtils.inBattle())
-        {
-            AbstractDungeon.effectList.add(new ShowCardAndAddToHandEffect(c.makeStatEquivalentCopy(), Settings.WIDTH * 0.5f, Settings.HEIGHT * 0.5f));
-        }
-    }
-
-    protected void addCopyToDeck(AbstractCard c)
-    {
-        AbstractDungeon.effectList.add(new ShowCardAndObtainEffect(c.makeStatEquivalentCopy(), Settings.WIDTH * 0.5f, Settings.HEIGHT * 0.5f));
-    }
-
-    protected void removeCardFromPool(AbstractCard c)
-    {
-        final ArrayList<CardGroup> groups = new ArrayList<>();
-        groups.addAll(EUIGameUtils.getGameCardPools());
-        groups.addAll(EUIGameUtils.getSourceCardPools());
-        for (CardGroup group : groups)
-        {
-            group.removeCard(c.cardID);
-        }
-        cardGrid.removeCard(c);
-        EUI.countingPanel.open(cardGrid.cards.group);
-    }
-
-    // This method can be patched to add additional debug options
-    public static ArrayList<DebugOption> getOptions(AbstractCard c)
-    {
-        return EUIUtils.arrayList(DebugOption.enlargeCard, DebugOption.addToHand, DebugOption.addToDeck, DebugOption.removeFromPool);
-    }
-
-    public static class DebugOption
-    {
+    public static class DebugOption {
         public static DebugOption enlargeCard = new DebugOption(EUIRM.strings.uipool_enlarge, CardPoolScreen::openPopup);
         public static DebugOption addToHand = new DebugOption(EUIRM.strings.uipool_addToHand, CardPoolScreen::addCopyToHand);
         public static DebugOption addToDeck = new DebugOption(EUIRM.strings.uipool_addToDeck, CardPoolScreen::addCopyToDeck);
@@ -272,8 +245,7 @@ public class CardPoolScreen extends AbstractDungeonScreen
         public final String name;
         public final ActionT2<CardPoolScreen, AbstractCard> onSelect;
 
-        public DebugOption(String name, ActionT2<CardPoolScreen, AbstractCard> onSelect)
-        {
+        public DebugOption(String name, ActionT2<CardPoolScreen, AbstractCard> onSelect) {
             this.name = name;
             this.onSelect = onSelect;
         }

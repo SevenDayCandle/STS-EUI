@@ -9,47 +9,47 @@
 package extendedui.swig;
 
 public class EffekseerBackendCore {
-  private transient long swigCPtr;
-  protected transient boolean swigCMemOwn;
+    protected transient boolean swigCMemOwn;
+    private transient long swigCPtr;
 
-  protected EffekseerBackendCore(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
-
-  protected static long getCPtr(EffekseerBackendCore obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  @SuppressWarnings("deprecation")
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        EffekseerCoreJNI.delete_EffekseerBackendCore(swigCPtr);
-      }
-      swigCPtr = 0;
+    public EffekseerBackendCore() {
+        this(EffekseerCoreJNI.new_EffekseerBackendCore(), true);
     }
-  }
 
-  public EffekseerBackendCore() {
-    this(EffekseerCoreJNI.new_EffekseerBackendCore(), true);
-  }
+    protected EffekseerBackendCore(long cPtr, boolean cMemoryOwn) {
+        swigCMemOwn = cMemoryOwn;
+        swigCPtr = cPtr;
+    }
 
-  public static EffekseerCoreDeviceType GetDevice() {
-    return EffekseerCoreDeviceType.swigToEnum(EffekseerCoreJNI.EffekseerBackendCore_GetDevice());
-  }
+    public static EffekseerCoreDeviceType GetDevice() {
+        return EffekseerCoreDeviceType.swigToEnum(EffekseerCoreJNI.EffekseerBackendCore_GetDevice());
+    }
 
-  public static boolean InitializeWithOpenGL() {
-    return EffekseerCoreJNI.EffekseerBackendCore_InitializeWithOpenGL();
-  }
+    public static boolean InitializeWithOpenGL() {
+        return EffekseerCoreJNI.EffekseerBackendCore_InitializeWithOpenGL();
+    }
 
-  public static void Terminate() {
-    EffekseerCoreJNI.EffekseerBackendCore_Terminate();
-  }
+    public static void Terminate() {
+        EffekseerCoreJNI.EffekseerBackendCore_Terminate();
+    }
+
+    protected static long getCPtr(EffekseerBackendCore obj) {
+        return (obj == null) ? 0 : obj.swigCPtr;
+    }
+
+    @SuppressWarnings("deprecation")
+    protected void finalize() {
+        delete();
+    }
+
+    public synchronized void delete() {
+        if (swigCPtr != 0) {
+            if (swigCMemOwn) {
+                swigCMemOwn = false;
+                EffekseerCoreJNI.delete_EffekseerBackendCore(swigCPtr);
+            }
+            swigCPtr = 0;
+        }
+    }
 
 }

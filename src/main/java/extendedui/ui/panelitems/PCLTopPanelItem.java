@@ -8,21 +8,19 @@ import extendedui.ui.TextureCache;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.GenericCallback;
 
-public abstract class PCLTopPanelItem extends TopPanelItem
-{
+public abstract class PCLTopPanelItem extends TopPanelItem {
     public EUITooltip tooltip;
     protected GenericCallback<PCLTopPanelItem> onLeftClick;
     protected GenericCallback<PCLTopPanelItem> onRightClick;
     private boolean rightClickable = true;
 
 
-    public static String createFullID(Class<? extends PCLTopPanelItem> type)
-    {
-        return EUIRM.getID(type.getSimpleName());
-    }
-
     public PCLTopPanelItem(TextureCache tc, String id) {
         super(tc.texture(), id);
+    }
+
+    public static String createFullID(Class<? extends PCLTopPanelItem> type) {
+        return EUIRM.getID(type.getSimpleName());
     }
 
     public PCLTopPanelItem setOnClick(GenericCallback<PCLTopPanelItem> onLeftClick) {
@@ -37,26 +35,13 @@ public abstract class PCLTopPanelItem extends TopPanelItem
         return this;
     }
 
-    public PCLTopPanelItem setTooltip(EUITooltip tooltip) {
-        this.tooltip = tooltip;
-        return this;
-    }
-
     public void setRightClickable(boolean rightClickable) {
         this.rightClickable = rightClickable;
     }
 
-    @Override
-    protected void onClick() {
-        if (this.onLeftClick != null) {
-            this.onLeftClick.complete(this);
-        }
-    }
-
-    protected void onRightClick() {
-        if (this.onRightClick != null) {
-            this.onRightClick.complete(this);
-        }
+    public PCLTopPanelItem setTooltip(EUITooltip tooltip) {
+        this.tooltip = tooltip;
+        return this;
     }
 
     @Override
@@ -70,6 +55,19 @@ public abstract class PCLTopPanelItem extends TopPanelItem
             if (this.hitbox.hovered && InputHelper.justClickedRight && this.rightClickable) {
                 this.onRightClick();
             }
+        }
+    }
+
+    @Override
+    protected void onClick() {
+        if (this.onLeftClick != null) {
+            this.onLeftClick.complete(this);
+        }
+    }
+
+    protected void onRightClick() {
+        if (this.onRightClick != null) {
+            this.onRightClick.complete(this);
         }
     }
 }

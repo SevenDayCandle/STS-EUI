@@ -9,39 +9,20 @@ import extendedui.EUI;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 
-public class DraggableHitbox extends EUIHitbox
-{
-    protected Vector2 dragStart = null;
-    protected ActionT1<DraggableHitbox> onDragFinish;
-
+public class DraggableHitbox extends EUIHitbox {
     public boolean canDrag;
     public float minY;
     public float maxY;
     public float minX;
     public float maxX;
+    protected Vector2 dragStart = null;
+    protected ActionT1<DraggableHitbox> onDragFinish;
 
-    public DraggableHitbox(Hitbox hb)
-    {
+    public DraggableHitbox(Hitbox hb) {
         this(hb.x, hb.y, hb.width, hb.height, true);
     }
 
-    public DraggableHitbox(float width, float height)
-    {
-        this(-9999, -9999, width, height, true);
-    }
-
-    public DraggableHitbox(Hitbox hb, float width, float height)
-    {
-        this(hb.x, hb.y, width, height, true);
-    }
-
-    public DraggableHitbox(float x, float y, float width, float height)
-    {
-        this(x, y, width, height, true);
-    }
-
-    public DraggableHitbox(float x, float y, float width, float height, boolean canDrag)
-    {
+    public DraggableHitbox(float x, float y, float width, float height, boolean canDrag) {
         super(x, y, width, height);
 
         this.canDrag = canDrag;
@@ -51,8 +32,23 @@ public class DraggableHitbox extends EUIHitbox
         this.maxY = Settings.HEIGHT + (height * 0.25f);
     }
 
-    public DraggableHitbox makeCopy()
-    {
+    public DraggableHitbox(float width, float height) {
+        this(-9999, -9999, width, height, true);
+    }
+
+    public DraggableHitbox(Hitbox hb, float width, float height) {
+        this(hb.x, hb.y, width, height, true);
+    }
+
+    public DraggableHitbox(float x, float y, float width, float height) {
+        this(x, y, width, height, true);
+    }
+
+    public boolean isDragging() {
+        return dragStart != null;
+    }
+
+    public DraggableHitbox makeCopy() {
         DraggableHitbox copy = new DraggableHitbox(x, y, width, height, canDrag);
         copy.lerpSpeed = this.lerpSpeed;
         copy.parentElement = this.parentElement;
@@ -62,55 +58,32 @@ public class DraggableHitbox extends EUIHitbox
         return copy;
     }
 
-    public DraggableHitbox setCenter(float cX, float cY)
-    {
+    public DraggableHitbox setCenter(float cX, float cY) {
         move(cX, cY);
 
         return this;
     }
 
-    public DraggableHitbox setBounds(float min_x, float max_x, float min_y, float max_y)
-    {
-        this.minX = min_x;
-        this.maxX = max_x;
-        this.minY = min_y;
-        this.maxY = max_y;
-
-        return this;
-    }
-
-    public DraggableHitbox setOnDragFinish(ActionT1<DraggableHitbox> onDragFinish) {
-        this.onDragFinish = onDragFinish;
-        return this;
-    }
-
     @Override
-    public void update()
-    {
+    public void update() {
         super.update();
 
-        if (canDrag)
-        {
+        if (canDrag) {
             float mX = Gdx.input.getX();
             float mY = Settings.HEIGHT - Gdx.input.getY();
 
-            if (hovered || dragStart != null)
-            {
-                if (InputHelper.justClickedLeft)
-                {
-                    if (EUI.tryDragging())
-                    {
+            if (hovered || dragStart != null) {
+                if (InputHelper.justClickedLeft) {
+                    if (EUI.tryDragging()) {
                         dragStart = new Vector2(mX, mY);
                         return;
                     }
                 }
-                else if (!InputHelper.justReleasedClickLeft && dragStart != null)
-                {
+                else if (!InputHelper.justReleasedClickLeft && dragStart != null) {
                     targetCx = Math.min(maxX, Math.max(minX, targetCx + (mX - dragStart.x)));
                     targetCy = Math.min(maxY, Math.max(minY, targetCy + (mY - dragStart.y)));
 
-                    if (EUI.tryDragging())
-                    {
+                    if (EUI.tryDragging()) {
                         dragStart.set(mX, mY);
                         return;
                     }
@@ -118,12 +91,10 @@ public class DraggableHitbox extends EUIHitbox
             }
         }
 
-        if (dragStart != null)
-        {
-            if (Settings.isDebug)
-            {
-                float xPercentage  = x  * 100f / Settings.WIDTH;
-                float yPercentage  = y  * 100f / Settings.HEIGHT;
+        if (dragStart != null) {
+            if (Settings.isDebug) {
+                float xPercentage = x * 100f / Settings.WIDTH;
+                float yPercentage = y * 100f / Settings.HEIGHT;
                 float cxPercentage = cX * 100f / Settings.WIDTH;
                 float cyPercentage = cY * 100f / Settings.HEIGHT;
 
@@ -139,8 +110,17 @@ public class DraggableHitbox extends EUIHitbox
         }
     }
 
-    public boolean isDragging()
-    {
-        return dragStart != null;
+    public DraggableHitbox setBounds(float min_x, float max_x, float min_y, float max_y) {
+        this.minX = min_x;
+        this.maxX = max_x;
+        this.minY = min_y;
+        this.maxY = max_y;
+
+        return this;
+    }
+
+    public DraggableHitbox setOnDragFinish(ActionT1<DraggableHitbox> onDragFinish) {
+        this.onDragFinish = onDragFinish;
+        return this;
     }
 }

@@ -18,8 +18,7 @@ import java.util.HashMap;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 
-public class EUIFontHelper
-{
+public class EUIFontHelper {
     public static final String TINY_NUMBERS_FONT = "font/04b03.ttf";
     public static final String ENG_DEFAULT_FONT = "font/Kreon-Regular.ttf";
     public static final String ENG_BOLD_FONT = "font/Kreon-Bold.ttf";
@@ -41,11 +40,6 @@ public class EUIFontHelper
     public static final String SRB_BOLD_FONT = "font/srb/InfluBG-Bold.otf";
     public static final String THA_DEFAULT_FONT = "font/tha/CSChatThaiUI.ttf";
     public static final String THA_BOLD_FONT = "font/tha/CSChatThaiUI.ttf";
-
-    protected static FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
-    protected static FreeTypeFontGenerator.FreeTypeBitmapFontData data = new FreeTypeFontGenerator.FreeTypeBitmapFontData();
-    protected static HashMap<String, FreeTypeFontGenerator> generators = new HashMap<>();
-    protected static FileHandle mainFont = null;
     public static BitmapFont bannerFont;
     public static BitmapFont bannerFontLarge;
     public static BitmapFont bannerFontExtraLarge;
@@ -71,11 +65,41 @@ public class EUIFontHelper
     public static BitmapFont cardiconfontVerylarge;
     public static BitmapFont energyFont;
     public static BitmapFont energyFontLarge;
+    protected static FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
+    protected static FreeTypeFontGenerator.FreeTypeBitmapFontData data = new FreeTypeFontGenerator.FreeTypeBitmapFontData();
+    protected static HashMap<String, FreeTypeFontGenerator> generators = new HashMap<>();
+    protected static FileHandle mainFont = null;
+
+    public static BitmapFont createBoldFont(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
+        FileHandle file = getCustomBoldFontFile(language);
+        BitmapFont preppedFont = prepFont(file, size, isLinearFiltering);
+        return prepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
+    }
+
+    public static FileHandle getCustomBoldFontFile(Settings.GameLanguage language) {
+        if (EUIConfiguration.useSeparateFonts.get()) {
+            return getCustomFont(EUIConfiguration.tipTitleFont, getBoldFontFile(language));
+        }
+        return getCustomFont(EUIConfiguration.cardDescFont, getBoldFontFile(language));
+    }
+
+    public static BitmapFont createDefaultFont(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
+        FileHandle file = getCustomDefaultFontFile(language);
+        BitmapFont preppedFont = prepFont(file, size, isLinearFiltering);
+        return prepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
+    }
+
+    public static FileHandle getCustomDefaultFontFile(Settings.GameLanguage language) {
+        return getCustomFont(EUIConfiguration.cardDescFont, getDefaultFontFile(language));
+    }
+
+    public static boolean hasGlyph(BitmapFont font, char c) {
+        return font.getData().hasGlyph(c);
+    }
 
     /* Because EUIFontHelper creates its fonts separately from the base game, mods that alter the game's font will not affect it.
-    * Thus, EUIFontHelper requires its own version of a font configuration to allow users to make changes to them */
-    public static void initialize()
-    {
+     * Thus, EUIFontHelper requires its own version of a font configuration to allow users to make changes to them */
+    public static void initialize() {
         boolean useSeparateFonts = EUIConfiguration.useSeparateFonts.get();
         generators.clear();
         data.xChars = new char[]{'动'};
@@ -100,13 +124,13 @@ public class EUIFontHelper
         param.shadowOffsetX = Math.round(3.0F * Settings.scale);
         param.shadowOffsetY = Math.round(3.0F * Settings.scale);
         param.borderWidth = 2.0F * Settings.scale;
-        EUIFontHelper.cardTitleFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.cardTitleFont, fontFile) : mainFont,27.0F, true);
+        EUIFontHelper.cardTitleFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.cardTitleFont, fontFile) : mainFont, 27.0F, true);
 
         param.borderWidth = 0.0F;
         param.shadowColor = Settings.QUARTER_TRANSPARENT_BLACK_COLOR.cpy();
         param.shadowOffsetX = Math.round(4.0F * Settings.scale);
         param.shadowOffsetY = Math.round(3.0F * Settings.scale);
-        EUIFontHelper.carddescfontL = prepFont(mainFont,48.0F, true);
+        EUIFontHelper.carddescfontL = prepFont(mainFont, 48.0F, true);
 
         param.shadowColor = Settings.QUARTER_TRANSPARENT_BLACK_COLOR.cpy();
         param.shadowOffsetX = (int) (3.0F * Settings.scale);
@@ -115,12 +139,12 @@ public class EUIFontHelper
         param.borderGamma = 0.9F;
         param.borderColor = new Color(0.4F, 0.1F, 0.1F, 1.0F);
         param.borderWidth = 0.0F;
-        EUIFontHelper.cardTipBodyFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.tipDescFont, fontFile) : mainFont,22.0F, true);
+        EUIFontHelper.cardTipBodyFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.tipDescFont, fontFile) : mainFont, 22.0F, true);
 
         param.borderWidth = 4.0F * Settings.scale;
-        param.spaceX = (int)(-2.5F * Settings.scale);
+        param.spaceX = (int) (-2.5F * Settings.scale);
         param.borderColor = Settings.QUARTER_TRANSPARENT_BLACK_COLOR;
-        EUIFontHelper.buttonFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.buttonFont, fontFile) : mainFont,32.0F, true);
+        EUIFontHelper.buttonFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.buttonFont, fontFile) : mainFont, 32.0F, true);
 
         FileHandle boldFile = EUIConfiguration.cardDescFont.get().isEmpty() ? fontFileBold : mainFont;
 
@@ -136,15 +160,15 @@ public class EUIFontHelper
         param.borderWidth = 2.0F * Settings.scale;
         param.shadowOffsetX = 1;
         param.shadowOffsetY = 1;
-        EUIFontHelper.cardTipTitleFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.tipTitleFont, fontFileBold) : boldFile,23, true);
+        EUIFontHelper.cardTipTitleFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.tipTitleFont, fontFileBold) : boldFile, 23, true);
 
         param.gamma = 1.2F;
         param.borderGamma = 1.2F;
         param.borderWidth = 0.0F;
         param.shadowColor = new Color(0.0F, 0.0F, 0.0F, 0.12F);
-        param.shadowOffsetX = (int)(5.0F * Settings.scale);
-        param.shadowOffsetY = (int)(4.0F * Settings.scale);
-        EUIFontHelper.bannerFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.bannerFont, fontFileBold) : boldFile,38, true);
+        param.shadowOffsetX = (int) (5.0F * Settings.scale);
+        param.shadowOffsetY = (int) (4.0F * Settings.scale);
+        EUIFontHelper.bannerFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.bannerFont, fontFileBold) : boldFile, 38, true);
 
 
         Color bc1 = new Color(0.35F, 0.35F, 0.35F, 1.0F);
@@ -168,41 +192,30 @@ public class EUIFontHelper
         EUIFontHelper.energyFontLarge = prepFont(energyFont, 76.0F, 8f, 3f);
     }
 
-    public static void overwriteBaseFonts()
-    {
-        FontHelper.cardDescFont_N = EUIFontHelper.carddescriptionfontNormal;
-        FontHelper.cardDescFont_L = EUIFontHelper.carddescriptionfontLarge;
-        FontHelper.cardTitleFont = EUIFontHelper.cardtitlefontNormal;
-        FontHelper.cardTypeFont = EUIFontHelper.cardTypeFont;
-        FontHelper.tipBodyFont = EUIFontHelper.cardTooltipFont;
-        FontHelper.tipHeaderFont = EUIFontHelper.cardtooltiptitlefontNormal;
-        FontHelper.topPanelInfoFont = EUIFontHelper.cardtooltiptitlefontLarge;
-        FontHelper.buttonLabelFont = EUIFontHelper.buttonFont;
-        FontHelper.cardEnergyFont_L = EUIFontHelper.energyFont;
-        FontHelper.SCP_cardEnergyFont = EUIFontHelper.energyFontLarge;
-        FontHelper.menuBannerFont = EUIFontHelper.bannerFont;
-        FontHelper.bannerNameFont = EUIFontHelper.bannerFontLarge;
-        FontHelper.dungeonTitleFont = EUIFontHelper.bannerFontExtraLarge;
+    public static FileHandle getDefaultFontFile(Settings.GameLanguage language) {
+        return Gdx.files.internal(getFontDefaultPath(language));
     }
 
-    private static FreeTypeFontGenerator getGenerator(FileHandle fontFile)
-    {
-        FreeTypeFontGenerator generator;
-        if (generators.containsKey(fontFile.path()))
-        {
-            generator = generators.get(fontFile.path());
-        }
-        else
-        {
-            generator = new FreeTypeFontGenerator(fontFile);
-            generators.put(fontFile.path(), generator);
-        }
-
-        return generator;
+    public static FileHandle getBoldFontFile(Settings.GameLanguage language) {
+        return Gdx.files.internal(getFontBoldPath(language));
     }
 
-    private static BitmapFont prepFont(FileHandle file, float size, boolean isLinearFiltering)
-    {
+    private static FileHandle getCustomFont(STSConfigItem<String> config, FileHandle fallback) {
+        String value = config.get();
+        if (value != null && !value.isEmpty()) {
+            String trimmed = value.replace("\"", "").trim();
+            File file = new File(trimmed);
+            if (file.exists()) {
+                return new FileHandle(file);
+            }
+            else {
+                EUIUtils.logWarning(EUIFontHelper.class, "Could not load external font for config " + config.key + ". Config value: " + trimmed + ". Actual path: " + file.getAbsolutePath());
+            }
+        }
+        return fallback;
+    }
+
+    private static BitmapFont prepFont(FileHandle file, float size, boolean isLinearFiltering) {
         final FreeTypeFontGenerator g = getGenerator(file);
         final float fontScale = 1.0F;
         final FreeTypeFontGenerator.FreeTypeFontParameter p = new FreeTypeFontGenerator.FreeTypeFontParameter();
@@ -219,13 +232,11 @@ public class EUIFontHelper
         p.shadowColor = param.shadowColor;
         p.shadowOffsetX = param.shadowOffsetX;
         p.shadowOffsetY = param.shadowOffsetY;
-        if (isLinearFiltering)
-        {
+        if (isLinearFiltering) {
             p.minFilter = Texture.TextureFilter.Linear;
             p.magFilter = Texture.TextureFilter.Linear;
         }
-        else
-        {
+        else {
             p.minFilter = Texture.TextureFilter.Nearest;
             p.magFilter = Texture.TextureFilter.MipMapLinearNearest;
         }
@@ -235,21 +246,14 @@ public class EUIFontHelper
         font.setUseIntegerPositions(!isLinearFiltering);
         font.getData().fontFile = file;
         font.getData().markupEnabled = true;
-        if (LocalizedStrings.break_chars != null)
-        {
+        if (LocalizedStrings.break_chars != null) {
             font.getData().breakChars = LocalizedStrings.break_chars.toCharArray();
         }
 
         return font;
     }
 
-    private static BitmapFont prepFont(BitmapFont source, float size, float borderWidth, float shadowOffset)
-    {
-        return prepFont(source, size, borderWidth, new Color(0f, 0f, 0f, 1f), shadowOffset, new Color(0f, 0f, 0f, 0.5f));
-    }
-
-    private static BitmapFont prepFont(BitmapFont source, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor)
-    {
+    private static BitmapFont prepFont(BitmapFont source, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
         FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
         param.minFilter = Texture.TextureFilter.Linear;
         param.magFilter = Texture.TextureFilter.Linear;
@@ -273,34 +277,19 @@ public class EUIFontHelper
         BitmapFont font = generator.generateFont(param);
         font.setUseIntegerPositions(false);
         font.getData().markupEnabled = false;
-        if (LocalizedStrings.break_chars != null)
-        {
+        if (LocalizedStrings.break_chars != null) {
             font.getData().breakChars = LocalizedStrings.break_chars.toCharArray();
         }
 
         return font;
     }
 
-    private static FileHandle getCustomFont(STSConfigItem<String> config, FileHandle fallback)
-    {
-        String value = config.get();
-        if (value != null && !value.isEmpty()) {
-            String trimmed = value.replace("\"","").trim();
-            File file = new File(trimmed);
-            if (file.exists()) {
-                return new FileHandle(file);
-            }
-            else {
-                EUIUtils.logWarning(EUIFontHelper.class, "Could not load external font for config " + config.key + ". Config value: " + trimmed + ". Actual path: " + file.getAbsolutePath());
-            }
-        }
-        return fallback;
+    private static BitmapFont prepFont(BitmapFont source, float size, float borderWidth, float shadowOffset) {
+        return prepFont(source, size, borderWidth, new Color(0f, 0f, 0f, 1f), shadowOffset, new Color(0f, 0f, 0f, 0.5f));
     }
 
-    public static String getFontDefaultPath(Settings.GameLanguage language)
-    {
-        switch (language)
-        {
+    public static String getFontDefaultPath(Settings.GameLanguage language) {
+        switch (language) {
             case JPN:
                 return JPN_DEFAULT_FONT;
             case KOR:
@@ -327,10 +316,8 @@ public class EUIFontHelper
         }
     }
 
-    public static String getFontBoldPath(Settings.GameLanguage language)
-    {
-        switch (language)
-        {
+    public static String getFontBoldPath(Settings.GameLanguage language) {
+        switch (language) {
             case JPN:
                 return JPN_BOLD_FONT;
             case KOR:
@@ -357,44 +344,32 @@ public class EUIFontHelper
         }
     }
 
-    public static FileHandle getDefaultFontFile(Settings.GameLanguage language)
-    {
-        return Gdx.files.internal(getFontDefaultPath(language));
-    }
-
-    public static FileHandle getBoldFontFile(Settings.GameLanguage language)
-    {
-        return Gdx.files.internal(getFontBoldPath(language));
-    }
-
-    public static FileHandle getCustomDefaultFontFile(Settings.GameLanguage language)
-    {
-        return getCustomFont(EUIConfiguration.cardDescFont, getDefaultFontFile(language));
-    }
-
-    public static FileHandle getCustomBoldFontFile(Settings.GameLanguage language)
-    {
-        if (EUIConfiguration.useSeparateFonts.get())
-        {
-            return getCustomFont(EUIConfiguration.tipTitleFont, getBoldFontFile(language));
+    private static FreeTypeFontGenerator getGenerator(FileHandle fontFile) {
+        FreeTypeFontGenerator generator;
+        if (generators.containsKey(fontFile.path())) {
+            generator = generators.get(fontFile.path());
         }
-        return getCustomFont(EUIConfiguration.cardDescFont, getBoldFontFile(language));
+        else {
+            generator = new FreeTypeFontGenerator(fontFile);
+            generators.put(fontFile.path(), generator);
+        }
+
+        return generator;
     }
 
-    public static BitmapFont createDefaultFont(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
-        FileHandle file = getCustomDefaultFontFile(language);
-        BitmapFont preppedFont = prepFont(file, size, isLinearFiltering);
-        return prepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
-    }
-
-    public static BitmapFont createBoldFont(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
-        FileHandle file = getCustomBoldFontFile(language);
-        BitmapFont preppedFont = prepFont(file, size, isLinearFiltering);
-        return prepFont(preppedFont, size, borderWidth, borderColor, shadowOffset, shadowColor);
-    }
-
-    public static boolean hasGlyph(BitmapFont font, char c)
-    {
-        return font.getData().hasGlyph(c);
+    public static void overwriteBaseFonts() {
+        FontHelper.cardDescFont_N = EUIFontHelper.carddescriptionfontNormal;
+        FontHelper.cardDescFont_L = EUIFontHelper.carddescriptionfontLarge;
+        FontHelper.cardTitleFont = EUIFontHelper.cardtitlefontNormal;
+        FontHelper.cardTypeFont = EUIFontHelper.cardTypeFont;
+        FontHelper.tipBodyFont = EUIFontHelper.cardTooltipFont;
+        FontHelper.tipHeaderFont = EUIFontHelper.cardtooltiptitlefontNormal;
+        FontHelper.topPanelInfoFont = EUIFontHelper.cardtooltiptitlefontLarge;
+        FontHelper.buttonLabelFont = EUIFontHelper.buttonFont;
+        FontHelper.cardEnergyFont_L = EUIFontHelper.energyFont;
+        FontHelper.SCP_cardEnergyFont = EUIFontHelper.energyFontLarge;
+        FontHelper.menuBannerFont = EUIFontHelper.bannerFont;
+        FontHelper.bannerNameFont = EUIFontHelper.bannerFontLarge;
+        FontHelper.dungeonTitleFont = EUIFontHelper.bannerFontExtraLarge;
     }
 }

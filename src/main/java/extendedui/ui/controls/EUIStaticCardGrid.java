@@ -4,30 +4,53 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
-public class EUIStaticCardGrid extends EUICardGrid
-{
-    protected int currentRow;
+public class EUIStaticCardGrid extends EUICardGrid {
     public int visibleRowCount = 4;
+    protected int currentRow;
 
-    public EUIStaticCardGrid()
-    {
+    public EUIStaticCardGrid() {
         this(0.5f, true);
     }
 
-    public EUIStaticCardGrid(float horizontalAlignment)
-    {
-        this(horizontalAlignment, true);
-    }
-
-    public EUIStaticCardGrid(float horizontalAlignment, boolean autoShowScrollbar)
-    {
+    public EUIStaticCardGrid(float horizontalAlignment, boolean autoShowScrollbar) {
         super(horizontalAlignment, autoShowScrollbar);
         instantSnap = true;
     }
 
+    public EUIStaticCardGrid(float horizontalAlignment) {
+        this(horizontalAlignment, true);
+    }
+
+    public void forceUpdateCardPositions() {
+        int row = 0;
+        int column = 0;
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++) {
+            AbstractCard card = cards.group.get(i);
+            card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * PAD_X);
+            card.current_y = card.target_y = drawTopY - (row * padY);
+            //card.drawScale = card.targetDrawScale = targetScale;
+            card.hb.move(card.current_x, card.current_y);
+
+            column += 1;
+            if (column >= rowSize) {
+                column = 0;
+                row += 1;
+            }
+        }
+    }
+
     @Override
-    protected void updateCards()
-    {
+    protected void renderCards(SpriteBatch sb) {
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++) {
+            AbstractCard card = cards.group.get(i);
+            if (card != hoveredCard) {
+                renderCard(sb, card);
+            }
+        }
+    }
+
+    @Override
+    protected void updateCards() {
         hoveredCard = null;
 
         int row = 0;
@@ -41,8 +64,7 @@ public class EUIStaticCardGrid extends EUICardGrid
             card.update();
             card.updateHoverLogic();
 
-            if (card.hb.hovered)
-            {
+            if (card.hb.hovered) {
                 hoveredCard = card;
                 hoveredIndex = i;
                 if (!shouldEnlargeHovered) {
@@ -51,28 +73,7 @@ public class EUIStaticCardGrid extends EUICardGrid
             }
 
             column += 1;
-            if (column >= rowSize)
-            {
-                column = 0;
-                row += 1;
-            }
-        }
-    }
-
-    public void forceUpdateCardPositions()
-    {
-        int row = 0;
-        int column = 0;
-        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++) {
-            AbstractCard card = cards.group.get(i);
-            card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * PAD_X);
-            card.current_y = card.target_y = drawTopY - (row * padY);
-            //card.drawScale = card.targetDrawScale = targetScale;
-            card.hb.move(card.current_x, card.current_y);
-
-            column += 1;
-            if (column >= rowSize)
-            {
+            if (column >= rowSize) {
                 column = 0;
                 row += 1;
             }
@@ -80,30 +81,13 @@ public class EUIStaticCardGrid extends EUICardGrid
     }
 
     @Override
-    protected void renderCards(SpriteBatch sb)
-    {
-        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, cards.group.size()); i++)
-        {
-            AbstractCard card = cards.group.get(i);
-            if (card != hoveredCard)
-            {
-                renderCard(sb, card);
-            }
-        }
-    }
-
-    @Override
-    protected float getScrollDistance(AbstractCard card, int index)
-    {
-        if (card != null)
-        {
+    protected float getScrollDistance(AbstractCard card, int index) {
+        if (card != null) {
             float scrollDistance = 1f / getRowCount();
-            if (card.target_y > drawTopY || index < currentRow * rowSize)
-            {
+            if (card.target_y > drawTopY || index < currentRow * rowSize) {
                 return -scrollDistance;
             }
-            else if (card.target_y < 0 || index > (currentRow + visibleRowCount) * rowSize)
-            {
+            else if (card.target_y < 0 || index > (currentRow + visibleRowCount) * rowSize) {
                 return scrollDistance;
             }
         }
@@ -111,8 +95,7 @@ public class EUIStaticCardGrid extends EUICardGrid
     }
 
     @Override
-    protected void updateScrolling(boolean isDraggingScrollBar)
-    {
+    protected void updateScrolling(boolean isDraggingScrollBar) {
         super.updateScrolling(isDraggingScrollBar);
         int rowCount = getRowCount();
         int prevRow = currentRow;

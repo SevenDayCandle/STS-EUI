@@ -9,111 +9,111 @@
 package extendedui.swig;
 
 public class EffekseerEffectCore {
-  private transient long swigCPtr;
-  protected transient boolean swigCMemOwn;
+    protected transient boolean swigCMemOwn;
+    private transient long swigCPtr;
 
-  protected EffekseerEffectCore(long cPtr, boolean cMemoryOwn) {
-    swigCMemOwn = cMemoryOwn;
-    swigCPtr = cPtr;
-  }
-
-  protected static long getCPtr(EffekseerEffectCore obj) {
-    return (obj == null) ? 0 : obj.swigCPtr;
-  }
-
-  @SuppressWarnings("deprecation")
-  protected void finalize() {
-    delete();
-  }
-
-  public synchronized void delete() {
-    if (swigCPtr != 0) {
-      if (swigCMemOwn) {
-        swigCMemOwn = false;
-        EffekseerCoreJNI.delete_EffekseerEffectCore(swigCPtr);
-      }
-      swigCPtr = 0;
+    public EffekseerEffectCore() {
+        this(EffekseerCoreJNI.new_EffekseerEffectCore(), true);
     }
-  }
 
-  public EffekseerEffectCore() {
-    this(EffekseerCoreJNI.new_EffekseerEffectCore(), true);
-  }
+    protected EffekseerEffectCore(long cPtr, boolean cMemoryOwn) {
+        swigCMemOwn = cMemoryOwn;
+        swigCPtr = cPtr;
+    }
 
-  public boolean Load(byte[] data, int len, float magnification) {
-    return EffekseerCoreJNI.EffekseerEffectCore_Load(swigCPtr, this, data, len, magnification);
-  }
+    protected static long getCPtr(EffekseerEffectCore obj) {
+        return (obj == null) ? 0 : obj.swigCPtr;
+    }
 
-  public String GetTexturePath(int index, EffekseerTextureType type) {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetTexturePath(swigCPtr, this, index, type.swigValue());
-  }
+    public int GetCurveCount() {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetCurveCount(swigCPtr, this);
+    }
 
-  public int GetTextureCount(EffekseerTextureType type) {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetTextureCount(swigCPtr, this, type.swigValue());
-  }
+    public String GetCurvePath(int index) {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetCurvePath(swigCPtr, this, index);
+    }
 
-  public boolean LoadTexture(byte[] data, int len, int index, EffekseerTextureType type) {
-    return EffekseerCoreJNI.EffekseerEffectCore_LoadTexture(swigCPtr, this, data, len, index, type.swigValue());
-  }
+    public int GetMaterialCount() {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetMaterialCount(swigCPtr, this);
+    }
 
-  public boolean HasTextureLoaded(int index, EffekseerTextureType type) {
-    return EffekseerCoreJNI.EffekseerEffectCore_HasTextureLoaded(swigCPtr, this, index, type.swigValue());
-  }
+    public String GetMaterialPath(int index) {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetMaterialPath(swigCPtr, this, index);
+    }
 
-  public String GetModelPath(int index) {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetModelPath(swigCPtr, this, index);
-  }
+    public int GetModelCount() {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetModelCount(swigCPtr, this);
+    }
 
-  public int GetModelCount() {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetModelCount(swigCPtr, this);
-  }
+    public String GetModelPath(int index) {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetModelPath(swigCPtr, this, index);
+    }
 
-  public boolean LoadModel(byte[] data, int len, int index) {
-    return EffekseerCoreJNI.EffekseerEffectCore_LoadModel(swigCPtr, this, data, len, index);
-  }
+    public int GetTermMax() {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetTermMax(swigCPtr, this);
+    }
 
-  public boolean HasModelLoaded(int index) {
-    return EffekseerCoreJNI.EffekseerEffectCore_HasModelLoaded(swigCPtr, this, index);
-  }
+    public int GetTermMin() {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetTermMin(swigCPtr, this);
+    }
 
-  public String GetMaterialPath(int index) {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetMaterialPath(swigCPtr, this, index);
-  }
+    public int GetTextureCount(EffekseerTextureType type) {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetTextureCount(swigCPtr, this, type.swigValue());
+    }
 
-  public int GetMaterialCount() {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetMaterialCount(swigCPtr, this);
-  }
+    public String GetTexturePath(int index, EffekseerTextureType type) {
+        return EffekseerCoreJNI.EffekseerEffectCore_GetTexturePath(swigCPtr, this, index, type.swigValue());
+    }
 
-  public boolean LoadMaterial(byte[] data, int len, int index) {
-    return EffekseerCoreJNI.EffekseerEffectCore_LoadMaterial(swigCPtr, this, data, len, index);
-  }
+    public boolean HasCurveLoaded(int index) {
+        return EffekseerCoreJNI.EffekseerEffectCore_HasCurveLoaded(swigCPtr, this, index);
+    }
 
-  public String GetCurvePath(int index) {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetCurvePath(swigCPtr, this, index);
-  }
+    public boolean HasMaterialLoaded(int index) {
+        return EffekseerCoreJNI.EffekseerEffectCore_HasMaterialLoaded(swigCPtr, this, index);
+    }
 
-  public boolean HasMaterialLoaded(int index) {
-    return EffekseerCoreJNI.EffekseerEffectCore_HasMaterialLoaded(swigCPtr, this, index);
-  }
+    public boolean HasModelLoaded(int index) {
+        return EffekseerCoreJNI.EffekseerEffectCore_HasModelLoaded(swigCPtr, this, index);
+    }
 
-  public int GetCurveCount() {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetCurveCount(swigCPtr, this);
-  }
+    public boolean HasTextureLoaded(int index, EffekseerTextureType type) {
+        return EffekseerCoreJNI.EffekseerEffectCore_HasTextureLoaded(swigCPtr, this, index, type.swigValue());
+    }
 
-  public boolean LoadCurve(byte[] data, int len, int index) {
-    return EffekseerCoreJNI.EffekseerEffectCore_LoadCurve(swigCPtr, this, data, len, index);
-  }
+    public boolean Load(byte[] data, int len, float magnification) {
+        return EffekseerCoreJNI.EffekseerEffectCore_Load(swigCPtr, this, data, len, magnification);
+    }
 
-  public boolean HasCurveLoaded(int index) {
-    return EffekseerCoreJNI.EffekseerEffectCore_HasCurveLoaded(swigCPtr, this, index);
-  }
+    public boolean LoadCurve(byte[] data, int len, int index) {
+        return EffekseerCoreJNI.EffekseerEffectCore_LoadCurve(swigCPtr, this, data, len, index);
+    }
 
-  public int GetTermMax() {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetTermMax(swigCPtr, this);
-  }
+    public boolean LoadMaterial(byte[] data, int len, int index) {
+        return EffekseerCoreJNI.EffekseerEffectCore_LoadMaterial(swigCPtr, this, data, len, index);
+    }
 
-  public int GetTermMin() {
-    return EffekseerCoreJNI.EffekseerEffectCore_GetTermMin(swigCPtr, this);
-  }
+    public boolean LoadModel(byte[] data, int len, int index) {
+        return EffekseerCoreJNI.EffekseerEffectCore_LoadModel(swigCPtr, this, data, len, index);
+    }
+
+    public boolean LoadTexture(byte[] data, int len, int index, EffekseerTextureType type) {
+        return EffekseerCoreJNI.EffekseerEffectCore_LoadTexture(swigCPtr, this, data, len, index, type.swigValue());
+    }
+
+    @SuppressWarnings("deprecation")
+    protected void finalize() {
+        delete();
+    }
+
+    public synchronized void delete() {
+        if (swigCPtr != 0) {
+            if (swigCMemOwn) {
+                swigCMemOwn = false;
+                EffekseerCoreJNI.delete_EffekseerEffectCore(swigCPtr);
+            }
+            swigCPtr = 0;
+        }
+    }
 
 }

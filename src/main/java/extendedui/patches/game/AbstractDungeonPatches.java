@@ -18,29 +18,14 @@ public class AbstractDungeonPatches {
     private static boolean fromEUI;
 
     @SpirePatch(clz = AbstractDungeon.class, method = "closeCurrentScreen")
-    public static class AbstractDungeonPatches_CloseCurrentScreen
-    {
-        @SpirePrefixPatch
-        public static void prefix()
-        {
-            if (AbstractDungeon.screen == EUI_SCREEN)
-            {
-                EUI.dispose();
-                fromEUI = true;
-            }
-        }
-
+    public static class AbstractDungeonPatches_CloseCurrentScreen {
         @SpirePostfixPatch
-        public static void postfix()
-        {
-            if (AbstractDungeon.screen != EUI_SCREEN)
-            {
+        public static void postfix() {
+            if (AbstractDungeon.screen != EUI_SCREEN) {
                 EUI.postDispose();
                 // Dungeon map needs to be manually closed after returning to the main screen
-                if (fromEUI)
-                {
-                    if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP)
-                    {
+                if (fromEUI) {
+                    if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP) {
                         AbstractDungeon.dungeonMapScreen.map.hideInstantly();
                     }
                     Settings.hideTopBar = false;
@@ -49,16 +34,21 @@ public class AbstractDungeonPatches {
                 }
             }
         }
+
+        @SpirePrefixPatch
+        public static void prefix() {
+            if (AbstractDungeon.screen == EUI_SCREEN) {
+                EUI.dispose();
+                fromEUI = true;
+            }
+        }
     }
 
     @SpirePatch(clz = AbstractDungeon.class, method = "openPreviousScreen")
-    public static class AbstractDungeonPatches_OpenPreviousScreen
-    {
+    public static class AbstractDungeonPatches_OpenPreviousScreen {
         @SpirePrefixPatch
-        public static void prefix(AbstractDungeon.CurrentScreen s)
-        {
-            if (EUI.currentScreen != null)
-            {
+        public static void prefix(AbstractDungeon.CurrentScreen s) {
+            if (EUI.currentScreen != null) {
                 // closeCurrentScreen will set screen to NONE if the previous screen was null
                 if (s == AbstractDungeon.CurrentScreen.NONE) {
                     AbstractDungeon.screen = EUI_SCREEN;
@@ -69,33 +59,26 @@ public class AbstractDungeonPatches {
     }
 
     @SpirePatch(clz = AbstractDungeon.class, method = "render")
-    public static class AbstractDungeon_Render
-    {
+    public static class AbstractDungeon_Render {
         @SpireInsertPatch(locator = Locator.class)
-        public static void insert(AbstractDungeon __instance, SpriteBatch sb)
-        {
+        public static void insert(AbstractDungeon __instance, SpriteBatch sb) {
             EUI.preRender(sb);
         }
 
-        private static class Locator extends SpireInsertLocator
-        {
-            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
-            {
+        @SpireInsertPatch(locator = Locator2.class)
+        public static void insert2(AbstractDungeon __instance, SpriteBatch sb) {
+            STSEffekseerManager.update();
+        }
+
+        private static class Locator extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
                 Matcher finalMatcher = new Matcher.MethodCallMatcher(DynamicBanner.class, "render");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }
 
-        @SpireInsertPatch(locator = Locator2.class)
-        public static void insert2(AbstractDungeon __instance, SpriteBatch sb)
-        {
-            STSEffekseerManager.update();
-        }
-
-        private static class Locator2 extends SpireInsertLocator
-        {
-            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException
-            {
+        private static class Locator2 extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
                 Matcher finalMatcher = new Matcher.MethodCallMatcher(OverlayMenu.class, "render");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }

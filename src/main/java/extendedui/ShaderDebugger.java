@@ -13,14 +13,12 @@ import extendedui.ui.controls.EUIImage;
 import imgui.ImGui;
 import imgui.flag.ImGuiInputTextFlags;
 
-public class ShaderDebugger implements ImGuiSubscriber
-{
-    protected static ShaderDebugger instance;
+public class ShaderDebugger implements ImGuiSubscriber {
     private static final String WINDOW_ID = "Shaders";
     private static final String INPUT_ID = "##FragmentShader";
     private static final String RENDER_ID = "Render";
     private static final String STOP_ID = "Stop";
-
+    protected static ShaderDebugger instance;
     private final DEUIWindow effectWindow;
     private final DEUIButton effectRender;
     private final DEUIButton effectStop;
@@ -28,8 +26,7 @@ public class ShaderDebugger implements ImGuiSubscriber
     private DEUITextMultilineInput fragmentShader;
     private ShaderProgram shader;
 
-    private ShaderDebugger()
-    {
+    private ShaderDebugger() {
         effectWindow = new DEUIWindow(WINDOW_ID);
         effectRender = new DEUIButton(RENDER_ID);
         effectStop = new DEUIButton(STOP_ID);
@@ -38,26 +35,22 @@ public class ShaderDebugger implements ImGuiSubscriber
     }
 
     public static void initialize() {
-        try
-        {
+        try {
             instance = new ShaderDebugger();
             BaseMod.subscribe(instance);
         }
-        catch (Exception e)
-        {
+        catch (Exception e) {
             EUIUtils.logInfoIfDebug(ShaderDebugger.class, "Unable to load shader debugger");
         }
     }
 
     @Override
-    public void receiveImGui()
-    {
+    public void receiveImGui() {
         effectWindow.render(() -> {
             effectRender.renderInline(this::compile);
             effectStop.render(() -> shader = null);
             ImGui.separator();
-            if (fragmentShader == null)
-            {
+            if (fragmentShader == null) {
                 fragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 0, 3000, ImGuiInputTextFlags.AllowTabInput);
             }
             fragmentShader.render();
@@ -65,29 +58,24 @@ public class ShaderDebugger implements ImGuiSubscriber
         renderShader();
     }
 
-    protected void compile()
-    {
+    protected void compile() {
         FileHandle vShader = Gdx.files.internal(EUIRenderHelpers.SHADER_VERTEX);
         String vShaderString = vShader.readString();
         ShaderProgram program = new ShaderProgram(vShaderString, fragmentShader.get());
-        if (program.isCompiled())
-        {
+        if (program.isCompiled()) {
             shader = program;
             if (program.getLog().length() > 0) {
                 System.out.println(program.getLog());
             }
         }
-        else
-        {
+        else {
             System.err.println(program.getLog());
             shader = null;
         }
     }
 
-    protected void renderShader()
-    {
-        if (shader != null)
-        {
+    protected void renderShader() {
+        if (shader != null) {
             shader.setUniformf("u_time", EUI.time());
             EUI.addPostRender(s -> EUIRenderHelpers.drawWithShader(s, shader, testImage::tryRender));
         }

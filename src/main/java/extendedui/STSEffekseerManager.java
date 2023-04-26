@@ -24,13 +24,9 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 
 import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
 
-public class STSEffekseerManager implements ImGuiSubscriber
-{
+public class STSEffekseerManager implements ImGuiSubscriber {
     public static final float BASE_ANIMATION_SPEED = 60f;
     protected static final ArrayList<String> AvailablePaths = new ArrayList<>();
-    private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
-    private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
-    protected static float animationSpeed = BASE_ANIMATION_SPEED;
     protected static final float ZPOS = 99;
     protected static final String WINDOW_ID = "Effekseer";
     protected static final String WINDOW_TABLE_ID = "Playing Effects";
@@ -50,6 +46,9 @@ public class STSEffekseerManager implements ImGuiSubscriber
     protected static final String EFFECT_LIST_PLAY_ID = "Play";
     protected static final String EFFECT_LIST_TOGGLE_ID = "Show Playing";
     protected static final String TABLE_ID = "Current Playing Effects";
+    private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
+    private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
+    protected static float animationSpeed = BASE_ANIMATION_SPEED;
     protected static STSEffekseerManager instance;
     private static EffekseerManagerCore managerCore;
     private static boolean enabled = false;
@@ -74,8 +73,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
     private final DEUIFloatInput effectColorA;
     private final DEUIButton effectPlay;
 
-    private STSEffekseerManager()
-    {
+    private STSEffekseerManager() {
         effectWindow = new DEUIWindow(WINDOW_ID);
         effectList = new DEUIListBox<String>(EFFECT_LIST_ID, AvailablePaths, p -> p);
         effectPosX = new DEUIFloatInput(EFFECT_LIST_POS_X_ID, Settings.WIDTH * 0.5f);
@@ -96,11 +94,11 @@ public class STSEffekseerManager implements ImGuiSubscriber
         handleWindow = new DEUICloseableWindow(WINDOW_TABLE_ID).link(handleToggle);
         handleTable = new DEUIDynamicActionTable<Integer>(TABLE_ID, 4);
         handleTable.setItems(PlayingHandles, handle -> EUIUtils.array(
-                String.valueOf(handle),
-                String.valueOf(managerCore.GetFrame(handle)),
-                String.valueOf(managerCore.GetInstanceCount(handle)),
-                String.valueOf(managerCore.GetLayer(handle))
-        ))
+                        String.valueOf(handle),
+                        String.valueOf(managerCore.GetFrame(handle)),
+                        String.valueOf(managerCore.GetInstanceCount(handle)),
+                        String.valueOf(managerCore.GetLayer(handle))
+                ))
                 .setClick(STSEffekseerManager::stop, "Stop")
                 .setColumnAction(() -> {
                     ImGui.tableSetupColumn("Handle", ImGuiTableColumnFlags.WidthStretch);
@@ -111,9 +109,9 @@ public class STSEffekseerManager implements ImGuiSubscriber
     }
 
     /**
-     Force an animation to stop playing
+     * Force an animation to stop playing
      */
-    public static void stop(int handle){
+    public static void stop(int handle) {
         if (enabled) {
             managerCore.Stop(handle);
         }
@@ -127,8 +125,16 @@ public class STSEffekseerManager implements ImGuiSubscriber
         }
     }
 
+    private static void clear() {
+        managerCore.delete();
+        for (EffekseerEffectCore effect : ParticleEffects.values()) {
+            effect.delete();
+        }
+        ParticleEffects.clear();
+    }
+
     /**
-     Attempts to initialize the Effekseer system for the current OS and set up the buffer used for rendering
+     * Attempts to initialize the Effekseer system for the current OS and set up the buffer used for rendering
      */
     public static void initialize() {
         try {
@@ -147,16 +153,16 @@ public class STSEffekseerManager implements ImGuiSubscriber
         LogManager.getLogger(STSEffekseerManager.class.getName()).info("Initialized STSEffekseerManager");
     }
 
-    public static boolean modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, Color color)  {
+    public static boolean modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, Color color) {
         return modify(handle, position, rotation, scale, STSEffekSeerUtils.toEffekseerColor(color));
     }
 
     /**
-     Edit the attributes of an effect that is currently playing
+     * Edit the attributes of an effect that is currently playing
      */
     public static boolean modify(int handle, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
         if (enabled && managerCore.Exists(handle)) {
-            if (position != null)         {
+            if (position != null) {
                 managerCore.SetEffectPosition(handle, position.x, position.y, ZPOS);
             }
             if (rotation != null) {
@@ -178,9 +184,9 @@ public class STSEffekseerManager implements ImGuiSubscriber
     }
 
     /**
-     Start playing a new effect in Effekseer.
-     Whenever a new effect type is loaded, its files are cached so that future calls to the same effect type do not need to load file data again
-     Note that rotations are in radians
+     * Start playing a new effect in Effekseer.
+     * Whenever a new effect type is loaded, its files are cached so that future calls to the same effect type do not need to load file data again
+     * Note that rotations are in radians
      */
     public static Integer play(String key, Vector2 position, Vector3 rotation, Vector3 scale, float[] color) {
         if (canPlay()) {
@@ -215,7 +221,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
     }
 
     /**
-     Effects can only play if the manager is loaded and if in-game effects are enabled
+     * Effects can only play if the manager is loaded and if in-game effects are enabled
      */
     public static boolean canPlay() {
         return enabled && !Settings.DISABLE_EFFECTS && !EUIConfiguration.disableEffekseer.get();
@@ -226,26 +232,24 @@ public class STSEffekseerManager implements ImGuiSubscriber
     }
 
     /**
-     The color and depth bits must be cleared before every render in order for effekseer effects to work
+     * The color and depth bits must be cleared before every render in order for effekseer effects to work
      */
     public static void preUpdate() {
         PlayingHandles.removeIf(handle -> !exists(handle));
-        if (!PlayingHandles.isEmpty())
-        {
-            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT|GL20.GL_DEPTH_BUFFER_BIT);
+        if (!PlayingHandles.isEmpty()) {
+            Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         }
     }
 
     /**
-     Whether the effect with the given handle is currently playing
+     * Whether the effect with the given handle is currently playing
      */
-    public static boolean exists(int handle){
+    public static boolean exists(int handle) {
         return enabled && managerCore.Exists(handle);
     }
 
     /* Add Effekseer file paths to the file selector */
-    public static void register(Collection<String> effects)
-    {
+    public static void register(Collection<String> effects) {
         AvailablePaths.addAll(effects);
     }
 
@@ -255,32 +259,24 @@ public class STSEffekseerManager implements ImGuiSubscriber
         managerCore.Initialize(BASE_SPRITES_DEFAULT);
     }
 
-    private static void clear() {
-        managerCore.delete();
-        for (EffekseerEffectCore effect : ParticleEffects.values()) {
-            effect.delete();
-        }
-        ParticleEffects.clear();
-    }
-
     /**
-     Set the global animation speed for ALL animations
+     * Set the global animation speed for ALL animations
      */
     public static void setAnimationSpeed(float speed) {
         animationSpeed = Math.max(0, speed);
     }
 
     /**
-     Force all animations to stop playing
+     * Force all animations to stop playing
      */
-    public static void stopAll(){
+    public static void stopAll() {
         if (enabled) {
             managerCore.StopAllEffects();
         }
     }
 
     /**
-     Advances the animations of all playing animations.
+     * Advances the animations of all playing animations.
      */
     public static void update() {
         if (canPlay() && !PlayingHandles.isEmpty()) {
@@ -290,8 +286,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
     }
 
     @Override
-    public void receiveImGui()
-    {
+    public void receiveImGui() {
         effectWindow.render(() -> {
             handleToggle.render();
             ImGui.separator();
@@ -316,8 +311,7 @@ public class STSEffekseerManager implements ImGuiSubscriber
             });
             effectPlay.render(() -> {
                         String value = effectList.get();
-                        if (value != null)
-                        {
+                        if (value != null) {
                             play(effectList.get(),
                                     new Vector2(effectPosX.get(), effectPosY.get()),
                                     new Vector3(effectRotX.get(), effectRotY.get(), effectRotZ.get()),
@@ -326,8 +320,8 @@ public class STSEffekseerManager implements ImGuiSubscriber
                             );
                         }
                     }
-                );
-            });
+            );
+        });
         handleWindow.render(handleTable::render);
     }
 }

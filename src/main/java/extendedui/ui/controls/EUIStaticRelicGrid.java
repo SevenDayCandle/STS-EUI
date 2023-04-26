@@ -2,33 +2,46 @@ package extendedui.ui.controls;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 
-public class EUIStaticRelicGrid extends EUIRelicGrid
-{
-    protected int currentRow;
+public class EUIStaticRelicGrid extends EUIRelicGrid {
     public int visibleRowCount = 20;
+    protected int currentRow;
 
-    public EUIStaticRelicGrid()
-    {
+    public EUIStaticRelicGrid() {
         this(0.5f, true);
     }
 
-    public EUIStaticRelicGrid(float horizontalAlignment)
-    {
-        this(horizontalAlignment, true);
-    }
-
-    public EUIStaticRelicGrid(float horizontalAlignment, boolean autoShowScrollbar)
-    {
+    public EUIStaticRelicGrid(float horizontalAlignment, boolean autoShowScrollbar) {
         super(horizontalAlignment, autoShowScrollbar);
         instantSnap = true;
     }
 
+    public EUIStaticRelicGrid(float horizontalAlignment) {
+        this(horizontalAlignment, true);
+    }
+
     @Override
-    protected void updateRelics()
-    {
+    public void forceUpdateRelicPositions() {
+        int row = 0;
+        int column = 0;
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++) {
+            RelicInfo relic = relicGroup.get(i);
+            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
+            relic.relic.currentY = relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
+            relic.relic.hb.update();
+            relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
+
+            column += 1;
+            if (column >= rowSize) {
+                column = 0;
+                row += 1;
+            }
+        }
+    }
+
+    @Override
+    protected void updateRelics() {
         hoveredRelic = null;
 
         int row = 0;
@@ -41,8 +54,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
             updateHoverLogic(relic, i);
 
             column += 1;
-            if (column >= rowSize)
-            {
+            if (column >= rowSize) {
                 column = 0;
                 row += 1;
             }
@@ -50,58 +62,33 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
     }
 
     @Override
-    public void forceUpdateRelicPositions()
-    {
-        int row = 0;
-        int column = 0;
-        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++)
-        {
-            RelicInfo relic = relicGroup.get(i);
-            relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
-            relic.relic.currentY = relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
-            relic.relic.hb.update();
-            relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
-
-            column += 1;
-            if (column >= rowSize)
-            {
-                column = 0;
-                row += 1;
-            }
-        }
-    }
-
-    @Override
-    protected float getScrollDistance(AbstractRelic relic, int index)
-    {
-        if (relic != null)
-        {
+    protected float getScrollDistance(AbstractRelic relic, int index) {
+        if (relic != null) {
             float scrollDistance = 1f / getRowCount();
-            if (relic.targetY > drawTopY || index < currentRow * rowSize)
-            {
+            if (relic.targetY > drawTopY || index < currentRow * rowSize) {
                 return -scrollDistance;
             }
-            else if (relic.targetY < 0 || index > (currentRow + visibleRowCount) * rowSize)
-            {
+            else if (relic.targetY < 0 || index > (currentRow + visibleRowCount) * rowSize) {
                 return scrollDistance;
             }
         }
         return 0;
     }
 
+    public int getRowCount() {
+        return (relicGroup.size() - 1) / rowSize;
+    }
+
     @Override
-    protected void renderRelics(SpriteBatch sb)
-    {
-        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++)
-        {
+    protected void renderRelics(SpriteBatch sb) {
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++) {
             renderRelic(sb, relicGroup.get(i));
         }
     }
 
     // TODO Remove, probably not necessary
     @Override
-    protected void updateScrolling(boolean isDraggingScrollBar)
-    {
+    protected void updateScrolling(boolean isDraggingScrollBar) {
         super.updateScrolling(isDraggingScrollBar);
         int rowCount = getRowCount();
         int prevRow = currentRow;
@@ -127,10 +114,6 @@ public class EUIStaticRelicGrid extends EUIRelicGrid
             card.relic.scale = targetScale;
         }
 
-    }
-
-    public int getRowCount() {
-        return (relicGroup.size() - 1) / rowSize;
     }
 
 }

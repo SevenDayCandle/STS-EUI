@@ -21,6 +21,10 @@ public class TextureCache {
         return this.path;
     }
 
+    public Texture texture() {
+        return this.texture(false);
+    }
+
     public Texture texture(boolean refresh) {
         if (refresh || this.texture == null) {
             this.texture = EUIRM.getTexture(this.path, this.mipmap, refresh, false);
@@ -30,9 +34,5 @@ public class TextureCache {
         }
 
         return this.texture;
-    }
-
-    public Texture texture() {
-        return this.texture(false);
     }
 }

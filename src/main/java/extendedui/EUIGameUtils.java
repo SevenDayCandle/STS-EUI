@@ -28,13 +28,11 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
-import com.megacrit.cardcrawl.screens.compendium.PotionViewScreen;
 import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.TextureCache;
 import extendedui.ui.tooltips.EUITooltip;
-import org.lwjgl.opencl.CL;
 
 import java.net.URL;
 import java.security.CodeSource;
@@ -48,49 +46,38 @@ import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
 public class EUIGameUtils {
-    private static final HashMap<AbstractCard.CardColor, String> CUSTOM_COLOR_NAMES = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, AbstractPlayer.PlayerClass> COLOR_TO_CLASS = new HashMap<>();
-    private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();
-    private static final HashMap<CodeSource, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
-    private static final HashMap<String, AbstractCard.CardColor> RELIC_COLORS = new HashMap<>();
     public static final Color COLOR_BASIC = new Color(0.61f, 0.61f, 0.61f, 1f);
     public static final Color COLOR_COMMON = new Color(0.72f, 0.72f, 0.72f, 1f);
     public static final Color COLOR_CURSE = new Color(0.45f, 0.45f, 0.45f, 1);
     public static final Color COLOR_RARE = new Color(1f, 0.8f, 0.35f, 1f);
     public static final Color COLOR_SPECIAL = new Color(0.7f, 1f, 0.5f, 1f);
     public static final Color COLOR_UNCOMMON = new Color(0.5f, 0.85f, 0.95f, 1f);
+    private static final HashMap<AbstractCard.CardColor, String> CUSTOM_COLOR_NAMES = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, AbstractPlayer.PlayerClass> COLOR_TO_CLASS = new HashMap<>();
+    private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();
+    private static final HashMap<CodeSource, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
+    private static final HashMap<String, AbstractCard.CardColor> RELIC_COLORS = new HashMap<>();
 
-    public static void addRelicColor(String relicID, AbstractCard.CardColor color)
-    {
+    public static void addRelicColor(String relicID, AbstractCard.CardColor color) {
         RELIC_COLORS.put(relicID, color);
     }
 
-    public static boolean canReceiveAnyColorCard()
-    {
+    public static boolean canReceiveAnyColorCard() {
         return (player != null && player.hasRelic(PrismaticShard.ID)) || ModHelper.isModEnabled(Diverse.ID);
     }
 
-    // Imitate getAnyColorCard logic
-    public static boolean canSeeAnyColorCard(AbstractCard c)
-    {
-        return (Settings.treatEverythingAsUnlocked() || !UnlockTracker.isCardLocked(c.cardID))
-                && c.type != AbstractCard.CardType.CURSE && c.type != AbstractCard.CardType.STATUS;
-    }
-
-    public static boolean canShowUpgrades(boolean isLibrary)
-    {
+    public static boolean canShowUpgrades(boolean isLibrary) {
         return SingleCardViewPopup.isViewingUpgrade && (AbstractDungeon.player == null || isLibrary
                 || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD
                 || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.CARD_REWARD
                 || AbstractDungeon.screen == EUI_SCREEN);
     }
 
-    public static boolean canViewEnemyIntents(AbstractMonster mo)
-    {
+    public static boolean canViewEnemyIntents(AbstractMonster mo) {
         return mo.intent != AbstractMonster.Intent.NONE && !AbstractDungeon.player.hasRelic(RunicDome.ID);
     }
 
-    public static Color colorForRarity(AbstractCard.CardRarity rarity){
+    public static Color colorForRarity(AbstractCard.CardRarity rarity) {
         switch (rarity) {
             case SPECIAL:
                 return COLOR_SPECIAL;
@@ -131,17 +118,15 @@ public class EUIGameUtils {
         return result;
     }
 
-    public static OrthographicCamera getCamera()
-    {
+    public static OrthographicCamera getCamera() {
         return ReflectionHacks.getPrivate(Gdx.app.getApplicationListener(), CardCrawlGame.class, "camera");
     }
 
-    public static AbstractCard.CardColor getCardColorForPlayer(AbstractPlayer.PlayerClass pc)
-    {
+    public static AbstractCard.CardColor getCardColorForPlayer(AbstractPlayer.PlayerClass pc) {
         return CLASS_TO_COLOR.getOrDefault(pc, AbstractCard.CardColor.COLORLESS);
     }
 
-    public static Color getColorColor(AbstractCard.CardColor co){
+    public static Color getColorColor(AbstractCard.CardColor co) {
         switch (co) {
             case RED:
                 return new Color(0.5F, 0.1F, 0.1F, 1.0F);
@@ -179,9 +164,14 @@ public class EUIGameUtils {
         }
     }
 
-    public static ArrayList<AbstractCard> getEveryColorCard()
-    {
+    public static ArrayList<AbstractCard> getEveryColorCard() {
         return EUIUtils.filter(CardLibrary.cards.values(), EUIGameUtils::canSeeAnyColorCard);
+    }
+
+    // Imitate getAnyColorCard logic
+    public static boolean canSeeAnyColorCard(AbstractCard c) {
+        return (Settings.treatEverythingAsUnlocked() || !UnlockTracker.isCardLocked(c.cardID))
+                && c.type != AbstractCard.CardType.CURSE && c.type != AbstractCard.CardType.STATUS;
     }
 
     public static ArrayList<CardGroup> getGameCardPools() {
@@ -194,15 +184,13 @@ public class EUIGameUtils {
         return result;
     }
 
-    public static AbstractPlayer.PlayerClass getPlayerClassForCardColor(AbstractCard.CardColor pc)
-    {
+    public static AbstractPlayer.PlayerClass getPlayerClassForCardColor(AbstractCard.CardColor pc) {
         return COLOR_TO_CLASS.get(pc);
     }
 
     public static AbstractCard.CardColor getPotionColor(String potionID) {
         // These are hardcoded in PotionHelper -_-
-        switch (potionID)
-        {
+        switch (potionID) {
             case BloodPotion.POTION_ID:
             case Elixir.POTION_ID:
             case HeartOfIron.POTION_ID:
@@ -238,13 +226,11 @@ public class EUIGameUtils {
         return result;
     }
 
-    public static SpriteBatch getSpriteBatch()
-    {
+    public static SpriteBatch getSpriteBatch() {
         return ReflectionHacks.getPrivate(Gdx.app.getApplicationListener(), CardCrawlGame.class, "sb");
     }
 
-    public static TextureCache iconForType(AbstractCard.CardType type)
-    {
+    public static TextureCache iconForType(AbstractCard.CardType type) {
         switch (type) {
             case ATTACK:
                 return EUIRM.images.typeAttack;
@@ -302,31 +288,25 @@ public class EUIGameUtils {
         return AbstractDungeon.player != null && AbstractDungeon.player.chosenClass == playerClass;
     }
 
-    public static void registerCustomColorName(AbstractCard.CardColor co, String name)
-    {
-        EUIGameUtils.CUSTOM_COLOR_NAMES.put(co, name);
-    }
-
-    public static void registerColorPlayer(AbstractCard.CardColor co, AbstractPlayer.PlayerClass pc)
-    {
+    public static void registerColorPlayer(AbstractCard.CardColor co, AbstractPlayer.PlayerClass pc) {
         EUIGameUtils.COLOR_TO_CLASS.put(co, pc);
         EUIGameUtils.CLASS_TO_COLOR.put(pc, co);
     }
 
-    public static void renderPotionTip(AbstractPotion po)
-    {
-        if (po instanceof TooltipProvider)
-        {
+    public static void registerCustomColorName(AbstractCard.CardColor co, String name) {
+        EUIGameUtils.CUSTOM_COLOR_NAMES.put(co, name);
+    }
+
+    public static void renderPotionTip(AbstractPotion po) {
+        if (po instanceof TooltipProvider) {
             EUITooltip.queueTooltips((AbstractPotion & TooltipProvider) po);
         }
-        else
-        {
+        else {
             TipHelper.queuePowerTips(InputHelper.mX + 50.0F * Settings.scale, InputHelper.mY + 50.0F * Settings.scale, po.tips);
         }
     }
 
-    public static float scale(float value)
-    {
+    public static float scale(float value) {
         return Settings.scale * value;
     }
 
@@ -334,25 +314,21 @@ public class EUIGameUtils {
         final Scanner desc = new Scanner(rawDesc);
         String s;
         boolean alreadyExists;
-        do
-        {
-            if (!desc.hasNext())
-            {
+        do {
+            if (!desc.hasNext()) {
                 desc.close();
                 return;
             }
 
             s = desc.next();
-            if (s.charAt(0) == '#')
-            {
+            if (s.charAt(0) == '#') {
                 s = s.substring(2);
             }
 
             s = s.replace(',', ' ');
             s = s.replace('.', ' ');
 
-            if (s.length() > 4)
-            {
+            if (s.length() > 4) {
                 s = s.replace('[', ' ');
                 s = s.replace(']', ' ');
             }
@@ -361,28 +337,24 @@ public class EUIGameUtils {
             s = s.toLowerCase();
 
             EUITooltip tip = EUITooltip.findByName(s);
-            if (tip != null && !tips.contains(tip))
-            {
+            if (tip != null && !tips.contains(tip)) {
                 tips.add(tip);
             }
         }
         while (true);
     }
 
-    public static float screenH(float value)
-    {
+    public static float screenH(float value) {
         return Settings.HEIGHT * value;
     }
 
-    public static float screenW(float value)
-    {
+    public static float screenW(float value) {
         return Settings.WIDTH * value;
     }
 
     // Potion rarities use the same names as card rarities
     public static String textForPotionRarity(AbstractPotion.PotionRarity type) {
-        switch (type)
-        {
+        switch (type) {
             case COMMON:
                 return RunHistoryScreen.TEXT[12];
 
@@ -399,8 +371,7 @@ public class EUIGameUtils {
 
 
     public static String textForRarity(AbstractCard.CardRarity type) {
-        switch (type)
-        {
+        switch (type) {
             case BASIC:
                 return EUIRM.strings.uiBasic; // STS calls this rarity "Starter" but this keyword is used by Animator/Clown Emporium to denote something else
 
@@ -425,8 +396,7 @@ public class EUIGameUtils {
     }
 
     public static String textForRelicTier(AbstractRelic.RelicTier type) {
-        switch (type)
-        {
+        switch (type) {
             case STARTER:
                 return SingleRelicViewPopup.TEXT[6];
 
@@ -457,8 +427,7 @@ public class EUIGameUtils {
     }
 
     public static String textForType(AbstractCard.CardType type) {
-        switch (type)
-        {
+        switch (type) {
             case ATTACK:
                 return AbstractCard.TEXT[0];
 

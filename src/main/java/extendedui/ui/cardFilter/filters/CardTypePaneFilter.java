@@ -9,13 +9,11 @@ import extendedui.ui.cardFilter.CountingPanelStats;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class CardTypePaneFilter implements CountingPanelCardFilter
-{
+public class CardTypePaneFilter implements CountingPanelCardFilter {
     @Override
-    public ArrayList<? extends CountingPanelCounter<?>> generateCounters(ArrayList<AbstractCard> cards, Hitbox hb)
-    {
+    public ArrayList<? extends CountingPanelCounter<?>> generateCounters(ArrayList<AbstractCard> cards, Hitbox hb) {
         return CountingPanelStats.basic(c ->
-                Collections.singleton(CardTypePanelFilterItem.get(c.type)),
+                        Collections.singleton(CardTypePanelFilterItem.get(c.type)),
                 cards).generateCounters(hb, panel -> cards.sort(panel.type));
     }
 }

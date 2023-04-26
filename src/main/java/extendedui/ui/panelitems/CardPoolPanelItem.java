@@ -30,8 +30,7 @@ import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
-public class CardPoolPanelItem extends PCLTopPanelItem
-{
+public class CardPoolPanelItem extends PCLTopPanelItem {
     public static final String ID = createFullID(CardPoolPanelItem.class);
     protected static FuncT0<String> additionalTextFunc;
     protected EUIContextMenu<ContextOption> contextMenu;
@@ -42,8 +41,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
 
         contextMenu = (EUIContextMenu<ContextOption>) new EUIContextMenu<ContextOption>(new EUIHitbox(0, 0, 0, 0), ContextOption::getDisplayName)
                 .setOnChange(options -> {
-                    for (ContextOption o : options)
-                    {
+                    for (ContextOption o : options) {
                         o.onSelect.invoke();
                     }
                 })
@@ -52,20 +50,20 @@ public class CardPoolPanelItem extends PCLTopPanelItem
                 .setCanAutosizeButton(true);
     }
 
-    @Override
-    protected void onClick() {
-        super.onClick();
-
-        EUI.cardsScreen.open(AbstractDungeon.player, getAllCards());
+    public static ArrayList<AbstractPotion> getAllPotions() {
+        return EUIUtils.mapAsNonnull(PotionHelper.getPotions(AbstractDungeon.player != null ? AbstractDungeon.player.chosenClass : null, true), PotionHelper::getPotion);
     }
 
     @Override
-    protected void onRightClick() {
-        super.onRightClick();
+    public void render(SpriteBatch sb) {
+        super.render(sb);
 
-        contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
-        contextMenu.refreshText();
-        contextMenu.openOrCloseMenu();
+        contextMenu.tryRender(sb);
+    }
+
+    public void setAdditionalStringFunction(FuncT0<String> func) {
+        additionalTextFunc = func;
+        update();
     }
 
     @Override
@@ -87,35 +85,29 @@ public class CardPoolPanelItem extends PCLTopPanelItem
     }
 
     @Override
-    public void render(SpriteBatch sb)
-    {
-        super.render(sb);
+    protected void onClick() {
+        super.onClick();
 
-        contextMenu.tryRender(sb);
+        EUI.cardsScreen.open(AbstractDungeon.player, getAllCards());
     }
 
-    public void setAdditionalStringFunction(FuncT0<String> func) {
-        additionalTextFunc = func;
-        update();
-    }
+    @Override
+    protected void onRightClick() {
+        super.onRightClick();
 
-    public String getFullDescription()
-    {
-        String base = EUIRM.strings.uipool_viewPoolDescription;
-        String addendum = additionalTextFunc != null ? additionalTextFunc.invoke() : null;
-        return addendum != null ? base + " || " + addendum : base;
+        contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
+        contextMenu.refreshText();
+        contextMenu.openOrCloseMenu();
     }
 
     public static CardGroup getAllCards() {
         CardGroup cardGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        if (EUIGameUtils.canReceiveAnyColorCard())
-        {
+        if (EUIGameUtils.canReceiveAnyColorCard()) {
             cardGroup.group = EUIGameUtils.getEveryColorCard();
             cardGroup.group.sort(CardPoolPanelItem::compareCardFromAllColors);
         }
-        else
-        {
-            for (CardGroup cg: EUIGameUtils.getGameCardPools()) {
+        else {
+            for (CardGroup cg : EUIGameUtils.getGameCardPools()) {
                 for (AbstractCard c : cg.group) {
                     cardGroup.addToTop(c);
                 }
@@ -125,24 +117,23 @@ public class CardPoolPanelItem extends PCLTopPanelItem
         return cardGroup;
     }
 
-    protected static int compareCardFromAllColors(AbstractCard c1, AbstractCard c2)
-    {
+    protected static int compareCardFromAllColors(AbstractCard c1, AbstractCard c2) {
         int c1val = c1.color.ordinal() * 100 + c1.rarity.ordinal();
         int c2val = c2.color.ordinal() * 100 + c2.rarity.ordinal();
         return c2val - c1val;
     }
 
-    public static ArrayList<AbstractPotion> getAllPotions() {
-        return EUIUtils.mapAsNonnull(PotionHelper.getPotions(AbstractDungeon.player != null ? AbstractDungeon.player.chosenClass : null, true), PotionHelper::getPotion);
+    public String getFullDescription() {
+        String base = EUIRM.strings.uipool_viewPoolDescription;
+        String addendum = additionalTextFunc != null ? additionalTextFunc.invoke() : null;
+        return addendum != null ? base + " || " + addendum : base;
     }
 
     public static ArrayList<AbstractRelic> getAllRelics() {
         ArrayList<AbstractRelic> newRelics = new ArrayList<>();
-        for (String relicID : EUIGameUtils.getAllRelicIDs())
-        {
+        for (String relicID : EUIGameUtils.getAllRelicIDs()) {
             AbstractRelic original = RelicLibrary.getRelic(relicID);
-            if (original instanceof Circlet)
-            {
+            if (original instanceof Circlet) {
                 original = BaseMod.getCustomRelic(relicID);
             }
 
@@ -154,8 +145,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem
         return newRelics;
     }
 
-    public enum ContextOption
-    {
+    public enum ContextOption {
         CardPool(EUIRM.strings.uipool_viewCardPool, EUIHotkeys.openCardPool, () -> EUI.cardsScreen.open(AbstractDungeon.player, getAllCards())),
         RelicPool(EUIRM.strings.uipool_viewRelicPool, EUIHotkeys.openRelicPool, () -> EUI.relicScreen.open(AbstractDungeon.player, getAllRelics())),
         PotionPool(EUIRM.strings.uipool_viewPotionPool, EUIHotkeys.openPotionPool, () -> EUI.potionScreen.open(AbstractDungeon.player, getAllPotions()));
@@ -164,15 +154,13 @@ public class CardPoolPanelItem extends PCLTopPanelItem
         public final InputAction hotkey;
         public final ActionT0 onSelect;
 
-        ContextOption(String name, InputAction hotkey, ActionT0 onSelect)
-        {
+        ContextOption(String name, InputAction hotkey, ActionT0 onSelect) {
             this.baseName = name;
             this.hotkey = hotkey;
             this.onSelect = onSelect;
         }
 
-        public String getDisplayName()
-        {
+        public String getDisplayName() {
             return baseName + " (" + hotkey.getKeyString() + ")";
         }
     }

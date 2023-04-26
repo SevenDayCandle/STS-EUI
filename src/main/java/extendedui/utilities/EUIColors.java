@@ -6,8 +6,7 @@ import com.megacrit.cardcrawl.core.Settings;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 
-public class EUIColors
-{
+public class EUIColors {
     private static final Color BLACK = Color.BLACK.cpy();
     private static final Color WHITE = Color.WHITE.cpy();
     private static final Color CREAM = Settings.CREAM_COLOR.cpy();
@@ -17,13 +16,36 @@ public class EUIColors
     private static final Color GOLD = Settings.GOLD_COLOR.cpy();
     private static final Color RED = Settings.RED_TEXT_COLOR.cpy();
 
-    public static Color copy(Color color, float a)
-    {
+    public static Color black(float a) {
+        BLACK.a = a;
+        return BLACK;
+    }
+
+    public static Color blue(float a) {
+        BLUE.a = a;
+        return BLUE;
+    }
+
+    public static Color copy(Color color, float a) {
         return new Color(color.r, color.g, color.b, a);
     }
 
-    public static Color lerp(Color current, Color target, float amount)
-    {
+    public static Color cream(float a) {
+        CREAM.a = a;
+        return CREAM;
+    }
+
+    public static Color gold(float a) {
+        GOLD.a = a;
+        return GOLD;
+    }
+
+    public static Color green(float a) {
+        GREEN.a = a;
+        return GREEN;
+    }
+
+    public static Color lerp(Color current, Color target, float amount) {
         current = current.cpy();
         current.r = MathUtils.lerp(current.r, target.r, amount);
         current.g = MathUtils.lerp(current.g, target.g, amount);
@@ -32,10 +54,13 @@ public class EUIColors
         return current;
     }
 
-    public static Color random(float min, float max, boolean grayscale)
-    {
-        if (grayscale)
-        {
+    public static Color purple(float a) {
+        PURPLE.a = a;
+        return PURPLE;
+    }
+
+    public static Color random(float min, float max, boolean grayscale) {
+        if (grayscale) {
             final float value = MathUtils.random(min, max);
             return new Color(value, value, value, 1);
         }
@@ -43,51 +68,13 @@ public class EUIColors
         return new Color(MathUtils.random(min, max), MathUtils.random(min, max), MathUtils.random(min, max), 1);
     }
 
-    public static Color black(float a)
-    {
-        BLACK.a = a;
-        return BLACK;
-    }
-
-    public static Color white(float a)
-    {
-        WHITE.a = a;
-        return WHITE;
-    }
-
-    public static Color cream(float a)
-    {
-        CREAM.a = a;
-        return CREAM;
-    }
-
-    public static Color purple(float a)
-    {
-        PURPLE.a = a;
-        return PURPLE;
-    }
-
-    public static Color green(float a)
-    {
-        GREEN.a = a;
-        return GREEN;
-    }
-
-    public static Color blue(float a)
-    {
-        BLUE.a = a;
-        return BLUE;
-    }
-
-    public static Color gold(float a)
-    {
-        GOLD.a = a;
-        return GOLD;
-    }
-
-    public static Color red(float a)
-    {
+    public static Color red(float a) {
         RED.a = a;
         return RED;
+    }
+
+    public static Color white(float a) {
+        WHITE.a = a;
+        return WHITE;
     }
 }

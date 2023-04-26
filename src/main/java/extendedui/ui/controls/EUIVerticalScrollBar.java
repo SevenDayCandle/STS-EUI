@@ -10,25 +10,21 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 
-public class EUIVerticalScrollBar extends EUIHoverable
-{
-    protected final float cursorWidth;
-    protected final float cursorHeight;
-    protected final float borderHeight;
-
+public class EUIVerticalScrollBar extends EUIHoverable {
     public final EUIImage topImage = new EUIImage(ImageMaster.SCROLL_BAR_TOP);
     public final EUIImage centerImage = new EUIImage(ImageMaster.SCROLL_BAR_MIDDLE);
     public final EUIImage bottomImage = new EUIImage(ImageMaster.SCROLL_BAR_BOTTOM);
     public final EUIImage cursorImage = new EUIImage(ImageMaster.SCROLL_BAR_TRAIN);
-
+    protected final float cursorWidth;
+    protected final float cursorHeight;
+    protected final float borderHeight;
     public ActionT1<Float> onScroll;
     public boolean isBackgroundVisible;
     public boolean isDragging;
     public float currentScrollPercent;
     public float cursorDrawPosition;
 
-    public EUIVerticalScrollBar(EUIHitbox hb)
-    {
+    public EUIVerticalScrollBar(EUIHitbox hb) {
         super(hb);
         this.isBackgroundVisible = true;
         this.cursorWidth = hb.width * 0.7f;
@@ -36,85 +32,71 @@ public class EUIVerticalScrollBar extends EUIHoverable
         this.borderHeight = cursorHeight * 0.25f;
     }
 
-    public EUIVerticalScrollBar setPosition(float x, float y)
-    {
-        this.hb.move(x, y);
-
-        return this;
-    }
-
-    public EUIVerticalScrollBar setOnScroll(ActionT1<Float> onScroll)
-    {
-        this.onScroll = onScroll;
-
-        return this;
-    }
-
-    public void updateImpl()
-    {
-        cursorDrawPosition = MathHelper.scrollSnapLerpSpeed(cursorDrawPosition, fromPercentage(currentScrollPercent));
-
-        super.updateImpl();
-
-        if (isDragging)
-        {
-            if (!InputHelper.isMouseDown)
-            {
-                isDragging = false;
-            }
-            else
-            {
-                scroll(toPercentage(CardCrawlGame.isPopupOpen ? CardCrawlGame.popupMY : InputHelper.mY), true);
-            }
-        }
-        else if (hb.hovered && InputHelper.isMouseDown)
-        {
-            isDragging = true;
-        }
-    }
-
-    public void scroll(float percent, boolean triggerEvent)
-    {
-        currentScrollPercent = clamp(percent);
-
-        if (triggerEvent && onScroll != null)
-        {
-            onScroll.invoke(currentScrollPercent);
-        }
-    }
-
-    public void renderImpl(SpriteBatch sb)
-    {
-        if (isBackgroundVisible)
-        {
+    public void renderImpl(SpriteBatch sb) {
+        if (isBackgroundVisible) {
             centerImage.render(sb, hb);
             topImage.render(sb, hb.x, hb.y + hb.height, hb.width, topImage.srcHeight);
             bottomImage.render(sb, hb.x, hb.y - bottomImage.srcHeight, hb.width, bottomImage.srcHeight);
         }
 
-        cursorImage.render(sb,hb.cX - (cursorWidth / 2f), cursorDrawPosition, cursorWidth, cursorHeight);
+        cursorImage.render(sb, hb.cX - (cursorWidth / 2f), cursorDrawPosition, cursorWidth, cursorHeight);
 
         hb.render(sb);
     }
 
-    private float toPercentage(float position)
-    {
-        float minY = this.hb.y + this.hb.height - borderHeight;
-        float maxY = this.hb.y + borderHeight;
+    public EUIVerticalScrollBar setOnScroll(ActionT1<Float> onScroll) {
+        this.onScroll = onScroll;
 
-        return clamp(MathHelper.percentFromValueBetween(minY, maxY, position));
+        return this;
     }
 
-    private float fromPercentage(float percent)
-    {
+    public void updateImpl() {
+        cursorDrawPosition = MathHelper.scrollSnapLerpSpeed(cursorDrawPosition, fromPercentage(currentScrollPercent));
+
+        super.updateImpl();
+
+        if (isDragging) {
+            if (!InputHelper.isMouseDown) {
+                isDragging = false;
+            }
+            else {
+                scroll(toPercentage(CardCrawlGame.isPopupOpen ? CardCrawlGame.popupMY : InputHelper.mY), true);
+            }
+        }
+        else if (hb.hovered && InputHelper.isMouseDown) {
+            isDragging = true;
+        }
+    }
+
+    public EUIVerticalScrollBar setPosition(float x, float y) {
+        this.hb.move(x, y);
+
+        return this;
+    }
+
+    private float fromPercentage(float percent) {
         float topY = this.hb.y + this.hb.height - cursorHeight + borderHeight;
         float bottomY = this.hb.y - borderHeight;
 
         return MathHelper.valueFromPercentBetween(topY, bottomY, clamp(percent));
     }
 
-    private static float clamp(float percent)
-    {
+    public void scroll(float percent, boolean triggerEvent) {
+        currentScrollPercent = clamp(percent);
+
+        if (triggerEvent && onScroll != null) {
+            onScroll.invoke(currentScrollPercent);
+        }
+    }
+
+    private float toPercentage(float position) {
+        float minY = this.hb.y + this.hb.height - borderHeight;
+        float maxY = this.hb.y + borderHeight;
+
+        return clamp(MathHelper.percentFromValueBetween(minY, maxY, position));
+    }
+
+    private static float clamp(float percent) {
         return MathUtils.clamp(percent, 0f, 1f);
     }
 }

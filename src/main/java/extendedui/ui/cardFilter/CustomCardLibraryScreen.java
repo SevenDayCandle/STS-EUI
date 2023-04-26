@@ -31,19 +31,17 @@ import java.util.HashMap;
 
 import static extendedui.ui.cardFilter.CustomCardLibSortHeader.CENTER_Y;
 
-public class CustomCardLibraryScreen extends AbstractMenuScreen
-{
-    protected static final float ICON_SIZE = scale(40);
+public class CustomCardLibraryScreen extends AbstractMenuScreen {
     public static final int VISIBLE_BUTTONS = 14;
+    public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
+    protected static final float ICON_SIZE = scale(40);
     public static AbstractCard.CardColor currentColor = AbstractCard.CardColor.COLORLESS;
     public static CustomCardPoolModule customModule;
-    public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
-
-    public EUICardGrid cardGrid;
     public final EUITextBoxInput quickSearch;
     public final EUIToggle upgradeToggle;
     public final MenuCancelButton cancelButton;
     protected final EUIButtonList colorButtons = new EUIButtonList();
+    public EUICardGrid cardGrid;
     protected int topButtonIndex;
     protected Rectangle scissors;
 
@@ -74,8 +72,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         ScissorStack.calculateScissors(EUIGameUtils.getCamera(), EUIGameUtils.getSpriteBatch().getTransformMatrix(), clipBounds, scissors);
     }
 
-    public void resetGrid()
-    {
+    public void resetGrid() {
         cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
         cardGrid.showScrollbar(true)
                 .canRenderUpgrades(true)
@@ -85,6 +82,11 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
                     c.unhover();
                     CardCrawlGame.cardPopup.open(c, cardGrid.cards);
                 });
+    }
+
+    protected void toggleUpgrades(boolean value) {
+        EUI.toggleViewUpgrades(value);
+        upgradeToggle.setToggle(value);
     }
 
     public void initialize(CardLibraryScreen screen) {
@@ -113,47 +115,13 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         BaseMod.getCardColors().stream().sorted(Comparator.comparing(EUIGameUtils::getColorName)).forEach(this::makeColorButton);
     }
 
-    protected void refreshGroups()
-    {
-        for (CardGroup group : CardLists.values())
-        {
-            for (AbstractCard c : group.group)
-            {
-                if (UnlockTracker.isCardLocked(c.cardID))
-                {
-                    c.setLocked();
-                }
-                else if (c.isLocked)
-                {
-                    c.unlock();
-                }
-            }
-        }
-    }
-
-    public void open() {
-        super.open();
-        openImpl();
-    }
-
-    // Also called by the card filter component
-    public void openImpl()
-    {
-        refreshGroups();
-        EUI.toggleViewUpgrades(false);
-        upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
-        setActiveColor(currentColor);
-        this.cancelButton.show(CardLibraryScreen.TEXT[0]);
+    protected void makeColorButton(AbstractCard.CardColor co) {
+        colorButtons.addButton(button -> setActiveColor(co), EUIGameUtils.getColorName(co))
+                .setColor(EUIGameUtils.getColorColor(co));
     }
 
     public void setActiveColor(AbstractCard.CardColor color) {
         setActiveColor(color, CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED)));
-    }
-
-    protected void toggleUpgrades(boolean value)
-    {
-        EUI.toggleViewUpgrades(value);
-        upgradeToggle.setToggle(value);
     }
 
     public void setActiveColor(AbstractCard.CardColor color, CardGroup cards) {
@@ -178,9 +146,35 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
         EUI.customHeader.resetSort();
     }
 
+    public void open() {
+        super.open();
+        openImpl();
+    }
+
+    // Also called by the card filter component
+    public void openImpl() {
+        refreshGroups();
+        EUI.toggleViewUpgrades(false);
+        upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
+        setActiveColor(currentColor);
+        this.cancelButton.show(CardLibraryScreen.TEXT[0]);
+    }
+
+    protected void refreshGroups() {
+        for (CardGroup group : CardLists.values()) {
+            for (AbstractCard c : group.group) {
+                if (UnlockTracker.isCardLocked(c.cardID)) {
+                    c.setLocked();
+                }
+                else if (c.isLocked) {
+                    c.unlock();
+                }
+            }
+        }
+    }
+
     @Override
-    public void updateImpl()
-    {
+    public void updateImpl() {
         super.updateImpl();
         boolean shouldDoStandardUpdate = !EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
         if (shouldDoStandardUpdate) {
@@ -199,8 +193,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
             if (customModule != null) {
                 customModule.update();
             }
-            if (EUI.customHeader.justSorted)
-            {
+            if (EUI.customHeader.justSorted) {
                 cardGrid.forceUpdateCardPositions();
                 EUI.customHeader.justSorted = false;
             }
@@ -208,8 +201,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb)
-    {
+    public void renderImpl(SpriteBatch sb) {
         colorButtons.tryRender(sb);
         cardGrid.renderWithScissors(sb, scissors);
         sb.setColor(EUIGameUtils.getColorColor(currentColor));
@@ -230,16 +222,10 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen
     }
 
     @Override
-    public void onEscape()
-    {
+    public void onEscape() {
         super.onEscape();
         if (customModule != null) {
             customModule.onClose();
         }
-    }
-
-    protected void makeColorButton(AbstractCard.CardColor co) {
-        colorButtons.addButton(button -> setActiveColor(co), EUIGameUtils.getColorName(co))
-                .setColor(EUIGameUtils.getColorColor(co));
     }
 }

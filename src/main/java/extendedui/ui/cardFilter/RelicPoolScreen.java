@@ -28,18 +28,15 @@ import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
-public class RelicPoolScreen extends AbstractDungeonScreen
-{
+public class RelicPoolScreen extends AbstractDungeonScreen {
     public static CustomRelicPoolModule customModule;
-
-    public EUIRelicGrid relicGrid;
     protected final EUIContextMenu<RelicPoolScreen.DebugOption> contextMenu;
     protected final EUIButton swapCardScreen;
     protected final EUIButton swapPotionScreen;
+    public EUIRelicGrid relicGrid;
     private AbstractRelic selected;
 
-    public RelicPoolScreen()
-    {
+    public RelicPoolScreen() {
         relicGrid = (EUIRelicGrid) new EUIStaticRelicGrid()
                 .setOnRelicRightClick(this::onRightClick)
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
@@ -65,8 +62,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen
 
         contextMenu = (EUIContextMenu<RelicPoolScreen.DebugOption>) new EUIContextMenu<RelicPoolScreen.DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
                 .setOnChange(options -> {
-                    for (RelicPoolScreen.DebugOption o : options)
-                    {
+                    for (RelicPoolScreen.DebugOption o : options) {
                         o.onSelect.invoke(this, selected);
                     }
                 })
@@ -74,13 +70,40 @@ public class RelicPoolScreen extends AbstractDungeonScreen
                 .setCanAutosizeButton(true);
     }
 
-    public void open(AbstractPlayer player, ArrayList<AbstractRelic> relics)
-    {
+    protected void onRightClick(AbstractRelic c) {
+        if (EUIConfiguration.enableCardPoolDebug.get()) {
+            selected = c;
+            contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
+            contextMenu.refreshText();
+            contextMenu.setItems(getOptions(c));
+            contextMenu.openOrCloseMenu();
+        }
+        else {
+            openPopup(c);
+        }
+    }
+
+    public static ArrayList<RelicPoolScreen.DebugOption> getOptions(AbstractRelic r) {
+        return EUIUtils.arrayList(DebugOption.enlarge, DebugOption.obtain);
+    }
+
+    protected void openPopup(AbstractRelic c) {
+        c.hb.unhover();
+        CardCrawlGame.relicPopup.open(c);
+    }
+
+    protected void obtain(AbstractRelic c) {
+        if (c != null) {
+            AbstractRelic copy = c.makeCopy();
+            copy.instantObtain();
+        }
+    }
+
+    public void open(AbstractPlayer player, ArrayList<AbstractRelic> relics) {
         super.open(false, true);
 
         relicGrid.clear();
-        if (relics.isEmpty())
-        {
+        if (relics.isEmpty()) {
             AbstractDungeon.closeCurrentScreen();
             return;
         }
@@ -96,8 +119,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen
         }, EUI.relicHeader.getOriginalRelics(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
         EUI.relicHeader.updateForFilters();
 
-        if (EUIGameUtils.inGame())
-        {
+        if (EUIGameUtils.inGame()) {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
 
@@ -109,17 +131,14 @@ public class RelicPoolScreen extends AbstractDungeonScreen
     }
 
     @Override
-    public void reopen()
-    {
-        if (EUIGameUtils.inGame())
-        {
+    public void reopen() {
+        if (EUIGameUtils.inGame()) {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
         }
     }
 
     @Override
-    public void updateImpl()
-    {
+    public void updateImpl() {
         super.updateImpl();
         if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             relicGrid.tryUpdate();
@@ -135,8 +154,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb)
-    {
+    public void renderImpl(SpriteBatch sb) {
         relicGrid.tryRender(sb);
         swapCardScreen.renderImpl(sb);
         swapPotionScreen.renderImpl(sb);
@@ -150,52 +168,14 @@ public class RelicPoolScreen extends AbstractDungeonScreen
         contextMenu.tryRender(sb);
     }
 
-    protected void onRightClick(AbstractRelic c)
-    {
-        if (EUIConfiguration.enableCardPoolDebug.get())
-        {
-            selected = c;
-            contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
-            contextMenu.refreshText();
-            contextMenu.setItems(getOptions(c));
-            contextMenu.openOrCloseMenu();
-        }
-        else
-        {
-            openPopup(c);
-        }
-    }
-
-    protected void openPopup(AbstractRelic c)
-    {
-        c.hb.unhover();
-        CardCrawlGame.relicPopup.open(c);
-    }
-
-    protected void obtain(AbstractRelic c)
-    {
-        if (c != null)
-        {
-            AbstractRelic copy = c.makeCopy();
-            copy.instantObtain();
-        }
-    }
-
-    public static ArrayList<RelicPoolScreen.DebugOption> getOptions(AbstractRelic r)
-    {
-        return EUIUtils.arrayList(DebugOption.enlarge, DebugOption.obtain);
-    }
-
-    public static class DebugOption
-    {
+    public static class DebugOption {
         public static RelicPoolScreen.DebugOption enlarge = new RelicPoolScreen.DebugOption(EUIRM.strings.uipool_enlarge, RelicPoolScreen::openPopup);
         public static RelicPoolScreen.DebugOption obtain = new RelicPoolScreen.DebugOption(EUIRM.strings.uipool_obtainRelic, RelicPoolScreen::obtain);
 
         public final String name;
         public final ActionT2<RelicPoolScreen, AbstractRelic> onSelect;
 
-        DebugOption(String name, ActionT2<RelicPoolScreen, AbstractRelic> onSelect)
-        {
+        DebugOption(String name, ActionT2<RelicPoolScreen, AbstractRelic> onSelect) {
             this.name = name;
             this.onSelect = onSelect;
         }

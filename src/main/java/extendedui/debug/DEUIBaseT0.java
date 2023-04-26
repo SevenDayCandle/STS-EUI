@@ -2,15 +2,12 @@ package extendedui.debug;
 
 import imgui.ImGui;
 
-public abstract class DEUIBaseT0 extends DEUIBase
-{
-    public DEUIBaseT0(String id)
-    {
+public abstract class DEUIBaseT0 extends DEUIBase {
+    public DEUIBaseT0(String id) {
         super(id);
     }
 
-    public void renderInline()
-    {
+    public void renderInline() {
         render();
         ImGui.sameLine();
     }

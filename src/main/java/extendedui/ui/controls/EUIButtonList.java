@@ -12,8 +12,7 @@ import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
-public class EUIButtonList extends EUIBase
-{
+public class EUIButtonList extends EUIBase {
     public static final float ICON_SIZE = scale(40);
     public static final float BUTTON_W = scale(200);
     public static final float BUTTON_H = scale(51);
@@ -33,13 +32,11 @@ public class EUIButtonList extends EUIBase
     protected EUIButton downButton;
     protected EUIButton upButton;
 
-    public EUIButtonList()
-    {
+    public EUIButtonList() {
         this(DEFAULT_VISIBLE, STARTING_X, STARTING_Y, BUTTON_W, BUTTON_H);
     }
 
-    public EUIButtonList(int visibleCount, float xPos, float yPos, float buttonWidth, float buttonHeight)
-    {
+    public EUIButtonList(int visibleCount, float xPos, float yPos, float buttonWidth, float buttonHeight) {
         final float y = yPos - (visibleCount + 1) * buttonHeight;
         visibleButtons = visibleCount;
         this.xPos = xPos;
@@ -54,39 +51,6 @@ public class EUIButtonList extends EUIBase
                 .setOnClick(__ -> setTopButtonIndex(topButtonIndex + 1))
                 .setText(null);
         downButton.background.setRotation(-90);
-    }
-
-    public EUIButtonList setFontScale(float fontScale)
-    {
-        this.fontScale = fontScale;
-        return this;
-    }
-
-    @Override
-    public void updateImpl()
-    {
-        for (EUIButton b : buttons) {
-            b.tryUpdate();
-        }
-        upButton.tryUpdate();
-        downButton.tryUpdate();
-        updateNonMouseInput();
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb)
-    {
-        for (EUIButton b : buttons) {
-            b.tryRenderCentered(sb);
-        }
-        upButton.tryRenderCentered(sb);
-        downButton.tryRenderCentered(sb);
-    }
-
-    public void clear()
-    {
-        buttons.clear();
-        setTopButtonIndex(0);
     }
 
     public void setTopButtonIndex(int index) {
@@ -106,23 +70,6 @@ public class EUIButtonList extends EUIBase
         downButton.setActive(topButtonIndex < buttons.size() - visibleButtons);
     }
 
-    public void selectButton(EUIButton button)
-    {
-        for (int i = 0; i < buttons.size(); i++)
-        {
-            EUIButton b = buttons.get(i);
-            if (b == button)
-            {
-                highlightedIndex = i;
-                b.setTextColor(Settings.GREEN_TEXT_COLOR);
-            }
-            else
-            {
-                b.setTextColor(Color.WHITE);
-            }
-        }
-    }
-
     public EUIButton addButton(ActionT1<EUIButton> onClick, String title) {
         EUIButton button = new EUIButton(ImageMaster.COLOR_TAB_BAR, new EUIHitbox(buttonWidth, buttonHeight))
                 .setFont(EUIFontHelper.buttonFont, fontScale)
@@ -138,12 +85,54 @@ public class EUIButtonList extends EUIBase
         return button;
     }
 
-    protected void updateNonMouseInput()
-    {
+    public void selectButton(EUIButton button) {
+        for (int i = 0; i < buttons.size(); i++) {
+            EUIButton b = buttons.get(i);
+            if (b == button) {
+                highlightedIndex = i;
+                b.setTextColor(Settings.GREEN_TEXT_COLOR);
+            }
+            else {
+                b.setTextColor(Color.WHITE);
+            }
+        }
+    }
+
+    public void clear() {
+        buttons.clear();
+        setTopButtonIndex(0);
+    }
+
+    public EUIButtonList setFontScale(float fontScale) {
+        this.fontScale = fontScale;
+        return this;
+    }
+
+    @Override
+    public void updateImpl() {
+        for (EUIButton b : buttons) {
+            b.tryUpdate();
+        }
+        upButton.tryUpdate();
+        downButton.tryUpdate();
+        updateNonMouseInput();
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        for (EUIButton b : buttons) {
+            b.tryRenderCentered(sb);
+        }
+        upButton.tryRenderCentered(sb);
+        downButton.tryRenderCentered(sb);
+    }
+
+    protected void updateNonMouseInput() {
         if (Settings.isControllerMode) {
             if (CInputActionSet.pageRightViewExhaust.isJustPressed()) {
                 buttons.get((highlightedIndex + 1) % buttons.size()).onLeftClick();
-            } else if (CInputActionSet.pageLeftViewDeck.isJustPressed()) {
+            }
+            else if (CInputActionSet.pageLeftViewDeck.isJustPressed()) {
                 buttons.get(highlightedIndex == 0 ? buttons.size() - 1 : highlightedIndex - 1).onLeftClick();
             }
         }

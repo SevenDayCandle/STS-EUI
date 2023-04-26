@@ -13,8 +13,7 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 
-public class EUILabel extends EUIHoverable
-{
+public class EUILabel extends EUIHoverable {
     public String text;
     public boolean smartText;
     public boolean smartTextResize;
@@ -25,18 +24,15 @@ public class EUILabel extends EUIHoverable
     protected BitmapFont font;
     private boolean smartPadEnd;
 
-    public EUILabel(BitmapFont font)
-    {
+    public EUILabel(BitmapFont font) {
         this(font, new EUIHitbox(0, 0));
     }
 
-    public EUILabel(BitmapFont font, EUIHitbox hb)
-    {
+    public EUILabel(BitmapFont font, EUIHitbox hb) {
         this(font, hb, 1);
     }
 
-    public EUILabel(BitmapFont font, EUIHitbox hb, float scale)
-    {
+    public EUILabel(BitmapFont font, EUIHitbox hb, float scale) {
         super(hb);
         this.smartText = true;
         this.verticalRatio = 0.85f;
@@ -47,8 +43,30 @@ public class EUILabel extends EUIHoverable
         this.text = "";
     }
 
-    public EUILabel makeCopy()
-    {
+    public EUILabel autosize() {
+        return autosize(1f, 1f);
+    }
+
+    public EUILabel autosize(Float resizeMultiplier, Float resizeHeight) {
+        if (resizeMultiplier != null) {
+            this.hb.width = getAutoWidth();
+        }
+        if (resizeHeight != null) {
+            this.hb.height = getAutoHeight();
+        }
+
+        return this;
+    }
+
+    public float getAutoWidth() {
+        return EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
+    }
+
+    public float getAutoHeight() {
+        return EUISmartText.getSmartHeight(font, text, Settings.WIDTH);
+    }
+
+    public EUILabel makeCopy() {
         return new EUILabel(font, new EUIHitbox(hb))
                 .setAlignment(verticalRatio, horizontalRatio, smartText)
                 .setColor(textColor)
@@ -57,70 +75,106 @@ public class EUILabel extends EUIHoverable
                 .setTooltip(tooltip);
     }
 
-    public EUILabel setLabel(Object content)
-    {
-        this.text = String.valueOf(content);
-
-        return this;
-    }
-
-    public EUILabel setLabel(String text)
-    {
+    public EUILabel setLabel(String text) {
         this.text = text;
 
         return this;
     }
 
-    public EUILabel setLabel(String format, Object... args)
-    {
-        this.text = EUIUtils.format(format, args);
-
-        return this;
-    }
-
-    public EUILabel setFont(BitmapFont font)
-    {
-        return setFont(font, 1);
-    }
-
-    public EUILabel setFont(BitmapFont font, float fontScale)
-    {
+    public EUILabel setFont(BitmapFont font, float fontScale) {
         this.font = font;
         this.fontScale = fontScale;
 
         return this;
     }
 
-    public EUILabel setFontScale(float fontScale)
-    {
+    public EUILabel setColor(Color textColor) {
+        this.textColor = textColor.cpy();
+
+        return this;
+    }
+
+    public EUILabel setAlignment(float verticalRatio, float horizontalRatio, boolean smartText) {
+        return setAlignment(verticalRatio, horizontalRatio, smartText, true);
+    }
+
+    public EUILabel setAlignment(float verticalRatio, float horizontalRatio, boolean smartText, boolean smartPadEnd) {
+        this.verticalRatio = verticalRatio;
+        this.horizontalRatio = horizontalRatio;
+        this.smartText = smartText;
+        this.smartPadEnd = smartPadEnd;
+
+        return this;
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        render(sb, hb);
+
+        hb.render(sb);
+    }
+
+    public void render(SpriteBatch sb, Hitbox hb) {
+        font.getData().setScale(fontScale);
+
+        if (smartText) {
+            final float step = hb.width * horizontalRatio;
+            EUISmartText.write(sb, font, text, hb.x + step, hb.y + (hb.height * verticalRatio),
+                    smartPadEnd ? hb.width - (step * 2) : hb.width, font.getLineHeight(), textColor, smartTextResize);
+        }
+        else if (horizontalRatio < 0.5f) {
+            final float step = hb.width * horizontalRatio;
+            FontHelper.renderFontLeft(sb, font, text, hb.x + step, hb.y + hb.height * verticalRatio, textColor);
+        }
+        else if (horizontalRatio > 0.5f) {
+            final float step = hb.width * (1 - horizontalRatio) * 2;
+            FontHelper.renderFontRightAligned(sb, font, text, hb.x + hb.width - step, hb.y + hb.height * verticalRatio, textColor);
+        }
+        else {
+            FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.y + hb.height * verticalRatio, textColor);
+        }
+
+        EUIRenderHelpers.resetFont(font);
+    }
+
+    public EUILabel setAlignment(float verticalRatio, float horizontalRatio) {
+        return setAlignment(verticalRatio, horizontalRatio, false);
+    }
+
+    public EUILabel setFont(BitmapFont font) {
+        return setFont(font, 1);
+    }
+
+    public EUILabel setFontScale(float fontScale) {
         this.fontScale = fontScale;
 
         return this;
     }
 
-    public EUILabel setPosition(float cX, float cY)
-    {
+    public EUILabel setLabel(Object content) {
+        this.text = String.valueOf(content);
+
+        return this;
+    }
+
+    public EUILabel setLabel(String format, Object... args) {
+        this.text = EUIUtils.format(format, args);
+
+        return this;
+    }
+
+    public EUILabel setPosition(float cX, float cY) {
         this.hb.move(cX, cY);
 
         return this;
     }
 
-    public EUILabel setAlignment(float verticalRatio, float horizontalRatio)
-    {
-        return setAlignment(verticalRatio, horizontalRatio, false);
+    public EUILabel setTooltip(String title, String description) {
+        return setTooltip(new EUITooltip(title, description));
     }
 
-    public EUILabel setAlignment(float verticalRatio, float horizontalRatio, boolean smartText)
-    {
-        return setAlignment(verticalRatio, horizontalRatio, smartText, true);
-    }
-
-    public EUILabel setAlignment(float verticalRatio, float horizontalRatio, boolean smartText, boolean smartPadEnd)
-    {
-        this.verticalRatio = verticalRatio;
-        this.horizontalRatio = horizontalRatio;
-        this.smartText = smartText;
-        this.smartPadEnd = smartPadEnd;
+    public EUILabel setTooltip(EUITooltip tooltip) {
+        super.setTooltip(tooltip);
 
         return this;
     }
@@ -140,83 +194,5 @@ public class EUILabel extends EUIHoverable
         this.smartPadEnd = smartPadEnd;
         this.smartTextResize = smartTextResize;
         return this;
-    }
-
-    public EUILabel setColor(Color textColor)
-    {
-        this.textColor = textColor.cpy();
-
-        return this;
-    }
-
-    public EUILabel setTooltip(String title, String description)
-    {
-        return setTooltip(new EUITooltip(title, description));
-    }
-
-    public EUILabel setTooltip(EUITooltip tooltip)
-    {
-        super.setTooltip(tooltip);
-
-        return this;
-    }
-
-    public EUILabel autosize() {
-        return autosize(1f, 1f);
-    }
-
-    public EUILabel autosize(Float resizeMultiplier, Float resizeHeight) {
-        if (resizeMultiplier != null) {
-            this.hb.width = getAutoWidth();
-        }
-        if (resizeHeight != null) {
-            this.hb.height = getAutoHeight();
-        }
-
-        return this;
-    }
-
-    public float getAutoHeight() {
-        return EUISmartText.getSmartHeight(font, text, Settings.WIDTH);
-    }
-
-    public float getAutoWidth() {
-        return EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb)
-    {
-        render(sb, hb);
-
-        hb.render(sb);
-    }
-
-    public void render(SpriteBatch sb, Hitbox hb)
-    {
-        font.getData().setScale(fontScale);
-
-        if (smartText)
-        {
-            final float step = hb.width * horizontalRatio;
-            EUISmartText.write(sb, font, text, hb.x + step, hb.y + (hb.height * verticalRatio),
-            smartPadEnd ? hb.width - (step * 2) : hb.width, font.getLineHeight(), textColor, smartTextResize);
-        }
-        else if (horizontalRatio < 0.5f)
-        {
-            final float step = hb.width * horizontalRatio;
-            FontHelper.renderFontLeft(sb, font, text, hb.x + step, hb.y + hb.height * verticalRatio, textColor);
-        }
-        else if (horizontalRatio > 0.5f)
-        {
-            final float step = hb.width * (1-horizontalRatio) * 2;
-            FontHelper.renderFontRightAligned(sb, font, text, hb.x + hb.width - step, hb.y + hb.height * verticalRatio, textColor);
-        }
-        else
-        {
-            FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.y + hb.height * verticalRatio, textColor);
-        }
-
-        EUIRenderHelpers.resetFont(font);
     }
 }

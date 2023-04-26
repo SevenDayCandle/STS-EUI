@@ -24,13 +24,11 @@ public class STSEffekSeerUtils {
     private static final String PATH_PREFIX = "STSEffekSeerUtils";
     private static File temporaryDir;
 
-    public static EffekseerEffectCore loadEffect(String effectPath)
-    {
+    public static EffekseerEffectCore loadEffect(String effectPath) {
         return loadEffect(effectPath, DEFAULT_MAGNIFICATION);
     }
 
-    public static EffekseerEffectCore loadEffect(String effectPath, float magnification)
-    {
+    public static EffekseerEffectCore loadEffect(String effectPath, float magnification) {
         com.badlogic.gdx.files.FileHandle handle = Gdx.files.internal(effectPath);
         EffekseerEffectCore effectCore = new EffekseerEffectCore();
 
@@ -44,19 +42,19 @@ public class STSEffekSeerUtils {
         }
 
         // load textures
-        EffekseerTextureType[] textureTypes = new EffekseerTextureType[] {
+        EffekseerTextureType[] textureTypes = new EffekseerTextureType[]{
                 EffekseerTextureType.Color,
                 EffekseerTextureType.Normal,
                 EffekseerTextureType.Distortion,
-        };
+                };
 
-        for(int t = 0; t < 3; t++)
-        {
+        for (int t = 0; t < 3; t++) {
             for (int i = 0; i < effectCore.GetTextureCount(textureTypes[t]); i++) {
                 String path = (new File(effectPath)).getParent();
                 if (path != null) {
                     path += "/" + effectCore.GetTexturePath(i, textureTypes[t]);
-                } else {
+                }
+                else {
                     path = effectCore.GetTexturePath(i, textureTypes[t]);
                 }
 
@@ -70,7 +68,8 @@ public class STSEffekSeerUtils {
             String path = (new File(effectPath)).getParent();
             if (path != null) {
                 path += "/" + effectCore.GetModelPath(i);
-            } else {
+            }
+            else {
                 path = effectCore.GetModelPath(i);
             }
 
@@ -83,7 +82,8 @@ public class STSEffekSeerUtils {
             String path = (new File(effectPath)).getParent();
             if (path != null) {
                 path += "/" + effectCore.GetMaterialPath(i);
-            } else {
+            }
+            else {
                 path = effectCore.GetMaterialPath(i);
             }
 
@@ -96,7 +96,8 @@ public class STSEffekSeerUtils {
             String path = (new File(effectPath)).getParent();
             if (path != null) {
                 path += "/" + effectCore.GetCurvePath(i);
-            } else {
+            }
+            else {
                 path = effectCore.GetCurvePath(i);
             }
 
@@ -144,14 +145,16 @@ public class STSEffekSeerUtils {
         catch (IOException e) {
             temp.delete();
             throw e;
-        } catch (NullPointerException e) {
+        }
+        catch (NullPointerException e) {
             temp.delete();
             throw new FileNotFoundException("File " + path + " was not found inside JAR.");
         }
 
         try {
             System.load(temp.getAbsolutePath());
-        } finally {
+        }
+        finally {
             // We need to keep the DLL file until the program closes, in case the system needs to read from it again
             temp.deleteOnExit();
         }
@@ -171,8 +174,9 @@ public class STSEffekSeerUtils {
         String tempDir = System.getProperty("java.io.tmpdir");
         File generatedDir = new File(tempDir, prefix + System.nanoTime());
 
-        if (!generatedDir.mkdir())
+        if (!generatedDir.mkdir()) {
             throw new IOException("Failed to create temp directory " + generatedDir.getName());
+        }
 
         return generatedDir;
     }
@@ -180,10 +184,12 @@ public class STSEffekSeerUtils {
     /* Effekseer color values range from 0-255, whereas LibGDX color values range from 0-1 */
     public static float[] toEffekseerColor(Color color) {
         return color != null ?
-                new float[]{color.r * EFFEKSEER_COLOR_RATE,
-                            color.g * EFFEKSEER_COLOR_RATE,
-                            color.b * EFFEKSEER_COLOR_RATE,
-                            color.a * EFFEKSEER_COLOR_RATE}
+                new float[]{
+                        color.r * EFFEKSEER_COLOR_RATE,
+                        color.g * EFFEKSEER_COLOR_RATE,
+                        color.b * EFFEKSEER_COLOR_RATE,
+                        color.a * EFFEKSEER_COLOR_RATE
+                }
                 : null;
     }
 }

@@ -16,8 +16,7 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 
-public class EUIDropdownRow<T>
-{
+public class EUIDropdownRow<T> {
     public static final float LABEL_OFFSET = 50;
     public final EUIDropdown<T> dr;
     public T item;
@@ -27,8 +26,7 @@ public class EUIDropdownRow<T>
     public int index;
     public boolean isSelected;
 
-    public EUIDropdownRow(EUIDropdown<T> dr, EUIHitbox hb, T item, int index)
-    {
+    public EUIDropdownRow(EUIDropdown<T> dr, EUIHitbox hb, T item, int index) {
         this.dr = dr;
         this.hb = hb;
         this.item = item;
@@ -38,99 +36,83 @@ public class EUIDropdownRow<T>
                 .setFont(dr.font, dr.fontScale)
                 .setLabel(dr.labelFunction.invoke(item))
                 .setAlignment(0.5f, 0f, dr.isOptionSmartText);
-        if (dr.colorFunctionOption != null)
-        {
+        if (dr.colorFunctionOption != null) {
             this.label.setColor(dr.colorFunctionOption.invoke(item));
         }
     }
 
-    public EUIDropdownRow<T> updateAlignment()
-    {
-        this.label.setAlignment(dr.isOptionSmartText ? 1f : 0.5f, 0f, dr.isOptionSmartText);
-        this.label.setHitbox(new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f));
-        return this;
-    }
-
-    public EUIDropdownRow<T> setLabelFont(BitmapFont font, float fontScale)
-    {
-        this.label.setFont(font, fontScale);
-        return this;
-    }
-
-    public EUIDropdownRow<T> setLabelFunction(FuncT1<String, T> labelFunction, boolean isSmartText)
-    {
-        this.label.setSmartText(isSmartText);
-        setLabelText(labelFunction);
-        return this;
-    }
-
-    public void setLabelColor(FuncT1<Color, T> colorFunction)
-    {
-        this.label.setColor(colorFunction.invoke(item));
-    }
-
-    public void setLabelText(FuncT1<String, T> labelFunction)
-    {
-        this.label.setLabel(labelFunction.invoke(item));
-    }
-
-    public String getText()
-    {
+    public String getText() {
         return this.label.text;
     }
 
-    public String getTextForWidth()
-    {
+    public String getTextForWidth() {
         return this.label.text;
     }
 
-    public void move(float x, float y)
-    {
+    public void move(float x, float y) {
         this.hb.translate(x, y);
         this.checkbox.hb.translate(x, y - EUIDropdown.TOGGLE_OFFSET);
         this.label.hb.translate(x + (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2), y);
     }
 
-    public boolean update(boolean isInRange, boolean isSelected)
-    {
+    public void renderRow(SpriteBatch sb) {
+        this.hb.render(sb);
+        this.label.tryRender(sb);
+        if (dr.isMultiSelect) {
+            this.checkbox.tryRender(sb);
+        }
+    }
+
+    public void setLabelColor(FuncT1<Color, T> colorFunction) {
+        this.label.setColor(colorFunction.invoke(item));
+    }
+
+    public EUIDropdownRow<T> setLabelFont(BitmapFont font, float fontScale) {
+        this.label.setFont(font, fontScale);
+        return this;
+    }
+
+    public EUIDropdownRow<T> setLabelFunction(FuncT1<String, T> labelFunction, boolean isSmartText) {
+        this.label.setSmartText(isSmartText);
+        setLabelText(labelFunction);
+        return this;
+    }
+
+    public void setLabelText(FuncT1<String, T> labelFunction) {
+        this.label.setLabel(labelFunction.invoke(item));
+    }
+
+    public boolean update(boolean isInRange, boolean isSelected) {
         this.hb.update();
         this.label.updateImpl();
         this.checkbox.updateImpl();
         this.isSelected = isSelected;
-        if (!isInRange)
-        {
+        if (!isInRange) {
             return false;
         }
         return tryHover(isSelected);
     }
 
-    protected boolean tryHover(boolean isSelected)
-    {
-        if (this.hb.hovered)
-        {
+    protected boolean tryHover(boolean isSelected) {
+        if (this.hb.hovered) {
             this.label.setColor(Settings.GREEN_TEXT_COLOR);
-            if (InputHelper.justClickedLeft)
-            {
+            if (InputHelper.justClickedLeft) {
                 this.hb.clickStarted = true;
             }
-            if (dr.showTooltipOnHover)
-            {
+            if (dr.showTooltipOnHover) {
                 addTooltip();
             }
         }
-        else if (isSelected)
-        {
+        else if (isSelected) {
             this.label.setColor(Settings.GOLD_COLOR);
             this.checkbox.setTexture(ImageMaster.COLOR_TAB_BOX_TICKED);
         }
-        else
-        {
+        else {
             this.label.setColor(dr.colorFunctionOption != null ? dr.colorFunctionOption.invoke(this.item) : Color.WHITE);
             this.checkbox.setTexture(ImageMaster.COLOR_TAB_BOX_UNTICKED);
         }
 
-        if (((this.hb.clicked) || (this.hb.hovered && CInputActionSet.select.isJustPressed())) && EUI.tryClick(this.hb))
-        {
+        if (((this.hb.clicked) || (this.hb.hovered && CInputActionSet.select.isJustPressed())) && EUI.tryClick(this.hb)) {
             this.hb.clicked = false;
             this.checkbox.setTexture(isSelected ? ImageMaster.COLOR_TAB_BOX_UNTICKED : ImageMaster.COLOR_TAB_BOX_TICKED);
             return true;
@@ -138,43 +120,33 @@ public class EUIDropdownRow<T>
         return false;
     }
 
-    public void renderRow(SpriteBatch sb)
-    {
-        this.hb.render(sb);
-        this.label.tryRender(sb);
-        if (dr.isMultiSelect)
-        {
-            this.checkbox.tryRender(sb);
-        }
-    }
-
-    protected void addTooltip()
-    {
-        if (dr.tooltipFunction != null)
-        {
+    protected void addTooltip() {
+        if (dr.tooltipFunction != null) {
             EUITooltip.queueTooltips(dr.tooltipFunction.invoke(item));
         }
-        else if (item instanceof TooltipProvider)
-        {
+        else if (item instanceof TooltipProvider) {
             EUITooltip.queueTooltips(((TooltipProvider) item).getTips());
         }
-        else if (item instanceof CardObject)
-        {
+        else if (item instanceof CardObject) {
             renderCard(((CardObject) item).getCard());
         }
-        else if (item instanceof AbstractCard)
-        {
+        else if (item instanceof AbstractCard) {
             renderCard((AbstractCard) item);
         }
     }
 
-    private void renderCard(AbstractCard card)
-    {
+    private void renderCard(AbstractCard card) {
         card.current_x = card.target_x = card.hb.x = InputHelper.mX + EUIDropdown.PREVIEW_OFFSET_X;
         card.current_y = card.target_y = card.hb.y = InputHelper.mY;
         card.update();
         card.updateHoverLogic();
         card.drawScale = card.targetDrawScale = 0.75f;
         EUI.addPriorityPostRender(card::render);
+    }
+
+    public EUIDropdownRow<T> updateAlignment() {
+        this.label.setAlignment(dr.isOptionSmartText ? 1f : 0.5f, 0f, dr.isOptionSmartText);
+        this.label.setHitbox(new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f));
+        return this;
     }
 }

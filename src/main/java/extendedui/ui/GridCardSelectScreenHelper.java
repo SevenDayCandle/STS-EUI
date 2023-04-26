@@ -20,8 +20,7 @@ import java.util.ArrayList;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
-public class GridCardSelectScreenHelper
-{
+public class GridCardSelectScreenHelper {
     private static final CardGroup mergedGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
     private static final ArrayList<CardGroup> cardGroups = new ArrayList<>();
     private static final EUITextBox dynamicLabel = new EUITextBox(ImageMaster.WHITE_SQUARE_IMG,
@@ -34,14 +33,76 @@ public class GridCardSelectScreenHelper
     private static ActionT3<CardGroup, ArrayList<AbstractCard>, AbstractCard> onClickCard;
     private static boolean enabled = false;
 
-    public static void clear(boolean clearFunctions)
-    {
+    public static void addGroup(CardGroup cardGroup) {
+        if (!cardGroup.isEmpty()) {
+            cardGroups.add(cardGroup);
+            mergedGroup.group.addAll(cardGroup.group);
+        }
+
+        enabled = !mergedGroup.isEmpty();
+    }
+
+    public static boolean calculateScrollBounds(GridCardSelectScreen instance) {
+        if (cardGroups.isEmpty()) {
+            return false;
+        }
+
+        float padY = EUIClassUtils.getField(instance, "padY");
+        CardGroup targetCardGroup = EUIClassUtils.getField(instance, "targetGroup");
+
+        float scrollTmp = (mergedGroup.size() + 2.6f * cardGroups.size()) / 5f - 2;
+        if (targetCardGroup.size() % 5 != 0) {
+            scrollTmp += 1;
+        }
+
+        EUIClassUtils.setField(instance, "scrollUpperBound", Settings.DEFAULT_SCROLL_LIMIT + scrollTmp * padY);
+        EUIClassUtils.setField(instance, "prevDeckSize", targetCardGroup.size());
+
+        return true;
+    }
+
+    public static CardGroup getCardGroup() {
+        return mergedGroup;
+    }
+
+    public static void invokeOnClick(GridCardSelectScreen selectScreen) {
+        if (onClickCard != null) {
+            onClickCard.invoke(mergedGroup, AbstractDungeon.gridSelectScreen.selectedCards, EUIClassUtils.getField(selectScreen, "hoveredCard"));
+        }
+    }
+
+    public static boolean isConditionMet() {
+        return condition == null || condition.check(AbstractDungeon.gridSelectScreen.selectedCards);
+    }
+
+    public static void open(GridCardSelectScreen selectScreen) {
+        if (!enabled) {
+            clear(false);
+        }
+        else {
+            if (cardGroups.size() == 1) {
+                EUIClassUtils.setField(selectScreen, "targetGroup", cardGroups.get(0));
+                clear(false);
+            }
+
+            enabled = false;
+        }
+    }
+
+    public static void clear(boolean clearFunctions) {
         cardGroups.clear();
         mergedGroup.clear();
         if (clearFunctions) {
             condition = null;
             dynamicString = null;
             onClickCard = null;
+        }
+    }
+
+    public static void renderDynamicString(SpriteBatch sb) {
+        if (dynamicString != null) {
+            //dynamicLabel.SetText(dynamicString.Invoke(AbstractDungeon.gridSelectScreen.selectedCards));
+            dynamicLabel.renderImpl(sb);
         }
     }
 
@@ -63,48 +124,8 @@ public class GridCardSelectScreenHelper
         onClickCard = newOnClickCard;
     }
 
-    public static void addGroup(CardGroup cardGroup)
-    {
-        if (!cardGroup.isEmpty())
-        {
-            cardGroups.add(cardGroup);
-            mergedGroup.group.addAll(cardGroup.group);
-        }
-
-        enabled = !mergedGroup.isEmpty();
-    }
-
-    public static CardGroup getCardGroup()
-    {
-        return mergedGroup;
-    }
-
-    public static void open(GridCardSelectScreen selectScreen)
-    {
-        if (!enabled)
-        {
-            clear(false);
-        }
-        else
-        {
-            if (cardGroups.size() == 1)
-            {
-                EUIClassUtils.setField(selectScreen, "targetGroup", cardGroups.get(0));
-                clear(false);
-            }
-
-            enabled = false;
-        }
-    }
-
-    public static boolean isConditionMet() {
-        return condition == null || condition.check(AbstractDungeon.gridSelectScreen.selectedCards);
-    }
-
-    public static boolean updateCardPositionAndHover(GridCardSelectScreen selectScreen)
-    {
-        if (cardGroups.isEmpty())
-        {
+    public static boolean updateCardPositionAndHover(GridCardSelectScreen selectScreen) {
+        if (cardGroups.isEmpty()) {
             return false;
         }
 
@@ -118,14 +139,11 @@ public class GridCardSelectScreenHelper
 
         EUIClassUtils.setField(selectScreen, "hoveredCard", null);
 
-        for (CardGroup cardGroup : cardGroups)
-        {
+        for (CardGroup cardGroup : cardGroups) {
             ArrayList<AbstractCard> cards = cardGroup.group;
-            for (int i = 0; i < cards.size(); ++i)
-            {
+            for (int i = 0; i < cards.size(); ++i) {
                 int mod = i % 5;
-                if (mod == 0 && i != 0)
-                {
+                if (mod == 0 && i != 0) {
                     lineNum += 1;
                 }
 
@@ -138,8 +156,7 @@ public class GridCardSelectScreenHelper
                 card.update();
                 card.updateHoverLogic();
 
-                if (card.hb.hovered)
-                {
+                if (card.hb.hovered) {
                     EUIClassUtils.setField(selectScreen, "hoveredCard", card);
                 }
             }
@@ -150,44 +167,9 @@ public class GridCardSelectScreenHelper
         return true;
     }
 
-    public static boolean calculateScrollBounds(GridCardSelectScreen instance)
-    {
-        if (cardGroups.isEmpty())
-        {
-            return false;
-        }
-
-        float padY = EUIClassUtils.getField(instance, "padY");
-        CardGroup targetCardGroup = EUIClassUtils.getField(instance, "targetGroup");
-
-        float scrollTmp = (mergedGroup.size() + 2.6f * cardGroups.size()) / 5f - 2;
-        if (targetCardGroup.size() % 5 != 0)
-        {
-            scrollTmp += 1;
-        }
-
-        EUIClassUtils.setField(instance, "scrollUpperBound", Settings.DEFAULT_SCROLL_LIMIT + scrollTmp * padY);
-        EUIClassUtils.setField(instance, "prevDeckSize", targetCardGroup.size());
-
-        return true;
-    }
-
-    public static void invokeOnClick(GridCardSelectScreen selectScreen){
-        if (onClickCard != null) {
-            onClickCard.invoke(mergedGroup, AbstractDungeon.gridSelectScreen.selectedCards, EUIClassUtils.getField(selectScreen, "hoveredCard"));
-        }
-    }
-
     public static void updateDynamicString() {
         if (dynamicString != null) {
             dynamicLabel.setLabel(dynamicString.invoke(AbstractDungeon.gridSelectScreen.selectedCards)).autosize(1f, null);
-        }
-    }
-
-    public static void renderDynamicString(SpriteBatch sb) {
-        if (dynamicString != null) {
-            //dynamicLabel.SetText(dynamicString.Invoke(AbstractDungeon.gridSelectScreen.selectedCards));
-            dynamicLabel.renderImpl(sb);
         }
     }
 }
