@@ -82,6 +82,16 @@ public class EUIHitbox extends Hitbox
         return this;
     }
 
+    public float getOffsetX()
+    {
+        return 0;
+    }
+
+    public float getOffsetY()
+    {
+        return 0;
+    }
+
     // Overridden in child classes
     public EUIHitbox setOffset(float x, float y)
     {

@@ -154,6 +154,19 @@ public class EUITooltip
         }
     }
 
+    public EUITooltip(EUITooltip other)
+    {
+        this.title = other.title;
+        this.descriptions.addAll(other.descriptions);
+        this.past = other.past;
+        this.present = other.present;
+        this.progressive = other.progressive;
+        this.plural = other.plural;
+        this.useLogic = other.useLogic;
+        this.modName = other.modName;
+        this.subHeader = other.subHeader;
+    }
+
     public static void registerID(String id, EUITooltip tooltip)
     {
         REGISTERED_IDS.put(id, tooltip);
@@ -840,6 +853,11 @@ public class EUITooltip
     protected BitmapFont getHeaderFont()
     {
         return headerFont != null ? headerFont : EUIFontHelper.cardtooltiptitlefontNormal;
+    }
+
+    public EUITooltip makeCopy()
+    {
+        return new EUITooltip(this);
     }
 
     public EUITooltip setChild(EUITooltip other)

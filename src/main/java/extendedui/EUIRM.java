@@ -115,6 +115,7 @@ public class EUIRM
         public final TextureCache hexagonalButton = new TextureCache("images/extendedui/ui/HexagonalButton.png");
         public final TextureCache hexagonalButtonBorder = new TextureCache("images/extendedui/ui/HexagonalButtonBorder.png");
         public final TextureCache hexagonalButtonHover = new TextureCache("images/extendedui/ui/HexagonalButtonHover.png");
+        public final TextureCache info = new TextureCache("images/extendedui/ui/Info.png");
         public final TextureCache longButton = new TextureCache("images/extendedui/ui/LongButton.png");
         public final TextureCache longButtonBorder = new TextureCache("images/extendedui/ui/LongButtonBorder.png");
         public final TextureCache longInput = new TextureCache("images/extendedui/ui/LongInput.png");

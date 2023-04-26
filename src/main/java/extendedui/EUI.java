@@ -34,6 +34,7 @@ import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
+import extendedui.ui.panelitems.FakeFtueScreen;
 import extendedui.ui.settings.ModSettingsScreen;
 import extendedui.ui.tooltips.EUITooltip;
 import org.apache.commons.lang3.StringUtils;
@@ -74,6 +75,7 @@ public class EUI
     public static EUIButton openCardFiltersButton;
     public static EUIButton openPotionFiltersButton;
     public static EUIButton openRelicFiltersButton;
+    public static FakeFtueScreen ftueScreen;
     public static ModSettingsScreen modSettingsScreen;
     public static PotionKeywordFilters potionFilters;
     public static PotionPoolScreen potionScreen;
@@ -251,6 +253,7 @@ public class EUI
         countingPanel = new CountingPanel();
         customHeader = new CustomCardLibSortHeader(null);
         customLibraryScreen = new CustomCardLibraryScreen();
+        ftueScreen = new FakeFtueScreen();
         modSettingsScreen = new ModSettingsScreen();
         potionFilters = new PotionKeywordFilters();
         potionHeader = new PotionSortHeader(null);

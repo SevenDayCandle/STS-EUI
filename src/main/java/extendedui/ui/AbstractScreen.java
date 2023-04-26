@@ -118,6 +118,7 @@ public abstract class AbstractScreen extends EUIBase
 
     }
 
+    // TODO should not be affecting dungeon screens outside of run
     public void dispose()
     {
         // Modified Logic from AbstractDungeon.closeCurrentScreen and AbstractDungeon.genericScreenOverlayReset

@@ -3,8 +3,10 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
@@ -22,88 +24,95 @@ import static extendedui.EUIRenderHelpers.DARKENED_SCREEN;
 public class EUITutorial extends EUIHoverable
 {
     private static final float ICON_SIZE = 96f * Settings.scale;
-    protected ArrayList<String> descriptions = new ArrayList<>();
-    protected ArrayList<ActionT1<SpriteBatch>> postRenders = new ArrayList<>();
+    protected EUISearchableDropdown<EUITutorialPage> tutorials;
     protected EUIButton next;
     protected EUIButton prev;
-    protected EUILabel header;
-    protected EUILabel sublabel;
     protected EUILabel description;
     protected EUIImage backgroundImage;
     private int page;
-    private ActionT1<SpriteBatch> renderFunction;
+    private EUITutorialPage current;
 
-    public EUITutorial(String headerText, String... descriptions) {
-        this(headerText, Arrays.asList(descriptions));
+    public EUITutorial(EUITutorialPage... descriptions) {
+        this(Arrays.asList(descriptions));
     }
 
-    public EUITutorial(String headerText, Collection<String> descriptions)
+    public EUITutorial(Collection<EUITutorialPage> descriptions)
     {
-        this(new EUIHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350F, 720F), EUIRM.images.panelLarge.texture(), headerText, descriptions);
+        this(new EUIHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, EUIRM.images.panelLarge.texture().getWidth(),  EUIRM.images.panelLarge.texture().getHeight()), EUIRM.images.panelLarge.texture(), descriptions);
     }
 
-    public EUITutorial(EUIHitbox hb, Texture backgroundTexture, String headerText, Collection<String> descriptions)
+    public EUITutorial(EUIHitbox hb, Texture backgroundTexture, EUITutorialPage... descriptions)
+    {
+        this(hb, backgroundTexture, Arrays.asList(descriptions));
+    }
+
+    public EUITutorial(EUIHitbox hb, Texture backgroundTexture, Collection<EUITutorialPage> tutorials)
     {
         super(hb);
         this.backgroundImage = new EUIImage(backgroundTexture, hb);
 
-        this.header = new EUILabel(EUIFontHelper.buttonFont,
-                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.85f))
-                .setAlignment(0.5f,0.5f,false)
-                .setLabel(headerText);
-        this.sublabel = new EUILabel(EUIFontHelper.cardtitlefontSmall,
-                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.75f))
-                .setFontScale(0.85f)
-                .setAlignment(0.5f,0.5f,false);
+        this.tutorials = (EUISearchableDropdown<EUITutorialPage>) new EUISearchableDropdown<EUITutorialPage>(new RelativeHitbox(hb, hb.width, scale(53), hb.width * 0.5f, hb.height * 0.77f), p -> p.title)
+                .setFontForButton(EUIFontHelper.cardtooltiptitlefontNormal, 1f)
+                .setOnOpenOrClose(isOpen -> {
+                    CardCrawlGame.isPopupOpen = this.isActive;
+                })
+                .setCanAutosizeButton(true);
+        this.tutorials.setOnChange(selectedSeries -> {
+                    this.tutorials.forceClose();
+                    if (selectedSeries.size() > 0)
+                    {
+                        setPage(selectedSeries.get(0));
+                    }
+                }
+        );
         this.description = new EUILabel(EUIFontHelper.cardTooltipFont,
                 new RelativeHitbox(hb, hb.width * 0.8f, hb.height, hb.width * 0.1f, hb.height * 0.65f))
                 .setAlignment(0.5f,0.5f,true)
                 .setSmartText(true, false);
 
-        this.descriptions.addAll(descriptions);
+        this.tutorials.setItems(tutorials);
         changePage(0);
 
         this.next = new EUIButton(ImageMaster.POPUP_ARROW,
                 new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, hb.width * 1.1f, hb.height * 0.5f))
-                .setOnClick(() -> changePage(page >= descriptions.size() - 1 ? 0 : page + 1));
+                .setOnClick(() -> changePage(page >= this.tutorials.size() - 1 ? 0 : page + 1));
         this.next.background.setFlipping(true, false);
 
         this.prev = new EUIButton(ImageMaster.POPUP_ARROW,
                 new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, hb.width * -0.1f, hb.height * 0.5f))
-                .setOnClick(() -> changePage(page <= 0 ? descriptions.size() - 1 : page - 1));
+                .setOnClick(() -> changePage(page <= 0 ? this.tutorials.size() - 1 : page - 1));
 
-        this.next.setActive(this.descriptions.size() > 1);
-        this.prev.setActive(this.descriptions.size() > 1);
-    }
-
-    @SafeVarargs
-    public final EUITutorial setPostRenders(ActionT1<SpriteBatch>... postRenders) {
-        return setPostRenders(Arrays.asList(postRenders));
-    }
-
-    public EUITutorial setPostRenders(Collection<ActionT1<SpriteBatch>> postRenders) {
-        this.postRenders.addAll(postRenders);
-        renderFunction = page < postRenders.size() ? this.postRenders.get(page) : null;
-        return this;
+        this.next.setActive(this.tutorials.size() > 1);
+        this.prev.setActive(this.tutorials.size() > 1);
     }
 
     protected void changePage(int newPage) {
         this.page = newPage;
-        this.description.setLabel(page < descriptions.size() ? descriptions.get(page) : "");
-        this.sublabel.setLabel(LABEL[3] + (page + 1) + "/" + descriptions.size() + ")");
-        renderFunction = page < postRenders.size() ? postRenders.get(page) : null;
+        this.tutorials.setSelectedIndex(newPage);
+    }
 
+    protected void setPage(EUITutorialPage page)
+    {
+        this.current = page;
+        this.description.setLabel(current != null ? current.description : "");
+    }
+
+    public void close()
+    {
+        this.tutorials.forceClose();
     }
 
     @Override
     public void updateImpl()
     {
         super.updateImpl();
-        this.header.tryUpdate();
-        this.sublabel.tryUpdate();
+        this.tutorials.tryUpdate();
         this.description.tryUpdate();
         this.next.tryUpdate();
         this.prev.tryUpdate();
+        if (current != null) {
+            current.tryUpdate();
+        }
     }
 
     @Override
@@ -114,13 +123,12 @@ public class EUITutorial extends EUIHoverable
         sb.setColor(Color.WHITE);
         this.backgroundImage.tryRender(sb);
 
-        this.header.tryRender(sb);
-        this.sublabel.tryRender(sb);
+        this.tutorials.tryRender(sb);
         this.description.tryRender(sb);
         this.next.tryRender(sb);
         this.prev.tryRender(sb);
-        if (renderFunction != null) {
-            renderFunction.invoke(sb);
+        if (current != null) {
+            current.tryRender(sb);
         }
     }
 }

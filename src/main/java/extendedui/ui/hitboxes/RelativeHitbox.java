@@ -51,6 +51,16 @@ public class RelativeHitbox extends EUIHitbox
         moveInternal(targetCx, targetCy);
     }
 
+    public float getOffsetX()
+    {
+        return offsetX;
+    }
+
+    public float getOffsetY()
+    {
+        return offsetY;
+    }
+
     public RelativeHitbox setOffset(float x, float y)
     {
         this.offsetX = x;

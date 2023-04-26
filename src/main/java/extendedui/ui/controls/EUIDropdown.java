@@ -124,7 +124,7 @@ public class EUIDropdown<T> extends EUIHoverable
                 .setFont(font, fontScale)
                 .setText(currentIndices.size() + " " + EUIRM.strings.uiItemsselected)
                 .setOnClick(this::openOrCloseMenu);
-        this.clearButton = new EUIButton(EUIRM.images.x.texture(), new OriginRelativeHitbox(hb, hb.height, hb.height, hb.width, 0)
+        this.clearButton = new EUIButton(EUIRM.images.x.texture(), new OriginRelativeHitbox(hb, hb.height * 0.88f, hb.height * 0.88f, hb.width, 0)
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnClick(this::clear);
@@ -561,6 +561,17 @@ public class EUIDropdown<T> extends EUIHoverable
         return items;
     }
 
+    public T getCurrentIndexItem()
+    {
+        return this.rows.get(getCurrentIndex()).item;
+    }
+
+    public T getItemAt(int i)
+    {
+        EUIDropdownRow<T> row = this.rows.get(i);
+        return row != null ? row.item : null;
+    }
+
     public FuncT1<String, T> getOptionLabelFunction()
     {
         return labelFunction;
@@ -591,6 +602,16 @@ public class EUIDropdown<T> extends EUIHoverable
 
         if (this.onOpenOrClose != null) {
             this.onOpenOrClose.invoke(this.isOpen);
+        }
+    }
+
+    public void forceClose()
+    {
+        EUI.setActiveElement(null);
+        CardCrawlGame.isPopupOpen = false;
+        this.isOpen = false;
+        if (this.onOpenOrClose != null) {
+            this.onOpenOrClose.invoke(false);
         }
     }
 
