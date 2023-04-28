@@ -48,7 +48,7 @@ public abstract class EUIUtils {
         return true;
     }
 
-    public static <T> boolean all(Iterable<T> list, Predicate<T> predicate) {
+    public static <T> boolean all(Iterable<? extends T> list, Predicate<T> predicate) {
         for (T t : list) {
             if (!predicate.test(t)) {
                 return false;
@@ -77,7 +77,7 @@ public abstract class EUIUtils {
         return false;
     }
 
-    public static <T> boolean any(Iterable<T> list, Predicate<T> predicate) {
+    public static <T> boolean any(Iterable<? extends T> list, Predicate<T> predicate) {
         for (T t : list) {
             if (predicate.test(t)) {
                 return true;
@@ -125,7 +125,7 @@ public abstract class EUIUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] arrayMap(List<T> list, Class<N> listClass, FuncT1<N, T> predicate) {
+    public static <T, N> N[] arrayMap(List<? extends T> list, Class<N> listClass, FuncT1<N, T> predicate) {
         if (list != null) {
             final N[] res = (N[]) Array.newInstance(listClass, list.size());
             for (int i = 0; i < list.size(); i++) {
@@ -154,7 +154,7 @@ public abstract class EUIUtils {
     }
 
     @SuppressWarnings("unchecked")
-    public static <T, N> N[] arrayMapAsNonnull(List<T> list, Class<N> listClass, FuncT1<N, T> predicate) {
+    public static <T, N> N[] arrayMapAsNonnull(List<? extends T> list, Class<N> listClass, FuncT1<N, T> predicate) {
         if (list != null) {
             final N[] res = (N[]) Array.newInstance(listClass, list.size());
             for (int i = 0; i < list.size(); i++) {
@@ -179,7 +179,7 @@ public abstract class EUIUtils {
         }
     }
 
-    public static <T> int count(Iterable<T> list, Predicate<T> predicate) {
+    public static <T> int count(Iterable<? extends T> list, Predicate<T> predicate) {
 
         int count = 0;
         for (T t : list) {
@@ -210,7 +210,7 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static <T> ArrayList<T> filter(Iterable<T> list, Predicate<T> predicate) {
+    public static <T> ArrayList<T> filter(Iterable<? extends T> list, Predicate<T> predicate) {
         final ArrayList<T> res = new ArrayList<>();
         for (T t : list) {
             if (predicate.test(t)) {
@@ -231,7 +231,7 @@ public abstract class EUIUtils {
         return null;
     }
 
-    public static <T> T find(Iterable<T> list, Predicate<T> predicate) {
+    public static <T> T find(Iterable<? extends T> list, Predicate<T> predicate) {
         for (T t : list) {
             if (predicate.test(t)) {
                 return t;
@@ -241,7 +241,7 @@ public abstract class EUIUtils {
         return null;
     }
 
-    public static <T, N extends Comparable<N>> T findMax(Iterable<T> list, FuncT1<N, T> getProperty) {
+    public static <T, N extends Comparable<N>> T findMax(Iterable<? extends T> list, FuncT1<N, T> getProperty) {
         N best = null;
         T result = null;
         for (T t : list) {
@@ -273,7 +273,7 @@ public abstract class EUIUtils {
         return result;
     }
 
-    public static <T, N extends Comparable<N>> T findMin(Iterable<T> list, FuncT1<N, T> getProperty) {
+    public static <T, N extends Comparable<N>> T findMin(Iterable<? extends T> list, FuncT1<N, T> getProperty) {
         N best = null;
         T result = null;
         for (T t : list) {
@@ -306,21 +306,21 @@ public abstract class EUIUtils {
     }
 
     @SafeVarargs
-    public static <T> ArrayList<T> flatten(Collection<T>... lists) {
+    public static <T> ArrayList<T> flatten(Collection<? extends T>... lists) {
         return Stream.of(lists)
                 .flatMap(Collection::stream)
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public static <T> ArrayList<T> flattenList(Collection<? extends Collection<T>> lists) {
+    public static <T> ArrayList<T> flattenList(Collection<? extends Collection<? extends T>> lists) {
         ArrayList<T> t = new ArrayList<>();
-        for (Collection<T> list : lists) {
+        for (Collection<? extends T> list : lists) {
             t.addAll(list);
         }
         return t;
     }
 
-    public static <T> void forEach(Iterable<T> list, ActionT1<T> action) {
+    public static <T> void forEach(Iterable<? extends T> list, ActionT1<T> action) {
         for (T t : list) {
             action.invoke(t);
         }
@@ -546,7 +546,7 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static <T, N> ArrayList<N> map(Iterable<T> list, FuncT1<N, T> predicate) {
+    public static <T, N> ArrayList<N> map(Iterable<? extends T> list, FuncT1<N, T> predicate) {
         final ArrayList<N> res = new ArrayList<>();
         if (list != null) {
             for (T t : list) {
@@ -557,7 +557,7 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static <T, N> ArrayList<N> map(List<T> list, FuncT1<N, T> predicate) {
+    public static <T, N> ArrayList<N> map(List<? extends T> list, FuncT1<N, T> predicate) {
         final ArrayList<N> res = new ArrayList<>();
         for (T t : list) {
             res.add(predicate.invoke(t));
@@ -580,7 +580,7 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static <T, N> ArrayList<N> mapAsNonnull(Iterable<T> list, FuncT1<N, T> predicate) {
+    public static <T, N> ArrayList<N> mapAsNonnull(Iterable<? extends T> list, FuncT1<N, T> predicate) {
         final ArrayList<N> res = new ArrayList<>();
         if (list != null) {
             for (T t : list) {
@@ -608,7 +608,7 @@ public abstract class EUIUtils {
         return best;
     }
 
-    public static <T, N extends Comparable<N>> N max(Iterable<T> list, FuncT1<N, T> getProperty) {
+    public static <T, N extends Comparable<N>> N max(Iterable<? extends T> list, FuncT1<N, T> getProperty) {
         N best = null;
         for (T t : list) {
             if (t != null) {
@@ -622,14 +622,14 @@ public abstract class EUIUtils {
         return best;
     }
 
-    public static <T> float mean(List<T> list, FuncT1<Float, T> predicate) {
+    public static <T> float mean(List<? extends T> list, FuncT1<Float, T> predicate) {
         if (list.size() <= 0) {
             return 0;
         }
         return sum(list, predicate) / list.size();
     }
 
-    public static <T> float sum(Iterable<T> list, FuncT1<Float, T> predicate) {
+    public static <T> float sum(Iterable<? extends T> list, FuncT1<Float, T> predicate) {
         float sum = 0;
         if (list == null) {
             return sum;
@@ -654,7 +654,7 @@ public abstract class EUIUtils {
         return best;
     }
 
-    public static <T, N extends Comparable<N>> N min(Iterable<T> list, FuncT1<N, T> getProperty) {
+    public static <T, N extends Comparable<N>> N min(Iterable<? extends T> list, FuncT1<N, T> getProperty) {
         N best = null;
         for (T t : list) {
             if (t != null) {
@@ -687,7 +687,7 @@ public abstract class EUIUtils {
         return items != null && items.length > 0 ? items[RNG.nextInt(items.length)] : null;
     }
 
-    public static <T> T random(List<T> items) {
+    public static <T> T random(List<? extends T> items) {
         int size = items != null ? items.size() : 0;
         if (size == 0) {
             return null;
@@ -695,7 +695,7 @@ public abstract class EUIUtils {
         return items.get(RNG.nextInt(size));
     }
 
-    public static <T> T random(Collection<T> items) {
+    public static <T> T random(Collection<? extends T> items) {
         int size = items != null ? items.size() : 0;
         if (size == 0) {
             return null;
@@ -756,7 +756,7 @@ public abstract class EUIUtils {
         return Settings.isDebug || Settings.isInfo;
     }
 
-    public static <T> int sumInt(Iterable<T> list, FuncT1<Integer, T> predicate) {
+    public static <T> int sumInt(Iterable<? extends T> list, FuncT1<Integer, T> predicate) {
         int sum = 0;
         if (list == null) {
             return sum;
