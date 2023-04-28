@@ -28,53 +28,55 @@ import java.util.HashSet;
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
 public class EUIConfiguration {
+
+    private static final ArrayList<STSConfigItem<?>> CONFIG_ITEMS = new ArrayList<>();
+    private static final String BANNER_FONT = getFullKey("BannerFont");
+    private static final String BUTTON_FONT = getFullKey("ButtonFont");
+    private static final String CARD_DESC_FONT = getFullKey("CardDescFont");
+    private static final String CARD_TITLE_FONT = getFullKey("CardTitleFont");
+    private static final String DISABLE_COMPENDIUM_BUTTON = getFullKey("DisableCompendiumButton");
+    private static final String DISABLE_DESCRIPTION_ICONS = getFullKey("DisableDescriptionIcons");
+    private static final String DISABLE_EFFEKSEER = getFullKey("DisableEffekseer");
+    private static final String ENABLE_CARD_POOL_DEBUG = getFullKey("EnableCardPoolDebug");
+    private static final String ENERGY_FONT = getFullKey("EnergyFont");
+    private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
+    private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
+    private static final String HIDE_TIP_DESCRIPTION = getFullKey("HideTipDescription");
+    private static final String OVERRIDE_GAME_FONT = getFullKey("OverrideGameFont");
+    private static final String PREFIX = "EUI";
+    private static final String SHOW_COUNTING_PANEL = getFullKey("ShowCountingPanel");
+    private static final String SHOW_MOD_SETTINGS = getFullKey("ShowModSettings");
+    private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
+    private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
+    private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
+    private static final String USE_SNAP_SCROLLING = getFullKey("UseSnapScrolling");
+    private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
+    private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "fnt");
     public static final int BASE_OPTION_OFFSET_X = 400;
     public static final int BASE_OPTION_OFFSET_X2 = 580;
     public static final int BASE_OPTION_OFFSET_Y = 720;
     public static final int BASE_OPTION_OPTION_HEIGHT = 32;
     public static final int BASE_SPRITES_DEFAULT = 6000;
-    private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "fnt");
-    private static final String PREFIX = "EUI";
-    private static final ArrayList<STSConfigItem<?>> CONFIG_ITEMS = new ArrayList<>();
-    private static final String BANNER_FONT = getFullKey("BannerFont");
-    public static STSStringConfigItem bannerFont = new STSStringConfigItem(BANNER_FONT, "");
-    private static final String BUTTON_FONT = getFullKey("ButtonFont");
-    public static STSStringConfigItem buttonFont = new STSStringConfigItem(BUTTON_FONT, "");
-    private static final String CARD_DESC_FONT = getFullKey("CardDescFont");
-    public static STSStringConfigItem cardDescFont = new STSStringConfigItem(CARD_DESC_FONT, "");
-    private static final String CARD_TITLE_FONT = getFullKey("CardTitleFont");
-    public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT, "");
-    private static final String DISABLE_COMPENDIUM_BUTTON = getFullKey("DisableCompendiumButton");
+
     public static STSConfigItem<Boolean> disableCompendiumButton = new STSConfigItem<>(DISABLE_COMPENDIUM_BUTTON, false);
-    private static final String DISABLE_DESCRIPTION_ICONS = getFullKey("DisableDescriptionIcons");
     public static STSConfigItem<Boolean> disableDescrptionIcons = new STSConfigItem<>(DISABLE_DESCRIPTION_ICONS, false);
-    private static final String DISABLE_EFFEKSEER = getFullKey("DisableEffekseer");
     public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
-    private static final String ENABLE_CARD_POOL_DEBUG = getFullKey("EnableCardPoolDebug");
     public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(ENABLE_CARD_POOL_DEBUG, false);
-    private static final String ENERGY_FONT = getFullKey("EnergyFont");
-    public static STSStringConfigItem energyFont = new STSStringConfigItem(ENERGY_FONT, "");
-    private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
     public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(FLUSH_ON_GAME_START, false);
-    private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
-    private static final String HIDE_TIP_DESCRIPTION = getFullKey("HideTipDescription");
-    private static final String OVERRIDE_GAME_FONT = getFullKey("OverrideGameFont");
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
-    private static final String SHOW_COUNTING_PANEL = getFullKey("ShowCountingPanel");
     public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(SHOW_COUNTING_PANEL, false);
-    private static final String SHOW_MOD_SETTINGS = getFullKey("ShowModSettings");
     public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(SHOW_MOD_SETTINGS, false);
-    private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
-    public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT, "");
-    private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
-    public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT, "");
-    private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
     public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(USE_SEPARATE_FONTS, false);
-    private static final String USE_SNAP_SCROLLING = getFullKey("UseSnapScrolling");
     public static STSConfigItem<Boolean> useSnapScrolling = new STSConfigItem<>(USE_SNAP_SCROLLING, false);
-    private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
     public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
+    public static STSStringConfigItem bannerFont = new STSStringConfigItem(BANNER_FONT, "");
+    public static STSStringConfigItem buttonFont = new STSStringConfigItem(BUTTON_FONT, "");
+    public static STSStringConfigItem cardDescFont = new STSStringConfigItem(CARD_DESC_FONT, "");
+    public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT, "");
+    public static STSStringConfigItem energyFont = new STSStringConfigItem(ENERGY_FONT, "");
+    public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT, "");
+    public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT, "");
     public static ModSettingsScreen.Category effekseerCategory;
     public static ModSettingsScreen.Category fontCategory;
     public static BasemodSettingsPage settingsBlock;
@@ -247,7 +249,7 @@ public class EUIConfiguration {
         // Sub-font settings should only show up if UseSeparateFonts is true
         boolean showOtherSelectors = useSeparateFonts.get();
         cardDescFontSelector2.setHeaderText(showOtherSelectors ? EUIRM.strings.config_cardDescFont : EUIRM.strings.config_mainFont);
-        cardTitleFontSelector.setActive(showOtherSelectors);
+        cardTitleFontSelector.setHeaderText(showOtherSelectors ? EUIRM.strings.config_cardTitleFont : EUIRM.strings.config_boldFont);
         tipDescFontSelector.setActive(showOtherSelectors);
         tipTitleFontSelector.setActive(showOtherSelectors);
         buttonFontSelector.setActive(showOtherSelectors);
@@ -263,7 +265,7 @@ public class EUIConfiguration {
         // Toggling the fonts icon requires us to update the visibility of all font selectors
         useSeparateFonts.addListener(newValue -> {
             cardDescFontSelector2.setHeaderText(newValue ? EUIRM.strings.config_cardDescFont : EUIRM.strings.config_mainFont);
-            cardTitleFontSelector.setActive(newValue);
+            cardTitleFontSelector.setHeaderText(showOtherSelectors ? EUIRM.strings.config_cardTitleFont : EUIRM.strings.config_boldFont);
             tipDescFontSelector.setActive(newValue);
             tipTitleFontSelector.setActive(newValue);
             buttonFontSelector.setActive(newValue);

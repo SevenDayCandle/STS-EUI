@@ -133,6 +133,13 @@ public class EUIRM {
 
     public static class Strings {
         private final UIStrings stringsConfig = getUIStrings("config");
+        private final UIStrings stringsConfigDesc = getUIStrings("config_desc");
+        private final UIStrings stringsGrammar = getUIStrings("grammar");
+        private final UIStrings stringsHotkeys = getUIStrings("hotkeys");
+        private final UIStrings stringsMisc = getUIStrings("misc");
+        private final UIStrings stringsUIPool = getUIStrings("ui_pool");
+        private final UIStrings stringsUIFilter = getUIStrings("ui_filters");
+
         public final String config_showCountingPanel = stringsConfig.TEXT[0];
         public final String config_useVanillaCompendium = stringsConfig.TEXT[1];
         public final String config_useSnapScrolling = stringsConfig.TEXT[2];
@@ -145,16 +152,17 @@ public class EUIRM {
         public final String config_useSeparateFonts = stringsConfig.TEXT[9];
         public final String config_overrideGameFont = stringsConfig.TEXT[10];
         public final String config_mainFont = stringsConfig.TEXT[11];
-        public final String config_cardDescFont = stringsConfig.TEXT[12];
-        public final String config_cardTitleFont = stringsConfig.TEXT[13];
-        public final String config_tipDescFont = stringsConfig.TEXT[14];
-        public final String config_tipTitleFont = stringsConfig.TEXT[15];
-        public final String config_buttonFont = stringsConfig.TEXT[16];
-        public final String config_energyFont = stringsConfig.TEXT[17];
-        public final String config_bannerFont = stringsConfig.TEXT[18];
-        public final String config_enableDebug = stringsConfig.TEXT[19];
-        public final String config_reenableTooltips = stringsConfig.TEXT[20];
-        private final UIStrings stringsConfigDesc = getUIStrings("config_desc");
+        public final String config_boldFont = stringsConfig.TEXT[12];
+        public final String config_cardDescFont = stringsConfig.TEXT[13];
+        public final String config_cardTitleFont = stringsConfig.TEXT[14];
+        public final String config_tipDescFont = stringsConfig.TEXT[15];
+        public final String config_tipTitleFont = stringsConfig.TEXT[16];
+        public final String config_buttonFont = stringsConfig.TEXT[17];
+        public final String config_energyFont = stringsConfig.TEXT[18];
+        public final String config_bannerFont = stringsConfig.TEXT[19];
+        public final String config_enableDebug = stringsConfig.TEXT[20];
+        public final String config_reenableTooltips = stringsConfig.TEXT[21];
+
         public final String configdesc_restartRequired = stringsConfigDesc.TEXT[0];
         public final String configdesc_showCountingPanel = stringsConfigDesc.TEXT[1];
         public final String configdesc_useVanillaCompendium = stringsConfigDesc.TEXT[2];
@@ -168,12 +176,11 @@ public class EUIRM {
         public final String configdesc_overrideGameFont = stringsConfigDesc.TEXT[10];
         public final String configdesc_enableDebug = stringsConfigDesc.TEXT[11];
         public final String configdesc_reenableTooltips = stringsConfigDesc.TEXT[12];
-        private final UIStrings stringsGrammar = getUIStrings("grammar");
-        private final UIStrings stringsHotkeys = getUIStrings("hotkeys");
+
         public final String hotkey_cycle = stringsHotkeys.TEXT[0];
         public final String hotkey_openCardPool = stringsHotkeys.TEXT[1];
         public final String hotkey_toggle = stringsHotkeys.TEXT[2];
-        private final UIStrings stringsMisc = getUIStrings("misc");
+
         public final String misc_KeyToCycle = stringsMisc.TEXT[0];
         public final String misc_TypeToSearch = stringsMisc.TEXT[1];
         public final String misc_sortByCount = stringsMisc.TEXT[2];
@@ -182,7 +189,7 @@ public class EUIRM {
         public final String misc_effekseerSettings = stringsMisc.TEXT[5];
         public final String misc_fontSettings = stringsMisc.TEXT[6];
         public final String misc_keywordInstructions = stringsMisc.TEXT[7];
-        private final UIStrings stringsUIPool = getUIStrings("ui_pool");
+
         public final String uipool_viewPool = stringsUIPool.TEXT[0];
         public final String uipool_viewPoolDescription = stringsUIPool.TEXT[1];
         public final String uipool_viewCardPool = stringsUIPool.TEXT[2];
@@ -195,7 +202,7 @@ public class EUIRM {
         public final String uipool_removeFromPool = stringsUIPool.TEXT[9];
         public final String uipool_obtainRelic = stringsUIPool.TEXT[10];
         public final String uipool_obtainPotion = stringsUIPool.TEXT[11];
-        private final UIStrings stringsUIFilter = getUIStrings("ui_filters");
+
         public final String uiItemsselected = stringsUIFilter.TEXT[0];
         public final String uiKeywords = stringsUIFilter.TEXT[1];
         public final String uiAmount = stringsUIFilter.TEXT[2];

@@ -68,7 +68,6 @@ public class EUIFontHelper {
     protected static FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
     protected static FreeTypeFontGenerator.FreeTypeBitmapFontData data = new FreeTypeFontGenerator.FreeTypeBitmapFontData();
     protected static HashMap<String, FreeTypeFontGenerator> generators = new HashMap<>();
-    protected static FileHandle mainFont = null;
 
     public static BitmapFont createBoldFont(Settings.GameLanguage language, boolean isLinearFiltering, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
         FileHandle file = getCustomBoldFontFile(language);
@@ -106,7 +105,8 @@ public class EUIFontHelper {
         data.capChars = new char[]{'动'};
         FileHandle fontFile = getDefaultFontFile(Settings.language);
         FileHandle fontFileBold = getBoldFontFile(Settings.language);
-        mainFont = getCustomFont(EUIConfiguration.cardDescFont, fontFile);
+        FileHandle mainFont = getCustomFont(EUIConfiguration.cardDescFont, fontFile);
+        FileHandle boldFile = getCustomFont(EUIConfiguration.cardTitleFont, mainFont != fontFile ? mainFont : fontFileBold);
 
         param.hinting = FreeTypeFontGenerator.Hinting.Slight;
         param.kerning = true;
@@ -145,8 +145,6 @@ public class EUIFontHelper {
         param.spaceX = (int) (-2.5F * Settings.scale);
         param.borderColor = Settings.QUARTER_TRANSPARENT_BLACK_COLOR;
         EUIFontHelper.buttonFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.buttonFont, fontFile) : mainFont, 32.0F, true);
-
-        FileHandle boldFile = EUIConfiguration.cardDescFont.get().isEmpty() ? fontFileBold : mainFont;
 
         param.borderStraight = true;
         param.borderWidth = 4.0F * Settings.scale;
