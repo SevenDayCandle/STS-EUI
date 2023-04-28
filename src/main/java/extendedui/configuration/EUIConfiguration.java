@@ -247,37 +247,27 @@ public class EUIConfiguration {
         BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
 
         // Sub-font settings should only show up if UseSeparateFonts is true
-        boolean showOtherSelectors = useSeparateFonts.get();
-        cardDescFontSelector2.setHeaderText(showOtherSelectors ? EUIRM.strings.config_cardDescFont : EUIRM.strings.config_mainFont);
-        cardTitleFontSelector.setHeaderText(showOtherSelectors ? EUIRM.strings.config_cardTitleFont : EUIRM.strings.config_boldFont);
-        tipDescFontSelector.setActive(showOtherSelectors);
-        tipTitleFontSelector.setActive(showOtherSelectors);
-        buttonFontSelector.setActive(showOtherSelectors);
-        bannerFontSelector.setActive(showOtherSelectors);
-        energyFontSelector.setActive(showOtherSelectors);
-        cardTitleFontSelector2.setActive(showOtherSelectors);
-        tipDescFontSelector2.setActive(showOtherSelectors);
-        tipTitleFontSelector2.setActive(showOtherSelectors);
-        buttonFontSelector2.setActive(showOtherSelectors);
-        bannerFontSelector2.setActive(showOtherSelectors);
-        energyFontSelector2.setActive(showOtherSelectors);
-
         // Toggling the fonts icon requires us to update the visibility of all font selectors
         useSeparateFonts.addListener(newValue -> {
-            cardDescFontSelector2.setHeaderText(newValue ? EUIRM.strings.config_cardDescFont : EUIRM.strings.config_mainFont);
-            cardTitleFontSelector.setHeaderText(showOtherSelectors ? EUIRM.strings.config_cardTitleFont : EUIRM.strings.config_boldFont);
-            tipDescFontSelector.setActive(newValue);
-            tipTitleFontSelector.setActive(newValue);
-            buttonFontSelector.setActive(newValue);
             bannerFontSelector.setActive(newValue);
-            energyFontSelector.setActive(newValue);
-            cardTitleFontSelector2.setActive(newValue);
-            tipDescFontSelector2.setActive(newValue);
-            tipTitleFontSelector2.setActive(newValue);
-            buttonFontSelector2.setActive(newValue);
-            buttonFontSelector2.setActive(newValue);
             bannerFontSelector2.setActive(newValue);
+            buttonFontSelector.setActive(newValue);
+            buttonFontSelector2.setActive(newValue);
+            energyFontSelector.setActive(newValue);
             energyFontSelector2.setActive(newValue);
+            tipDescFontSelector.setActive(newValue);
+            tipDescFontSelector2.setActive(newValue);
+            tipTitleFontSelector.setActive(newValue);
+            tipTitleFontSelector2.setActive(newValue);
+
+            cardDescFontSelector.tooltip.setTitle(newValue ? EUIRM.strings.config_cardDescFont : EUIRM.strings.config_mainFont);
+            cardDescFontSelector2.tooltip.setTitle(newValue ? EUIRM.strings.config_cardDescFont : EUIRM.strings.config_mainFont);
+            cardTitleFontSelector.tooltip.setTitle(newValue ? EUIRM.strings.config_cardTitleFont : EUIRM.strings.config_boldFont);
+            cardTitleFontSelector2.tooltip.setTitle(newValue ? EUIRM.strings.config_cardTitleFont : EUIRM.strings.config_boldFont);
+            cardDescFontSelector.setHeaderText(cardDescFontSelector.tooltip.title);
+            cardDescFontSelector2.setHeaderText(cardDescFontSelector2.tooltip.title);
+            cardTitleFontSelector.setHeaderText(cardTitleFontSelector.tooltip.title);
+            cardTitleFontSelector2.setHeaderText(cardTitleFontSelector2.tooltip.title);
         });
 
         // NOTE: DISABLE_COMPENDIUM_BUTTON, HIDE_TIP_DESCRIPTION, and USE_SMOOTH_SCROLLING listeners are added in EUI.initialize to avoid errors from initializing too early

@@ -41,7 +41,7 @@ public class FontHelperPatches {
         @SpirePostfixPatch
         public static void postfix() {
             EUIFontHelper.initialize();
-            if (EUIConfiguration.overrideGameFont.get()) {
+            if (EUIConfiguration.overrideGameFont.get() && EUIConfiguration.useSeparateFonts.get()) {
                 EUIFontHelper.overwriteBaseFonts();
             }
         }

@@ -356,8 +356,7 @@ public class EUIFontHelper {
     }
 
     public static void overwriteBaseFonts() {
-        FontHelper.cardDescFont_N = EUIFontHelper.carddescriptionfontNormal;
-        FontHelper.cardDescFont_L = EUIFontHelper.carddescriptionfontLarge;
+        // cardDescFont_N and cardDescFont_L are already be set properly through patches
         FontHelper.cardTitleFont = EUIFontHelper.cardtitlefontNormal;
         FontHelper.cardTypeFont = EUIFontHelper.cardTypeFont;
         FontHelper.tipBodyFont = EUIFontHelper.cardTooltipFont;
