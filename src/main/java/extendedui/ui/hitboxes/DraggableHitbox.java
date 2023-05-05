@@ -64,6 +64,14 @@ public class DraggableHitbox extends EUIHitbox {
         return this;
     }
 
+    public void forceStartDrag()
+    {
+        if (EUI.tryDragging())
+        {
+            dragStart = new Vector2(Gdx.input.getX(), Settings.HEIGHT - Gdx.input.getY());
+        }
+    }
+
     @Override
     public void update() {
         super.update();

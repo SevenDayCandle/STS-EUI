@@ -19,7 +19,6 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.GenericCallback;
 import org.apache.commons.lang3.StringUtils;
 
 public class EUIButton extends EUIHoverable {
@@ -33,8 +32,8 @@ public class EUIButton extends EUIHoverable {
     public boolean isSmartText;
     public boolean showText = true;
     public boolean smartTextResize;
-    public GenericCallback<EUIButton> onLeftClick;
-    public GenericCallback<EUIButton> onRightClick;
+    public ActionT1<EUIButton> onLeftClick;
+    public ActionT1<EUIButton> onRightClick;
     public String text;
     public Color textColor = Color.WHITE.cpy();
     public Color hoverBlendColor;
@@ -173,37 +172,49 @@ public class EUIButton extends EUIHoverable {
     }
 
     public EUIButton setOnClick(ActionT0 onClick) {
-        this.onLeftClick = GenericCallback.fromT0(onClick);
+        this.onLeftClick = (__) -> onClick.invoke();
 
         return this;
     }
 
     public EUIButton setOnClick(ActionT1<EUIButton> onClick) {
-        this.onLeftClick = GenericCallback.fromT1(onClick);
+        this.onLeftClick = onClick;
 
         return this;
     }
 
-    public <T> EUIButton setOnClick(T state, ActionT2<T, EUIButton> onClick) {
-        this.onLeftClick = GenericCallback.fromT2(onClick, state);
+    public <S> EUIButton setOnClick(S item, ActionT1<S> onClick) {
+        this.onLeftClick = (__) -> onClick.invoke(item);
+
+        return this;
+    }
+
+    public <S> EUIButton setOnClick(S item, ActionT2<S, EUIButton> onClick) {
+        this.onLeftClick = (s) -> onClick.invoke(item, s);
 
         return this;
     }
 
     public EUIButton setOnRightClick(ActionT0 onClick) {
-        this.onRightClick = GenericCallback.fromT0(onClick);
+        this.onRightClick = (__) -> onClick.invoke();
 
         return this;
     }
 
     public EUIButton setOnRightClick(ActionT1<EUIButton> onClick) {
-        this.onRightClick = GenericCallback.fromT1(onClick);
+        this.onRightClick = onClick;
 
         return this;
     }
 
-    public <T> EUIButton setOnRightClick(T state, ActionT2<T, EUIButton> onClick) {
-        this.onRightClick = GenericCallback.fromT2(onClick, state);
+    public <S> EUIButton setOnRightClick(S item, ActionT1<S> onClick) {
+        this.onRightClick = (__) -> onClick.invoke(item);
+
+        return this;
+    }
+
+    public <S> EUIButton setOnRightClick(S item, ActionT2<S, EUIButton> onClick) {
+        this.onRightClick = (s) -> onClick.invoke(item, s);
 
         return this;
     }
@@ -386,7 +397,7 @@ public class EUIButton extends EUIHoverable {
         this.currentClickDelay = clickDelay;
 
         if (onRightClick != null) {
-            this.onRightClick.complete(this);
+            this.onRightClick.invoke(this);
         }
     }
 
@@ -400,7 +411,7 @@ public class EUIButton extends EUIHoverable {
         this.currentClickDelay = clickDelay;
 
         if (onLeftClick != null) {
-            this.onLeftClick.complete(this);
+            this.onLeftClick.invoke(this);
         }
     }
 }

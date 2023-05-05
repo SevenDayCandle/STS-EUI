@@ -4,14 +4,14 @@ import basemod.TopPanelItem;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUIRM;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.TextureCache;
 import extendedui.ui.tooltips.EUITooltip;
-import extendedui.utilities.GenericCallback;
 
 public abstract class PCLTopPanelItem extends TopPanelItem {
     public EUITooltip tooltip;
-    protected GenericCallback<PCLTopPanelItem> onLeftClick;
-    protected GenericCallback<PCLTopPanelItem> onRightClick;
+    protected ActionT1<PCLTopPanelItem> onLeftClick;
+    protected ActionT1<PCLTopPanelItem> onRightClick;
     private boolean rightClickable = true;
 
 
@@ -23,13 +23,13 @@ public abstract class PCLTopPanelItem extends TopPanelItem {
         return EUIRM.getID(type.getSimpleName());
     }
 
-    public PCLTopPanelItem setOnClick(GenericCallback<PCLTopPanelItem> onLeftClick) {
+    public PCLTopPanelItem setOnClick(ActionT1<PCLTopPanelItem> onLeftClick) {
         this.onLeftClick = onLeftClick;
         setClickable(this.onLeftClick != null);
         return this;
     }
 
-    public PCLTopPanelItem setOnRightClick(GenericCallback<PCLTopPanelItem> onRightClick) {
+    public PCLTopPanelItem setOnRightClick(ActionT1<PCLTopPanelItem> onRightClick) {
         this.onRightClick = onRightClick;
         setRightClickable(this.onRightClick != null);
         return this;
@@ -61,13 +61,13 @@ public abstract class PCLTopPanelItem extends TopPanelItem {
     @Override
     protected void onClick() {
         if (this.onLeftClick != null) {
-            this.onLeftClick.complete(this);
+            this.onLeftClick.invoke(this);
         }
     }
 
     protected void onRightClick() {
         if (this.onRightClick != null) {
-            this.onRightClick.complete(this);
+            this.onRightClick.invoke(this);
         }
     }
 }

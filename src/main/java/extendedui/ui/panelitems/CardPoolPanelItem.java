@@ -103,7 +103,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
     public static CardGroup getAllCards() {
         CardGroup cardGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
         if (EUIGameUtils.canReceiveAnyColorCard()) {
-            cardGroup.group = EUIGameUtils.getEveryColorCard();
+            cardGroup.group = EUIGameUtils.getEveryColorCardForPoolDisplay();
             cardGroup.group.sort(CardPoolPanelItem::compareCardFromAllColors);
         }
         else {

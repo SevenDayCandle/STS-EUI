@@ -172,10 +172,10 @@ public class CardPoolScreen extends AbstractDungeonScreen {
     }
 
     protected void removeCardFromPool(AbstractCard c) {
-        final ArrayList<CardGroup> groups = new ArrayList<>();
-        groups.addAll(EUIGameUtils.getGameCardPools());
-        groups.addAll(EUIGameUtils.getSourceCardPools());
-        for (CardGroup group : groups) {
+        for (CardGroup group : EUIGameUtils.getGameCardPools()) {
+            group.removeCard(c.cardID);
+        }
+        for (CardGroup group : EUIGameUtils.getSourceCardPools()) {
             group.removeCard(c.cardID);
         }
         cardGrid.removeCard(c);

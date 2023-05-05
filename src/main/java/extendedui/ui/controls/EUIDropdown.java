@@ -85,11 +85,19 @@ public class EUIDropdown<T> extends EUIHoverable {
         this(hb, Object::toString, new ArrayList<>(), EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
     }
 
-    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
+    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, List<? extends T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
         this(hb, labelFunction, options, EUIFontHelper.cardTooltipFont, 1, DEFAULT_MAX_ROWS, false);
     }
 
-    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
+    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction) {
+        this(hb, labelFunction, new ArrayList<>(), EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
+    }
+
+    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, List<? extends T> options) {
+        this(hb, labelFunction, options, EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
+    }
+
+    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, List<? extends T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
         super(hb);
         this.hb
                 .setIsPopupCompatible(true)
@@ -128,7 +136,7 @@ public class EUIDropdown<T> extends EUIHoverable {
         return scaledHeight + extraSpace;
     }
 
-    public EUIDropdownRow<T> makeRow(List<T> options, int index) {
+    public EUIDropdownRow<T> makeRow(List<? extends T> options, int index) {
         return makeRow(options, index, 0);
     }
 
@@ -167,7 +175,7 @@ public class EUIDropdown<T> extends EUIHoverable {
         }
     }
 
-    public EUIDropdownRow<T> makeRow(List<T> options, int index, int offset) {
+    public EUIDropdownRow<T> makeRow(List<? extends T> options, int index, int offset) {
         EUIHitbox rh = new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0)
                 .setIsPopupCompatible(true)
                 .setParentElement(this);
@@ -284,19 +292,11 @@ public class EUIDropdown<T> extends EUIHoverable {
         return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.strings.uiItemsselected : prospective;
     }
 
-    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction) {
-        this(hb, labelFunction, new ArrayList<>(), EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
-    }
-
-    public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, ArrayList<T> options) {
-        this(hb, labelFunction, options, EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
-    }
-
     public EUIDropdown<T> addItems(T... options) {
         return addItems(Arrays.asList(options));
     }
 
-    public EUIDropdown<T> addItems(List<T> options) {
+    public EUIDropdown<T> addItems(List<? extends T> options) {
         int initialSize = rows.size();
         for (int i = 0; i < options.size(); i++) {
             rows.add(makeRow(options, i, initialSize));
@@ -310,11 +310,15 @@ public class EUIDropdown<T> extends EUIHoverable {
         if (this.hb.hovered || (this.isMultiSelect && currentIndices.size() != 0 && this.clearButton.hb.hovered)) {
             return true;
         }
-        for (int i = 0; i < this.visibleRowCount(); ++i) {
-            if (this.rows.get(i + this.topVisibleRowIndex).hb.hovered) {
-                return true;
+        if (isOpen)
+        {
+            for (int i = 0; i < this.visibleRowCount(); ++i) {
+                if (this.rows.get(i + this.topVisibleRowIndex).hb.hovered) {
+                    return true;
+                }
             }
         }
+
         return false;
     }
 
@@ -611,7 +615,7 @@ public class EUIDropdown<T> extends EUIHoverable {
         return setItems(Arrays.asList(options));
     }
 
-    public EUIDropdown<T> setItems(List<T> options) {
+    public EUIDropdown<T> setItems(List<? extends T> options) {
         this.currentIndices.clear();
         this.rows.clear();
         for (int i = 0; i < options.size(); i++) {
@@ -622,7 +626,7 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
-    public EUIDropdown<T> setItems(Collection<T> options) {
+    public EUIDropdown<T> setItems(Collection<? extends T> options) {
         return setItems(new ArrayList<>(options));
     }
 

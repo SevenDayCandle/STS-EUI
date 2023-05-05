@@ -320,12 +320,6 @@ public abstract class EUIUtils {
         return t;
     }
 
-    public static <T> void forEach(Iterable<? extends T> list, ActionT1<T> action) {
-        for (T t : list) {
-            action.invoke(t);
-        }
-    }
-
     public static <K, V> HashMap<K, List<V>> group(Iterable<V> list, FuncT1<K, V> getKey) {
         final HashMap<K, List<V>> map = new HashMap<>();
         for (V v : list) {

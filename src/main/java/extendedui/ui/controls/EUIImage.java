@@ -53,6 +53,10 @@ public class EUIImage extends EUIHoverable {
         this(texture, hb, Color.WHITE);
     }
 
+    public EUIImage(EUIImage other) {
+        this(other.texture, other.hb.makeCopy());
+    }
+
     public void render(SpriteBatch sb, Hitbox hb, Color targetColor) {
         render(sb, shaderMode, hb, targetColor);
     }

@@ -14,7 +14,6 @@ import extendedui.ui.controls.EUITextBox;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.GenericCondition;
 
 import java.util.ArrayList;
 
@@ -28,7 +27,7 @@ public class GridCardSelectScreenHelper {
             .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
             .setAlignment(0.7f, 0.15f, true, false)
             .setFont(EUIFontHelper.carddescriptionfontNormal, 1f);
-    private static GenericCondition<ArrayList<AbstractCard>> condition;
+    private static FuncT1<Boolean, ArrayList<AbstractCard>> condition;
     private static FuncT1<String, ArrayList<AbstractCard>> dynamicString;
     private static ActionT3<CardGroup, ArrayList<AbstractCard>, AbstractCard> onClickCard;
     private static boolean enabled = false;
@@ -72,7 +71,7 @@ public class GridCardSelectScreenHelper {
     }
 
     public static boolean isConditionMet() {
-        return condition == null || condition.check(AbstractDungeon.gridSelectScreen.selectedCards);
+        return condition == null || condition.invoke(AbstractDungeon.gridSelectScreen.selectedCards);
     }
 
     public static void open(GridCardSelectScreen selectScreen) {
@@ -106,7 +105,7 @@ public class GridCardSelectScreenHelper {
         }
     }
 
-    public static void setCondition(GenericCondition<ArrayList<AbstractCard>> newCondition) {
+    public static void setCondition(FuncT1<Boolean, ArrayList<AbstractCard>> newCondition) {
         condition = newCondition;
     }
 

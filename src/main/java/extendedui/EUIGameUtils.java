@@ -40,7 +40,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.player;
+import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.*;
 import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
@@ -164,24 +164,22 @@ public class EUIGameUtils {
         }
     }
 
-    public static ArrayList<AbstractCard> getEveryColorCard() {
-        return EUIUtils.filter(CardLibrary.cards.values(), EUIGameUtils::canSeeAnyColorCard);
+    public static ArrayList<AbstractCard> getEveryColorCardForPoolDisplay() {
+        return EUIUtils.filter(CardLibrary.cards.values(), EUIGameUtils::canSeeAnyColorCardFromPool);
+    }
+
+    public static boolean canSeeCard(AbstractCard c)
+    {
+        return (Settings.treatEverythingAsUnlocked() || !UnlockTracker.isCardLocked(c.cardID));
     }
 
     // Imitate getAnyColorCard logic
-    public static boolean canSeeAnyColorCard(AbstractCard c) {
-        return (Settings.treatEverythingAsUnlocked() || !UnlockTracker.isCardLocked(c.cardID))
-                && c.type != AbstractCard.CardType.CURSE && c.type != AbstractCard.CardType.STATUS;
+    public static boolean canSeeAnyColorCardFromPool(AbstractCard c) {
+        return canSeeCard(c) && (c.rarity == AbstractCard.CardRarity.COMMON || c.rarity == AbstractCard.CardRarity.UNCOMMON || c.rarity == AbstractCard.CardRarity.RARE || c.rarity == AbstractCard.CardRarity.CURSE) && c.type != AbstractCard.CardType.STATUS;
     }
 
     public static ArrayList<CardGroup> getGameCardPools() {
-        ArrayList<CardGroup> result = new ArrayList<>();
-        result.add(AbstractDungeon.colorlessCardPool);
-        result.add(AbstractDungeon.commonCardPool);
-        result.add(AbstractDungeon.uncommonCardPool);
-        result.add(AbstractDungeon.rareCardPool);
-        result.add(AbstractDungeon.curseCardPool);
-        return result;
+        return EUIUtils.arrayList(colorlessCardPool, commonCardPool, uncommonCardPool, rareCardPool, curseCardPool);
     }
 
     public static AbstractPlayer.PlayerClass getPlayerClassForCardColor(AbstractCard.CardColor pc) {
@@ -217,13 +215,7 @@ public class EUIGameUtils {
     }
 
     public static ArrayList<CardGroup> getSourceCardPools() {
-        ArrayList<CardGroup> result = new ArrayList<>();
-        result.add(AbstractDungeon.srcColorlessCardPool);
-        result.add(AbstractDungeon.srcCommonCardPool);
-        result.add(AbstractDungeon.srcUncommonCardPool);
-        result.add(AbstractDungeon.srcRareCardPool);
-        result.add(AbstractDungeon.srcCurseCardPool);
-        return result;
+        return EUIUtils.arrayList(AbstractDungeon.srcColorlessCardPool, AbstractDungeon.srcCommonCardPool, AbstractDungeon.srcUncommonCardPool, AbstractDungeon.srcRareCardPool, AbstractDungeon.srcCurseCardPool);
     }
 
     public static SpriteBatch getSpriteBatch() {
