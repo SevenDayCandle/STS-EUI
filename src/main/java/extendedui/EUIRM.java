@@ -108,6 +108,7 @@ public class EUIRM {
         public final TextureCache draggable = new TextureCache("images/extendedui/ui/Draggable.png");
         public final TextureCache fileSelectButton = new TextureCache("images/extendedui/ui/FileSelectButton.png");
         public final TextureCache fullSquare = new TextureCache("images/extendedui/ui/FullSquare.png");
+        public final TextureCache greySquare = new TextureCache("images/extendedui/ui/GreySquare.png");
         public final TextureCache hexagonalButton = new TextureCache("images/extendedui/ui/HexagonalButton.png");
         public final TextureCache hexagonalButtonBorder = new TextureCache("images/extendedui/ui/HexagonalButtonBorder.png");
         public final TextureCache hexagonalButtonHover = new TextureCache("images/extendedui/ui/HexagonalButtonHover.png");
@@ -117,9 +118,16 @@ public class EUIRM {
         public final TextureCache longInput = new TextureCache("images/extendedui/ui/LongInput.png");
         public final TextureCache minus = new TextureCache("images/extendedui/ui/Minus.png");
         public final TextureCache panel = new TextureCache("images/extendedui/ui/Panel.png");
+        public final TextureCache panelBorderB = new TextureCache("images/extendedui/ui/Panel_Border_B.png");
+        public final TextureCache panelBorderL = new TextureCache("images/extendedui/ui/Panel_Border_L.png");
+        public final TextureCache panelBorderR = new TextureCache("images/extendedui/ui/Panel_Border_R.png");
+        public final TextureCache panelBorderT = new TextureCache("images/extendedui/ui/Panel_Border_T.png");
+        public final TextureCache panelCornerBL = new TextureCache("images/extendedui/ui/Panel_Corner_BL.png");
+        public final TextureCache panelCornerBR = new TextureCache("images/extendedui/ui/Panel_Corner_BR.png");
+        public final TextureCache panelCornerTL = new TextureCache("images/extendedui/ui/Panel_Corner_TL.png");
+        public final TextureCache panelCornerTR = new TextureCache("images/extendedui/ui/Panel_Corner_TR.png");
         public final TextureCache panelElliptical = new TextureCache("images/extendedui/ui/Panel_Elliptical.png");
         public final TextureCache panelEllipticalHalfH = new TextureCache("images/extendedui/ui/Panel_Elliptical_Half_H.png");
-        public final TextureCache panelLarge = new TextureCache("images/extendedui/ui/Panel_Large.png");
         public final TextureCache panelRounded = new TextureCache("images/extendedui/ui/Panel_Rounded.png");
         public final TextureCache panelRoundedHalfH = new TextureCache("images/extendedui/ui/Panel_Rounded_Half_H.png");
         public final TextureCache plus = new TextureCache("images/extendedui/ui/Plus.png");

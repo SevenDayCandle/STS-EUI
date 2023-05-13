@@ -33,6 +33,7 @@ public class EUIButton extends EUIHoverable {
     public boolean showText = true;
     public boolean smartTextResize;
     public ActionT1<EUIButton> onLeftClick;
+    public ActionT1<EUIButton> onLeftPreClick;
     public ActionT1<EUIButton> onRightClick;
     public String text;
     public Color textColor = Color.WHITE.cpy();
@@ -121,12 +122,28 @@ public class EUIButton extends EUIHoverable {
         return this;
     }
 
+    public EUIButton setBackground(EUIImage background) {
+        this.background = background;
+
+        return this;
+    }
+
     public EUIButton setBorder(Texture borderTexture, Color color) {
         if (borderTexture == null) {
             this.border = null;
         }
         else {
             this.border = new EUIImage(borderTexture, color).setHitbox(hb);
+        }
+
+        return this;
+    }
+
+    public EUIButton setBorder(EUIImage border) {
+        this.border = border;
+        if (this.border != null)
+        {
+            this.border.setHitbox(hb);
         }
 
         return this;
@@ -191,6 +208,30 @@ public class EUIButton extends EUIHoverable {
 
     public <S> EUIButton setOnClick(S item, ActionT2<S, EUIButton> onClick) {
         this.onLeftClick = (s) -> onClick.invoke(item, s);
+
+        return this;
+    }
+
+    public EUIButton setOnPreClick(ActionT0 onClick) {
+        this.onLeftPreClick = (__) -> onClick.invoke();
+
+        return this;
+    }
+
+    public EUIButton setOnPreClick(ActionT1<EUIButton> onClick) {
+        this.onLeftPreClick = onClick;
+
+        return this;
+    }
+
+    public <S> EUIButton setOnPreClick(S item, ActionT1<S> onClick) {
+        this.onLeftPreClick = (__) -> onClick.invoke(item);
+
+        return this;
+    }
+
+    public <S> EUIButton setOnPreClick(S item, ActionT2<S, EUIButton> onClick) {
+        this.onLeftPreClick = (s) -> onClick.invoke(item, s);
 
         return this;
     }
@@ -379,7 +420,7 @@ public class EUIButton extends EUIHoverable {
     }
 
     public boolean isInteractable() {
-        return interactable && onLeftClick != null;
+        return interactable && (onLeftClick != null || onLeftPreClick != null);
     }
 
     public EUIButton setInteractable(boolean interactable) {
@@ -404,6 +445,10 @@ public class EUIButton extends EUIHoverable {
     protected void onClickStart() {
         this.hb.clickStarted = true;
         CardCrawlGame.sound.play("UI_CLICK_1");
+
+        if (onLeftPreClick != null) {
+            this.onLeftPreClick.invoke(this);
+        }
     }
 
     protected void onLeftClick() {

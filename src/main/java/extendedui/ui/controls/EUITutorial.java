@@ -32,12 +32,12 @@ public class EUITutorial extends EUIHoverable {
     }
 
     public EUITutorial(Collection<EUITutorialPage> descriptions) {
-        this(new EUIHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, EUIRM.images.panelLarge.texture().getWidth(), EUIRM.images.panelLarge.texture().getHeight()), EUIRM.images.panelLarge.texture(), descriptions);
+        this(new EUIHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350, 720), EUIRM.images.greySquare.texture(), descriptions);
     }
 
     public EUITutorial(EUIHitbox hb, Texture backgroundTexture, Collection<EUITutorialPage> tutorials) {
         super(hb);
-        this.backgroundImage = new EUIImage(backgroundTexture, hb);
+        this.backgroundImage = new EUIBorderedImage(backgroundTexture, hb);
 
         this.tutorials = (EUISearchableDropdown<EUITutorialPage>) new EUISearchableDropdown<EUITutorialPage>(new RelativeHitbox(hb, hb.width, scale(53), hb.width * 0.5f, hb.height * 0.77f), p -> p.title)
                 .setFontForButton(EUIFontHelper.cardtooltiptitlefontNormal, 1f)
