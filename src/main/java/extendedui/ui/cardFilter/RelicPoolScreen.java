@@ -109,15 +109,13 @@ public class RelicPoolScreen extends AbstractDungeonScreen {
         }
 
         relicGrid.setRelics(relics);
-        EUI.relicHeader.setGrid(relicGrid).snapToGroup(false);
-        EUI.relicFilters.initialize(__ -> {
-            EUI.relicHeader.updateForFilters();
+
+        EUI.relicFilters.initializeForCustomHeader(relicGrid.relicGroup, __ -> {
             if (customModule != null) {
                 customModule.open(EUI.relicHeader.getRelics());
             }
             relicGrid.forceUpdateRelicPositions();
-        }, EUI.relicHeader.getOriginalRelics(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
-        EUI.relicHeader.updateForFilters();
+        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true, false);
 
         if (EUIGameUtils.inGame()) {
             AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);

@@ -126,7 +126,7 @@ public class EUIDropdown<T> extends EUIHoverable {
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnClick(this::clear);
-        this.header = new EUILabel(EUIFontHelper.cardtitlefontSmall, new OriginRelativeHitbox(hb, hb.width, hb.height, 0, hb.height)).setAlignment(0.5f, 0.0f, false);
+        this.header = new EUILabel(EUIFontHelper.cardTitleFontSmall, new OriginRelativeHitbox(hb, hb.width, hb.height, 0, hb.height)).setAlignment(0.5f, 0.0f, false);
         this.header.setActive(false);
     }
 

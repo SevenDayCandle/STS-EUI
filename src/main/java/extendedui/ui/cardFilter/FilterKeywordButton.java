@@ -66,9 +66,9 @@ public class FilterKeywordButton extends EUIHoverable {
                 .setAlignment(0.5f, 0.49f) // 0.1f
                 .setLabel(this.tooltip.title);
 
-        countText = new EUILabel(EUIFontHelper.carddescriptionfontNormal,
+        countText = new EUILabel(EUIFontHelper.cardDescriptionFontNormal,
                 RelativeHitbox.fromPercentages(hb, 0.28f, 1, baseCountOffset, 0f))
-                .setFont(EUIFontHelper.carddescriptionfontNormal, 0.8f)
+                .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.8f)
                 .setAlignment(0.5f, 0.51f) // 0.1f
                 .setColor(Settings.GOLD_COLOR)
                 .setLabel(this.filters.currentNegateFilters.contains(this.tooltip) ? "X" : cardCount);

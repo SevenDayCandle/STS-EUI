@@ -653,11 +653,11 @@ public class EUIRenderHelpers {
     public static BitmapFont getDescriptionFont(AbstractCard card, float scaleModifier) {
         BitmapFont result;
         if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup()) {
-            result = EUIFontHelper.carddescriptionfontLarge;
+            result = EUIFontHelper.cardDescriptionFontLarge;
             result.getData().setScale(card.drawScale * scaleModifier * 0.5f);
         }
         else {
-            result = EUIFontHelper.carddescriptionfontNormal;
+            result = EUIFontHelper.cardDescriptionFontNormal;
             result.getData().setScale(card.drawScale * scaleModifier);
         }
 
@@ -681,11 +681,11 @@ public class EUIRenderHelpers {
         BitmapFont result;
         final float scale = 1 / (Math.max(14f, card.name.length()) / 14f);
         if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup()) {
-            result = EUIFontHelper.cardtitlefontLarge;
+            result = EUIFontHelper.cardTitleFontLarge;
             result.getData().setScale(card.drawScale * 0.5f * scale);
         }
         else {
-            result = EUIFontHelper.cardtitlefontNormal;
+            result = EUIFontHelper.cardTitleFontNormal;
             result.getData().setScale(card.drawScale * scale);
         }
 

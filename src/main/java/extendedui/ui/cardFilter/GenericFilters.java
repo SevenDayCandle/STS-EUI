@@ -88,7 +88,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
                 .setItems(TooltipOption.values())
                 .setCanAutosizeButton(true);
 
-        keywordsSectionLabel = new EUILabel(EUIFontHelper.cardtitlefontSmall,
+        keywordsSectionLabel = new EUILabel(EUIFontHelper.cardTitleFontSmall,
                 new EUIHitbox(0, 0, scale(48), scale(48)), 0.8f)
                 .setLabel(EUIRM.strings.uiKeywords)
                 .setColor(Settings.GOLD_COLOR)
@@ -97,12 +97,12 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
                 .setColors(Color.DARK_GRAY, Settings.CREAM_COLOR)
                 .setLabel(EUIRM.strings.misc_keywordInstructions)
                 .setAlignment(0.75f, 0.05f, true);
-        currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardtitlefontNormal,
+        currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardTitleFontNormal,
                 new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)), 1f)
                 .setLabel(EUIRM.strings.uiTotal)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
-        currentTotalLabel = new EUILabel(EUIFontHelper.cardtitlefontNormal,
+        currentTotalLabel = new EUILabel(EUIFontHelper.cardTitleFontNormal,
                 new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.906f, scale(48), scale(48)), 1f)
                 .setColor(Settings.BLUE_TEXT_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
@@ -110,7 +110,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
         sortTypeToggle = new EUIToggle(new EUIHitbox(0, 0, scale(170), scale(32)).setIsPopupCompatible(true))
                 .setBackground(EUIRM.images.rectangularButton.texture(), Color.DARK_GRAY)
                 .setTickImage(null, null, 10)
-                .setFont(EUIFontHelper.carddescriptionfontNormal, 0.7f)
+                .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.7f)
                 .setText(EUIRM.strings.misc_sortByCount)
                 .setOnToggle(val -> {
                     shouldSortByCount = val;

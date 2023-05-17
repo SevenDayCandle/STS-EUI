@@ -6,8 +6,10 @@ import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.core.OverlayMenu;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
 import extendedui.EUI;
+import extendedui.EUIGameUtils;
 import extendedui.STSEffekseerManager;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
@@ -24,9 +26,17 @@ public class AbstractDungeonPatches {
             if (AbstractDungeon.screen != EUI_SCREEN) {
                 EUI.postDispose();
                 // Dungeon map needs to be manually closed after returning to the main screen
-                if (fromEUI) {
+                // Also, boss chests might sometimes goof up
+                if (fromEUI && EUIGameUtils.inGame()) {
                     if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP) {
                         AbstractDungeon.dungeonMapScreen.map.hideInstantly();
+                        if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.NONE)
+                        {
+                            AbstractRoom currentRoom = AbstractDungeon.getCurrRoom();
+                            if (currentRoom != null && currentRoom.rewardTime) {
+                                AbstractDungeon.previousScreen = AbstractDungeon.CurrentScreen.COMBAT_REWARD;
+                            }
+                        }
                     }
                     Settings.hideTopBar = false;
                     Settings.hideRelics = false;

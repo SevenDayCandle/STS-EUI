@@ -40,7 +40,7 @@ public class EUITutorial extends EUIHoverable {
         this.backgroundImage = new EUIBorderedImage(backgroundTexture, hb);
 
         this.tutorials = (EUISearchableDropdown<EUITutorialPage>) new EUISearchableDropdown<EUITutorialPage>(new RelativeHitbox(hb, hb.width, scale(53), hb.width * 0.5f, hb.height * 0.77f), p -> p.title)
-                .setFontForButton(EUIFontHelper.cardtooltiptitlefontNormal, 1f)
+                .setFontForButton(EUIFontHelper.cardTooltipTitleFontNormal, 1f)
                 .setOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
                 })

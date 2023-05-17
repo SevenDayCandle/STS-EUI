@@ -73,6 +73,12 @@ public class EUIRelicGrid extends EUICanvasGrid {
         return this;
     }
 
+    public EUIRelicGrid canDragScreen(boolean canDrag) {
+        this.canDragScreen = canDrag;
+
+        return this;
+    }
+
     public void clear() {
         this.sizeCache = 0;
         this.hoveredRelic = null;
@@ -328,12 +334,12 @@ public class EUIRelicGrid extends EUICanvasGrid {
         return this;
     }
 
-    public EUIRelicGrid setRelics(Iterable<AbstractRelic> relics) {
+    public EUIRelicGrid setRelics(Iterable<? extends AbstractRelic> relics) {
         relicGroup.clear();
         return addRelics(relics);
     }
 
-    public EUIRelicGrid addRelics(Iterable<AbstractRelic> relics) {
+    public EUIRelicGrid addRelics(Iterable<? extends AbstractRelic> relics) {
         for (AbstractRelic relic : relics) {
             addRelic(relic);
         }

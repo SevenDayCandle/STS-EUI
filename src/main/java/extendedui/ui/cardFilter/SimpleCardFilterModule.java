@@ -40,7 +40,7 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
                     currentSeries.addAll(selectedSeries);
                     EUI.cardFilters.invoke(null);
                 })
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, title)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, title)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
     }

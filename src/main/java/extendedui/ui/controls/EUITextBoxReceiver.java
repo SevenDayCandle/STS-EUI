@@ -29,7 +29,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
 
     public EUITextBoxReceiver(Texture backgroundTexture, EUIHitbox hb) {
         super(backgroundTexture, hb);
-        this.header = new EUILabel(EUIFontHelper.cardtitlefontSmall,
+        this.header = new EUILabel(EUIFontHelper.cardTitleFontSmall,
                 new EUIHitbox(hb.x, hb.y + hb.height * headerSpacing, hb.width, hb.height)).setAlignment(0.5f, 0.0f, false);
         this.header.setActive(false);
         editTextColor = EUIColors.green(1).cpy();

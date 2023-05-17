@@ -287,7 +287,7 @@ public class EUIConfiguration {
     }
 
     protected static int addToggle(int page, ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos, String tip) {
-        settingsBlock.addUIElement(page, new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.carddescriptionfontNormal, option.get(), panel, (__) -> {
+        settingsBlock.addUIElement(page, new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.cardDescriptionFontNormal, option.get(), panel, (__) -> {
         }, (c) -> option.set(c.enabled, true)));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }

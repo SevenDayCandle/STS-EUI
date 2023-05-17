@@ -54,7 +54,7 @@ public class ModSettingsScreen extends AbstractScreen {
         ArrayList<IUIElement> list = configCategories.get(cat);
         float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
         if (list != null) {
-            float baseWidth = EUISmartText.getSmartWidth(EUIFontHelper.carddescriptionfontNormal, label);
+            float baseWidth = EUISmartText.getSmartWidth(EUIFontHelper.cardDescriptionFontNormal, label);
             ModSettingsToggle toggle = new ModSettingsToggle(new RelativeHitbox(hb, OPTION_SIZE * 2 + baseWidth, OPTION_SIZE, OPTION_SIZE * 3.3f + baseWidth / 2f, offY), option, label);
             list.add(toggle);
             offsets.put(cat, offY -= toggle.hb.height * 1.1f);

@@ -32,6 +32,12 @@ public abstract class EUICanvas extends EUIBase {
         }
     }
 
+    public EUICanvas canDragScreen(boolean canDrag) {
+        this.canDragScreen = canDrag;
+
+        return this;
+    }
+
     public float getScrollDelta() {
         return scrollDelta;
     }

@@ -69,7 +69,7 @@ public class EUICardGrid extends EUICanvasGrid {
         this(horizontalAlignment, true);
     }
 
-    public EUICardGrid addCards(Iterable<AbstractCard> cards) {
+    public EUICardGrid addCards(Iterable<? extends AbstractCard> cards) {
         for (AbstractCard card : cards) {
             addCard(card);
         }

@@ -14,12 +14,13 @@ import extendedui.ui.controls.EUIRelicGrid;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener {
     public static final float START_X = screenW(0.5f) - CardLibSortHeader.SPACE_X * 1.45f;
     public static RelicSortHeader instance;
     public SortHeaderButton[] buttons;
-    public EUIRelicGrid grid;
+    public List<EUIRelicGrid.RelicInfo> relicGroup;
     public ArrayList<EUIRelicGrid.RelicInfo> originalGroup;
     protected boolean isAscending;
     protected boolean snapToGroup;
@@ -30,8 +31,8 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
     protected SortHeaderButton seenButton;
     private SortHeaderButton lastUsedButton;
 
-    public RelicSortHeader(EUIRelicGrid grid) {
-        this.grid = grid;
+    public RelicSortHeader(List<EUIRelicGrid.RelicInfo> relicGroup) {
+        this.relicGroup = relicGroup;
         instance = this;
         float xPosition = START_X;
         this.rarityButton = new SortHeaderButton(CardLibSortHeader.TEXT[0], xPosition, 0.0F, this);
@@ -49,7 +50,7 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
     }
 
     public ArrayList<AbstractRelic> getRelics() {
-        return EUIUtils.map(grid.relicGroup, r -> r.relic);
+        return EUIUtils.map(relicGroup, r -> r.relic);
     }
 
     public RelicSortHeader setBaseY(float value) {
@@ -57,13 +58,13 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         return this;
     }
 
-    public RelicSortHeader setGrid(EUIRelicGrid grid) {
+    public RelicSortHeader setGroup(List<EUIRelicGrid.RelicInfo> relicGroup) {
         EUI.relicFilters.clear(false, true);
-        this.grid = grid;
-        this.originalGroup = new ArrayList<>(grid.relicGroup);
+        this.relicGroup = relicGroup;
+        this.originalGroup = new ArrayList<>(relicGroup);
 
         if (RelicKeywordFilters.customModule != null) {
-            RelicKeywordFilters.customModule.processGroup(EUIUtils.map(grid.relicGroup, r -> r.relic));
+            RelicKeywordFilters.customModule.processGroup(EUIUtils.map(relicGroup, r -> r.relic));
         }
         for (SortHeaderButton button : buttons) {
             button.reset();
@@ -78,37 +79,37 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
     }
 
     public void updateForFilters() {
-        if (this.grid != null) {
+        if (this.relicGroup != null) {
             if (EUI.relicFilters.areFiltersEmpty()) {
-                this.grid.relicGroup = originalGroup;
+                this.relicGroup = originalGroup;
             }
             else {
-                this.grid.relicGroup = EUI.relicFilters.applyInfoFilters(originalGroup);
+                this.relicGroup = EUI.relicFilters.applyInfoFilters(originalGroup);
             }
             didChangeOrder(lastUsedButton, isAscending);
-            EUI.relicFilters.refresh(EUIUtils.map(grid.relicGroup, group -> group.relic));
+            EUI.relicFilters.refresh(EUIUtils.map(relicGroup, group -> group.relic));
         }
     }
 
     @Override
     public void didChangeOrder(SortHeaderButton button, boolean isAscending) {
-        if (grid != null) {
+        if (relicGroup != null) {
             if (button == this.rarityButton) {
-                this.grid.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relic.tier.ordinal() - b.relic.tier.ordinal()) * (isAscending ? 1 : -1));
+                this.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relic.tier.ordinal() - b.relic.tier.ordinal()) * (isAscending ? 1 : -1));
             }
             else if (button == this.nameButton) {
-                this.grid.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.relic.name, b.relic.name)) * (isAscending ? 1 : -1));
+                this.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.relic.name, b.relic.name)) * (isAscending ? 1 : -1));
             }
             else if (button == this.colorButton) {
-                this.grid.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relicColor.ordinal() - b.relicColor.ordinal()) * (isAscending ? 1 : -1));
+                this.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relicColor.ordinal() - b.relicColor.ordinal()) * (isAscending ? 1 : -1));
             }
             else if (button == this.seenButton) {
-                this.grid.relicGroup.sort((a, b) -> sortBySeen(a, b) * (isAscending ? 1 : -1));
+                this.relicGroup.sort((a, b) -> sortBySeen(a, b) * (isAscending ? 1 : -1));
             }
             else {
-                this.grid.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relicColor.ordinal() - b.relicColor.ordinal()) * (isAscending ? 1 : -1));
-                this.grid.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relic.tier.ordinal() - b.relic.tier.ordinal()) * (isAscending ? 1 : -1));
-                this.grid.relicGroup.sort((a, b) -> sortBySeen(a, b) * (isAscending ? 1 : -1));
+                this.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relicColor.ordinal() - b.relicColor.ordinal()) * (isAscending ? 1 : -1));
+                this.relicGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relic.tier.ordinal() - b.relic.tier.ordinal()) * (isAscending ? 1 : -1));
+                this.relicGroup.sort((a, b) -> sortBySeen(a, b) * (isAscending ? 1 : -1));
             }
         }
         for (SortHeaderButton eB : buttons) {
@@ -124,7 +125,7 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
 
     @Override
     public void updateImpl() {
-        float scrolledY = snapToGroup && this.grid != null && this.grid.relicGroup.size() > 0 ? this.grid.relicGroup.get(0).relic.currentY + 230.0F * Settings.yScale : baseY;
+        float scrolledY = snapToGroup && this.relicGroup != null && this.relicGroup.size() > 0 ? this.relicGroup.get(0).relic.hb.y + 230.0F * Settings.yScale : baseY;
         for (SortHeaderButton button : buttons) {
             button.update();
             button.updateScrollPosition(scrolledY);

@@ -51,7 +51,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         resetGrid();
         upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setPosition(1450.0F * Settings.xScale, Settings.HEIGHT * 0.8f)
-                .setFont(EUIFontHelper.cardtooltiptitlefontLarge, 1f)
+                .setFont(EUIFontHelper.cardTooltipTitleFontLarge, 1f)
                 .setText(CardLibraryScreen.TEXT[7])
                 .setOnToggle(this::toggleUpgrades);
         cancelButton = new MenuCancelButton();
@@ -59,10 +59,10 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
                 new EUIHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, scale(280), scale(48)))
                 .setOnComplete((v) -> EUI.cardFilters.nameInput.setTextAndCommit(v))
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.7f, Settings.GOLD_COLOR, EUIRM.strings.uiNamesearch)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.7f, Settings.GOLD_COLOR, EUIRM.strings.uiNamesearch)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
-                .setFont(EUIFontHelper.cardtitlefontSmall, 0.7f)
+                .setFont(EUIFontHelper.cardTitleFontSmall, 0.7f)
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture())
                 .setLabel("");
         quickSearch.header.setAlignment(0f, -0.51f);

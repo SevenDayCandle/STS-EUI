@@ -46,7 +46,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion> {
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiOrigins)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiOrigins)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
@@ -56,7 +56,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion> {
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentRarities, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(AbstractPotion.PotionRarity.values());
@@ -66,7 +66,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion> {
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiColors)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiColors)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
         nameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
@@ -77,11 +77,11 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion> {
                         onClick.invoke(null);
                     }
                 })
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
                 .setHeaderSpacing(1f)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
-                .setFont(EUIFontHelper.cardtitlefontSmall, 0.8f)
+                .setFont(EUIFontHelper.cardTitleFontSmall, 0.8f)
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
     }
 

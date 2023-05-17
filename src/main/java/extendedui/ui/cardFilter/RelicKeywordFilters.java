@@ -19,6 +19,7 @@ import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomRelicFilterModule;
+import extendedui.interfaces.markers.CustomRelicPoolModule;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUIRelicGrid;
@@ -30,6 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 
 public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
     public static CustomRelicFilterModule customModule;
@@ -50,7 +52,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiOrigins)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiOrigins)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
@@ -60,7 +62,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentRarities, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(AbstractRelic.RelicTier.values());
@@ -70,7 +72,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiColors)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiColors)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
         seenDropdown = new EUIDropdown<SeenValue>(new EUIHitbox(0, 0, scale(240), scale(48))
@@ -78,7 +80,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentSeen, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiSeen)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiSeen)
                 .setItems(SeenValue.values())
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
@@ -90,11 +92,11 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                         onClick.invoke(null);
                     }
                 })
-                .setHeader(EUIFontHelper.cardtitlefontSmall, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
                 .setHeaderSpacing(1f)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
-                .setFont(EUIFontHelper.cardtitlefontSmall, 0.8f)
+                .setFont(EUIFontHelper.cardTitleFontSmall, 0.8f)
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
     }
 
@@ -236,6 +238,38 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         if (customModule != null) {
             customModule.render(sb);
         }
+    }
+
+    public RelicKeywordFilters initializeForCustomHeader(List<EUIRelicGrid.RelicInfo> group, CustomRelicPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
+        EUI.relicFilters.initialize(__ -> {
+            EUI.relicHeader.updateForFilters();
+            if (customModule != null) {
+                customModule.processGroup(EUI.relicHeader.getRelics());
+            }
+        }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
+        EUI.relicHeader.updateForFilters();
+        return this;
+    }
+
+    public RelicKeywordFilters initializeForCustomHeader(List<EUIRelicGrid.RelicInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
+        EUI.relicFilters.initialize(button -> {
+            EUI.relicHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
+        EUI.relicHeader.updateForFilters();
+        return this;
+    }
+
+    public RelicKeywordFilters initializeForCustomHeader(List<EUIRelicGrid.RelicInfo> group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
+        EUI.relicFilters.initialize(button -> {
+            EUI.relicHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
+        EUI.relicHeader.updateForFilters();
+        return this;
     }
 
     protected boolean evaluateRelic(AbstractRelic c) {

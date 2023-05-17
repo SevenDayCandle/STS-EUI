@@ -72,7 +72,7 @@ public class EUITooltip {
     private static AbstractCreature creature;
     private static AbstractCreature lastHoveredCreature;
     public ArrayList<String> descriptions = new ArrayList<>();
-    public BitmapFont headerFont = EUIFontHelper.cardtooltiptitlefontNormal;
+    public BitmapFont headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
     public BitmapFont descriptionFont = EUIFontHelper.cardTooltipFont;
     public Boolean hideDescription = null;
     public Color backgroundColor;
@@ -216,6 +216,10 @@ public class EUITooltip {
 
     public static Set<Map.Entry<String, EUITooltip>> getEntries() {
         return REGISTERED_IDS.entrySet();
+    }
+
+    public static EUITooltip headerless(String text) {
+        return new EUITooltip("", text);
     }
 
     public static void invalidateHideDescription(String id) {
@@ -675,7 +679,7 @@ public class EUITooltip {
     }
 
     protected BitmapFont getHeaderFont() {
-        return headerFont != null ? headerFont : EUIFontHelper.cardtooltiptitlefontNormal;
+        return headerFont != null ? headerFont : EUIFontHelper.cardTooltipTitleFontNormal;
     }
 
     public EUITooltip setHeaderFont(BitmapFont headerFont) {
@@ -775,12 +779,16 @@ public class EUITooltip {
             sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, width, BOX_EDGE_H);
         }
 
+        boolean isTitleEmpty = StringUtils.isEmpty(title);
+
         if (icon != null) {
             // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
             renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, 28 * iconmultiW, 28 * iconmultiH);
-            FontHelper.renderFontLeftTopAligned(sb, hFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+            if (!isTitleEmpty) {
+                FontHelper.renderFontLeftTopAligned(sb, hFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+            }
         }
-        else {
+        else if (!isTitleEmpty){
             FontHelper.renderFontLeftTopAligned(sb, hFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
 
@@ -789,7 +797,7 @@ public class EUITooltip {
                 FontHelper.renderFontRightTopAligned(sb, descFont, subText.text, x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, subText.color);
             }
 
-            float yOff = y + BODY_OFFSET_Y;
+            float yOff = isTitleEmpty ? y : y + BODY_OFFSET_Y;
             if (modName != null) {
                 FontHelper.renderFontLeftTopAligned(sb, descFont, modName.text, x + TEXT_OFFSET_X, yOff, modName.color);
                 yOff += lastModNameHeight;

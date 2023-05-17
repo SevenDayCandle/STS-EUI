@@ -40,7 +40,7 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase {
                 .setAlignment(0.5f, 0.5f) // 0.1f
                 .setLabel(panel.getAmount(type));
 
-        counterpercentageText = new EUILabel(EUIFontHelper.carddescriptionfontNormal,
+        counterpercentageText = new EUILabel(EUIFontHelper.cardDescriptionFontNormal,
                 RelativeHitbox.fromPercentages(hb, 0.38f, 1, 0.8f, 0f))
                 .setAlignment(0.5f, 0.5f) // 0.1f
                 .setLabel(panel.getPercentageString(type));
