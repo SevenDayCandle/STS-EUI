@@ -32,6 +32,7 @@ import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.TextureCache;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 
 import java.net.URL;
@@ -302,7 +303,7 @@ public class EUIGameUtils {
         return Settings.scale * value;
     }
 
-    public static void scanForTips(String rawDesc, ArrayList<EUITooltip> tips) {
+    public static void scanForTips(String rawDesc, ArrayList<EUIKeywordTooltip> tips) {
         final Scanner desc = new Scanner(rawDesc);
         String s;
         boolean alreadyExists;
@@ -328,7 +329,7 @@ public class EUIGameUtils {
             s = s.trim();
             s = s.toLowerCase();
 
-            EUITooltip tip = EUITooltip.findByName(s);
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(s);
             if (tip != null && !tips.contains(tip)) {
                 tips.add(tip);
             }

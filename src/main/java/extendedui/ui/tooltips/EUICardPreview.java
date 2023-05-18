@@ -11,7 +11,7 @@ import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.CardObject;
-import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.interfaces.markers.KeywordProvider;
 
 public class EUICardPreview implements CardObject {
     public AbstractCard defaultPreview;
@@ -20,16 +20,16 @@ public class EUICardPreview implements CardObject {
 
     public EUICardPreview(AbstractCard card, boolean upgrade) {
         this.defaultPreview = card;
-        if (defaultPreview instanceof TooltipProvider) {
-            ((TooltipProvider) this.defaultPreview).setIsPreview(true);
+        if (defaultPreview instanceof KeywordProvider) {
+            ((KeywordProvider) this.defaultPreview).setIsPreview(true);
         }
 
         if (upgrade) {
             this.upgradedPreview = defaultPreview.makeStatEquivalentCopy();
             this.upgradedPreview.upgrade();
             this.upgradedPreview.displayUpgrades();
-            if (upgradedPreview instanceof TooltipProvider) {
-                ((TooltipProvider) this.upgradedPreview).setIsPreview(true);
+            if (upgradedPreview instanceof KeywordProvider) {
+                ((KeywordProvider) this.upgradedPreview).setIsPreview(true);
             }
         }
     }

@@ -1,20 +1,14 @@
 package extendedui.ui.tooltips;
 
 import basemod.ReflectionHacks;
-import basemod.patches.whatmod.WhatMod;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.AbstractCreature;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
@@ -32,11 +26,9 @@ import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
-import extendedui.interfaces.delegates.FuncT0;
+import extendedui.interfaces.markers.IntentProvider;
 import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.patches.EUIKeyword;
 import extendedui.text.EUISmartText;
-import extendedui.ui.TextureCache;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
@@ -61,9 +53,6 @@ public class EUITooltip {
     public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
     public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
     public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
-    protected static final HashMap<String, EUITooltip> REGISTERED_IDS = new HashMap<>();
-    protected static final HashMap<String, EUITooltip> REGISTERED_NAMES = new HashMap<>();
-    protected static final HashSet<EUITooltip> ICON_UPDATING_LIST = new HashSet<>();
     private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
     private static final Vector2 genericTipPos = new Vector2(0, 0);
@@ -74,33 +63,18 @@ public class EUITooltip {
     public ArrayList<String> descriptions = new ArrayList<>();
     public BitmapFont headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
     public BitmapFont descriptionFont = EUIFontHelper.cardTooltipFont;
-    public Boolean hideDescription = null;
-    public Color backgroundColor;
-    public ColoredString modName;
     public ColoredString subHeader;
     public ColoredString subText;
     public EUITooltip child;
     public String ID;
-    public String past;
-    public String plural;
-    public String present;
-    public String progressive;
     public String title;
-    public TextureRegion icon;
-    public boolean canHighlight = true;
-    public boolean canFilter = true;
-    public boolean canRender = true;
     public boolean renderBg = true;
-    public boolean useLogic = false;
     public float width = BOX_W;
-    public float iconmultiH = 1;
-    public float iconmultiW = 1;
     protected int currentDesc;
-    protected FuncT0<TextureRegion> iconFunc;
-    private Float lastModNameHeight;
-    private Float lastSubHeaderHeight;
-    private Float lastTextHeight;
-    private Float lastHeight;
+    protected Float lastSubHeaderHeight;
+    protected Float lastTextHeight;
+    protected Float lastHeight;
+    public boolean canRender = true;
 
     public EUITooltip(String title, String... descriptions) {
         this(title, Arrays.asList(descriptions));
@@ -111,49 +85,9 @@ public class EUITooltip {
         this.descriptions.addAll(descriptions);
     }
 
-    public EUITooltip(String title, AbstractPlayer.PlayerClass playerClass, String... descriptions) {
-        this(title, playerClass, Arrays.asList(descriptions));
-    }
-
-    public EUITooltip(String title, AbstractPlayer.PlayerClass playerClass, Collection<String> descriptions) {
-        this.title = title;
-        this.descriptions.addAll(descriptions);
-
-        if (WhatMod.enabled && playerClass != null) {
-            String foundName = WhatMod.findModName(playerClass.getClass());
-            if (foundName != null) {
-                modName = new ColoredString(foundName, Settings.PURPLE_COLOR);
-            }
-        }
-    }
-
-    public EUITooltip(Keyword keyword) {
-        this.title = keyword.PROPER_NAME;
-        this.descriptions.add(keyword.DESCRIPTION);
-    }
-
-    public EUITooltip(EUIKeyword keyword) {
-        this.title = keyword.NAME;
-        this.descriptions.add(keyword.DESCRIPTION);
-        this.past = keyword.PAST;
-        this.present = keyword.PRESENT;
-        this.progressive = keyword.PROGRESSIVE;
-        this.plural = keyword.PLURAL;
-        // If the plural starts with $, use logic mode
-        if (keyword.PLURAL != null && !keyword.PLURAL.isEmpty() && keyword.PLURAL.charAt(0) == '$') {
-            this.useLogic = true;
-        }
-    }
-
     public EUITooltip(EUITooltip other) {
         this.title = other.title;
         this.descriptions.addAll(other.descriptions);
-        this.past = other.past;
-        this.present = other.present;
-        this.progressive = other.progressive;
-        this.plural = other.plural;
-        this.useLogic = other.useLogic;
-        this.modName = other.modName;
         this.subHeader = other.subHeader;
     }
 
@@ -181,27 +115,13 @@ public class EUITooltip {
         }
     }
 
-    public static EUITooltip findByName(String name) {
-        return REGISTERED_NAMES.get(name);
-    }
-
-    public static String findName(EUITooltip tooltip) {
-        for (String key : REGISTERED_NAMES.keySet()) {
-            if (REGISTERED_NAMES.get(key) == tooltip) {
-                return key;
-            }
-        }
-
-        return null;
-    }
-
-    public static EUITooltip fromMonsterIntent(AbstractMonster monster) {
+    public static EUIKeywordTooltip fromMonsterIntent(AbstractMonster monster) {
         PowerTip tip = ReflectionHacks.getPrivate(monster, AbstractMonster.class, "intentTip");
         return tip != null ? fromPowerTip(tip) : null;
     }
 
-    public static EUITooltip fromPowerTip(PowerTip tip) {
-        EUITooltip newTip = new EUITooltip(tip.header, tip.body);
+    public static EUIKeywordTooltip fromPowerTip(PowerTip tip) {
+        EUIKeywordTooltip newTip = new EUIKeywordTooltip(tip.header, tip.body);
         if (newTip.title == null) {
             newTip.title = "";
         }
@@ -212,25 +132,6 @@ public class EUITooltip {
             newTip.icon = new TextureRegion(tip.img);
         }
         return newTip;
-    }
-
-    public static Set<Map.Entry<String, EUITooltip>> getEntries() {
-        return REGISTERED_IDS.entrySet();
-    }
-
-    public static EUITooltip headerless(String text) {
-        return new EUITooltip("", text);
-    }
-
-    public static void invalidateHideDescription(String id) {
-        EUITooltip tooltip = findByID(id);
-        if (tooltip != null) {
-            tooltip.hideDescription = null;
-        }
-    }
-
-    public static EUITooltip findByID(String id) {
-        return REGISTERED_IDS.get(id);
     }
 
     public static void queueTooltip(EUITooltip tooltip) {
@@ -254,7 +155,7 @@ public class EUITooltip {
         }
     }
 
-    public static void queueTooltips(Collection<EUITooltip> tips) {
+    public static void queueTooltips(Collection<? extends EUITooltip> tips) {
         float maxWidth = tips.size() > 0 ? EUIUtils.max(tips, tip -> tip.width) : BOX_W;
         float estHeight = EUIUtils.sum(tips, EUITooltip::height);
         float x = InputHelper.mX;
@@ -268,7 +169,7 @@ public class EUITooltip {
         queueTooltips(tips, x, y);
     }
 
-    public static void queueTooltips(Collection<EUITooltip> tips, float x, float y) {
+    public static void queueTooltips(Collection<? extends EUITooltip> tips, float x, float y) {
         if (tryRender()) {
             tooltips.addAll(tips);
             genericTipPos.x = x;
@@ -312,15 +213,6 @@ public class EUITooltip {
         }
     }
 
-    public static void registerID(String id, EUITooltip tooltip) {
-        REGISTERED_IDS.put(id, tooltip);
-        tooltip.ID = id;
-    }
-
-    public static void registerName(String name, EUITooltip tooltip) {
-        REGISTERED_NAMES.put(name, tooltip);
-    }
-
     public static void renderFromBlight(SpriteBatch sb) {
         AbstractBlight blight = EUIUtils.safeCast(provider, AbstractBlight.class);
         if (blight == null) {
@@ -328,7 +220,7 @@ public class EUITooltip {
         }
 
         lastProvider = provider;
-        List<EUITooltip> pTips = provider.getTips();
+        List<? extends EUITooltip> pTips = provider.getTips();
 
         float x;
         float y;
@@ -368,26 +260,12 @@ public class EUITooltip {
 
         if (lastProvider != provider) {
             lastProvider = provider;
-            List<EUITooltip> pTips = provider.getTips();
             lastHoveredCreature = null;
             tooltips.clear();
-            provider.generateDynamicTooltips(tooltips);
-            for (EUITooltip tip : pTips) {
-                if (tip.canRender && !tooltips.contains(tip)) {
+            for (EUITooltip tip : provider.getTipsForRender()) {
+                if (tip.canRender) {
                     tooltips.add(tip);
                 }
-            }
-        }
-
-        for (EUITooltip tip : tooltips) {
-            if (StringUtils.isNotEmpty(tip.ID)) {
-                if (tip.hideDescription == null) {
-                    tip.hideDescription = EUIConfiguration.getIsTipDescriptionHidden(tip.ID);
-                }
-            }
-
-            if (tip.hideDescription == null) {
-                tip.hideDescription = false;
             }
         }
 
@@ -409,7 +287,7 @@ public class EUITooltip {
             y = card.current_y - BOX_EDGE_H;
             float size = 0;
             for (EUITooltip tip : tooltips) {
-                if (!tip.hideDescription && !StringUtils.isEmpty(tip.description())) {
+                if (!tip.canRender && !StringUtils.isEmpty(tip.description())) {
                     size += 1f;
                 }
             }
@@ -427,7 +305,7 @@ public class EUITooltip {
 
         for (int i = 0; i < tooltips.size(); i++) {
             EUITooltip tip = tooltips.get(i);
-            if ((tip.hideDescription || StringUtils.isEmpty(tip.description()))) {
+            if ((!tip.canRender || StringUtils.isEmpty(tip.description()))) {
                 continue;
             }
 
@@ -459,9 +337,9 @@ public class EUITooltip {
 
             tooltips.clear();
 
-            if (creature instanceof TooltipProvider) {
+            if (creature instanceof IntentProvider) {
                 lastProvider = provider = (TooltipProvider) creature;
-                EUITooltip intentTip = provider.getIntentTip();
+                EUITooltip intentTip = ((IntentProvider) creature).getIntentTip();
                 if (intentTip != null) {
                     tooltips.add(intentTip);
                 }
@@ -490,7 +368,7 @@ public class EUITooltip {
                         continue;
                     }
 
-                    final EUITooltip tip = new EUITooltip(p.name, p.description);
+                    final EUIKeywordTooltip tip = new EUIKeywordTooltip(p.name, p.description);
                     if (p.region48 != null) {
                         tip.icon = p.region48;
                     }
@@ -518,10 +396,6 @@ public class EUITooltip {
                 x += offset_x;
             }
 
-            if (tip.hideDescription == null) {
-                tip.hideDescription = !StringUtils.isEmpty(tip.ID) && EUIConfiguration.getIsTipDescriptionHidden(tip.ID);
-            }
-
             y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
             offset += offsetChange;
         }
@@ -534,7 +408,7 @@ public class EUITooltip {
         }
 
         lastProvider = provider;
-        List<EUITooltip> pTips = provider.getTips();
+        List<? extends EUITooltip> pTips = provider.getTips();
 
         float x;
         float y;
@@ -574,7 +448,7 @@ public class EUITooltip {
         }
 
         lastProvider = provider;
-        List<EUITooltip> pTips = provider.getTips();
+        List<? extends EUITooltip> pTips = provider.getTips();
 
         float x;
         float y;
@@ -610,14 +484,11 @@ public class EUITooltip {
         renderTipsImpl(sb, tooltips, genericTipPos.x, genericTipPos.y);
     }
 
-    protected static void renderTipsImpl(SpriteBatch sb, List<EUITooltip> tips, float x, float y) {
+    protected static void renderTipsImpl(SpriteBatch sb, List<? extends EUITooltip> tips, float x, float y) {
         for (int i = 0; i < tips.size(); i++) {
             final EUITooltip tip = tips.get(i);
-            if (tip.hideDescription == null) {
-                tip.hideDescription = !StringUtils.isEmpty(tip.ID) && EUIConfiguration.getIsTipDescriptionHidden(tip.ID);
-            }
 
-            if (!tip.hideDescription && tip.canRender) {
+            if (tip.canRender) {
                 y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
             }
         }
@@ -630,24 +501,6 @@ public class EUITooltip {
         }
 
         return canRender;
-    }
-
-    public static void updateTooltipIcons() {
-        for (EUITooltip tip : ICON_UPDATING_LIST) {
-            tip.icon = tip.iconFunc.invoke();
-        }
-    }
-
-    public EUITooltip canFilter(boolean value) {
-        this.canFilter = value;
-
-        return this;
-    }
-
-    public EUITooltip canHighlight(boolean value) {
-        this.canHighlight = value;
-
-        return this;
     }
 
     public void cycleDescription() {
@@ -669,17 +522,9 @@ public class EUITooltip {
         return "";
     }
 
-    protected BitmapFont getDescriptionFont() {
-        return descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
-    }
-
     public EUITooltip setDescriptionFont(BitmapFont descriptionFont) {
         this.descriptionFont = descriptionFont;
         return this;
-    }
-
-    protected BitmapFont getHeaderFont() {
-        return headerFont != null ? headerFont : EUIFontHelper.cardTooltipTitleFontNormal;
     }
 
     public EUITooltip setHeaderFont(BitmapFont headerFont) {
@@ -693,21 +538,13 @@ public class EUITooltip {
 
     public float height() {
         if (lastHeight == null) {
-            BitmapFont descFont = getDescriptionFont();
+            BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
             String desc = description();
             lastTextHeight = EUISmartText.getSmartHeight(descFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-            lastModNameHeight = (modName != null) ? EUISmartText.getSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
             lastSubHeaderHeight = (subHeader != null) ? EUISmartText.getSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-            lastHeight = (hideDescription() || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastModNameHeight + lastSubHeaderHeight) - 7f * Settings.scale);
+            lastHeight = (!canRender || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastSubHeaderHeight) - 7f * Settings.scale);
         }
         return lastHeight;
-    }
-
-    public boolean hideDescription() {
-        if (hideDescription == null) {
-            hideDescription = !StringUtils.isEmpty(ID) && EUIConfiguration.getIsTipDescriptionHidden(ID);
-        }
-        return hideDescription;
     }
 
     public boolean is(EUITooltip tooltip) {
@@ -718,42 +555,6 @@ public class EUITooltip {
         return new EUITooltip(this);
     }
 
-    public String parsePlural(int amount) {
-        if (plural == null) {
-            plural = EUIRM.strings.plural(title);
-        }
-        return useLogic ? EUISmartText.parseKeywordLogicWithAmount(plural, amount) : plural;
-    }
-
-    public String past() {
-        if (past == null) {
-            past = EUIRM.strings.past(title);
-        }
-        return past;
-    }
-
-    public String plural() {
-        if (plural == null) {
-            plural = EUIRM.strings.plural(title);
-        }
-        return plural;
-    }
-
-    // If progressive is not present, assume present tense works for it as well
-    public String progressive() {
-        if (progressive == null) {
-            return present();
-        }
-        return progressive;
-    }
-
-    public String present() {
-        if (present == null) {
-            present = EUIRM.strings.present(title);
-        }
-        return present;
-    }
-
     public float render(SpriteBatch sb, float x, float y, int index) {
         if (EUIHotkeys.cycle.isJustPressed()) {
             cycleDescription();
@@ -762,82 +563,51 @@ public class EUITooltip {
             updateCycleText();
         }
 
-        BitmapFont descFont = getDescriptionFont();
-        BitmapFont hFont = getHeaderFont();
-        String desc = description();
-
+        verifyFonts();
         final float h = height();
 
-        if (renderBg) {
-            sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
-            sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, width, BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BODY, x + SHADOW_DIST_X, y - h - BOX_EDGE_H - SHADOW_DIST_Y, width, h + BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BOT, x + SHADOW_DIST_X, y - h - BOX_BODY_H - SHADOW_DIST_Y, width, BOX_EDGE_H);
-            sb.setColor(Color.WHITE);
-            sb.draw(ImageMaster.KEYWORD_TOP, x, y, width, BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BODY, x, y - h - BOX_EDGE_H, width, h + BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, width, BOX_EDGE_H);
-        }
+        renderBg(sb, x, y, h);
+        renderTitle(sb, x, y);
+        renderSubtext(sb, x, y);
 
-        boolean isTitleEmpty = StringUtils.isEmpty(title);
-
-        if (icon != null) {
-            // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
-            renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, 28 * iconmultiW, 28 * iconmultiH);
-            if (!isTitleEmpty) {
-                FontHelper.renderFontLeftTopAligned(sb, hFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
-            }
-        }
-        else if (!isTitleEmpty){
-            FontHelper.renderFontLeftTopAligned(sb, hFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
-        }
-
-        if (!StringUtils.isEmpty(desc)) {
-            if (subText != null) {
-                FontHelper.renderFontRightTopAligned(sb, descFont, subText.text, x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, subText.color);
-            }
-
-            float yOff = isTitleEmpty ? y : y + BODY_OFFSET_Y;
-            if (modName != null) {
-                FontHelper.renderFontLeftTopAligned(sb, descFont, modName.text, x + TEXT_OFFSET_X, yOff, modName.color);
-                yOff += lastModNameHeight;
-            }
-            if (subHeader != null) {
-                FontHelper.renderFontLeftTopAligned(sb, descFont, subHeader.text, x + TEXT_OFFSET_X, yOff, subHeader.color);
-                yOff += lastSubHeaderHeight;
-            }
-
-            if (!hideDescription()) {
-                EUISmartText.write(sb, descFont, desc, x + TEXT_OFFSET_X, yOff, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
-            }
-        }
+        float yOff = y + BODY_OFFSET_Y;
+        yOff += renderSubheader(sb, x, yOff);
+        renderDescription(sb, x, yOff);
 
         return h;
     }
 
-    public EUITooltip renderBackground(boolean value) {
-        this.renderBg = value;
-
-        return this;
+    public void renderBg(SpriteBatch sb, float x, float y, float h) {
+        sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
+        sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, width, BOX_EDGE_H);
+        sb.draw(ImageMaster.KEYWORD_BODY, x + SHADOW_DIST_X, y - h - BOX_EDGE_H - SHADOW_DIST_Y, width, h + BOX_EDGE_H);
+        sb.draw(ImageMaster.KEYWORD_BOT, x + SHADOW_DIST_X, y - h - BOX_BODY_H - SHADOW_DIST_Y, width, BOX_EDGE_H);
+        sb.setColor(Color.WHITE);
+        sb.draw(ImageMaster.KEYWORD_TOP, x, y, width, BOX_EDGE_H);
+        sb.draw(ImageMaster.KEYWORD_BODY, x, y - h - BOX_EDGE_H, width, h + BOX_EDGE_H);
+        sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, width, BOX_EDGE_H);
     }
 
-    public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height) {
-        renderTipEnergy(sb, region, x, y, width, height, Settings.scale, Settings.scale, Color.WHITE);
+    public void renderTitle(SpriteBatch sb, float x, float y) {
+        FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
     }
 
-    public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height, float scaleX, float scaleY, Color renderColor) {
-        if (backgroundColor != null) {
-            sb.setColor(backgroundColor);
-            sb.draw(EUIRM.images.baseBadge.texture(), x, y, 0f, 0f,
-                    width, height, Settings.scale, Settings.scale, 0f,
-                    region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
-                    region.getRegionHeight(), false, false);
+    public void renderSubtext(SpriteBatch sb, float x, float y) {
+        if (subText != null) {
+            FontHelper.renderFontRightTopAligned(sb, descriptionFont, subText.text, x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, subText.color);
         }
-        sb.setColor(renderColor);
-        sb.draw(region.getTexture(), x, y, 0f, 0f,
-                width, height, Settings.scale, Settings.scale, 0f,
-                region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
-                region.getRegionHeight(), false, false);
+    }
+
+    public float renderSubheader(SpriteBatch sb, float x, float y) {
+        if (subHeader != null) {
+            FontHelper.renderFontLeftTopAligned(sb, descriptionFont, subHeader.text, x + TEXT_OFFSET_X, y, subHeader.color);
+            return lastSubHeaderHeight;
+        }
+        return 0;
+    }
+
+    public void renderDescription(SpriteBatch sb, float x, float y) {
+        EUISmartText.write(sb, descriptionFont, description(), x + TEXT_OFFSET_X, y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
     }
 
     public EUITooltip setAutoWidth() {
@@ -850,14 +620,7 @@ public class EUITooltip {
     public void invalidateHeight() {
         lastHeight = null;
         lastTextHeight = null;
-        lastModNameHeight = null;
         lastSubHeaderHeight = null;
-    }
-
-    public EUITooltip setBadgeBackground(Color color) {
-        this.backgroundColor = color;
-
-        return this;
     }
 
     public EUITooltip setChild(EUITooltip other) {
@@ -915,78 +678,6 @@ public class EUITooltip {
         return this;
     }
 
-    public EUITooltip setIcon(AbstractRelic relic) {
-        return this.setIcon(relic.img, 4);
-    }
-
-    public EUITooltip setIcon(Texture texture, int div) {
-        this.icon = EUIRenderHelpers.getCroppedRegion(texture, div);
-
-        return this;
-    }
-
-    public EUITooltip setIcon(TextureRegion region, int div) {
-        int w = region.getRegionWidth();
-        int h = region.getRegionHeight();
-        int x = region.getRegionX();
-        int y = region.getRegionY();
-        int half_div = div / 2;
-        this.icon = new TextureRegion(region.getTexture(), x + (w / div), y + (h / div), w - (w / half_div), h - (h / half_div));
-
-        return this;
-    }
-
-    public EUITooltip setIcon(TextureCache texture) {
-        return setIcon(texture.texture());
-    }
-
-    public EUITooltip setIcon(Texture texture) {
-        this.icon = new TextureRegion(texture);
-
-        return this;
-    }
-
-    public EUITooltip setIconFromPath(String imagePath) {
-        if (Gdx.files.internal(imagePath).exists()) {
-            setIcon(EUIRM.getTexture(imagePath));
-        }
-        else {
-            EUIUtils.logWarning(this, "Could not load icon at " + imagePath);
-        }
-        return this;
-    }
-
-    public EUITooltip setIconFromPowerRegion(String imagePath) {
-        TextureAtlas.AtlasRegion region = AbstractPower.atlas.findRegion("48/" + imagePath);
-        if (region != null) {
-            setIcon(region);
-        }
-        else {
-            EUIUtils.logWarning(this, "Could not load region at " + imagePath);
-        }
-        return this;
-    }
-
-    public EUITooltip setIcon(TextureRegion region) {
-        this.icon = region;
-
-        return this;
-    }
-
-    public EUITooltip setIconFunc(FuncT0<TextureRegion> iconFunc) {
-        this.iconFunc = iconFunc;
-        ICON_UPDATING_LIST.add(this);
-
-        return this;
-    }
-
-    public EUITooltip setIconSizeMulti(float w, float h) {
-        this.iconmultiW = w;
-        this.iconmultiH = h;
-
-        return this;
-    }
-
     public String setIndex(int index) {
         if (descriptions.size() < 1) {
             return "";
@@ -1041,6 +732,16 @@ public class EUITooltip {
     @Override
     public String toString() {
         return getTitleOrIcon();
+    }
+
+    // Because keyword tooltips can be instantiated before EUIFontHelper fonts are set up, we need to verify keyword tooltips when they render
+    public void verifyFonts() {
+        if (headerFont == null) {
+            headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
+        }
+        if (descriptionFont == null) {
+            descriptionFont = EUIFontHelper.cardTooltipFont;
+        }
     }
 
     public String getTitleOrIcon() {

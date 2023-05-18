@@ -115,7 +115,7 @@ public class EUIFileSelector extends EUIHoverable {
             }
             else {
                 filePath.setLabel(currentFile.getName());
-                filePath.tooltip = new EUITooltip("", currentFile.getAbsolutePath()).renderBackground(false);
+                filePath.tooltip = new EUITooltip("", currentFile.getAbsolutePath());
             }
         }
         else {

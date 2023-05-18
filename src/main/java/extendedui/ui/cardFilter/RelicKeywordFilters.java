@@ -20,12 +20,12 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomRelicFilterModule;
 import extendedui.interfaces.markers.CustomRelicPoolModule;
-import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUIRelicGrid;
 import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.EUIHitbox;
-import extendedui.ui.tooltips.EUITooltip;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
@@ -145,7 +145,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         if (referenceItems != null) {
             currentTotal = getReferenceCount();
             for (AbstractRelic relic : referenceItems) {
-                for (EUITooltip tooltip : getAllTooltips(relic)) {
+                for (EUIKeywordTooltip tooltip : getAllTooltips(relic)) {
                     if (tooltip.canFilter) {
                         currentFilterCounts.merge(tooltip, 1, Integer::sum);
                     }
@@ -195,23 +195,17 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         }
     }
 
-    public ArrayList<EUITooltip> getAllTooltips(AbstractRelic c) {
-        ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
-        TooltipProvider eC = EUIUtils.safeCast(c, TooltipProvider.class);
+    public List<EUIKeywordTooltip> getAllTooltips(AbstractRelic c) {
+        KeywordProvider eC = EUIUtils.safeCast(c, KeywordProvider.class);
         if (eC != null) {
-            eC.generateDynamicTooltips(dynamicTooltips);
-            for (EUITooltip tip : eC.getTipsForFilters()) {
-                if (!dynamicTooltips.contains(tip)) {
-                    dynamicTooltips.add(tip);
-                }
-            }
+            return eC.getTipsForFilters();
         }
-        else {
-            for (PowerTip sk : c.tips) {
-                EUITooltip tip = EUITooltip.findByName(StringUtils.lowerCase(sk.header));
-                if (tip != null && !dynamicTooltips.contains(tip)) {
-                    dynamicTooltips.add(tip);
-                }
+
+        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
+        for (PowerTip sk : c.tips) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
+            if (tip != null && !dynamicTooltips.contains(tip)) {
+                dynamicTooltips.add(tip);
             }
         }
         return dynamicTooltips;

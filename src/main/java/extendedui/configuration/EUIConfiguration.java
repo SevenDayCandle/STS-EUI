@@ -17,6 +17,7 @@ import extendedui.ui.settings.BasemodSettingsPage;
 import extendedui.ui.settings.ModSettingsPathSelector;
 import extendedui.ui.settings.ModSettingsScreen;
 import extendedui.ui.settings.ModSettingsToggle;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
@@ -104,26 +105,17 @@ public class EUIConfiguration {
     }
 
     public static boolean getIsTipDescriptionHiddenByName(String name) {
-        EUITooltip tip = EUITooltip.findByName(name);
+        EUITooltip tip = EUIKeywordTooltip.findByName(name);
         return tip != null && getIsTipDescriptionHidden(tip.ID);
     }
 
     public static boolean getIsTipDescriptionHidden(String id) {
-        if (tips == null) {
-            tips = new HashSet<>();
-
-            if (config.has(HIDE_TIP_DESCRIPTION)) {
-                Collections.addAll(tips, config.getString(HIDE_TIP_DESCRIPTION).split("\\|"));
-            }
-        }
-
+        verifyHideTipsList();
         return tips.contains(id);
     }
 
     public static void hideTipDescription(String id, boolean value, boolean flush) {
-        if (tips == null) {
-            tips = new HashSet<>();
-        }
+        verifyHideTipsList();
 
         if (value) {
             if (id != null) {
@@ -140,7 +132,17 @@ public class EUIConfiguration {
             save();
         }
 
-        EUITooltip.invalidateHideDescription(id);
+        EUIKeywordTooltip.setCanRender(id, value);
+    }
+
+    public static void verifyHideTipsList() {
+        if (tips == null) {
+            tips = new HashSet<>();
+
+            if (config.has(HIDE_TIP_DESCRIPTION)) {
+                Collections.addAll(tips, config.getString(HIDE_TIP_DESCRIPTION).split("\\|"));
+            }
+        }
     }
 
     public static void save() {

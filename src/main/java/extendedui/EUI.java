@@ -36,6 +36,7 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.ui.panelitems.FakeFtueScreen;
 import extendedui.ui.settings.ModSettingsScreen;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import org.apache.commons.lang3.StringUtils;
 
@@ -341,8 +342,8 @@ public class EUI {
     public static void registerBasegameKeywords() {
 
         // Energy tooltips are not present in GameDictionary
-        EUITooltip energyTooltip = tryRegisterTooltip("E", TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).setIconFunc(EUI::getEnergyIcon);
-        EUITooltip.registerName(StringUtils.lowerCase(TipHelper.TEXT[0]), energyTooltip);
+        EUIKeywordTooltip energyTooltip = tryRegisterTooltip("E", TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).setIconFunc(EUI::getEnergyIcon);
+        EUIKeywordTooltip.registerName(StringUtils.lowerCase(TipHelper.TEXT[0]), energyTooltip);
 
         // Read directly from fields to obtain the actual IDs to use, which are language-invariant
         for (Field field : GameDictionary.class.getDeclaredFields()) {
@@ -361,14 +362,14 @@ public class EUI {
 
     /* Register a tooltip with the given parameters. If grammar exists, its contents will be merged with this tooltip
      * */
-    public static EUITooltip tryRegisterTooltip(String id, String title, String description, String[] names) {
-        EUITooltip tooltip = EUITooltip.findByID(id);
+    public static EUIKeywordTooltip tryRegisterTooltip(String id, String title, String description, String[] names) {
+        EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(id);
         if (tooltip == null) {
             String newTitle = EUIUtils.capitalize(title);
-            tooltip = new EUITooltip(newTitle, description);
-            EUITooltip.registerID(id, tooltip);
+            tooltip = new EUIKeywordTooltip(newTitle, description);
+            EUIKeywordTooltip.registerID(id, tooltip);
             for (String subName : names) {
-                EUITooltip.registerName(subName, tooltip);
+                EUIKeywordTooltip.registerName(subName, tooltip);
             }
         }
         return tooltip;
@@ -403,7 +404,7 @@ public class EUI {
     public static void registerGrammar(Map<String, EUIKeyword> keywords) {
         for (Map.Entry<String, EUIKeyword> entry : keywords.entrySet()) {
             EUIKeyword grammar = entry.getValue();
-            EUITooltip existing = EUITooltip.findByID(entry.getKey());
+            EUIKeywordTooltip existing = EUIKeywordTooltip.findByID(entry.getKey());
             if (existing != null) {
                 existing.past = grammar.PAST;
                 existing.plural = grammar.PLURAL;
@@ -416,7 +417,7 @@ public class EUI {
     // Add CommonKeywordIcon pictures to keywords. This REQUIRES stslib to run
     public static void registerKeywordIcons() {
         if (Loader.isModLoaded("stslib")) {
-            for (EUITooltip tooltip : EUIUtils.map(EUITooltip.getEntries(), Map.Entry::getValue)) {
+            for (EUIKeywordTooltip tooltip : EUIUtils.map(EUIKeywordTooltip.getEntries(), Map.Entry::getValue)) {
                 String title = tooltip.title;
                 // Add CommonKeywordIcon pictures to keywords
                 if (title.equals(GameDictionary.INNATE.NAMES[0])) {
@@ -442,30 +443,30 @@ public class EUI {
         }
     }
 
-    public static ArrayList<EUITooltip> registerKeywords(FileHandle handle) {
+    public static ArrayList<EUIKeywordTooltip> registerKeywords(FileHandle handle) {
         return registerKeywords(loadKeywords(handle));
     }
 
-    public static ArrayList<EUITooltip> registerKeywords(Map<String, EUIKeyword> keywords) {
-        ArrayList<EUITooltip> tooltips = new ArrayList<>();
+    public static ArrayList<EUIKeywordTooltip> registerKeywords(Map<String, EUIKeyword> keywords) {
+        ArrayList<EUIKeywordTooltip> tooltips = new ArrayList<>();
         for (Map.Entry<String, EUIKeyword> pair : keywords.entrySet()) {
             EUIKeyword keyword = pair.getValue();
-            EUITooltip tooltip = new EUITooltip(keyword);
-            EUITooltip.registerID(pair.getKey(), tooltip);
-            EUITooltip.registerName(keyword.NAME.toLowerCase(), tooltip);
+            EUIKeywordTooltip tooltip = new EUIKeywordTooltip(keyword);
+            EUIKeywordTooltip.registerID(pair.getKey(), tooltip);
+            EUIKeywordTooltip.registerName(keyword.NAME.toLowerCase(), tooltip);
             if (keyword.PLURAL != null) {
                 // Emulate a plural parsing
                 // TODO account for languages that have multiple plural forms
-                EUITooltip.registerName(EUISmartText.parseKeywordLogicWithAmount(keyword.PLURAL, 2).toLowerCase(), tooltip);
+                EUIKeywordTooltip.registerName(EUISmartText.parseKeywordLogicWithAmount(keyword.PLURAL, 2).toLowerCase(), tooltip);
             }
             if (keyword.PAST != null) {
-                EUITooltip.registerName(keyword.PAST.toLowerCase(), tooltip);
+                EUIKeywordTooltip.registerName(keyword.PAST.toLowerCase(), tooltip);
             }
             if (keyword.PRESENT != null) {
-                EUITooltip.registerName(keyword.PRESENT.toLowerCase(), tooltip);
+                EUIKeywordTooltip.registerName(keyword.PRESENT.toLowerCase(), tooltip);
             }
             if (keyword.PROGRESSIVE != null) {
-                EUITooltip.registerName(keyword.PROGRESSIVE.toLowerCase(), tooltip);
+                EUIKeywordTooltip.registerName(keyword.PROGRESSIVE.toLowerCase(), tooltip);
             }
             tooltips.add(tooltip);
         }

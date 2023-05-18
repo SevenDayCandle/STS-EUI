@@ -20,11 +20,11 @@ import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.CustomCardFilterModule;
 import extendedui.interfaces.markers.CustomCardPoolModule;
-import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.EUIHitbox;
-import extendedui.ui.tooltips.EUITooltip;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.CostFilter;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.FakeLibraryCard;
@@ -242,7 +242,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
         if (referenceItems != null) {
             currentTotal = getReferenceCount();
             for (AbstractCard card : referenceItems) {
-                for (EUITooltip tooltip : getAllTooltips(card)) {
+                for (EUIKeywordTooltip tooltip : getAllTooltips(card)) {
                     if (tooltip.canFilter) {
                         currentFilterCounts.merge(tooltip, 1, Integer::sum);
                     }
@@ -326,57 +326,51 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
         return (referenceItems.size() == 1 && referenceItems.get(0) instanceof FakeLibraryCard) ? 0 : referenceItems.size();
     }
 
-    public ArrayList<EUITooltip> getAllTooltips(AbstractCard c) {
-        ArrayList<EUITooltip> dynamicTooltips = new ArrayList<>();
-        TooltipProvider eC = EUIUtils.safeCast(c, TooltipProvider.class);
+    public List<EUIKeywordTooltip> getAllTooltips(AbstractCard c) {
+        KeywordProvider eC = EUIUtils.safeCast(c, KeywordProvider.class);
         if (eC != null) {
-            eC.generateDynamicTooltips(dynamicTooltips);
-            for (EUITooltip tip : eC.getTipsForFilters()) {
-                if (!dynamicTooltips.contains(tip)) {
-                    dynamicTooltips.add(tip);
-                }
+            return eC.getTipsForFilters();
+        }
+
+        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
+        if (c.isInnate) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
+            if (tip != null) {
+                dynamicTooltips.add(tip);
             }
         }
-        else {
-            if (c.isInnate) {
-                EUITooltip tip = EUITooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
-                if (tip != null) {
-                    dynamicTooltips.add(tip);
-                }
+        if (c.isEthereal) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.ETHEREAL.NAMES[0]);
+            if (tip != null) {
+                dynamicTooltips.add(tip);
             }
-            if (c.isEthereal) {
-                EUITooltip tip = EUITooltip.findByID(GameDictionary.ETHEREAL.NAMES[0]);
-                if (tip != null) {
-                    dynamicTooltips.add(tip);
-                }
+        }
+        if (c.selfRetain) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.RETAIN.NAMES[0]);
+            if (tip != null) {
+                dynamicTooltips.add(tip);
             }
-            if (c.selfRetain) {
-                EUITooltip tip = EUITooltip.findByID(GameDictionary.RETAIN.NAMES[0]);
-                if (tip != null) {
-                    dynamicTooltips.add(tip);
-                }
+        }
+        if (c.exhaust) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
+            if (tip != null) {
+                dynamicTooltips.add(tip);
             }
-            if (c.exhaust) {
-                EUITooltip tip = EUITooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
-                if (tip != null) {
-                    dynamicTooltips.add(tip);
-                }
+        }
+        for (String sk : c.keywords) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(sk);
+            if (tip != null && !dynamicTooltips.contains(tip)) {
+                dynamicTooltips.add(tip);
             }
-            for (String sk : c.keywords) {
-                EUITooltip tip = EUITooltip.findByName(sk);
-                if (tip != null && !dynamicTooltips.contains(tip)) {
-                    dynamicTooltips.add(tip);
-                }
-            }
-            if (c instanceof CustomCard) {
-                List<TooltipInfo> infos = ((CustomCard) c).getCustomTooltips();
-                ModInfo mi = EUIGameUtils.getModInfo(c);
-                if (infos != null && mi != null) {
-                    for (TooltipInfo info : infos) {
-                        EUITooltip tip = EUITooltip.findByName(mi.ID.toLowerCase() + ":" + info.title);
-                        if (tip != null && !dynamicTooltips.contains(tip)) {
-                            dynamicTooltips.add(tip);
-                        }
+        }
+        if (c instanceof CustomCard) {
+            List<TooltipInfo> infos = ((CustomCard) c).getCustomTooltips();
+            ModInfo mi = EUIGameUtils.getModInfo(c);
+            if (infos != null && mi != null) {
+                for (TooltipInfo info : infos) {
+                    EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(mi.ID.toLowerCase() + ":" + info.title);
+                    if (tip != null && !dynamicTooltips.contains(tip)) {
+                        dynamicTooltips.add(tip);
                     }
                 }
             }

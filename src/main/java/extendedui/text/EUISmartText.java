@@ -12,6 +12,7 @@ import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.TupleT2;
 import org.apache.commons.lang3.StringUtils;
@@ -283,7 +284,7 @@ public class EUISmartText {
     }
 
     private static Color getTooltipBackgroundColor(String id) {
-        EUITooltip tooltip = EUITooltip.findByID(id);
+        EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(id);
         return (tooltip != null) ? tooltip.backgroundColor : null;
     }
 
@@ -301,7 +302,7 @@ public class EUISmartText {
                 return AbstractCard.orb_special;
 
             default:
-                EUITooltip tooltip = EUITooltip.findByID(id);
+                EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(id);
                 return (tooltip != null) ? tooltip.icon : null;
         }
     }

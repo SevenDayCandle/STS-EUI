@@ -10,7 +10,7 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.patches.EUIKeyword;
-import extendedui.ui.tooltips.EUITooltip;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
@@ -52,8 +52,8 @@ public class Initializer
 
     // EUI's own tooltips should not be highlighted
     private void registerKeywords(String language) {
-        ArrayList<EUITooltip> tips = EUI.registerKeywords(Gdx.files.internal(PATH + language + JSON_KEYWORD));
-        for (EUITooltip tip : tips) {
+        ArrayList<EUIKeywordTooltip> tips = EUI.registerKeywords(Gdx.files.internal(PATH + language + JSON_KEYWORD));
+        for (EUIKeywordTooltip tip : tips) {
             tip.canHighlight(false).showText(false);
         }
     }
@@ -95,6 +95,7 @@ public class Initializer
         STSEffekseerManager.initialize();
         ShaderDebugger.initialize();
         HitboxDebugger.initialize();
+        EUIKeywordTooltip.postInitialize();
     }
 
     private Map<String, EUIKeyword> loadKeywords(String language, String path) {
@@ -113,6 +114,6 @@ public class Initializer
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager. Particles: " + BASE_SPRITES_DEFAULT);
             shouldReloadEffekseer = false;
         }
-        EUITooltip.updateTooltipIcons();
+        EUIKeywordTooltip.updateTooltipIcons();
     }
 }

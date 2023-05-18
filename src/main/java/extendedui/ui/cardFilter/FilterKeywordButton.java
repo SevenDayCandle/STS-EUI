@@ -13,6 +13,7 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
@@ -35,21 +36,22 @@ public class FilterKeywordButton extends EUIHoverable {
     public EUIButton backgroundButton;
     public EUILabel titleText;
     public EUILabel countText;
+    public EUIKeywordTooltip keywordTooltip;
     protected float offX;
     protected float offY;
     private ActionT1<FilterKeywordButton> onToggle;
     private ActionT1<FilterKeywordButton> onRightClick;
 
-    public FilterKeywordButton(GenericFilters<?> filters, EUITooltip tooltip) {
+    public FilterKeywordButton(GenericFilters<?> filters, EUIKeywordTooltip tooltip) {
         super(filters.hb);
 
         this.filters = filters;
-        this.tooltip = tooltip;
+        this.tooltip = this.keywordTooltip = tooltip;
 
         backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), RelativeHitbox.fromPercentages(filters.hb, 1, 1, 0.5f, BASE_OFFSET_Y).setIsPopupCompatible(true))
                 .setClickDelay(0.01f)
-                .setColor(this.filters.currentFilters.contains(this.tooltip) ? ACTIVE_COLOR
-                        : this.filters.currentNegateFilters.contains(this.tooltip) ? NEGATE_COLOR : PANEL_COLOR)
+                .setColor(this.filters.currentFilters.contains(this.keywordTooltip) ? ACTIVE_COLOR
+                        : this.filters.currentNegateFilters.contains(this.keywordTooltip) ? NEGATE_COLOR : PANEL_COLOR)
                 .setOnClick(button -> {
                     doToggle();
                 })
@@ -62,7 +64,7 @@ public class FilterKeywordButton extends EUIHoverable {
         titleText = new EUILabel(EUIFontHelper.cardTooltipFont,
                 RelativeHitbox.fromPercentages(hb, 0.5f, 1, BASE_OFFSET_X, BASE_OFFSET_Y))
                 .setFont(EUIFontHelper.cardTooltipFont, 0.8f)
-                .setColor(this.filters.currentFilters.contains(this.tooltip) ? Color.DARK_GRAY : Color.WHITE)
+                .setColor(this.filters.currentFilters.contains(this.keywordTooltip) ? Color.DARK_GRAY : Color.WHITE)
                 .setAlignment(0.5f, 0.49f) // 0.1f
                 .setLabel(this.tooltip.title);
 
@@ -71,7 +73,7 @@ public class FilterKeywordButton extends EUIHoverable {
                 .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.8f)
                 .setAlignment(0.5f, 0.51f) // 0.1f
                 .setColor(Settings.GOLD_COLOR)
-                .setLabel(this.filters.currentNegateFilters.contains(this.tooltip) ? "X" : cardCount);
+                .setLabel(this.filters.currentNegateFilters.contains(this.keywordTooltip) ? "X" : cardCount);
     }
 
     public void doToggle() {
@@ -84,13 +86,13 @@ public class FilterKeywordButton extends EUIHoverable {
     }
 
     public void reverseToggle() {
-        this.filters.currentFilters.remove(this.tooltip);
-        if (this.filters.currentNegateFilters.contains(this.tooltip)) {
-            this.filters.currentNegateFilters.remove(this.tooltip);
+        this.filters.currentFilters.remove(this.keywordTooltip);
+        if (this.filters.currentNegateFilters.contains(this.keywordTooltip)) {
+            this.filters.currentNegateFilters.remove(this.keywordTooltip);
             backgroundButton.setColor(PANEL_COLOR);
         }
         else {
-            this.filters.currentNegateFilters.add(this.tooltip);
+            this.filters.currentNegateFilters.add(this.keywordTooltip);
             backgroundButton.setColor(NEGATE_COLOR);
         }
         titleText.setColor(Color.WHITE);
@@ -101,14 +103,14 @@ public class FilterKeywordButton extends EUIHoverable {
     }
 
     public void normalToggle() {
-        this.filters.currentNegateFilters.remove(this.tooltip);
-        if (this.filters.currentFilters.contains(this.tooltip)) {
-            this.filters.currentFilters.remove(this.tooltip);
+        this.filters.currentNegateFilters.remove(this.keywordTooltip);
+        if (this.filters.currentFilters.contains(this.keywordTooltip)) {
+            this.filters.currentFilters.remove(this.keywordTooltip);
             backgroundButton.setColor(PANEL_COLOR);
             titleText.setColor(Color.WHITE);
         }
         else {
-            this.filters.currentFilters.add(this.tooltip);
+            this.filters.currentFilters.add(this.keywordTooltip);
             backgroundButton.setColor(ACTIVE_COLOR);
             titleText.setColor(Color.DARK_GRAY);
         }
@@ -127,8 +129,8 @@ public class FilterKeywordButton extends EUIHoverable {
     public void renderImpl(SpriteBatch sb) {
         backgroundButton.renderImpl(sb);
 
-        if (tooltip.icon != null) {
-            if (cardCount != 0 || filters.currentNegateFilters.contains(tooltip)) {
+        if (keywordTooltip.icon != null) {
+            if (cardCount != 0 || filters.currentNegateFilters.contains(keywordTooltip)) {
                 renderTooltipImage(sb);
             }
             else {
@@ -159,20 +161,20 @@ public class FilterKeywordButton extends EUIHoverable {
     }
 
     private void renderTooltipImage(SpriteBatch sb) {
-        tooltip.renderTipEnergy(sb, tooltip.icon,
+        keywordTooltip.renderTipEnergy(sb, keywordTooltip.icon,
                 hb.x + (offX + baseImageOffsetX) * hb.width,
                 hb.y + (offY + baseImageOffsetY) * hb.height,
-                28 * tooltip.iconmultiW,
-                28 * tooltip.iconmultiH,
-                CARD_ENERGY_IMG_WIDTH / tooltip.icon.getRegionWidth(),
-                CARD_ENERGY_IMG_WIDTH / tooltip.icon.getRegionHeight(),
+                28 * keywordTooltip.iconmultiW,
+                28 * keywordTooltip.iconmultiH,
+                CARD_ENERGY_IMG_WIDTH / keywordTooltip.icon.getRegionWidth(),
+                CARD_ENERGY_IMG_WIDTH / keywordTooltip.icon.getRegionHeight(),
                 cardCount == 0 ? Color.DARK_GRAY : Color.WHITE);
     }
 
     public FilterKeywordButton setCardCount(int count) {
         this.cardCount = count;
-        boolean isNegate = filters.currentNegateFilters.contains(tooltip);
-        boolean isContains = filters.currentFilters.contains(tooltip);
+        boolean isNegate = filters.currentNegateFilters.contains(keywordTooltip);
+        boolean isContains = filters.currentFilters.contains(keywordTooltip);
         countText
                 .setLabel(isNegate ? "X" : count).setColor(count > 0 ? Settings.GOLD_COLOR : Color.DARK_GRAY);
         titleText.setColor((!isContains && count > 0) || isNegate ? Color.WHITE : Color.DARK_GRAY);

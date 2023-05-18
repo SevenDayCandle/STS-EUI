@@ -21,6 +21,7 @@ import extendedui.interfaces.delegates.FuncT1;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
@@ -47,9 +48,9 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
     public final EUITextBox keywordsInstructionLabel;
     public final EUIToggle sortTypeToggle;
     public final EUIToggle sortDirectionToggle;
-    public final HashSet<EUITooltip> currentFilters = new HashSet<>();
-    public final HashSet<EUITooltip> currentNegateFilters = new HashSet<>();
-    protected final HashMap<EUITooltip, Integer> currentFilterCounts = new HashMap<>();
+    public final HashSet<EUIKeywordTooltip> currentFilters = new HashSet<>();
+    public final HashSet<EUIKeywordTooltip> currentNegateFilters = new HashSet<>();
+    protected final HashMap<EUIKeywordTooltip, Integer> currentFilterCounts = new HashMap<>();
     protected final ArrayList<FilterKeywordButton> filterButtons = new ArrayList<>();
     protected final EUIHitbox hb;
     protected int currentTotal;
@@ -156,7 +157,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
 
     abstract public void clearFilters(boolean shouldInvoke, boolean shouldClearColors);
 
-    public void addManualKeyword(EUITooltip tooltip, int count) {
+    public void addManualKeyword(EUIKeywordTooltip tooltip, int count) {
         filterButtons.add(new FilterKeywordButton(this, tooltip).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(count));
         currentFilterCounts.merge(tooltip, count, Integer::sum);
     }
@@ -210,14 +211,14 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
         currentTotal = 0;
 
         EUI.actingColor = color;
-        EUITooltip.updateTooltipIcons();
+        EUIKeywordTooltip.updateTooltipIcons();
         this.onClick = onClick;
         referenceItems = items;
 
         initializeImpl(onClick, items, color, isAccessedFromCardPool);
 
         // InitializeImpl should set up the CurrentFilterCounts set
-        for (Map.Entry<EUITooltip, Integer> filter : currentFilterCounts.entrySet()) {
+        for (Map.Entry<EUIKeywordTooltip, Integer> filter : currentFilterCounts.entrySet()) {
             int cardCount = filter.getValue();
             filterButtons.add(new FilterKeywordButton(this, filter.getKey()).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(cardCount));
         }
@@ -327,13 +328,13 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
         if (referenceItems != null) {
             currentTotal = getReferenceCount();
             for (T card : referenceItems) {
-                for (EUITooltip tooltip : getAllTooltips(card)) {
+                for (EUIKeywordTooltip tooltip : getAllTooltips(card)) {
                     currentFilterCounts.merge(tooltip, 1, Integer::sum);
                 }
             }
         }
         for (FilterKeywordButton c : filterButtons) {
-            c.setCardCount(currentFilterCounts.getOrDefault(c.tooltip, 0));
+            c.setCardCount(currentFilterCounts.getOrDefault(c.keywordTooltip, 0));
         }
 
         currentTotalLabel.setLabel(currentTotal);
@@ -371,7 +372,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
         return referenceItems.size();
     }
 
-    abstract public ArrayList<EUITooltip> getAllTooltips(T c);
+    abstract public List<EUIKeywordTooltip> getAllTooltips(T c);
 
     abstract public boolean isHoveredImpl();
 
