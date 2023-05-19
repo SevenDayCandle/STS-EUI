@@ -93,7 +93,7 @@ public class EUIRenderHelpers {
     }
 
     public static float getTooltipHeight(EUITooltip tip) {
-        return -EUISmartText.getSmartHeight(EUIFontHelper.cardTooltipFont, tip.description(), BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
+        return -EUISmartText.getSmartHeight(EUIFontHelper.cardTooltipFont, tip.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
     }
 
     public static float calculateToAvoidOffscreen(ArrayList<EUITooltip> tips, float hb_cY) {

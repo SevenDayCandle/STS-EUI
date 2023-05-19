@@ -132,7 +132,7 @@ public class EUIConfiguration {
             save();
         }
 
-        EUIKeywordTooltip.setCanRender(id, value);
+        EUIKeywordTooltip.setHideTooltip(id, value);
     }
 
     public static void verifyHideTipsList() {

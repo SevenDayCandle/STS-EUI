@@ -22,6 +22,7 @@ import java.util.stream.Stream;
 
 public abstract class EUIUtils {
     public static final Random RNG = new Random();
+    public static final String EMPTY_STRING = "";
     public static final String DOUBLE_SPLIT_LINE = " || ";
     public static final String LEGACY_DOUBLE_SPLIT_LINE = " NL  NL ";
     public static final String SPLIT_LINE = " | ";

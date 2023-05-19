@@ -11,6 +11,7 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.ui.tooltips.EUIHeaderlessTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
@@ -115,7 +116,7 @@ public class EUIFileSelector extends EUIHoverable {
             }
             else {
                 filePath.setLabel(currentFile.getName());
-                filePath.tooltip = new EUITooltip("", currentFile.getAbsolutePath());
+                filePath.tooltip = new EUIHeaderlessTooltip(currentFile.getAbsolutePath());
             }
         }
         else {

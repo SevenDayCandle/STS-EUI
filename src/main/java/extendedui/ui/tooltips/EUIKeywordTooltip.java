@@ -47,19 +47,15 @@ public class EUIKeywordTooltip extends EUITooltip {
     public float iconmultiW = 1;
     public boolean useLogic = false;
 
-    public EUIKeywordTooltip(String title, String... descriptions) {
-        super(title, descriptions);
+    public EUIKeywordTooltip(String title) {
+        super(title);
     }
 
-    public EUIKeywordTooltip(String title, Collection<String> descriptions) {
-        super(title, descriptions);
+    public EUIKeywordTooltip(String title, String description) {
+        super(title, description);
     }
 
-    public EUIKeywordTooltip(String title, AbstractPlayer.PlayerClass playerClass, String... descriptions) {
-        this(title, playerClass, Arrays.asList(descriptions));
-    }
-
-    public EUIKeywordTooltip(String title, AbstractPlayer.PlayerClass playerClass, Collection<String> descriptions) {
+    public EUIKeywordTooltip(String title, AbstractPlayer.PlayerClass playerClass, String descriptions) {
         super(title, descriptions);
 
         if (WhatMod.enabled && playerClass != null) {
@@ -125,7 +121,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     public static void postInitialize() {
         for (Map.Entry<String, EUIKeywordTooltip> entry : getEntries()) {
             EUIKeywordTooltip tip = entry.getValue();
-            tip.canRender = EUIConfiguration.getIsTipDescriptionHidden(entry.getKey());
+            tip.canRender = !EUIConfiguration.getIsTipDescriptionHidden(entry.getKey());
             tip.headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
             tip.descriptionFont = EUIFontHelper.cardTooltipFont;
         }
@@ -140,10 +136,10 @@ public class EUIKeywordTooltip extends EUITooltip {
         REGISTERED_NAMES.put(name, tooltip);
     }
 
-    public static void setCanRender(String id, boolean value) {
+    public static void setHideTooltip(String id, boolean value) {
         EUIKeywordTooltip tooltip = findByID(id);
         if (tooltip != null) {
-            tooltip.canRender = value;
+            tooltip.canRender = !value;
         }
     }
 
@@ -168,11 +164,10 @@ public class EUIKeywordTooltip extends EUITooltip {
     public float height() {
         if (lastHeight == null) {
             BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
-            String desc = description();
-            lastTextHeight = EUISmartText.getSmartHeight(descFont, desc, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+            lastTextHeight = EUISmartText.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastModNameHeight = (modName != null) ? EUISmartText.getSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
             lastSubHeaderHeight = (subHeader != null) ? EUISmartText.getSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-            lastHeight = (!canRender || StringUtils.isEmpty(desc)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastModNameHeight + lastSubHeaderHeight) - 7f * Settings.scale);
+            lastHeight = (!canRender || StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastModNameHeight + lastSubHeaderHeight) - 7f * Settings.scale);
         }
         return lastHeight;
     }
