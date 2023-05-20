@@ -80,15 +80,16 @@ public class EUIConfiguration {
     public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT, "");
     public static ModSettingsScreen.Category effekseerCategory;
     public static ModSettingsScreen.Category fontCategory;
-    public static BasemodSettingsPage settingsBlock;
     public static boolean shouldReloadEffekseer;
+    protected static BasemodSettingsPage settingsBlock;
+    protected static ModPanel panel;
     private static SpireConfig config;
     private static int counter;
     private static HashSet<String> tips = null;
 
     //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
 
-    protected static int addSlider(int page, ModPanel panel, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
+    protected static int addSlider(int page, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
         settingsBlock.addUIElement(page, new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.get(), "%d", panel, (c) -> {
             option.set(MathUtils.round(c.getValue()), true);
             shouldReloadEffekseer = true;
@@ -96,9 +97,38 @@ public class EUIConfiguration {
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }
 
-    protected static int addToggle(int page, ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos) {
-        return addToggle(page, panel, option, label, ypos, null);
+    protected static int addToggle(int page, STSConfigItem<Boolean> option, int ypos, String label) {
+        return addToggle(page, option, label, ypos, null);
     }
+
+    protected static int addToggle(int page, STSConfigItem<Boolean> option, String label, int ypos, String tip) {
+        settingsBlock.addUIElement(page, new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.cardDescriptionFontNormal, option.get(), panel, (__) -> {
+        }, (c) -> option.set(c.enabled, true)));
+        return ypos - BASE_OPTION_OPTION_HEIGHT;
+    }
+
+    protected static int addGenericElement(int page, EUIHoverable renderable, int ypos) {
+        settingsBlock.addUIElement(page, renderable);
+        return (int) (ypos - renderable.hb.height);
+    }
+
+    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label) {
+        return ModSettingsScreen.addBoolean(category, option, label);
+    }
+
+    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label, String tip) {
+        ModSettingsToggle toggle = makeModToggle(category, option, label);
+        if (toggle != null) {
+            toggle.setTooltip(label, tip);
+            toggle.tooltip.setAutoWidth();
+        }
+        return toggle;
+    }
+
+    protected static ModSettingsPathSelector makeModPathSelection(ModSettingsScreen.Category category, STSConfigItem<String> option, String label, String... exts) {
+        return ModSettingsScreen.addPathSelection(category, option, label, exts);
+    }
+
 
     public static String getFullKey(String base) {
         return PREFIX + "_" + base;
@@ -188,6 +218,8 @@ public class EUIConfiguration {
 
     public static void postInitialize() {
         settingsBlock = new BasemodSettingsPage();
+        panel = new ModPanel();
+        panel.addUIElement(settingsBlock);
 
         // Add EUI options
         effekseerCategory = new ModSettingsScreen.Category(EUIRM.strings.misc_effekseerSettings);
@@ -215,37 +247,35 @@ public class EUIConfiguration {
 
         // Add basemod options
         int yPos = BASE_OPTION_OFFSET_Y;
-        ModPanel panel = new ModPanel();
-        panel.addUIElement(settingsBlock);
 
-        yPos = addToggle(0, panel, showCountingPanel, EUIRM.strings.config_showCountingPanel, yPos, EUIRM.strings.configdesc_showCountingPanel);
-        yPos = addToggle(0, panel, useVanillaCompendium, EUIRM.strings.config_useVanillaCompendium, yPos, EUIRM.strings.configdesc_useVanillaCompendium);
-        yPos = addToggle(0, panel, useSnapScrolling, EUIRM.strings.config_useSnapScrolling, yPos, EUIRM.strings.configdesc_useSnapScrolling);
-        yPos = addToggle(0, panel, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, yPos, EUIRM.strings.configdesc_disableCompendiumButton);
-        yPos = addToggle(0, panel, disableDescrptionIcons, EUIRM.strings.config_disableDescriptionIcons, yPos, EUIRM.strings.configdesc_disableDescriptionIcons);
-        yPos = addToggle(0, panel, disableEffekseer, EUIRM.strings.config_disableEffekseer, yPos, EUIRM.strings.configdesc_disableEffekseer);
-        yPos = addToggle(0, panel, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
-        yPos = addToggle(0, panel, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
-        yPos = addToggle(0, panel, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);
-        yPos = addToggle(0, panel, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
+        yPos = addToggle(0, showCountingPanel, EUIRM.strings.config_showCountingPanel, yPos, EUIRM.strings.configdesc_showCountingPanel);
+        yPos = addToggle(0, useVanillaCompendium, EUIRM.strings.config_useVanillaCompendium, yPos, EUIRM.strings.configdesc_useVanillaCompendium);
+        yPos = addToggle(0, useSnapScrolling, EUIRM.strings.config_useSnapScrolling, yPos, EUIRM.strings.configdesc_useSnapScrolling);
+        yPos = addToggle(0, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, yPos, EUIRM.strings.configdesc_disableCompendiumButton);
+        yPos = addToggle(0, disableDescrptionIcons, EUIRM.strings.config_disableDescriptionIcons, yPos, EUIRM.strings.configdesc_disableDescriptionIcons);
+        yPos = addToggle(0, disableEffekseer, EUIRM.strings.config_disableEffekseer, yPos, EUIRM.strings.configdesc_disableEffekseer);
+        yPos = addToggle(0, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
+        yPos = addToggle(0, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
+        yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);
+        yPos = addToggle(0, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
 
         yPos = BASE_OPTION_OFFSET_Y;
-        yPos = addToggle(1, panel, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
-        yPos = addToggle(1, panel, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
+        yPos = addToggle(1, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
+        yPos = addToggle(1, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1, panel, cardDescFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, cardDescFontSelector2, yPos) + 2;
         ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1, panel, cardTitleFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, cardTitleFontSelector2, yPos) + 2;
         ModSettingsPathSelector tipDescFontSelector2 = (ModSettingsPathSelector) tipDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1, panel, tipDescFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, tipDescFontSelector2, yPos) + 2;
         ModSettingsPathSelector tipTitleFontSelector2 = (ModSettingsPathSelector) tipTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1, panel, tipTitleFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, tipTitleFontSelector2, yPos) + 2;
         ModSettingsPathSelector buttonFontSelector2 = (ModSettingsPathSelector) buttonFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1, panel, buttonFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, buttonFontSelector2, yPos) + 2;
         ModSettingsPathSelector bannerFontSelector2 = (ModSettingsPathSelector) bannerFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1, panel, buttonFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, buttonFontSelector2, yPos) + 2;
         ModSettingsPathSelector energyFontSelector2 = (ModSettingsPathSelector) energyFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(1, panel, buttonFontSelector2, yPos) + 2;
+        yPos = addGenericElement(1, buttonFontSelector2, yPos) + 2;
         BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
 
         // Sub-font settings should only show up if UseSeparateFonts is true
@@ -273,33 +303,5 @@ public class EUIConfiguration {
         });
 
         // NOTE: DISABLE_COMPENDIUM_BUTTON, HIDE_TIP_DESCRIPTION, and USE_SMOOTH_SCROLLING listeners are added in EUI.initialize to avoid errors from initializing too early
-    }
-
-    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label, String tip) {
-        ModSettingsToggle toggle = makeModToggle(category, option, label);
-        if (toggle != null) {
-            toggle.setTooltip(label, tip);
-            toggle.tooltip.setAutoWidth();
-        }
-        return toggle;
-    }
-
-    protected static ModSettingsPathSelector makeModPathSelection(ModSettingsScreen.Category category, STSConfigItem<String> option, String label, String... exts) {
-        return ModSettingsScreen.addPathSelection(category, option, label, exts);
-    }
-
-    protected static int addToggle(int page, ModPanel panel, STSConfigItem<Boolean> option, String label, int ypos, String tip) {
-        settingsBlock.addUIElement(page, new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.cardDescriptionFontNormal, option.get(), panel, (__) -> {
-        }, (c) -> option.set(c.enabled, true)));
-        return ypos - BASE_OPTION_OPTION_HEIGHT;
-    }
-
-    protected static int addGenericElement(int page, ModPanel panel, EUIHoverable renderable, int ypos) {
-        settingsBlock.addUIElement(page, renderable);
-        return (int) (ypos - renderable.hb.height);
-    }
-
-    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label) {
-        return ModSettingsScreen.addBoolean(category, option, label);
     }
 }

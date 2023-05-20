@@ -183,6 +183,10 @@ public class EUIGameUtils {
         return EUIUtils.arrayList(colorlessCardPool, commonCardPool, uncommonCardPool, rareCardPool, curseCardPool);
     }
 
+    public static ArrayList<ArrayList<String>> getGameRelicPools() {
+        return EUIUtils.arrayList(commonRelicPool, uncommonRelicPool, rareRelicPool, bossRelicPool, shopRelicPool);
+    }
+
     public static AbstractPlayer.PlayerClass getPlayerClassForCardColor(AbstractCard.CardColor pc) {
         return COLOR_TO_CLASS.get(pc);
     }

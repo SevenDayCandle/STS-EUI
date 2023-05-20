@@ -3,10 +3,13 @@ package extendedui.ui.cardFilter;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.CardLibrary;
+import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
@@ -27,6 +30,7 @@ import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class RelicPoolScreen extends AbstractDungeonScreen {
     public static CustomRelicPoolModule customModule;
@@ -84,7 +88,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen {
     }
 
     public static ArrayList<RelicPoolScreen.DebugOption> getOptions(AbstractRelic r) {
-        return EUIUtils.arrayList(DebugOption.enlarge, DebugOption.obtain);
+        return EUIUtils.arrayList(DebugOption.enlarge, DebugOption.obtain, DebugOption.removeFromPool);
     }
 
     protected void openPopup(AbstractRelic c) {
@@ -128,6 +132,13 @@ public class RelicPoolScreen extends AbstractDungeonScreen {
 
     }
 
+    protected void removeRelicFromPool(AbstractRelic c) {
+        for (ArrayList<String> relics : EUIGameUtils.getGameRelicPools()) {
+            relics.remove(c.relicId);
+        }
+        relicGrid.removeRelic(c);
+    }
+
     @Override
     public void reopen() {
         if (EUIGameUtils.inGame()) {
@@ -169,11 +180,12 @@ public class RelicPoolScreen extends AbstractDungeonScreen {
     public static class DebugOption {
         public static RelicPoolScreen.DebugOption enlarge = new RelicPoolScreen.DebugOption(EUIRM.strings.uipool_enlarge, RelicPoolScreen::openPopup);
         public static RelicPoolScreen.DebugOption obtain = new RelicPoolScreen.DebugOption(EUIRM.strings.uipool_obtainRelic, RelicPoolScreen::obtain);
+        public static RelicPoolScreen.DebugOption removeFromPool = new RelicPoolScreen.DebugOption(EUIRM.strings.uipool_removeFromPool, RelicPoolScreen::removeRelicFromPool);
 
         public final String name;
         public final ActionT2<RelicPoolScreen, AbstractRelic> onSelect;
 
-        DebugOption(String name, ActionT2<RelicPoolScreen, AbstractRelic> onSelect) {
+        public DebugOption(String name, ActionT2<RelicPoolScreen, AbstractRelic> onSelect) {
             this.name = name;
             this.onSelect = onSelect;
         }

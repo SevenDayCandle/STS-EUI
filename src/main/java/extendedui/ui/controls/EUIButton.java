@@ -26,8 +26,6 @@ public class EUIButton extends EUIHoverable {
     public EUIImage border;
 
     public float clickDelay = 0f;
-    public float targetAlpha = 1f;
-    public float currentAlpha = 1f;
     public boolean interactable = true;
     public boolean isSmartText;
     public boolean showText = true;
@@ -58,11 +56,6 @@ public class EUIButton extends EUIHoverable {
 
     @Override
     public void renderImpl(SpriteBatch sb) {
-        background.color.a = this.textColor.a = currentAlpha;
-        if (currentAlpha <= 0) {
-            return;
-        }
-
         final boolean interactable = isInteractable();
         if (StringUtils.isNotEmpty(text) && showText) {
             this.renderButton(sb, interactable);
@@ -103,17 +96,6 @@ public class EUIButton extends EUIHoverable {
         if (interactable && this.hb.hovered && !this.hb.clickStarted) {
             background.render(sb, EUIRenderHelpers.ShaderMode.Bright, hb, hoverBlendColor != null ? hoverBlendColor : HOVER_BLEND_COLOR);
         }
-    }
-
-    public EUIButton setAlpha(float currentAlpha, float targetAlpha) {
-        this.currentAlpha = currentAlpha;
-        this.targetAlpha = targetAlpha;
-        return this;
-    }
-
-    public EUIButton setAlpha(float targetAlpha) {
-        this.targetAlpha = targetAlpha;
-        return this;
     }
 
     public EUIButton setBackground(Texture borderTexture) {
@@ -314,11 +296,6 @@ public class EUIButton extends EUIHoverable {
     }
 
     public void renderCentered(SpriteBatch sb) {
-        background.color.a = this.textColor.a = currentAlpha;
-        if (currentAlpha <= 0) {
-            return;
-        }
-
         final boolean interactable = isInteractable();
         if (StringUtils.isNotEmpty(text) && showText) {
             this.renderButtonCentered(sb, interactable);
@@ -365,11 +342,6 @@ public class EUIButton extends EUIHoverable {
     public void updateImpl() {
         if (currentClickDelay > 0) {
             this.currentClickDelay -= EUI.delta();
-        }
-
-        this.currentAlpha = MathHelper.fadeLerpSnap(currentAlpha, targetAlpha);
-        if ((currentAlpha <= 0)) {
-            return;
         }
 
         super.updateImpl();

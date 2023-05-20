@@ -29,7 +29,7 @@ public class EUIHeaderlessTooltip extends EUITooltip {
         if (lastHeight == null) {
             BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
             lastTextHeight = EUISmartText.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-            lastHeight = (!canRender || StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight) - 7f * Settings.scale);
+            lastHeight = (!canRender) ? 0 : (-(lastTextHeight));
         }
         return lastHeight;
     }
