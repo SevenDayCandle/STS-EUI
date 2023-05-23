@@ -7,16 +7,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
-import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUIGameUtils;
+import extendedui.EUIInputManager;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.STSConfigItem;
 import extendedui.text.EUISmartText;
-import extendedui.ui.AbstractScreen;
+import extendedui.ui.EUIBase;
 import extendedui.ui.TextureCache;
 import extendedui.ui.controls.EUIButtonList;
 import extendedui.ui.controls.EUIImage;
@@ -30,7 +28,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-public class ModSettingsScreen extends AbstractScreen {
+public class ExtraModSettingsPanel extends EUIBase {
     protected static final float OPTION_SIZE = scale(40);
     protected static final float OFFSET_SIZE = scale(640);
     protected static final float COLOR_BUTTON_SIZE = scale(51);
@@ -39,12 +37,12 @@ public class ModSettingsScreen extends AbstractScreen {
     protected static final HashMap<Category, ArrayList<IUIElement>> configCategories = new HashMap<>();
     protected static final HashMap<Category, Float> offsets = new HashMap<>();
     protected static final EUIHitbox hb = new EUIHitbox(screenW(0.5f) - scale(700), Settings.OPTION_Y - scale(400), scale(1400), scale(800));
-    public final MenuCancelButton button;
+    protected final MenuCancelButton button;
     protected final EUIButtonList buttons = new EUIButtonList(7, screenW(0.077f), hb.y + scale(800), scale(205), scale(42)).setFontScale(0.6f);
-    private final EUIImage background;
+    protected final EUIImage background;
     private Category activeMod;
 
-    public ModSettingsScreen() {
+    public ExtraModSettingsPanel() {
         super();
         background = new EUIImage(modPanel.texture(), hb);
         button = new MenuCancelButton();
@@ -124,8 +122,7 @@ public class ModSettingsScreen extends AbstractScreen {
     }
 
     public void open() {
-        super.open();
-        SingleCardViewPopup.isViewingUpgrade = false;
+        isActive = true;
         this.button.show(MasterDeckViewScreen.TEXT[1]);
 
         buttons.clear();
@@ -140,37 +137,12 @@ public class ModSettingsScreen extends AbstractScreen {
         }
     }
 
-    @Override
-    protected void updateDungeonPreviousScreen() {
-        // Allow settings screens to be previous
-        if (AbstractDungeon.screen != EUI_SCREEN) {
-
-            if (AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MAP
-                    && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.MASTER_DECK_VIEW) {
-                AbstractDungeon.previousScreen = AbstractDungeon.screen;
-            }
-
-            AbstractDungeon.screen = EUI_SCREEN;
-        }
-    }
-
-    public void onEscape() {
-        InputHelper.pressedEscape = false;
-        AbstractDungeon.CurrentScreen prevScreen = AbstractDungeon.previousScreen;
-        AbstractDungeon.closeCurrentScreen();
-        if (prevScreen == AbstractDungeon.CurrentScreen.SETTINGS) {
-            AbstractDungeon.settingsScreen.open();
-        }
-    }
-
-    @Override
-    public void reopen() {
-        this.button.show(MasterDeckViewScreen.TEXT[1]);
+    public void close() {
+        isActive = false;
     }
 
     @Override
     public void updateImpl() {
-        super.updateImpl();
         background.tryUpdate();
         buttons.updateImpl();
 
@@ -182,16 +154,14 @@ public class ModSettingsScreen extends AbstractScreen {
         }
 
         button.update();
-        if (this.button.hb.clicked) {
+        if (this.button.hb.clicked || (EUIInputManager.tryEscape())) {
             this.button.hb.clicked = false;
             this.button.hide();
-            onEscape();
+            close();
         }
     }
 
     public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-
         background.tryRender(sb);
         buttons.renderImpl(sb);
 

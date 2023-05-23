@@ -1,7 +1,8 @@
-package extendedui.ui.cardFilter;
+package extendedui.ui.screens;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -20,7 +21,6 @@ import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomCardPoolModule;
-import extendedui.ui.AbstractDungeonScreen;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
@@ -28,7 +28,13 @@ import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
-public class CardPoolScreen extends AbstractDungeonScreen {
+import static extendedui.EUIGameUtils.scale;
+
+public class CardPoolScreen extends EUIPoolScreen {
+
+    @SpireEnum
+    public static AbstractDungeon.CurrentScreen CARD_POOL_SCREEN;
+
     public static CustomCardPoolModule customModule;
 
     protected final EUIToggle upgradeToggle;
@@ -89,6 +95,11 @@ public class CardPoolScreen extends AbstractDungeonScreen {
                 .setCanAutosizeButton(true);
     }
 
+    @Override
+    public AbstractDungeon.CurrentScreen curScreen() {
+        return CARD_POOL_SCREEN;
+    }
+
     public void resetGrid() {
         cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
         cardGrid.showScrollbar(true)
@@ -131,15 +142,15 @@ public class CardPoolScreen extends AbstractDungeonScreen {
     }
 
     @Override
-    public void onEscape() {
-        super.onEscape();
+    public void close() {
+        super.close();
         if (customModule != null) {
             customModule.onClose();
         }
     }
 
     public void open(AbstractPlayer player, CardGroup cards) {
-        super.open(false, true);
+        super.open();
         boolean canSeeAllColors = EUIGameUtils.canReceiveAnyColorCard();
 
         cardGrid.clear();
@@ -157,10 +168,6 @@ public class CardPoolScreen extends AbstractDungeonScreen {
             }
             cardGrid.forceUpdateCardPositions();
         }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, !canSeeAllColors, true);
-
-        if (EUIGameUtils.inGame()) {
-            AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
-        }
 
         EUI.countingPanel.open(cardGrid.cards.group);
 
@@ -183,15 +190,7 @@ public class CardPoolScreen extends AbstractDungeonScreen {
     }
 
     @Override
-    public void reopen() {
-        if (EUIGameUtils.inGame()) {
-            AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
-        }
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
+    public void update() {
         if (!EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             cardGrid.tryUpdate();
             upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
@@ -214,14 +213,9 @@ public class CardPoolScreen extends AbstractDungeonScreen {
     }
 
     @Override
-    public void preRender(SpriteBatch sb) {
-        super.preRender(sb);
+    public void render(SpriteBatch sb) {
         cardGrid.tryRender(sb);
         EUI.customHeader.render(sb);
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
         upgradeToggle.renderImpl(sb);
         colorlessToggle.render(sb);
         swapRelicScreen.renderImpl(sb);

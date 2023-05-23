@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.patches.EUIKeyword;
+import extendedui.patches.game.AbstractDungeonPatches;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import org.apache.logging.log4j.LogManager;
 

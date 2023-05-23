@@ -32,6 +32,7 @@ import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.TextureCache;
+import extendedui.ui.screens.CardPoolScreen;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 
@@ -42,7 +43,6 @@ import java.util.HashMap;
 import java.util.Scanner;
 
 import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.*;
-import static extendedui.ui.AbstractScreen.EUI_SCREEN;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
@@ -71,7 +71,7 @@ public class EUIGameUtils {
         return SingleCardViewPopup.isViewingUpgrade && (AbstractDungeon.player == null || isLibrary
                 || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD
                 || AbstractDungeon.screen == AbstractDungeon.CurrentScreen.CARD_REWARD
-                || AbstractDungeon.screen == EUI_SCREEN);
+                || AbstractDungeon.screen == CardPoolScreen.CARD_POOL_SCREEN);
     }
 
     public static boolean canViewEnemyIntents(AbstractMonster mo) {

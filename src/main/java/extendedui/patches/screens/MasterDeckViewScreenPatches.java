@@ -10,7 +10,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import extendedui.EUI;
-import extendedui.ui.cardFilter.CardPoolScreen;
+import extendedui.ui.screens.CardPoolScreen;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 

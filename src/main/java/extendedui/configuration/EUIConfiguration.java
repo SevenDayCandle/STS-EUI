@@ -15,7 +15,7 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.settings.BasemodSettingsPage;
 import extendedui.ui.settings.ModSettingsPathSelector;
-import extendedui.ui.settings.ModSettingsScreen;
+import extendedui.ui.settings.ExtraModSettingsPanel;
 import extendedui.ui.settings.ModSettingsToggle;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
@@ -78,8 +78,8 @@ public class EUIConfiguration {
     public static STSStringConfigItem energyFont = new STSStringConfigItem(ENERGY_FONT, "");
     public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT, "");
     public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT, "");
-    public static ModSettingsScreen.Category effekseerCategory;
-    public static ModSettingsScreen.Category fontCategory;
+    public static ExtraModSettingsPanel.Category effekseerCategory;
+    public static ExtraModSettingsPanel.Category fontCategory;
     public static boolean shouldReloadEffekseer;
     protected static BasemodSettingsPage settingsBlock;
     protected static ModPanel panel;
@@ -112,11 +112,11 @@ public class EUIConfiguration {
         return (int) (ypos - renderable.hb.height);
     }
 
-    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label) {
-        return ModSettingsScreen.addBoolean(category, option, label);
+    protected static ModSettingsToggle makeModToggle(ExtraModSettingsPanel.Category category, STSConfigItem<Boolean> option, String label) {
+        return ExtraModSettingsPanel.addBoolean(category, option, label);
     }
 
-    protected static ModSettingsToggle makeModToggle(ModSettingsScreen.Category category, STSConfigItem<Boolean> option, String label, String tip) {
+    protected static ModSettingsToggle makeModToggle(ExtraModSettingsPanel.Category category, STSConfigItem<Boolean> option, String label, String tip) {
         ModSettingsToggle toggle = makeModToggle(category, option, label);
         if (toggle != null) {
             toggle.setTooltip(label, tip);
@@ -125,8 +125,8 @@ public class EUIConfiguration {
         return toggle;
     }
 
-    protected static ModSettingsPathSelector makeModPathSelection(ModSettingsScreen.Category category, STSConfigItem<String> option, String label, String... exts) {
-        return ModSettingsScreen.addPathSelection(category, option, label, exts);
+    protected static ModSettingsPathSelector makeModPathSelection(ExtraModSettingsPanel.Category category, STSConfigItem<String> option, String label, String... exts) {
+        return ExtraModSettingsPanel.addPathSelection(category, option, label, exts);
     }
 
 
@@ -212,8 +212,8 @@ public class EUIConfiguration {
         }
     }
 
-    protected static EUILabel makeModLabel(ModSettingsScreen.Category category, String label, BitmapFont font) {
-        return ModSettingsScreen.addLabel(category, label, font);
+    protected static EUILabel makeModLabel(ExtraModSettingsPanel.Category category, String label, BitmapFont font) {
+        return ExtraModSettingsPanel.addLabel(category, label, font);
     }
 
     public static void postInitialize() {
@@ -222,11 +222,11 @@ public class EUIConfiguration {
         panel.addUIElement(settingsBlock);
 
         // Add EUI options
-        effekseerCategory = new ModSettingsScreen.Category(EUIRM.strings.misc_effekseerSettings);
-        fontCategory = new ModSettingsScreen.Category(EUIRM.strings.misc_fontSettings);
+        effekseerCategory = new ExtraModSettingsPanel.Category(EUIRM.strings.misc_effekseerSettings);
+        fontCategory = new ExtraModSettingsPanel.Category(EUIRM.strings.misc_fontSettings);
 
-        ModSettingsScreen.addCategory(effekseerCategory);
-        ModSettingsScreen.addCategory(fontCategory);
+        ExtraModSettingsPanel.addCategory(effekseerCategory);
+        ExtraModSettingsPanel.addCategory(fontCategory);
         makeModToggle(effekseerCategory, showCountingPanel, EUIRM.strings.config_showCountingPanel, EUIRM.strings.configdesc_showCountingPanel);
         makeModToggle(effekseerCategory, useSnapScrolling, EUIRM.strings.config_useSnapScrolling, EUIRM.strings.configdesc_useSnapScrolling);
         makeModToggle(effekseerCategory, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, EUIRM.strings.configdesc_disableCompendiumButton);

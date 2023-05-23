@@ -188,7 +188,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
             if (this.cancelButton.hb.clicked) {
                 this.cancelButton.hb.clicked = false;
                 this.cancelButton.hide();
-                onEscape();
+                close();
             }
             if (customModule != null) {
                 customModule.update();
@@ -222,8 +222,8 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     }
 
     @Override
-    public void onEscape() {
-        super.onEscape();
+    public void close() {
+        super.close();
         if (customModule != null) {
             customModule.onClose();
         }

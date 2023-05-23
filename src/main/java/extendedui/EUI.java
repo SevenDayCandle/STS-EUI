@@ -27,15 +27,15 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.*;
 import extendedui.patches.EUIKeyword;
 import extendedui.text.EUISmartText;
-import extendedui.ui.AbstractScreen;
+import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
-import extendedui.ui.panelitems.FakeFtueScreen;
-import extendedui.ui.settings.ModSettingsScreen;
+import extendedui.ui.screens.*;
+import extendedui.ui.settings.ExtraModSettingsPanel;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import org.apache.commons.lang3.StringUtils;
@@ -66,7 +66,7 @@ public class EUI {
     private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicLibraryModules = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicPoolModules = new HashMap<>();
     public static AbstractCard.CardColor actingColor;
-    public static AbstractScreen currentScreen;
+    public static AbstractMenuScreen currentScreen;
     public static CardKeywordFilters cardFilters;
     public static CardPoolScreen cardsScreen;
     public static CountingPanel countingPanel;
@@ -75,8 +75,9 @@ public class EUI {
     public static EUIButton openCardFiltersButton;
     public static EUIButton openPotionFiltersButton;
     public static EUIButton openRelicFiltersButton;
+    public static EUITutorialScreen tutorialScreen;
     public static FakeFtueScreen ftueScreen;
-    public static ModSettingsScreen modSettingsScreen;
+    public static ExtraModSettingsPanel modSettingsScreen;
     public static PotionKeywordFilters potionFilters;
     public static PotionPoolScreen potionScreen;
     public static PotionSortHeader potionHeader;
@@ -237,8 +238,10 @@ public class EUI {
         countingPanel = new CountingPanel();
         customHeader = new CustomCardLibSortHeader(null);
         customLibraryScreen = new CustomCardLibraryScreen();
+        tutorialScreen = new EUITutorialScreen();
         ftueScreen = new FakeFtueScreen();
-        modSettingsScreen = new ModSettingsScreen();
+        modSettingsScreen = new ExtraModSettingsPanel();
+        modSettingsScreen.setActive(false);
         potionFilters = new PotionKeywordFilters();
         potionHeader = new PotionSortHeader(null);
         potionScreen = new PotionPoolScreen();
@@ -272,6 +275,12 @@ public class EUI {
             EUI.customLibraryScreen.resetGrid();
             EUI.cardsScreen.resetGrid();
         });
+
+        // Register basemod screens
+        BaseMod.addCustomScreen(cardsScreen);
+        BaseMod.addCustomScreen(relicScreen);
+        BaseMod.addCustomScreen(potionScreen);
+        BaseMod.addCustomScreen(ftueScreen);
     }
 
     public static void toggleCompendiumButton(boolean hide) {
@@ -317,7 +326,7 @@ public class EUI {
     }
 
     public static void preRender(SpriteBatch sb) {
-        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null) {
+        if (currentScreen != null) {
             currentScreen.preRender(sb);
         }
 
@@ -482,7 +491,7 @@ public class EUI {
     }
 
     public static void render(SpriteBatch sb) {
-        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null) {
+        if (currentScreen != null) {
             currentScreen.renderImpl(sb);
         }
 
@@ -571,7 +580,7 @@ public class EUI {
     }
 
     public static void update() {
-        if (AbstractDungeon.screen == AbstractScreen.EUI_SCREEN && currentScreen != null) {
+        if (currentScreen != null) {
             currentScreen.updateImpl();
         }
 

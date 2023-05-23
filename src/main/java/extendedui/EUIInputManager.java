@@ -2,9 +2,11 @@ package extendedui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.MathUtils;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputActionSet;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 
 public class EUIInputManager {
     public static KeyState rightClick = KeyState.Released;
@@ -24,6 +26,14 @@ public class EUIInputManager {
 
     public static boolean didInputUp() {
         return CInputActionSet.up.isJustPressed() || CInputActionSet.altUp.isJustPressed() || InputActionSet.up.isJustPressed();
+    }
+
+    public static boolean tryEscape() {
+        if (InputHelper.pressedEscape && !CardCrawlGame.isPopupOpen && !EUI.cardFilters.isActive && !EUI.relicFilters.isActive && !EUI.potionFilters.isActive) {
+            InputHelper.pressedEscape = false;
+            return true;
+        }
+        return false;
     }
 
     // TODO utility mapping for mapping InputActionSet to CInputActionSet

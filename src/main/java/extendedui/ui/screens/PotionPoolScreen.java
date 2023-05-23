@@ -1,7 +1,8 @@
-package extendedui.ui.cardFilter;
+package extendedui.ui.screens;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -17,7 +18,6 @@ import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomPotionPoolModule;
-import extendedui.ui.AbstractDungeonScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.controls.EUIPotionGrid;
@@ -28,7 +28,13 @@ import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
-public class PotionPoolScreen extends AbstractDungeonScreen {
+import static extendedui.EUIGameUtils.scale;
+
+public class PotionPoolScreen extends EUIPoolScreen {
+
+    @SpireEnum
+    public static AbstractDungeon.CurrentScreen POTION_POOL_SCREEN;
+
     public static CustomPotionPoolModule customModule;
     protected final EUIContextMenu<PotionPoolScreen.DebugOption> contextMenu;
     protected final EUIButton swapCardScreen;
@@ -70,6 +76,11 @@ public class PotionPoolScreen extends AbstractDungeonScreen {
                 .setCanAutosizeButton(true);
     }
 
+    @Override
+    public AbstractDungeon.CurrentScreen curScreen() {
+        return POTION_POOL_SCREEN;
+    }
+
     protected void onRightClick(AbstractPotion c) {
         if (EUIConfiguration.enableCardPoolDebug.get()) {
             selected = c;
@@ -91,7 +102,7 @@ public class PotionPoolScreen extends AbstractDungeonScreen {
     }
 
     public void open(AbstractPlayer player, ArrayList<AbstractPotion> potions) {
-        super.open(false, true);
+        super.open();
 
         potionGrid.clear();
         if (potions.isEmpty()) {
@@ -110,10 +121,6 @@ public class PotionPoolScreen extends AbstractDungeonScreen {
         }, EUI.potionHeader.getOriginalPotions(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
         EUI.potionHeader.updateForFilters();
 
-        if (EUIGameUtils.inGame()) {
-            AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
-        }
-
         customModule = EUI.getCustomPotionPoolModule(player);
         if (customModule != null) {
             customModule.open(EUIUtils.map(potionGrid.potionGroup, r -> r.potion));
@@ -122,15 +129,7 @@ public class PotionPoolScreen extends AbstractDungeonScreen {
     }
 
     @Override
-    public void reopen() {
-        if (EUIGameUtils.inGame()) {
-            AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
-        }
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
+    public void update() {
         if (!EUI.potionFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             potionGrid.tryUpdate();
             swapCardScreen.updateImpl();
@@ -145,7 +144,7 @@ public class PotionPoolScreen extends AbstractDungeonScreen {
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
+    public void render(SpriteBatch sb) {
         potionGrid.tryRender(sb);
         swapCardScreen.renderImpl(sb);
         swapRelicScreen.renderImpl(sb);

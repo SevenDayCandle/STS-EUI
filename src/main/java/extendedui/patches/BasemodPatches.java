@@ -10,7 +10,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
-import extendedui.ui.settings.ModSettingsScreen;
+import extendedui.ui.settings.ExtraModSettingsPanel;
 
 public class BasemodPatches {
     // Create EUI variants of Basemod keywords to show in the relic filter screen
@@ -69,7 +69,7 @@ public class BasemodPatches {
     public static class BaseMod_RegisterModBadge {
         @SpirePostfixPatch
         public static void postfix(Texture t, String name, String author, String desc, ModPanel settingsPanel) {
-            ModSettingsScreen.addModList(new ModSettingsScreen.Category(name), settingsPanel);
+            ExtraModSettingsPanel.addModList(new ExtraModSettingsPanel.Category(name), settingsPanel);
         }
     }
 }

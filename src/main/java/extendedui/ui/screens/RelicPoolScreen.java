@@ -1,15 +1,13 @@
-package extendedui.ui.cardFilter;
+package extendedui.ui.screens;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.CardLibrary;
-import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
@@ -20,7 +18,6 @@ import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomRelicPoolModule;
-import extendedui.ui.AbstractDungeonScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.controls.EUIRelicGrid;
@@ -30,9 +27,14 @@ import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
-public class RelicPoolScreen extends AbstractDungeonScreen {
+import static extendedui.EUIGameUtils.scale;
+
+public class RelicPoolScreen extends EUIPoolScreen {
+
+    @SpireEnum
+    public static AbstractDungeon.CurrentScreen RELIC_POOL_SCREEN;
+
     public static CustomRelicPoolModule customModule;
     protected final EUIContextMenu<RelicPoolScreen.DebugOption> contextMenu;
     protected final EUIButton swapCardScreen;
@@ -74,6 +76,11 @@ public class RelicPoolScreen extends AbstractDungeonScreen {
                 .setCanAutosizeButton(true);
     }
 
+    @Override
+    public AbstractDungeon.CurrentScreen curScreen() {
+        return RELIC_POOL_SCREEN;
+    }
+
     protected void onRightClick(AbstractRelic c) {
         if (EUIConfiguration.enableCardPoolDebug.get()) {
             selected = c;
@@ -104,7 +111,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen {
     }
 
     public void open(AbstractPlayer player, ArrayList<AbstractRelic> relics) {
-        super.open(false, true);
+        super.open();
 
         relicGrid.clear();
         if (relics.isEmpty()) {
@@ -121,10 +128,6 @@ public class RelicPoolScreen extends AbstractDungeonScreen {
             relicGrid.forceUpdateRelicPositions();
         }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true, false);
 
-        if (EUIGameUtils.inGame()) {
-            AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
-        }
-
         customModule = EUI.getCustomRelicPoolModule(player);
         if (customModule != null) {
             customModule.open(EUIUtils.map(relicGrid.relicGroup, r -> r.relic));
@@ -140,15 +143,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen {
     }
 
     @Override
-    public void reopen() {
-        if (EUIGameUtils.inGame()) {
-            AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
-        }
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
+    public void update() {
         if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             relicGrid.tryUpdate();
             swapCardScreen.updateImpl();
@@ -163,7 +158,7 @@ public class RelicPoolScreen extends AbstractDungeonScreen {
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
+    public void render(SpriteBatch sb) {
         relicGrid.tryRender(sb);
         swapCardScreen.renderImpl(sb);
         swapPotionScreen.renderImpl(sb);

@@ -23,6 +23,9 @@ import extendedui.EUIUtils;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.FuncT0;
+import extendedui.ui.screens.CardPoolScreen;
+import extendedui.ui.screens.PotionPoolScreen;
+import extendedui.ui.screens.RelicPoolScreen;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
@@ -74,11 +77,14 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
             EUITooltip.queueTooltip(tooltip);
         }
 
-        if (EUIHotkeys.openCardPool.isJustPressed() && EUI.currentScreen != EUI.cardsScreen) {
+        if (EUIHotkeys.openCardPool.isJustPressed() && AbstractDungeon.screen != CardPoolScreen.CARD_POOL_SCREEN) {
             EUI.cardsScreen.open(AbstractDungeon.player, getAllCards());
         }
-        else if (EUIHotkeys.openRelicPool.isJustPressed() && EUI.currentScreen != EUI.relicScreen) {
+        else if (EUIHotkeys.openRelicPool.isJustPressed() && AbstractDungeon.screen != RelicPoolScreen.RELIC_POOL_SCREEN) {
             EUI.relicScreen.open(AbstractDungeon.player, getAllRelics());
+        }
+        else if (EUIHotkeys.openPotionPool.isJustPressed() && AbstractDungeon.screen != PotionPoolScreen.POTION_POOL_SCREEN) {
+            EUI.potionScreen.open(AbstractDungeon.player, getAllPotions());
         }
 
         contextMenu.tryUpdate();

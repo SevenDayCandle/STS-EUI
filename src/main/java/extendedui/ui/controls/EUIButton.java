@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
+import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.ActionT1;
@@ -52,6 +53,15 @@ public class EUIButton extends EUIHoverable {
         this.text = "";
         this.font = EUIFontHelper.buttonFont;
         this.fontScale = 1f;
+    }
+
+    public static EUIButton createHexagonalButton(float x, float y, float width, float height) {
+        final Texture buttonTexture = EUIRM.images.hexagonalButton.texture();
+        final Texture buttonBorderTexture = EUIRM.images.hexagonalButtonBorder.texture();
+        return new EUIButton(buttonTexture, x, y)
+                .setBorder(buttonBorderTexture, Color.WHITE)
+                .setClickDelay(0.25f)
+                .setDimensions(width, height);
     }
 
     @Override
