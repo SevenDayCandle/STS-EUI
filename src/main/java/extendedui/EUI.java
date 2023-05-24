@@ -85,6 +85,7 @@ public class EUI {
     public static RelicPoolScreen relicScreen;
     public static RelicSortHeader relicHeader;
     public static CardPoolPanelItem compendiumButton;
+    public static boolean disableInteract;
     protected static EUIBase activeElement;
     private static float delta = 0;
     private static float timer = 0;

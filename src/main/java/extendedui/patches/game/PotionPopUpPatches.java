@@ -1,4 +1,4 @@
-package extendedui.patches.topPanel;
+package extendedui.patches.game;
 
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.Settings;

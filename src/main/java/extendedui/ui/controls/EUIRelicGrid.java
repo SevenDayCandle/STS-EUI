@@ -6,6 +6,7 @@ import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
@@ -22,7 +23,6 @@ public class EUIRelicGrid extends EUICanvasGrid {
     protected static final float PAD = scale(80);
     protected static final float DRAW_START_X = Settings.WIDTH - (3f * scale(AbstractRelic.RAW_W)) - (4f * PAD);
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
-    public boolean shouldEnlargeHovered = true;
     public float padX = PAD;
     public float padY = PAD;
     public ArrayList<RelicInfo> relicGroup;
@@ -30,6 +30,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
     public String message = null;
     public float targetScale = 1;
     public float startingScale = targetScale;
+    public float hoveredScale = 1.25f;
     protected ActionT1<AbstractRelic> onRelicClick;
     protected ActionT1<AbstractRelic> onRelicHovered;
     protected ActionT1<AbstractRelic> onRelicRightClick;
@@ -209,16 +210,17 @@ public class EUIRelicGrid extends EUICanvasGrid {
     }
 
     protected void updateHoverLogic(RelicInfo relic, int i) {
-        relic.relic.update();
         relic.relic.hb.update();
         relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
 
         if (relic.relic.hb.hovered) {
+
             hoveredRelic = relic;
             hoveredIndex = i;
-            if (!shouldEnlargeHovered) {
-                relic.relic.scale = targetScale;
-            }
+            relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(hoveredScale));
+        }
+        else {
+            relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(targetScale));
         }
     }
 
@@ -327,9 +329,18 @@ public class EUIRelicGrid extends EUICanvasGrid {
         return this;
     }
 
+    public EUIRelicGrid setRelicScale(float targetScale) {
+        return setRelicScale(targetScale, targetScale, targetScale * 1.25f);
+    }
+
     public EUIRelicGrid setRelicScale(float startingScale, float targetScale) {
+        return setRelicScale(startingScale, targetScale, targetScale * 1.25f);
+    }
+
+    public EUIRelicGrid setRelicScale(float startingScale, float targetScale, float hoveredScale) {
         this.startingScale = startingScale;
         this.targetScale = targetScale;
+        this.hoveredScale = hoveredScale;
 
         return this;
     }
@@ -349,6 +360,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
 
     public EUIRelicGrid addRelic(AbstractRelic relic) {
         relicGroup.add(new RelicInfo(relic));
+        relic.scale = startingScale;
 
         return this;
     }

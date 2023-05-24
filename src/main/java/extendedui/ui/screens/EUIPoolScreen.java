@@ -4,6 +4,7 @@ import basemod.abstracts.CustomScreen;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
+import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.patches.game.AbstractDungeonPatches;
 
@@ -11,6 +12,7 @@ public abstract class EUIPoolScreen extends CustomScreen {
 
     public void switchScreen() {
         Settings.hideRelics = false;
+        EUI.disableInteract = false;
         AbstractDungeon.isScreenUp = false;
         genericScreenOverlayReset();
         AbstractDungeon.overlayMenu.hideBlackScreen();
@@ -39,6 +41,7 @@ public abstract class EUIPoolScreen extends CustomScreen {
     @Override
     public void reopen() {
         Settings.hideRelics = true;
+        EUI.disableInteract = true;
         AbstractDungeon.isScreenUp = true;
         if (AbstractDungeonPatches.coolerPreviousScreen == null) {
             AbstractDungeonPatches.coolerPreviousScreen = isScreenNonEmpty(AbstractDungeon.previousScreen) ? AbstractDungeon.previousScreen

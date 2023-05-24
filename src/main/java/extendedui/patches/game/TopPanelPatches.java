@@ -1,19 +1,44 @@
-package extendedui.patches.topPanel;
+package extendedui.patches.game;
 
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.TipHelper;
-import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.ui.panels.TopPanel;
+import extendedui.EUI;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
-import javassist.CannotCompileException;
 import javassist.CtBehavior;
-import javassist.expr.ExprEditor;
 
 public class TopPanelPatches {
+
+    @SpirePatch(clz = TopPanel.class, method = "update")
+    public static class TopPanelPatches_Update {
+        @SpirePrefixPatch
+        public static SpireReturn<Void> method(TopPanel __instance) {
+            // To simulate AbstractDungeon.screen == CurrentScreen.NO_INTERACT
+            if (EUI.disableInteract && Settings.hideTopBar) {
+                return SpireReturn.Return(null);
+            }
+            else {
+                return SpireReturn.Continue();
+            }
+        }
+    }
+
+    @SpirePatch(clz = TopPanel.class, method = "updateRelics")
+    public static class TopPanelPatches_UpdateRelics {
+        @SpirePrefixPatch
+        public static SpireReturn<Void> method(TopPanel __instance) {
+            // To simulate AbstractDungeon.screen == CurrentScreen.NO_INTERACT
+            if (EUI.disableInteract && Settings.hideRelics) {
+                return SpireReturn.Return(null);
+            }
+            else {
+                return SpireReturn.Continue();
+            }
+        }
+    }
 
     @SpirePatch(clz = TopPanel.class, method = "renderPotionTips")
     public static class TopPanel_RenderPotionTips {

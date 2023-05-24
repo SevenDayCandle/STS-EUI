@@ -29,15 +29,17 @@ public class EUITutorialScreen extends AbstractMenuScreen {
 
     @Override
     public void close() {
-        super.close();
         if (current != null) {
             current.close();
         }
         this.button.hide();
+        super.close();
 
         if (onClose != null) {
             onClose.invoke();
         }
+        EUI.setActiveElement(null);
+        CardCrawlGame.isPopupOpen = false;
     }
 
     public void open(EUITutorial ftue) {
