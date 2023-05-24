@@ -169,6 +169,9 @@ public class EUIRelicGrid extends EUICanvasGrid {
             RelicInfo relic = relicGroup.get(i);
             relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
             relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
+            relic.relic.currentX = MathHelper.cardLerpSnap(relic.relic.currentX, relic.relic.targetX);
+            relic.relic.currentY = MathHelper.cardLerpSnap(relic.relic.currentY, relic.relic.targetY);
+
             updateHoverLogic(relic, i);
 
             column += 1;

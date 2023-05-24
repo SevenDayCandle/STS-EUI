@@ -13,9 +13,10 @@ public abstract class EUIPoolScreen extends CustomScreen {
     public void switchScreen() {
         Settings.hideRelics = false;
         EUI.disableInteract = false;
-        AbstractDungeon.isScreenUp = false;
         genericScreenOverlayReset();
+        AbstractDungeon.overlayMenu.cancelButton.hide();
         AbstractDungeon.overlayMenu.hideBlackScreen();
+        AbstractDungeon.isScreenUp = false;
     }
 
     @Override
@@ -45,14 +46,12 @@ public abstract class EUIPoolScreen extends CustomScreen {
         AbstractDungeon.isScreenUp = true;
         if (AbstractDungeonPatches.coolerPreviousScreen == null) {
             AbstractDungeonPatches.coolerPreviousScreen = isScreenNonEmpty(AbstractDungeon.previousScreen) ? AbstractDungeon.previousScreen
-                    : isScreenNonEmpty(AbstractDungeon.screen) ? AbstractDungeon.screen : null;
+                    : isScreenValid(AbstractDungeon.screen) ? AbstractDungeon.screen : null;
         }
         AbstractDungeon.screen = curScreen();
         AbstractDungeon.overlayMenu.showBlackScreen(0.7f);
         AbstractDungeon.dungeonMapScreen.map.hideInstantly(); // Because the map won't be hidden properly otherwise
-        if (EUIGameUtils.inGame()) {
-            AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
-        }
+        AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
     }
 
     public void open() {
@@ -69,5 +68,17 @@ public abstract class EUIPoolScreen extends CustomScreen {
 
     public boolean isScreenNonEmpty(AbstractDungeon.CurrentScreen s) {
         return !(s == null || s == AbstractDungeon.CurrentScreen.NONE);
+    }
+
+    public boolean isScreenValid(AbstractDungeon.CurrentScreen s) {
+        switch (s) {
+            case MAP:
+            case MASTER_DECK_VIEW:
+            case SETTINGS:
+            case INPUT_SETTINGS:
+            case NONE:
+                return false;
+        }
+        return s != CardPoolScreen.CARD_POOL_SCREEN && s != RelicPoolScreen.RELIC_POOL_SCREEN && s != PotionPoolScreen.POTION_POOL_SCREEN;
     }
 }
