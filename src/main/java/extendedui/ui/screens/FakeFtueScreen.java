@@ -34,9 +34,14 @@ public class FakeFtueScreen extends EUIDungeonScreen {
         return FAKE_FTUE_SCREEN;
     }
 
-    public void open(EUITutorial ftue, ActionT0 onClose) {
-        super.open();
+    public void openScreen(EUITutorial ftue) {
+        super.reopen();
+        this.button.show(CardLibraryScreen.TEXT[0]);
         current = ftue;
+    }
+
+    public void openScreen(EUITutorial ftue, ActionT0 onClose) {
+        openScreen(ftue);
         this.onClose = onClose;
     }
 
@@ -63,7 +68,7 @@ public class FakeFtueScreen extends EUIDungeonScreen {
         button.update();
         if (this.button.hb.clicked || EUIInputManager.tryEscape()) {
             this.button.hb.clicked = false;
-            close();
+            AbstractDungeon.closeCurrentScreen();
         }
     }
 

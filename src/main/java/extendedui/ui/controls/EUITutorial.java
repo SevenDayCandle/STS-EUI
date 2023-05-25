@@ -42,7 +42,7 @@ public class EUITutorial extends EUIHoverable {
         this.tutorials = (EUISearchableDropdown<EUITutorialPage>) new EUISearchableDropdown<EUITutorialPage>(new RelativeHitbox(hb, hb.width, scale(53), hb.width * 0.5f, hb.height * 0.77f), p -> p.title)
                 .setFontForButton(EUIFontHelper.cardTooltipTitleFontNormal, 1f)
                 .setOnOpenOrClose(isOpen -> {
-                    CardCrawlGame.isPopupOpen = this.isActive;
+                    CardCrawlGame.isPopupOpen = isOpen;
                 })
                 .setCanAutosizeButton(true);
         this.tutorials.setOnChange(selectedSeries -> {

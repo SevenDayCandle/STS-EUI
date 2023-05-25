@@ -10,7 +10,6 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndAddToHandEffect;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndObtainEffect;
@@ -71,7 +70,7 @@ public class CardPoolScreen extends EUIPoolScreen {
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.relicScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
+                .setOnClick(() -> EUI.relicScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
                 .setText(EUIRM.strings.uipool_viewRelicPool);
 
         swapPotionScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
@@ -80,7 +79,7 @@ public class CardPoolScreen extends EUIPoolScreen {
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.potionScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllPotions()))
+                .setOnClick(() -> EUI.potionScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllPotions()))
                 .setText(EUIRM.strings.uipool_viewPotionPool);
 
         contextMenu = (EUIContextMenu<DebugOption>) new EUIContextMenu<DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
@@ -149,8 +148,8 @@ public class CardPoolScreen extends EUIPoolScreen {
         }
     }
 
-    public void open(AbstractPlayer player, CardGroup cards) {
-        super.open();
+    public void openScreen(AbstractPlayer player, CardGroup cards) {
+        super.reopen();
         boolean canSeeAllColors = EUIGameUtils.canReceiveAnyColorCard();
 
         cardGrid.clear();

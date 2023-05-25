@@ -10,7 +10,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
@@ -54,7 +53,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.cardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
+                .setOnClick(() -> EUI.cardsScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
                 .setText(EUIRM.strings.uipool_viewCardPool);
 
         swapPotionScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
@@ -63,7 +62,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.potionScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllPotions()))
+                .setOnClick(() -> EUI.potionScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllPotions()))
                 .setText(EUIRM.strings.uipool_viewPotionPool);
 
         contextMenu = (EUIContextMenu<RelicPoolScreen.DebugOption>) new EUIContextMenu<RelicPoolScreen.DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
@@ -110,8 +109,8 @@ public class RelicPoolScreen extends EUIPoolScreen {
         }
     }
 
-    public void open(AbstractPlayer player, ArrayList<AbstractRelic> relics) {
-        super.open();
+    public void openScreen(AbstractPlayer player, ArrayList<AbstractRelic> relics) {
+        super.reopen();
 
         relicGrid.clear();
         if (relics.isEmpty()) {

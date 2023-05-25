@@ -614,12 +614,14 @@ public class EUITooltip {
 
     public EUITooltip setDescription(String description) {
         this.description = description;
+        invalidateHeight();
         return this;
     }
 
     public EUITooltip setFonts(BitmapFont headerFont, BitmapFont descriptionFont) {
         this.headerFont = headerFont;
         this.descriptionFont = descriptionFont;
+        invalidateHeight();
         return this;
     }
 

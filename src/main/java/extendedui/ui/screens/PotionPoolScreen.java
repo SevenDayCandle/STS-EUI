@@ -10,9 +10,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import extendedui.EUI;
-import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
@@ -54,7 +52,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.cardsScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
+                .setOnClick(() -> EUI.cardsScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllCards()))
                 .setText(EUIRM.strings.uipool_viewCardPool);
 
         swapRelicScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
@@ -63,7 +61,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
                 .setFont(EUIFontHelper.buttonFont, 0.8f)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.relicScreen.open(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
+                .setOnClick(() -> EUI.relicScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
                 .setText(EUIRM.strings.uipool_viewRelicPool);
 
         contextMenu = (EUIContextMenu<PotionPoolScreen.DebugOption>) new EUIContextMenu<PotionPoolScreen.DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
@@ -101,8 +99,8 @@ public class PotionPoolScreen extends EUIPoolScreen {
         }
     }
 
-    public void open(AbstractPlayer player, ArrayList<AbstractPotion> potions) {
-        super.open();
+    public void openScreen(AbstractPlayer player, ArrayList<AbstractPotion> potions) {
+        super.reopen();
 
         potionGrid.clear();
         if (potions.isEmpty()) {
