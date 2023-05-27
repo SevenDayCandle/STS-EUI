@@ -58,23 +58,23 @@ public class ShaderDebugger implements ImGuiSubscriber {
         renderShader();
     }
 
-    protected void compile() {
+    private void compile() {
         FileHandle vShader = Gdx.files.internal(EUIRenderHelpers.SHADER_VERTEX);
         String vShaderString = vShader.readString();
         ShaderProgram program = new ShaderProgram(vShaderString, fragmentShader.get());
         if (program.isCompiled()) {
             shader = program;
             if (program.getLog().length() > 0) {
-                System.out.println(program.getLog());
+                EUIUtils.logInfo(ShaderDebugger.class, program.getLog());
             }
         }
         else {
-            System.err.println(program.getLog());
+            EUIUtils.logError(ShaderDebugger.class, program.getLog());
             shader = null;
         }
     }
 
-    protected void renderShader() {
+    private void renderShader() {
         if (shader != null) {
             shader.setUniformf("u_time", EUI.time());
             EUI.addPostRender(s -> EUIRenderHelpers.drawWithShader(s, shader, testImage::tryRender));

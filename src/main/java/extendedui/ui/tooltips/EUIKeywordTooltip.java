@@ -9,11 +9,13 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
+import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
@@ -55,13 +57,13 @@ public class EUIKeywordTooltip extends EUITooltip {
         super(title, description);
     }
 
-    public EUIKeywordTooltip(String title, AbstractPlayer.PlayerClass playerClass, String descriptions) {
-        super(title, descriptions);
+    public EUIKeywordTooltip(String title, String description, String modID) {
+        super(title, description);
 
-        if (WhatMod.enabled && playerClass != null) {
-            String foundName = WhatMod.findModName(playerClass.getClass());
-            if (foundName != null) {
-                modName = new ColoredString(foundName, Settings.PURPLE_COLOR);
+        if (WhatMod.enabled && modID != null) {
+            ModInfo found = EUIGameUtils.getModInfoFromID(modID);
+            if (found != null) {
+                modName = new ColoredString(found.Name, Settings.PURPLE_COLOR);
             }
         }
     }
@@ -177,6 +179,10 @@ public class EUIKeywordTooltip extends EUITooltip {
         lastTextHeight = null;
         lastModNameHeight = null;
         lastSubHeaderHeight = null;
+    }
+
+    public boolean isRenderable() {
+        return super.isRenderable() && canHighlight;
     }
 
     public EUIKeywordTooltip makeCopy() {
@@ -328,7 +334,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     }
 
     public EUIKeywordTooltip showText(boolean value) {
-        this.canRender = value;
+        super.showText(value);
 
         return this;
     }

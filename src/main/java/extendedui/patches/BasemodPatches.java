@@ -24,7 +24,7 @@ public class BasemodPatches {
             if (title == null) {
                 title = names[0];
             }
-            EUI.tryRegisterTooltip(names[0], title, description, names);
+            EUI.tryRegisterTooltip(names[0], modID, title, description, names);
         }
     }
 

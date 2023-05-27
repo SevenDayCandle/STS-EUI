@@ -89,6 +89,7 @@ public class EUITooltip {
         this.title = other.title;
         this.description = other.description;
         this.subHeader = other.subHeader;
+        this.canRender = other.canRender;
     }
 
     public static boolean canRenderPower(AbstractPower po) {
@@ -263,7 +264,7 @@ public class EUITooltip {
             lastHoveredCreature = null;
             tooltips.clear();
             for (EUITooltip tip : provider.getTipsForRender()) {
-                if (tip.canRender) {
+                if (tip.isRenderable()) {
                     tooltips.add(tip);
                 }
             }
@@ -287,7 +288,7 @@ public class EUITooltip {
             y = card.current_y - BOX_EDGE_H;
             float size = 0;
             for (EUITooltip tip : tooltips) {
-                if (!tip.canRender && !StringUtils.isEmpty(tip.description)) {
+                if (!StringUtils.isEmpty(tip.description)) {
                     size += 1f;
                 }
             }
@@ -305,7 +306,7 @@ public class EUITooltip {
 
         for (int i = 0; i < tooltips.size(); i++) {
             EUITooltip tip = tooltips.get(i);
-            if ((!tip.canRender || StringUtils.isEmpty(tip.description))) {
+            if (StringUtils.isEmpty(tip.description)) {
                 continue;
             }
 
@@ -488,7 +489,7 @@ public class EUITooltip {
         for (int i = 0; i < tips.size(); i++) {
             final EUITooltip tip = tips.get(i);
 
-            if (tip.canRender) {
+            if (tip.isRenderable()) {
                 y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
             }
         }
@@ -513,6 +514,10 @@ public class EUITooltip {
         return this;
     }
 
+    public boolean idEquals(EUITooltip tooltip) {
+        return tooltip != null && ID.equals(tooltip.ID);
+    }
+
     public EUITooltip formatDescription(Object... items) {
         return setDescription(EUIUtils.format(description, items));
     }
@@ -531,8 +536,8 @@ public class EUITooltip {
         return lastHeight;
     }
 
-    public boolean is(EUITooltip tooltip) {
-        return tooltip != null && ID.equals(tooltip.ID);
+    public boolean isRenderable() {
+        return canRender;
     }
 
     public EUITooltip makeCopy() {

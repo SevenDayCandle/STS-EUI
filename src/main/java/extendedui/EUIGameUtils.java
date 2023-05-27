@@ -281,6 +281,15 @@ public class EUIGameUtils {
         return null;
     }
 
+    public static ModInfo getModInfoFromID(String id) {
+        for (ModInfo loadedInfo : Loader.MODINFOS) {
+            if (loadedInfo.ID.equals(id)) {
+                return loadedInfo;
+            }
+        }
+        return null;
+    }
+
     public static boolean isPlayerClass(AbstractPlayer.PlayerClass playerClass) {
         return AbstractDungeon.player != null && AbstractDungeon.player.chosenClass == playerClass;
     }

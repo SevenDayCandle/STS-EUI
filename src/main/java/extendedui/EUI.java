@@ -352,7 +352,7 @@ public class EUI {
     public static void registerBasegameKeywords() {
 
         // Energy tooltips are not present in GameDictionary
-        EUIKeywordTooltip energyTooltip = tryRegisterTooltip("E", TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).setIconFunc(EUI::getEnergyIcon);
+        EUIKeywordTooltip energyTooltip = tryRegisterTooltip("E", null, TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).setIconFunc(EUI::getEnergyIcon);
         EUIKeywordTooltip.registerName(StringUtils.lowerCase(TipHelper.TEXT[0]), energyTooltip);
 
         // Read directly from fields to obtain the actual IDs to use, which are language-invariant
@@ -361,7 +361,7 @@ public class EUI {
                 try {
                     final com.megacrit.cardcrawl.localization.Keyword k = (Keyword) field.get(null);
                     String id = EUIUtils.capitalize(field.getName());
-                    tryRegisterTooltip(EUIUtils.capitalize(id), k.DESCRIPTION, k.NAMES);
+                    tryRegisterTooltip(EUIUtils.capitalize(id), null, k.DESCRIPTION, k.NAMES);
                 }
                 catch (IllegalAccessException ex) {
                     ex.printStackTrace();
@@ -372,11 +372,12 @@ public class EUI {
 
     /* Register a tooltip with the given parameters. If grammar exists, its contents will be merged with this tooltip
      * */
-    public static EUIKeywordTooltip tryRegisterTooltip(String id, String title, String description, String[] names) {
+
+    public static EUIKeywordTooltip tryRegisterTooltip(String id, String modID, String title, String description, String[] names) {
         EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(id);
         if (tooltip == null) {
             String newTitle = EUIUtils.capitalize(title);
-            tooltip = new EUIKeywordTooltip(newTitle, description);
+            tooltip = new EUIKeywordTooltip(newTitle, description, modID);
             EUIKeywordTooltip.registerID(id, tooltip);
             for (String subName : names) {
                 EUIKeywordTooltip.registerName(subName, tooltip);
@@ -406,8 +407,8 @@ public class EUI {
         }
     }
 
-    public static EUITooltip tryRegisterTooltip(String id, String description, String[] names) {
-        return tryRegisterTooltip(id, names[0], description, names);
+    public static EUITooltip tryRegisterTooltip(String id, String modID, String description, String[] names) {
+        return tryRegisterTooltip(id, modID, names[0], description, names);
     }
 
     /* Add grammar rules to existing tooltips */
