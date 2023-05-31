@@ -15,23 +15,22 @@ import java.util.StringJoiner;
 public class EUIRM {
     public static final String ID = "extendedui";
     protected static final HashMap<String, Texture> internalTextures = new HashMap<>();
-    private static final HashMap<String, Texture> localTextures = new HashMap<>();
+    private static final HashMap<String, Texture> externalTextures = new HashMap<>();
     public static Images images = new Images();
     public static Strings strings;
 
-    public static Texture getLocalTexture(String path) {
-        return getLocalTexture(path, true);
+    public static Texture getExternalTexture(String path) {
+        return getExternalTexture(path, true);
     }
 
-    public static Texture getLocalTexture(String path, boolean useMipMap) {
-        return getLocalTexture(path, useMipMap, false, false);
+    public static Texture getExternalTexture(String path, boolean useMipMap) {
+        return getExternalTexture(path, useMipMap, false);
     }
 
-    public static Texture getLocalTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {
-        Texture texture = localTextures.get(path);
-        if (texture == null || refresh) {
-            texture = loadTextureImpl(Gdx.files.local(path), useMipMap, suppressError);
-            localTextures.put(path, texture);
+    public static Texture getExternalTexture(String path, boolean useMipMap, boolean suppressError) {
+        Texture texture = externalTextures.get(path);
+        if (texture == null) {
+            texture = reloadExternalTexture(path, useMipMap, suppressError);
         }
 
         return texture;
@@ -42,16 +41,27 @@ public class EUIRM {
     }
 
     public static Texture getTexture(String path, boolean useMipMap) {
-        return getTexture(path, useMipMap, false, false);
+        return getTexture(path, useMipMap, false);
     }
 
-    public static Texture getTexture(String path, boolean useMipMap, boolean refresh, boolean suppressError) {
+    public static Texture getTexture(String path, boolean useMipMap, boolean suppressError) {
         Texture texture = internalTextures.get(path);
-        if (texture == null || refresh) {
-            texture = loadTextureImpl(Gdx.files.internal(path), useMipMap, suppressError);
-            internalTextures.put(path, texture);
+        if (texture == null) {
+            texture = reloadTexture(path, useMipMap, suppressError);
         }
 
+        return texture;
+    }
+
+    public static Texture reloadExternalTexture(String path, boolean useMipMap, boolean suppressError) {
+        Texture texture = loadTextureImpl(Gdx.files.external(path), useMipMap, suppressError);
+        externalTextures.put(path, texture);
+        return texture;
+    }
+
+    public static Texture reloadTexture(String path, boolean useMipMap, boolean suppressError) {
+        Texture texture = loadTextureImpl(Gdx.files.internal(path), useMipMap, suppressError);
+        internalTextures.put(path, texture);
         return texture;
     }
 

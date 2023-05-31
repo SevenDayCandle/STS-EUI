@@ -22,17 +22,14 @@ public class TextureCache {
     }
 
     public Texture texture() {
-        return this.texture(false);
+        if (this.texture == null) {
+            this.texture = EUIRM.getTexture(this.path, this.mipmap, false);
+        }
+        return this.texture;
     }
 
-    public Texture texture(boolean refresh) {
-        if (refresh || this.texture == null) {
-            this.texture = EUIRM.getTexture(this.path, this.mipmap, refresh, false);
-            if (this.texture == null) {
-                this.texture = EUIRM.getLocalTexture(this.path, this.mipmap, refresh, false);
-            }
-        }
-
+    public Texture reload() {
+        this.texture = EUIRM.getTexture(this.path, this.mipmap, false);
         return this.texture;
     }
 }
