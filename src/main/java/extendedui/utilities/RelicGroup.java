@@ -26,6 +26,10 @@ public class RelicGroup implements Iterable<RelicGroup.RelicInfo> {
         group.add(relicInfo);
     }
 
+    public void addAll(Collection<RelicInfo> relicInfo) {
+        group.addAll(relicInfo);
+    }
+
     public void clear() {
         group.clear();
     }

@@ -11,6 +11,7 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.ui.EUIBase;
 import extendedui.ui.controls.EUIPotionGrid;
+import extendedui.utilities.PotionGroup;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -19,8 +20,8 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
     public static final float START_X = screenW(0.5f) - CardLibSortHeader.SPACE_X * 1.45f;
     public static PotionSortHeader instance;
     public SortHeaderButton[] buttons;
-    public EUIPotionGrid grid;
-    public ArrayList<EUIPotionGrid.PotionInfo> originalGroup;
+    public PotionGroup group;
+    public ArrayList<PotionGroup.PotionInfo> originalGroup;
     protected boolean isAscending;
     protected boolean snapToGroup;
     protected float baseY = Settings.HEIGHT * 0.85f;
@@ -30,8 +31,8 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
     protected SortHeaderButton amountButton;
     private SortHeaderButton lastUsedButton;
 
-    public PotionSortHeader(EUIPotionGrid grid) {
-        this.grid = grid;
+    public PotionSortHeader(PotionGroup group) {
+        this.group = group;
         instance = this;
         float xPosition = START_X;
         this.rarityButton = new SortHeaderButton(CardLibSortHeader.TEXT[0], xPosition, 0.0F, this);
@@ -49,7 +50,7 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
     }
 
     public ArrayList<AbstractPotion> getPotions() {
-        return EUIUtils.map(grid.potionGroup, r -> r.potion);
+        return EUIUtils.map(group.group, r -> r.potion);
     }
 
     public PotionSortHeader setBaseY(float value) {
@@ -57,13 +58,13 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
         return this;
     }
 
-    public PotionSortHeader setGrid(EUIPotionGrid grid) {
+    public PotionSortHeader setGroup(PotionGroup group) {
         EUI.potionFilters.clear(false, true);
-        this.grid = grid;
-        this.originalGroup = new ArrayList<>(grid.potionGroup);
+        this.group = group;
+        this.originalGroup = new ArrayList<>(group.group);
 
         if (PotionKeywordFilters.customModule != null) {
-            PotionKeywordFilters.customModule.processGroup(EUIUtils.map(grid.potionGroup, r -> r.potion));
+            PotionKeywordFilters.customModule.processGroup(EUIUtils.map(group.group, r -> r.potion));
         }
         for (SortHeaderButton button : buttons) {
             button.reset();
@@ -78,37 +79,37 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
     }
 
     public void updateForFilters() {
-        if (this.grid != null) {
+        if (this.group != null) {
             if (EUI.potionFilters.areFiltersEmpty()) {
-                this.grid.potionGroup = originalGroup;
+                this.group.group = originalGroup;
             }
             else {
-                this.grid.potionGroup = EUI.potionFilters.applyInfoFilters(originalGroup);
+                this.group.group = EUI.potionFilters.applyInfoFilters(originalGroup);
             }
             didChangeOrder(lastUsedButton, isAscending);
-            EUI.potionFilters.refresh(EUIUtils.map(grid.potionGroup, group -> group.potion));
+            EUI.potionFilters.refresh(EUIUtils.map(group.group, group -> group.potion));
         }
     }
 
     @Override
     public void didChangeOrder(SortHeaderButton button, boolean isAscending) {
-        if (grid != null) {
+        if (group != null) {
             if (button == this.rarityButton) {
-                this.grid.potionGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal()) * (isAscending ? 1 : -1));
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal()) * (isAscending ? 1 : -1));
             }
             else if (button == this.nameButton) {
-                this.grid.potionGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.potion.name, b.potion.name)) * (isAscending ? 1 : -1));
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.potion.name, b.potion.name)) * (isAscending ? 1 : -1));
             }
             else if (button == this.colorButton) {
-                this.grid.potionGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potionColor.ordinal() - b.potionColor.ordinal()) * (isAscending ? 1 : -1));
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potionColor.ordinal() - b.potionColor.ordinal()) * (isAscending ? 1 : -1));
             }
             else if (button == this.amountButton) {
-                this.grid.potionGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency()) * (isAscending ? 1 : -1));
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency()) * (isAscending ? 1 : -1));
             }
             else {
-                this.grid.potionGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potionColor.ordinal() - b.potionColor.ordinal()) * (isAscending ? 1 : -1));
-                this.grid.potionGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal()) * (isAscending ? 1 : -1));
-                this.grid.potionGroup.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency()) * (isAscending ? 1 : -1));
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potionColor.ordinal() - b.potionColor.ordinal()) * (isAscending ? 1 : -1));
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal()) * (isAscending ? 1 : -1));
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency()) * (isAscending ? 1 : -1));
             }
         }
         for (SortHeaderButton eB : buttons) {
@@ -118,7 +119,7 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
 
     @Override
     public void updateImpl() {
-        float scrolledY = snapToGroup && this.grid != null && this.grid.potionGroup.size() > 0 ? this.grid.potionGroup.get(0).potion.posY + 230.0F * Settings.yScale : baseY;
+        float scrolledY = snapToGroup && this.group != null && this.group.size() > 0 ? this.group.group.get(0).potion.posY + 230.0F * Settings.yScale : baseY;
         for (SortHeaderButton button : buttons) {
             button.update();
             button.updateScrollPosition(scrolledY);

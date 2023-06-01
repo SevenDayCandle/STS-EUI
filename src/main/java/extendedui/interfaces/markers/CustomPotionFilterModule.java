@@ -2,7 +2,7 @@ package extendedui.interfaces.markers;
 
 import basemod.IUIElement;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-import extendedui.ui.controls.EUIPotionGrid;
+import extendedui.utilities.PotionGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,7 @@ public interface CustomPotionFilterModule extends IUIElement {
 
     boolean isHovered();
 
-    default boolean isPotionValid(EUIPotionGrid.PotionInfo c) {
+    default boolean isPotionValid(PotionGroup.PotionInfo c) {
         return isPotionValid(c.potion);
     }
 

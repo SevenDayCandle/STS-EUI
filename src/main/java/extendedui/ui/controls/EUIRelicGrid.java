@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIInputManager;
+import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.utilities.RelicGroup;
@@ -18,6 +19,7 @@ import java.util.ArrayList;
 
 public class EUIRelicGrid extends EUICanvasGrid {
     public static final int ROW_SIZE = 10;
+    public static final int LERP_SPEED = 8;
     protected static final float PAD = scale(80);
     protected static final float DRAW_START_X = Settings.WIDTH - (3f * scale(AbstractRelic.RAW_W)) - (4f * PAD);
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
@@ -167,8 +169,8 @@ public class EUIRelicGrid extends EUICanvasGrid {
             RelicGroup.RelicInfo relic = relicGroup.group.get(i);
             relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
             relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
-            relic.relic.currentX = MathHelper.cardLerpSnap(relic.relic.currentX, relic.relic.targetX);
-            relic.relic.currentY = MathHelper.cardLerpSnap(relic.relic.currentY, relic.relic.targetY);
+            relic.relic.currentX = EUIUtils.lerpSnap(relic.relic.currentX, relic.relic.targetX, LERP_SPEED);
+            relic.relic.currentY = EUIUtils.lerpSnap(relic.relic.currentY, relic.relic.targetY, LERP_SPEED);
 
             updateHoverLogic(relic, i);
 

@@ -19,7 +19,6 @@ import extendedui.interfaces.markers.CustomPotionPoolModule;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.controls.EUIPotionGrid;
-import extendedui.ui.controls.EUIStaticPotionGrid;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
@@ -109,21 +108,18 @@ public class PotionPoolScreen extends EUIPoolScreen {
         }
 
         potionGrid.setPotions(potions);
-        EUI.potionHeader.setGrid(potionGrid).snapToGroup(false);
-        EUI.potionFilters.initialize(__ -> {
-            EUI.potionHeader.updateForFilters();
+
+        EUI.potionFilters.initializeForCustomHeader(potionGrid.potionGroup, __ -> {
             if (customModule != null) {
                 customModule.open(EUI.potionHeader.getPotions());
             }
             potionGrid.forceUpdatePotionPositions();
-        }, EUI.potionHeader.getOriginalPotions(), player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true);
-        EUI.potionHeader.updateForFilters();
+        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true, false);
 
         customModule = EUI.getCustomPotionPoolModule(player);
         if (customModule != null) {
             customModule.open(EUIUtils.map(potionGrid.potionGroup, r -> r.potion));
         }
-
     }
 
     @Override

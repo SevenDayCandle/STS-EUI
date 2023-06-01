@@ -1,5 +1,7 @@
 package extendedui;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.math.MathUtils;
 import com.google.gson.Gson;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.TipHelper;
@@ -501,6 +503,22 @@ public abstract class EUIUtils {
 
         return sj.toString();
     }
+
+    public static float lerpSnap(float startX, float targetX, float rate) {
+        return lerpSnap(startX, targetX, rate, Settings.CARD_SNAP_THRESHOLD);
+    }
+
+    public static float lerpSnap(float startX, float targetX, float rate, float threshold) {
+        if (startX != targetX) {
+            startX = MathUtils.lerp(startX, targetX, Gdx.graphics.getDeltaTime() * rate);
+            if (Math.abs(startX - targetX) < threshold) {
+                startX = targetX;
+            }
+        }
+
+        return startX;
+    }
+
 
     public static void logInfoIfDebug(Object source, Object message) {
         if (Settings.isDebug) {

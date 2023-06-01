@@ -3,6 +3,7 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
+import extendedui.utilities.PotionGroup;
 
 public class EUIStaticPotionGrid extends EUIPotionGrid {
     public int visibleRowCount = 20;
@@ -26,7 +27,7 @@ public class EUIStaticPotionGrid extends EUIPotionGrid {
         int row = 0;
         int column = 0;
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, potionGroup.size()); i++) {
-            PotionInfo potion = potionGroup.get(i);
+            PotionGroup.PotionInfo potion = potionGroup.group.get(i);
             potion.potion.posX = (DRAW_START_X * drawX) + (column * PAD);
             potion.potion.posY = drawTopY + scrollDelta - (row * padY);
             potion.potion.hb.update();
@@ -48,7 +49,7 @@ public class EUIStaticPotionGrid extends EUIPotionGrid {
         int column = 0;
 
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, potionGroup.size()); i++) {
-            PotionInfo potion = potionGroup.get(i);
+            PotionGroup.PotionInfo potion = potionGroup.group.get(i);
             potion.potion.posX = (DRAW_START_X * drawX) + (column * PAD);
             potion.potion.posY = drawTopY - (row * padY);
             updateHoverLogic(potion, i);
@@ -82,7 +83,7 @@ public class EUIStaticPotionGrid extends EUIPotionGrid {
     @Override
     protected void renderPotions(SpriteBatch sb) {
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, potionGroup.size()); i++) {
-            renderPotion(sb, potionGroup.get(i));
+            renderPotion(sb, potionGroup.group.get(i));
         }
     }
 
@@ -110,7 +111,7 @@ public class EUIStaticPotionGrid extends EUIPotionGrid {
         }
 
         for (int i = Math.max(0, min); i < Math.min(max, potionGroup.size()); i++) {
-            PotionInfo card = potionGroup.get(i);
+            PotionGroup.PotionInfo card = potionGroup.group.get(i);
             card.potion.scale = targetScale;
         }
 

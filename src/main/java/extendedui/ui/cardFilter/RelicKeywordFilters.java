@@ -238,8 +238,8 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
         EUI.relicFilters.initialize(__ -> {
             EUI.relicHeader.updateForFilters();
-            if (customModule != null) {
-                customModule.processGroup(EUI.relicHeader.getRelics());
+            if (module != null) {
+                module.open(EUI.relicHeader.getRelics());
             }
         }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
         EUI.relicHeader.updateForFilters();

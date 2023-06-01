@@ -16,13 +16,16 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.CustomPotionFilterModule;
+import extendedui.interfaces.markers.CustomPotionPoolModule;
+import extendedui.interfaces.markers.CustomRelicPoolModule;
 import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.controls.EUIDropdown;
-import extendedui.ui.controls.EUIPotionGrid;
 import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.PotionGroup;
+import extendedui.utilities.RelicGroup;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -86,7 +89,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion> {
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
     }
 
-    public ArrayList<EUIPotionGrid.PotionInfo> applyInfoFilters(ArrayList<EUIPotionGrid.PotionInfo> input) {
+    public ArrayList<PotionGroup.PotionInfo> applyInfoFilters(ArrayList<PotionGroup.PotionInfo> input) {
         return EUIUtils.filter(input, info -> evaluatePotion(info.potion));
     }
 
@@ -214,6 +217,38 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion> {
         if (customModule != null) {
             customModule.render(sb);
         }
+    }
+
+    public PotionKeywordFilters initializeForCustomHeader(PotionGroup group, CustomPotionPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.potionHeader.setGroup(group).snapToGroup(snapToGroup);
+        EUI.potionFilters.initialize(__ -> {
+            EUI.potionHeader.updateForFilters();
+            if (customModule != null) {
+                customModule.processGroup(EUI.potionHeader.getPotions());
+            }
+        }, EUI.potionHeader.getOriginalPotions(), color, isAccessedFromCardPool);
+        EUI.potionHeader.updateForFilters();
+        return this;
+    }
+
+    public PotionKeywordFilters initializeForCustomHeader(PotionGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.potionHeader.setGroup(group).snapToGroup(snapToGroup);
+        EUI.potionFilters.initialize(button -> {
+            EUI.potionHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.potionHeader.getOriginalPotions(), color, isAccessedFromCardPool);
+        EUI.potionHeader.updateForFilters();
+        return this;
+    }
+
+    public PotionKeywordFilters initializeForCustomHeader(PotionGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.potionHeader.setGroup(group).snapToGroup(snapToGroup);
+        EUI.potionFilters.initialize(button -> {
+            EUI.potionHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.potionHeader.getOriginalPotions(), color, isAccessedFromCardPool);
+        EUI.potionHeader.updateForFilters();
+        return this;
     }
 
     protected boolean evaluatePotion(AbstractPotion c) {

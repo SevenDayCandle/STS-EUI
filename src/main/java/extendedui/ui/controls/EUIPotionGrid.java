@@ -3,7 +3,6 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
@@ -12,21 +11,24 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIGameUtils;
 import extendedui.EUIInputManager;
+import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
+import extendedui.utilities.PotionGroup;
 
 import java.util.ArrayList;
 
 public class EUIPotionGrid extends EUICanvasGrid {
-    public static final int ROW_SIZE = 10;
+    public static final int ROW_SIZE = 12;
+    public static final int LERP_SPEED = 8;
     protected static final float PAD = scale(64);
     protected static final float DRAW_START_X = Settings.WIDTH - (3f * scale(AbstractRelic.RAW_W)) - (4f * PAD);
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
     public boolean shouldEnlargeHovered = true;
     public float padX = PAD;
     public float padY = PAD;
-    public ArrayList<PotionInfo> potionGroup;
-    public PotionInfo hoveredPotion = null;
+    public PotionGroup potionGroup;
+    public PotionGroup.PotionInfo hoveredPotion = null;
     public String message = null;
     public float targetScale = 1;
     public float startingScale = targetScale;
@@ -45,7 +47,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
     public EUIPotionGrid(float horizontalAlignment, boolean autoShowScrollbar) {
         super(ROW_SIZE, PAD);
         this.autoShowScrollbar = autoShowScrollbar;
-        this.potionGroup = new ArrayList<>();
+        this.potionGroup = new PotionGroup();
 
         setHorizontalAlignment(horizontalAlignment);
     }
@@ -82,7 +84,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
         this.draggingScreen = false;
         this.message = null;
         // Unlink the potions from any outside potion group given to it
-        this.potionGroup = new ArrayList<>();
+        this.potionGroup = new PotionGroup();
 
 
         refreshOffset();
@@ -107,7 +109,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
     public void forceUpdatePotionPositions() {
         int row = 0;
         int column = 0;
-        for (PotionInfo potion : potionGroup) {
+        for (PotionGroup.PotionInfo potion : potionGroup) {
             potion.potion.posX = (DRAW_START_X * drawX) + (column * PAD);
             potion.potion.posY = drawTopY + scrollDelta - (row * padY);
             potion.potion.hb.update();
@@ -159,9 +161,11 @@ public class EUIPotionGrid extends EUICanvasGrid {
         int row = 0;
         int column = 0;
         for (int i = 0; i < potionGroup.size(); i++) {
-            PotionInfo potion = potionGroup.get(i);
-            potion.potion.posX = (DRAW_START_X * drawX) + (column * PAD);
-            potion.potion.posY = drawTopY + scrollDelta - (row * padY);
+            PotionGroup.PotionInfo potion = potionGroup.group.get(i);
+            float targetX = (DRAW_START_X * drawX) + (column * PAD);
+            float targetY = drawTopY + scrollDelta - (row * padY);
+            potion.potion.posX = EUIUtils.lerpSnap(potion.potion.posX, targetX, LERP_SPEED);
+            potion.potion.posY = EUIUtils.lerpSnap(potion.potion.posY, targetY, LERP_SPEED);
             updateHoverLogic(potion, i);
 
             column += 1;
@@ -190,7 +194,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
 
             if (targetIndex != hoveredIndex) {
                 targetIndex = MathUtils.clamp(targetIndex, 0, potionGroup.size() - 1);
-                PotionInfo potion = potionGroup.get(targetIndex);
+                PotionGroup.PotionInfo potion = potionGroup.group.get(targetIndex);
                 if (potion != null) {
                     float distance = getScrollDistance(potion.potion, targetIndex);
                     if (distance != 0) {
@@ -202,8 +206,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
         }
     }
 
-    protected void updateHoverLogic(PotionInfo potion, int i) {
-        potion.potion.update();
+    protected void updateHoverLogic(PotionGroup.PotionInfo potion, int i) {
         potion.potion.hb.update();
         potion.potion.hb.move(potion.potion.posX, potion.potion.posY);
 
@@ -249,12 +252,12 @@ public class EUIPotionGrid extends EUICanvasGrid {
     }
 
     protected void renderPotions(SpriteBatch sb) {
-        for (PotionInfo potionInfo : potionGroup) {
+        for (PotionGroup.PotionInfo potionInfo : potionGroup) {
             renderPotion(sb, potionInfo);
         }
     }
 
-    protected void renderPotion(SpriteBatch sb, PotionInfo potion) {
+    protected void renderPotion(SpriteBatch sb, PotionGroup.PotionInfo potion) {
         potion.potion.render(sb);
 
         if (onPotionRender != null) {
@@ -263,7 +266,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
     }
 
     public EUIPotionGrid removePotion(AbstractPotion potion) {
-        potionGroup.removeIf(rInfo -> rInfo.potion == potion);
+        potionGroup.group.removeIf(rInfo -> rInfo.potion == potion);
 
         return this;
     }
@@ -307,7 +310,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
     }
 
     public EUIPotionGrid addPotion(AbstractPotion potion) {
-        potionGroup.add(new PotionInfo(potion));
+        potionGroup.add(new PotionGroup.PotionInfo(potion));
 
         return this;
     }
@@ -318,13 +321,4 @@ public class EUIPotionGrid extends EUICanvasGrid {
         return this;
     }
 
-    public static class PotionInfo {
-        public final AbstractPotion potion;
-        public final AbstractCard.CardColor potionColor;
-
-        public PotionInfo(AbstractPotion potion) {
-            this.potion = potion;
-            this.potionColor = EUIGameUtils.getPotionColor(potion.ID);
-        }
-    }
 }
