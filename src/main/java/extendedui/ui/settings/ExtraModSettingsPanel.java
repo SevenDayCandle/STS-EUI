@@ -6,7 +6,9 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUIGameUtils;
@@ -41,6 +43,7 @@ public class ExtraModSettingsPanel extends EUIBase {
     protected final EUIButtonList buttons = new EUIButtonList(7, screenW(0.077f), hb.y + scale(800), scale(205), scale(42)).setFontScale(0.6f);
     protected final EUIImage background;
     private Category activeMod;
+    private String prevOpenString;
 
     public ExtraModSettingsPanel() {
         super();
@@ -123,6 +126,18 @@ public class ExtraModSettingsPanel extends EUIBase {
 
     public void open() {
         isActive = true;
+        if (EUIGameUtils.inGame() && !AbstractDungeon.overlayMenu.cancelButton.isHidden) {
+            AbstractDungeon.overlayMenu.cancelButton.hide();
+            prevOpenString = AbstractDungeon.overlayMenu.cancelButton.buttonText;
+        }
+        else if (!EUIGameUtils.inGame() && !CardCrawlGame.cancelButton.isHidden) {
+            CardCrawlGame.cancelButton.hide();
+            prevOpenString = AbstractDungeon.overlayMenu.cancelButton.buttonText;
+        }
+        else {
+            prevOpenString = null;
+        }
+
         this.button.show(MasterDeckViewScreen.TEXT[1]);
 
         buttons.clear();
@@ -138,7 +153,16 @@ public class ExtraModSettingsPanel extends EUIBase {
     }
 
     public void close() {
+        if (prevOpenString != null) {
+            if (EUIGameUtils.inGame()) {
+                AbstractDungeon.overlayMenu.cancelButton.show(prevOpenString);
+            }
+            else {
+                CardCrawlGame.cancelButton.show(prevOpenString);
+            }
+        }
         isActive = false;
+        prevOpenString = null;
     }
 
     @Override
