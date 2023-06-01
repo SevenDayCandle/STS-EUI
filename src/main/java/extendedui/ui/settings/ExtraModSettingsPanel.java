@@ -132,7 +132,7 @@ public class ExtraModSettingsPanel extends EUIBase {
         }
         else if (!EUIGameUtils.inGame() && !CardCrawlGame.cancelButton.isHidden) {
             CardCrawlGame.cancelButton.hide();
-            prevOpenString = AbstractDungeon.overlayMenu.cancelButton.buttonText;
+            prevOpenString = CardCrawlGame.cancelButton.buttonText;
         }
         else {
             prevOpenString = null;
