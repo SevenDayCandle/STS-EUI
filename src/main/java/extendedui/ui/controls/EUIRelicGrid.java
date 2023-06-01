@@ -3,18 +3,16 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
-import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import extendedui.EUIGameUtils;
 import extendedui.EUIInputManager;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
+import extendedui.utilities.RelicGroup;
 
 import java.util.ArrayList;
 
@@ -25,8 +23,8 @@ public class EUIRelicGrid extends EUICanvasGrid {
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
     public float padX = PAD;
     public float padY = PAD;
-    public ArrayList<RelicInfo> relicGroup;
-    public RelicInfo hoveredRelic = null;
+    public RelicGroup relicGroup;
+    public RelicGroup.RelicInfo hoveredRelic = null;
     public String message = null;
     public float targetScale = 1;
     public float startingScale = targetScale;
@@ -46,7 +44,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
     public EUIRelicGrid(float horizontalAlignment, boolean autoShowScrollbar) {
         super(ROW_SIZE, PAD);
         this.autoShowScrollbar = autoShowScrollbar;
-        this.relicGroup = new ArrayList<>();
+        this.relicGroup = new RelicGroup();
 
         setHorizontalAlignment(horizontalAlignment);
     }
@@ -89,7 +87,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
         this.draggingScreen = false;
         this.message = null;
         // Unlink the relics from any outside relic group given to it
-        this.relicGroup = new ArrayList<>();
+        this.relicGroup = new RelicGroup();
 
 
         refreshOffset();
@@ -114,7 +112,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
     public void forceUpdateRelicPositions() {
         int row = 0;
         int column = 0;
-        for (RelicInfo relic : relicGroup) {
+        for (RelicGroup.RelicInfo relic : relicGroup.group) {
             relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
             relic.relic.currentY = relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
             relic.relic.hb.update();
@@ -166,7 +164,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
         int row = 0;
         int column = 0;
         for (int i = 0; i < relicGroup.size(); i++) {
-            RelicInfo relic = relicGroup.get(i);
+            RelicGroup.RelicInfo relic = relicGroup.group.get(i);
             relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
             relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
             relic.relic.currentX = MathHelper.cardLerpSnap(relic.relic.currentX, relic.relic.targetX);
@@ -200,7 +198,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
 
             if (targetIndex != hoveredIndex) {
                 targetIndex = MathUtils.clamp(targetIndex, 0, relicGroup.size() - 1);
-                RelicInfo relic = relicGroup.get(targetIndex);
+                RelicGroup.RelicInfo relic = relicGroup.group.get(targetIndex);
                 if (relic != null) {
                     float distance = getScrollDistance(relic.relic, targetIndex);
                     if (distance != 0) {
@@ -212,7 +210,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
         }
     }
 
-    protected void updateHoverLogic(RelicInfo relic, int i) {
+    protected void updateHoverLogic(RelicGroup.RelicInfo relic, int i) {
         relic.relic.hb.update();
         relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
 
@@ -260,12 +258,12 @@ public class EUIRelicGrid extends EUICanvasGrid {
     }
 
     protected void renderRelics(SpriteBatch sb) {
-        for (RelicInfo relicInfo : relicGroup) {
+        for (RelicGroup.RelicInfo relicInfo : relicGroup.group) {
             renderRelic(sb, relicInfo);
         }
     }
 
-    protected void renderRelic(SpriteBatch sb, RelicInfo relic) {
+    protected void renderRelic(SpriteBatch sb, RelicGroup.RelicInfo relic) {
         if (relic.locked) {
             switch (relic.relicColor) {
                 case RED:
@@ -309,7 +307,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
     }
 
     public EUIRelicGrid removeRelic(AbstractRelic relic) {
-        relicGroup.removeIf(rInfo -> rInfo.relic == relic);
+        relicGroup.group.removeIf(rInfo -> rInfo.relic == relic);
 
         return this;
     }
@@ -362,7 +360,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
     }
 
     public EUIRelicGrid addRelic(AbstractRelic relic) {
-        relicGroup.add(new RelicInfo(relic));
+        relicGroup.add(relic);
         relic.scale = startingScale;
 
         return this;
@@ -374,15 +372,4 @@ public class EUIRelicGrid extends EUICanvasGrid {
         return this;
     }
 
-    public static class RelicInfo {
-        public final AbstractRelic relic;
-        public final AbstractCard.CardColor relicColor;
-        public final boolean locked;
-
-        public RelicInfo(AbstractRelic relic) {
-            this.relic = relic;
-            this.relicColor = EUIGameUtils.getRelicColor(relic.relicId);
-            this.locked = UnlockTracker.isRelicLocked(relic.relicId);
-        }
-    }
 }

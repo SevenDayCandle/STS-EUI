@@ -3,6 +3,7 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import extendedui.utilities.RelicGroup;
 
 public class EUIStaticRelicGrid extends EUIRelicGrid {
     public int visibleRowCount = 20;
@@ -26,7 +27,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid {
         int row = 0;
         int column = 0;
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++) {
-            RelicInfo relic = relicGroup.get(i);
+            RelicGroup.RelicInfo relic = relicGroup.group.get(i);
             relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
             relic.relic.currentY = relic.relic.targetY = drawTopY + scrollDelta - (row * padY);
             relic.relic.hb.update();
@@ -48,7 +49,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid {
         int column = 0;
 
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++) {
-            RelicInfo relic = relicGroup.get(i);
+            RelicGroup.RelicInfo relic = relicGroup.group.get(i);
             relic.relic.currentX = relic.relic.targetX = (DRAW_START_X * drawX) + (column * PAD);
             relic.relic.currentY = relic.relic.targetY = drawTopY - (row * padY);
             updateHoverLogic(relic, i);
@@ -82,7 +83,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid {
     @Override
     protected void renderRelics(SpriteBatch sb) {
         for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++) {
-            renderRelic(sb, relicGroup.get(i));
+            renderRelic(sb, relicGroup.group.get(i));
         }
     }
 
@@ -110,7 +111,7 @@ public class EUIStaticRelicGrid extends EUIRelicGrid {
         }
 
         for (int i = Math.max(0, min); i < Math.min(max, relicGroup.size()); i++) {
-            RelicInfo card = relicGroup.get(i);
+            RelicGroup.RelicInfo card = relicGroup.group.get(i);
             card.relic.scale = targetScale;
         }
 

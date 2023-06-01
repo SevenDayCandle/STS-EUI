@@ -2,7 +2,7 @@ package extendedui.interfaces.markers;
 
 import basemod.IUIElement;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import extendedui.ui.controls.EUIRelicGrid;
+import extendedui.utilities.RelicGroup;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,7 @@ public interface CustomRelicFilterModule extends IUIElement {
 
     boolean isHovered();
 
-    default boolean isRelicValid(EUIRelicGrid.RelicInfo c) {
+    default boolean isRelicValid(RelicGroup.RelicInfo c) {
         return isRelicValid(c.relic);
     }
 

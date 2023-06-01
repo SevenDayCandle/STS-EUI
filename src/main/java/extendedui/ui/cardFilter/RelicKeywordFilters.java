@@ -22,11 +22,11 @@ import extendedui.interfaces.markers.CustomRelicFilterModule;
 import extendedui.interfaces.markers.CustomRelicPoolModule;
 import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.controls.EUIDropdown;
-import extendedui.ui.controls.EUIRelicGrid;
 import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.RelicGroup;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -100,7 +100,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
     }
 
-    public ArrayList<EUIRelicGrid.RelicInfo> applyInfoFilters(ArrayList<EUIRelicGrid.RelicInfo> input) {
+    public ArrayList<RelicGroup.RelicInfo> applyInfoFilters(ArrayList<RelicGroup.RelicInfo> input) {
         return EUIUtils.filter(input, info -> evaluateRelic(info.relic));
     }
 
@@ -234,7 +234,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         }
     }
 
-    public RelicKeywordFilters initializeForCustomHeader(List<EUIRelicGrid.RelicInfo> group, CustomRelicPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, CustomRelicPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
         EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
         EUI.relicFilters.initialize(__ -> {
             EUI.relicHeader.updateForFilters();
@@ -246,7 +246,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         return this;
     }
 
-    public RelicKeywordFilters initializeForCustomHeader(List<EUIRelicGrid.RelicInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
         EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
         EUI.relicFilters.initialize(button -> {
             EUI.relicHeader.updateForFilters();
@@ -256,7 +256,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         return this;
     }
 
-    public RelicKeywordFilters initializeForCustomHeader(List<EUIRelicGrid.RelicInfo> group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
         EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
         EUI.relicFilters.initialize(button -> {
             EUI.relicHeader.updateForFilters();

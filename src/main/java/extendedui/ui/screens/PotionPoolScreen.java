@@ -41,7 +41,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
     private AbstractPotion selected;
 
     public PotionPoolScreen() {
-        potionGrid = (EUIPotionGrid) new EUIStaticPotionGrid()
+        potionGrid = (EUIPotionGrid) new EUIPotionGrid()
                 .setOnPotionRightClick(this::onRightClick)
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);

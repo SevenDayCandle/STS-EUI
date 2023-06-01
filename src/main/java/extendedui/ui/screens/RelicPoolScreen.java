@@ -42,7 +42,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
     private AbstractRelic selected;
 
     public RelicPoolScreen() {
-        relicGrid = (EUIRelicGrid) new EUIStaticRelicGrid()
+        relicGrid = (EUIRelicGrid) new EUIRelicGrid()
                 .setOnRelicRightClick(this::onRightClick)
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);
