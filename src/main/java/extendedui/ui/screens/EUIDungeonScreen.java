@@ -5,6 +5,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import extendedui.EUI;
 import extendedui.patches.game.AbstractDungeonPatches;
+import extendedui.utilities.EUIClassUtils;
 
 public abstract class EUIDungeonScreen extends CustomScreen {
 
@@ -37,7 +38,8 @@ public abstract class EUIDungeonScreen extends CustomScreen {
                     : isScreenValid(AbstractDungeon.screen) ? AbstractDungeon.screen : null;
         }
         AbstractDungeon.screen = curScreen();
-        AbstractDungeon.overlayMenu.showBlackScreen(0.7f);
+        AbstractDungeon.overlayMenu.showBlackScreen();
+        AbstractDungeon.dynamicBanner.hide(); // Hide banners that get in the way
         AbstractDungeon.dungeonMapScreen.map.hideInstantly(); // Because the map won't be hidden properly otherwise
     }
 
@@ -55,8 +57,6 @@ public abstract class EUIDungeonScreen extends CustomScreen {
             case MASTER_DECK_VIEW:
             case SETTINGS:
             case INPUT_SETTINGS:
-            case COMBAT_REWARD:
-            case CARD_REWARD:
             case NONE:
                 return false;
         }
