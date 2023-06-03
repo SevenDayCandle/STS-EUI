@@ -48,12 +48,12 @@ import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.*;
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
 public class EUIGameUtils {
-    public static final Color COLOR_BASIC = new Color(0.61f, 0.61f, 0.61f, 1f);
-    public static final Color COLOR_COMMON = new Color(0.72f, 0.72f, 0.72f, 1f);
-    public static final Color COLOR_CURSE = new Color(0.45f, 0.45f, 0.45f, 1);
+    public static final Color COLOR_BASIC = new Color(0.58f, 0.58f, 0.58f, 1f);
+    public static final Color COLOR_COMMON = new Color(0.69f, 0.69f, 0.69f, 1f);
+    public static final Color COLOR_CURSE = new Color(0.41f, 0.35f, 0.35f, 1);
     public static final Color COLOR_RARE = new Color(1f, 0.8f, 0.35f, 1f);
     public static final Color COLOR_SPECIAL = new Color(0.7f, 1f, 0.5f, 1f);
-    public static final Color COLOR_UNCOMMON = new Color(0.5f, 0.85f, 0.95f, 1f);
+    public static final Color COLOR_UNCOMMON = new Color(0.45f, 0.82f, 1f, 1f);
     private static final HashMap<AbstractCard.CardColor, String> CUSTOM_COLOR_NAMES = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, AbstractPlayer.PlayerClass> COLOR_TO_CLASS = new HashMap<>();
     private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();

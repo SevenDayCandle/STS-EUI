@@ -54,7 +54,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
     }
 
     public static ArrayList<AbstractPotion> getAllPotions() {
-        return EUIUtils.mapAsNonnull(PotionHelper.getPotions(AbstractDungeon.player != null ? AbstractDungeon.player.chosenClass : null, true), PotionHelper::getPotion);
+        return EUIUtils.mapAsNonnull(PotionHelper.getPotions(AbstractDungeon.player != null ? AbstractDungeon.player.chosenClass : null, false), PotionHelper::getPotion);
     }
 
     @Override

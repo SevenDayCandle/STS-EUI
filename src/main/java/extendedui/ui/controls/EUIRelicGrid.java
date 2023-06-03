@@ -15,8 +15,6 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.utilities.RelicGroup;
 
-import java.util.ArrayList;
-
 public class EUIRelicGrid extends EUICanvasGrid {
     public static final int ROW_SIZE = 10;
     public static final int LERP_SPEED = 8;
@@ -24,7 +22,6 @@ public class EUIRelicGrid extends EUICanvasGrid {
     protected static final float DRAW_START_X = Settings.WIDTH - (3f * scale(AbstractRelic.RAW_W)) - (4f * PAD);
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
     public float padX = PAD;
-    public float padY = PAD;
     public RelicGroup relicGroup;
     public RelicGroup.RelicInfo hoveredRelic = null;
     public String message = null;
@@ -102,7 +99,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
 
         if (sizeCache > rowSize * 2) {
             int offset = ((sizeCache / rowSize) - ((sizeCache % rowSize > 0) ? 1 : 2));
-            upperScrollBound += yPadding * offset;
+            upperScrollBound += this.padY * offset;
         }
     }
 

@@ -91,7 +91,7 @@ public class EUIConfiguration {
 
     protected static int addSlider(int page, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
         settingsBlock.addUIElement(page, new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.get(), "%d", panel, (c) -> {
-            option.set(MathUtils.round(c.getValue()), true);
+            option.set(MathUtils.round(c.getValue()));
             shouldReloadEffekseer = true;
         }));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
@@ -103,7 +103,7 @@ public class EUIConfiguration {
 
     protected static int addToggle(int page, STSConfigItem<Boolean> option, String label, int ypos, String tip) {
         settingsBlock.addUIElement(page, new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.cardDescriptionFontNormal, option.get(), panel, (__) -> {
-        }, (c) -> option.set(c.enabled, true)));
+        }, (c) -> option.set(c.enabled)));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }
 

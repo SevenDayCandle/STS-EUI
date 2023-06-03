@@ -33,7 +33,6 @@ public class EUICardGrid extends EUICanvasGrid {
     public boolean canRenderUpgrades = false;
     public boolean shouldEnlargeHovered = true;
     public float padX = PAD_X;
-    public float padY = PAD_Y;
     public float targetScale = CARD_SCALE;
     public float startingScale = targetScale;
     protected ActionT1<AbstractCard> onCardClick;
@@ -134,7 +133,7 @@ public class EUICardGrid extends EUICanvasGrid {
 
         if (sizeCache > rowSize * 2) {
             int offset = ((sizeCache / rowSize) - ((sizeCache % rowSize > 0) ? 1 : 2));
-            upperScrollBound += yPadding * offset;
+            upperScrollBound += this.padY * offset;
         }
     }
 

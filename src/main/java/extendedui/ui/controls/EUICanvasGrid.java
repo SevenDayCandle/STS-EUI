@@ -3,14 +3,14 @@ package extendedui.ui.controls;
 import com.megacrit.cardcrawl.core.Settings;
 
 public abstract class EUICanvasGrid extends EUICanvas {
-    protected float yPadding;
+    protected float padY;
     protected int rowSize = 5;
     protected int sizeCache;
 
-    public EUICanvasGrid(int rowSize, float yPadding) {
+    public EUICanvasGrid(int rowSize, float padY) {
         super();
         this.rowSize = Math.max(1, rowSize);
-        this.yPadding = yPadding;
+        this.padY = padY;
     }
 
     protected void updateScrolling(boolean isDraggingScrollBar) {
@@ -29,8 +29,8 @@ public abstract class EUICanvasGrid extends EUICanvas {
 
         if (sizeCache > rowSize) {
             int offset = (sizeCache - 1) / rowSize;
-            upperScrollBound += yPadding * (offset + 2);
-            lowerScrollBound -= yPadding * (offset - 1);
+            upperScrollBound += padY * (offset + 2);
+            lowerScrollBound -= padY * (offset - 1);
         }
     }
 }

@@ -22,7 +22,7 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
     }
 
     private void onUpdateFile(File file) {
-        config.set(file != null && file.exists() ? file.getAbsolutePath() : "", true);
+        config.set(file != null && file.exists() ? file.getAbsolutePath() : "");
     }
 
     public ModSettingsPathSelector makeCopy() {

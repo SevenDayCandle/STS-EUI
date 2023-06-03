@@ -163,16 +163,16 @@ public class CardPoolScreen extends EUIPoolScreen {
 
         EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
             if (customModule != null) {
-                customModule.open(EUI.customHeader.group.group);
+                customModule.open(EUI.customHeader.group.group, false);
             }
             cardGrid.forceUpdateCardPositions();
         }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, !canSeeAllColors, true);
 
-        EUI.countingPanel.open(cardGrid.cards.group);
+        EUI.countingPanel.open(cardGrid.cards.group, false);
 
         customModule = EUI.getCustomCardPoolModule(player);
         if (customModule != null) {
-            customModule.open(cardGrid.cards.group);
+            customModule.open(cardGrid.cards.group, false);
         }
 
     }
@@ -185,7 +185,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             group.removeCard(c.cardID);
         }
         cardGrid.removeCard(c);
-        EUI.countingPanel.open(cardGrid.cards.group);
+        EUI.countingPanel.open(cardGrid.cards.group, false);
     }
 
     @Override

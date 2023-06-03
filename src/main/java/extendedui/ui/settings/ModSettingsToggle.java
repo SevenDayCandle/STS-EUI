@@ -14,7 +14,7 @@ public class ModSettingsToggle extends EUIToggle implements STSConfigListener<Bo
         this.config = config;
         setText(title);
         setFont(EUIFontHelper.cardDescriptionFontNormal, 1f);
-        setOnToggle(val -> this.config.set(val, true));
+        setOnToggle(val -> this.config.set(val));
         this.config.addListener(this);
     }
 

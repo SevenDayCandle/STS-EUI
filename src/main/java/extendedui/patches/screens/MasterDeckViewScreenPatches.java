@@ -62,11 +62,11 @@ public class MasterDeckViewScreenPatches {
             EUI.cardFilters.initialize(__ -> {
                 updateForFilters();
                 if (CardPoolScreen.customModule != null) {
-                    CardPoolScreen.customModule.open(fakeMasterDeck.group);
+                    CardPoolScreen.customModule.open(fakeMasterDeck.group, false);
                 }
             }, fakeMasterDeck.group, AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : AbstractCard.CardColor.COLORLESS, false);
             updateForFilters();
-            EUI.countingPanel.open(AbstractDungeon.player.masterDeck.group);
+            EUI.countingPanel.open(AbstractDungeon.player.masterDeck.group, false);
         }
     }
 

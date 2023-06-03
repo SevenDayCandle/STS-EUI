@@ -9,5 +9,5 @@ public interface CustomCardPoolModule extends IUIElement {
     default void onClose() {
     }
 
-    void open(ArrayList<AbstractCard> cards);
+    void open(ArrayList<AbstractCard> cards, boolean triggeredFromCustom);
 }

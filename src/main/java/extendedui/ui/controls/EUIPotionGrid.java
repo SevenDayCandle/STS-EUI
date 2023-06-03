@@ -16,8 +16,6 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.utilities.PotionGroup;
 
-import java.util.ArrayList;
-
 public class EUIPotionGrid extends EUICanvasGrid {
     public static final int ROW_SIZE = 12;
     public static final int LERP_SPEED = 8;
@@ -26,7 +24,6 @@ public class EUIPotionGrid extends EUICanvasGrid {
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
     public boolean shouldEnlargeHovered = true;
     public float padX = PAD;
-    public float padY = PAD;
     public PotionGroup potionGroup;
     public PotionGroup.PotionInfo hoveredPotion = null;
     public String message = null;
@@ -102,7 +99,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
 
         if (sizeCache > rowSize * 2) {
             int offset = ((sizeCache / rowSize) - ((sizeCache % rowSize > 0) ? 1 : 2));
-            upperScrollBound += yPadding * offset;
+            upperScrollBound += this.padY * offset;
         }
     }
 

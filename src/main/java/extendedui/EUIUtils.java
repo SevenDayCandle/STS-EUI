@@ -549,14 +549,15 @@ public abstract class EUIUtils {
     }
 
     public static <T, N> ArrayList<N> map(T[] list, FuncT1<N, T> predicate) {
-        final ArrayList<N> res = new ArrayList<>();
         if (list != null) {
+            final ArrayList<N> res = new ArrayList<>(list.length);
             for (T t : list) {
                 res.add(predicate.invoke(t));
             }
+            return res;
         }
 
-        return res;
+        return new ArrayList<>();
     }
 
     public static <T, N> ArrayList<N> map(Iterable<? extends T> list, FuncT1<N, T> predicate) {
@@ -571,12 +572,15 @@ public abstract class EUIUtils {
     }
 
     public static <T, N> ArrayList<N> map(List<? extends T> list, FuncT1<N, T> predicate) {
-        final ArrayList<N> res = new ArrayList<>();
-        for (T t : list) {
-            res.add(predicate.invoke(t));
+        if (list != null) {
+            final ArrayList<N> res = new ArrayList<>(list.size());
+            for (T t : list) {
+                res.add(predicate.invoke(t));
+            }
+            return res;
         }
 
-        return res;
+        return new ArrayList<>();
     }
 
     public static <T, N> ArrayList<N> mapAsNonnull(T[] list, FuncT1<N, T> predicate) {
