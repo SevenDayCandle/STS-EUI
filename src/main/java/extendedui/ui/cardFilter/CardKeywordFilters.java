@@ -412,7 +412,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
         {
             EUI.customHeader.updateForFilters();
             if (module != null) {
-                module.open(EUI.customHeader.group.group, false);
+                module.open(EUI.customHeader.group.group, color, null);
             }
         }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
         EUI.customHeader.updateForFilters();

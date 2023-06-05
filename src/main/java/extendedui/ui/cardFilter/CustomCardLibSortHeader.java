@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.ActionT2;
 import extendedui.utilities.CardAmountComparator;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.FakeLibraryCard;

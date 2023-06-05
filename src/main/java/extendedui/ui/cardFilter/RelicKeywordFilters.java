@@ -239,7 +239,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         EUI.relicFilters.initialize(__ -> {
             EUI.relicHeader.updateForFilters();
             if (module != null) {
-                module.open(EUI.relicHeader.getRelics());
+                module.open(EUI.relicHeader.getRelics(), color, null);
             }
         }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
         EUI.relicHeader.updateForFilters();

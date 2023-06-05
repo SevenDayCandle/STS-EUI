@@ -151,6 +151,7 @@ public class CardPoolScreen extends EUIPoolScreen {
     public void openScreen(AbstractPlayer player, CardGroup cards) {
         super.reopen();
         boolean canSeeAllColors = EUIGameUtils.canReceiveAnyColorCard();
+        AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
 
         cardGrid.clear();
         colorlessToggle.setToggle(false).setActive(!canSeeAllColors);
@@ -163,16 +164,16 @@ public class CardPoolScreen extends EUIPoolScreen {
 
         EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
             if (customModule != null) {
-                customModule.open(EUI.customHeader.group.group, false);
+                customModule.open(EUI.customHeader.group.group, color, null);
             }
             cardGrid.forceUpdateCardPositions();
-        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, !canSeeAllColors, true);
+        }, color, !canSeeAllColors, true);
 
-        EUI.countingPanel.open(cardGrid.cards.group, false);
+        EUI.countingPanel.open(cardGrid.cards.group, color, null);
 
         customModule = EUI.getCustomCardPoolModule(player);
         if (customModule != null) {
-            customModule.open(cardGrid.cards.group, false);
+            customModule.open(cardGrid.cards.group, color, null);
         }
 
     }
@@ -185,7 +186,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             group.removeCard(c.cardID);
         }
         cardGrid.removeCard(c);
-        EUI.countingPanel.open(cardGrid.cards.group, false);
+        EUI.countingPanel.open(cardGrid.cards.group, EUI.actingColor, null);
     }
 
     @Override

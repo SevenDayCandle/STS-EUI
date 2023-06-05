@@ -55,7 +55,7 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
         setActive(false);
     }
 
-    public void open(ArrayList<AbstractCard> cards, boolean triggeredFromCustom) {
+    public void open(ArrayList<AbstractCard> cards, AbstractCard.CardColor color, Object payload) {
         isActive = EUIConfiguration.showCountingPanel.get() && cards != null;
         this.cards = cards;
         swapButton.setActive(true);

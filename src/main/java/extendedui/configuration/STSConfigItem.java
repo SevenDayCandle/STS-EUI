@@ -72,10 +72,6 @@ public class STSConfigItem<T> {
     }
 
     public final T set(T Value) {
-        return set(Value, true);
-    }
-
-    public final T set(T Value, boolean save) {
         this.value = Value;
         this.config.setString(this.key, serialize());
         save();

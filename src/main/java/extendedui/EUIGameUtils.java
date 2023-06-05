@@ -36,6 +36,8 @@ import extendedui.ui.TextureCache;
 import extendedui.ui.screens.CardPoolScreen;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
+import javassist.ClassPool;
+import javassist.CtClass;
 
 import java.net.URL;
 import java.security.CodeSource;
@@ -262,21 +264,34 @@ public class EUIGameUtils {
 
     public static ModInfo getModInfo(Class<?> objectClass) {
         CodeSource source = objectClass.getProtectionDomain().getCodeSource();
-        ModInfo info = MOD_INFO_MAPPING.get(source);
-        if (info != null) {
-            return info;
+        if (MOD_INFO_MAPPING.containsKey(source)) {
+            return MOD_INFO_MAPPING.get(source);
         }
 
         try {
-            URL jarURL = source.getLocation().toURI().toURL();
+            URL jarURL = source.getLocation();
+            if (jarURL == null) {
+                ClassPool pool = Loader.getClassPool();
+                pool.childFirstLookup = true;
+                CtClass ctCls = pool.get(objectClass.getName());
+                String url = ctCls.getURL().getFile();
+                int i = url.lastIndexOf('!');
+                url = url.substring(0, i);
+                jarURL = new URL(url);
+            }
+
             for (ModInfo loadedInfo : Loader.MODINFOS) {
                 if (jarURL.equals(loadedInfo.jarURL)) {
                     MOD_INFO_MAPPING.put(source, loadedInfo);
                     return loadedInfo;
                 }
             }
+            MOD_INFO_MAPPING.put(source, null);
         }
-        catch (Exception ignored) {
+        catch (Exception e) {
+            EUIUtils.logError(objectClass, "Failed to find source for codesource " + source);
+            e.printStackTrace();
+            MOD_INFO_MAPPING.put(source, null);
         }
 
         return null;

@@ -121,10 +121,10 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     }
 
     public void setActiveColor(AbstractCard.CardColor color) {
-        setActiveColor(color, CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED)), false);
+        setActiveColor(color, CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED)), null);
     }
 
-    public void setActiveColor(AbstractCard.CardColor color, CardGroup cards, boolean triggeredFromCustom) {
+    public void setActiveColor(AbstractCard.CardColor color, CardGroup cards, Object payload) {
         EUI.actingColor = currentColor = color;
         cardGrid.clear();
         cardGrid.setCardGroup(cards);
@@ -132,7 +132,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
             quickSearch.setLabel(EUI.cardFilters.currentName != null ? EUI.cardFilters.currentName : "");
             if (customModule != null) {
-                customModule.open(EUI.customHeader.group.group, false);
+                customModule.open(EUI.customHeader.group.group, color, payload);
             }
             cardGrid.moveToTop();
             cardGrid.forceUpdateCardPositions();
@@ -140,7 +140,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
 
         customModule = EUI.getCustomCardLibraryModule(color);
         if (customModule != null) {
-            customModule.open(cardGrid.cards.group, triggeredFromCustom);
+            customModule.open(cardGrid.cards.group, color, payload);
         }
 
         EUI.customHeader.resetSort();

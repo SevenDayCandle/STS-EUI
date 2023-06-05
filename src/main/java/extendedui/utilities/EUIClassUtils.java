@@ -2,14 +2,20 @@ package extendedui.utilities;
 
 import basemod.ReflectionHacks;
 import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.FuncT0;
 import extendedui.interfaces.delegates.FuncT1;
 
+import java.lang.invoke.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
+import java.util.HashMap;
+import java.util.function.Function;
 
 public class EUIClassUtils {
+    public static final MethodHandles.Lookup IMPL_LOOKUP = ReflectionHacks.getPrivateStatic(MethodHandles.Lookup.class, "IMPL_LOOKUP");
+
     public static <T> void getAndSetField(Object o, String fieldName, FuncT1<T, T> valueFunc) {
         Class<?> c = o.getClass();
         ReflectionHacks.setPrivate(o, c, fieldName, valueFunc.invoke(ReflectionHacks.getPrivate(o, c, fieldName)));

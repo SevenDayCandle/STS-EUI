@@ -111,6 +111,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
 
     public void openScreen(AbstractPlayer player, ArrayList<AbstractRelic> relics) {
         super.reopen();
+        AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
 
         relicGrid.clear();
         if (relics.isEmpty()) {
@@ -122,14 +123,14 @@ public class RelicPoolScreen extends EUIPoolScreen {
 
         EUI.relicFilters.initializeForCustomHeader(relicGrid.relicGroup, __ -> {
             if (customModule != null) {
-                customModule.open(EUI.relicHeader.getRelics());
+                customModule.open(EUI.relicHeader.getRelics(), color, null);
             }
             relicGrid.forceUpdateRelicPositions();
-        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true, false);
+        }, color, true, false);
 
         customModule = EUI.getCustomRelicPoolModule(player);
         if (customModule != null) {
-            customModule.open(EUIUtils.map(relicGrid.relicGroup, r -> r.relic));
+            customModule.open(EUIUtils.map(relicGrid.relicGroup, r -> r.relic), color, null);
         }
 
     }

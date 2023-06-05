@@ -59,14 +59,15 @@ public class MasterDeckViewScreenPatches {
         public static void prefix(MasterDeckViewScreen __instance) {
             screen = __instance;
             getFakeMasterDeck();
+            AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : AbstractCard.CardColor.COLORLESS;
             EUI.cardFilters.initialize(__ -> {
                 updateForFilters();
                 if (CardPoolScreen.customModule != null) {
-                    CardPoolScreen.customModule.open(fakeMasterDeck.group, false);
+                    CardPoolScreen.customModule.open(fakeMasterDeck.group, color, null);
                 }
-            }, fakeMasterDeck.group, AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : AbstractCard.CardColor.COLORLESS, false);
+            }, fakeMasterDeck.group, color, false);
             updateForFilters();
-            EUI.countingPanel.open(AbstractDungeon.player.masterDeck.group, false);
+            EUI.countingPanel.open(AbstractDungeon.player.masterDeck.group, color, null);
         }
     }
 

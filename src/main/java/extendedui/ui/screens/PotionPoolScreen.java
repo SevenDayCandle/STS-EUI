@@ -100,6 +100,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
 
     public void openScreen(AbstractPlayer player, ArrayList<AbstractPotion> potions) {
         super.reopen();
+        AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
 
         potionGrid.clear();
         if (potions.isEmpty()) {
@@ -111,14 +112,14 @@ public class PotionPoolScreen extends EUIPoolScreen {
 
         EUI.potionFilters.initializeForCustomHeader(potionGrid.potionGroup, __ -> {
             if (customModule != null) {
-                customModule.open(EUI.potionHeader.getPotions());
+                customModule.open(EUI.potionHeader.getPotions(), color, null);
             }
             potionGrid.forceUpdatePotionPositions();
-        }, player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS, true, false);
+        }, color, true, false);
 
         customModule = EUI.getCustomPotionPoolModule(player);
         if (customModule != null) {
-            customModule.open(EUIUtils.map(potionGrid.potionGroup, r -> r.potion));
+            customModule.open(EUIUtils.map(potionGrid.potionGroup, r -> r.potion), color, null);
         }
     }
 

@@ -14,6 +14,7 @@ import javassist.CtBehavior;
 
 public class AbstractDungeonPatches {
 
+    // Currently being used as an alternative to patching every single screen check that the game does
     public static AbstractDungeon.CurrentScreen coolerPreviousScreen;
 
     @SpirePatch(clz = AbstractDungeon.class, method = "closeCurrentScreen")
@@ -21,7 +22,7 @@ public class AbstractDungeonPatches {
 
         @SpirePrefixPatch
         public static void prefix() {
-            if (coolerPreviousScreen != null && coolerPreviousScreen != AbstractDungeon.previousScreen) {
+            if (coolerPreviousScreen != null) {
                 AbstractDungeon.previousScreen = coolerPreviousScreen;
                 coolerPreviousScreen = null;
             }
