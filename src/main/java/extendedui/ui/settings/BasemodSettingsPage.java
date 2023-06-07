@@ -23,11 +23,9 @@ public class BasemodSettingsPage implements IUIElement {
     public BasemodSettingsPage() {
         pages.add(new ArrayList<>());
         leftButton = new EUIButton(ImageMaster.CF_LEFT_ARROW, new EUIHitbox(EUIConfiguration.BASE_OPTION_OFFSET_X * Settings.scale, 800 * Settings.scale, ICON_SIZE, ICON_SIZE))
-                .setOnClick(__ -> setPage(current - 1))
-                .setText(null);
+                .setOnClick(__ -> setPage(current - 1));
         rightButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new EUIHitbox(leftButton.hb.cX + ICON_SIZE, leftButton.getY(), ICON_SIZE, ICON_SIZE))
-                .setOnClick(__ -> setPage(current + 1))
-                .setText(null);
+                .setOnClick(__ -> setPage(current + 1));
         setPage(current);
     }
 

@@ -70,6 +70,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     protected boolean justOpened;
     protected boolean rowsHaveBeenPositioned;
     protected boolean shouldSnapCursorToSelectedIndex;
+    protected boolean isButtonSmartText;
     protected boolean isOptionSmartText;
     protected boolean shouldPositionClearAtTop;
     protected boolean showClearForSingle;
@@ -119,8 +120,7 @@ public class EUIDropdown<T> extends EUIHoverable {
                 .setOnScroll(this::onScroll);
         this.button = new EUIButton(EUIRM.images.rectangularButton.texture(), this.hb)
                 .setColor(Color.GRAY)
-                .setFont(font, fontScale)
-                .setText(currentIndices.size() + " " + EUIRM.strings.uiItemsselected)
+                .setLabel(font, fontScale, currentIndices.size() + " " + EUIRM.strings.uiItemsselected)
                 .setOnClick(this::openOrCloseMenu);
         this.clearButton = new EUIButton(EUIRM.images.x.texture(), new OriginRelativeHitbox(hb, hb.height * 0.88f, hb.height * 0.88f, hb.width, 0)
                 .setIsPopupCompatible(true)
@@ -253,13 +253,13 @@ public class EUIDropdown<T> extends EUIHoverable {
     public void updateForSelection(boolean shouldInvoke) {
         int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
         if (isMultiSelect) {
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : makeMultiSelectString();
+            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : makeMultiSelectString());
         }
         else if (currentIndices.size() > 0) {
             this.topVisibleRowIndex = Math.min(temp, this.rows.size() - this.visibleRowCount());
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : rows.get(temp).label.text;
+            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : rows.get(temp).label.text);
             if (colorFunctionButton != null) {
-                this.button.setTextColor(colorFunctionButton.invoke(getCurrentItems()));
+                this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
             }
 
             this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
@@ -288,7 +288,7 @@ public class EUIDropdown<T> extends EUIHoverable {
 
     public String makeMultiSelectString(FuncT1<String, T> optionFunc) {
         String prospective = StringUtils.join(EUIUtils.map(getCurrentItems(), optionFunc), ", ");
-        float width = button.isSmartText ? EUISmartText.getSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
+        float width = button.label.smartText ? EUISmartText.getSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
         return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.strings.uiItemsselected : prospective;
     }
 
@@ -361,7 +361,7 @@ public class EUIDropdown<T> extends EUIHoverable {
                 .setHeader(this.font, this.fontScale, this.header.textColor, this.header.text, this.header.smartText)
                 .setLabelColorFunctionForButton(this.colorFunctionButton)
                 .setLabelColorFunctionForOption(this.colorFunctionOption)
-                .setLabelFunctionForButton(this.labelFunctionButton, this.button.isSmartText)
+                .setLabelFunctionForButton(this.labelFunctionButton, this.button.label.smartText)
                 .setLabelFunctionForOption(this.labelFunction, this.isOptionSmartText)
                 .setCanAutosize(this.canAutosizeButton, this.canAutosizeRows)
                 .setClearButtonOptions(this.showClearForSingle, this.shouldPositionClearAtTop)
@@ -417,7 +417,14 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     public EUIDropdown<T> setLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, boolean isSmartText) {
-        this.button.setSmartText(isSmartText);
+        this.button.label.setSmartText(isSmartText);
+        if (isSmartText) {
+            this.button.label.setAlignment(0.7f, 0.1f);
+        }
+        else {
+            this.button.label.setAlignment(0.5f, 0.5f);
+        }
+
         this.labelFunctionButton = labelFunctionButton;
         if (labelFunctionButton != null) {
             this.button.setText(labelFunctionButton.invoke(getCurrentItems(), labelFunction));
@@ -438,7 +445,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     public EUIDropdown<T> setLabelColorFunctionForButton(FuncT1<Color, List<T>> colorFunctionButton) {
         this.colorFunctionButton = colorFunctionButton;
         if (colorFunctionButton != null) {
-            this.button.setTextColor(colorFunctionButton.invoke(getCurrentItems()));
+            this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
         }
         return this;
     }
@@ -453,7 +460,7 @@ public class EUIDropdown<T> extends EUIHoverable {
             this.button.setText(labelFunctionButton.invoke(getCurrentItems(), labelFunction));
         }
         if (colorFunctionButton != null) {
-            this.button.setTextColor(colorFunctionButton.invoke(getCurrentItems()));
+            this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
         }
         if (colorFunctionOption != null) {
             for (EUIDropdownRow<T> row : rows) {
@@ -577,7 +584,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     public EUIDropdown<T> setFontForButton(BitmapFont font, float fontScale) {
-        button.setFont(font, fontScale);
+        button.label.setFont(font, fontScale);
         autosize();
 
         return this;

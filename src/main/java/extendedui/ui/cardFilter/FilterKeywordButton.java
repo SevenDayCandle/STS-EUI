@@ -20,18 +20,19 @@ import extendedui.utilities.EUIFontHelper;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
 import static extendedui.text.EUISmartText.CARD_ENERGY_IMG_WIDTH;
+import static extendedui.ui.tooltips.EUIKeywordTooltip.BASE_ICON_SIZE;
 
 public class FilterKeywordButton extends EUIHoverable {
     public static final float ICON_SIZE = scale(40);
     private static final Color ACTIVE_COLOR = new Color(0.76f, 0.76f, 0.76f, 1f);
     private static final Color NEGATE_COLOR = new Color(0.62f, 0.32f, 0.28f, 1f);
     private static final Color PANEL_COLOR = new Color(0.3f, 0.3f, 0.3f, 1f);
-    private static final float BASE_OFFSET_X = -0.10f;
+    private static final float BASE_TITLE_OFFSET_X = -0.15f;
     private static final float BASE_OFFSET_Y = -0.8f;
+    public static final float BASE_COUNT_OFFSET_X = -0.21f;
+    public static final float BASE_IMAGE_OFFSET_X = -0.29f;
+    public static final float BASE_IMAGE_OFFSET_Y = -0.16f;
     public final GenericFilters<?> filters;
-    public final float baseCountOffset = -0.17f;
-    public final float baseImageOffsetX = -0.27f;
-    public final float baseImageOffsetY = -0.2f;
     public int cardCount = -1;
     public EUIButton backgroundButton;
     public EUILabel titleText;
@@ -62,14 +63,14 @@ public class FilterKeywordButton extends EUIHoverable {
                 });
 
         titleText = new EUILabel(EUIFontHelper.cardTooltipFont,
-                RelativeHitbox.fromPercentages(hb, 0.5f, 1, BASE_OFFSET_X, BASE_OFFSET_Y))
+                RelativeHitbox.fromPercentages(hb, 0.5f, 1, BASE_TITLE_OFFSET_X, BASE_OFFSET_Y))
                 .setFont(EUIFontHelper.cardTooltipFont, 0.8f)
                 .setColor(this.filters.currentFilters.contains(this.keywordTooltip) ? Color.DARK_GRAY : Color.WHITE)
                 .setAlignment(0.5f, 0.49f) // 0.1f
                 .setLabel(this.tooltip.title);
 
         countText = new EUILabel(EUIFontHelper.cardDescriptionFontNormal,
-                RelativeHitbox.fromPercentages(hb, 0.28f, 1, baseCountOffset, 0f))
+                RelativeHitbox.fromPercentages(hb, 0.28f, 1, BASE_COUNT_OFFSET_X, 0f))
                 .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.8f)
                 .setAlignment(0.5f, 0.51f) // 0.1f
                 .setColor(Settings.GOLD_COLOR)
@@ -162,12 +163,12 @@ public class FilterKeywordButton extends EUIHoverable {
 
     private void renderTooltipImage(SpriteBatch sb) {
         keywordTooltip.renderTipEnergy(sb, keywordTooltip.icon,
-                hb.x + (offX + baseImageOffsetX) * hb.width,
-                hb.y + (offY + baseImageOffsetY) * hb.height,
-                28 * keywordTooltip.iconmultiW,
-                28 * keywordTooltip.iconmultiH,
-                CARD_ENERGY_IMG_WIDTH / keywordTooltip.icon.getRegionWidth(),
-                CARD_ENERGY_IMG_WIDTH / keywordTooltip.icon.getRegionHeight(),
+                hb.x + (offX + BASE_IMAGE_OFFSET_X) * hb.width,
+                hb.y + (offY + BASE_IMAGE_OFFSET_Y) * hb.height,
+                BASE_ICON_SIZE * keywordTooltip.iconmultiW,
+                BASE_ICON_SIZE * keywordTooltip.iconmultiH,
+                Settings.scale * 0.75f,
+                Settings.scale * 0.75f,
                 cardCount == 0 ? Color.DARK_GRAY : Color.WHITE);
     }
 
@@ -190,8 +191,8 @@ public class FilterKeywordButton extends EUIHoverable {
         offX = (index % CardKeywordFilters.ROW_SIZE) * 1.06f;
         offY = BASE_OFFSET_Y - (Math.floorDiv(index, CardKeywordFilters.ROW_SIZE)) * 0.85f;
         backgroundButton.hb.setOffset(filters.hb.width * offX, hb.height * offY);
-        titleText.hb.setOffset(hb.width * (offX + BASE_OFFSET_X), hb.height * offY);
-        countText.hb.setOffset(hb.width * (offX + baseCountOffset), hb.height * offY);
+        titleText.hb.setOffset(hb.width * (offX + BASE_TITLE_OFFSET_X), hb.height * offY);
+        countText.hb.setOffset(hb.width * (offX + BASE_COUNT_OFFSET_X), hb.height * offY);
 
         return this;
     }

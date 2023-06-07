@@ -146,6 +146,7 @@ public class EUIRM {
         public final TextureCache squaredButton2 = new TextureCache("images/extendedui/ui/SquaredButton2.png");
         public final TextureCache swap = new TextureCache("images/extendedui/ui/Swap.png");
         public final TextureCache tag = new TextureCache("images/extendedui/ui/Tag.png");
+        public final TextureCache warning = new TextureCache("images/extendedui/ui/Warning.png");
         public final TextureCache x = new TextureCache("images/extendedui/ui/X.png");
     }
 

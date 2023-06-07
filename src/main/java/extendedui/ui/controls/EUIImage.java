@@ -56,6 +56,10 @@ public class EUIImage extends EUIHoverable {
         this(other.texture, other.hb.makeCopy());
     }
 
+    public void render(SpriteBatch sb, Hitbox hb) {
+        render(sb, hb, color);
+    }
+
     public void render(SpriteBatch sb, Hitbox hb, Color targetColor) {
         render(sb, shaderMode, hb, targetColor);
     }
@@ -84,8 +88,30 @@ public class EUIImage extends EUIHoverable {
         render(sb, mode, blend, hb.x, hb.y, hb.width, hb.height, targetColor);
     }
 
+    public void render(SpriteBatch sb, float x, float y, float width, float height) {
+        render(sb, shaderMode, x, y, width, height);
+    }
+
+    public void render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
+        render(sb, mode, blendingMode, x, y, width, height, color);
+    }
+
+    public void render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, EUIRenderHelpers.BlendingMode blend, float x, float y, float width, float height, Color targetColor) {
+        mode.draw(sb, (s) -> blend.draw(s, s2 -> renderImpl(s, x, y, width, height, targetColor)));
+    }
+
     public void renderBicubic(SpriteBatch sb, float x, float y, float width, float height) {
 
+    }
+
+    public void renderCentered(SpriteBatch sb) {
+        renderCentered(sb, hb);
+
+        hb.render(sb);
+    }
+
+    public void renderCentered(SpriteBatch sb, Hitbox hb) {
+        renderCentered(sb, hb, color);
     }
 
     public void renderCentered(SpriteBatch sb, Hitbox hb, Color targetColor) {
@@ -98,19 +124,6 @@ public class EUIImage extends EUIHoverable {
 
     public void renderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, EUIRenderHelpers.BlendingMode blend, float x, float y, float width, float height, Color targetColor) {
         mode.draw(sb, (s) -> blend.draw(s, s2 -> renderCenteredImpl(s, x, y, width, height, targetColor)));
-    }
-
-    protected void renderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
-        if (background != null) {
-            final float scale = background.scale * Settings.scale;
-            final int s_w = background.texture.getWidth();
-            final int s_h = background.texture.getHeight();
-            sb.setColor(background.color != null ? background.color : targetColor);
-            sb.draw(background.texture, x, y, width / 2f, height / 2f, width, height, scaleX * scale, scaleY * scale, rotation, 0, 0, s_w, s_h, flipX, flipY);
-        }
-
-        sb.setColor(targetColor);
-        sb.draw(texture, x, y, width / 2f, height / 2f, width, height, scaleX * Settings.scale, scaleY * Settings.scale, rotation, 0, 0, srcWidth, srcHeight, flipX, flipY);
     }
 
     public void renderCentered(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, Hitbox hb) {
@@ -137,26 +150,27 @@ public class EUIImage extends EUIHoverable {
         renderCentered(sb, mode, blend, hb.x, hb.y, hb.width, hb.height, targetColor);
     }
 
+    public void renderCentered(SpriteBatch sb, float x, float y, float width, float height) {
+        renderCentered(sb, shaderMode, x, y, width, height);
+    }
+
+    protected void renderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
+        if (background != null) {
+            final float scale = background.scale * Settings.scale;
+            final int s_w = background.texture.getWidth();
+            final int s_h = background.texture.getHeight();
+            sb.setColor(background.color != null ? background.color : targetColor);
+            sb.draw(background.texture, x, y, width / 2f, height / 2f, width, height, scaleX * scale, scaleY * scale, rotation, 0, 0, s_w, s_h, flipX, flipY);
+        }
+
+        sb.setColor(targetColor);
+        sb.draw(texture, x, y, width / 2f, height / 2f, width, height, scaleX * Settings.scale, scaleY * Settings.scale, rotation, 0, 0, srcWidth, srcHeight, flipX, flipY);
+    }
+
     public void renderImpl(SpriteBatch sb) {
         render(sb, hb);
 
         hb.render(sb);
-    }
-
-    public void render(SpriteBatch sb, Hitbox hb) {
-        render(sb, hb.x, hb.y, hb.width, hb.height);
-    }
-
-    public void render(SpriteBatch sb, float x, float y, float width, float height) {
-        render(sb, shaderMode, x, y, width, height);
-    }
-
-    public void render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, float x, float y, float width, float height) {
-        render(sb, mode, blendingMode, x, y, width, height, color);
-    }
-
-    public void render(SpriteBatch sb, EUIRenderHelpers.ShaderMode mode, EUIRenderHelpers.BlendingMode blend, float x, float y, float width, float height, Color targetColor) {
-        mode.draw(sb, (s) -> blend.draw(s, s2 -> renderImpl(s, x, y, width, height, targetColor)));
     }
 
     protected void renderImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
@@ -274,33 +288,10 @@ public class EUIImage extends EUIHoverable {
         return this;
     }
 
-    public boolean tryRenderCentered(SpriteBatch sb) {
-        if (isActive) {
-            this.hb.render(sb);
-            renderCentered(sb);
-        }
+    public EUIImage translate(float x, float y) {
+        this.hb.translate(x, y);
 
-        return isActive;
-    }
-
-    public void renderCentered(SpriteBatch sb) {
-        renderCentered(sb, hb);
-
-        hb.render(sb);
-    }
-
-    public void renderCentered(SpriteBatch sb, Hitbox hb) {
-        renderCentered(sb, hb.x, hb.y, hb.width, hb.height);
-    }
-
-    public void renderCentered(SpriteBatch sb, float x, float y, float width, float height) {
-        renderCentered(sb, shaderMode, x, y, width, height);
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-        updateColor();
+        return this;
     }
 
     public EUIImage setHitbox(EUIHitbox hb) {
@@ -315,12 +306,6 @@ public class EUIImage extends EUIHoverable {
         return this;
     }
 
-    public EUIImage translate(float x, float y) {
-        this.hb.translate(x, y);
-
-        return this;
-    }
-
     public EUIImage setTooltip(String title, String description) {
         return setTooltip(new EUITooltip(title, description));
     }
@@ -329,6 +314,21 @@ public class EUIImage extends EUIHoverable {
         super.setTooltip(tooltip);
 
         return this;
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        updateColor();
+    }
+
+    public boolean tryRenderCentered(SpriteBatch sb) {
+        if (isActive) {
+            this.hb.render(sb);
+            renderCentered(sb);
+        }
+
+        return isActive;
     }
 
     public void updateColor() {

@@ -34,6 +34,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     private static final HashMap<String, EUIKeywordTooltip> REGISTERED_NAMES = new HashMap<>();
     private static final HashMap<String, EUIKeywordTooltip> REGISTERED_IDS = new HashMap<>();
     private static final HashSet<EUIKeywordTooltip> ICON_UPDATING_LIST = new HashSet<>();
+    public static final float BASE_ICON_SIZE = 28;
     protected FuncT0<TextureRegion> iconFunc;
     protected Float lastModNameHeight;
     public Color backgroundColor;
@@ -228,7 +229,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     public void renderTitle(SpriteBatch sb, float x, float y) {
         if (icon != null) {
             // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
-            renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, 28 * iconmultiW, 28 * iconmultiH);
+            renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, BASE_ICON_SIZE * iconmultiW, BASE_ICON_SIZE * iconmultiH);
             FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         }
         else {
@@ -244,13 +245,13 @@ public class EUIKeywordTooltip extends EUITooltip {
         if (backgroundColor != null) {
             sb.setColor(backgroundColor);
             sb.draw(EUIRM.images.baseBadge.texture(), x, y, 0f, 0f,
-                    width, height, Settings.scale, Settings.scale, 0f,
+                    width, height, scaleX, scaleY, 0f,
                     region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
                     region.getRegionHeight(), false, false);
         }
         sb.setColor(renderColor);
         sb.draw(region.getTexture(), x, y, 0f, 0f,
-                width, height, Settings.scale, Settings.scale, 0f,
+                width, height, scaleX, scaleY, 0f,
                 region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
                 region.getRegionHeight(), false, false);
     }

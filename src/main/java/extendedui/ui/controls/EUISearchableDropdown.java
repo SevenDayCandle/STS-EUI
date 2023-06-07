@@ -25,7 +25,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
 
     protected void initialize() {
         this.originalRows = this.rows;
-        searchInput = (EUITextInput) new EUITextInput(button.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f))
+        searchInput = (EUITextInput) new EUITextInput(button.label.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f))
                 .setOnUpdate(this::onUpdate)
                 .setLabel("");
     }
@@ -82,13 +82,13 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
     public void updateForSelection(boolean shouldInvoke) {
         int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
         if (isMultiSelect) {
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : currentIndices.size() + " " + EUIRM.strings.uiItemsselected;
+            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : makeMultiSelectString());
         }
         else if (currentIndices.size() > 0) {
             this.topVisibleRowIndex = Math.min(temp, this.originalRows.size() - this.visibleRowCount());
-            this.button.text = labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : originalRows.get(temp).label.text;
+            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : originalRows.get(temp).label.text);
             if (colorFunctionButton != null) {
-                this.button.setTextColor(colorFunctionButton.invoke(getCurrentItems()));
+                this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
             }
 
             this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);

@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
+import extendedui.EUIInputManager;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.EUITutorial;
@@ -53,14 +54,22 @@ public class EUITutorialScreen extends AbstractMenuScreen {
         super.updateImpl();
         if (current != null) {
             current.updateImpl();
+            if (InputHelper.justClickedLeft && !current.isHovered()) {
+                exitScreen();
+                return;
+            }
         }
 
         button.update();
         if (this.button.hb.clicked || InputHelper.pressedEscape) {
-            this.button.hb.clicked = false;
-            this.button.hide();
-            close();
+            exitScreen();
         }
+    }
+
+    public void exitScreen() {
+        this.button.hb.clicked = false;
+        this.button.hide();
+        close();
     }
 
     @Override

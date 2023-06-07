@@ -12,11 +12,6 @@ import static extendedui.utilities.EUIClassUtils.IMPL_LOOKUP;
 public interface ActionT0 {
     void invoke();
 
-    public static void doStatic(Class<?> invokeClass, String funcName) throws Throwable {
-        ActionT0 fun = get(invokeClass, funcName);
-        fun.invoke();
-    }
-
     public static ActionT0 get(Class<?> invokeClass, String funcName) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         MethodType mType = MethodType.methodType(void.class);

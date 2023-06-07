@@ -67,20 +67,18 @@ public class CardPoolScreen extends EUIPoolScreen {
         swapRelicScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.9f)
-                .setFont(EUIFontHelper.buttonFont, 0.8f)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uipool_viewRelicPool)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.relicScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()))
-                .setText(EUIRM.strings.uipool_viewRelicPool);
+                .setOnClick(() -> EUI.relicScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()));
 
         swapPotionScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.85f)
-                .setFont(EUIFontHelper.buttonFont, 0.8f)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uipool_viewPotionPool)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
-                .setOnClick(() -> EUI.potionScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllPotions()))
-                .setText(EUIRM.strings.uipool_viewPotionPool);
+                .setOnClick(() -> EUI.potionScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllPotions()));
 
         contextMenu = (EUIContextMenu<DebugOption>) new EUIContextMenu<DebugOption>(new EUIHitbox(0, 0, 0, 0), d -> d.name)
                 .setOnChange(options -> {

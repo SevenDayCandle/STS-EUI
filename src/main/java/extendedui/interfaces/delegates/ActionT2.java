@@ -12,16 +12,6 @@ import static extendedui.utilities.EUIClassUtils.IMPL_LOOKUP;
 public interface ActionT2<T1, T2> {
     void invoke(T1 arg1, T2 arg2);
 
-    public static <P, T1> void doFor(P invoker, String funcName, T1 param) throws Throwable {
-        ActionT2<P, T1> fun = get((Class<P>) invoker.getClass(), funcName, (Class<T1>) param.getClass());
-        fun.invoke(invoker, param);
-    }
-
-    public static <T1, T2> void doStatic(Class<?> invokeClass, String funcName, T1 param, T2 param2) throws Throwable {
-        ActionT2<T1, T2> fun = get(invokeClass, funcName, (Class<T1>) param.getClass(), (Class<T2>) param2.getClass());
-        fun.invoke(param, param2);
-    }
-
     public static <P, T1> ActionT2<P, T1> get(Class<P> invokeClass, String funcName, Class<T1> param1) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         CallSite site = LambdaMetafactory.metafactory(lookup,

@@ -59,7 +59,7 @@ public class EUIGameUtils {
     private static final HashMap<AbstractCard.CardColor, String> CUSTOM_COLOR_NAMES = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, AbstractPlayer.PlayerClass> COLOR_TO_CLASS = new HashMap<>();
     private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();
-    private static final HashMap<CodeSource, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
+    private static final HashMap<Class, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
     private static final HashMap<String, AbstractCard.CardColor> RELIC_COLORS = new HashMap<>();
 
     public static void addRelicColor(String relicID, AbstractCard.CardColor color) {
@@ -263,13 +263,14 @@ public class EUIGameUtils {
     }
 
     public static ModInfo getModInfo(Class<?> objectClass) {
-        CodeSource source = objectClass.getProtectionDomain().getCodeSource();
-        if (MOD_INFO_MAPPING.containsKey(source)) {
-            return MOD_INFO_MAPPING.get(source);
+        if (MOD_INFO_MAPPING.containsKey(objectClass)) {
+            return MOD_INFO_MAPPING.get(objectClass);
         }
 
+        CodeSource source = objectClass.getProtectionDomain().getCodeSource();
         try {
             URL jarURL = source.getLocation();
+            // If the class was patched by ModTheSpire, getLocation will be null
             if (jarURL == null) {
                 ClassPool pool = Loader.getClassPool();
                 pool.childFirstLookup = true;
@@ -282,16 +283,16 @@ public class EUIGameUtils {
 
             for (ModInfo loadedInfo : Loader.MODINFOS) {
                 if (jarURL.equals(loadedInfo.jarURL)) {
-                    MOD_INFO_MAPPING.put(source, loadedInfo);
+                    MOD_INFO_MAPPING.put(objectClass, loadedInfo);
                     return loadedInfo;
                 }
             }
-            MOD_INFO_MAPPING.put(source, null);
+            MOD_INFO_MAPPING.put(objectClass, null);
         }
         catch (Exception e) {
             EUIUtils.logError(objectClass, "Failed to find source for codesource " + source);
             e.printStackTrace();
-            MOD_INFO_MAPPING.put(source, null);
+            MOD_INFO_MAPPING.put(objectClass, null);
         }
 
         return null;

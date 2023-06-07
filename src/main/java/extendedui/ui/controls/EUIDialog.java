@@ -56,8 +56,7 @@ public abstract class EUIDialog<T> extends EUIHoverable {
     protected EUIButton getConfirmButton() {
         return new EUIButton(ImageMaster.OPTION_YES,
                 new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.15f, hb.height * 0.15f))
-                .setFont(EUIFontHelper.cardTitleFontNormal, 1f)
-                .setText(TEXT[2])
+                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, TEXT[2])
                 .setOnClick(() -> {
                     if (onComplete != null) {
                         onComplete.invoke(getConfirmValue());
@@ -68,8 +67,7 @@ public abstract class EUIDialog<T> extends EUIHoverable {
     protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.85f, hb.height * 0.15f))
-                .setFont(EUIFontHelper.cardTitleFontNormal, 1f)
-                .setText(TEXT[3])
+                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, TEXT[3])
                 .setOnClick(() -> {
                     if (onComplete != null) {
                         onComplete.invoke(getCancelValue());

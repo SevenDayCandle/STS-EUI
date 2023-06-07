@@ -38,6 +38,7 @@ import extendedui.ui.screens.*;
 import extendedui.ui.settings.ExtraModSettingsPanel;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -124,9 +125,9 @@ public class EUI {
     public static void dispose() {
         if (currentScreen != null) {
             currentScreen.dispose();
-            activeElement = null;
         }
 
+        activeElement = null;
         currentScreen = null;
         lastClicked = null;
     }
@@ -257,17 +258,20 @@ public class EUI {
 
         openCardFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uiFilters)
                 .setOnClick(() -> EUI.cardFilters.toggleFilters())
                 .setColor(Color.GRAY);
         openPotionFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uiFilters)
                 .setOnClick(() -> EUI.potionFilters.toggleFilters())
                 .setColor(Color.GRAY);
         openRelicFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f).setText(EUIRM.strings.uiFilters)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uiFilters)
                 .setOnClick(() -> EUI.relicFilters.toggleFilters())
                 .setColor(Color.GRAY);
 

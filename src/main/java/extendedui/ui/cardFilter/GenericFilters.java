@@ -36,7 +36,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
     public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.87f;
     public static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
     public static final float PAD_Y = scale(45);
-    public static final float SPACING = Settings.scale * 22.5f;
+    public static final float SPACING = Settings.scale * 18f;
     public static final int ROW_SIZE = 8;
     protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
     public final EUIButton closeButton;
@@ -95,7 +95,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
         keywordsInstructionLabel = new EUITextBox(EUIRM.images.panel.texture(), new EUIHitbox(0, 0, Settings.WIDTH * 0.48f, scale(64)), EUIFontHelper.cardTooltipFont, 0.85f)
-                .setColors(Color.DARK_GRAY, Settings.CREAM_COLOR)
+                .setColors(Color.BLACK, Settings.CREAM_COLOR)
                 .setLabel(EUIRM.strings.misc_keywordInstructions)
                 .setAlignment(0.75f, 0.05f, true);
         currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardTitleFontNormal,
@@ -108,7 +108,7 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
                 .setColor(Settings.BLUE_TEXT_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
 
-        sortTypeToggle = new EUIToggle(new EUIHitbox(0, 0, scale(170), scale(32)).setIsPopupCompatible(true))
+        sortTypeToggle = new EUIToggle(new EUIHitbox(0, 0, scale(135), scale(32)).setIsPopupCompatible(true))
                 .setBackground(EUIRM.images.rectangularButton.texture(), Color.DARK_GRAY)
                 .setTickImage(null, null, 10)
                 .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.7f)
@@ -296,9 +296,9 @@ public abstract class GenericFilters<T> extends EUICanvasGrid {
         super.updateImpl();
         hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
         keywordsSectionLabel.setPosition(hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 7).updateImpl();
-        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.21f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 9.1f).updateImpl();
-        sortTypeToggle.setPosition(keywordsSectionLabel.hb.x + SPACING * 10, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
-        sortDirectionToggle.setPosition(sortTypeToggle.hb.x + SPACING * 7, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
+        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.205f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 10f).updateImpl();
+        sortTypeToggle.setPosition(keywordsSectionLabel.hb.x + SPACING * 11, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
+        sortDirectionToggle.setPosition(sortTypeToggle.hb.x + sortTypeToggle.hb.width + SPACING * 1.4f, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
         currentTotalHeaderLabel.updateImpl();
         currentTotalLabel.updateImpl();
         hb.update();

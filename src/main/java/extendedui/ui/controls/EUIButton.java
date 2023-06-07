@@ -5,8 +5,6 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
@@ -20,28 +18,20 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
-import org.apache.commons.lang3.StringUtils;
+import extendedui.utilities.TupleT2;
 
 public class EUIButton extends EUIHoverable {
+    protected float currentClickDelay = 0f;
     public EUIImage background;
     public EUIImage border;
-
+    public EUILabel label;
     public float clickDelay = 0f;
     public boolean interactable = true;
-    public boolean isSmartText;
     public boolean showText = true;
-    public boolean smartTextResize;
     public ActionT1<EUIButton> onLeftClick;
     public ActionT1<EUIButton> onLeftPreClick;
     public ActionT1<EUIButton> onRightClick;
-    public String text;
-    public Color textColor = Color.WHITE.cpy();
     public Color hoverBlendColor;
-
-    protected BitmapFont font;
-    protected EUILabel label;
-    protected float fontScale;
-    protected float currentClickDelay = 0f;
 
     public EUIButton(Texture buttonTexture, float x, float y) {
         this(buttonTexture, new EUIHitbox(x, y, scale(buttonTexture.getWidth()), scale(buttonTexture.getHeight())));
@@ -50,9 +40,6 @@ public class EUIButton extends EUIHoverable {
     public EUIButton(Texture buttonTexture, EUIHitbox hitbox) {
         super(hitbox);
         this.background = new EUIImage(buttonTexture, hitbox, Color.WHITE);
-        this.text = "";
-        this.font = EUIFontHelper.buttonFont;
-        this.fontScale = 1f;
     }
 
     public static EUIButton createHexagonalButton(float x, float y, float width, float height) {
@@ -64,36 +51,39 @@ public class EUIButton extends EUIHoverable {
                 .setDimensions(width, height);
     }
 
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        final boolean interactable = isInteractable();
-        if (StringUtils.isNotEmpty(text) && showText) {
-            this.renderButton(sb, interactable);
+    public boolean isInteractable() {
+        return interactable && (onLeftClick != null || onLeftPreClick != null);
+    }
 
-            font.getData().setScale(fontScale);
-            final Color color = interactable ? textColor : TEXT_DISABLED_COLOR;
-            if (isSmartText) {
-                EUISmartText.write(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color);
-            }
-            else if (FontHelper.getSmartWidth(font, text, Integer.MAX_VALUE, 0f) > (hb.width * 0.7)) {
-                EUIRenderHelpers.writeCentered(sb, font, text, hb, color, 0.8f);
-            }
-            else {
-                EUIRenderHelpers.writeCentered(sb, font, text, hb, color);
-            }
-            EUIRenderHelpers.resetFont(font);
+    protected void onClickStart() {
+        this.hb.clickStarted = true;
+        CardCrawlGame.sound.play("UI_CLICK_1");
+
+        if (onLeftPreClick != null) {
+            this.onLeftPreClick.invoke(this);
         }
-        else {
-            if (interactable) {
-                this.renderButton(sb, interactable);
-            }
-            else {
-                EUIRenderHelpers.drawGrayscale(sb, (s) -> this.renderButton(s, interactable));
-            }
+    }
 
+    protected void onJustHovered() {
+        CardCrawlGame.sound.play("UI_HOVER");
+    }
+
+    protected void onLeftClick() {
+        this.hb.clicked = false;
+        this.currentClickDelay = clickDelay;
+
+        if (onLeftClick != null) {
+            this.onLeftClick.invoke(this);
         }
+    }
 
-        this.hb.render(sb);
+    protected void onRightClick() {
+        this.hb.clicked = false;
+        this.currentClickDelay = clickDelay;
+
+        if (onRightClick != null) {
+            this.onRightClick.invoke(this);
+        }
     }
 
     protected void renderButton(SpriteBatch sb, boolean interactable) {
@@ -106,6 +96,58 @@ public class EUIButton extends EUIHoverable {
         if (interactable && this.hb.hovered && !this.hb.clickStarted) {
             background.render(sb, EUIRenderHelpers.ShaderMode.Bright, hb, hoverBlendColor != null ? hoverBlendColor : HOVER_BLEND_COLOR);
         }
+    }
+
+    protected void renderButtonCentered(SpriteBatch sb, boolean interactable) {
+        background.renderCentered(sb, hb);
+
+        if (border != null) {
+            border.renderCentered(sb);
+        }
+
+        if (interactable && this.hb.hovered && !this.hb.clickStarted) {
+            background.renderCentered(sb, EUIRenderHelpers.ShaderMode.Bright, hb, hoverBlendColor != null ? hoverBlendColor : HOVER_BLEND_COLOR);
+        }
+    }
+
+    public void renderCentered(SpriteBatch sb) {
+        final boolean interactable = isInteractable();
+        if (label != null && showText) {
+            this.renderButtonCentered(sb, interactable);
+            label.renderImpl(sb, hb, interactable ? label.textColor : TEXT_DISABLED_COLOR);
+        }
+        else {
+            if (interactable) {
+                this.renderButtonCentered(sb, interactable);
+            }
+            else {
+                EUIRenderHelpers.drawGrayscale(sb, (s) -> this.renderButtonCentered(s, interactable));
+            }
+
+        }
+
+        this.hb.render(sb);
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        final boolean interactable = isInteractable();
+
+        if (label != null && showText) {
+            this.renderButton(sb, interactable);
+            label.renderImpl(sb, hb, interactable ? label.textColor : TEXT_DISABLED_COLOR);
+        }
+        else {
+            if (interactable) {
+                this.renderButton(sb, interactable);
+            }
+            else {
+                EUIRenderHelpers.drawGrayscale(sb, (s) -> this.renderButton(s, interactable));
+            }
+
+        }
+
+        this.hb.render(sb);
     }
 
     public EUIButton setBackground(Texture borderTexture) {
@@ -165,18 +207,82 @@ public class EUIButton extends EUIHoverable {
         return this;
     }
 
-    public EUIButton setFont(BitmapFont font, float fontScale) {
-        if (font != null) {
-            this.font = font;
-        }
-
-        this.fontScale = fontScale;
+    public EUIButton setDimensions(float width, float height) {
+        this.hb.resize(width, height);
 
         return this;
     }
 
+    public EUIButton setPosition(float cX, float cY) {
+        this.hb.move(cX, cY);
+
+        return this;
+    }
+
+    public EUIButton setTooltip(String title, String description) {
+        return setTooltip(new EUITooltip(title, description));
+    }
+
+    public EUIButton setTooltip(EUITooltip tooltip) {
+        super.setTooltip(tooltip);
+
+        return this;
+    }
+
+    @Override
+    public void updateImpl() {
+        if (currentClickDelay > 0) {
+            this.currentClickDelay -= EUI.delta();
+        }
+
+        super.updateImpl();
+        background.updateColor();
+
+        if (isInteractable()) {
+            if (this.hb.justHovered) {
+                onJustHovered();
+            }
+
+            if (this.hb.hovered) {
+                if (currentClickDelay <= 0) {
+                    if (EUIInputManager.rightClick.isJustPressed() && EUI.tryClick(this.hb)) {
+                        onRightClick();
+                    }
+                    else if (InputHelper.justClickedLeft) {
+                        onClickStart();
+                    }
+                }
+            }
+
+            if (this.hb.clicked && EUI.tryClick(this.hb)) {
+                onLeftClick();
+            }
+        }
+    }
+
     public EUIButton setHoverBlendColor(Color color) {
         this.hoverBlendColor = color;
+        return this;
+    }
+
+    public EUIButton setInteractable(boolean interactable) {
+        this.interactable = interactable;
+
+        return this;
+    }
+
+    public EUIButton setLabel(EUILabel label) {
+        this.label = label;
+        return this;
+    }
+
+    public EUIButton setLabel(String text) {
+        return setLabel(EUIFontHelper.buttonFont, 1, text);
+    }
+
+    public EUIButton setLabel(BitmapFont font, float fontScale, String text) {
+        this.label = new EUILabel(font, hb, fontScale, 0.5f, 0.5f, false);
+        setText(text);
         return this;
     }
 
@@ -257,19 +363,6 @@ public class EUIButton extends EUIHoverable {
         return this;
     }
 
-    public EUIButton setSmartText(boolean isSmartText) {
-        this.isSmartText = isSmartText;
-
-        return this;
-    }
-
-    public EUIButton setSmartText(boolean isSmartText, boolean smartTextResize) {
-        this.isSmartText = isSmartText;
-        this.smartTextResize = smartTextResize;
-
-        return this;
-    }
-
     public EUIButton setTargetColor(Color buttonColor) {
         background.setTargetColor(buttonColor);
 
@@ -277,14 +370,66 @@ public class EUIButton extends EUIHoverable {
     }
 
     public EUIButton setText(String text) {
-        this.text = text;
+        verifyLabel();
+        if (this.label.smartText) {
+            return setTextAndAlign(text);
+        }
+        else {
+            return setTextAndResize(text);
+        }
+    }
 
+    public EUIButton setTextAndAlign(String text) {
+        return setTextAndAlign(text, 0.5f);
+    }
+
+    public EUIButton setTextAndAlign(String text, float baseW) {
+        return setTextAndAlign(text, baseW, baseW);
+    }
+
+    public EUIButton setTextAndAlign(String text, float baseW, float rateW) {
+        this.label.setLabel(text);
+        label.font.getData().setScale(label.fontScale);
+        float smartWidth = EUISmartText.getSmartWidth(label.font, text, hb.width, 0f);
+        this.label.horizontalRatio = Math.max(0, baseW - (smartWidth / hb.width) * rateW);
+        EUIRenderHelpers.resetFont(label.font);
         return this;
     }
 
-    public EUIButton setTextColor(Color textColor) {
-        this.textColor = textColor.cpy();
+    public EUIButton setTextAndAlign2D(String text) {
+        return setTextAndAlign2D(text, 0.7f, 0.5f);
+    }
 
+    public EUIButton setTextAndAlign2D(String text, float rateH, float rateW) {
+        return setTextAndAlign2D(text, rateH, rateW, rateH, rateW);
+    }
+
+    public EUIButton setTextAndAlign2D(String text, float baseH, float baseW, float rateH, float rateW) {
+        this.label.setLabel(text);
+        label.font.getData().setScale(label.fontScale);
+        TupleT2<Float, Float> smartSize = EUISmartText.getSmartSize(label.font, text, hb.width, 0f);
+        this.label.horizontalRatio = Math.max(0, baseW - (smartSize.v1 / hb.width) * rateW);
+        this.label.verticalRatio = Math.max(0, baseH - (smartSize.v2 / hb.height) * rateH);
+        EUIRenderHelpers.resetFont(label.font);
+        return this;
+    }
+
+    public EUIButton setTextAndResize(String text) {
+        return setTextAndResize(text, 0.8f, 0.84f);
+    }
+
+    public EUIButton setTextAndResize(String text, float targetShrink) {
+        return setTextAndResize(text, targetShrink, 0.84f);
+    }
+
+    public EUIButton setTextAndResize(String text, float targetShrink, float threshold) {
+        this.label.setLabel(text);
+        if (EUISmartText.getSmartWidth(label.font, text, Integer.MAX_VALUE, 0f) * label.fontScale > hb.width * threshold) {
+            this.label.setFontScaleRelative(targetShrink);
+        }
+        else {
+            this.label.setFontScaleRelative(1f);
+        }
         return this;
     }
 
@@ -305,140 +450,9 @@ public class EUIButton extends EUIHoverable {
         return isActive;
     }
 
-    public void renderCentered(SpriteBatch sb) {
-        final boolean interactable = isInteractable();
-        if (StringUtils.isNotEmpty(text) && showText) {
-            this.renderButtonCentered(sb, interactable);
-
-            font.getData().setScale(fontScale);
-            final Color color = interactable ? textColor : TEXT_DISABLED_COLOR;
-            if (isSmartText) {
-                EUISmartText.write(sb, font, text, hb.cX - (hb.width * 0.4f), hb.y + (hb.height * 0.65f), hb.width, font.getLineHeight(), color, smartTextResize);
-            }
-            else if (FontHelper.getSmartWidth(font, text, Integer.MAX_VALUE, 0f) > (hb.width * 0.7)) {
-                EUIRenderHelpers.writeCentered(sb, font, text, hb, color, 0.8f);
-            }
-            else {
-                EUIRenderHelpers.writeCentered(sb, font, text, hb, color);
-            }
-            EUIRenderHelpers.resetFont(font);
-        }
-        else {
-            if (interactable) {
-                this.renderButtonCentered(sb, interactable);
-            }
-            else {
-                EUIRenderHelpers.drawGrayscale(sb, (s) -> this.renderButtonCentered(s, interactable));
-            }
-
-        }
-
-        this.hb.render(sb);
-    }
-
-    protected void renderButtonCentered(SpriteBatch sb, boolean interactable) {
-        background.renderCentered(sb, hb);
-
-        if (border != null) {
-            border.renderCentered(sb);
-        }
-
-        if (interactable && this.hb.hovered && !this.hb.clickStarted) {
-            background.renderCentered(sb, EUIRenderHelpers.ShaderMode.Bright, hb, hoverBlendColor != null ? hoverBlendColor : HOVER_BLEND_COLOR);
-        }
-    }
-
-    @Override
-    public void updateImpl() {
-        if (currentClickDelay > 0) {
-            this.currentClickDelay -= EUI.delta();
-        }
-
-        super.updateImpl();
-        background.updateColor();
-
-        if (isInteractable()) {
-            if (this.hb.justHovered) {
-                onJustHovered();
-            }
-
-            if (this.hb.hovered) {
-                if (currentClickDelay <= 0) {
-                    if (EUIInputManager.rightClick.isJustPressed() && EUI.tryClick(this.hb)) {
-                        onRightClick();
-                    }
-                    else if (InputHelper.justClickedLeft) {
-                        onClickStart();
-                    }
-                }
-            }
-
-            if (this.hb.clicked && EUI.tryClick(this.hb)) {
-                onLeftClick();
-            }
-        }
-    }
-
-    public EUIButton setDimensions(float width, float height) {
-        this.hb.resize(width, height);
-
-        return this;
-    }
-
-    public EUIButton setPosition(float cX, float cY) {
-        this.hb.move(cX, cY);
-
-        return this;
-    }
-
-    public EUIButton setTooltip(String title, String description) {
-        return setTooltip(new EUITooltip(title, description));
-    }
-
-    public EUIButton setTooltip(EUITooltip tooltip) {
-        super.setTooltip(tooltip);
-
-        return this;
-    }
-
-    public boolean isInteractable() {
-        return interactable && (onLeftClick != null || onLeftPreClick != null);
-    }
-
-    public EUIButton setInteractable(boolean interactable) {
-        this.interactable = interactable;
-
-        return this;
-    }
-
-    protected void onJustHovered() {
-        CardCrawlGame.sound.play("UI_HOVER");
-    }
-
-    protected void onRightClick() {
-        this.hb.clicked = false;
-        this.currentClickDelay = clickDelay;
-
-        if (onRightClick != null) {
-            this.onRightClick.invoke(this);
-        }
-    }
-
-    protected void onClickStart() {
-        this.hb.clickStarted = true;
-        CardCrawlGame.sound.play("UI_CLICK_1");
-
-        if (onLeftPreClick != null) {
-            this.onLeftPreClick.invoke(this);
-        }
-    }
-
-    protected void onLeftClick() {
-        this.hb.clicked = false;
-        this.currentClickDelay = clickDelay;
-
-        if (onLeftClick != null) {
-            this.onLeftClick.invoke(this);
+    protected void verifyLabel() {
+        if (label == null) {
+            label = new EUILabel(EUIFontHelper.buttonFont, hb, 1, 0.5f, 0.5f, false);
         }
     }
 }

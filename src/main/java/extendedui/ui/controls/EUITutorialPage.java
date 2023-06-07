@@ -12,6 +12,10 @@ public class EUITutorialPage extends EUIBase {
         this.description = description;
     }
 
+    public boolean isHovered() {
+        return false;
+    }
+
     @Override
     public void updateImpl() {
 

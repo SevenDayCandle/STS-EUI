@@ -44,12 +44,10 @@ public class EUIButtonList extends EUIBase {
         this.buttonWidth = buttonWidth;
         this.buttonHeight = buttonHeight;
         upButton = new EUIButton(ImageMaster.CF_LEFT_ARROW, new EUIHitbox(xPos - ICON_SIZE, y + (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE))
-                .setOnClick(__ -> setTopButtonIndex(topButtonIndex - 1))
-                .setText(null);
+                .setOnClick(__ -> setTopButtonIndex(topButtonIndex - 1));
         upButton.background.setRotation(-90);
         downButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new EUIHitbox(upButton.hb.cX + ICON_SIZE, upButton.getY(), ICON_SIZE, ICON_SIZE))
-                .setOnClick(__ -> setTopButtonIndex(topButtonIndex + 1))
-                .setText(null);
+                .setOnClick(__ -> setTopButtonIndex(topButtonIndex + 1));
         downButton.background.setRotation(-90);
     }
 
@@ -72,13 +70,12 @@ public class EUIButtonList extends EUIBase {
 
     public EUIButton addButton(ActionT1<EUIButton> onClick, String title) {
         EUIButton button = new EUIButton(ImageMaster.COLOR_TAB_BAR, new EUIHitbox(buttonWidth, buttonHeight))
-                .setFont(EUIFontHelper.buttonFont, fontScale)
+                .setLabel(EUIFontHelper.buttonFont, fontScale, title)
                 .setButtonScale(1f, 1.2f)
                 .setOnClick((b) -> {
                     selectButton(b);
                     onClick.invoke(b);
-                })
-                .setText(title);
+                });
         buttons.add(button);
         setTopButtonIndex(0);
         selectButton(buttons.get(0));
@@ -90,10 +87,10 @@ public class EUIButtonList extends EUIBase {
             EUIButton b = buttons.get(i);
             if (b == button) {
                 highlightedIndex = i;
-                b.setTextColor(Settings.GREEN_TEXT_COLOR);
+                b.label.setColor(Settings.GREEN_TEXT_COLOR);
             }
             else {
-                b.setTextColor(Color.WHITE);
+                b.label.setColor(Color.WHITE);
             }
         }
     }

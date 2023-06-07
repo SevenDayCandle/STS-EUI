@@ -59,11 +59,19 @@ public class EUIBorderedImage extends EUIImage {
     }
 
     protected void renderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
+        x += cornerTL.getWidth();
+        y += cornerBR.getHeight();
+        width = width - cornerTL.getWidth() - cornerBR.getWidth();
+        height = height - cornerTL.getHeight() - cornerBR.getHeight();
         super.renderCenteredImpl(sb, x, y, width, height, targetColor);
         renderCorners(sb, x, y, width, height);
     }
 
     protected void renderImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
+        x += cornerTL.getWidth();
+        y += cornerBR.getHeight();
+        width = width - cornerTL.getWidth() - cornerBR.getWidth();
+        height = height - cornerTL.getHeight() - cornerBR.getHeight();
         super.renderImpl(sb, x, y, width, height, targetColor);
         renderCorners(sb, x, y, width, height);
     }

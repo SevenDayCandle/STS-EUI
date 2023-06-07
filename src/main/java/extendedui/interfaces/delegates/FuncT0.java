@@ -13,11 +13,6 @@ import static extendedui.utilities.EUIClassUtils.IMPL_LOOKUP;
 public interface FuncT0<Result> {
     Result invoke();
 
-    public static <Result> Result doStatic(Class<Result> retType, Class<?> invokeClass, String funcName) throws Throwable {
-        FuncT0<Result> fun = get(retType, invokeClass, funcName);
-        return fun.invoke();
-    }
-
     public static <Result> FuncT0<Result> get(Class<Result> retType, Class<?> invokeClass, String funcName) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         MethodType mType = MethodType.methodType(retType);

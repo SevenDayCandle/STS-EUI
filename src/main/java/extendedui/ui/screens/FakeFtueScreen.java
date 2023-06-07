@@ -63,13 +63,21 @@ public class FakeFtueScreen extends EUIDungeonScreen {
     public void update() {
         if (current != null) {
             current.updateImpl();
+            if (InputHelper.justClickedLeft && !current.isHovered()) {
+                exitScreen();
+                return;
+            }
         }
 
         button.update();
         if (this.button.hb.clicked || EUIInputManager.tryEscape()) {
-            this.button.hb.clicked = false;
-            AbstractDungeon.closeCurrentScreen();
+            exitScreen();
         }
+    }
+
+    public void exitScreen() {
+        this.button.hb.clicked = false;
+        AbstractDungeon.closeCurrentScreen();
     }
 
     @Override

@@ -19,13 +19,13 @@ import static extendedui.EUIRenderHelpers.DARKENED_SCREEN;
 
 public class EUITutorial extends EUIHoverable {
     private static final float ICON_SIZE = 96f * Settings.scale;
+    private int page;
+    private EUITutorialPage current;
     protected EUISearchableDropdown<EUITutorialPage> tutorials;
     protected EUIButton next;
     protected EUIButton prev;
     protected EUILabel description;
     protected EUIImage backgroundImage;
-    private int page;
-    private EUITutorialPage current;
 
     public EUITutorial(EUITutorialPage... descriptions) {
         this(Arrays.asList(descriptions));
@@ -73,9 +73,8 @@ public class EUITutorial extends EUIHoverable {
         this.prev.setActive(this.tutorials.size() > 1);
     }
 
-    protected void setPage(EUITutorialPage page) {
-        this.current = page;
-        this.description.setLabel(current != null ? current.description : "");
+    public EUITutorial(EUIHitbox hb, Texture backgroundTexture, EUITutorialPage... descriptions) {
+        this(hb, backgroundTexture, Arrays.asList(descriptions));
     }
 
     protected void changePage(int newPage) {
@@ -83,12 +82,12 @@ public class EUITutorial extends EUIHoverable {
         this.tutorials.setSelectedIndex(newPage);
     }
 
-    public EUITutorial(EUIHitbox hb, Texture backgroundTexture, EUITutorialPage... descriptions) {
-        this(hb, backgroundTexture, Arrays.asList(descriptions));
-    }
-
     public void close() {
         this.tutorials.forceClose();
+    }
+
+    public boolean isHovered() {
+        return hb.hovered || next.hb.hovered || prev.hb.hovered || tutorials.areAnyItemsHovered() || current != null && current.isHovered();
     }
 
     @Override
@@ -107,11 +106,16 @@ public class EUITutorial extends EUIHoverable {
         }
     }
 
+    protected void setPage(EUITutorialPage page) {
+        this.current = page;
+        this.description.setLabel(current != null ? current.description : "");
+    }
+
     @Override
     public void updateImpl() {
         super.updateImpl();
         this.tutorials.tryUpdate();
-        this.description.tryUpdate();
+        this.description.updateImpl();
         this.next.tryUpdate();
         this.prev.tryUpdate();
         if (current != null) {
