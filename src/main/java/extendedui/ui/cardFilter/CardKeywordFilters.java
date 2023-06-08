@@ -60,6 +60,13 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
         return c.rawDescription != null ? CardModifierManager.onCreateDescription(c, c.rawDescription) : null;
     }
 
+    public static String getNameForSort(AbstractCard c) {
+        if (c instanceof CacheableCard) {
+            return ((CacheableCard) c).getNameForSort();
+        }
+        return c.name != null ? CardModifierManager.onRenderTitle(c, c.name) : null;
+    }
+
     public CardKeywordFilters() {
         super();
 
@@ -167,7 +174,8 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
         return EUIUtils.filter(input, c -> {
             //Name check
             if (currentName != null && !currentName.isEmpty()) {
-                if (c.name == null || !c.name.toLowerCase().contains(currentName.toLowerCase())) {
+                String name = getNameForSort(c);
+                if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
                     return false;
                 }
             }
