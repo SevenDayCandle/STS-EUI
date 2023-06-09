@@ -20,6 +20,7 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.markers.CustomCardPoolModule;
+import extendedui.interfaces.markers.CustomPotionFilterModule;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -131,6 +132,9 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
 
         EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
             quickSearch.setLabel(EUI.cardFilters.currentName != null ? EUI.cardFilters.currentName : "");
+            for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+                module.open(EUI.customHeader.group.group, color, payload);
+            }
             if (customModule != null) {
                 customModule.open(EUI.customHeader.group.group, color, payload);
             }
@@ -138,6 +142,9 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
             cardGrid.forceUpdateCardPositions();
         }, color, false, true);
 
+        for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+            module.open(cardGrid.cards.group, color, payload);
+        }
         customModule = EUI.getCustomCardLibraryModule(color);
         if (customModule != null) {
             customModule.open(cardGrid.cards.group, color, payload);
@@ -190,6 +197,9 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
                 this.cancelButton.hide();
                 close();
             }
+            for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+                module.update();
+            }
             if (customModule != null) {
                 customModule.update();
             }
@@ -212,6 +222,9 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         EUI.customHeader.render(sb);
         quickSearch.tryRender(sb);
 
+        for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+            module.render(sb);
+        }
         if (customModule != null) {
             customModule.render(sb);
         }
@@ -224,6 +237,9 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     @Override
     public void close() {
         super.close();
+        for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+            module.onClose();
+        }
         if (customModule != null) {
             customModule.onClose();
         }

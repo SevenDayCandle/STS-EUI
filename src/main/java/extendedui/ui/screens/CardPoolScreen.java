@@ -141,6 +141,9 @@ public class CardPoolScreen extends EUIPoolScreen {
     @Override
     public void close() {
         super.close();
+        for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
+            module.onClose();
+        }
         if (customModule != null) {
             customModule.onClose();
         }
@@ -161,6 +164,9 @@ public class CardPoolScreen extends EUIPoolScreen {
         cardGrid.setCardGroup(cards);
 
         EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
+            for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
+                module.open(EUI.customHeader.group.group, color, null);
+            }
             if (customModule != null) {
                 customModule.open(EUI.customHeader.group.group, color, null);
             }
@@ -168,6 +174,10 @@ public class CardPoolScreen extends EUIPoolScreen {
         }, color, !canSeeAllColors, true);
 
         EUI.countingPanel.open(cardGrid.cards.group, color, null);
+
+        for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
+            module.open(cardGrid.cards.group, color, null);
+        }
 
         customModule = EUI.getCustomCardPoolModule(player);
         if (customModule != null) {
@@ -198,6 +208,9 @@ public class CardPoolScreen extends EUIPoolScreen {
             EUI.customHeader.update();
             EUI.openCardFiltersButton.tryUpdate();
             EUI.countingPanel.tryUpdate();
+            for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
+                module.update();
+            }
             if (customModule != null) {
                 customModule.update();
             }
@@ -221,6 +234,9 @@ public class CardPoolScreen extends EUIPoolScreen {
         EUI.countingPanel.tryRender(sb);
         if (!EUI.cardFilters.isActive) {
             EUI.openCardFiltersButton.tryRender(sb);
+        }
+        for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
+            module.render(sb);
         }
         if (customModule != null) {
             customModule.render(sb);

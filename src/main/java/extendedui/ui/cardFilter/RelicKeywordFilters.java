@@ -18,9 +18,7 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
-import extendedui.interfaces.markers.CustomRelicFilterModule;
-import extendedui.interfaces.markers.CustomRelicPoolModule;
-import extendedui.interfaces.markers.KeywordProvider;
+import extendedui.interfaces.markers.*;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -119,6 +117,9 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         colorsDropdown.setSelectionIndices((int[]) null, false);
         seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
+        for (CustomRelicFilterModule module : EUI.globalCustomRelicFilters) {
+            module.reset();
+        }
         if (customModule != null) {
             customModule.reset();
         }
@@ -132,7 +133,9 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
     public boolean areFiltersEmpty() {
         return (currentName == null || currentName.isEmpty())
                 && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty() && currentSeen.isEmpty()
-                && currentFilters.isEmpty() && currentNegateFilters.isEmpty() && (customModule != null && customModule.isEmpty());
+                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
+                && EUIUtils.all(EUI.globalCustomRelicFilters, CustomRelicFilterModule::isEmpty)
+                && (customModule != null && customModule.isEmpty());
     }
 
     @Override
@@ -154,6 +157,9 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 availableMods.add(EUIGameUtils.getModInfo(relic));
                 availableRarities.add(relic.tier);
                 availableColors.add(EUIGameUtils.getRelicColor(relic.relicId));
+            }
+            for (CustomRelicFilterModule module : EUI.globalCustomRelicFilters) {
+                module.initializeSelection(referenceItems);
             }
             if (customModule != null) {
                 customModule.initializeSelection(referenceItems);
@@ -190,6 +196,9 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         seenDropdown.setPosition(colorsDropdown.hb.x + colorsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
         nameInput.setPosition(hb.x + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
 
+        for (CustomRelicFilterModule module : EUI.globalCustomRelicFilters) {
+            module.update();
+        }
         if (customModule != null) {
             customModule.update();
         }
@@ -218,6 +227,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 || colorsDropdown.areAnyItemsHovered()
                 || seenDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
+                || EUIUtils.any(EUI.globalCustomRelicFilters, CustomRelicFilterModule::isHovered)
                 || (customModule != null && customModule.isHovered());
     }
 
@@ -229,21 +239,12 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         seenDropdown.tryRender(sb);
         nameInput.tryRender(sb);
 
+        for (CustomRelicFilterModule module : EUI.globalCustomRelicFilters) {
+            module.render(sb);
+        }
         if (customModule != null) {
             customModule.render(sb);
         }
-    }
-
-    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, CustomRelicPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
-        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
-        EUI.relicFilters.initialize(__ -> {
-            EUI.relicHeader.updateForFilters();
-            if (module != null) {
-                module.open(EUI.relicHeader.getRelics(), color, null);
-            }
-        }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
-        EUI.relicHeader.updateForFilters();
-        return this;
     }
 
     public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {

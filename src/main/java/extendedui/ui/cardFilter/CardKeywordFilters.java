@@ -165,6 +165,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
         raritiesDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
+        for (CustomCardFilterModule module : EUI.globalCustomCardFilters) {
+            module.reset();
+        }
         if (customModule != null) {
             customModule.reset();
         }
@@ -218,6 +221,12 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
                 return false;
             }
 
+            for (CustomCardFilterModule module : EUI.globalCustomCardFilters) {
+                if (!module.isCardValid(c)) {
+                    return false;
+                }
+            }
+
             //Module check
             if (customModule != null && !customModule.isCardValid(c)) {
                 return false;
@@ -246,7 +255,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
                 && currentColors.isEmpty() && currentOrigins.isEmpty()
                 && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
                 && currentCosts.isEmpty() && currentRarities.isEmpty()
-                && currentTypes.isEmpty() && (customModule != null && customModule.isEmpty());
+                && currentTypes.isEmpty()
+                && EUIUtils.all(EUI.globalCustomCardFilters, CustomCardFilterModule::isEmpty)
+                && (customModule != null && customModule.isEmpty());
     }
 
     @Override
@@ -272,6 +283,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
                 availableTypes.add(card.type);
                 availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost4Plus.lowerBound));
                 availableColors.add(card.color);
+            }
+            for (CustomCardFilterModule module : EUI.globalCustomCardFilters) {
+                module.initializeSelection(referenceItems);
             }
             if (customModule != null) {
                 customModule.initializeSelection(referenceItems);
@@ -335,6 +349,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
         nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
 
+        for (CustomCardFilterModule module : EUI.globalCustomCardFilters) {
+            module.update();
+        }
         if (customModule != null) {
             customModule.update();
         }
@@ -406,6 +423,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
                 || typesDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
                 || descriptionInput.hb.hovered
+                || EUIUtils.any(EUI.globalCustomCardFilters, CustomCardFilterModule::isHovered)
                 || (customModule != null && customModule.isHovered());
     }
 
@@ -419,23 +437,12 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard> {
         nameInput.tryRender(sb);
         descriptionInput.tryRender(sb);
 
+        for (CustomCardFilterModule module : EUI.globalCustomCardFilters) {
+            module.render(sb);
+        }
         if (customModule != null) {
             customModule.render(sb);
         }
-    }
-
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, CustomCardPoolModule module, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition) {
-        EUI.customHeader.setGroup(group);
-        EUI.customHeader.setupButtons(isFixedPosition);
-        initialize((button) ->
-        {
-            EUI.customHeader.updateForFilters();
-            if (module != null) {
-                module.open(EUI.customHeader.group.group, color, null);
-            }
-        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
-        EUI.customHeader.updateForFilters();
-        return this;
     }
 
     public CardKeywordFilters initializeForCustomHeader(CardGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition) {

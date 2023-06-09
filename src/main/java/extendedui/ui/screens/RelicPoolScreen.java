@@ -9,6 +9,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
@@ -16,6 +17,7 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT2;
+import extendedui.interfaces.markers.CustomPotionPoolModule;
 import extendedui.interfaces.markers.CustomRelicPoolModule;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
@@ -74,6 +76,17 @@ public class RelicPoolScreen extends EUIPoolScreen {
     }
 
     @Override
+    public void close() {
+        super.close();
+        for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+            module.onClose();
+        }
+        if (customModule != null) {
+            customModule.onClose();
+        }
+    }
+
+    @Override
     public AbstractDungeon.CurrentScreen curScreen() {
         return RELIC_POOL_SCREEN;
     }
@@ -120,15 +133,22 @@ public class RelicPoolScreen extends EUIPoolScreen {
         relicGrid.setRelics(relics);
 
         EUI.relicFilters.initializeForCustomHeader(relicGrid.relicGroup, __ -> {
+            ArrayList<AbstractRelic> headerRelics = EUI.relicHeader.getRelics();
+            for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+                module.open(headerRelics, color, null);
+            }
             if (customModule != null) {
-                customModule.open(EUI.relicHeader.getRelics(), color, null);
+                customModule.open(headerRelics, color, null);
             }
             relicGrid.forceUpdateRelicPositions();
         }, color, true, false);
 
+        for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+            module.open(relics, color, null);
+        }
         customModule = EUI.getCustomRelicPoolModule(player);
         if (customModule != null) {
-            customModule.open(EUIUtils.map(relicGrid.relicGroup, r -> r.relic), color, null);
+            customModule.open(relics, color, null);
         }
 
     }
@@ -148,6 +168,9 @@ public class RelicPoolScreen extends EUIPoolScreen {
             swapPotionScreen.updateImpl();
             EUI.relicHeader.updateImpl();
             EUI.openRelicFiltersButton.tryUpdate();
+            for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+                module.update();
+            }
             if (customModule != null) {
                 customModule.update();
             }
@@ -163,6 +186,9 @@ public class RelicPoolScreen extends EUIPoolScreen {
         EUI.relicHeader.renderImpl(sb);
         if (!EUI.relicFilters.isActive) {
             EUI.openRelicFiltersButton.tryRender(sb);
+        }
+        for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+            module.render(sb);
         }
         if (customModule != null) {
             customModule.render(sb);

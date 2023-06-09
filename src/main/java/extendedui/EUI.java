@@ -51,21 +51,34 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EUI {
-    public static final ArrayList<EUIBase> BattleSubscribers = new ArrayList<>();
-    public static final ArrayList<EUIBase> Subscribers = new ArrayList<>();
-    private static final String[] ENERGY_STRINGS = {"[E]", "[R]", "[G]", "[B]", "[W]"};
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> preRenderList = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> postRenderList = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> priorityPostRenderList = new ConcurrentLinkedQueue<>();
-    private static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customCardFilters = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardLibraryModules = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardPoolModules = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomPotionFilterModule> customPotionFilters = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomPotionPoolModule> customPotionLibraryModules = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomPotionPoolModule> customPotionPoolModules = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomRelicFilterModule> customRelicFilters = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicLibraryModules = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicPoolModules = new HashMap<>();
+    public static final ArrayList<EUIBase> BattleSubscribers = new ArrayList<>();
+    public static final ArrayList<EUIBase> Subscribers = new ArrayList<>();
+    public static final String[] ENERGY_STRINGS = {"[E]", "[R]", "[G]", "[B]", "[W]"};
+    public static final ArrayList<CustomCardFilterModule> globalCustomCardFilters = new ArrayList<>();
+    public static final ArrayList<CustomCardPoolModule> globalCustomCardLibraryModules = new ArrayList<>();
+    public static final ArrayList<CustomCardPoolModule> globalCustomCardPoolModules = new ArrayList<>();
+    public static final ArrayList<CustomPotionFilterModule> globalCustomPotionFilters = new ArrayList<>();
+    public static final ArrayList<CustomPotionPoolModule> globalCustomPotionLibraryModules = new ArrayList<>(); // TODO use this
+    public static final ArrayList<CustomPotionPoolModule> globalCustomPotionPoolModules = new ArrayList<>();
+    public static final ArrayList<CustomRelicFilterModule> globalCustomRelicFilters = new ArrayList<>();
+    public static final ArrayList<CustomRelicPoolModule> globalCustomRelicLibraryModules = new ArrayList<>(); // TODO use this
+    public static final ArrayList<CustomRelicPoolModule> globalCustomRelicPoolModules = new ArrayList<>();
+    public static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customCardFilters = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardLibraryModules = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardPoolModules = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomPotionFilterModule> customPotionFilters = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomPotionPoolModule> customPotionPoolModules = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomRelicFilterModule> customRelicFilters = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicPoolModules = new HashMap<>();
+    private static float delta = 0;
+    private static float timer = 0;
+    private static int imguiIndex = 0;
+    private static boolean isDragging;
+    private static Hitbox lastClicked;
+    protected static EUIBase activeElement;
     public static AbstractCard.CardColor actingColor;
     public static AbstractMenuScreen currentScreen;
     public static CardKeywordFilters cardFilters;
@@ -87,15 +100,45 @@ public class EUI {
     public static RelicSortHeader relicHeader;
     public static CardPoolPanelItem compendiumButton;
     public static boolean disableInteract;
-    protected static EUIBase activeElement;
-    private static float delta = 0;
-    private static float timer = 0;
-    private static int imguiIndex = 0;
-    private static boolean isDragging;
-    private static Hitbox lastClicked;
 
     public static void addBattleSubscriber(EUIBase element) {
         BattleSubscribers.add(element);
+    }
+
+    public static void addGlobalCustomCardFilter(CustomCardFilterModule element) {
+        globalCustomCardFilters.add(element);
+    }
+
+    public static void addGlobalCustomCardLibraryModule(CustomCardPoolModule element) {
+        globalCustomCardLibraryModules.add(element);
+    }
+
+    public static void addGlobalCustomCardPoolModule(CustomCardPoolModule element) {
+        globalCustomCardPoolModules.add(element);
+    }
+
+    public static void addGlobalCustomPotionFilter(CustomPotionFilterModule element) {
+        globalCustomPotionFilters.add(element);
+    }
+
+    public static void addGlobalCustomPotionLibraryModule(CustomPotionPoolModule element) {
+        globalCustomPotionLibraryModules.add(element);
+    }
+
+    public static void addGlobalCustomPotionPoolModule(CustomPotionPoolModule element) {
+        globalCustomPotionPoolModules.add(element);
+    }
+
+    public static void addGlobalCustomRelicFilter(CustomRelicFilterModule element) {
+        globalCustomRelicFilters.add(element);
+    }
+
+    public static void addGlobalCustomRelicLibraryModule(CustomRelicPoolModule element) {
+        globalCustomRelicLibraryModules.add(element);
+    }
+
+    public static void addGlobalCustomRelicPoolModule(CustomRelicPoolModule element) {
+        globalCustomRelicPoolModules.add(element);
     }
 
     public static void addPostRender(ActionT1<SpriteBatch> toRender) {
@@ -184,10 +227,6 @@ public class EUI {
         return customPotionFilters.get(cardColor);
     }
 
-    public static CustomPotionPoolModule getCustomPotionLibraryModule(AbstractCard.CardColor cardColor) {
-        return customPotionLibraryModules.get(cardColor);
-    }
-
     public static CustomPotionPoolModule getCustomPotionPoolModule(AbstractPlayer player) {
         return player != null ? getCustomPotionPoolModule(player.getCardColor()) : null;
     }
@@ -202,10 +241,6 @@ public class EUI {
 
     public static CustomRelicFilterModule getCustomRelicFilter(AbstractCard.CardColor cardColor) {
         return customRelicFilters.get(cardColor);
-    }
-
-    public static CustomRelicPoolModule getCustomRelicLibraryModule(AbstractCard.CardColor cardColor) {
-        return customRelicLibraryModules.get(cardColor);
     }
 
     public static CustomRelicPoolModule getCustomRelicPoolModule(AbstractPlayer player) {
@@ -528,20 +563,12 @@ public class EUI {
         customPotionFilters.put(cardColor, element);
     }
 
-    public static void setCustomPotionLibraryModule(AbstractCard.CardColor cardColor, CustomPotionPoolModule element) {
-        customPotionLibraryModules.put(cardColor, element);
-    }
-
     public static void setCustomPotionPoolModule(AbstractCard.CardColor cardColor, CustomPotionPoolModule element) {
         customPotionPoolModules.put(cardColor, element);
     }
 
     public static void setCustomRelicFilter(AbstractCard.CardColor cardColor, CustomRelicFilterModule element) {
         customRelicFilters.put(cardColor, element);
-    }
-
-    public static void setCustomRelicLibraryModule(AbstractCard.CardColor cardColor, CustomRelicPoolModule element) {
-        customRelicLibraryModules.put(cardColor, element);
     }
 
     public static void setCustomRelicPoolModule(AbstractCard.CardColor cardColor, CustomRelicPoolModule element) {

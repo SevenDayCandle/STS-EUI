@@ -13,7 +13,7 @@ varying vec2 v_texCoords;
 uniform sampler2D u_texture;
 uniform float u_time;
 uniform bool colorSeparation = true;
-uniform float amp = 0.2;
+uniform float amp = 0.13;
 uniform float glitchSpeed = 0.16;
 uniform float barSize = 0.25;
 uniform float numSlices = 10.0;

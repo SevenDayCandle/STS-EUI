@@ -15,6 +15,7 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT2;
+import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.interfaces.markers.CustomPotionPoolModule;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
@@ -72,6 +73,17 @@ public class PotionPoolScreen extends EUIPoolScreen {
     }
 
     @Override
+    public void close() {
+        super.close();
+        for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
+            module.onClose();
+        }
+        if (customModule != null) {
+            customModule.onClose();
+        }
+    }
+
+    @Override
     public AbstractDungeon.CurrentScreen curScreen() {
         return POTION_POOL_SCREEN;
     }
@@ -109,15 +121,23 @@ public class PotionPoolScreen extends EUIPoolScreen {
         potionGrid.setPotions(potions);
 
         EUI.potionFilters.initializeForCustomHeader(potionGrid.potionGroup, __ -> {
+            ArrayList<AbstractPotion> headerPotions = EUI.potionHeader.getPotions();
+            for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
+                module.open(headerPotions, color, null);
+            }
             if (customModule != null) {
-                customModule.open(EUI.potionHeader.getPotions(), color, null);
+                customModule.open(headerPotions, color, null);
             }
             potionGrid.forceUpdatePotionPositions();
         }, color, true, false);
 
+
+        for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
+            module.open(potions, color, null);
+        }
         customModule = EUI.getCustomPotionPoolModule(player);
         if (customModule != null) {
-            customModule.open(EUIUtils.map(potionGrid.potionGroup, r -> r.potion), color, null);
+            customModule.open(potions, color, null);
         }
     }
 
@@ -129,6 +149,9 @@ public class PotionPoolScreen extends EUIPoolScreen {
             swapRelicScreen.updateImpl();
             EUI.potionHeader.updateImpl();
             EUI.openPotionFiltersButton.tryUpdate();
+            for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
+                module.update();
+            }
             if (customModule != null) {
                 customModule.update();
             }
@@ -144,6 +167,9 @@ public class PotionPoolScreen extends EUIPoolScreen {
         EUI.potionHeader.renderImpl(sb);
         if (!EUI.potionFilters.isActive) {
             EUI.openPotionFiltersButton.tryRender(sb);
+        }
+        for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
+            module.render(sb);
         }
         if (customModule != null) {
             customModule.render(sb);
