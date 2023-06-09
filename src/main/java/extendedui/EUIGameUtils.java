@@ -6,7 +6,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -50,17 +49,17 @@ import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.*;
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
 public class EUIGameUtils {
+    private static final HashMap<AbstractCard.CardColor, String> CUSTOM_COLOR_NAMES = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, AbstractPlayer.PlayerClass> COLOR_TO_CLASS = new HashMap<>();
+    private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();
+    private static final HashMap<Class, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
+    private static final HashMap<String, AbstractCard.CardColor> RELIC_COLORS = new HashMap<>();
     public static final Color COLOR_BASIC = new Color(0.58f, 0.58f, 0.58f, 1f);
     public static final Color COLOR_COMMON = new Color(0.69f, 0.69f, 0.69f, 1f);
     public static final Color COLOR_CURSE = new Color(0.41f, 0.35f, 0.35f, 1);
     public static final Color COLOR_RARE = new Color(1f, 0.8f, 0.35f, 1f);
     public static final Color COLOR_SPECIAL = new Color(0.7f, 1f, 0.5f, 1f);
     public static final Color COLOR_UNCOMMON = new Color(0.45f, 0.82f, 1f, 1f);
-    private static final HashMap<AbstractCard.CardColor, String> CUSTOM_COLOR_NAMES = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, AbstractPlayer.PlayerClass> COLOR_TO_CLASS = new HashMap<>();
-    private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();
-    private static final HashMap<Class, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
-    private static final HashMap<String, AbstractCard.CardColor> RELIC_COLORS = new HashMap<>();
 
     public static void addRelicColor(String relicID, AbstractCard.CardColor color) {
         RELIC_COLORS.put(relicID, color);
@@ -68,6 +67,15 @@ public class EUIGameUtils {
 
     public static boolean canReceiveAnyColorCard() {
         return (player != null && player.hasRelic(PrismaticShard.ID)) || ModHelper.isModEnabled(Diverse.ID);
+    }
+
+    // Imitate getAnyColorCard logic
+    public static boolean canSeeAnyColorCardFromPool(AbstractCard c) {
+        return canSeeCard(c) && (c.rarity == AbstractCard.CardRarity.COMMON || c.rarity == AbstractCard.CardRarity.UNCOMMON || c.rarity == AbstractCard.CardRarity.RARE || c.rarity == AbstractCard.CardRarity.CURSE) && c.type != AbstractCard.CardType.STATUS;
+    }
+
+    public static boolean canSeeCard(AbstractCard c) {
+        return (Settings.treatEverythingAsUnlocked() || !UnlockTracker.isCardLocked(c.cardID));
     }
 
     public static boolean canShowUpgrades(boolean isLibrary) {
@@ -172,22 +180,61 @@ public class EUIGameUtils {
         return EUIUtils.filter(CardLibrary.cards.values(), EUIGameUtils::canSeeAnyColorCardFromPool);
     }
 
-    public static boolean canSeeCard(AbstractCard c)
-    {
-        return (Settings.treatEverythingAsUnlocked() || !UnlockTracker.isCardLocked(c.cardID));
-    }
-
-    // Imitate getAnyColorCard logic
-    public static boolean canSeeAnyColorCardFromPool(AbstractCard c) {
-        return canSeeCard(c) && (c.rarity == AbstractCard.CardRarity.COMMON || c.rarity == AbstractCard.CardRarity.UNCOMMON || c.rarity == AbstractCard.CardRarity.RARE || c.rarity == AbstractCard.CardRarity.CURSE) && c.type != AbstractCard.CardType.STATUS;
-    }
-
     public static ArrayList<CardGroup> getGameCardPools() {
         return EUIUtils.arrayList(colorlessCardPool, commonCardPool, uncommonCardPool, rareCardPool, curseCardPool);
     }
 
     public static ArrayList<ArrayList<String>> getGameRelicPools() {
         return EUIUtils.arrayList(commonRelicPool, uncommonRelicPool, rareRelicPool, bossRelicPool, shopRelicPool);
+    }
+
+    public static ModInfo getModInfo(Object o) {
+        return getModInfo(o.getClass());
+    }
+
+    public static ModInfo getModInfo(Class<?> objectClass) {
+        if (MOD_INFO_MAPPING.containsKey(objectClass)) {
+            return MOD_INFO_MAPPING.get(objectClass);
+        }
+
+        CodeSource source = objectClass.getProtectionDomain().getCodeSource();
+        try {
+            URL jarURL = source.getLocation();
+            // If the class was patched by ModTheSpire, getLocation will be null
+            if (jarURL == null) {
+                ClassPool pool = Loader.getClassPool();
+                pool.childFirstLookup = true;
+                CtClass ctCls = pool.get(objectClass.getName());
+                String url = ctCls.getURL().getFile();
+                int i = url.lastIndexOf('!');
+                url = url.substring(0, i);
+                jarURL = new URL(url);
+            }
+
+            for (ModInfo loadedInfo : Loader.MODINFOS) {
+                if (jarURL.equals(loadedInfo.jarURL)) {
+                    MOD_INFO_MAPPING.put(objectClass, loadedInfo);
+                    return loadedInfo;
+                }
+            }
+            MOD_INFO_MAPPING.put(objectClass, null);
+        }
+        catch (Exception e) {
+            EUIUtils.logError(objectClass, "Failed to find source for codesource " + source);
+            e.printStackTrace();
+            MOD_INFO_MAPPING.put(objectClass, null);
+        }
+
+        return null;
+    }
+
+    public static ModInfo getModInfoFromID(String id) {
+        for (ModInfo loadedInfo : Loader.MODINFOS) {
+            if (loadedInfo.ID.equals(id)) {
+                return loadedInfo;
+            }
+        }
+        return null;
     }
 
     public static AbstractPlayer.PlayerClass getPlayerClassForCardColor(AbstractCard.CardColor pc) {
@@ -256,55 +303,6 @@ public class EUIGameUtils {
 
     public static boolean isObjectFromMod(Object o, ModInfo mod) {
         return getModInfo(o) == mod;
-    }
-
-    public static ModInfo getModInfo(Object o) {
-        return getModInfo(o.getClass());
-    }
-
-    public static ModInfo getModInfo(Class<?> objectClass) {
-        if (MOD_INFO_MAPPING.containsKey(objectClass)) {
-            return MOD_INFO_MAPPING.get(objectClass);
-        }
-
-        CodeSource source = objectClass.getProtectionDomain().getCodeSource();
-        try {
-            URL jarURL = source.getLocation();
-            // If the class was patched by ModTheSpire, getLocation will be null
-            if (jarURL == null) {
-                ClassPool pool = Loader.getClassPool();
-                pool.childFirstLookup = true;
-                CtClass ctCls = pool.get(objectClass.getName());
-                String url = ctCls.getURL().getFile();
-                int i = url.lastIndexOf('!');
-                url = url.substring(0, i);
-                jarURL = new URL(url);
-            }
-
-            for (ModInfo loadedInfo : Loader.MODINFOS) {
-                if (jarURL.equals(loadedInfo.jarURL)) {
-                    MOD_INFO_MAPPING.put(objectClass, loadedInfo);
-                    return loadedInfo;
-                }
-            }
-            MOD_INFO_MAPPING.put(objectClass, null);
-        }
-        catch (Exception e) {
-            EUIUtils.logError(objectClass, "Failed to find source for codesource " + source);
-            e.printStackTrace();
-            MOD_INFO_MAPPING.put(objectClass, null);
-        }
-
-        return null;
-    }
-
-    public static ModInfo getModInfoFromID(String id) {
-        for (ModInfo loadedInfo : Loader.MODINFOS) {
-            if (loadedInfo.ID.equals(id)) {
-                return loadedInfo;
-            }
-        }
-        return null;
     }
 
     public static boolean isPlayerClass(AbstractPlayer.PlayerClass playerClass) {

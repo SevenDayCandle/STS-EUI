@@ -24,9 +24,9 @@ import static extendedui.ui.cardFilter.GenericFilters.SPACING;
 
 public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilterModule {
     public final EUISearchableDropdown<T> seriesDropdown;
-    public HashSet<T> currentSeries = new HashSet<>();
     protected FuncT1<String, T> nameFunc;
     protected FuncT1<T, AbstractCard> objectFunc;
+    public HashSet<T> currentSeries = new HashSet<>();
 
     public SimpleCardFilterModule(String title, FuncT1<String, T> nameFunc, FuncT1<T, AbstractCard> objectFunc) {
         this.nameFunc = nameFunc;
@@ -46,11 +46,6 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     }
 
     @Override
-    public boolean isItemValid(AbstractCard c) {
-        return currentSeries.isEmpty() || currentSeries.contains(objectFunc.invoke(c));
-    }
-
-    @Override
     public boolean isEmpty() {
         return currentSeries.isEmpty();
     }
@@ -58,6 +53,11 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     @Override
     public boolean isHovered() {
         return seriesDropdown.hb.hovered;
+    }
+
+    @Override
+    public boolean isItemValid(AbstractCard c) {
+        return currentSeries.isEmpty() || currentSeries.contains(objectFunc.invoke(c));
     }
 
     @Override
@@ -78,12 +78,12 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     }
 
     @Override
-    public void updateImpl() {
-        this.seriesDropdown.setPosition(EUI.cardFilters.typesDropdown.hb.x + EUI.cardFilters.typesDropdown.hb.width + SPACING * 2, DRAW_START_Y + EUI.cardFilters.getScrollDelta()).tryUpdate();
+    public void renderImpl(SpriteBatch sb) {
+        this.seriesDropdown.tryRender(sb);
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
-        this.seriesDropdown.tryRender(sb);
+    public void updateImpl() {
+        this.seriesDropdown.setPosition(EUI.cardFilters.typesDropdown.hb.x + EUI.cardFilters.typesDropdown.hb.width + SPACING * 2, DRAW_START_Y + EUI.cardFilters.getScrollDelta()).tryUpdate();
     }
 }

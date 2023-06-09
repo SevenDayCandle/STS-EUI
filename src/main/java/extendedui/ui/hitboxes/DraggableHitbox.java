@@ -10,13 +10,13 @@ import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 
 public class DraggableHitbox extends EUIHitbox {
+    protected Vector2 dragStart = null;
+    protected ActionT1<DraggableHitbox> onDragFinish;
     public boolean canDrag;
     public float minY;
     public float maxY;
     public float minX;
     public float maxX;
-    protected Vector2 dragStart = null;
-    protected ActionT1<DraggableHitbox> onDragFinish;
 
     public DraggableHitbox(Hitbox hb) {
         this(hb.x, hb.y, hb.width, hb.height, true);
@@ -44,6 +44,12 @@ public class DraggableHitbox extends EUIHitbox {
         this(x, y, width, height, true);
     }
 
+    public void forceStartDrag() {
+        if (EUI.tryDragging()) {
+            dragStart = new Vector2(Gdx.input.getX(), Settings.HEIGHT - Gdx.input.getY());
+        }
+    }
+
     public boolean isDragging() {
         return dragStart != null;
     }
@@ -62,14 +68,6 @@ public class DraggableHitbox extends EUIHitbox {
         move(cX, cY);
 
         return this;
-    }
-
-    public void forceStartDrag()
-    {
-        if (EUI.tryDragging())
-        {
-            dragStart = new Vector2(Gdx.input.getX(), Settings.HEIGHT - Gdx.input.getY());
-        }
     }
 
     @Override

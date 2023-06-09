@@ -64,6 +64,11 @@ public class ExtraModSettingsPanel extends EUIBase {
         return null;
     }
 
+    public static void addCategory(Category cat) {
+        configCategories.putIfAbsent(cat, new ArrayList<>());
+        offsets.putIfAbsent(cat, OFFSET_SIZE);
+    }
+
     public static void addIUI(Category cat, IUIElement option, String label) {
         ArrayList<IUIElement> list = configCategories.get(cat);
         if (list != null) {
@@ -114,9 +119,21 @@ public class ExtraModSettingsPanel extends EUIBase {
         return c;
     }
 
-    public static void addCategory(Category cat) {
-        configCategories.putIfAbsent(cat, new ArrayList<>());
-        offsets.putIfAbsent(cat, OFFSET_SIZE);
+    public void close() {
+        if (prevOpenString != null) {
+            if (EUIGameUtils.inGame()) {
+                AbstractDungeon.overlayMenu.cancelButton.show(prevOpenString);
+            }
+            else {
+                CardCrawlGame.cancelButton.show(prevOpenString);
+            }
+        }
+        isActive = false;
+        prevOpenString = null;
+    }
+
+    protected HashMap<Category, ArrayList<IUIElement>> getCategories() {
+        return EUIConfiguration.showModSettings.get() ? modListCategories : configCategories;
     }
 
     protected void makeButton(Category info) {
@@ -152,17 +169,18 @@ public class ExtraModSettingsPanel extends EUIBase {
         }
     }
 
-    public void close() {
-        if (prevOpenString != null) {
-            if (EUIGameUtils.inGame()) {
-                AbstractDungeon.overlayMenu.cancelButton.show(prevOpenString);
-            }
-            else {
-                CardCrawlGame.cancelButton.show(prevOpenString);
+    public void renderImpl(SpriteBatch sb) {
+        background.tryRender(sb);
+        buttons.renderImpl(sb);
+
+        ArrayList<IUIElement> list = getCategories().get(activeMod);
+        if (list != null) {
+            for (IUIElement option : list) {
+                option.render(sb);
             }
         }
-        isActive = false;
-        prevOpenString = null;
+
+        button.render(sb);
     }
 
     @Override
@@ -183,24 +201,6 @@ public class ExtraModSettingsPanel extends EUIBase {
             this.button.hide();
             close();
         }
-    }
-
-    public void renderImpl(SpriteBatch sb) {
-        background.tryRender(sb);
-        buttons.renderImpl(sb);
-
-        ArrayList<IUIElement> list = getCategories().get(activeMod);
-        if (list != null) {
-            for (IUIElement option : list) {
-                option.render(sb);
-            }
-        }
-
-        button.render(sb);
-    }
-
-    protected HashMap<Category, ArrayList<IUIElement>> getCategories() {
-        return EUIConfiguration.showModSettings.get() ? modListCategories : configCategories;
     }
 
     public void setActiveItem(Category info) {

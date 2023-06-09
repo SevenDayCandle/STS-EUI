@@ -9,7 +9,6 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
@@ -17,12 +16,10 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT2;
-import extendedui.interfaces.markers.CustomPotionPoolModule;
 import extendedui.interfaces.markers.CustomRelicPoolModule;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.controls.EUIRelicGrid;
-import extendedui.ui.controls.EUIStaticRelicGrid;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
@@ -40,8 +37,8 @@ public class RelicPoolScreen extends EUIPoolScreen {
     protected final EUIContextMenu<RelicPoolScreen.DebugOption> contextMenu;
     protected final EUIButton swapCardScreen;
     protected final EUIButton swapPotionScreen;
-    public EUIRelicGrid relicGrid;
     private AbstractRelic selected;
+    public EUIRelicGrid relicGrid;
 
     public RelicPoolScreen() {
         relicGrid = (EUIRelicGrid) new EUIRelicGrid()
@@ -75,6 +72,10 @@ public class RelicPoolScreen extends EUIPoolScreen {
                 .setCanAutosizeButton(true);
     }
 
+    public static ArrayList<RelicPoolScreen.DebugOption> getOptions(AbstractRelic r) {
+        return EUIUtils.arrayList(DebugOption.enlarge, DebugOption.obtain, DebugOption.removeFromPool);
+    }
+
     @Override
     public void close() {
         super.close();
@@ -91,6 +92,49 @@ public class RelicPoolScreen extends EUIPoolScreen {
         return RELIC_POOL_SCREEN;
     }
 
+    @Override
+    public void update() {
+        if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
+            relicGrid.tryUpdate();
+            swapCardScreen.updateImpl();
+            swapPotionScreen.updateImpl();
+            EUI.relicHeader.updateImpl();
+            EUI.openRelicFiltersButton.tryUpdate();
+            for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+                module.update();
+            }
+            if (customModule != null) {
+                customModule.update();
+            }
+        }
+        contextMenu.tryUpdate();
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        relicGrid.tryRender(sb);
+        swapCardScreen.renderImpl(sb);
+        swapPotionScreen.renderImpl(sb);
+        EUI.relicHeader.renderImpl(sb);
+        if (!EUI.relicFilters.isActive) {
+            EUI.openRelicFiltersButton.tryRender(sb);
+        }
+        for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+            module.render(sb);
+        }
+        if (customModule != null) {
+            customModule.render(sb);
+        }
+        contextMenu.tryRender(sb);
+    }
+
+    protected void obtain(AbstractRelic c) {
+        if (c != null) {
+            AbstractRelic copy = c.makeCopy();
+            copy.instantObtain();
+        }
+    }
+
     protected void onRightClick(AbstractRelic c) {
         if (EUIConfiguration.enableCardPoolDebug.get()) {
             selected = c;
@@ -104,20 +148,9 @@ public class RelicPoolScreen extends EUIPoolScreen {
         }
     }
 
-    public static ArrayList<RelicPoolScreen.DebugOption> getOptions(AbstractRelic r) {
-        return EUIUtils.arrayList(DebugOption.enlarge, DebugOption.obtain, DebugOption.removeFromPool);
-    }
-
     protected void openPopup(AbstractRelic c) {
         c.hb.unhover();
         CardCrawlGame.relicPopup.open(c);
-    }
-
-    protected void obtain(AbstractRelic c) {
-        if (c != null) {
-            AbstractRelic copy = c.makeCopy();
-            copy.instantObtain();
-        }
     }
 
     public void openScreen(AbstractPlayer player, ArrayList<AbstractRelic> relics) {
@@ -158,42 +191,6 @@ public class RelicPoolScreen extends EUIPoolScreen {
             relics.remove(c.relicId);
         }
         relicGrid.removeRelic(c);
-    }
-
-    @Override
-    public void update() {
-        if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
-            relicGrid.tryUpdate();
-            swapCardScreen.updateImpl();
-            swapPotionScreen.updateImpl();
-            EUI.relicHeader.updateImpl();
-            EUI.openRelicFiltersButton.tryUpdate();
-            for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
-                module.update();
-            }
-            if (customModule != null) {
-                customModule.update();
-            }
-        }
-        contextMenu.tryUpdate();
-    }
-
-    @Override
-    public void render(SpriteBatch sb) {
-        relicGrid.tryRender(sb);
-        swapCardScreen.renderImpl(sb);
-        swapPotionScreen.renderImpl(sb);
-        EUI.relicHeader.renderImpl(sb);
-        if (!EUI.relicFilters.isActive) {
-            EUI.openRelicFiltersButton.tryRender(sb);
-        }
-        for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
-            module.render(sb);
-        }
-        if (customModule != null) {
-            customModule.render(sb);
-        }
-        contextMenu.tryRender(sb);
     }
 
     public static class DebugOption {

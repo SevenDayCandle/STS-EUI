@@ -27,29 +27,9 @@ public abstract class EUIBase implements IUIElement {
         tryRender(sb);
     }
 
-    public boolean tryRender(SpriteBatch sb) {
-        if (isActive) {
-            renderImpl(sb);
-        }
-
-        return isActive;
-    }
-
-    public abstract void renderImpl(SpriteBatch sb);
-
     public void update() {
         tryUpdate();
     }
-
-    public boolean tryUpdate() {
-        if (isActive) {
-            updateImpl();
-        }
-
-        return isActive;
-    }
-
-    public abstract void updateImpl();
 
     public int renderLayer() {
         return 1;
@@ -64,4 +44,24 @@ public abstract class EUIBase implements IUIElement {
 
         return this;
     }
+
+    public boolean tryRender(SpriteBatch sb) {
+        if (isActive) {
+            renderImpl(sb);
+        }
+
+        return isActive;
+    }
+
+    public boolean tryUpdate() {
+        if (isActive) {
+            updateImpl();
+        }
+
+        return isActive;
+    }
+
+    public abstract void renderImpl(SpriteBatch sb);
+
+    public abstract void updateImpl();
 }

@@ -1,23 +1,16 @@
 package extendedui.ui.screens;
 
-import basemod.abstracts.CustomScreen;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
-import extendedui.EUI;
-import extendedui.EUIGameUtils;
-import extendedui.patches.game.AbstractDungeonPatches;
 
 public abstract class EUIPoolScreen extends EUIDungeonScreen {
 
-    public void switchScreen() {
-        super.switchScreen();
-        AbstractDungeon.overlayMenu.hideBlackScreen();
+    public boolean allowOpenDeck() {
+        return true;
     }
 
-    @Override
-    public void close() {
-        switchScreen();
+    public boolean allowOpenMap() {
+        return true;
     }
 
     @Override
@@ -27,6 +20,16 @@ public abstract class EUIPoolScreen extends EUIDungeonScreen {
 
     @Override
     public void openingMap() {
+        switchScreen();
+    }
+
+    public void switchScreen() {
+        super.switchScreen();
+        AbstractDungeon.overlayMenu.hideBlackScreen();
+    }
+
+    @Override
+    public void close() {
         switchScreen();
     }
 
@@ -44,13 +47,5 @@ public abstract class EUIPoolScreen extends EUIDungeonScreen {
 
     public void open() {
         reopen();
-    }
-
-    public boolean allowOpenDeck() {
-        return true;
-    }
-
-    public boolean allowOpenMap() {
-        return true;
     }
 }

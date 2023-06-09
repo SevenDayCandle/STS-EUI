@@ -1,6 +1,5 @@
 package extendedui.ui.cardFilter;
 
-import basemod.IUIElement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
@@ -17,7 +16,9 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
-import extendedui.interfaces.markers.*;
+import extendedui.interfaces.markers.CustomFilterable;
+import extendedui.interfaces.markers.CustomRelicFilterModule;
+import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
@@ -184,7 +185,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
 
     @Override
     public void updateFilters() {
-        originsDropdown.setPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        originsDropdown.setPosition(hb.x - SPACING * 3.65f, DRAW_START_Y + scrollDelta).tryUpdate();
         raritiesDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
         colorsDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
         seenDropdown.setPosition(colorsDropdown.hb.x + colorsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();

@@ -3,7 +3,6 @@ package extendedui.ui;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
@@ -16,6 +15,13 @@ public abstract class AbstractMenuScreen extends EUIBase {
 
     @SpireEnum
     public static MainMenuScreen.CurScreen EUI_MENU;
+
+    public void close() {
+        CardCrawlGame.mainMenuScreen.panelScreen.refresh();
+        if (EUI.currentScreen == this) {
+            dispose();
+        }
+    }
 
     public void dispose() {
         EUI.currentScreen = null;
@@ -33,15 +39,12 @@ public abstract class AbstractMenuScreen extends EUIBase {
         }
     }
 
-    public void reopen() {
+    public void preRender(SpriteBatch sb) {
 
     }
 
-    public void close() {
-        CardCrawlGame.mainMenuScreen.panelScreen.refresh();
-        if (EUI.currentScreen == this) {
-            dispose();
-        }
+    public void renderImpl(SpriteBatch sb) {
+
     }
 
     public void updateImpl() {
@@ -50,11 +53,7 @@ public abstract class AbstractMenuScreen extends EUIBase {
         }
     }
 
-    public void preRender(SpriteBatch sb) {
-
-    }
-
-    public void renderImpl(SpriteBatch sb) {
+    public void reopen() {
 
     }
 

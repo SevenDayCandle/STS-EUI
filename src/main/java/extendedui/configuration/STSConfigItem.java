@@ -12,9 +12,9 @@ import java.util.HashMap;
 
 public class STSConfigItem<T> {
     protected static final HashMap<Class<?>, Method> METHOD_HASH_MAP = new HashMap<>();
-    public final String key;
     protected final ArrayList<STSConfigListener<T>> listeners = new ArrayList<>();
     protected final T defaultValue;
+    public final String key;
     protected SpireConfig config;
     protected T value;
 
@@ -31,15 +31,19 @@ public class STSConfigItem<T> {
         return this;
     }
 
-    protected T parseValue(String raw) {
-        try {
-            return (T) getMethod().invoke(null, raw);
+    public final void addListener(STSConfigListener<T> listener) {
+        if (!this.listeners.contains(listener)) {
+            this.listeners.add(listener);
+            listener.onInitialize(value);
         }
-        catch (Exception e) {
-            EUIUtils.logError(this, "Failed to load preference for " + key + ", value was: " + raw);
-            e.printStackTrace();
-        }
-        return defaultValue;
+    }
+
+    public final T get() {
+        return value;
+    }
+
+    public final Class<?> getConfigClass() {
+        return defaultValue.getClass();
     }
 
     protected Method getMethod() throws Exception {
@@ -52,23 +56,32 @@ public class STSConfigItem<T> {
         return method;
     }
 
-    public final Class<?> getConfigClass() {
-        return defaultValue.getClass();
-    }
-
-    public final void addListener(STSConfigListener<T> listener) {
-        if (!this.listeners.contains(listener)) {
-            this.listeners.add(listener);
-            listener.onInitialize(value);
+    protected T parseValue(String raw) {
+        try {
+            return (T) getMethod().invoke(null, raw);
         }
-    }
-
-    public final T get() {
-        return value;
+        catch (Exception e) {
+            EUIUtils.logError(this, "Failed to load preference for " + key + ", value was: " + raw);
+            e.printStackTrace();
+        }
+        return defaultValue;
     }
 
     public final void removeListener(STSConfigListener<T> listener) {
         this.listeners.remove(listener);
+    }
+
+    protected final void save() {
+        try {
+            this.config.save();
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+    protected String serialize() {
+        return String.valueOf(value);
     }
 
     public final T set(T Value) {
@@ -79,18 +92,5 @@ public class STSConfigItem<T> {
             listener.onChange(Value);
         }
         return Value;
-    }
-
-    protected String serialize() {
-        return String.valueOf(value);
-    }
-
-    protected final void save() {
-        try {
-            this.config.save();
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-        }
     }
 }

@@ -18,9 +18,7 @@ import java.util.ArrayList;
 public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener {
     public static final float START_X = screenW(0.5f) - CardLibSortHeader.SPACE_X * 1.45f;
     public static RelicSortHeader instance;
-    public SortHeaderButton[] buttons;
-    public RelicGroup relicGroup;
-    public ArrayList<RelicGroup.RelicInfo> originalGroup;
+    private SortHeaderButton lastUsedButton;
     protected boolean isAscending;
     protected boolean snapToGroup;
     protected float baseY = Settings.HEIGHT * 0.85f;
@@ -28,7 +26,9 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
     protected SortHeaderButton nameButton;
     protected SortHeaderButton colorButton;
     protected SortHeaderButton seenButton;
-    private SortHeaderButton lastUsedButton;
+    public SortHeaderButton[] buttons;
+    public RelicGroup relicGroup;
+    public ArrayList<RelicGroup.RelicInfo> originalGroup;
 
     public RelicSortHeader(RelicGroup relicGroup) {
         this.relicGroup = relicGroup;
@@ -42,52 +42,6 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         xPosition += CardLibSortHeader.SPACE_X;
         this.seenButton = new SortHeaderButton(EUIRM.strings.uiSeen, xPosition, 0.0F, this);
         this.buttons = new SortHeaderButton[]{this.rarityButton, this.nameButton, this.colorButton, this.seenButton};
-    }
-
-    public ArrayList<AbstractRelic> getOriginalRelics() {
-        return EUIUtils.map(originalGroup, r -> r.relic);
-    }
-
-    public ArrayList<AbstractRelic> getRelics() {
-        return EUIUtils.map(relicGroup, r -> r.relic);
-    }
-
-    public RelicSortHeader setBaseY(float value) {
-        this.baseY = value;
-        return this;
-    }
-
-    public RelicSortHeader setGroup(RelicGroup relicGroup) {
-        EUI.relicFilters.clear(false, true);
-        this.relicGroup = relicGroup;
-        this.originalGroup = new ArrayList<>(relicGroup.group);
-
-        if (EUI.relicFilters.customModule != null) {
-            EUI.relicFilters.customModule.processGroup(relicGroup);
-        }
-        for (SortHeaderButton button : buttons) {
-            button.reset();
-        }
-
-        return this;
-    }
-
-    public RelicSortHeader snapToGroup(boolean value) {
-        this.snapToGroup = value;
-        return this;
-    }
-
-    public void updateForFilters() {
-        if (this.relicGroup != null) {
-            if (EUI.relicFilters.areFiltersEmpty()) {
-                this.relicGroup.group = originalGroup;
-            }
-            else {
-                this.relicGroup.group = EUI.relicFilters.applyInfoFilters(originalGroup);
-            }
-            didChangeOrder(lastUsedButton, isAscending);
-            EUI.relicFilters.refresh(EUIUtils.map(relicGroup, group -> group.relic));
-        }
     }
 
     @Override
@@ -116,10 +70,19 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         }
     }
 
-    protected int sortBySeen(RelicGroup.RelicInfo a, RelicGroup.RelicInfo b) {
-        int aValue = a == null || a.locked ? 2 : a.relic.isSeen ? 1 : 0;
-        int bValue = b == null || b.locked ? 2 : b.relic.isSeen ? 1 : 0;
-        return aValue - bValue;
+    public ArrayList<AbstractRelic> getOriginalRelics() {
+        return EUIUtils.map(originalGroup, r -> r.relic);
+    }
+
+    public ArrayList<AbstractRelic> getRelics() {
+        return EUIUtils.map(relicGroup, r -> r.relic);
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        for (SortHeaderButton button : buttons) {
+            button.render(sb);
+        }
     }
 
     @Override
@@ -131,10 +94,47 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         }
     }
 
-    @Override
-    public void renderImpl(SpriteBatch sb) {
+    public RelicSortHeader setBaseY(float value) {
+        this.baseY = value;
+        return this;
+    }
+
+    public RelicSortHeader setGroup(RelicGroup relicGroup) {
+        EUI.relicFilters.clear(false, true);
+        this.relicGroup = relicGroup;
+        this.originalGroup = new ArrayList<>(relicGroup.group);
+
+        if (EUI.relicFilters.customModule != null) {
+            EUI.relicFilters.customModule.processGroup(relicGroup);
+        }
         for (SortHeaderButton button : buttons) {
-            button.render(sb);
+            button.reset();
+        }
+
+        return this;
+    }
+
+    public RelicSortHeader snapToGroup(boolean value) {
+        this.snapToGroup = value;
+        return this;
+    }
+
+    protected int sortBySeen(RelicGroup.RelicInfo a, RelicGroup.RelicInfo b) {
+        int aValue = a == null || a.locked ? 2 : a.relic.isSeen ? 1 : 0;
+        int bValue = b == null || b.locked ? 2 : b.relic.isSeen ? 1 : 0;
+        return aValue - bValue;
+    }
+
+    public void updateForFilters() {
+        if (this.relicGroup != null) {
+            if (EUI.relicFilters.areFiltersEmpty()) {
+                this.relicGroup.group = originalGroup;
+            }
+            else {
+                this.relicGroup.group = EUI.relicFilters.applyInfoFilters(originalGroup);
+            }
+            didChangeOrder(lastUsedButton, isAscending);
+            EUI.relicFilters.refresh(EUIUtils.map(relicGroup, group -> group.relic));
         }
     }
 }

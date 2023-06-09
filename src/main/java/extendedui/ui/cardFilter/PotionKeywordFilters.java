@@ -13,7 +13,9 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.markers.*;
+import extendedui.interfaces.markers.CustomFilterable;
+import extendedui.interfaces.markers.CustomPotionFilterModule;
+import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
@@ -168,7 +170,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
 
     @Override
     public void updateFilters() {
-        originsDropdown.setPosition(hb.x - SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        originsDropdown.setPosition(hb.x - SPACING * 3.65f, DRAW_START_Y + scrollDelta).tryUpdate();
         raritiesDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
         colorsDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
         nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();

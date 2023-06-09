@@ -179,12 +179,12 @@ public class EUI {
         return activeElement != null;
     }
 
-    public static boolean elapsed100() {
-        return elapsed(1.00f);
-    }
-
     public static boolean elapsed(float value) {
         return (delta >= value) || (((timer % value) - delta) < 0);
+    }
+
+    public static boolean elapsed100() {
+        return elapsed(1.00f);
     }
 
     public static boolean elapsed25() {
@@ -249,6 +249,27 @@ public class EUI {
 
     public static CustomRelicPoolModule getCustomRelicPoolModule(AbstractCard.CardColor cardColor) {
         return customRelicPoolModules.get(cardColor);
+    }
+
+    public static TextureRegion getEnergyIcon() {
+        AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : actingColor;
+        if (color == null) {
+            return AbstractCard.orb_red;
+        }
+        switch (color) {
+            case RED:
+            case COLORLESS:
+            case CURSE:
+                return AbstractCard.orb_red;
+            case GREEN:
+                return AbstractCard.orb_green;
+            case BLUE:
+                return AbstractCard.orb_blue;
+            case PURPLE:
+                return AbstractCard.orb_purple;
+            default:
+                return BaseMod.getCardEnergyOrbAtlasRegion(color);
+        }
     }
 
     public static int getImguiIndex() {
@@ -323,15 +344,6 @@ public class EUI {
         BaseMod.addCustomScreen(ftueScreen);
     }
 
-    public static void toggleCompendiumButton(boolean hide) {
-        if (hide) {
-            BaseMod.removeTopPanelItem(compendiumButton);
-        }
-        else {
-            BaseMod.addTopPanelItem(compendiumButton);
-        }
-    }
-
     public static boolean isActiveElement(EUIBase element) {
         return activeElement == element;
     }
@@ -348,6 +360,14 @@ public class EUI {
         return cardsScreen != null; // This will be null before the UI has loaded
     }
 
+    public static Map<String, EUIKeyword> loadKeywords(FileHandle handle) {
+        if (handle.exists()) {
+            return EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>() {
+            }.getType());
+        }
+        return new HashMap<>();
+    }
+
     public static void postDispose() {
         activeElement = null;
         currentScreen = null;
@@ -355,14 +375,6 @@ public class EUI {
 
     public static void postRender(SpriteBatch sb) {
         renderImpl(sb, postRenderList.iterator());
-    }
-
-    private static void renderImpl(SpriteBatch sb, Iterator<ActionT1<SpriteBatch>> i) {
-        while (i.hasNext()) {
-            ActionT1<SpriteBatch> toRender = i.next();
-            toRender.invoke(sb);
-            i.remove();
-        }
     }
 
     public static void preRender(SpriteBatch sb) {
@@ -411,44 +423,6 @@ public class EUI {
 
     /* Register a tooltip with the given parameters. If grammar exists, its contents will be merged with this tooltip
      * */
-
-    public static EUIKeywordTooltip tryRegisterTooltip(String id, String modID, String title, String description, String[] names) {
-        EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(id);
-        if (tooltip == null) {
-            String newTitle = EUIUtils.capitalize(title);
-            tooltip = new EUIKeywordTooltip(newTitle, description, modID);
-            EUIKeywordTooltip.registerID(id, tooltip);
-            for (String subName : names) {
-                EUIKeywordTooltip.registerName(subName, tooltip);
-            }
-        }
-        return tooltip;
-    }
-
-    public static TextureRegion getEnergyIcon() {
-        AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : actingColor;
-        if (color == null) {
-            return AbstractCard.orb_red;
-        }
-        switch (color) {
-            case RED:
-            case COLORLESS:
-            case CURSE:
-                return AbstractCard.orb_red;
-            case GREEN:
-                return AbstractCard.orb_green;
-            case BLUE:
-                return AbstractCard.orb_blue;
-            case PURPLE:
-                return AbstractCard.orb_purple;
-            default:
-                return BaseMod.getCardEnergyOrbAtlasRegion(color);
-        }
-    }
-
-    public static EUITooltip tryRegisterTooltip(String id, String modID, String description, String[] names) {
-        return tryRegisterTooltip(id, modID, names[0], description, names);
-    }
 
     /* Add grammar rules to existing tooltips */
     public static void registerGrammar(Map<String, EUIKeyword> keywords) {
@@ -523,14 +497,6 @@ public class EUI {
         return tooltips;
     }
 
-    public static Map<String, EUIKeyword> loadKeywords(FileHandle handle) {
-        if (handle.exists()) {
-            return EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>() {
-            }.getType());
-        }
-        return new HashMap<>();
-    }
-
     public static void render(SpriteBatch sb) {
         if (currentScreen != null) {
             currentScreen.renderImpl(sb);
@@ -541,6 +507,14 @@ public class EUI {
         }
 
         // Battle subscribers are rendered in the energy panel patch
+    }
+
+    private static void renderImpl(SpriteBatch sb, Iterator<ActionT1<SpriteBatch>> i) {
+        while (i.hasNext()) {
+            ActionT1<SpriteBatch> toRender = i.next();
+            toRender.invoke(sb);
+            i.remove();
+        }
     }
 
     public static void setActiveElement(EUIBase element) {
@@ -591,6 +565,15 @@ public class EUI {
         return MathUtils.sin(timer * speed) * distance;
     }
 
+    public static void toggleCompendiumButton(boolean hide) {
+        if (hide) {
+            BaseMod.removeTopPanelItem(compendiumButton);
+        }
+        else {
+            BaseMod.addTopPanelItem(compendiumButton);
+        }
+    }
+
     public static void toggleViewUpgrades(boolean value) {
         SingleCardViewPopup.isViewingUpgrade = value;
     }
@@ -610,6 +593,23 @@ public class EUI {
         }
 
         return drag;
+    }
+
+    public static EUIKeywordTooltip tryRegisterTooltip(String id, String modID, String title, String description, String[] names) {
+        EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(id);
+        if (tooltip == null) {
+            String newTitle = EUIUtils.capitalize(title);
+            tooltip = new EUIKeywordTooltip(newTitle, description, modID);
+            EUIKeywordTooltip.registerID(id, tooltip);
+            for (String subName : names) {
+                EUIKeywordTooltip.registerName(subName, tooltip);
+            }
+        }
+        return tooltip;
+    }
+
+    public static EUITooltip tryRegisterTooltip(String id, String modID, String description, String[] names) {
+        return tryRegisterTooltip(id, modID, names[0], description, names);
     }
 
     public static void update() {

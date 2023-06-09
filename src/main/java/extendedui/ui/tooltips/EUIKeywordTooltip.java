@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
-import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.powers.AbstractPower;
@@ -28,7 +27,10 @@ import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class EUIKeywordTooltip extends EUITooltip {
     private static final HashMap<String, EUIKeywordTooltip> REGISTERED_NAMES = new HashMap<>();
@@ -190,6 +192,23 @@ public class EUIKeywordTooltip extends EUITooltip {
         return new EUIKeywordTooltip(this);
     }
 
+    public void renderTitle(SpriteBatch sb, float x, float y) {
+        if (icon != null) {
+            // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
+            renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, BASE_ICON_SIZE * iconmultiW, BASE_ICON_SIZE * iconmultiH);
+            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+        }
+        else {
+            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+        }
+    }
+
+    public EUIKeywordTooltip showText(boolean value) {
+        super.showText(value);
+
+        return this;
+    }
+
     public String parsePlural(int amount) {
         if (plural == null) {
             plural = EUIRM.strings.plural(title);
@@ -211,14 +230,6 @@ public class EUIKeywordTooltip extends EUITooltip {
         return plural;
     }
 
-    // If progressive is not present, assume present tense works for it as well
-    public String progressive() {
-        if (progressive == null) {
-            return present();
-        }
-        return progressive;
-    }
-
     public String present() {
         if (present == null) {
             present = EUIRM.strings.present(title);
@@ -226,15 +237,12 @@ public class EUIKeywordTooltip extends EUITooltip {
         return present;
     }
 
-    public void renderTitle(SpriteBatch sb, float x, float y) {
-        if (icon != null) {
-            // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
-            renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, BASE_ICON_SIZE * iconmultiW, BASE_ICON_SIZE * iconmultiH);
-            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+    // If progressive is not present, assume present tense works for it as well
+    public String progressive() {
+        if (progressive == null) {
+            return present();
         }
-        else {
-            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
-        }
+        return progressive;
     }
 
     public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height) {
@@ -293,6 +301,12 @@ public class EUIKeywordTooltip extends EUITooltip {
         return this;
     }
 
+    public EUIKeywordTooltip setIcon(TextureRegion region) {
+        this.icon = region;
+
+        return this;
+    }
+
     public EUIKeywordTooltip setIconFromPath(String imagePath) {
         if (Gdx.files.internal(imagePath).exists()) {
             setIcon(EUIRM.getTexture(imagePath));
@@ -314,12 +328,6 @@ public class EUIKeywordTooltip extends EUITooltip {
         return this;
     }
 
-    public EUIKeywordTooltip setIcon(TextureRegion region) {
-        this.icon = region;
-
-        return this;
-    }
-
     public EUIKeywordTooltip setIconFunc(FuncT0<TextureRegion> iconFunc) {
         this.iconFunc = iconFunc;
         ICON_UPDATING_LIST.add(this);
@@ -330,12 +338,6 @@ public class EUIKeywordTooltip extends EUITooltip {
     public EUIKeywordTooltip setIconSizeMulti(float w, float h) {
         this.iconmultiW = w;
         this.iconmultiH = h;
-
-        return this;
-    }
-
-    public EUIKeywordTooltip showText(boolean value) {
-        super.showText(value);
 
         return this;
     }

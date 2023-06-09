@@ -17,12 +17,33 @@ import java.nio.file.StandardCopyOption;
 /* Adapted from https://github.com/SrJohnathan/gdx-effekseer */
 
 public class STSEffekSeerUtils {
-    public static final float DEFAULT_MAGNIFICATION = 50f;
-    public static final float EFFEKSEER_COLOR_RATE = 255f;
     private static final int MIN_PREFIX_LENGTH = 3;
     private static final String LIBRARY_NAME = "EffekseerNativeForJava";
     private static final String PATH_PREFIX = "STSEffekSeerUtils";
+    public static final float DEFAULT_MAGNIFICATION = 50f;
+    public static final float EFFEKSEER_COLOR_RATE = 255f;
     private static File temporaryDir;
+
+    private static File createTemporaryDirectory(String prefix) throws IOException {
+        String tempDir = System.getProperty("java.io.tmpdir");
+        File generatedDir = new File(tempDir, prefix + System.nanoTime());
+
+        if (!generatedDir.mkdir()) {
+            throw new IOException("Failed to create temp directory " + generatedDir.getName());
+        }
+
+        return generatedDir;
+    }
+
+    private static String getEffekseerPath() {
+        if (SystemUtils.IS_OS_WINDOWS) {
+            return "/" + LIBRARY_NAME + ".dll";
+        }
+        else if (SystemUtils.IS_OS_LINUX) {
+            return "/" + LIBRARY_NAME + ".so";
+        }
+        throw new RuntimeException("Unsupported OS");
+    }
 
     public static EffekseerEffectCore loadEffect(String effectPath) {
         return loadEffect(effectPath, DEFAULT_MAGNIFICATION);
@@ -158,27 +179,6 @@ public class STSEffekSeerUtils {
             // We need to keep the DLL file until the program closes, in case the system needs to read from it again
             temp.deleteOnExit();
         }
-    }
-
-    private static String getEffekseerPath() {
-        if (SystemUtils.IS_OS_WINDOWS) {
-            return "/" + LIBRARY_NAME + ".dll";
-        }
-        else if (SystemUtils.IS_OS_LINUX) {
-            return "/" + LIBRARY_NAME + ".so";
-        }
-        throw new RuntimeException("Unsupported OS");
-    }
-
-    private static File createTemporaryDirectory(String prefix) throws IOException {
-        String tempDir = System.getProperty("java.io.tmpdir");
-        File generatedDir = new File(tempDir, prefix + System.nanoTime());
-
-        if (!generatedDir.mkdir()) {
-            throw new IOException("Failed to create temp directory " + generatedDir.getName());
-        }
-
-        return generatedDir;
     }
 
     /* Effekseer color values range from 0-255, whereas LibGDX color values range from 0-1 */

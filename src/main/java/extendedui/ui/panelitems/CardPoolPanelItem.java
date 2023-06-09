@@ -23,11 +23,11 @@ import extendedui.EUIUtils;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.FuncT0;
+import extendedui.ui.controls.EUIContextMenu;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.screens.CardPoolScreen;
 import extendedui.ui.screens.PotionPoolScreen;
 import extendedui.ui.screens.RelicPoolScreen;
-import extendedui.ui.controls.EUIContextMenu;
-import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
@@ -53,20 +53,62 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
                 .setCanAutosizeButton(true);
     }
 
+    protected static int compareCardFromAllColors(AbstractCard c1, AbstractCard c2) {
+        int c1val = c1.color.ordinal() * 100 + c1.rarity.ordinal();
+        int c2val = c2.color.ordinal() * 100 + c2.rarity.ordinal();
+        return c2val - c1val;
+    }
+
+    public static CardGroup getAllCards() {
+        CardGroup cardGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+        if (EUIGameUtils.canReceiveAnyColorCard()) {
+            cardGroup.group = EUIGameUtils.getEveryColorCardForPoolDisplay();
+            cardGroup.group.sort(CardPoolPanelItem::compareCardFromAllColors);
+        }
+        else {
+            for (CardGroup cg : EUIGameUtils.getGameCardPools()) {
+                for (AbstractCard c : cg.group) {
+                    cardGroup.addToTop(c);
+                }
+            }
+        }
+
+        return cardGroup;
+    }
+
     public static ArrayList<AbstractPotion> getAllPotions() {
         return EUIUtils.mapAsNonnull(PotionHelper.getPotions(AbstractDungeon.player != null ? AbstractDungeon.player.chosenClass : null, false), PotionHelper::getPotion);
     }
 
-    @Override
-    public void render(SpriteBatch sb) {
-        super.render(sb);
+    public static ArrayList<AbstractRelic> getAllRelics() {
+        ArrayList<AbstractRelic> newRelics = new ArrayList<>();
+        for (String relicID : EUIGameUtils.getAllRelicIDs()) {
+            AbstractRelic original = RelicLibrary.getRelic(relicID);
+            if (original instanceof Circlet) {
+                original = BaseMod.getCustomRelic(relicID);
+            }
 
-        contextMenu.tryRender(sb);
+            AbstractRelic newRelic = original.makeCopy();
+            newRelic.hb = new Hitbox(80.0F * Settings.scale, 80.0F * Settings.scale);
+            newRelic.isSeen = UnlockTracker.isRelicSeen(original.relicId);
+            newRelics.add(newRelic);
+        }
+        return newRelics;
     }
 
-    public void setAdditionalStringFunction(FuncT0<String> func) {
-        additionalTextFunc = func;
-        update();
+    public String getFullDescription() {
+        String base = EUIRM.strings.uipool_viewPoolDescription;
+        String addendum = additionalTextFunc != null ? additionalTextFunc.invoke() : null;
+        return addendum != null ? base + " || " + addendum : base;
+    }
+
+    @Override
+    protected void onRightClick() {
+        super.onRightClick();
+
+        contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
+        contextMenu.refreshText();
+        contextMenu.openOrCloseMenu();
     }
 
     @Override
@@ -98,57 +140,15 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
     }
 
     @Override
-    protected void onRightClick() {
-        super.onRightClick();
+    public void render(SpriteBatch sb) {
+        super.render(sb);
 
-        contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
-        contextMenu.refreshText();
-        contextMenu.openOrCloseMenu();
+        contextMenu.tryRender(sb);
     }
 
-    public static CardGroup getAllCards() {
-        CardGroup cardGroup = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        if (EUIGameUtils.canReceiveAnyColorCard()) {
-            cardGroup.group = EUIGameUtils.getEveryColorCardForPoolDisplay();
-            cardGroup.group.sort(CardPoolPanelItem::compareCardFromAllColors);
-        }
-        else {
-            for (CardGroup cg : EUIGameUtils.getGameCardPools()) {
-                for (AbstractCard c : cg.group) {
-                    cardGroup.addToTop(c);
-                }
-            }
-        }
-
-        return cardGroup;
-    }
-
-    protected static int compareCardFromAllColors(AbstractCard c1, AbstractCard c2) {
-        int c1val = c1.color.ordinal() * 100 + c1.rarity.ordinal();
-        int c2val = c2.color.ordinal() * 100 + c2.rarity.ordinal();
-        return c2val - c1val;
-    }
-
-    public String getFullDescription() {
-        String base = EUIRM.strings.uipool_viewPoolDescription;
-        String addendum = additionalTextFunc != null ? additionalTextFunc.invoke() : null;
-        return addendum != null ? base + " || " + addendum : base;
-    }
-
-    public static ArrayList<AbstractRelic> getAllRelics() {
-        ArrayList<AbstractRelic> newRelics = new ArrayList<>();
-        for (String relicID : EUIGameUtils.getAllRelicIDs()) {
-            AbstractRelic original = RelicLibrary.getRelic(relicID);
-            if (original instanceof Circlet) {
-                original = BaseMod.getCustomRelic(relicID);
-            }
-
-            AbstractRelic newRelic = original.makeCopy();
-            newRelic.hb = new Hitbox(80.0F * Settings.scale, 80.0F * Settings.scale);
-            newRelic.isSeen = UnlockTracker.isRelicSeen(original.relicId);
-            newRelics.add(newRelic);
-        }
-        return newRelics;
+    public void setAdditionalStringFunction(FuncT0<String> func) {
+        additionalTextFunc = func;
+        update();
     }
 
     public enum ContextOption {

@@ -50,6 +50,21 @@ public class HitboxDebugger implements ImGuiSubscriber {
         }
     }
 
+    protected float applyScale(float v) {
+        return v * Settings.scale;
+    }
+
+    @Override
+    public void receiveImGui() {
+        effectWindow.render(() -> {
+            ImGui.text(HITBOX_ADDRESS + ": " + (current != null ? current.toString() : ""));
+            DEUIUtils.withWidth(90, hbX::renderInline);
+            DEUIUtils.withWidth(90, hbY::renderInline);
+            DEUIUtils.withWidth(90, hbW::renderInline);
+            DEUIUtils.withWidth(90, hbH::render);
+        });
+    }
+
     public void register(EUIHitbox current) {
         this.current = current;
         if (current instanceof RelativeHitbox) {
@@ -70,17 +85,6 @@ public class HitboxDebugger implements ImGuiSubscriber {
         return v / Settings.scale;
     }
 
-    @Override
-    public void receiveImGui() {
-        effectWindow.render(() -> {
-            ImGui.text(HITBOX_ADDRESS + ": " + (current != null ? current.toString() : ""));
-            DEUIUtils.withWidth(90, hbX::renderInline);
-            DEUIUtils.withWidth(90, hbY::renderInline);
-            DEUIUtils.withWidth(90, hbW::renderInline);
-            DEUIUtils.withWidth(90, hbH::render);
-        });
-    }
-
     public void updateHitbox() {
         if (this.current instanceof RelativeHitbox) {
             this.current.setOffset(hbX.get(), hbY.get());
@@ -92,9 +96,5 @@ public class HitboxDebugger implements ImGuiSubscriber {
             this.current.width = applyScale(hbW.get());
             this.current.height = applyScale(hbW.get());
         }
-    }
-
-    protected float applyScale(float v) {
-        return v * Settings.scale;
     }
 }

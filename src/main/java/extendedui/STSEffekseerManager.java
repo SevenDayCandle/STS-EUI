@@ -25,7 +25,8 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
 
 public class STSEffekseerManager implements ImGuiSubscriber {
-    public static final float BASE_ANIMATION_SPEED = 60f;
+    private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
+    private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
     protected static final ArrayList<String> AvailablePaths = new ArrayList<>();
     protected static final float ZPOS = 99;
     protected static final String WINDOW_ID = "Effekseer";
@@ -46,14 +47,11 @@ public class STSEffekseerManager implements ImGuiSubscriber {
     protected static final String EFFECT_LIST_PLAY_ID = "Play";
     protected static final String EFFECT_LIST_TOGGLE_ID = "Show Playing";
     protected static final String TABLE_ID = "Current Playing Effects";
-    private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
-    private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
-    protected static float animationSpeed = BASE_ANIMATION_SPEED;
-    protected static STSEffekseerManager instance;
+    public static final float BASE_ANIMATION_SPEED = 60f;
     private static EffekseerManagerCore managerCore;
     private static boolean enabled = false;
-
-
+    protected static float animationSpeed = BASE_ANIMATION_SPEED;
+    protected static STSEffekseerManager instance;
     private final DEUIWindow effectWindow;
     private final DEUIListBox<String> effectList;
     private final DEUICloseableWindow handleWindow;
@@ -109,12 +107,18 @@ public class STSEffekseerManager implements ImGuiSubscriber {
     }
 
     /**
-     * Force an animation to stop playing
+     * Effects can only play if the manager is loaded and if in-game effects are enabled
      */
-    public static void stop(int handle) {
-        if (enabled) {
-            managerCore.Stop(handle);
+    public static boolean canPlay() {
+        return enabled && !Settings.DISABLE_EFFECTS && !EUIConfiguration.disableEffekseer.get();
+    }
+
+    private static void clear() {
+        managerCore.delete();
+        for (EffekseerEffectCore effect : ParticleEffects.values()) {
+            effect.delete();
         }
+        ParticleEffects.clear();
     }
 
     public static void end() {
@@ -125,12 +129,11 @@ public class STSEffekseerManager implements ImGuiSubscriber {
         }
     }
 
-    private static void clear() {
-        managerCore.delete();
-        for (EffekseerEffectCore effect : ParticleEffects.values()) {
-            effect.delete();
-        }
-        ParticleEffects.clear();
+    /**
+     * Whether the effect with the given handle is currently playing
+     */
+    public static boolean exists(int handle) {
+        return enabled && managerCore.Exists(handle);
     }
 
     /**
@@ -220,13 +223,6 @@ public class STSEffekseerManager implements ImGuiSubscriber {
         return null;
     }
 
-    /**
-     * Effects can only play if the manager is loaded and if in-game effects are enabled
-     */
-    public static boolean canPlay() {
-        return enabled && !Settings.DISABLE_EFFECTS && !EUIConfiguration.disableEffekseer.get();
-    }
-
     public static Integer play(String key, Vector2 position, Vector3 rotation, Vector3 scale, Color color) {
         return play(key, position, rotation, scale, STSEffekSeerUtils.toEffekseerColor(color));
     }
@@ -239,13 +235,6 @@ public class STSEffekseerManager implements ImGuiSubscriber {
         if (!PlayingHandles.isEmpty()) {
             Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT);
         }
-    }
-
-    /**
-     * Whether the effect with the given handle is currently playing
-     */
-    public static boolean exists(int handle) {
-        return enabled && managerCore.Exists(handle);
     }
 
     /* Add Effekseer file paths to the file selector */
@@ -264,6 +253,15 @@ public class STSEffekseerManager implements ImGuiSubscriber {
      */
     public static void setAnimationSpeed(float speed) {
         animationSpeed = Math.max(0, speed);
+    }
+
+    /**
+     * Force an animation to stop playing
+     */
+    public static void stop(int handle) {
+        if (enabled) {
+            managerCore.Stop(handle);
+        }
     }
 
     /**

@@ -15,7 +15,6 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT2;
-import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.interfaces.markers.CustomPotionPoolModule;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
@@ -37,8 +36,8 @@ public class PotionPoolScreen extends EUIPoolScreen {
     protected final EUIContextMenu<PotionPoolScreen.DebugOption> contextMenu;
     protected final EUIButton swapCardScreen;
     protected final EUIButton swapRelicScreen;
-    public EUIPotionGrid potionGrid;
     private AbstractPotion selected;
+    public EUIPotionGrid potionGrid;
 
     public PotionPoolScreen() {
         potionGrid = (EUIPotionGrid) new EUIPotionGrid()
@@ -72,6 +71,10 @@ public class PotionPoolScreen extends EUIPoolScreen {
                 .setCanAutosizeButton(true);
     }
 
+    public static ArrayList<PotionPoolScreen.DebugOption> getOptions(AbstractPotion p) {
+        return EUIUtils.arrayList(DebugOption.obtain);
+    }
+
     @Override
     public void close() {
         super.close();
@@ -86,59 +89,6 @@ public class PotionPoolScreen extends EUIPoolScreen {
     @Override
     public AbstractDungeon.CurrentScreen curScreen() {
         return POTION_POOL_SCREEN;
-    }
-
-    protected void onRightClick(AbstractPotion c) {
-        if (EUIConfiguration.enableCardPoolDebug.get()) {
-            selected = c;
-            contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
-            contextMenu.refreshText();
-            contextMenu.setItems(getOptions(c));
-            contextMenu.openOrCloseMenu();
-        }
-    }
-
-    public static ArrayList<PotionPoolScreen.DebugOption> getOptions(AbstractPotion p) {
-        return EUIUtils.arrayList(DebugOption.obtain);
-    }
-
-    protected void obtain(AbstractPotion c) {
-        if (c != null && AbstractDungeon.player != null) {
-            AbstractDungeon.player.obtainPotion(c);
-        }
-    }
-
-    public void openScreen(AbstractPlayer player, ArrayList<AbstractPotion> potions) {
-        super.reopen();
-        AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
-
-        potionGrid.clear();
-        if (potions.isEmpty()) {
-            AbstractDungeon.closeCurrentScreen();
-            return;
-        }
-
-        potionGrid.setPotions(potions);
-
-        EUI.potionFilters.initializeForCustomHeader(potionGrid.potionGroup, __ -> {
-            ArrayList<AbstractPotion> headerPotions = EUI.potionHeader.getPotions();
-            for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
-                module.open(headerPotions, color, null);
-            }
-            if (customModule != null) {
-                customModule.open(headerPotions, color, null);
-            }
-            potionGrid.forceUpdatePotionPositions();
-        }, color, true, false);
-
-
-        for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
-            module.open(potions, color, null);
-        }
-        customModule = EUI.getCustomPotionPoolModule(player);
-        if (customModule != null) {
-            customModule.open(potions, color, null);
-        }
     }
 
     @Override
@@ -175,6 +125,55 @@ public class PotionPoolScreen extends EUIPoolScreen {
             customModule.render(sb);
         }
         contextMenu.tryRender(sb);
+    }
+
+    protected void obtain(AbstractPotion c) {
+        if (c != null && AbstractDungeon.player != null) {
+            AbstractDungeon.player.obtainPotion(c);
+        }
+    }
+
+    protected void onRightClick(AbstractPotion c) {
+        if (EUIConfiguration.enableCardPoolDebug.get()) {
+            selected = c;
+            contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
+            contextMenu.refreshText();
+            contextMenu.setItems(getOptions(c));
+            contextMenu.openOrCloseMenu();
+        }
+    }
+
+    public void openScreen(AbstractPlayer player, ArrayList<AbstractPotion> potions) {
+        super.reopen();
+        AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
+
+        potionGrid.clear();
+        if (potions.isEmpty()) {
+            AbstractDungeon.closeCurrentScreen();
+            return;
+        }
+
+        potionGrid.setPotions(potions);
+
+        EUI.potionFilters.initializeForCustomHeader(potionGrid.potionGroup, __ -> {
+            ArrayList<AbstractPotion> headerPotions = EUI.potionHeader.getPotions();
+            for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
+                module.open(headerPotions, color, null);
+            }
+            if (customModule != null) {
+                customModule.open(headerPotions, color, null);
+            }
+            potionGrid.forceUpdatePotionPositions();
+        }, color, true, false);
+
+
+        for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
+            module.open(potions, color, null);
+        }
+        customModule = EUI.getCustomPotionPoolModule(player);
+        if (customModule != null) {
+            customModule.open(potions, color, null);
+        }
     }
 
     public static class DebugOption {

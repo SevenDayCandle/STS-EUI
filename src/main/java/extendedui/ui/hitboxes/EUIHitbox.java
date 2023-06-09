@@ -45,16 +45,16 @@ public class EUIHitbox extends Hitbox {
         return 0;
     }
 
-    public EUIHitbox setOffsetX(float x) {
-        return this;
-    }
-
     public float getOffsetY() {
         return 0;
     }
 
-    public EUIHitbox setOffsetY(float y) {
-        return this;
+    protected float lerp(float current, float target) {
+        if (lerpSpeed < 0 || Math.abs(current - target) < Settings.UI_SNAP_THRESHOLD) {
+            return target;
+        }
+
+        return MathUtils.lerp(current, target, lerpSpeed * Gdx.graphics.getDeltaTime());
     }
 
     public EUIHitbox makeCopy() {
@@ -63,6 +63,13 @@ public class EUIHitbox extends Hitbox {
         copy.parentElement = this.parentElement;
         copy.isPopupCompatible = this.isPopupCompatible;
         return copy;
+    }
+
+    protected void moveInternal(float cX, float cY) {
+        this.cX = cX;
+        this.cY = cY;
+        this.x = cX - this.width / 2f;
+        this.y = cY - this.height / 2f;
     }
 
     public EUIHitbox setCenter(float cX, float cY) {
@@ -79,6 +86,14 @@ public class EUIHitbox extends Hitbox {
 
     // Overridden in child classes
     public EUIHitbox setOffset(float x, float y) {
+        return this;
+    }
+
+    public EUIHitbox setOffsetX(float x) {
+        return this;
+    }
+
+    public EUIHitbox setOffsetY(float y) {
         return this;
     }
 
@@ -175,20 +190,5 @@ public class EUIHitbox extends Hitbox {
         this.height = h;
         this.targetCx = this.cX = x + this.width / 2f;
         this.targetCy = this.cY = y + this.height / 2f;
-    }
-
-    protected void moveInternal(float cX, float cY) {
-        this.cX = cX;
-        this.cY = cY;
-        this.x = cX - this.width / 2f;
-        this.y = cY - this.height / 2f;
-    }
-
-    protected float lerp(float current, float target) {
-        if (lerpSpeed < 0 || Math.abs(current - target) < Settings.UI_SNAP_THRESHOLD) {
-            return target;
-        }
-
-        return MathUtils.lerp(current, target, lerpSpeed * Gdx.graphics.getDeltaTime());
     }
 }

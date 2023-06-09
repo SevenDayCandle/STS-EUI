@@ -13,8 +13,8 @@ import java.util.Arrays;
 import java.util.List;
 
 public class EUIPaginatedTooltip extends EUITooltip {
-    public ArrayList<String> descriptions = new ArrayList<>();
     protected int currentDesc;
+    public ArrayList<String> descriptions = new ArrayList<>();
 
     public EUIPaginatedTooltip(String title, String... descriptions) {
         this(title, Arrays.asList(descriptions));
@@ -40,6 +40,18 @@ public class EUIPaginatedTooltip extends EUITooltip {
         return formatDescription(currentDesc, items);
     }
 
+    @Override
+    public float render(SpriteBatch sb, float x, float y, int index) {
+        if (EUIHotkeys.cycle.isJustPressed()) {
+            cycleDescription();
+        }
+        return super.render(sb, x, y, index);
+    }
+
+    public EUIPaginatedTooltip setDescription(String description) {
+        return setDescription(0, description);
+    }
+
     public EUIPaginatedTooltip formatDescription(int index, Object... items) {
         if (index < descriptions.size()) {
             String newDesc = EUIUtils.format(descriptions.get(index), items);
@@ -49,12 +61,12 @@ public class EUIPaginatedTooltip extends EUITooltip {
         return this;
     }
 
-    public String getUpdatedDescription() {
-        return currentDesc < descriptions.size() ? descriptions.get(currentDesc) : "";
+    protected String getCycleText() {
+        return EUIRM.strings.keyToCycle(EUIHotkeys.cycle.getKeyString()) + " (" + (currentDesc + 1) + "/" + descriptions.size() + ")";
     }
 
-    public EUIPaginatedTooltip setDescription(String description) {
-        return setDescription(0, description);
+    public String getUpdatedDescription() {
+        return currentDesc < descriptions.size() ? descriptions.get(currentDesc) : "";
     }
 
     public EUIPaginatedTooltip setDescription(int index, String description) {
@@ -106,21 +118,9 @@ public class EUIPaginatedTooltip extends EUITooltip {
         return this;
     }
 
-    @Override
-    public float render(SpriteBatch sb, float x, float y, int index) {
-        if (EUIHotkeys.cycle.isJustPressed()) {
-            cycleDescription();
-        }
-        return super.render(sb, x, y, index);
-    }
-
     protected void updateText() {
         description = getUpdatedDescription();
         subText.setText(getCycleText());
         invalidateHeight();
-    }
-
-    protected String getCycleText() {
-        return EUIRM.strings.keyToCycle(EUIHotkeys.cycle.getKeyString()) + " (" + (currentDesc + 1) + "/" + descriptions.size() + ")";
     }
 }

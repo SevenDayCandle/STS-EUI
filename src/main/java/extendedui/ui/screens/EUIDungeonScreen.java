@@ -5,27 +5,27 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import extendedui.EUI;
 import extendedui.patches.game.AbstractDungeonPatches;
-import extendedui.utilities.EUIClassUtils;
 
 public abstract class EUIDungeonScreen extends CustomScreen {
 
-    public void switchScreen() {
-        Settings.hideRelics = false;
-        EUI.disableInteract = false;
-        genericScreenOverlayReset();
-        AbstractDungeon.overlayMenu.cancelButton.hide();
-        AbstractDungeon.overlayMenu.hideBlackScreen();
-        AbstractDungeon.isScreenUp = false;
+    public boolean isScreenNonEmpty(AbstractDungeon.CurrentScreen s) {
+        return !(s == null || s == AbstractDungeon.CurrentScreen.NONE);
     }
 
-    @Override
-    public void close() {
-        switchScreen();
+    public boolean isScreenValid(AbstractDungeon.CurrentScreen s) {
+        switch (s) {
+            case MAP:
+            case MASTER_DECK_VIEW:
+            case SETTINGS:
+            case INPUT_SETTINGS:
+            case NONE:
+                return false;
+        }
+        return s != CardPoolScreen.CARD_POOL_SCREEN && s != RelicPoolScreen.RELIC_POOL_SCREEN && s != PotionPoolScreen.POTION_POOL_SCREEN;
     }
 
-    @Override
-    public void openingSettings() {
-        switchScreen();
+    public void open() {
+        reopen();
     }
 
     @Override
@@ -43,24 +43,23 @@ public abstract class EUIDungeonScreen extends CustomScreen {
         AbstractDungeon.dungeonMapScreen.map.hideInstantly(); // Because the map won't be hidden properly otherwise
     }
 
-    public void open() {
-        reopen();
+    @Override
+    public void close() {
+        switchScreen();
     }
 
-    public boolean isScreenNonEmpty(AbstractDungeon.CurrentScreen s) {
-        return !(s == null || s == AbstractDungeon.CurrentScreen.NONE);
+    @Override
+    public void openingSettings() {
+        switchScreen();
     }
 
-    public boolean isScreenValid(AbstractDungeon.CurrentScreen s) {
-        switch (s) {
-            case MAP:
-            case MASTER_DECK_VIEW:
-            case SETTINGS:
-            case INPUT_SETTINGS:
-            case NONE:
-                return false;
-        }
-        return s != CardPoolScreen.CARD_POOL_SCREEN && s != RelicPoolScreen.RELIC_POOL_SCREEN && s != PotionPoolScreen.POTION_POOL_SCREEN;
+    public void switchScreen() {
+        Settings.hideRelics = false;
+        EUI.disableInteract = false;
+        genericScreenOverlayReset();
+        AbstractDungeon.overlayMenu.cancelButton.hide();
+        AbstractDungeon.overlayMenu.hideBlackScreen();
+        AbstractDungeon.isScreenUp = false;
     }
 
 }

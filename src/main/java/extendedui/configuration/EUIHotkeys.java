@@ -8,13 +8,12 @@ import java.util.HashMap;
 
 public class EUIHotkeys {
 
-    public static final HashMap<Integer, Integer> EQUIVALENT_KEYS = new HashMap<>();
-
     private static final String KEYMAP_CYCLE = EUIConfiguration.getFullKey("Cycle");
     private static final String KEYMAP_OPEN_CARD_POOL = EUIConfiguration.getFullKey("OpenCardPool");
     private static final String KEYMAP_OPEN_POTION_POOL = EUIConfiguration.getFullKey("OpenPotionPool");
     private static final String KEYMAP_OPEN_RELIC_POOL = EUIConfiguration.getFullKey("OpenRelicPool");
     private static final String KEYMAP_TOGGLE_FILTERS = EUIConfiguration.getFullKey("ToggleFilters");
+    public static final HashMap<Integer, Integer> EQUIVALENT_KEYS = new HashMap<>();
     public static InputAction cycle;
     public static InputAction openCardPool;
     public static InputAction openPotionPool;

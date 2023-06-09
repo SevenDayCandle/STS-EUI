@@ -5,7 +5,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.google.gson.Gson;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.TipHelper;
-import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT3;
 import extendedui.interfaces.delegates.FuncT1;
 import org.apache.commons.lang3.StringUtils;
@@ -23,14 +22,14 @@ import java.util.stream.Stream;
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
 public abstract class EUIUtils {
+    private static final Gson GsonReader = new Gson();
+    private static final StringBuilder sb1 = new StringBuilder();
+    private static final StringBuilder sb2 = new StringBuilder();
     public static final Random RNG = new Random();
     public static final String EMPTY_STRING = "";
     public static final String DOUBLE_SPLIT_LINE = " || ";
     public static final String LEGACY_DOUBLE_SPLIT_LINE = " NL  NL ";
     public static final String SPLIT_LINE = " | ";
-    private static final Gson GsonReader = new Gson();
-    private static final StringBuilder sb1 = new StringBuilder();
-    private static final StringBuilder sb2 = new StringBuilder();
 
     public static boolean all(CharSequence sequence, Predicate<Character> func) {
         for (int i = 0; i < sequence.length(); i++) {
@@ -323,6 +322,71 @@ public abstract class EUIUtils {
         return t;
     }
 
+    // Simple string Formatting in which integers inside curly braces are replaced by args[B].
+    public static String format(String format, Object... args) {
+        if (StringUtils.isEmpty(format)) {
+            return "";
+        }
+        if (args == null || args.length == 0) {
+            return format;
+        }
+
+        sb1.setLength(0);
+        sb2.setLength(0);
+        int braces = 0;
+        for (int i = 0; i < format.length(); i++) {
+            Character c = format.charAt(i);
+            if (c == '{') {
+                sb2.setLength(0);
+                int j = i + 1;
+                while (j < format.length()) {
+                    final Character next = format.charAt(j);
+                    if (Character.isDigit(next)) {
+                        sb2.append(next);
+                        j += 1;
+                        continue;
+                    }
+                    else if (next == '}' && sb2.length() > 0) {
+                        int index;
+                        if (sb2.length() == 1) {
+                            index = Character.getNumericValue(sb2.toString().charAt(0));
+                        }
+                        else {
+                            index = EUIUtils.parseInt(sb2.toString(), -1);
+                        }
+
+                        if (index >= 0 && index < args.length) {
+                            sb1.append(args[index]);
+                        }
+                        else {
+                            EUIUtils.logError(EUIUtils.class, "Invalid format: " + format + "\n" + joinStrings(", ", args));
+                        }
+
+                        i = j;
+                    }
+
+                    break;
+                }
+
+                if (sb2.length() > 0) {
+                    continue;
+                }
+            }
+
+            sb1.append(c);
+        }
+
+        return sb1.toString();
+    }
+
+    public static Logger getLogger(Object source) {
+        if (source == null) {
+            return LogManager.getLogger();
+        }
+
+        return LogManager.getLogger((source instanceof Class) ? ((Class<?>) source).getName() : source.getClass().getName());
+    }
+
     public static <K, V> HashMap<K, List<V>> group(Iterable<V> list, FuncT1<K, V> getKey) {
         final HashMap<K, List<V>> map = new HashMap<>();
         for (V v : list) {
@@ -383,6 +447,16 @@ public abstract class EUIUtils {
         return sj.toString();
     }
 
+    @SafeVarargs
+    public static <T> String joinStrings(String delimiter, T... values) {
+        final StringJoiner sj = new StringJoiner(delimiter);
+        for (T value : values) {
+            sj.add(String.valueOf(value));
+        }
+
+        return sj.toString();
+    }
+
     public static <T> String joinTrueStrings(String delimiter, Iterable<T> values) {
         final StringJoiner sj = new StringJoiner(delimiter);
         for (T value : values) {
@@ -412,98 +486,6 @@ public abstract class EUIUtils {
         return sj.toString();
     }
 
-    public static void logError(Object source, String format, Object... values) {
-        getLogger(source).error(format(format, values));
-    }
-
-    public static Logger getLogger(Object source) {
-        if (source == null) {
-            return LogManager.getLogger();
-        }
-
-        return LogManager.getLogger((source instanceof Class) ? ((Class<?>) source).getName() : source.getClass().getName());
-    }
-
-    // Simple string Formatting in which integers inside curly braces are replaced by args[B].
-    public static String format(String format, Object... args) {
-        if (StringUtils.isEmpty(format)) {
-            return "";
-        }
-        if (args == null || args.length == 0) {
-            return format;
-        }
-
-        sb1.setLength(0);
-        sb2.setLength(0);
-        int braces = 0;
-        for (int i = 0; i < format.length(); i++) {
-            Character c = format.charAt(i);
-            if (c == '{') {
-                sb2.setLength(0);
-                int j = i + 1;
-                while (j < format.length()) {
-                    final Character next = format.charAt(j);
-                    if (Character.isDigit(next)) {
-                        sb2.append(next);
-                        j += 1;
-                        continue;
-                    }
-                    else if (next == '}' && sb2.length() > 0) {
-                        int index;
-                        if (sb2.length() == 1) {
-                            index = Character.getNumericValue(sb2.toString().charAt(0));
-                        }
-                        else {
-                            index = EUIUtils.parseInt(sb2.toString(), -1);
-                        }
-
-                        if (index >= 0 && index < args.length) {
-                            sb1.append(args[index]);
-                        }
-                        else {
-                            EUIUtils.logError(EUIUtils.class, "Invalid format: " + format + "\n" + joinStrings(", ", args));
-                        }
-
-                        i = j;
-                    }
-
-                    break;
-                }
-
-                if (sb2.length() > 0) {
-                    continue;
-                }
-            }
-
-            sb1.append(c);
-        }
-
-        return sb1.toString();
-    }
-
-    public static int parseInt(String value, int defaultValue) {
-        try {
-            return Integer.parseInt(value);
-        }
-        catch (NumberFormatException ex) {
-            return defaultValue;
-        }
-    }
-
-    public static void logError(Object source, Object message) {
-        getLogger(source).error(message);
-    }
-
-    @SafeVarargs
-    public static <T> String joinStrings(String delimiter, T... values) {
-        final StringJoiner sj = new StringJoiner(delimiter);
-        for (T value : values) {
-            sj.add(String.valueOf(value));
-        }
-
-        return sj.toString();
-    }
-
     public static float lerpSnap(float startX, float targetX, float rate) {
         return lerpSnap(startX, targetX, rate, Settings.CARD_SNAP_THRESHOLD);
     }
@@ -519,6 +501,21 @@ public abstract class EUIUtils {
         return startX;
     }
 
+    public static void logError(Object source, String format, Object... values) {
+        getLogger(source).error(format(format, values));
+    }
+
+    public static void logError(Object source, Object message) {
+        getLogger(source).error(message);
+    }
+
+    public static void logInfo(Object source, Object message) {
+        getLogger(source).info(message);
+    }
+
+    public static void logInfo(Object source, String format, Object... values) {
+        getLogger(source).info(format(format, values));
+    }
 
     public static void logInfoIfDebug(Object source, Object message) {
         if (Settings.isDebug) {
@@ -526,18 +523,10 @@ public abstract class EUIUtils {
         }
     }
 
-    public static void logInfo(Object source, Object message) {
-        getLogger(source).info(message);
-    }
-
     public static void logInfoIfDebug(Object source, String format, Object... values) {
         if (Settings.isDebug) {
             logInfo(source, format, values);
         }
-    }
-
-    public static void logInfo(Object source, String format, Object... values) {
-        getLogger(source).info(format(format, values));
     }
 
     public static void logWarning(Object source, Object message) {
@@ -646,17 +635,6 @@ public abstract class EUIUtils {
         return sum(list, predicate) / list.size();
     }
 
-    public static <T> float sum(Iterable<? extends T> list, FuncT1<Float, T> predicate) {
-        float sum = 0;
-        if (list == null) {
-            return sum;
-        }
-        for (T t : list) {
-            sum += predicate.invoke(t);
-        }
-        return sum;
-    }
-
     public static <T, N extends Comparable<N>> N min(T[] list, FuncT1<N, T> getProperty) {
         N best = null;
         for (T t : list) {
@@ -685,9 +663,33 @@ public abstract class EUIUtils {
         return best;
     }
 
+    public static String modifyString(String text, FuncT1<String, String> modifyWord) {
+        return EUIUtils.modifyString(text, " ", " ", modifyWord);
+    }
+
+    public static String modifyString(String text, String separator, String delimiter, FuncT1<String, String> modifyWord) {
+        final String[] words = splitString(separator, text);
+        if (modifyWord != null) {
+            for (int i = 0; i < words.length; i++) {
+                words[i] = modifyWord.invoke(words[i]);
+            }
+        }
+
+        return joinStrings(delimiter, words);
+    }
+
     public static float parseFloat(String value, float defaultValue) {
         try {
             return Float.parseFloat(value);
+        }
+        catch (NumberFormatException ex) {
+            return defaultValue;
+        }
+    }
+
+    public static int parseInt(String value, int defaultValue) {
+        try {
+            return Integer.parseInt(value);
         }
         catch (NumberFormatException ex) {
             return defaultValue;
@@ -773,36 +775,6 @@ public abstract class EUIUtils {
         return Settings.isDebug || Settings.isInfo;
     }
 
-    public static <T> int sumInt(Iterable<? extends T> list, FuncT1<Integer, T> predicate) {
-        int sum = 0;
-        if (list == null) {
-            return sum;
-        }
-        for (T t : list) {
-            sum += predicate.invoke(t);
-        }
-        return sum;
-    }
-
-    public static String titleCase(String text) {
-        return EUIUtils.modifyString(text, w -> Character.toUpperCase(w.charAt(0)) + (w.length() > 1 ? w.substring(1) : ""));
-    }
-
-    public static String modifyString(String text, FuncT1<String, String> modifyWord) {
-        return EUIUtils.modifyString(text, " ", " ", modifyWord);
-    }
-
-    public static String modifyString(String text, String separator, String delimiter, FuncT1<String, String> modifyWord) {
-        final String[] words = splitString(separator, text);
-        if (modifyWord != null) {
-            for (int i = 0; i < words.length; i++) {
-                words[i] = modifyWord.invoke(words[i]);
-            }
-        }
-
-        return joinStrings(delimiter, words);
-    }
-
     public static String[] splitString(String separator, String text) {
         return splitString(separator, text, true);
     }
@@ -854,6 +826,32 @@ public abstract class EUIUtils {
 
         final String[] arr = new String[result.size()];
         return result.toArray(arr);
+    }
+
+    public static <T> float sum(Iterable<? extends T> list, FuncT1<Float, T> predicate) {
+        float sum = 0;
+        if (list == null) {
+            return sum;
+        }
+        for (T t : list) {
+            sum += predicate.invoke(t);
+        }
+        return sum;
+    }
+
+    public static <T> int sumInt(Iterable<? extends T> list, FuncT1<Integer, T> predicate) {
+        int sum = 0;
+        if (list == null) {
+            return sum;
+        }
+        for (T t : list) {
+            sum += predicate.invoke(t);
+        }
+        return sum;
+    }
+
+    public static String titleCase(String text) {
+        return EUIUtils.modifyString(text, w -> Character.toUpperCase(w.charAt(0)) + (w.length() > 1 ? w.substring(1) : ""));
     }
 
     public static <T> Constructor<T> tryGetConstructor(Class<T> type, Class<?>... paramTypes) {

@@ -20,31 +20,17 @@ import extendedui.utilities.RotatingList;
 import java.util.ArrayList;
 
 public class CountingPanel extends EUIHoverable implements CustomCardPoolModule {
-    public static final float ICON_SIZE = scale(40);
     protected static final RotatingList<CountingPanelCardFilter> FILTERS = new RotatingList<>(new CardTypePaneFilter(), new CardRarityPaneFilter());
+    public static final float ICON_SIZE = scale(40);
+    private long lastFrame;
     protected ArrayList<? extends CountingPanelCounter<?>> counters;
     protected ArrayList<AbstractCard> cards;
     protected EUIButton swapButton;
-    private long lastFrame;
 
     public CountingPanel() {
         super(new DraggableHitbox(screenW(0.025f), screenH(0.65f), scale(140), scale(50), false));
         swapButton = new EUIButton(EUIRM.images.swap.texture(), new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, ICON_SIZE, 0))
                 .setOnClick(this::swap);
-    }
-
-    public void swap() {
-        FILTERS.next(true);
-        reset();
-    }
-
-    protected void reset() {
-        if (cards != null) {
-            CountingPanelCardFilter filter = FILTERS.current();
-            if (filter != null) {
-                counters = filter.generateCounters(cards, hb);
-            }
-        }
     }
 
     public static void register(CountingPanelCardFilter filter) {
@@ -90,6 +76,20 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
                 c.tryRender(sb);
             }
         }
+    }
+
+    protected void reset() {
+        if (cards != null) {
+            CountingPanelCardFilter filter = FILTERS.current();
+            if (filter != null) {
+                counters = filter.generateCounters(cards, hb);
+            }
+        }
+    }
+
+    public void swap() {
+        FILTERS.next(true);
+        reset();
     }
 
     @Override

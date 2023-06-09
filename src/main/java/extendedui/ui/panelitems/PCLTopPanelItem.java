@@ -9,10 +9,10 @@ import extendedui.ui.TextureCache;
 import extendedui.ui.tooltips.EUITooltip;
 
 public abstract class PCLTopPanelItem extends TopPanelItem {
-    public EUITooltip tooltip;
+    private boolean rightClickable = true;
     protected ActionT1<PCLTopPanelItem> onLeftClick;
     protected ActionT1<PCLTopPanelItem> onRightClick;
-    private boolean rightClickable = true;
+    public EUITooltip tooltip;
 
 
     public PCLTopPanelItem(TextureCache tc, String id) {
@@ -21,6 +21,12 @@ public abstract class PCLTopPanelItem extends TopPanelItem {
 
     public static String createFullID(Class<? extends PCLTopPanelItem> type) {
         return EUIRM.getID(type.getSimpleName());
+    }
+
+    protected void onRightClick() {
+        if (this.onRightClick != null) {
+            this.onRightClick.invoke(this);
+        }
     }
 
     public PCLTopPanelItem setOnClick(ActionT1<PCLTopPanelItem> onLeftClick) {
@@ -62,12 +68,6 @@ public abstract class PCLTopPanelItem extends TopPanelItem {
     protected void onClick() {
         if (this.onLeftClick != null) {
             this.onLeftClick.invoke(this);
-        }
-    }
-
-    protected void onRightClick() {
-        if (this.onRightClick != null) {
-            this.onRightClick.invoke(this);
         }
     }
 }

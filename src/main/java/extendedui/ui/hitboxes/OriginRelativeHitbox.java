@@ -15,9 +15,17 @@ public class OriginRelativeHitbox extends RelativeHitbox {
         this(hb, width, height, 0, 0);
     }
 
-    public OriginRelativeHitbox updateTargetPosition() {
-        this.targetCx = parentHB.x + width / 2f + offsetX;
-        this.targetCy = parentHB.y + height / 2f + offsetY;
+    public RelativeHitbox makeCopy() {
+        OriginRelativeHitbox copy = new OriginRelativeHitbox(this.parentHB, width, height, offsetX, offsetY);
+        copy.lerpSpeed = this.lerpSpeed;
+        copy.parentElement = this.parentElement;
+        copy.isPopupCompatible = this.isPopupCompatible;
+
+        return copy;
+    }
+
+    public OriginRelativeHitbox setOffset(float x, float y) {
+        super.setOffset(x, y);
 
         return this;
     }
@@ -34,17 +42,9 @@ public class OriginRelativeHitbox extends RelativeHitbox {
         return this;
     }
 
-    public RelativeHitbox makeCopy() {
-        OriginRelativeHitbox copy = new OriginRelativeHitbox(this.parentHB, width, height, offsetX, offsetY);
-        copy.lerpSpeed = this.lerpSpeed;
-        copy.parentElement = this.parentElement;
-        copy.isPopupCompatible = this.isPopupCompatible;
-
-        return copy;
-    }
-
-    public OriginRelativeHitbox setOffset(float x, float y) {
-        super.setOffset(x, y);
+    public OriginRelativeHitbox updateTargetPosition() {
+        this.targetCx = parentHB.x + width / 2f + offsetX;
+        this.targetCy = parentHB.y + height / 2f + offsetY;
 
         return this;
     }

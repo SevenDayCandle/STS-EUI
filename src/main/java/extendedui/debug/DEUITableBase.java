@@ -33,8 +33,6 @@ public abstract class DEUITableBase extends DEUIBaseT0 {
         }
     }
 
-    public abstract void onRender();
-
     public DEUITableBase setColumnAction(ActionT0 columnAction) {
         this.columnAction = columnAction;
         return this;
@@ -46,4 +44,6 @@ public abstract class DEUITableBase extends DEUIBaseT0 {
         this.innerWidth = innerWidth;
         return this;
     }
+
+    public abstract void onRender();
 }

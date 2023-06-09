@@ -13,7 +13,6 @@ import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
-import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.TupleT2;
 import org.apache.commons.lang3.StringUtils;
 

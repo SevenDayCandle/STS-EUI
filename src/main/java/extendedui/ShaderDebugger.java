@@ -44,20 +44,6 @@ public class ShaderDebugger implements ImGuiSubscriber {
         }
     }
 
-    @Override
-    public void receiveImGui() {
-        effectWindow.render(() -> {
-            effectRender.renderInline(this::compile);
-            effectStop.render(() -> shader = null);
-            ImGui.separator();
-            if (fragmentShader == null) {
-                fragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 0, 3000, ImGuiInputTextFlags.AllowTabInput);
-            }
-            fragmentShader.render();
-        });
-        renderShader();
-    }
-
     private void compile() {
         FileHandle vShader = Gdx.files.internal(EUIRenderHelpers.SHADER_VERTEX);
         String vShaderString = vShader.readString();
@@ -72,6 +58,20 @@ public class ShaderDebugger implements ImGuiSubscriber {
             EUIUtils.logError(ShaderDebugger.class, program.getLog());
             shader = null;
         }
+    }
+
+    @Override
+    public void receiveImGui() {
+        effectWindow.render(() -> {
+            effectRender.renderInline(this::compile);
+            effectStop.render(() -> shader = null);
+            ImGui.separator();
+            if (fragmentShader == null) {
+                fragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 0, 3000, ImGuiInputTextFlags.AllowTabInput);
+            }
+            fragmentShader.render();
+        });
+        renderShader();
     }
 
     private void renderShader() {

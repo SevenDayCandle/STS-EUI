@@ -20,7 +20,6 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.markers.CustomCardPoolModule;
-import extendedui.interfaces.markers.CustomPotionFilterModule;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -33,18 +32,18 @@ import java.util.HashMap;
 import static extendedui.ui.cardFilter.CustomCardLibSortHeader.CENTER_Y;
 
 public class CustomCardLibraryScreen extends AbstractMenuScreen {
+    protected static final float ICON_SIZE = scale(40);
     public static final int VISIBLE_BUTTONS = 14;
     public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
-    protected static final float ICON_SIZE = scale(40);
     public static AbstractCard.CardColor currentColor = AbstractCard.CardColor.COLORLESS;
     public static CustomCardPoolModule customModule;
+    protected final EUIButtonList colorButtons = new EUIButtonList();
     public final EUITextBoxInput quickSearch;
     public final EUIToggle upgradeToggle;
     public final MenuCancelButton cancelButton;
-    protected final EUIButtonList colorButtons = new EUIButtonList();
-    public EUICardGrid cardGrid;
     protected int topButtonIndex;
     protected Rectangle scissors;
+    public EUICardGrid cardGrid;
 
     public CustomCardLibraryScreen() {
         final float y = Settings.HEIGHT * 0.92f - (VISIBLE_BUTTONS + 1) * scale(48);
@@ -71,23 +70,6 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         scissors = new Rectangle();
         Rectangle clipBounds = new Rectangle(0, 0, Settings.WIDTH, CENTER_Y);
         ScissorStack.calculateScissors(EUIGameUtils.getCamera(), EUIGameUtils.getSpriteBatch().getTransformMatrix(), clipBounds, scissors);
-    }
-
-    public void resetGrid() {
-        cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
-        cardGrid.showScrollbar(true)
-                .canRenderUpgrades(true)
-                .setVerticalStart(Settings.HEIGHT * 0.65f)
-                .setCardScale(0.6f, 0.75f)
-                .setOnCardRightClick(c -> {
-                    c.unhover();
-                    CardCrawlGame.cardPopup.open(c, cardGrid.cards);
-                });
-    }
-
-    protected void toggleUpgrades(boolean value) {
-        EUI.toggleViewUpgrades(value);
-        upgradeToggle.setToggle(value);
     }
 
     public void initialize(CardLibraryScreen screen) {
@@ -121,62 +103,19 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
                 .setColor(EUIGameUtils.getColorColor(co));
     }
 
-    public void setActiveColor(AbstractCard.CardColor color) {
-        setActiveColor(color, CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED)), null);
-    }
-
-    public void setActiveColor(AbstractCard.CardColor color, CardGroup cards, Object payload) {
-        EUI.actingColor = currentColor = color;
-        cardGrid.clear();
-        cardGrid.setCardGroup(cards);
-
-        EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
-            quickSearch.setLabel(EUI.cardFilters.currentName != null ? EUI.cardFilters.currentName : "");
-            for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
-                module.open(EUI.customHeader.group.group, color, payload);
-            }
-            if (customModule != null) {
-                customModule.open(EUI.customHeader.group.group, color, payload);
-            }
-            cardGrid.moveToTop();
-            cardGrid.forceUpdateCardPositions();
-        }, color, false, true);
-
-        for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
-            module.open(cardGrid.cards.group, color, payload);
-        }
-        customModule = EUI.getCustomCardLibraryModule(color);
-        if (customModule != null) {
-            customModule.open(cardGrid.cards.group, color, payload);
-        }
-
-        EUI.customHeader.resetSort();
-    }
-
     public void open() {
         super.open();
         openImpl();
     }
 
-    // Also called by the card filter component
-    public void openImpl() {
-        refreshGroups();
-        EUI.toggleViewUpgrades(false);
-        upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
-        setActiveColor(currentColor);
-        this.cancelButton.show(CardLibraryScreen.TEXT[0]);
-    }
-
-    protected void refreshGroups() {
-        for (CardGroup group : CardLists.values()) {
-            for (AbstractCard c : group.group) {
-                if (UnlockTracker.isCardLocked(c.cardID)) {
-                    c.setLocked();
-                }
-                else if (c.isLocked) {
-                    c.unlock();
-                }
-            }
+    @Override
+    public void close() {
+        super.close();
+        for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+            module.onClose();
+        }
+        if (customModule != null) {
+            customModule.onClose();
         }
     }
 
@@ -234,14 +173,74 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         cancelButton.render(sb);
     }
 
-    @Override
-    public void close() {
-        super.close();
+    // Also called by the card filter component
+    public void openImpl() {
+        refreshGroups();
+        EUI.toggleViewUpgrades(false);
+        upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
+        setActiveColor(currentColor);
+        this.cancelButton.show(CardLibraryScreen.TEXT[0]);
+    }
+
+    protected void refreshGroups() {
+        for (CardGroup group : CardLists.values()) {
+            for (AbstractCard c : group.group) {
+                if (UnlockTracker.isCardLocked(c.cardID)) {
+                    c.setLocked();
+                }
+                else if (c.isLocked) {
+                    c.unlock();
+                }
+            }
+        }
+    }
+
+    public void resetGrid() {
+        cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
+        cardGrid.showScrollbar(true)
+                .canRenderUpgrades(true)
+                .setVerticalStart(Settings.HEIGHT * 0.65f)
+                .setCardScale(0.6f, 0.75f)
+                .setOnCardRightClick(c -> {
+                    c.unhover();
+                    CardCrawlGame.cardPopup.open(c, cardGrid.cards);
+                });
+    }
+
+    public void setActiveColor(AbstractCard.CardColor color, CardGroup cards, Object payload) {
+        EUI.actingColor = currentColor = color;
+        cardGrid.clear();
+        cardGrid.setCardGroup(cards);
+
+        EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
+            quickSearch.setLabel(EUI.cardFilters.currentName != null ? EUI.cardFilters.currentName : "");
+            for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+                module.open(EUI.customHeader.group.group, color, payload);
+            }
+            if (customModule != null) {
+                customModule.open(EUI.customHeader.group.group, color, payload);
+            }
+            cardGrid.moveToTop();
+            cardGrid.forceUpdateCardPositions();
+        }, color, false, true);
+
         for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
-            module.onClose();
+            module.open(cardGrid.cards.group, color, payload);
         }
+        customModule = EUI.getCustomCardLibraryModule(color);
         if (customModule != null) {
-            customModule.onClose();
+            customModule.open(cardGrid.cards.group, color, payload);
         }
+
+        EUI.customHeader.resetSort();
+    }
+
+    public void setActiveColor(AbstractCard.CardColor color) {
+        setActiveColor(color, CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED)), null);
+    }
+
+    protected void toggleUpgrades(boolean value) {
+        EUI.toggleViewUpgrades(value);
+        upgradeToggle.setToggle(value);
     }
 }

@@ -2,13 +2,10 @@ package extendedui.ui.screens;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUI;
-import extendedui.EUIGameUtils;
-import extendedui.EUIInputManager;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.EUITutorial;
@@ -21,11 +18,6 @@ public class EUITutorialScreen extends AbstractMenuScreen {
     public EUITutorialScreen() {
         super();
         button = new MenuCancelButton();
-    }
-
-    public void open(EUITutorial ftue, ActionT0 onClose) {
-        open(ftue);
-        this.onClose = onClose;
     }
 
     @Override
@@ -41,12 +33,6 @@ public class EUITutorialScreen extends AbstractMenuScreen {
         }
         EUI.setActiveElement(null);
         CardCrawlGame.isPopupOpen = false;
-    }
-
-    public void open(EUITutorial ftue) {
-        super.open();
-        current = ftue;
-        this.button.show(CardLibraryScreen.TEXT[0]);
     }
 
     @Override
@@ -66,12 +52,6 @@ public class EUITutorialScreen extends AbstractMenuScreen {
         }
     }
 
-    public void exitScreen() {
-        this.button.hb.clicked = false;
-        this.button.hide();
-        close();
-    }
-
     @Override
     public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
@@ -79,5 +59,22 @@ public class EUITutorialScreen extends AbstractMenuScreen {
             current.renderImpl(sb);
         }
         button.render(sb);
+    }
+
+    public void exitScreen() {
+        this.button.hb.clicked = false;
+        this.button.hide();
+        close();
+    }
+
+    public void open(EUITutorial ftue) {
+        super.open();
+        current = ftue;
+        this.button.show(CardLibraryScreen.TEXT[0]);
+    }
+
+    public void open(EUITutorial ftue, ActionT0 onClose) {
+        open(ftue);
+        this.onClose = onClose;
     }
 }

@@ -33,21 +33,6 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
         this.amountFunc = amountFunc;
     }
 
-    public void addItems(Iterable<K> items) {
-        for (K item : items) {
-            addItem(item);
-        }
-    }
-
-    public void addItem(K item) {
-        totalK += 1;
-        Iterable<J> results = vendorFunc.invoke(item);
-        totalK += amountFunc.invoke(results, item);
-        for (J res : results) {
-            groups.merge(keyFunc.invoke(res), countingFunc.invoke(res), Integer::sum);
-        }
-    }
-
     public static <T extends CountingPanelItem, K> CountingPanelStats<T, T, K> basic(FuncT1<Iterable<T>, K> vendorFunc) {
         return new CountingPanelStats<>(vendorFunc,
                 (a) -> {
@@ -77,6 +62,21 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
         );
     }
 
+    public void addItem(K item) {
+        totalK += 1;
+        Iterable<J> results = vendorFunc.invoke(item);
+        totalK += amountFunc.invoke(results, item);
+        for (J res : results) {
+            groups.merge(keyFunc.invoke(res), countingFunc.invoke(res), Integer::sum);
+        }
+    }
+
+    public void addItems(Iterable<K> items) {
+        for (K item : items) {
+            addItem(item);
+        }
+    }
+
     public ArrayList<CountingPanelCounter<T>> generateCounters(Hitbox baseHb, ActionT1<CountingPanelCounter<T>> onClick) {
         ArrayList<CountingPanelCounter<T>> base = sortedStream().map(entry -> new CountingPanelCounter<>(this, baseHb, entry.getKey(), onClick)).collect(Collectors.toCollection(ArrayList::new));
         for (int i = 0; i < base.size(); i++) {
@@ -85,25 +85,20 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
         return base;
     }
 
-    public String getPercentageString(T key) {
-        return Math.round(getPercentage(key) * 100) + "%";
+    public int getAmount(T key) {
+        return groups.getOrDefault(key, 0);
     }
 
     public float getPercentage(T key) {
         return totalK <= 0 ? 0 : getAmount(key) / (float) totalK;
     }
 
-    public int getAmount(T key) {
-        return groups.getOrDefault(key, 0);
+    public String getPercentageString(T key) {
+        return Math.round(getPercentage(key) * 100) + "%";
     }
 
     public ArrayList<Map.Entry<T, Integer>> getSortedItems() {
         return sortedStream().collect(Collectors.toCollection(ArrayList::new));
-    }
-
-    protected Stream<Map.Entry<T, Integer>> sortedStream() {
-        // Descending value
-        return groups.entrySet().stream().sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()));
     }
 
     @Override
@@ -118,5 +113,10 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
 
     public int size() {
         return totalK;
+    }
+
+    protected Stream<Map.Entry<T, Integer>> sortedStream() {
+        // Descending value
+        return groups.entrySet().stream().sorted((a, b) -> Integer.compare(b.getValue(), a.getValue()));
     }
 }

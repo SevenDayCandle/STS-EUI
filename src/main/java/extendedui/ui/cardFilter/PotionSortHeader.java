@@ -10,7 +10,6 @@ import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.ui.EUIBase;
-import extendedui.ui.controls.EUIPotionGrid;
 import extendedui.utilities.PotionGroup;
 import org.apache.commons.lang3.StringUtils;
 
@@ -19,9 +18,7 @@ import java.util.ArrayList;
 public class PotionSortHeader extends EUIBase implements SortHeaderButtonListener {
     public static final float START_X = screenW(0.5f) - CardLibSortHeader.SPACE_X * 1.45f;
     public static PotionSortHeader instance;
-    public SortHeaderButton[] buttons;
-    public PotionGroup group;
-    public ArrayList<PotionGroup.PotionInfo> originalGroup;
+    private SortHeaderButton lastUsedButton;
     protected boolean isAscending;
     protected boolean snapToGroup;
     protected float baseY = Settings.HEIGHT * 0.85f;
@@ -29,7 +26,9 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
     protected SortHeaderButton nameButton;
     protected SortHeaderButton colorButton;
     protected SortHeaderButton amountButton;
-    private SortHeaderButton lastUsedButton;
+    public SortHeaderButton[] buttons;
+    public PotionGroup group;
+    public ArrayList<PotionGroup.PotionInfo> originalGroup;
 
     public PotionSortHeader(PotionGroup group) {
         this.group = group;
@@ -45,12 +44,54 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
         this.buttons = new SortHeaderButton[]{this.rarityButton, this.nameButton, this.colorButton, this.amountButton};
     }
 
+    @Override
+    public void didChangeOrder(SortHeaderButton button, boolean isAscending) {
+        if (group != null) {
+            if (button == this.rarityButton) {
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal()) * (isAscending ? 1 : -1));
+            }
+            else if (button == this.nameButton) {
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.potion.name, b.potion.name)) * (isAscending ? 1 : -1));
+            }
+            else if (button == this.colorButton) {
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potionColor.ordinal() - b.potionColor.ordinal()) * (isAscending ? 1 : -1));
+            }
+            else if (button == this.amountButton) {
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency()) * (isAscending ? 1 : -1));
+            }
+            else {
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potionColor.ordinal() - b.potionColor.ordinal()) * (isAscending ? 1 : -1));
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal()) * (isAscending ? 1 : -1));
+                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency()) * (isAscending ? 1 : -1));
+            }
+        }
+        for (SortHeaderButton eB : buttons) {
+            eB.setActive(eB == button);
+        }
+    }
+
     public ArrayList<AbstractPotion> getOriginalPotions() {
         return EUIUtils.map(originalGroup, r -> r.potion);
     }
 
     public ArrayList<AbstractPotion> getPotions() {
         return EUIUtils.map(group.group, r -> r.potion);
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        for (SortHeaderButton button : buttons) {
+            button.render(sb);
+        }
+    }
+
+    @Override
+    public void updateImpl() {
+        float scrolledY = snapToGroup && this.group != null && this.group.size() > 0 ? this.group.group.get(0).potion.posY + 230.0F * Settings.yScale : baseY;
+        for (SortHeaderButton button : buttons) {
+            button.update();
+            button.updateScrollPosition(scrolledY);
+        }
     }
 
     public PotionSortHeader setBaseY(float value) {
@@ -88,48 +129,6 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
             }
             didChangeOrder(lastUsedButton, isAscending);
             EUI.potionFilters.refresh(EUIUtils.map(group.group, group -> group.potion));
-        }
-    }
-
-    @Override
-    public void didChangeOrder(SortHeaderButton button, boolean isAscending) {
-        if (group != null) {
-            if (button == this.rarityButton) {
-                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal()) * (isAscending ? 1 : -1));
-            }
-            else if (button == this.nameButton) {
-                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.potion.name, b.potion.name)) * (isAscending ? 1 : -1));
-            }
-            else if (button == this.colorButton) {
-                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potionColor.ordinal() - b.potionColor.ordinal()) * (isAscending ? 1 : -1));
-            }
-            else if (button == this.amountButton) {
-                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency()) * (isAscending ? 1 : -1));
-            }
-            else {
-                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potionColor.ordinal() - b.potionColor.ordinal()) * (isAscending ? 1 : -1));
-                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal()) * (isAscending ? 1 : -1));
-                this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency()) * (isAscending ? 1 : -1));
-            }
-        }
-        for (SortHeaderButton eB : buttons) {
-            eB.setActive(eB == button);
-        }
-    }
-
-    @Override
-    public void updateImpl() {
-        float scrolledY = snapToGroup && this.group != null && this.group.size() > 0 ? this.group.group.get(0).potion.posY + 230.0F * Settings.yScale : baseY;
-        for (SortHeaderButton button : buttons) {
-            button.update();
-            button.updateScrollPosition(scrolledY);
-        }
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        for (SortHeaderButton button : buttons) {
-            button.render(sb);
         }
     }
 }

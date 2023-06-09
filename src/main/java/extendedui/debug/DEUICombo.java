@@ -19,6 +19,18 @@ public class DEUICombo<T> extends DEUIBaseT0 {
         }
     }
 
+    protected String asLabel() {
+        if (selected == null) {
+            if (this.items.size() > 0) {
+                selected = items.get(0);
+            }
+            else {
+                return "##null";
+            }
+        }
+        return stringFunc.invoke(selected);
+    }
+
     public T get() {
         return selected;
     }
@@ -37,18 +49,6 @@ public class DEUICombo<T> extends DEUIBaseT0 {
             }
             ImGui.endCombo();
         }
-    }
-
-    protected String asLabel() {
-        if (selected == null) {
-            if (this.items.size() > 0) {
-                selected = items.get(0);
-            }
-            else {
-                return "##null";
-            }
-        }
-        return stringFunc.invoke(selected);
     }
 
     public void set(T item) {

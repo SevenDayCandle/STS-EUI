@@ -21,10 +21,6 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
         setOnUpdate(this::onUpdateFile);
     }
 
-    private void onUpdateFile(File file) {
-        config.set(file != null && file.exists() ? file.getAbsolutePath() : "");
-    }
-
     public ModSettingsPathSelector makeCopy() {
         ModSettingsPathSelector other = new ModSettingsPathSelector(new EUIHitbox(hb), config, this.header.text);
         other.extensionFilter = new FileNameExtensionFilter(this.extensionFilter.getDescription(), this.extensionFilter.getExtensions());
@@ -35,6 +31,10 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
     @Override
     public void onChange(String newValue) {
         selectFile(new File(newValue), false);
+    }
+
+    private void onUpdateFile(File file) {
+        config.set(file != null && file.exists() ? file.getAbsolutePath() : "");
     }
 
     public ModSettingsPathSelector setFileFilters(String... filters) {

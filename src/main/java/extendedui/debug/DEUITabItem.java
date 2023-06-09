@@ -8,14 +8,14 @@ public class DEUITabItem extends DEUIBaseT1<ActionT0> {
         super(id);
     }
 
-    public void render(ActionT0 onRender) {
-        render(ID, onRender);
-    }
-
     public static void render(String id, ActionT0 onRender) {
         if (ImGui.beginTabItem(id)) {
             onRender.invoke();
             ImGui.endTabItem();
         }
+    }
+
+    public void render(ActionT0 onRender) {
+        render(ID, onRender);
     }
 }

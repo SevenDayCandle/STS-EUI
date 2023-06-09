@@ -21,15 +21,15 @@ public class TextureCache {
         return this.path;
     }
 
+    public Texture reload() {
+        this.texture = EUIRM.getTexture(this.path, this.mipmap, false);
+        return this.texture;
+    }
+
     public Texture texture() {
         if (this.texture == null) {
             this.texture = EUIRM.getTexture(this.path, this.mipmap, false);
         }
-        return this.texture;
-    }
-
-    public Texture reload() {
-        this.texture = EUIRM.getTexture(this.path, this.mipmap, false);
         return this.texture;
     }
 }

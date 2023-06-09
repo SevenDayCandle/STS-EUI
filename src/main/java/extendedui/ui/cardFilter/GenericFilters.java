@@ -17,16 +17,13 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
-import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
-import extendedui.interfaces.markers.CustomCardFilterModule;
 import extendedui.interfaces.markers.CustomFilterModule;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
-import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
@@ -109,7 +106,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
                 .setHeaderSpacing(1f)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
-                .setAlignment(0.5f, 0.0f)
+                .setAlignment(0.5f, 0.1f)
                 .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.8f)
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
         descriptionInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
@@ -123,7 +120,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiDescriptionsearch)
                 .setHeaderSpacing(1f)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
-                .setAlignment(0.5f, 0.0f)
+                .setAlignment(0.5f, 0.1f)
                 .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.8f)
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
 
@@ -340,17 +337,27 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     }
 
     @Override
-    public final boolean tryUpdate() {
-        super.tryUpdate();
-        if (EUIHotkeys.toggleFilters.isJustPressed()) {
-            toggleFilters();
-        }
-        return isActive;
-    }
+    public final void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
+        sb.setColor(FADE_COLOR);
+        sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float) Settings.WIDTH, (float) Settings.HEIGHT);
+        sb.setColor(Color.WHITE);
+        hb.render(sb);
+        closeButton.tryRender(sb);
+        clearButton.tryRender(sb);
+        keywordsSectionLabel.renderImpl(sb);
+        keywordsInstructionLabel.renderImpl(sb);
+        currentTotalHeaderLabel.renderImpl(sb);
+        currentTotalLabel.renderImpl(sb);
+        sortTypeToggle.tryRender(sb);
+        sortDirectionToggle.tryRender(sb);
 
-    // Shorthand function to be fed to all dropdown filters
-    protected void updateActive(boolean whatever) {
-        CardCrawlGame.isPopupOpen = this.isActive;
+        for (FilterKeywordButton c : filterButtons) {
+            c.tryRender(sb);
+        }
+
+        renderFilters(sb);
+        contextMenu.tryRender(sb);
     }
 
     @Override
@@ -384,27 +391,17 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     }
 
     @Override
-    public final void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-        sb.setColor(FADE_COLOR);
-        sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float) Settings.WIDTH, (float) Settings.HEIGHT);
-        sb.setColor(Color.WHITE);
-        hb.render(sb);
-        closeButton.tryRender(sb);
-        clearButton.tryRender(sb);
-        keywordsSectionLabel.renderImpl(sb);
-        keywordsInstructionLabel.renderImpl(sb);
-        currentTotalHeaderLabel.renderImpl(sb);
-        currentTotalLabel.renderImpl(sb);
-        sortTypeToggle.tryRender(sb);
-        sortDirectionToggle.tryRender(sb);
-
-        for (FilterKeywordButton c : filterButtons) {
-            c.tryRender(sb);
+    public final boolean tryUpdate() {
+        super.tryUpdate();
+        if (EUIHotkeys.toggleFilters.isJustPressed()) {
+            toggleFilters();
         }
+        return isActive;
+    }
 
-        renderFilters(sb);
-        contextMenu.tryRender(sb);
+    // Shorthand function to be fed to all dropdown filters
+    protected void updateActive(boolean whatever) {
+        CardCrawlGame.isPopupOpen = this.isActive;
     }
 
     private void updateInput() {
@@ -456,9 +453,9 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         EnableTooltip(EUIRM.strings.uiEnableTooltip, filters -> filters.hideKeyword(false));
 
         public final String baseName;
-        public final ActionT1<GenericFilters<?,?>> onAct;
+        public final ActionT1<GenericFilters<?, ?>> onAct;
 
-        TooltipOption(String name, ActionT1<GenericFilters<?,?>> onAct) {
+        TooltipOption(String name, ActionT1<GenericFilters<?, ?>> onAct) {
             this.baseName = name;
             this.onAct = onAct;
         }

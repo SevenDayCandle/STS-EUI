@@ -8,13 +8,13 @@ public class DEUIButton extends DEUIBaseT1<ActionT0> {
         super(id);
     }
 
-    public void render(ActionT0 onClick) {
-        render(ID, onClick);
-    }
-
     public static void render(String id, ActionT0 onClick) {
         if (ImGui.button(id)) {
             onClick.invoke();
         }
+    }
+
+    public void render(ActionT0 onClick) {
+        render(ID, onClick);
     }
 }

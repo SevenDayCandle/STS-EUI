@@ -19,31 +19,30 @@ import extendedui.utilities.EUIFontHelper;
 
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
-import static extendedui.text.EUISmartText.CARD_ENERGY_IMG_WIDTH;
 import static extendedui.ui.tooltips.EUIKeywordTooltip.BASE_ICON_SIZE;
 
 public class FilterKeywordButton extends EUIHoverable {
-    public static final float ICON_SIZE = scale(40);
     private static final Color ACTIVE_COLOR = new Color(0.76f, 0.76f, 0.76f, 1f);
     private static final Color NEGATE_COLOR = new Color(0.62f, 0.32f, 0.28f, 1f);
     private static final Color PANEL_COLOR = new Color(0.3f, 0.3f, 0.3f, 1f);
     private static final float BASE_TITLE_OFFSET_X = -0.15f;
     private static final float BASE_OFFSET_Y = -0.8f;
+    public static final float ICON_SIZE = scale(40);
     public static final float BASE_COUNT_OFFSET_X = -0.21f;
     public static final float BASE_IMAGE_OFFSET_X = -0.29f;
     public static final float BASE_IMAGE_OFFSET_Y = -0.16f;
-    public final GenericFilters<?,?> filters;
+    public final GenericFilters<?, ?> filters;
+    private ActionT1<FilterKeywordButton> onToggle;
+    private ActionT1<FilterKeywordButton> onRightClick;
+    protected float offX;
+    protected float offY;
     public int cardCount = -1;
     public EUIButton backgroundButton;
     public EUILabel titleText;
     public EUILabel countText;
     public EUIKeywordTooltip keywordTooltip;
-    protected float offX;
-    protected float offY;
-    private ActionT1<FilterKeywordButton> onToggle;
-    private ActionT1<FilterKeywordButton> onRightClick;
 
-    public FilterKeywordButton(GenericFilters<?,?> filters, EUIKeywordTooltip tooltip) {
+    public FilterKeywordButton(GenericFilters<?, ?> filters, EUIKeywordTooltip tooltip) {
         super(filters.hb);
 
         this.filters = filters;
@@ -77,29 +76,17 @@ public class FilterKeywordButton extends EUIHoverable {
                 .setLabel(this.filters.currentNegateFilters.contains(this.keywordTooltip) ? "X" : cardCount);
     }
 
+    // TODO
+    public void afterToggleRight() {
+
+    }
+
     public void doToggle() {
         if (EUIInputManager.isHoldingPeek()) {
             reverseToggle();
         }
         else {
             normalToggle();
-        }
-    }
-
-    public void reverseToggle() {
-        this.filters.currentFilters.remove(this.keywordTooltip);
-        if (this.filters.currentNegateFilters.contains(this.keywordTooltip)) {
-            this.filters.currentNegateFilters.remove(this.keywordTooltip);
-            backgroundButton.setColor(PANEL_COLOR);
-        }
-        else {
-            this.filters.currentNegateFilters.add(this.keywordTooltip);
-            backgroundButton.setColor(NEGATE_COLOR);
-        }
-        titleText.setColor(Color.WHITE);
-
-        if (this.onToggle != null) {
-            this.onToggle.invoke(this);
         }
     }
 
@@ -119,11 +106,6 @@ public class FilterKeywordButton extends EUIHoverable {
         if (this.onToggle != null) {
             this.onToggle.invoke(this);
         }
-    }
-
-    // TODO
-    public void afterToggleRight() {
-
     }
 
     @Override
@@ -170,6 +152,23 @@ public class FilterKeywordButton extends EUIHoverable {
                 Settings.scale * 0.75f,
                 Settings.scale * 0.75f,
                 cardCount == 0 ? Color.DARK_GRAY : Color.WHITE);
+    }
+
+    public void reverseToggle() {
+        this.filters.currentFilters.remove(this.keywordTooltip);
+        if (this.filters.currentNegateFilters.contains(this.keywordTooltip)) {
+            this.filters.currentNegateFilters.remove(this.keywordTooltip);
+            backgroundButton.setColor(PANEL_COLOR);
+        }
+        else {
+            this.filters.currentNegateFilters.add(this.keywordTooltip);
+            backgroundButton.setColor(NEGATE_COLOR);
+        }
+        titleText.setColor(Color.WHITE);
+
+        if (this.onToggle != null) {
+            this.onToggle.invoke(this);
+        }
     }
 
     public FilterKeywordButton setCardCount(int count) {

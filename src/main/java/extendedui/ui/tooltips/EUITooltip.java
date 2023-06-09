@@ -23,9 +23,10 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import extendedui.*;
-import extendedui.configuration.EUIConfiguration;
-import extendedui.configuration.EUIHotkeys;
+import extendedui.EUI;
+import extendedui.EUIGameUtils;
+import extendedui.EUIRenderHelpers;
+import extendedui.EUIUtils;
 import extendedui.interfaces.markers.IntentProvider;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
@@ -34,9 +35,14 @@ import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class EUITooltip {
+    private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
+    private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
+    private static final Vector2 genericTipPos = new Vector2(0, 0);
     public static final Color BASE_COLOR = new Color(1f, 0.9725f, 0.8745f, 1f);
     public static final float CARD_TIP_PAD = 12f * Settings.scale;
     public static final float BOX_EDGE_H = 32f * Settings.scale;
@@ -53,13 +59,14 @@ public class EUITooltip {
     public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
     public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
     public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
-    private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
-    private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
-    private static final Vector2 genericTipPos = new Vector2(0, 0);
     private static TooltipProvider provider;
     private static TooltipProvider lastProvider;
     private static AbstractCreature creature;
     private static AbstractCreature lastHoveredCreature;
+    protected int currentDesc;
+    protected Float lastSubHeaderHeight;
+    protected Float lastTextHeight;
+    protected Float lastHeight;
     public BitmapFont headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
     public BitmapFont descriptionFont = EUIFontHelper.cardTooltipFont;
     public ColoredString subHeader;
@@ -70,10 +77,6 @@ public class EUITooltip {
     public String description;
     public boolean renderBg = true;
     public float width = BOX_W;
-    protected int currentDesc;
-    protected Float lastSubHeaderHeight;
-    protected Float lastTextHeight;
-    protected Float lastHeight;
     public boolean canRender = true;
 
     public EUITooltip(String title) {
@@ -504,22 +507,12 @@ public class EUITooltip {
         return canRender;
     }
 
-    public EUITooltip setDescriptionFont(BitmapFont descriptionFont) {
-        this.descriptionFont = descriptionFont;
-        return this;
-    }
-
-    public EUITooltip setHeaderFont(BitmapFont headerFont) {
-        this.headerFont = headerFont;
-        return this;
-    }
-
-    public boolean idEquals(EUITooltip tooltip) {
-        return tooltip != null && ID.equals(tooltip.ID);
-    }
-
     public EUITooltip formatDescription(Object... items) {
         return setDescription(EUIUtils.format(description, items));
+    }
+
+    public String getTitleOrIcon() {
+        return (ID != null) ? "[" + ID + "]" : title;
     }
 
     public String getTitleOrIconForced() {
@@ -534,6 +527,16 @@ public class EUITooltip {
             lastHeight = (!canRender || StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastSubHeaderHeight) - 7f * Settings.scale);
         }
         return lastHeight;
+    }
+
+    public boolean idEquals(EUITooltip tooltip) {
+        return tooltip != null && ID.equals(tooltip.ID);
+    }
+
+    public void invalidateHeight() {
+        lastHeight = null;
+        lastTextHeight = null;
+        lastSubHeaderHeight = null;
     }
 
     public boolean isRenderable() {
@@ -570,13 +573,9 @@ public class EUITooltip {
         sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, width, BOX_EDGE_H);
     }
 
-    public void renderTitle(SpriteBatch sb, float x, float y) {
-        FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
-    }
-
-    public void renderSubtext(SpriteBatch sb, float x, float y) {
-        if (subText != null) {
-            FontHelper.renderFontRightTopAligned(sb, descriptionFont, subText.text, x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, subText.color);
+    public void renderDescription(SpriteBatch sb, float x, float y) {
+        if (!StringUtils.isEmpty(description)) {
+            EUISmartText.write(sb, descriptionFont, description, x + TEXT_OFFSET_X, y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
         }
     }
 
@@ -588,10 +587,14 @@ public class EUITooltip {
         return 0;
     }
 
-    public void renderDescription(SpriteBatch sb, float x, float y) {
-        if (!StringUtils.isEmpty(description)) {
-            EUISmartText.write(sb, descriptionFont, description, x + TEXT_OFFSET_X, y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+    public void renderSubtext(SpriteBatch sb, float x, float y) {
+        if (subText != null) {
+            FontHelper.renderFontRightTopAligned(sb, descriptionFont, subText.text, x + BODY_TEXT_WIDTH * 1.07f, y + HEADER_OFFSET_Y * 1.33f, subText.color);
         }
+    }
+
+    public void renderTitle(SpriteBatch sb, float x, float y) {
+        FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
     }
 
     public EUITooltip setAutoWidth() {
@@ -599,12 +602,6 @@ public class EUITooltip {
         invalidateHeight();
 
         return this;
-    }
-
-    public void invalidateHeight() {
-        lastHeight = null;
-        lastTextHeight = null;
-        lastSubHeaderHeight = null;
     }
 
     public EUITooltip setChild(EUITooltip other) {
@@ -623,10 +620,20 @@ public class EUITooltip {
         return this;
     }
 
+    public EUITooltip setDescriptionFont(BitmapFont descriptionFont) {
+        this.descriptionFont = descriptionFont;
+        return this;
+    }
+
     public EUITooltip setFonts(BitmapFont headerFont, BitmapFont descriptionFont) {
         this.headerFont = headerFont;
         this.descriptionFont = descriptionFont;
         invalidateHeight();
+        return this;
+    }
+
+    public EUITooltip setHeaderFont(BitmapFont headerFont) {
+        this.headerFont = headerFont;
         return this;
     }
 
@@ -680,9 +687,5 @@ public class EUITooltip {
         if (descriptionFont == null) {
             descriptionFont = EUIFontHelper.cardTooltipFont;
         }
-    }
-
-    public String getTitleOrIcon() {
-        return (ID != null) ? "[" + ID + "]" : title;
     }
 }

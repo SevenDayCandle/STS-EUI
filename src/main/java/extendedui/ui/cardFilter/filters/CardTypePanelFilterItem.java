@@ -39,14 +39,14 @@ public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvid
     }
 
     @Override
-    public Texture getIcon() {
-        return EUIGameUtils.iconForType(type).texture();
-    }
-
-    @Override
     public int getRank(AbstractCard c) {
         int ordinal = c.type.ordinal();
         return c.type == type ? ordinal + 1000 : ordinal;
+    }
+
+    @Override
+    public Texture getIcon() {
+        return EUIGameUtils.iconForType(type).texture();
     }
 
     @Override

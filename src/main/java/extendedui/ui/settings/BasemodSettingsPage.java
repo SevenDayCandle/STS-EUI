@@ -14,11 +14,11 @@ import java.util.ArrayList;
 
 public class BasemodSettingsPage implements IUIElement {
     public static final float ICON_SIZE = EUIGameUtils.scale(40);
-    public ArrayList<ArrayList<IUIElement>> pages = new ArrayList<>();
-    public int current = 0;
     protected ArrayList<IUIElement> currentItems;
     protected EUIButton leftButton;
     protected EUIButton rightButton;
+    public ArrayList<ArrayList<IUIElement>> pages = new ArrayList<>();
+    public int current = 0;
 
     public BasemodSettingsPage() {
         pages.add(new ArrayList<>());
@@ -27,16 +27,6 @@ public class BasemodSettingsPage implements IUIElement {
         rightButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new EUIHitbox(leftButton.hb.cX + ICON_SIZE, leftButton.getY(), ICON_SIZE, ICON_SIZE))
                 .setOnClick(__ -> setPage(current + 1));
         setPage(current);
-    }
-
-    public void setPage(int page) {
-        current = MathUtils.clamp(page, 0, pages.size() - 1);
-        ArrayList<IUIElement> selected = current < pages.size() ? pages.get(current) : null;
-        if (selected != null) {
-            currentItems = selected;
-        }
-        leftButton.setInteractable(current > 0);
-        rightButton.setInteractable(current < pages.size());
     }
 
     public void addUIElement(int page, IUIElement element) {
@@ -72,5 +62,15 @@ public class BasemodSettingsPage implements IUIElement {
     @Override
     public int updateOrder() {
         return 0;
+    }
+
+    public void setPage(int page) {
+        current = MathUtils.clamp(page, 0, pages.size() - 1);
+        ArrayList<IUIElement> selected = current < pages.size() ? pages.get(current) : null;
+        if (selected != null) {
+            currentItems = selected;
+        }
+        leftButton.setInteractable(current > 0);
+        rightButton.setInteractable(current < pages.size());
     }
 }

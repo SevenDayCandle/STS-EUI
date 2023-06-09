@@ -16,11 +16,20 @@ public abstract class EUIHoverable extends EUIBase {
         translate(xPos, yPos);
     }
 
-    // Move the hitbox's bottom-left corner to the specified coordinates
-    public EUIHoverable translate(float x, float y) {
-        this.hb.translate(x, y);
+    public void setX(float xPos) {
+        translate(xPos, hb.y);
+    }
 
-        return this;
+    public void setY(float yPos) {
+        translate(hb.x, yPos);
+    }
+
+    public float getX() {
+        return hb.x;
+    }
+
+    public float getY() {
+        return hb.y;
     }
 
     public EUIHoverable setDimensions(float width, float height) {
@@ -73,6 +82,13 @@ public abstract class EUIHoverable extends EUIBase {
         return this;
     }
 
+    // Move the hitbox's bottom-left corner to the specified coordinates
+    public EUIHoverable translate(float x, float y) {
+        this.hb.translate(x, y);
+
+        return this;
+    }
+
     public boolean tryRender(SpriteBatch sb) {
         if (isActive) {
             this.hb.render(sb);
@@ -87,21 +103,5 @@ public abstract class EUIHoverable extends EUIBase {
         if (this.hb.hovered && tooltip != null && tooltip.canRender) {
             EUITooltip.queueTooltip(tooltip);
         }
-    }
-
-    public void setX(float xPos) {
-        translate(xPos, hb.y);
-    }
-
-    public void setY(float yPos) {
-        translate(hb.x, yPos);
-    }
-
-    public float getX() {
-        return hb.x;
-    }
-
-    public float getY() {
-        return hb.y;
     }
 }

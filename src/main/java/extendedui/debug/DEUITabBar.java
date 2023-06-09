@@ -8,14 +8,14 @@ public class DEUITabBar extends DEUIBaseT1<ActionT0> {
         super(id);
     }
 
-    public void render(ActionT0 onRender) {
-        render(ID, onRender);
-    }
-
     public static void render(String id, ActionT0 onRender) {
         if (ImGui.beginTabBar(id)) {
             onRender.invoke();
             ImGui.endTabBar();
         }
+    }
+
+    public void render(ActionT0 onRender) {
+        render(ID, onRender);
     }
 }

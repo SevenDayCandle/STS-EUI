@@ -2,14 +2,9 @@ package extendedui.ui.tooltips;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.megacrit.cardcrawl.core.Settings;
 import extendedui.EUIUtils;
-import extendedui.configuration.EUIHotkeys;
 import extendedui.text.EUISmartText;
 import extendedui.utilities.EUIFontHelper;
-import org.apache.commons.lang3.StringUtils;
-
-import java.util.Collection;
 
 public class EUIHeaderlessTooltip extends EUITooltip {
 

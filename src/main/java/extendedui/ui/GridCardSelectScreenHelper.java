@@ -60,6 +60,16 @@ public class GridCardSelectScreenHelper {
         return true;
     }
 
+    public static void clear(boolean clearFunctions) {
+        cardGroups.clear();
+        mergedGroup.clear();
+        if (clearFunctions) {
+            condition = null;
+            dynamicString = null;
+            onClickCard = null;
+        }
+    }
+
     public static CardGroup getCardGroup() {
         return mergedGroup;
     }
@@ -85,16 +95,6 @@ public class GridCardSelectScreenHelper {
             }
 
             enabled = false;
-        }
-    }
-
-    public static void clear(boolean clearFunctions) {
-        cardGroups.clear();
-        mergedGroup.clear();
-        if (clearFunctions) {
-            condition = null;
-            dynamicString = null;
-            onClickCard = null;
         }
     }
 

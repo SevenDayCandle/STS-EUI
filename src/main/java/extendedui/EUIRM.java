@@ -13,9 +13,9 @@ import java.util.List;
 import java.util.StringJoiner;
 
 public class EUIRM {
-    public static final String ID = "extendedui";
-    protected static final HashMap<String, Texture> internalTextures = new HashMap<>();
     private static final HashMap<String, Texture> externalTextures = new HashMap<>();
+    protected static final HashMap<String, Texture> internalTextures = new HashMap<>();
+    public static final String ID = "extendedui";
     public static Images images = new Images();
     public static Strings strings;
 
@@ -36,6 +36,10 @@ public class EUIRM {
         return texture;
     }
 
+    public static String getID(String suffix) {
+        return ID + ":" + suffix;
+    }
+
     public static Texture getTexture(String path) {
         return getTexture(path, true);
     }
@@ -53,16 +57,12 @@ public class EUIRM {
         return texture;
     }
 
-    public static Texture reloadExternalTexture(String path, boolean useMipMap, boolean suppressError) {
-        Texture texture = loadTextureImpl(Gdx.files.external(path), useMipMap, suppressError);
-        externalTextures.put(path, texture);
-        return texture;
+    private static UIStrings getUIStrings(String suffix) {
+        return CardCrawlGame.languagePack.getUIString(getID(suffix));
     }
 
-    public static Texture reloadTexture(String path, boolean useMipMap, boolean suppressError) {
-        Texture texture = loadTextureImpl(Gdx.files.internal(path), useMipMap, suppressError);
-        internalTextures.put(path, texture);
-        return texture;
+    public static void initialize() {
+        strings = new Strings();
     }
 
     private static Texture loadTextureImpl(FileHandle file, boolean useMipMap, boolean suppressError) {
@@ -88,16 +88,16 @@ public class EUIRM {
         return null;
     }
 
-    private static UIStrings getUIStrings(String suffix) {
-        return CardCrawlGame.languagePack.getUIString(getID(suffix));
+    public static Texture reloadExternalTexture(String path, boolean useMipMap, boolean suppressError) {
+        Texture texture = loadTextureImpl(Gdx.files.external(path), useMipMap, suppressError);
+        externalTextures.put(path, texture);
+        return texture;
     }
 
-    public static String getID(String suffix) {
-        return ID + ":" + suffix;
-    }
-
-    public static void initialize() {
-        strings = new Strings();
+    public static Texture reloadTexture(String path, boolean useMipMap, boolean suppressError) {
+        Texture texture = loadTextureImpl(Gdx.files.internal(path), useMipMap, suppressError);
+        internalTextures.put(path, texture);
+        return texture;
     }
 
     public static class Images {

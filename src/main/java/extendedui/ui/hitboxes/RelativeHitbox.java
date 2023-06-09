@@ -23,13 +23,6 @@ public class RelativeHitbox extends EUIHitbox {
         moveInternal(targetCx, targetCy);
     }
 
-    public RelativeHitbox updateTargetPosition() {
-        this.targetCx = parentHB.x + offsetX;
-        this.targetCy = parentHB.y + offsetY;
-
-        return this;
-    }
-
     public RelativeHitbox(Hitbox hb, float width, float height) {
         this(hb, width, height, 0, 0);
     }
@@ -46,24 +39,8 @@ public class RelativeHitbox extends EUIHitbox {
         return offsetX;
     }
 
-    public RelativeHitbox setOffsetX(float x) {
-        this.offsetX = x;
-        updateTargetPosition();
-        moveInternal(targetCx, targetCy);
-
-        return this;
-    }
-
     public float getOffsetY() {
         return offsetY;
-    }
-
-    public RelativeHitbox setOffsetY(float y) {
-        this.offsetY = y;
-        updateTargetPosition();
-        moveInternal(targetCx, targetCy);
-
-        return this;
     }
 
     public RelativeHitbox makeCopy() {
@@ -84,10 +61,33 @@ public class RelativeHitbox extends EUIHitbox {
         return this;
     }
 
+    public RelativeHitbox setOffsetX(float x) {
+        this.offsetX = x;
+        updateTargetPosition();
+        moveInternal(targetCx, targetCy);
+
+        return this;
+    }
+
+    public RelativeHitbox setOffsetY(float y) {
+        this.offsetY = y;
+        updateTargetPosition();
+        moveInternal(targetCx, targetCy);
+
+        return this;
+    }
+
     @Override
     public void update() {
         super.update();
 
         updateTargetPosition();
+    }
+
+    public RelativeHitbox updateTargetPosition() {
+        this.targetCx = parentHB.x + offsetX;
+        this.targetCy = parentHB.y + offsetY;
+
+        return this;
     }
 }

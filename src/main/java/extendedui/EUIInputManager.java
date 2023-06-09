@@ -28,14 +28,6 @@ public class EUIInputManager {
         return CInputActionSet.up.isJustPressed() || CInputActionSet.altUp.isJustPressed() || InputActionSet.up.isJustPressed();
     }
 
-    public static boolean tryEscape() {
-        if (InputHelper.pressedEscape && !CardCrawlGame.isPopupOpen && !EUI.cardFilters.isActive && !EUI.relicFilters.isActive && !EUI.potionFilters.isActive) {
-            InputHelper.pressedEscape = false;
-            return true;
-        }
-        return false;
-    }
-
     // TODO utility mapping for mapping InputActionSet to CInputActionSet
     public static boolean isHoldingPeek() {
         return CInputActionSet.peek.isPressed() || InputActionSet.peek.isPressed();
@@ -60,6 +52,30 @@ public class EUIInputManager {
     public static void postUpdate() {
         updateLeftClick();
         updateRightClick();
+    }
+
+    public static void setCursor(float x, float y) {
+        setCursor((int) x, (int) y);
+    }
+
+    public static void setCursor(int x, int y) {
+        Gdx.input.setCursorPosition(x, MathUtils.clamp(y, 0, Settings.HEIGHT));
+    }
+
+    public static boolean tryEscape() {
+        if (InputHelper.pressedEscape && !CardCrawlGame.isPopupOpen && !EUI.cardFilters.isActive && !EUI.relicFilters.isActive && !EUI.potionFilters.isActive) {
+            InputHelper.pressedEscape = false;
+            return true;
+        }
+        return false;
+    }
+
+    public static void unpressLeft() {
+        leftClick = KeyState.Released;
+    }
+
+    public static void unpressRight() {
+        rightClick = KeyState.Released;
     }
 
     private static void updateLeftClick() {
@@ -106,22 +122,6 @@ public class EUIInputManager {
                 rightClick = KeyState.JustReleased;
             }
         }
-    }
-
-    public static void setCursor(float x, float y) {
-        setCursor((int) x, (int) y);
-    }
-
-    public static void setCursor(int x, int y) {
-        Gdx.input.setCursorPosition(x, MathUtils.clamp(y, 0, Settings.HEIGHT));
-    }
-
-    public static void unpressLeft() {
-        leftClick = KeyState.Released;
-    }
-
-    public static void unpressRight() {
-        rightClick = KeyState.Released;
     }
 
     public enum KeyState {
