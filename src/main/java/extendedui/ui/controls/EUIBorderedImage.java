@@ -3,10 +3,8 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.megacrit.cardcrawl.core.Settings;
 import extendedui.EUIRM;
 import extendedui.ui.hitboxes.EUIHitbox;
-import extendedui.utilities.ColoredTexture;
 
 public class EUIBorderedImage extends EUIImage {
     public Texture borderB = EUIRM.images.panelBorderB.texture();
@@ -39,25 +37,6 @@ public class EUIBorderedImage extends EUIImage {
         super(other);
     }
 
-    public EUIBorderedImage setBorder(Texture borderB, Texture borderL, Texture borderR, Texture borderT, Texture cornerBL, Texture cornerBR, Texture cornerTL, Texture cornerTR)
-    {
-        this.borderB = borderB;
-        this.borderL = borderL;
-        this.borderR = borderR;
-        this.borderT = borderT;
-        this.cornerBL = cornerBL;
-        this.cornerBR = cornerBR;
-        this.cornerTL = cornerTL;
-        this.cornerTR = cornerTR;
-        return this;
-    }
-
-    public EUIBorderedImage setBorderScale(float borderScale)
-    {
-        this.borderScale = borderScale;
-        return this;
-    }
-
     protected void renderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
         x += cornerTL.getWidth();
         y += cornerBR.getHeight();
@@ -86,5 +65,22 @@ public class EUIBorderedImage extends EUIImage {
         sb.draw(borderL, x - cornerBL.getWidth(), y, 0, 0, borderL.getWidth(), height, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, borderL.getWidth(), borderL.getHeight(), flipX, flipY);
         sb.draw(borderR, x + width, y, 0, 0, borderR.getWidth(), height, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, borderR.getWidth(), borderR.getHeight(), flipX, flipY);
         sb.draw(borderT, x, y + height, 0, 0, width, borderT.getHeight(), scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, borderT.getWidth(), borderT.getHeight(), flipX, flipY);
+    }
+
+    public EUIBorderedImage setBorder(Texture borderB, Texture borderL, Texture borderR, Texture borderT, Texture cornerBL, Texture cornerBR, Texture cornerTL, Texture cornerTR) {
+        this.borderB = borderB;
+        this.borderL = borderL;
+        this.borderR = borderR;
+        this.borderT = borderT;
+        this.cornerBL = cornerBL;
+        this.cornerBR = cornerBR;
+        this.cornerTL = cornerTL;
+        this.cornerTR = cornerTR;
+        return this;
+    }
+
+    public EUIBorderedImage setBorderScale(float borderScale) {
+        this.borderScale = borderScale;
+        return this;
     }
 }

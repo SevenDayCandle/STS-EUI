@@ -63,8 +63,8 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
         this.group = group;
         this.originalGroup = new ArrayList<>(group.group);
 
-        if (PotionKeywordFilters.customModule != null) {
-            PotionKeywordFilters.customModule.processGroup(EUIUtils.map(group.group, r -> r.potion));
+        if (EUI.potionFilters.customModule != null) {
+            EUI.potionFilters.customModule.processGroup(group);
         }
         for (SortHeaderButton button : buttons) {
             button.reset();

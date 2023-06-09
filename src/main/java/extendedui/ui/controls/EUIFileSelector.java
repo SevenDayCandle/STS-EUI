@@ -12,7 +12,6 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUIHeaderlessTooltip;
-import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
 import javax.swing.*;
@@ -27,15 +26,15 @@ import java.io.File;
 import java.util.List;
 
 public class EUIFileSelector extends EUIHoverable {
+    protected File currentFile;
+    protected FileNameExtensionFilter extensionFilter;
+    protected ActionT1<File> onUpdate;
+    protected float headerSpacing = 0.1f;
     public boolean showFullPath;
     public EUILabel header;
     public EUITextBox filePath;
     public EUIButton selectButton;
     public EUIButton clearButton;
-    protected File currentFile;
-    protected FileNameExtensionFilter extensionFilter;
-    protected ActionT1<File> onUpdate;
-    protected float headerSpacing = 0.1f;
 
     public EUIFileSelector(EUIHitbox hb) {
         this(hb, EUIRM.images.panel.texture());
@@ -108,6 +107,14 @@ public class EUIFileSelector extends EUIHoverable {
         }
     }
 
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        header.renderImpl(sb);
+        filePath.renderImpl(sb);
+        selectButton.renderImpl(sb);
+        clearButton.renderImpl(sb);
+    }
+
     protected void selectFile(File file, boolean shouldInvoke) {
         currentFile = file;
         if (currentFile != null) {
@@ -127,14 +134,6 @@ public class EUIFileSelector extends EUIHoverable {
         if (shouldInvoke && onUpdate != null) {
             onUpdate.invoke(currentFile);
         }
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        header.renderImpl(sb);
-        filePath.renderImpl(sb);
-        selectButton.renderImpl(sb);
-        clearButton.renderImpl(sb);
     }
 
     public EUIFileSelector setFileFilters(String... filters) {

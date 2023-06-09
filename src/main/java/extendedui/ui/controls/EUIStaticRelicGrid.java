@@ -6,8 +6,8 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.utilities.RelicGroup;
 
 public class EUIStaticRelicGrid extends EUIRelicGrid {
-    public int visibleRowCount = 20;
     protected int currentRow;
+    public int visibleRowCount = 20;
 
     public EUIStaticRelicGrid() {
         this(0.5f, true);
@@ -41,6 +41,31 @@ public class EUIStaticRelicGrid extends EUIRelicGrid {
         }
     }
 
+    public int getRowCount() {
+        return (relicGroup.size() - 1) / rowSize;
+    }
+
+    @Override
+    protected float getScrollDistance(AbstractRelic relic, int index) {
+        if (relic != null) {
+            float scrollDistance = 1f / getRowCount();
+            if (relic.targetY > drawTopY || index < currentRow * rowSize) {
+                return -scrollDistance;
+            }
+            else if (relic.targetY < 0 || index > (currentRow + visibleRowCount) * rowSize) {
+                return scrollDistance;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    protected void renderRelics(SpriteBatch sb) {
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++) {
+            renderRelic(sb, relicGroup.group.get(i));
+        }
+    }
+
     @Override
     protected void updateRelics() {
         hoveredRelic = null;
@@ -59,31 +84,6 @@ public class EUIStaticRelicGrid extends EUIRelicGrid {
                 column = 0;
                 row += 1;
             }
-        }
-    }
-
-    @Override
-    protected float getScrollDistance(AbstractRelic relic, int index) {
-        if (relic != null) {
-            float scrollDistance = 1f / getRowCount();
-            if (relic.targetY > drawTopY || index < currentRow * rowSize) {
-                return -scrollDistance;
-            }
-            else if (relic.targetY < 0 || index > (currentRow + visibleRowCount) * rowSize) {
-                return scrollDistance;
-            }
-        }
-        return 0;
-    }
-
-    public int getRowCount() {
-        return (relicGroup.size() - 1) / rowSize;
-    }
-
-    @Override
-    protected void renderRelics(SpriteBatch sb) {
-        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, relicGroup.size()); i++) {
-            renderRelic(sb, relicGroup.group.get(i));
         }
     }
 

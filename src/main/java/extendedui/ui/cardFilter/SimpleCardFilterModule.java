@@ -46,7 +46,7 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     }
 
     @Override
-    public boolean isCardValid(AbstractCard c) {
+    public boolean isItemValid(AbstractCard c) {
         return currentSeries.isEmpty() || currentSeries.contains(objectFunc.invoke(c));
     }
 
@@ -61,7 +61,7 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     }
 
     @Override
-    public void initializeSelection(Collection<AbstractCard> cards) {
+    public void initializeSelection(Collection<? extends AbstractCard> cards) {
         HashSet<T> availableSeries = new HashSet<>();
         for (AbstractCard card : cards) {
             availableSeries.add(objectFunc.invoke(card));

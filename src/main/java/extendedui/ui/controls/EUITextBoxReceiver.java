@@ -18,7 +18,6 @@ import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
 
 public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextReceiver {
-    public EUILabel header;
     protected ActionT1<T> onComplete;
     protected ActionT1<T> onUpdate;
     protected Color editTextColor;
@@ -26,6 +25,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
     protected String originalValue;
     protected boolean isEditing;
     protected float headerSpacing = 0.6f;
+    public EUILabel header;
 
     public EUITextBoxReceiver(Texture backgroundTexture, EUIHitbox hb) {
         super(backgroundTexture, hb);
@@ -34,6 +34,25 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         this.header.setActive(false);
         editTextColor = EUIColors.green(1).cpy();
         originalTextColor = this.label.textColor.cpy();
+    }
+
+    protected void commit(boolean commit) {
+        if (commit) {
+            if (onComplete != null) {
+                onComplete.invoke(getValue(label.text));
+            }
+        }
+        else {
+            label.text = originalValue;
+        }
+    }
+
+    public void end(boolean commit) {
+        isEditing = false;
+        EUI.setActiveElement(null);
+        TextInput.stopTextReceiver(this);
+        label.setColor(originalTextColor);
+        commit(commit);
     }
 
     @Override
@@ -142,7 +161,17 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         }
     }
 
-    abstract T getValue(String text);
+    public EUITextBoxReceiver<T> setTooltip(String name, String desc) {
+        super.setTooltip(name, desc);
+        this.header.setTooltip(this.tooltip);
+        return this;
+    }
+
+    public EUITextBoxReceiver<T> setTooltip(EUITooltip tip) {
+        super.setTooltip(tip);
+        this.header.setTooltip(tip);
+        return this;
+    }
 
     @Override
     public void updateImpl() {
@@ -162,18 +191,6 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         header.tryUpdate();
     }
 
-    public EUITextBoxReceiver<T> setTooltip(String name, String desc) {
-        super.setTooltip(name, desc);
-        this.header.setTooltip(this.tooltip);
-        return this;
-    }
-
-    public EUITextBoxReceiver<T> setTooltip(EUITooltip tip) {
-        super.setTooltip(tip);
-        this.header.setTooltip(tip);
-        return this;
-    }
-
     public void start() {
         isEditing = true;
         EUI.setActiveElement(this);
@@ -182,22 +199,5 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         originalValue = label.text;
     }
 
-    public void end(boolean commit) {
-        isEditing = false;
-        EUI.setActiveElement(null);
-        TextInput.stopTextReceiver(this);
-        label.setColor(originalTextColor);
-        commit(commit);
-    }
-
-    protected void commit(boolean commit) {
-        if (commit) {
-            if (onComplete != null) {
-                onComplete.invoke(getValue(label.text));
-            }
-        }
-        else {
-            label.text = originalValue;
-        }
-    }
+    abstract T getValue(String text);
 }

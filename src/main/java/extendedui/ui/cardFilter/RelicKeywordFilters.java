@@ -1,6 +1,6 @@
 package extendedui.ui.cardFilter;
 
-import com.badlogic.gdx.graphics.Color;
+import basemod.IUIElement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
@@ -10,7 +10,6 @@ import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
-import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
@@ -20,7 +19,6 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.*;
 import extendedui.ui.controls.EUIDropdown;
-import extendedui.ui.controls.EUITextBoxInput;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
@@ -31,8 +29,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
-    public static CustomRelicFilterModule customModule;
+public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRelicFilterModule> {
     public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
     public final HashSet<AbstractRelic.RelicTier> currentRarities = new HashSet<>();
@@ -41,8 +38,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
     public final EUIDropdown<AbstractRelic.RelicTier> raritiesDropdown;
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
     public final EUIDropdown<SeenValue> seenDropdown;
-    public final EUITextBoxInput nameInput;
-    public String currentName;
+
     public RelicKeywordFilters() {
         super();
 
@@ -82,20 +78,20 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 .setItems(SeenValue.values())
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
-        nameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
-                new EUIHitbox(0, 0, scale(240), scale(40)).setIsPopupCompatible(true))
-                .setOnComplete(s -> {
-                    currentName = s;
-                    if (onClick != null) {
-                        onClick.invoke(null);
-                    }
-                })
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
-                .setHeaderSpacing(1f)
-                .setColors(Color.GRAY, Settings.CREAM_COLOR)
-                .setAlignment(0.5f, 0.1f)
-                .setFont(EUIFontHelper.cardTitleFontSmall, 0.8f)
-                .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
+    }
+
+    public static String getDescriptionForSort(AbstractRelic c) {
+        if (c instanceof CustomFilterable) {
+            return ((CustomFilterable) c).getDescriptionForSort();
+        }
+        return c.description;
+    }
+
+    public static String getNameForSort(AbstractRelic c) {
+        if (c instanceof CustomFilterable) {
+            return ((CustomFilterable) c).getNameForSort();
+        }
+        return c.name;
     }
 
     public ArrayList<RelicGroup.RelicInfo> applyInfoFilters(ArrayList<RelicGroup.RelicInfo> input) {
@@ -112,17 +108,14 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         currentNegateFilters.clear();
         currentRarities.clear();
         currentName = null;
+        currentDescription = null;
         originsDropdown.setSelectionIndices((int[]) null, false);
         raritiesDropdown.setSelectionIndices((int[]) null, false);
         colorsDropdown.setSelectionIndices((int[]) null, false);
         seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
-        for (CustomRelicFilterModule module : EUI.globalCustomRelicFilters) {
-            module.reset();
-        }
-        if (customModule != null) {
-            customModule.reset();
-        }
+        descriptionInput.setLabel("");
+        doForFilters(CustomRelicFilterModule::reset);
     }
 
     public ArrayList<AbstractRelic> applyFilters(ArrayList<AbstractRelic> input) {
@@ -132,10 +125,16 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
     @Override
     public boolean areFiltersEmpty() {
         return (currentName == null || currentName.isEmpty())
+                && (currentDescription == null || currentDescription.isEmpty())
                 && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty() && currentSeen.isEmpty()
                 && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
-                && EUIUtils.all(EUI.globalCustomRelicFilters, CustomRelicFilterModule::isEmpty)
+                && EUIUtils.all(getGlobalFilters(), CustomRelicFilterModule::isEmpty)
                 && (customModule != null && customModule.isEmpty());
+    }
+
+    @Override
+    public ArrayList<CustomRelicFilterModule> getGlobalFilters() {
+        return EUI.globalCustomRelicFilters;
     }
 
     @Override
@@ -158,12 +157,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 availableRarities.add(relic.tier);
                 availableColors.add(EUIGameUtils.getRelicColor(relic.relicId));
             }
-            for (CustomRelicFilterModule module : EUI.globalCustomRelicFilters) {
-                module.initializeSelection(referenceItems);
-            }
-            if (customModule != null) {
-                customModule.initializeSelection(referenceItems);
-            }
+            doForFilters(m -> m.initializeSelection(referenceItems));
         }
 
         ArrayList<ModInfo> modInfos = new ArrayList<>(availableMods);
@@ -194,14 +188,9 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         raritiesDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
         colorsDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
         seenDropdown.setPosition(colorsDropdown.hb.x + colorsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
-        nameInput.setPosition(hb.x + SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 3).tryUpdate();
-
-        for (CustomRelicFilterModule module : EUI.globalCustomRelicFilters) {
-            module.update();
-        }
-        if (customModule != null) {
-            customModule.update();
-        }
+        nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        doForFilters(CustomRelicFilterModule::update);
     }
 
     public List<EUIKeywordTooltip> getAllTooltips(AbstractRelic c) {
@@ -227,7 +216,8 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
                 || colorsDropdown.areAnyItemsHovered()
                 || seenDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
-                || EUIUtils.any(EUI.globalCustomRelicFilters, CustomRelicFilterModule::isHovered)
+                || descriptionInput.hb.hovered
+                || EUIUtils.any(getGlobalFilters(), CustomRelicFilterModule::isHovered)
                 || (customModule != null && customModule.isHovered());
     }
 
@@ -238,39 +228,23 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         colorsDropdown.tryRender(sb);
         seenDropdown.tryRender(sb);
         nameInput.tryRender(sb);
-
-        for (CustomRelicFilterModule module : EUI.globalCustomRelicFilters) {
-            module.render(sb);
-        }
-        if (customModule != null) {
-            customModule.render(sb);
-        }
-    }
-
-    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
-        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
-        EUI.relicFilters.initialize(button -> {
-            EUI.relicHeader.updateForFilters();
-            onClick.invoke(button);
-        }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
-        EUI.relicHeader.updateForFilters();
-        return this;
-    }
-
-    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
-        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
-        EUI.relicFilters.initialize(button -> {
-            EUI.relicHeader.updateForFilters();
-            onClick.invoke(button);
-        }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
-        EUI.relicHeader.updateForFilters();
-        return this;
+        descriptionInput.tryRender(sb);
+        doForFilters(m -> m.render(sb));
     }
 
     protected boolean evaluateRelic(AbstractRelic c) {
         //Name check
         if (currentName != null && !currentName.isEmpty()) {
-            if (c.name == null || !c.name.toLowerCase().contains(currentName.toLowerCase())) {
+            String name = getNameForSort(c);
+            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
+                return false;
+            }
+        }
+
+        //Description check
+        if (currentDescription != null && !currentDescription.isEmpty()) {
+            String desc = getDescriptionForSort(c);
+            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
                 return false;
             }
         }
@@ -306,7 +280,27 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic> {
         }
 
         //Module check
-        return customModule == null || customModule.isRelicValid(c);
+        return customModule == null || customModule.isItemValid(c);
+    }
+
+    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
+        EUI.relicFilters.initialize(button -> {
+            EUI.relicHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
+        EUI.relicHeader.updateForFilters();
+        return this;
+    }
+
+    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
+        EUI.relicFilters.initialize(button -> {
+            EUI.relicHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
+        EUI.relicHeader.updateForFilters();
+        return this;
     }
 
     public enum SeenValue {

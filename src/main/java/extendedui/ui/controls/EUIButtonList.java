@@ -51,23 +51,6 @@ public class EUIButtonList extends EUIBase {
         downButton.background.setRotation(-90);
     }
 
-    public void setTopButtonIndex(int index) {
-        topButtonIndex = Math.max(0, index);
-        int lastButtonIndex = topButtonIndex + visibleButtons;
-
-        for (int i = 0; i < buttons.size(); i++) {
-            if (i >= topButtonIndex && i < lastButtonIndex) {
-                buttons.get(i).setPosition(xPos, yPos - (i - topButtonIndex) * buttonHeight).setActive(true);
-            }
-            else {
-                buttons.get(i).setActive(false);
-            }
-        }
-
-        upButton.setActive(topButtonIndex > 0);
-        downButton.setActive(topButtonIndex < buttons.size() - visibleButtons);
-    }
-
     public EUIButton addButton(ActionT1<EUIButton> onClick, String title) {
         EUIButton button = new EUIButton(ImageMaster.COLOR_TAB_BAR, new EUIHitbox(buttonWidth, buttonHeight))
                 .setLabel(EUIFontHelper.buttonFont, fontScale, title)
@@ -80,6 +63,30 @@ public class EUIButtonList extends EUIBase {
         setTopButtonIndex(0);
         selectButton(buttons.get(0));
         return button;
+    }
+
+    public void clear() {
+        buttons.clear();
+        setTopButtonIndex(0);
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        for (EUIButton b : buttons) {
+            b.tryRenderCentered(sb);
+        }
+        upButton.tryRenderCentered(sb);
+        downButton.tryRenderCentered(sb);
+    }
+
+    @Override
+    public void updateImpl() {
+        for (EUIButton b : buttons) {
+            b.tryUpdate();
+        }
+        upButton.tryUpdate();
+        downButton.tryUpdate();
+        updateNonMouseInput();
     }
 
     public void selectButton(EUIButton button) {
@@ -95,33 +102,26 @@ public class EUIButtonList extends EUIBase {
         }
     }
 
-    public void clear() {
-        buttons.clear();
-        setTopButtonIndex(0);
-    }
-
     public EUIButtonList setFontScale(float fontScale) {
         this.fontScale = fontScale;
         return this;
     }
 
-    @Override
-    public void updateImpl() {
-        for (EUIButton b : buttons) {
-            b.tryUpdate();
-        }
-        upButton.tryUpdate();
-        downButton.tryUpdate();
-        updateNonMouseInput();
-    }
+    public void setTopButtonIndex(int index) {
+        topButtonIndex = Math.max(0, index);
+        int lastButtonIndex = topButtonIndex + visibleButtons;
 
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        for (EUIButton b : buttons) {
-            b.tryRenderCentered(sb);
+        for (int i = 0; i < buttons.size(); i++) {
+            if (i >= topButtonIndex && i < lastButtonIndex) {
+                buttons.get(i).setPosition(xPos, yPos - (i - topButtonIndex) * buttonHeight).setActive(true);
+            }
+            else {
+                buttons.get(i).setActive(false);
+            }
         }
-        upButton.tryRenderCentered(sb);
-        downButton.tryRenderCentered(sb);
+
+        upButton.setActive(topButtonIndex > 0);
+        downButton.setActive(topButtonIndex < buttons.size() - visibleButtons);
     }
 
     protected void updateNonMouseInput() {

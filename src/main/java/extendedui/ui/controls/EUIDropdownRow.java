@@ -41,6 +41,21 @@ public class EUIDropdownRow<T> {
         }
     }
 
+    protected void addTooltip() {
+        if (dr.tooltipFunction != null) {
+            EUITooltip.queueTooltips(dr.tooltipFunction.invoke(item));
+        }
+        else if (item instanceof TooltipProvider) {
+            EUITooltip.queueTooltips(((TooltipProvider) item).getTips());
+        }
+        else if (item instanceof CardObject) {
+            renderCard(((CardObject) item).getCard());
+        }
+        else if (item instanceof AbstractCard) {
+            renderCard((AbstractCard) item);
+        }
+    }
+
     public String getText() {
         return this.label.text;
     }
@@ -53,6 +68,15 @@ public class EUIDropdownRow<T> {
         this.hb.translate(x, y);
         this.checkbox.hb.translate(x, y - EUIDropdown.TOGGLE_OFFSET);
         this.label.hb.translate(x + (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2), y);
+    }
+
+    private void renderCard(AbstractCard card) {
+        card.current_x = card.target_x = card.hb.x = InputHelper.mX + EUIDropdown.PREVIEW_OFFSET_X;
+        card.current_y = card.target_y = card.hb.y = InputHelper.mY;
+        card.update();
+        card.updateHoverLogic();
+        card.drawScale = card.targetDrawScale = 0.75f;
+        EUI.addPriorityPostRender(card::render);
     }
 
     public void renderRow(SpriteBatch sb) {
@@ -82,17 +106,6 @@ public class EUIDropdownRow<T> {
         this.label.setLabel(labelFunction.invoke(item));
     }
 
-    public boolean update(boolean isInRange, boolean isSelected) {
-        this.hb.update();
-        this.label.updateImpl();
-        this.checkbox.updateImpl();
-        this.isSelected = isSelected;
-        if (!isInRange) {
-            return false;
-        }
-        return tryHover(isSelected);
-    }
-
     protected boolean tryHover(boolean isSelected) {
         if (this.hb.hovered) {
             this.label.setColor(Settings.GREEN_TEXT_COLOR);
@@ -120,28 +133,15 @@ public class EUIDropdownRow<T> {
         return false;
     }
 
-    protected void addTooltip() {
-        if (dr.tooltipFunction != null) {
-            EUITooltip.queueTooltips(dr.tooltipFunction.invoke(item));
+    public boolean update(boolean isInRange, boolean isSelected) {
+        this.hb.update();
+        this.label.updateImpl();
+        this.checkbox.updateImpl();
+        this.isSelected = isSelected;
+        if (!isInRange) {
+            return false;
         }
-        else if (item instanceof TooltipProvider) {
-            EUITooltip.queueTooltips(((TooltipProvider) item).getTips());
-        }
-        else if (item instanceof CardObject) {
-            renderCard(((CardObject) item).getCard());
-        }
-        else if (item instanceof AbstractCard) {
-            renderCard((AbstractCard) item);
-        }
-    }
-
-    private void renderCard(AbstractCard card) {
-        card.current_x = card.target_x = card.hb.x = InputHelper.mX + EUIDropdown.PREVIEW_OFFSET_X;
-        card.current_y = card.target_y = card.hb.y = InputHelper.mY;
-        card.update();
-        card.updateHoverLogic();
-        card.drawScale = card.targetDrawScale = 0.75f;
-        EUI.addPriorityPostRender(card::render);
+        return tryHover(isSelected);
     }
 
     public EUIDropdownRow<T> updateAlignment() {

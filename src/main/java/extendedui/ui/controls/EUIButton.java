@@ -175,8 +175,7 @@ public class EUIButton extends EUIHoverable {
 
     public EUIButton setBorder(EUIImage border) {
         this.border = border;
-        if (this.border != null)
-        {
+        if (this.border != null) {
             this.border.setHitbox(hb);
         }
 

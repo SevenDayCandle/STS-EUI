@@ -62,8 +62,8 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         this.relicGroup = relicGroup;
         this.originalGroup = new ArrayList<>(relicGroup.group);
 
-        if (RelicKeywordFilters.customModule != null) {
-            RelicKeywordFilters.customModule.processGroup(EUIUtils.map(relicGroup, r -> r.relic));
+        if (EUI.relicFilters.customModule != null) {
+            EUI.relicFilters.customModule.processGroup(relicGroup);
         }
         for (SortHeaderButton button : buttons) {
             button.reset();

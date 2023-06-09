@@ -6,17 +6,8 @@ import com.megacrit.cardcrawl.cards.CardGroup;
 
 import java.util.Collection;
 
-public interface CustomCardFilterModule extends IUIElement {
-    void initializeSelection(Collection<AbstractCard> cards);
-
-    boolean isCardValid(AbstractCard c);
-
-    boolean isEmpty();
-
-    boolean isHovered();
-
+public interface CustomCardFilterModule extends CustomFilterModule<AbstractCard> {
     default void processGroup(CardGroup group) {
     }
 
-    void reset();
 }

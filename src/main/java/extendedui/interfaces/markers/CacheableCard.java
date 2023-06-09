@@ -2,8 +2,6 @@ package extendedui.interfaces.markers;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
-public interface CacheableCard {
+public interface CacheableCard extends CustomFilterable {
     AbstractCard getCachedUpgrade();
-    String getDescriptionForSort();
-    String getNameForSort();
 }

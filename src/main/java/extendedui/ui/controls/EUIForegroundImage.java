@@ -30,20 +30,6 @@ public class EUIForegroundImage extends EUIImage {
         super(other);
     }
 
-    public EUIImage setForegroundTexture(Texture texture) {
-        setForegroundTexture(texture, null, 1);
-
-        return this;
-    }
-
-    public EUIImage setForegroundTexture(Texture texture, Color color, float scale) {
-        this.foreground = new ColoredTexture(texture);
-        this.foreground.scale = scale;
-        this.foreground.setColor(color);
-
-        return this;
-    }
-
     protected void renderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
         super.renderCenteredImpl(sb, x, y, width, height, targetColor);
         if (foreground != null) {
@@ -65,5 +51,19 @@ public class EUIForegroundImage extends EUIImage {
             sb.setColor(foreground.color != null ? foreground.color : targetColor);
             sb.draw(foreground.texture, x + ((width - w) * 0.5f), y + ((height - h) * 0.5f), 0, 0, w, h, scaleX, scaleY, rotation, 0, 0, s_w, s_h, flipX, flipY);
         }
+    }
+
+    public EUIImage setForegroundTexture(Texture texture, Color color, float scale) {
+        this.foreground = new ColoredTexture(texture);
+        this.foreground.scale = scale;
+        this.foreground.setColor(color);
+
+        return this;
+    }
+
+    public EUIImage setForegroundTexture(Texture texture) {
+        setForegroundTexture(texture, null, 1);
+
+        return this;
     }
 }

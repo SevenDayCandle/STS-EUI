@@ -14,6 +14,9 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 
 public class EUILabel extends EUIHoverable {
+    private boolean smartPadEnd;
+    protected float originalFontScale;
+    protected BitmapFont font;
     public String text;
     public boolean smartText;
     public boolean smartTextResize;
@@ -21,9 +24,6 @@ public class EUILabel extends EUIHoverable {
     public float verticalRatio;
     public float horizontalRatio;
     public float fontScale;
-    protected float originalFontScale;
-    protected BitmapFont font;
-    private boolean smartPadEnd;
 
     public EUILabel(BitmapFont font) {
         this(font, new EUIHitbox(0, 0));
@@ -63,12 +63,12 @@ public class EUILabel extends EUIHoverable {
         return this;
     }
 
-    public float getAutoWidth() {
-        return EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
-    }
-
     public float getAutoHeight() {
         return EUISmartText.getSmartHeight(font, text, Settings.WIDTH);
+    }
+
+    public float getAutoWidth() {
+        return EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
     }
 
     public float getOriginalFontScale() {
@@ -137,8 +137,8 @@ public class EUILabel extends EUIHoverable {
         return this;
     }
 
-    public EUILabel setLabel(String text) {
-        this.text = text;
+    public EUILabel setColor(Color textColor) {
+        this.textColor = textColor.cpy();
 
         return this;
     }
@@ -146,12 +146,6 @@ public class EUILabel extends EUIHoverable {
     public EUILabel setFont(BitmapFont font, float fontScale) {
         this.font = font;
         this.originalFontScale = this.fontScale = fontScale;
-
-        return this;
-    }
-
-    public EUILabel setColor(Color textColor) {
-        this.textColor = textColor.cpy();
 
         return this;
     }
@@ -168,6 +162,12 @@ public class EUILabel extends EUIHoverable {
 
     public EUILabel setFontScaleRelative(float relativeSize) {
         this.fontScale = originalFontScale * relativeSize;
+
+        return this;
+    }
+
+    public EUILabel setLabel(String text) {
+        this.text = text;
 
         return this;
     }

@@ -65,8 +65,8 @@ public class CustomCardLibSortHeader extends CardLibSortHeader {
             fakeLibraryCard.current_y = group.group.get(0).current_y;
         }
 
-        if (CardKeywordFilters.customModule != null) {
-            CardKeywordFilters.customModule.processGroup(group);
+        if (EUI.cardFilters.customModule != null) {
+            EUI.cardFilters.customModule.processGroup(group);
         }
 
         this.group = group;

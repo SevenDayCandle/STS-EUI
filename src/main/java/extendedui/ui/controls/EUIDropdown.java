@@ -46,11 +46,6 @@ public class EUIDropdown<T> extends EUIHoverable {
     protected final EUIButton button;
     protected final EUIButton clearButton;
     protected final TreeSet<Integer> currentIndices = new TreeSet<>();
-    public boolean canAutosizeButton;
-    public boolean canAutosizeRows = true;
-    public boolean isMultiSelect;
-    public boolean showTooltipOnHover = true;
-    public ArrayList<EUIDropdownRow<T>> rows = new ArrayList<>();
     protected ActionT1<Boolean> onOpenOrClose;
     protected ActionT1<List<T>> onChange;
     protected ActionT1<List<T>> onClear;
@@ -81,6 +76,11 @@ public class EUIDropdown<T> extends EUIHoverable {
     protected float bottomY;
     protected int maxRows;
     protected int topVisibleRowIndex;
+    public boolean canAutosizeButton;
+    public boolean canAutosizeRows = true;
+    public boolean isMultiSelect;
+    public boolean showTooltipOnHover = true;
+    public ArrayList<EUIDropdownRow<T>> rows = new ArrayList<>();
 
     public EUIDropdown(EUIHitbox hb) {
         this(hb, Object::toString, new ArrayList<>(), EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
@@ -130,18 +130,179 @@ public class EUIDropdown<T> extends EUIHoverable {
         this.header.setActive(false);
     }
 
+    public EUIDropdown<T> addItems(T... options) {
+        return addItems(Arrays.asList(options));
+    }
+
+    public EUIDropdown<T> addItems(List<? extends T> options) {
+        int initialSize = rows.size();
+        for (int i = 0; i < options.size(); i++) {
+            rows.add(makeRow(options, i, initialSize));
+        }
+        autosize();
+
+        return this;
+    }
+
+    public boolean areAnyItemsHovered() {
+        if (this.hb.hovered || (this.isMultiSelect && currentIndices.size() != 0 && this.clearButton.hb.hovered)) {
+            return true;
+        }
+        if (isOpen) {
+            for (int i = 0; i < this.visibleRowCount(); ++i) {
+                if (this.rows.get(i + this.topVisibleRowIndex).hb.hovered) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public void autosize() {
+
+        this.rowWidth = rowWidthFunction != null ? rowWidthFunction.invoke(this, font, fontScale) : calculateRowWidth();
+        this.rowHeight = rowHeightFunction != null ? rowHeightFunction.invoke(this, font, fontScale) : calculateRowHeight();
+        if (canAutosizeButton) {
+            hb.resize(rowWidth, hb.height);
+            button.hb.resize(rowWidth, hb.height);
+            this.header.hb.setOffset(0, hb.height);
+            positionClearButton();
+        }
+        if (canAutosizeRows) {
+            for (EUIDropdownRow<T> row : rows) {
+                row.hb.resize(rowWidth, rowHeight);
+                row.updateAlignment();
+            }
+        }
+        else {
+            for (EUIDropdownRow<T> row : rows) {
+                row.updateAlignment();
+                row.hb.update();
+            }
+        }
+        this.scrollBar.hb.resize(SCROLLBAR_WIDTH, rowHeight * (this.visibleRowCount() - 1));
+        this.scrollBar.hb.setOffsetX((canAutosizeRows ? rowWidth : hb.width) - SCROLLBAR_PADDING);
+    }
+
     public float calculateRowHeight() {
         float scaledHeight = font.getCapHeight() * fontScale;
         float extraSpace = Math.min(Math.max(scaledHeight, 15.0F) * Settings.scale, 15.0F);
         return scaledHeight + extraSpace;
     }
 
+    public float calculateRowWidth() {
+        float w = 0;
+        for (EUIDropdownRow<T> row : rows) {
+            w = Math.max(w, EUISmartText.getSmartWidth(this.font, row.getTextForWidth(), ROW_WIDTH_MULT, ROW_WIDTH_MULT) + ICON_WIDTH);
+        }
+        return w;
+    }
+
+    public void clear() {
+        setSelectionIndices((int[]) null, true);
+        if (onClear != null) {
+            onClear.invoke(getAllItems());
+        }
+    }
+
+    public void forceClose() {
+        EUI.setActiveElement(null);
+        CardCrawlGame.isPopupOpen = false;
+        this.isOpen = false;
+        if (this.onOpenOrClose != null) {
+            this.onOpenOrClose.invoke(false);
+        }
+    }
+
+    public ArrayList<T> getAllItems() {
+        return EUIUtils.map(this.rows, row -> row.item);
+    }
+
+    public int getCurrentIndex() {
+        return currentIndices.isEmpty() || currentIndices.first() >= this.rows.size() ? 0 : currentIndices.first();
+    }
+
+    public T getCurrentIndexItem() {
+        return this.rows.get(getCurrentIndex()).item;
+    }
+
+    public ArrayList<T> getCurrentItems() {
+        ArrayList<T> items = new ArrayList<>();
+        for (Integer i : currentIndices) {
+            items.add(this.rows.get(i).item);
+        }
+        return items;
+    }
+
+    public T getItemAt(int i) {
+        EUIDropdownRow<T> row = this.rows.get(i);
+        return row != null ? row.item : null;
+    }
+
+    public FuncT1<String, T> getOptionLabelFunction() {
+        return labelFunction;
+    }
+
+    public float getRowHeight() {
+        return rowHeight;
+    }
+
+    protected boolean isUsingNonMouseControl() {
+        return Settings.isControllerMode || InputActionSet.up.isJustPressed() || InputActionSet.down.isJustPressed();
+    }
+
+    protected void layoutRowsBelow(float originX, float originY) {
+        for (int i = 0; i < this.visibleRowCount(); ++i) {
+            if (this.topVisibleRowIndex + i < this.rows.size()) {
+                this.rows.get(this.topVisibleRowIndex + i).move(originX, this.yPositionForRowBelow(originY, i + 1));
+            }
+        }
+        this.rowsHaveBeenPositioned = true;
+    }
+
+    public EUIDropdown<T> makeCopy() {
+        return makeCopy(new EUIHitbox(hb));
+    }
+
+    public EUIDropdown<T> makeCopy(EUIHitbox hb) {
+        return new EUIDropdown<T>(hb, this.labelFunction, getAllItems(), this.font, this.maxRows, this.canAutosizeButton)
+                .setHeader(this.font, this.fontScale, this.header.textColor, this.header.text, this.header.smartText)
+                .setLabelColorFunctionForButton(this.colorFunctionButton)
+                .setLabelColorFunctionForOption(this.colorFunctionOption)
+                .setLabelFunctionForButton(this.labelFunctionButton, this.button.label.smartText)
+                .setLabelFunctionForOption(this.labelFunction, this.isOptionSmartText)
+                .setCanAutosize(this.canAutosizeButton, this.canAutosizeRows)
+                .setClearButtonOptions(this.showClearForSingle, this.shouldPositionClearAtTop)
+                .setIsMultiSelect(this.isMultiSelect)
+                .setOnChange(this.onChange)
+                .setOnOpenOrClose(this.onOpenOrClose);
+    }
+
+    public String makeMultiSelectString() {
+        return makeMultiSelectString(labelFunction);
+    }
+
+    public String makeMultiSelectString(FuncT1<String, T> optionFunc) {
+        String prospective = StringUtils.join(EUIUtils.map(getCurrentItems(), optionFunc), ", ");
+        float width = button.label.smartText ? EUISmartText.getSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
+        return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.strings.uiItemsselected : prospective;
+    }
+
     public EUIDropdownRow<T> makeRow(List<? extends T> options, int index) {
         return makeRow(options, index, 0);
     }
 
-    protected int visibleRowCount() {
-        return Math.min(this.rows.size(), this.maxRows);
+    public EUIDropdownRow<T> makeRow(List<? extends T> options, int index, int offset) {
+        EUIHitbox rh = new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0)
+                .setIsPopupCompatible(true)
+                .setParentElement(this);
+        T rowItem = options.get(index);
+        int ind = index + offset;
+        return (rowFunction != null ? rowFunction.invoke(this, rh, rowItem, ind) : new EUIDropdownRow<T>(
+                this,
+                rh, rowItem, ind))
+                .updateAlignment();
     }
 
     protected void onScroll(float newPercent) {
@@ -168,286 +329,13 @@ public class EUIDropdown<T> extends EUIHoverable {
         }
     }
 
-    public void clear() {
-        setSelectionIndices((int[]) null, true);
-        if (onClear != null) {
-            onClear.invoke(getAllItems());
-        }
-    }
-
-    public EUIDropdownRow<T> makeRow(List<? extends T> options, int index, int offset) {
-        EUIHitbox rh = new RelativeHitbox(hb, hb.width, this.rowHeight, 0f, 0)
-                .setIsPopupCompatible(true)
-                .setParentElement(this);
-        T rowItem = options.get(index);
-        int ind = index + offset;
-        return (rowFunction != null ? rowFunction.invoke(this, rh, rowItem, ind) : new EUIDropdownRow<T>(
-                this,
-                rh, rowItem, ind))
-                .updateAlignment();
-    }
-
-    protected void updateRowPositions() {
-        int rowCount = this.visibleRowCount();
-        topY = this.yPositionForRowBelow(hb.y, -1);
-        bottomY = this.yPositionForRowBelow(hb.y, rowCount);
-
-        // If the rows would be below the screen, move them above the bar
-        if (bottomY < 0) {
-            float newOrigin = hb.y + topY - bottomY + hb.height;
-            this.layoutRowsBelow(hb.x, newOrigin);
-            topY = this.yPositionForRowBelow(newOrigin, -1);
-            bottomY = this.yPositionForRowBelow(newOrigin, rowCount);
-            this.scrollBar.hb.setOffsetY(this.hb.height * 2);
+    protected void positionClearButton() {
+        if (shouldPositionClearAtTop) {
+            this.clearButton.hb.setOffset(hb.width - clearButton.hb.width, hb.height);
         }
         else {
-            this.layoutRowsBelow(hb.x, hb.y);
-            this.scrollBar.hb.setOffsetY(-this.visibleRowCount() * this.rowHeight - (headerRow != null ? headerRow.hb.height : 0));
+            this.clearButton.hb.setOffset(hb.width, 0);
         }
-    }
-
-    protected void updateNonMouseStartPosition() {
-        if (this.isUsingNonMouseControl()) {
-            this.shouldSnapCursorToSelectedIndex = true;
-        }
-    }
-
-    public EUIDropdown<T> setSelectionIndices(int[] selection, boolean shouldInvoke) {
-        this.currentIndices.clear();
-        if (selection != null) {
-            for (Integer i : selection) {
-                if (i < rows.size() && i >= 0) {
-                    currentIndices.add(i);
-                }
-            }
-        }
-        updateForSelection(shouldInvoke);
-        return this;
-    }
-
-    public ArrayList<T> getAllItems() {
-        return EUIUtils.map(this.rows, row -> row.item);
-    }
-
-    protected float yPositionForRowBelow(float originY, int rowIndex) {
-        float extraHeight = rowIndex > 0 ? BORDER_SIZE : 0.0F;
-        if (headerRow != null) {
-            extraHeight += headerRow.hb.height;
-        }
-        return originY - rowHeight * (float) rowIndex - extraHeight;
-    }
-
-    protected void layoutRowsBelow(float originX, float originY) {
-        for (int i = 0; i < this.visibleRowCount(); ++i) {
-            if (this.topVisibleRowIndex + i < this.rows.size()) {
-                this.rows.get(this.topVisibleRowIndex + i).move(originX, this.yPositionForRowBelow(originY, i + 1));
-            }
-        }
-        this.rowsHaveBeenPositioned = true;
-    }
-
-    protected boolean isUsingNonMouseControl() {
-        return Settings.isControllerMode || InputActionSet.up.isJustPressed() || InputActionSet.down.isJustPressed();
-    }
-
-    public void updateForSelection(boolean shouldInvoke) {
-        int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
-        if (isMultiSelect) {
-            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : makeMultiSelectString());
-        }
-        else if (currentIndices.size() > 0) {
-            this.topVisibleRowIndex = Math.min(temp, this.rows.size() - this.visibleRowCount());
-            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : rows.get(temp).label.text);
-            if (colorFunctionButton != null) {
-                this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
-            }
-
-            this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
-        }
-        if (shouldInvoke && onChange != null) {
-            onChange.invoke(getCurrentItems());
-        }
-    }
-
-    public ArrayList<T> getCurrentItems() {
-        ArrayList<T> items = new ArrayList<>();
-        for (Integer i : currentIndices) {
-            items.add(this.rows.get(i).item);
-        }
-        return items;
-    }
-
-    public String makeMultiSelectString() {
-        return makeMultiSelectString(labelFunction);
-    }
-
-    public float scrollPercentForTopVisibleRowIndex(int topIndex) {
-        int maxRow = this.rows.size() - this.visibleRowCount();
-        return (float) topIndex / (float) maxRow;
-    }
-
-    public String makeMultiSelectString(FuncT1<String, T> optionFunc) {
-        String prospective = StringUtils.join(EUIUtils.map(getCurrentItems(), optionFunc), ", ");
-        float width = button.label.smartText ? EUISmartText.getSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
-        return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.strings.uiItemsselected : prospective;
-    }
-
-    public EUIDropdown<T> addItems(T... options) {
-        return addItems(Arrays.asList(options));
-    }
-
-    public EUIDropdown<T> addItems(List<? extends T> options) {
-        int initialSize = rows.size();
-        for (int i = 0; i < options.size(); i++) {
-            rows.add(makeRow(options, i, initialSize));
-        }
-        autosize();
-
-        return this;
-    }
-
-    public boolean areAnyItemsHovered() {
-        if (this.hb.hovered || (this.isMultiSelect && currentIndices.size() != 0 && this.clearButton.hb.hovered)) {
-            return true;
-        }
-        if (isOpen)
-        {
-            for (int i = 0; i < this.visibleRowCount(); ++i) {
-                if (this.rows.get(i + this.topVisibleRowIndex).hb.hovered) {
-                    return true;
-                }
-            }
-        }
-
-        return false;
-    }
-
-    public void forceClose() {
-        EUI.setActiveElement(null);
-        CardCrawlGame.isPopupOpen = false;
-        this.isOpen = false;
-        if (this.onOpenOrClose != null) {
-            this.onOpenOrClose.invoke(false);
-        }
-    }
-
-    public T getCurrentIndexItem() {
-        return this.rows.get(getCurrentIndex()).item;
-    }
-
-    public int getCurrentIndex() {
-        return currentIndices.isEmpty() || currentIndices.first() >= this.rows.size() ? 0 : currentIndices.first();
-    }
-
-    public T getItemAt(int i) {
-        EUIDropdownRow<T> row = this.rows.get(i);
-        return row != null ? row.item : null;
-    }
-
-    public FuncT1<String, T> getOptionLabelFunction() {
-        return labelFunction;
-    }
-
-    public float getRowHeight() {
-        return rowHeight;
-    }
-
-    public EUIDropdown<T> makeCopy() {
-        return makeCopy(new EUIHitbox(hb));
-    }
-
-    public EUIDropdown<T> makeCopy(EUIHitbox hb) {
-        return new EUIDropdown<T>(hb, this.labelFunction, getAllItems(), this.font, this.maxRows, this.canAutosizeButton)
-                .setHeader(this.font, this.fontScale, this.header.textColor, this.header.text, this.header.smartText)
-                .setLabelColorFunctionForButton(this.colorFunctionButton)
-                .setLabelColorFunctionForOption(this.colorFunctionOption)
-                .setLabelFunctionForButton(this.labelFunctionButton, this.button.label.smartText)
-                .setLabelFunctionForOption(this.labelFunction, this.isOptionSmartText)
-                .setCanAutosize(this.canAutosizeButton, this.canAutosizeRows)
-                .setClearButtonOptions(this.showClearForSingle, this.shouldPositionClearAtTop)
-                .setIsMultiSelect(this.isMultiSelect)
-                .setOnChange(this.onChange)
-                .setOnOpenOrClose(this.onOpenOrClose);
-    }
-
-    // If you're using this dropdown on a pop-up menu, you need to have this action set CardCrawlGame.isOpen or your pop-up menu won't work properly
-    public EUIDropdown<T> setOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
-        this.onOpenOrClose = onOpenOrClose;
-
-        return this;
-    }
-
-    public EUIDropdown<T> setOnChange(ActionT1<List<T>> onChange) {
-        this.onChange = onChange;
-        return this;
-    }
-
-    public EUIDropdown<T> setIsMultiSelect(boolean value) {
-        this.isMultiSelect = value;
-        for (EUIDropdownRow<T> row : rows) {
-            row.updateAlignment();
-        }
-
-        return this;
-    }
-
-    public EUIDropdown<T> setClearButtonOptions(boolean showClearForSingle, boolean shouldPositionClearAtTop) {
-        this.showClearForSingle = showClearForSingle;
-        this.shouldPositionClearAtTop = shouldPositionClearAtTop;
-        positionClearButton();
-
-        return this;
-    }
-
-    public EUIDropdown<T> setCanAutosize(boolean canAutosizeButton, boolean canAutosizeRows) {
-        this.canAutosizeButton = canAutosizeButton;
-        this.canAutosizeRows = canAutosizeRows;
-        autosize();
-
-        return this;
-    }
-
-    public EUIDropdown<T> setLabelFunctionForOption(FuncT1<String, T> labelFunction, boolean isSmartText) {
-        this.labelFunction = labelFunction;
-        this.isOptionSmartText = isSmartText;
-        for (EUIDropdownRow<T> row : rows) {
-            row.setLabelFunction(labelFunction, isSmartText);
-        }
-        return this;
-    }
-
-    public EUIDropdown<T> setLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, boolean isSmartText) {
-        this.button.label.setSmartText(isSmartText);
-        if (isSmartText) {
-            this.button.label.setAlignment(0.7f, 0.1f);
-        }
-        else {
-            this.button.label.setAlignment(0.5f, 0.5f);
-        }
-
-        this.labelFunctionButton = labelFunctionButton;
-        if (labelFunctionButton != null) {
-            this.button.setText(labelFunctionButton.invoke(getCurrentItems(), labelFunction));
-        }
-        return this;
-    }
-
-    public EUIDropdown<T> setLabelColorFunctionForOption(FuncT1<Color, T> colorFunctionOption) {
-        this.colorFunctionOption = colorFunctionOption;
-        if (colorFunctionOption != null) {
-            for (EUIDropdownRow<T> row : rows) {
-                row.setLabelColor(colorFunctionOption);
-            }
-        }
-        return this;
-    }
-
-    public EUIDropdown<T> setLabelColorFunctionForButton(FuncT1<Color, List<T>> colorFunctionButton) {
-        this.colorFunctionButton = colorFunctionButton;
-        if (colorFunctionButton != null) {
-            this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
-        }
-        return this;
     }
 
     public void refreshText() {
@@ -467,6 +355,23 @@ public class EUIDropdown<T> extends EUIHoverable {
                 row.setLabelColor(colorFunctionOption);
             }
         }
+    }
+
+    protected void renderArrows(SpriteBatch sb) {
+        float arrowIconX = hb.x + hb.width - ARROW_ICON_W - Settings.scale * 10.0F;
+        Texture dropdownArrowIcon = this.isOpen ? ImageMaster.OPTION_TOGGLE_ON : ImageMaster.FILTER_ARROW;
+        sb.draw(dropdownArrowIcon, arrowIconX, hb.y + hb.height / 4, ARROW_ICON_W, ARROW_ICON_H);
+    }
+
+    protected void renderBorder(SpriteBatch sb, float x, float bottom, float width, float height) {
+        float BOX_W = width + 2.0F * BORDER_SIZE;
+        float FRAME_X = x - BORDER_SIZE;
+        sb.setColor(Color.WHITE);
+        float bottomY = bottom - BORDER_SIZE;
+        sb.draw(ImageMaster.KEYWORD_BOT, FRAME_X, bottomY, BOX_W, rowHeight);
+        float middleHeight = height - 2.0F * rowHeight - BORDER_SIZE;
+        sb.draw(ImageMaster.KEYWORD_BODY, FRAME_X, bottomY + rowHeight, BOX_W, middleHeight);
+        sb.draw(ImageMaster.KEYWORD_TOP, FRAME_X, bottom + middleHeight + BORDER_SIZE, BOX_W, rowHeight);
     }
 
     protected void renderBorderFromTop(SpriteBatch sb, float x, float top, float width, float height) {
@@ -496,12 +401,6 @@ public class EUIDropdown<T> extends EUIHoverable {
         }
     }
 
-    protected void renderArrows(SpriteBatch sb) {
-        float arrowIconX = hb.x + hb.width - ARROW_ICON_W - Settings.scale * 10.0F;
-        Texture dropdownArrowIcon = this.isOpen ? ImageMaster.OPTION_TOGGLE_ON : ImageMaster.FILTER_ARROW;
-        sb.draw(dropdownArrowIcon, arrowIconX, hb.y + hb.height / 4, ARROW_ICON_W, ARROW_ICON_H);
-    }
-
     protected void renderRowContent(SpriteBatch sb) {
         if (headerRow != null) {
             this.renderBorder(sb, hb.x, bottomY, hb.width, topY - bottomY + headerRow.hb.height);
@@ -518,19 +417,17 @@ public class EUIDropdown<T> extends EUIHoverable {
         }
     }
 
-    protected void renderBorder(SpriteBatch sb, float x, float bottom, float width, float height) {
-        float BOX_W = width + 2.0F * BORDER_SIZE;
-        float FRAME_X = x - BORDER_SIZE;
-        sb.setColor(Color.WHITE);
-        float bottomY = bottom - BORDER_SIZE;
-        sb.draw(ImageMaster.KEYWORD_BOT, FRAME_X, bottomY, BOX_W, rowHeight);
-        float middleHeight = height - 2.0F * rowHeight - BORDER_SIZE;
-        sb.draw(ImageMaster.KEYWORD_BODY, FRAME_X, bottomY + rowHeight, BOX_W, middleHeight);
-        sb.draw(ImageMaster.KEYWORD_TOP, FRAME_X, bottom + middleHeight + BORDER_SIZE, BOX_W, rowHeight);
+    public float scrollPercentForTopVisibleRowIndex(int topIndex) {
+        int maxRow = this.rows.size() - this.visibleRowCount();
+        return (float) topIndex / (float) maxRow;
     }
 
-    protected boolean shouldShowSlider() {
-        return this.rows.size() > this.maxRows;
+    public EUIDropdown<T> setCanAutosize(boolean canAutosizeButton, boolean canAutosizeRows) {
+        this.canAutosizeButton = canAutosizeButton;
+        this.canAutosizeRows = canAutosizeRows;
+        autosize();
+
+        return this;
     }
 
     public EUIDropdown<T> setCanAutosizeButton(boolean value) {
@@ -540,47 +437,12 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
-    public void autosize() {
+    public EUIDropdown<T> setClearButtonOptions(boolean showClearForSingle, boolean shouldPositionClearAtTop) {
+        this.showClearForSingle = showClearForSingle;
+        this.shouldPositionClearAtTop = shouldPositionClearAtTop;
+        positionClearButton();
 
-        this.rowWidth = rowWidthFunction != null ? rowWidthFunction.invoke(this, font, fontScale) : calculateRowWidth();
-        this.rowHeight = rowHeightFunction != null ? rowHeightFunction.invoke(this, font, fontScale) : calculateRowHeight();
-        if (canAutosizeButton) {
-            hb.resize(rowWidth, hb.height);
-            button.hb.resize(rowWidth, hb.height);
-            this.header.hb.setOffset(0, hb.height);
-            positionClearButton();
-        }
-        if (canAutosizeRows) {
-            for (EUIDropdownRow<T> row : rows) {
-                row.hb.resize(rowWidth, rowHeight);
-                row.updateAlignment();
-            }
-        }
-        else {
-            for (EUIDropdownRow<T> row : rows) {
-                row.updateAlignment();
-                row.hb.update();
-            }
-        }
-        this.scrollBar.hb.resize(SCROLLBAR_WIDTH, rowHeight * (this.visibleRowCount() - 1));
-        this.scrollBar.hb.setOffsetX((canAutosizeRows ? rowWidth : hb.width) - SCROLLBAR_PADDING);
-    }
-
-    public float calculateRowWidth() {
-        float w = 0;
-        for (EUIDropdownRow<T> row : rows) {
-            w = Math.max(w, EUISmartText.getSmartWidth(this.font, row.getTextForWidth(), ROW_WIDTH_MULT, ROW_WIDTH_MULT) + ICON_WIDTH);
-        }
-        return w;
-    }
-
-    protected void positionClearButton() {
-        if (shouldPositionClearAtTop) {
-            this.clearButton.hb.setOffset(hb.width - clearButton.hb.width, hb.height);
-        }
-        else {
-            this.clearButton.hb.setOffset(hb.width, 0);
-        }
+        return this;
     }
 
     public EUIDropdown<T> setFontForButton(BitmapFont font, float fontScale) {
@@ -618,6 +480,15 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
+    public EUIDropdown<T> setIsMultiSelect(boolean value) {
+        this.isMultiSelect = value;
+        for (EUIDropdownRow<T> row : rows) {
+            row.updateAlignment();
+        }
+
+        return this;
+    }
+
     public EUIDropdown<T> setItems(T... options) {
         return setItems(Arrays.asList(options));
     }
@@ -637,14 +508,114 @@ public class EUIDropdown<T> extends EUIHoverable {
         return setItems(new ArrayList<>(options));
     }
 
+    public EUIDropdown<T> setLabelColorFunctionForButton(FuncT1<Color, List<T>> colorFunctionButton) {
+        this.colorFunctionButton = colorFunctionButton;
+        if (colorFunctionButton != null) {
+            this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
+        }
+        return this;
+    }
+
+    public EUIDropdown<T> setLabelColorFunctionForOption(FuncT1<Color, T> colorFunctionOption) {
+        this.colorFunctionOption = colorFunctionOption;
+        if (colorFunctionOption != null) {
+            for (EUIDropdownRow<T> row : rows) {
+                row.setLabelColor(colorFunctionOption);
+            }
+        }
+        return this;
+    }
+
+    public EUIDropdown<T> setLabelFunctionForButton(FuncT2<String, List<T>, FuncT1<String, T>> labelFunctionButton, boolean isSmartText) {
+        this.button.label.setSmartText(isSmartText);
+        if (isSmartText) {
+            this.button.label.setAlignment(0.7f, 0.1f);
+        }
+        else {
+            this.button.label.setAlignment(0.5f, 0.5f);
+        }
+
+        this.labelFunctionButton = labelFunctionButton;
+        if (labelFunctionButton != null) {
+            this.button.setText(labelFunctionButton.invoke(getCurrentItems(), labelFunction));
+        }
+        return this;
+    }
+
+    public EUIDropdown<T> setLabelFunctionForOption(FuncT1<String, T> labelFunction, boolean isSmartText) {
+        this.labelFunction = labelFunction;
+        this.isOptionSmartText = isSmartText;
+        for (EUIDropdownRow<T> row : rows) {
+            row.setLabelFunction(labelFunction, isSmartText);
+        }
+        return this;
+    }
+
     public EUIDropdown<T> setMaxRows(int maxRows) {
         this.maxRows = maxRows;
         autosize();
         return this;
     }
 
+    public EUIDropdown<T> setOffset(float x, float y) {
+        this.hb.setOffset(x, y);
+        positionClearButton();
+        return this;
+    }
+
+    public EUIDropdown<T> setOffsetX(float x) {
+        this.hb.setOffsetX(x);
+        positionClearButton();
+        return this;
+    }
+
+    public EUIDropdown<T> setOffsetY(float y) {
+        this.hb.setOffsetY(y);
+        positionClearButton();
+        return this;
+    }
+
+    public EUIDropdown<T> setPosition(float x, float y) {
+        this.hb.translate(x, y);
+        positionClearButton();
+        updateRowPositions();
+        return this;
+    }
+
+    public EUIDropdown<T> setTooltip(String name, String desc) {
+        super.setTooltip(name, desc);
+        this.header.setTooltip(this.tooltip);
+        return this;
+    }
+
+    public EUIDropdown<T> setTooltip(EUITooltip tip) {
+        super.setTooltip(tip);
+        this.header.setTooltip(tip);
+        return this;
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        updateButtons();
+        updateRows();
+        justOpened = false;
+    }
+
+    public EUIDropdown<T> setOnChange(ActionT1<List<T>> onChange) {
+        this.onChange = onChange;
+        return this;
+    }
+
     public EUIDropdown<T> setOnClear(ActionT1<List<T>> onClear) {
         this.onClear = onClear;
+        return this;
+    }
+
+    // If you're using this dropdown on a pop-up menu, you need to have this action set CardCrawlGame.isOpen or your pop-up menu won't work properly
+    public EUIDropdown<T> setOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
+        this.onOpenOrClose = onOpenOrClose;
+
         return this;
     }
 
@@ -720,6 +691,32 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
+    public EUIDropdown<T> setSelection(Collection<T> selection, boolean shouldInvoke) {
+        this.currentIndices.clear();
+        if (selection != null) {
+            for (int i = 0; i < rows.size(); i++) {
+                if (selection.contains(rows.get(i).item)) {
+                    currentIndices.add(i);
+                }
+            }
+        }
+        updateForSelection(shouldInvoke);
+        return this;
+    }
+
+    public EUIDropdown<T> setSelectionIndices(int[] selection, boolean shouldInvoke) {
+        this.currentIndices.clear();
+        if (selection != null) {
+            for (Integer i : selection) {
+                if (i < rows.size() && i >= 0) {
+                    currentIndices.add(i);
+                }
+            }
+        }
+        updateForSelection(shouldInvoke);
+        return this;
+    }
+
     public EUIDropdown<T> setSelectionIndices(Collection<Integer> selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
@@ -757,6 +754,10 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
+    protected boolean shouldShowSlider() {
+        return this.rows.size() > this.maxRows;
+    }
+
     public int size() {
         return this.rows.size();
     }
@@ -768,19 +769,6 @@ public class EUIDropdown<T> extends EUIHoverable {
             rows.get(i).index = i;
         }
         setSelection(current, false);
-    }
-
-    public EUIDropdown<T> setSelection(Collection<T> selection, boolean shouldInvoke) {
-        this.currentIndices.clear();
-        if (selection != null) {
-            for (int i = 0; i < rows.size(); i++) {
-                if (selection.contains(rows.get(i).item)) {
-                    currentIndices.add(i);
-                }
-            }
-        }
-        updateForSelection(shouldInvoke);
-        return this;
     }
 
     public EUIDropdown<T> toggleSelection(T selection, boolean value, boolean shouldInvoke) {
@@ -813,49 +801,23 @@ public class EUIDropdown<T> extends EUIHoverable {
         }
     }
 
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-        updateButtons();
-        updateRows();
-        justOpened = false;
-    }
+    public void updateForSelection(boolean shouldInvoke) {
+        int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
+        if (isMultiSelect) {
+            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : makeMultiSelectString());
+        }
+        else if (currentIndices.size() > 0) {
+            this.topVisibleRowIndex = Math.min(temp, this.rows.size() - this.visibleRowCount());
+            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : rows.get(temp).label.text);
+            if (colorFunctionButton != null) {
+                this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
+            }
 
-    public EUIDropdown<T> setOffset(float x, float y) {
-        this.hb.setOffset(x, y);
-        positionClearButton();
-        return this;
-    }
-
-    public EUIDropdown<T> setOffsetX(float x) {
-        this.hb.setOffsetX(x);
-        positionClearButton();
-        return this;
-    }
-
-    public EUIDropdown<T> setOffsetY(float y) {
-        this.hb.setOffsetY(y);
-        positionClearButton();
-        return this;
-    }
-
-    public EUIDropdown<T> setPosition(float x, float y) {
-        this.hb.translate(x, y);
-        positionClearButton();
-        updateRowPositions();
-        return this;
-    }
-
-    public EUIDropdown<T> setTooltip(String name, String desc) {
-        super.setTooltip(name, desc);
-        this.header.setTooltip(this.tooltip);
-        return this;
-    }
-
-    public EUIDropdown<T> setTooltip(EUITooltip tip) {
-        super.setTooltip(tip);
-        this.header.setTooltip(tip);
-        return this;
+            this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
+        }
+        if (shouldInvoke && onChange != null) {
+            onChange.invoke(getCurrentItems());
+        }
     }
 
     protected void updateNonMouseInput() {
@@ -909,6 +871,31 @@ public class EUIDropdown<T> extends EUIHoverable {
                     }
                 }
             }
+        }
+    }
+
+    protected void updateNonMouseStartPosition() {
+        if (this.isUsingNonMouseControl()) {
+            this.shouldSnapCursorToSelectedIndex = true;
+        }
+    }
+
+    protected void updateRowPositions() {
+        int rowCount = this.visibleRowCount();
+        topY = this.yPositionForRowBelow(hb.y, -1);
+        bottomY = this.yPositionForRowBelow(hb.y, rowCount);
+
+        // If the rows would be below the screen, move them above the bar
+        if (bottomY < 0) {
+            float newOrigin = hb.y + topY - bottomY + hb.height;
+            this.layoutRowsBelow(hb.x, newOrigin);
+            topY = this.yPositionForRowBelow(newOrigin, -1);
+            bottomY = this.yPositionForRowBelow(newOrigin, rowCount);
+            this.scrollBar.hb.setOffsetY(this.hb.height * 2);
+        }
+        else {
+            this.layoutRowsBelow(hb.x, hb.y);
+            this.scrollBar.hb.setOffsetY(-this.visibleRowCount() * this.rowHeight - (headerRow != null ? headerRow.hb.height : 0));
         }
     }
 
@@ -973,5 +960,17 @@ public class EUIDropdown<T> extends EUIHoverable {
                 }
             }
         }
+    }
+
+    protected int visibleRowCount() {
+        return Math.min(this.rows.size(), this.maxRows);
+    }
+
+    protected float yPositionForRowBelow(float originY, int rowIndex) {
+        float extraHeight = rowIndex > 0 ? BORDER_SIZE : 0.0F;
+        if (headerRow != null) {
+            extraHeight += headerRow.hb.height;
+        }
+        return originY - rowHeight * (float) rowIndex - extraHeight;
     }
 }

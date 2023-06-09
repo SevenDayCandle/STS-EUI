@@ -20,6 +20,14 @@ public class EUITextInput extends EUILabel implements TextReceiver {
         super(font, hb);
     }
 
+    public void end() {
+        isEditing = false;
+        TextInput.stopTextReceiver(this);
+        if (onComplete != null) {
+            onComplete.invoke(text);
+        }
+    }
+
     @Override
     public String getCurrentText() {
         return text;
@@ -47,14 +55,6 @@ public class EUITextInput extends EUILabel implements TextReceiver {
     @Override
     public boolean acceptCharacter(char c) {
         return font.getData().hasGlyph(c);
-    }
-
-    public void end() {
-        isEditing = false;
-        TextInput.stopTextReceiver(this);
-        if (onComplete != null) {
-            onComplete.invoke(text);
-        }
     }
 
     public EUITextInput setOnComplete(ActionT1<String> onComplete) {

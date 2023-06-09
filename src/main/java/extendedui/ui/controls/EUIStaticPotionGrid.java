@@ -6,8 +6,8 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import extendedui.utilities.PotionGroup;
 
 public class EUIStaticPotionGrid extends EUIPotionGrid {
-    public int visibleRowCount = 20;
     protected int currentRow;
+    public int visibleRowCount = 20;
 
     public EUIStaticPotionGrid() {
         this(0.5f, true);
@@ -41,6 +41,31 @@ public class EUIStaticPotionGrid extends EUIPotionGrid {
         }
     }
 
+    public int getRowCount() {
+        return (potionGroup.size() - 1) / rowSize;
+    }
+
+    @Override
+    protected float getScrollDistance(AbstractPotion relic, int index) {
+        if (relic != null) {
+            float scrollDistance = 1f / getRowCount();
+            if (relic.posY > drawTopY || index < currentRow * rowSize) {
+                return -scrollDistance;
+            }
+            else if (relic.posY < 0 || index > (currentRow + visibleRowCount) * rowSize) {
+                return scrollDistance;
+            }
+        }
+        return 0;
+    }
+
+    @Override
+    protected void renderPotions(SpriteBatch sb) {
+        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, potionGroup.size()); i++) {
+            renderPotion(sb, potionGroup.group.get(i));
+        }
+    }
+
     @Override
     protected void updatePotions() {
         hoveredPotion = null;
@@ -59,31 +84,6 @@ public class EUIStaticPotionGrid extends EUIPotionGrid {
                 column = 0;
                 row += 1;
             }
-        }
-    }
-
-    @Override
-    protected float getScrollDistance(AbstractPotion relic, int index) {
-        if (relic != null) {
-            float scrollDistance = 1f / getRowCount();
-            if (relic.posY > drawTopY || index < currentRow * rowSize) {
-                return -scrollDistance;
-            }
-            else if (relic.posY < 0 || index > (currentRow + visibleRowCount) * rowSize) {
-                return scrollDistance;
-            }
-        }
-        return 0;
-    }
-
-    public int getRowCount() {
-        return (potionGroup.size() - 1) / rowSize;
-    }
-
-    @Override
-    protected void renderPotions(SpriteBatch sb) {
-        for (int i = Math.max(0, currentRow * rowSize); i < Math.min((currentRow + visibleRowCount) * rowSize, potionGroup.size()); i++) {
-            renderPotion(sb, potionGroup.group.get(i));
         }
     }
 

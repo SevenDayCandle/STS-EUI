@@ -21,20 +21,12 @@ import extendedui.interfaces.markers.CacheableCard;
 import java.util.HashMap;
 
 public class EUICardGrid extends EUICanvasGrid {
-    public static final int ROW_SIZE = 5;
     protected static final float CARD_SCALE = 0.75f;
     protected static final float DRAW_START_X = Settings.WIDTH - (3f * AbstractCard.IMG_WIDTH) - (4f * Settings.CARD_VIEW_PAD_X);
     protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
     protected static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
     protected static final float PAD_Y = AbstractCard.IMG_HEIGHT * 0.75f + Settings.CARD_VIEW_PAD_Y;
-    public AbstractCard hoveredCard = null;
-    public CardGroup cards;
-    public String message = null;
-    public boolean canRenderUpgrades = false;
-    public boolean shouldEnlargeHovered = true;
-    public float padX = PAD_X;
-    public float targetScale = CARD_SCALE;
-    public float startingScale = targetScale;
+    public static final int ROW_SIZE = 5;
     protected ActionT1<AbstractCard> onCardClick;
     protected ActionT1<AbstractCard> onCardHovered;
     protected ActionT1<AbstractCard> onCardRightClick;
@@ -43,6 +35,14 @@ public class EUICardGrid extends EUICanvasGrid {
     protected float drawTopY = DRAW_START_Y;
     protected float drawX;
     protected int hoveredIndex;
+    public AbstractCard hoveredCard = null;
+    public CardGroup cards;
+    public String message = null;
+    public boolean canRenderUpgrades = false;
+    public boolean shouldEnlargeHovered = true;
+    public float padX = PAD_X;
+    public float targetScale = CARD_SCALE;
+    public float startingScale = targetScale;
 
     public EUICardGrid() {
         this(0.5f, true);
@@ -57,23 +57,8 @@ public class EUICardGrid extends EUICanvasGrid {
         setHorizontalAlignment(horizontalAlignment);
     }
 
-    public EUICardGrid setHorizontalAlignment(float percentage) {
-        this.drawX = MathUtils.clamp(percentage, 0.35f, 0.55f);
-        this.scrollBar.setPosition(screenW((percentage < 0.5f) ? 0.05f : 0.9f), screenH(0.5f));
-
-        return this;
-    }
-
     public EUICardGrid(float horizontalAlignment) {
         this(horizontalAlignment, true);
-    }
-
-    public EUICardGrid addCards(Iterable<? extends AbstractCard> cards) {
-        for (AbstractCard card : cards) {
-            addCard(card);
-        }
-
-        return this;
     }
 
     public EUICardGrid addCard(AbstractCard card) {
@@ -82,6 +67,14 @@ public class EUICardGrid extends EUICanvasGrid {
         card.setAngle(0, true);
         card.lighten(true);
         cards.addToTop(card);
+
+        return this;
+    }
+
+    public EUICardGrid addCards(Iterable<? extends AbstractCard> cards) {
+        for (AbstractCard card : cards) {
+            addCard(card);
+        }
 
         return this;
     }
@@ -98,70 +91,31 @@ public class EUICardGrid extends EUICanvasGrid {
         return this;
     }
 
-    public EUICardGrid canDragScreen(boolean canDrag) {
-        this.canDragScreen = canDrag;
-
-        return this;
-    }
-
-    public EUICardGrid canRenderUpgrades(boolean canRenderUpgrades) {
-        this.canRenderUpgrades = canRenderUpgrades;
-
-        return this;
-    }
-
-    public void clear() {
-        this.sizeCache = 0;
-        this.hoveredCard = null;
-        this.hoveredIndex = 0;
-        this.scrollDelta = 0f;
-        this.scrollStart = 0f;
-        this.draggingScreen = false;
-        this.message = null;
-        // Unlink the cards from any outside card group given to it
-        this.cards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
-        this.upgradeCards.clear();
-
-
-        refreshOffset();
-    }
-
-    @Override
-    public void refreshOffset() {
-        sizeCache = currentSize();
-        upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
-
-        if (sizeCache > rowSize * 2) {
-            int offset = ((sizeCache / rowSize) - ((sizeCache % rowSize > 0) ? 1 : 2));
-            upperScrollBound += this.padY * offset;
-        }
-    }
-
-    @Override
-    public int currentSize() {
-        return cards.size();
-    }
-
-    public void forceUpdateCardPositions() {
-        int row = 0;
-        int column = 0;
-        for (int i = 0; i < cards.group.size(); i++) {
-            AbstractCard card = cards.group.get(i);
-            card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * padX);
-            card.current_y = card.target_y = drawTopY + scrollDelta - (row * padY);
-            //card.drawScale = card.targetDrawScale = targetScale;
-            card.hb.move(card.current_x, card.current_y);
-
-            column += 1;
-            if (column >= rowSize) {
-                column = 0;
-                row += 1;
+    protected void addUpgrade(AbstractCard card) {
+        if (canRenderUpgrades) {
+            try {
+                AbstractCard copy;
+                if (card instanceof CacheableCard) {
+                    copy = ((CacheableCard) card).getCachedUpgrade();
+                }
+                else {
+                    copy = card.makeSameInstanceOf();
+                    copy.upgrade();
+                    copy.displayUpgrades();
+                }
+                upgradeCards.put(card, copy);
+            }
+            catch (Exception e) {
+                EUIUtils.logError(this, "Card upgrade cannot be rendered: " + card.getClass());
+                upgradeCards.put(card, card);
             }
         }
     }
 
-    public AbstractCard getUpgrade(AbstractCard card) {
-        return upgradeCards.get(card);
+    public EUICardGrid canDragScreen(boolean canDrag) {
+        this.canDragScreen = canDrag;
+
+        return this;
     }
 
     @Override
@@ -169,10 +123,19 @@ public class EUICardGrid extends EUICanvasGrid {
         return super.isHovered() || hoveredCard != null;
     }
 
-    public EUICardGrid showScrollbar(boolean showScrollbar) {
-        this.autoShowScrollbar = showScrollbar;
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
+        renderCards(sb);
+        if (hoveredCard != null) {
+            hoveredCard.renderHoverShadow(sb);
+            renderCard(sb, hoveredCard);
+            hoveredCard.renderCardTip(sb);
+        }
 
-        return this;
+        if (message != null) {
+            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
+        }
     }
 
     @Override
@@ -202,28 +165,93 @@ public class EUICardGrid extends EUICanvasGrid {
         }
     }
 
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-        renderCards(sb);
-        if (hoveredCard != null) {
-            hoveredCard.renderHoverShadow(sb);
-            renderCard(sb, hoveredCard);
-            hoveredCard.renderCardTip(sb);
-        }
+    public EUICardGrid showScrollbar(boolean showScrollbar) {
+        this.autoShowScrollbar = showScrollbar;
 
-        if (message != null) {
-            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
+        return this;
+    }
+
+    public EUICardGrid canRenderUpgrades(boolean canRenderUpgrades) {
+        this.canRenderUpgrades = canRenderUpgrades;
+
+        return this;
+    }
+
+    public void clear() {
+        this.sizeCache = 0;
+        this.hoveredCard = null;
+        this.hoveredIndex = 0;
+        this.scrollDelta = 0f;
+        this.scrollStart = 0f;
+        this.draggingScreen = false;
+        this.message = null;
+        // Unlink the cards from any outside card group given to it
+        this.cards = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+        this.upgradeCards.clear();
+
+
+        refreshOffset();
+    }
+
+    public void forceUpdateCardPositions() {
+        int row = 0;
+        int column = 0;
+        for (int i = 0; i < cards.group.size(); i++) {
+            AbstractCard card = cards.group.get(i);
+            card.current_x = card.target_x = (DRAW_START_X * drawX) + (column * padX);
+            card.current_y = card.target_y = drawTopY + scrollDelta - (row * padY);
+            //card.drawScale = card.targetDrawScale = targetScale;
+            card.hb.move(card.current_x, card.current_y);
+
+            column += 1;
+            if (column >= rowSize) {
+                column = 0;
+                row += 1;
+            }
         }
     }
 
-    protected void renderCards(SpriteBatch sb) {
-        for (int i = 0; i < cards.group.size(); i++) {
-            AbstractCard card = cards.group.get(i);
-            if (card != hoveredCard) {
-                renderCard(sb, card);
+    public int getRowCount() {
+        return (this.cards.size() - 1) / rowSize;
+    }
+
+    protected float getScrollDistance(AbstractCard card, int index) {
+        if (card != null) {
+            float scrollDistance = 1f / getRowCount();
+            if (card.target_y > drawTopY) {
+                return -scrollDistance;
+            }
+            else if (card.target_y < 0) {
+                return scrollDistance;
             }
         }
+        return 0;
+    }
+
+    public AbstractCard getUpgrade(AbstractCard card) {
+        return upgradeCards.get(card);
+    }
+
+    @Override
+    public void refreshOffset() {
+        sizeCache = currentSize();
+        upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
+
+        if (sizeCache > rowSize * 2) {
+            int offset = ((sizeCache / rowSize) - ((sizeCache % rowSize > 0) ? 1 : 2));
+            upperScrollBound += this.padY * offset;
+        }
+    }
+
+    @Override
+    public int currentSize() {
+        return cards.size();
+    }
+
+    public EUICardGrid removeCard(AbstractCard card) {
+        cards.removeCard(card);
+
+        return this;
     }
 
     protected void renderCard(SpriteBatch sb, AbstractCard card) {
@@ -246,6 +274,103 @@ public class EUICardGrid extends EUICanvasGrid {
         if (onCardRender != null) {
             onCardRender.invoke(sb, card);
         }
+    }
+
+    protected void renderCards(SpriteBatch sb) {
+        for (int i = 0; i < cards.group.size(); i++) {
+            AbstractCard card = cards.group.get(i);
+            if (card != hoveredCard) {
+                renderCard(sb, card);
+            }
+        }
+    }
+
+    public void renderWithScissors(SpriteBatch sb, Rectangle scissors) {
+        super.renderImpl(sb);
+        if (ScissorStack.pushScissors(scissors)) {
+            renderCards(sb);
+            if (hoveredCard != null) {
+                hoveredCard.renderHoverShadow(sb);
+                renderCard(sb, hoveredCard);
+            }
+            ScissorStack.popScissors();
+        }
+        if (hoveredCard != null) {
+            hoveredCard.renderCardTip(sb);
+        }
+
+        if (message != null) {
+            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
+        }
+    }
+
+    public EUICardGrid setCardGroup(CardGroup cardGroup) {
+        this.upgradeCards.clear();
+        this.cards = cardGroup;
+        for (AbstractCard c : cardGroup.group) {
+            c.drawScale = startingScale;
+            c.targetDrawScale = targetScale;
+            addUpgrade(c);
+        }
+        return this;
+    }
+
+    public EUICardGrid setCardScale(float startingScale, float targetScale) {
+        this.startingScale = startingScale;
+        this.targetScale = targetScale;
+
+        return this;
+    }
+
+    public EUICardGrid setEnlargeOnHover(boolean shouldEnlargeHovered) {
+        this.shouldEnlargeHovered = shouldEnlargeHovered;
+
+        return this;
+    }
+
+    public EUICardGrid setHorizontalAlignment(float percentage) {
+        this.drawX = MathUtils.clamp(percentage, 0.35f, 0.55f);
+        this.scrollBar.setPosition(screenW((percentage < 0.5f) ? 0.05f : 0.9f), screenH(0.5f));
+
+        return this;
+    }
+
+    public EUICardGrid setOnCardClick(ActionT1<AbstractCard> onCardClicked) {
+        this.onCardClick = onCardClicked;
+
+        return this;
+    }
+
+    public EUICardGrid setOnCardHover(ActionT1<AbstractCard> onCardHovered) {
+        this.onCardHovered = onCardHovered;
+
+        return this;
+    }
+
+    public EUICardGrid setOnCardRender(ActionT2<SpriteBatch, AbstractCard> onCardRender) {
+        this.onCardRender = onCardRender;
+
+        return this;
+    }
+
+    public EUICardGrid setOnCardRightClick(ActionT1<AbstractCard> onCardRightClicked) {
+        this.onCardRightClick = onCardRightClicked;
+
+        return this;
+    }
+
+    public EUICardGrid setOptions(boolean canDrag, boolean shouldEnlargeHovered, boolean showScrollbar) {
+        this.canDragScreen = canDrag;
+        this.shouldEnlargeHovered = shouldEnlargeHovered;
+        this.autoShowScrollbar = showScrollbar;
+
+        return this;
+    }
+
+    public EUICardGrid setVerticalStart(float posY) {
+        this.drawTopY = posY;
+
+        return this;
     }
 
     protected void updateCards() {
@@ -305,130 +430,5 @@ public class EUICardGrid extends EUICanvasGrid {
                 }
             }
         }
-    }
-
-    protected float getScrollDistance(AbstractCard card, int index) {
-        if (card != null) {
-            float scrollDistance = 1f / getRowCount();
-            if (card.target_y > drawTopY) {
-                return -scrollDistance;
-            }
-            else if (card.target_y < 0) {
-                return scrollDistance;
-            }
-        }
-        return 0;
-    }
-
-    public int getRowCount() {
-        return (this.cards.size() - 1) / rowSize;
-    }
-
-    public EUICardGrid removeCard(AbstractCard card) {
-        cards.removeCard(card);
-
-        return this;
-    }
-
-    public void renderWithScissors(SpriteBatch sb, Rectangle scissors) {
-        super.renderImpl(sb);
-        if (ScissorStack.pushScissors(scissors)) {
-            renderCards(sb);
-            if (hoveredCard != null) {
-                hoveredCard.renderHoverShadow(sb);
-                renderCard(sb, hoveredCard);
-            }
-            ScissorStack.popScissors();
-        }
-        if (hoveredCard != null) {
-            hoveredCard.renderCardTip(sb);
-        }
-
-        if (message != null) {
-            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
-        }
-    }
-
-    public EUICardGrid setCardGroup(CardGroup cardGroup) {
-        this.upgradeCards.clear();
-        this.cards = cardGroup;
-        for (AbstractCard c : cardGroup.group) {
-            c.drawScale = startingScale;
-            c.targetDrawScale = targetScale;
-            addUpgrade(c);
-        }
-        return this;
-    }
-
-    protected void addUpgrade(AbstractCard card) {
-        if (canRenderUpgrades) {
-            try {
-                AbstractCard copy;
-                if (card instanceof CacheableCard) {
-                    copy = ((CacheableCard) card).getCachedUpgrade();
-                }
-                else {
-                    copy = card.makeSameInstanceOf();
-                    copy.upgrade();
-                    copy.displayUpgrades();
-                }
-                upgradeCards.put(card, copy);
-            }
-            catch (Exception e) {
-                EUIUtils.logError(this, "Card upgrade cannot be rendered: " + card.getClass());
-                upgradeCards.put(card, card);
-            }
-        }
-    }
-
-    public EUICardGrid setCardScale(float startingScale, float targetScale) {
-        this.startingScale = startingScale;
-        this.targetScale = targetScale;
-
-        return this;
-    }
-
-    public EUICardGrid setEnlargeOnHover(boolean shouldEnlargeHovered) {
-        this.shouldEnlargeHovered = shouldEnlargeHovered;
-
-        return this;
-    }
-
-    public EUICardGrid setOnCardClick(ActionT1<AbstractCard> onCardClicked) {
-        this.onCardClick = onCardClicked;
-
-        return this;
-    }
-
-    public EUICardGrid setOnCardHover(ActionT1<AbstractCard> onCardHovered) {
-        this.onCardHovered = onCardHovered;
-
-        return this;
-    }
-
-    public EUICardGrid setOnCardRender(ActionT2<SpriteBatch, AbstractCard> onCardRender) {
-        this.onCardRender = onCardRender;
-
-        return this;
-    }
-
-    public EUICardGrid setOnCardRightClick(ActionT1<AbstractCard> onCardRightClicked) {
-        this.onCardRightClick = onCardRightClicked;
-
-        return this;
-    }
-
-    public EUICardGrid setOptions(boolean canDrag, boolean shouldEnlargeHovered, boolean showScrollbar) {
-        this.canDragScreen = canDrag;
-        this.shouldEnlargeHovered = shouldEnlargeHovered;
-        this.autoShowScrollbar = showScrollbar;
-
-        return this;
-    }
-
-    public EUICardGrid setVerticalStart(float posY) {
-        this.drawTopY = posY;
-
-        return this;
     }
 }

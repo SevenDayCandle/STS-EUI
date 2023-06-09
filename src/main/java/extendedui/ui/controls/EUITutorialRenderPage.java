@@ -12,12 +12,12 @@ public class EUITutorialRenderPage extends EUITutorialPage {
     }
 
     @Override
-    public void updateImpl() {
-
+    public void renderImpl(SpriteBatch sb) {
+        postRender.invoke(sb);
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
-        postRender.invoke(sb);
+    public void updateImpl() {
+
     }
 }

@@ -11,25 +11,19 @@ import extendedui.ui.hitboxes.EUIHitbox;
 public abstract class EUICanvas extends EUIBase {
     private static final float SCROLL_BAR_THRESHOLD = 500f * Settings.scale;
     public final EUIVerticalScrollBar scrollBar;
-    public boolean autoShowScrollbar = true;
-    public boolean draggingScreen;
-    public boolean instantSnap;
     protected boolean canDragScreen = true;
     protected float lowerScrollBound = -Settings.DEFAULT_SCROLL_LIMIT;
     protected float scrollDelta;
     protected float scrollStart;
     protected float upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
+    public boolean autoShowScrollbar = true;
+    public boolean draggingScreen;
+    public boolean instantSnap;
 
 
     public EUICanvas() {
         this.scrollBar = new EUIVerticalScrollBar(new EUIHitbox(screenW(0.93f), screenH(0.15f), screenW(0.03f), screenH(0.7f)))
                 .setOnScroll(this::onScroll);
-    }
-
-    protected void onScroll(float newPercent) {
-        if (!EUI.doesActiveElementExist()) {
-            scrollDelta = MathHelper.valueFromPercentBetween(lowerScrollBound, upperScrollBound, newPercent);
-        }
     }
 
     public EUICanvas canDragScreen(boolean canDrag) {
@@ -50,16 +44,17 @@ public abstract class EUICanvas extends EUIBase {
         scrollBar.scroll(0, true);
     }
 
-    public EUICanvas setScrollBounds(float lowerScrollBound, float upperScrollBound) {
-        this.lowerScrollBound = lowerScrollBound;
-        this.upperScrollBound = Math.max(lowerScrollBound, upperScrollBound);
-        return this;
+    protected void onScroll(float newPercent) {
+        if (!EUI.doesActiveElementExist()) {
+            scrollDelta = MathHelper.valueFromPercentBetween(lowerScrollBound, upperScrollBound, newPercent);
+        }
     }
 
-    public EUICanvas showScrollbar(boolean showScrollbar) {
-        this.autoShowScrollbar = showScrollbar;
-
-        return this;
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        if (shouldShowScrollbar()) {
+            scrollBar.renderImpl(sb);
+        }
     }
 
     @Override
@@ -75,15 +70,20 @@ public abstract class EUICanvas extends EUIBase {
         }
     }
 
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        if (shouldShowScrollbar()) {
-            scrollBar.renderImpl(sb);
-        }
+    public EUICanvas setScrollBounds(float lowerScrollBound, float upperScrollBound) {
+        this.lowerScrollBound = lowerScrollBound;
+        this.upperScrollBound = Math.max(lowerScrollBound, upperScrollBound);
+        return this;
     }
 
     protected boolean shouldShowScrollbar() {
         return autoShowScrollbar && upperScrollBound > SCROLL_BAR_THRESHOLD;
+    }
+
+    public EUICanvas showScrollbar(boolean showScrollbar) {
+        this.autoShowScrollbar = showScrollbar;
+
+        return this;
     }
 
     protected void updateScrolling(boolean isDraggingScrollBar) {

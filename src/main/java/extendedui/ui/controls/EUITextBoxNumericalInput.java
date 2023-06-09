@@ -8,12 +8,12 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
-    public boolean hasEntered;
-    public boolean showNegativeAsInfinity;
-    public boolean clearOnInitialEntry = true;
     protected int cachedValue;
     protected int min = Integer.MIN_VALUE;
     protected int max = Integer.MAX_VALUE;
+    public boolean hasEntered;
+    public boolean showNegativeAsInfinity;
+    public boolean clearOnInitialEntry = true;
 
     public EUITextBoxNumericalInput(Texture backgroundTexture, EUIHitbox hb) {
         super(backgroundTexture, hb);
@@ -24,6 +24,16 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         forceUpdateText();
         if (invoke && onComplete != null) {
             onComplete.invoke(cachedValue);
+        }
+    }
+
+    public void forceUpdateText() {
+        if (showNegativeAsInfinity && cachedValue < 0) {
+            label.text = label.font.getData().hasGlyph('∞') ? "∞" : "Inf";
+        }
+        else {
+            // Ensure parity between label and cachedValue, in case getText is overwritten
+            label.text = String.valueOf(cachedValue);
         }
     }
 
@@ -105,20 +115,6 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         }
     }
 
-    public void forceUpdateText() {
-        if (showNegativeAsInfinity && cachedValue < 0) {
-            label.text = label.font.getData().hasGlyph('∞') ? "∞" : "Inf";
-        }
-        else {
-            // Ensure parity between label and cachedValue, in case getText is overwritten
-            label.text = String.valueOf(cachedValue);
-        }
-    }
-
-    protected void setValue(int value) {
-        setText(String.valueOf(MathUtils.clamp(value, min, max)));
-    }
-
     public int getMax() {
         return max;
     }
@@ -131,6 +127,10 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         this.min = min;
         this.max = Math.max(max, min);
         return this;
+    }
+
+    protected void setValue(int value) {
+        setText(String.valueOf(MathUtils.clamp(value, min, max)));
     }
 
     public EUITextBoxNumericalInput showNegativeAsInfinity(boolean val) {

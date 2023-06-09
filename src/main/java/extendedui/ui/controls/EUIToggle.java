@@ -66,12 +66,12 @@ public class EUIToggle extends EUIHoverable {
         return this;
     }
 
-    public float getAutoWidth() {
-        return tickSize * Settings.scale + EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
-    }
-
     public float getAutoHeight() {
         return EUISmartText.getSmartHeight(font, text, Settings.WIDTH);
+    }
+
+    public float getAutoWidth() {
+        return tickSize * Settings.scale + EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
     }
 
     public boolean isToggled() {
@@ -170,26 +170,14 @@ public class EUIToggle extends EUIHoverable {
         return this;
     }
 
-    public EUIToggle setText(String text) {
-        this.text = text;
+    public EUIToggle setPosition(float cX, float cY) {
+        this.hb.move(cX, cY);
 
         return this;
     }
 
-    public EUIToggle setTickImage(EUIImage unticked, EUIImage ticked) {
-        return setTickImage(unticked, ticked, unticked.srcWidth);
-    }
-
-    public EUIToggle setTickImage(EUIImage unticked, EUIImage ticked, float size) {
-        this.untickedImage = unticked;
-        this.tickedImage = ticked;
-        this.tickSize = size;
-
-        return this;
-    }
-
-    public EUIToggle setToggle(boolean value) {
-        this.toggled = value;
+    public EUIToggle setTooltip(EUITooltip tooltip) {
+        super.setTooltip(tooltip);
 
         return this;
     }
@@ -218,14 +206,26 @@ public class EUIToggle extends EUIHoverable {
         }
     }
 
-    public EUIToggle setPosition(float cX, float cY) {
-        this.hb.move(cX, cY);
+    public EUIToggle setText(String text) {
+        this.text = text;
 
         return this;
     }
 
-    public EUIToggle setTooltip(EUITooltip tooltip) {
-        super.setTooltip(tooltip);
+    public EUIToggle setTickImage(EUIImage unticked, EUIImage ticked) {
+        return setTickImage(unticked, ticked, unticked.srcWidth);
+    }
+
+    public EUIToggle setTickImage(EUIImage unticked, EUIImage ticked, float size) {
+        this.untickedImage = unticked;
+        this.tickedImage = ticked;
+        this.tickSize = size;
+
+        return this;
+    }
+
+    public EUIToggle setToggle(boolean value) {
+        this.toggled = value;
 
         return this;
     }

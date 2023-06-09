@@ -34,16 +34,6 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
     }
 
     @Override
-    public ArrayList<T> getConfirmValue() {
-        return dropdown.getCurrentItems();
-    }
-
-    @Override
-    public ArrayList<T> getCancelValue() {
-        return null;
-    }
-
-    @Override
     public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
         this.dropdown.tryRender(sb);
@@ -53,6 +43,16 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
     public void updateImpl() {
         super.updateImpl();
         this.dropdown.tryUpdate();
+    }
+
+    @Override
+    public ArrayList<T> getConfirmValue() {
+        return dropdown.getCurrentItems();
+    }
+
+    @Override
+    public ArrayList<T> getCancelValue() {
+        return null;
     }
 
     public EUIDialogDropdown<T> setItems(List<T> items) {

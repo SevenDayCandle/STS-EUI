@@ -13,15 +13,6 @@ public abstract class EUICanvasGrid extends EUICanvas {
         this.padY = padY;
     }
 
-    protected void updateScrolling(boolean isDraggingScrollBar) {
-        if (sizeCache != currentSize()) {
-            refreshOffset();
-        }
-        super.updateScrolling(isDraggingScrollBar);
-    }
-
-    abstract public int currentSize();
-
     public void refreshOffset() {
         sizeCache = currentSize();
         upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
@@ -33,4 +24,13 @@ public abstract class EUICanvasGrid extends EUICanvas {
             lowerScrollBound -= padY * (offset - 1);
         }
     }
+
+    protected void updateScrolling(boolean isDraggingScrollBar) {
+        if (sizeCache != currentSize()) {
+            refreshOffset();
+        }
+        super.updateScrolling(isDraggingScrollBar);
+    }
+
+    abstract public int currentSize();
 }

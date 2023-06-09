@@ -5,8 +5,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 
 public class EUIStaticCardGrid extends EUICardGrid {
-    public int visibleRowCount = 4;
     protected int currentRow;
+    public int visibleRowCount = 4;
 
     public EUIStaticCardGrid() {
         this(0.5f, true);
@@ -37,6 +37,20 @@ public class EUIStaticCardGrid extends EUICardGrid {
                 row += 1;
             }
         }
+    }
+
+    @Override
+    protected float getScrollDistance(AbstractCard card, int index) {
+        if (card != null) {
+            float scrollDistance = 1f / getRowCount();
+            if (card.target_y > drawTopY || index < currentRow * rowSize) {
+                return -scrollDistance;
+            }
+            else if (card.target_y < 0 || index > (currentRow + visibleRowCount) * rowSize) {
+                return scrollDistance;
+            }
+        }
+        return 0;
     }
 
     @Override
@@ -78,20 +92,6 @@ public class EUIStaticCardGrid extends EUICardGrid {
                 row += 1;
             }
         }
-    }
-
-    @Override
-    protected float getScrollDistance(AbstractCard card, int index) {
-        if (card != null) {
-            float scrollDistance = 1f / getRowCount();
-            if (card.target_y > drawTopY || index < currentRow * rowSize) {
-                return -scrollDistance;
-            }
-            else if (card.target_y < 0 || index > (currentRow + visibleRowCount) * rowSize) {
-                return scrollDistance;
-            }
-        }
-        return 0;
     }
 
     @Override

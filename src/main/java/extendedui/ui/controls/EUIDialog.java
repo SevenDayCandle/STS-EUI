@@ -53,17 +53,6 @@ public abstract class EUIDialog<T> extends EUIHoverable {
         this.cancel = getCancelButton();
     }
 
-    protected EUIButton getConfirmButton() {
-        return new EUIButton(ImageMaster.OPTION_YES,
-                new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.15f, hb.height * 0.15f))
-                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, TEXT[2])
-                .setOnClick(() -> {
-                    if (onComplete != null) {
-                        onComplete.invoke(getConfirmValue());
-                    }
-                });
-    }
-
     protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.85f, hb.height * 0.15f))
@@ -75,9 +64,16 @@ public abstract class EUIDialog<T> extends EUIHoverable {
                 });
     }
 
-    public abstract T getConfirmValue();
-
-    public abstract T getCancelValue();
+    protected EUIButton getConfirmButton() {
+        return new EUIButton(ImageMaster.OPTION_YES,
+                new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.15f, hb.height * 0.15f))
+                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, TEXT[2])
+                .setOnClick(() -> {
+                    if (onComplete != null) {
+                        onComplete.invoke(getConfirmValue());
+                    }
+                });
+    }
 
     @Override
     public void renderImpl(SpriteBatch sb) {
@@ -162,4 +158,8 @@ public abstract class EUIDialog<T> extends EUIHoverable {
             }
         }
     }
+
+    public abstract T getConfirmValue();
+
+    public abstract T getCancelValue();
 }

@@ -17,12 +17,12 @@ public class EUITutorialPage extends EUIBase {
     }
 
     @Override
-    public void updateImpl() {
+    public void renderImpl(SpriteBatch sb) {
 
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
+    public void updateImpl() {
 
     }
 }
