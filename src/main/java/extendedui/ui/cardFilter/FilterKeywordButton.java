@@ -32,7 +32,7 @@ public class FilterKeywordButton extends EUIHoverable {
     public static final float BASE_COUNT_OFFSET_X = -0.21f;
     public static final float BASE_IMAGE_OFFSET_X = -0.29f;
     public static final float BASE_IMAGE_OFFSET_Y = -0.16f;
-    public final GenericFilters<?> filters;
+    public final GenericFilters<?,?> filters;
     public int cardCount = -1;
     public EUIButton backgroundButton;
     public EUILabel titleText;
@@ -43,7 +43,7 @@ public class FilterKeywordButton extends EUIHoverable {
     private ActionT1<FilterKeywordButton> onToggle;
     private ActionT1<FilterKeywordButton> onRightClick;
 
-    public FilterKeywordButton(GenericFilters<?> filters, EUIKeywordTooltip tooltip) {
+    public FilterKeywordButton(GenericFilters<?,?> filters, EUIKeywordTooltip tooltip) {
         super(filters.hb);
 
         this.filters = filters;
