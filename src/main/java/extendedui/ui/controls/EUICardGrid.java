@@ -17,6 +17,7 @@ import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CacheableCard;
+import extendedui.ui.tooltips.EUITourTooltip;
 
 import java.util.HashMap;
 
@@ -151,7 +152,7 @@ public class EUICardGrid extends EUICanvasGrid {
                 return;
             }
 
-            if (InputHelper.justClickedLeft) {
+            if (InputHelper.justClickedLeft && !EUITourTooltip.shouldBlockInteract(hoveredCard.hb)) {
                 hoveredCard.hb.clickStarted = true;
             }
 

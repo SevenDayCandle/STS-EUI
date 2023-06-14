@@ -141,6 +141,7 @@ public class EUIRM {
         public final TextureCache panelRounded = new TextureCache("images/extendedui/ui/Panel_Rounded.png");
         public final TextureCache panelRoundedHalfH = new TextureCache("images/extendedui/ui/Panel_Rounded_Half_H.png");
         public final TextureCache plus = new TextureCache("images/extendedui/ui/Plus.png");
+        public final TextureCache proceed = new TextureCache("images/extendedui/ui/Proceed.png");
         public final TextureCache rectangularButton = new TextureCache("images/extendedui/ui/RectangularButton.png");
         public final TextureCache squaredButton = new TextureCache("images/extendedui/ui/SquaredButton.png");
         public final TextureCache squaredButton2 = new TextureCache("images/extendedui/ui/SquaredButton2.png");
@@ -163,7 +164,7 @@ public class EUIRM {
         public final String config_useVanillaCompendium = stringsConfig.TEXT[1];
         public final String config_useSnapScrolling = stringsConfig.TEXT[2];
         public final String config_disableCompendiumButton = stringsConfig.TEXT[3];
-        public final String config_disableDescriptionIcons = stringsConfig.TEXT[4];
+        public final String config_enableDescriptionIcons = stringsConfig.TEXT[4];
         public final String config_disableEffekseer = stringsConfig.TEXT[5];
         public final String config_flushOnGameStart = stringsConfig.TEXT[6];
         public final String config_flushOnRoomStart = stringsConfig.TEXT[7];
@@ -187,7 +188,7 @@ public class EUIRM {
         public final String configdesc_useVanillaCompendium = stringsConfigDesc.TEXT[2];
         public final String configdesc_useSnapScrolling = stringsConfigDesc.TEXT[3];
         public final String configdesc_disableCompendiumButton = stringsConfigDesc.TEXT[4];
-        public final String configdesc_disableDescriptionIcons = stringsConfigDesc.TEXT[5];
+        public final String configdesc_enableDescriptionIcons = stringsConfigDesc.TEXT[5];
         public final String configdesc_disableEffekseer = stringsConfigDesc.TEXT[6];
         public final String configdesc_flushEffekseer = stringsConfigDesc.TEXT[7];
         public final String configdesc_showModSettings = stringsConfigDesc.TEXT[8];

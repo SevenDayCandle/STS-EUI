@@ -95,7 +95,7 @@ public class EUISmartText {
         }
     }
 
-    public static TextureRegion getSmallIcon(String id) {
+    public static TextureRegion getSmallIcon(String id, boolean force) {
         switch (id) {
             case "E":
                 return AbstractDungeon.player != null ? AbstractDungeon.player.getOrb() : AbstractCard.orb_red;
@@ -107,10 +107,9 @@ public class EUISmartText {
                 return AbstractCard.orb_relic;
             case "SPECIAL":
                 return AbstractCard.orb_special;
-
             default:
                 EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(id);
-                return (tooltip != null) ? tooltip.icon : null;
+                return (tooltip != null && (force || tooltip.forceIcon)) ? tooltip.icon : null;
         }
     }
 
@@ -281,13 +280,11 @@ public class EUISmartText {
                 switch (currentChar) {
                     // Symbol
                     case '[':
-                        if (!EUIConfiguration.disableDescrptionIcons.get()) {
-                            writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize);
-                        }
+                        writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize, EUIConfiguration.enableDescriptionIcons.get());
                         break;
                     // Force symbol, ignoring user config settings
                     case '†':
-                        writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize);
+                        writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize, true);
                         break;
                     // End of symbol, needs to be manually ignored when icons are disabled
                     case ']':
@@ -375,7 +372,7 @@ public class EUISmartText {
         curWidth += spaceWidth * 5.0f;
     }
 
-    private static void writeToken(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing, float iconScaling, float imageSize) {
+    private static void writeToken(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing, float iconScaling, float imageSize, boolean force) {
         StringBuilder subBuilder = new StringBuilder();
         while (getAndMove() && currentChar != ']') {
             subBuilder.append(currentChar);
@@ -383,7 +380,7 @@ public class EUISmartText {
 
         String iconID = EUIUtils.popBuilder(subBuilder);
         Color backgroundColor = getTooltipBackgroundColor(iconID);
-        TextureRegion icon = getSmallIcon(iconID);
+        TextureRegion icon = getSmallIcon(iconID, force);
         if (icon != null) {
             final float orbWidth = icon.getRegionWidth();
             final float orbHeight = icon.getRegionHeight();
@@ -424,6 +421,10 @@ public class EUISmartText {
 
                 curWidth += imageSize + spaceWidth;
             }
+        }
+        else {
+            wordColor = Settings.GOLD_COLOR;
+            writeWord(sb, iconID, x, y, lineWidth, lineSpacing);
         }
     }
 

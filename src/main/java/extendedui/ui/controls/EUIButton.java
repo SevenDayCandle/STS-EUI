@@ -17,6 +17,7 @@ import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.TupleT2;
 
@@ -53,6 +54,16 @@ public class EUIButton extends EUIHoverable {
 
     public boolean isInteractable() {
         return interactable && (onLeftClick != null || onLeftPreClick != null);
+    }
+
+    public EUITourTooltip makeTour(boolean canDismiss) {
+        if (tooltip != null) {
+            EUITourTooltip tip = new EUITourTooltip(hb, tooltip.title, tooltip.description);
+            tip.setFlash(background);
+            tip.setCanDismiss(canDismiss);
+            return tip;
+        }
+        return null;
     }
 
     protected void onClickStart() {
@@ -237,7 +248,7 @@ public class EUIButton extends EUIHoverable {
         super.updateImpl();
         background.updateColor();
 
-        if (isInteractable()) {
+        if (isInteractable() && !EUITourTooltip.shouldBlockInteract(this.hb)) {
             if (this.hb.justHovered) {
                 onJustHovered();
             }

@@ -24,7 +24,7 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
     public static final float ICON_SIZE = scale(40);
     private long lastFrame;
     protected ArrayList<? extends CountingPanelCounter<?>> counters;
-    protected ArrayList<AbstractCard> cards;
+    protected ArrayList<? extends AbstractCard> cards;
     protected EUIButton swapButton;
 
     public CountingPanel() {
@@ -41,7 +41,7 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
         setActive(false);
     }
 
-    public void open(ArrayList<AbstractCard> cards, AbstractCard.CardColor color, Object payload) {
+    public void open(ArrayList<? extends AbstractCard> cards, AbstractCard.CardColor color, Object payload) {
         isActive = EUIConfiguration.showCountingPanel.get() && cards != null;
         this.cards = cards;
         swapButton.setActive(true);

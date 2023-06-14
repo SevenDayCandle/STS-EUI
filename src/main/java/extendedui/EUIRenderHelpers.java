@@ -56,7 +56,7 @@ public class EUIRenderHelpers {
     protected static final String SHADER_RAINBOW_FRAGMENT = "shaders/rainbowFragment.glsl";
     protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
     protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
-    public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.5F);
+    public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.4F);
     private static FrameBuffer maskBuffer;
     protected static ShaderProgram blurShader;
     protected static ShaderProgram brighterShader;

@@ -5,9 +5,5 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 
 import java.util.ArrayList;
 
-public interface CustomCardPoolModule extends IUIElement {
-    default void onClose() {
-    }
-
-    void open(ArrayList<AbstractCard> cards, AbstractCard.CardColor color, Object payload);
+public interface CustomCardPoolModule extends CustomPoolModule<AbstractCard> {
 }

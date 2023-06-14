@@ -7,5 +7,5 @@ import extendedui.ui.cardFilter.CountingPanelCounter;
 import java.util.ArrayList;
 
 public interface CountingPanelCardFilter {
-    ArrayList<? extends CountingPanelCounter<?>> generateCounters(ArrayList<AbstractCard> cards, Hitbox hb);
+    ArrayList<? extends CountingPanelCounter<?>> generateCounters(ArrayList<? extends AbstractCard> cards, Hitbox hb);
 }

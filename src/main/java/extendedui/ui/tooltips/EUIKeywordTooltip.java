@@ -48,6 +48,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     public TextureRegion icon;
     public boolean canHighlight = true;
     public boolean canFilter = true;
+    public boolean forceIcon;
     public float iconmultiH = 1;
     public float iconmultiW = 1;
     public boolean useLogic = false;
@@ -162,6 +163,12 @@ public class EUIKeywordTooltip extends EUITooltip {
 
     public EUIKeywordTooltip canHighlight(boolean value) {
         this.canHighlight = value;
+
+        return this;
+    }
+
+    public EUIKeywordTooltip forceIcon(boolean value) {
+        this.forceIcon = value;
 
         return this;
     }
@@ -340,5 +347,10 @@ public class EUIKeywordTooltip extends EUITooltip {
         this.iconmultiH = h;
 
         return this;
+    }
+
+    @Override
+    public String getTitleOrIcon() {
+        return forceIcon ? getTitleOrIconForced() : super.getTitleOrIcon();
     }
 }

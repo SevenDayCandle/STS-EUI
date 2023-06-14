@@ -38,16 +38,14 @@ import extendedui.ui.screens.*;
 import extendedui.ui.settings.ExtraModSettingsPanel;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EUI {
@@ -173,6 +171,7 @@ public class EUI {
         activeElement = null;
         currentScreen = null;
         lastClicked = null;
+        EUITourTooltip.clearTutorialQueue();
     }
 
     public static boolean doesActiveElementExist() {
@@ -394,6 +393,7 @@ public class EUI {
 
     public static void priorityPostRender(SpriteBatch sb) {
         renderImpl(sb, priorityPostRenderList.iterator());
+        EUITourTooltip.render(sb);
     }
 
     /* Create EUITooltips for all basegame keywords

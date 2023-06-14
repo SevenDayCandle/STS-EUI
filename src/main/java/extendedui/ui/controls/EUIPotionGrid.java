@@ -14,6 +14,7 @@ import extendedui.EUIInputManager;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
+import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.PotionGroup;
 
 public class EUIPotionGrid extends EUICanvasGrid {
@@ -161,7 +162,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
                 return;
             }
 
-            if (InputHelper.justClickedLeft) {
+            if (InputHelper.justClickedLeft && !EUITourTooltip.shouldBlockInteract(hoveredPotion.potion.hb)) {
                 hoveredPotion.potion.hb.clickStarted = true;
             }
 

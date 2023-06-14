@@ -17,6 +17,7 @@ import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIFontHelper;
 
 public class EUIToggle extends EUIHoverable {
@@ -76,6 +77,16 @@ public class EUIToggle extends EUIHoverable {
 
     public boolean isToggled() {
         return toggled;
+    }
+
+    public EUITourTooltip makeTour(boolean canDismiss) {
+        if (tooltip != null) {
+            EUITourTooltip tip = new EUITourTooltip(hb, tooltip.title, tooltip.description);
+            tip.setFlash(untickedImage);
+            tip.setCanDismiss(canDismiss);
+            return tip;
+        }
+        return null;
     }
 
     @Override
@@ -194,7 +205,7 @@ public class EUIToggle extends EUIHoverable {
             CardCrawlGame.sound.playA("UI_HOVER", -0.3f);
         }
 
-        if (hb.hovered && InputHelper.justClickedLeft) {
+        if (hb.hovered && InputHelper.justClickedLeft && !EUITourTooltip.shouldBlockInteract(hb)) {
             hb.clickStarted = true;
         }
 

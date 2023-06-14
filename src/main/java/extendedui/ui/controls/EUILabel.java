@@ -12,6 +12,7 @@ import extendedui.text.EUISmartText;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.ui.tooltips.EUITourTooltip;
 
 public class EUILabel extends EUIHoverable {
     private boolean smartPadEnd;
@@ -82,6 +83,15 @@ public class EUILabel extends EUIHoverable {
                 .setFont(font, fontScale)
                 .setLabel(text)
                 .setTooltip(tooltip);
+    }
+
+    public EUITourTooltip makeTour(boolean canDismiss) {
+        if (tooltip != null) {
+            EUITourTooltip tip = new EUITourTooltip(hb, tooltip.title, tooltip.description);
+            tip.setCanDismiss(canDismiss);
+            return tip;
+        }
+        return null;
     }
 
     @Override

@@ -15,25 +15,25 @@ import java.util.stream.Stream;
 
 public class CountingPanelStats<T extends CountingPanelItem, J, K> implements Iterable<Map.Entry<T, Integer>> {
     private final HashMap<T, Integer> groups = new HashMap<>();
-    private final FuncT1<Iterable<J>, K> vendorFunc;
+    private final FuncT1<Iterable<? extends J>, K> vendorFunc;
     private final FuncT1<T, J> keyFunc;
     private final FuncT1<Integer, J> countingFunc;
-    private final FuncT2<Integer, Iterable<J>, K> amountFunc;
+    private final FuncT2<Integer, Iterable<? extends J>, K> amountFunc;
     private int totalK;
 
-    public CountingPanelStats(FuncT1<Iterable<J>, K> vendorFunc, FuncT1<T, J> keyFunc, FuncT1<Integer, J> countingFunc, FuncT2<Integer, Iterable<J>, K> amountFunc, Iterable<K> items) {
+    public CountingPanelStats(FuncT1<Iterable<? extends J>, K> vendorFunc, FuncT1<T, J> keyFunc, FuncT1<Integer, J> countingFunc, FuncT2<Integer, Iterable<? extends J>, K> amountFunc, Iterable<? extends K> items) {
         this(vendorFunc, keyFunc, countingFunc, amountFunc);
         addItems(items);
     }
 
-    public CountingPanelStats(FuncT1<Iterable<J>, K> vendorFunc, FuncT1<T, J> keyFunc, FuncT1<Integer, J> countingFunc, FuncT2<Integer, Iterable<J>, K> amountFunc) {
+    public CountingPanelStats(FuncT1<Iterable<? extends J>, K> vendorFunc, FuncT1<T, J> keyFunc, FuncT1<Integer, J> countingFunc, FuncT2<Integer, Iterable<? extends J>, K> amountFunc) {
         this.vendorFunc = vendorFunc;
         this.keyFunc = keyFunc;
         this.countingFunc = countingFunc;
         this.amountFunc = amountFunc;
     }
 
-    public static <T extends CountingPanelItem, K> CountingPanelStats<T, T, K> basic(FuncT1<Iterable<T>, K> vendorFunc) {
+    public static <T extends CountingPanelItem, K> CountingPanelStats<T, T, K> basic(FuncT1<Iterable<? extends T>, K> vendorFunc) {
         return new CountingPanelStats<>(vendorFunc,
                 (a) -> {
                     return a;
@@ -41,13 +41,13 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
                 (a) -> {
                     return 1;
                 },
-                (a, b) -> {
+                (res, i) -> {
                     return 1;
                 }
         );
     }
 
-    public static <T extends CountingPanelItem, K> CountingPanelStats<T, T, K> basic(FuncT1<Iterable<T>, K> vendorFunc, Iterable<K> items) {
+    public static <T extends CountingPanelItem, K> CountingPanelStats<T, T, K> basic(FuncT1<Iterable<? extends T>, K> vendorFunc, Iterable<? extends K> items) {
         return new CountingPanelStats<>(vendorFunc,
                 (a) -> {
                     return a;
@@ -55,7 +55,7 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
                 (a) -> {
                     return 1;
                 },
-                (a, b) -> {
+                (res, b) -> {
                     return 1;
                 },
                 items
@@ -63,15 +63,14 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
     }
 
     public void addItem(K item) {
-        totalK += 1;
-        Iterable<J> results = vendorFunc.invoke(item);
+        Iterable<? extends J> results = vendorFunc.invoke(item);
         totalK += amountFunc.invoke(results, item);
         for (J res : results) {
             groups.merge(keyFunc.invoke(res), countingFunc.invoke(res), Integer::sum);
         }
     }
 
-    public void addItems(Iterable<K> items) {
+    public void addItems(Iterable<? extends K> items) {
         for (K item : items) {
             addItem(item);
         }

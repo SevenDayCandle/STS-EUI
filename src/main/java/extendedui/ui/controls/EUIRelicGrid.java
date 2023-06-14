@@ -13,6 +13,7 @@ import extendedui.EUIInputManager;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
+import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.RelicGroup;
 
 public class EUIRelicGrid extends EUICanvasGrid {
@@ -118,7 +119,7 @@ public class EUIRelicGrid extends EUICanvasGrid {
                 return;
             }
 
-            if (InputHelper.justClickedLeft) {
+            if (InputHelper.justClickedLeft && !EUITourTooltip.shouldBlockInteract(hoveredRelic.relic.hb)) {
                 hoveredRelic.relic.hb.clickStarted = true;
             }
 

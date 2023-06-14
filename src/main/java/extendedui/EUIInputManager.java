@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 
+/* This class allows one to check if the user clicked in the mouse in render calls, which is not possible with InputManager because clicks are cleared after the update phase */
 public class EUIInputManager {
     public static KeyState rightClick = KeyState.Released;
     public static KeyState leftClick = KeyState.Released;

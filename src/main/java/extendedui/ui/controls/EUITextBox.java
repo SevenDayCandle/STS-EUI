@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIFontHelper;
 
 public class EUITextBox extends EUIHoverable {
@@ -43,6 +44,16 @@ public class EUITextBox extends EUIHoverable {
         label.render(sb);
 
         hb.render(sb);
+    }
+
+    public EUITourTooltip makeTour(boolean canDismiss) {
+        if (tooltip != null) {
+            EUITourTooltip tip = new EUITourTooltip(hb, tooltip.title, tooltip.description);
+            tip.setFlash(image);
+            tip.setCanDismiss(canDismiss);
+            return tip;
+        }
+        return null;
     }
 
     public EUITextBox setAlignment(float verticalRatio, float horizontalRatio) {

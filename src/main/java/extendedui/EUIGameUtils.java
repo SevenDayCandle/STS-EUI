@@ -331,40 +331,6 @@ public class EUIGameUtils {
         return Settings.scale * value;
     }
 
-    public static void scanForTips(String rawDesc, ArrayList<EUIKeywordTooltip> tips) {
-        final Scanner desc = new Scanner(rawDesc);
-        String s;
-        boolean alreadyExists;
-        do {
-            if (!desc.hasNext()) {
-                desc.close();
-                return;
-            }
-
-            s = desc.next();
-            if (s.charAt(0) == '#') {
-                s = s.substring(2);
-            }
-
-            s = s.replace(',', ' ');
-            s = s.replace('.', ' ');
-
-            if (s.length() > 4) {
-                s = s.replace('[', ' ');
-                s = s.replace(']', ' ');
-            }
-
-            s = s.trim();
-            s = s.toLowerCase();
-
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(s);
-            if (tip != null && !tips.contains(tip)) {
-                tips.add(tip);
-            }
-        }
-        while (true);
-    }
-
     public static float screenH(float value) {
         return Settings.HEIGHT * value;
     }

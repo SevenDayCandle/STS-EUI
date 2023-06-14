@@ -10,6 +10,7 @@ import extendedui.EUIRenderHelpers;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
 
@@ -54,6 +55,16 @@ public class EUIImage extends EUIHoverable {
 
     public EUIImage(EUIImage other) {
         this(other.texture, other.hb.makeCopy());
+    }
+
+    public EUITourTooltip makeTour(boolean canDismiss) {
+        if (tooltip != null) {
+            EUITourTooltip tip = new EUITourTooltip(hb, tooltip.title, tooltip.description);
+            tip.setFlash(this);
+            tip.setCanDismiss(canDismiss);
+            return tip;
+        }
+        return null;
     }
 
     public void render(SpriteBatch sb, Hitbox hb) {

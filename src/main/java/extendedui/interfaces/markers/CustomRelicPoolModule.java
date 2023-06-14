@@ -7,9 +7,5 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 
 import java.util.ArrayList;
 
-public interface CustomRelicPoolModule extends IUIElement {
-    default void onClose() {
-    }
-
-    void open(ArrayList<AbstractRelic> relics, AbstractCard.CardColor color, Object payload);
+public interface CustomRelicPoolModule extends CustomPoolModule<AbstractRelic> {
 }

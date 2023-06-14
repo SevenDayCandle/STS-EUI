@@ -7,12 +7,15 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import extendedui.EUI;
 import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.FuncT1;
+import extendedui.interfaces.delegates.FuncT2;
 import extendedui.ui.cardFilter.SimpleCardFilterModule;
 import extendedui.utilities.EUIClassUtils;
 
 public class PackmasterPatches {
     @SpirePatch(cls = "thePackmaster.SpireAnniversary5Mod", method = "receivePostInitialize", requiredModId = "anniv5", optional = true)
     public static class PackmasterPatches_PostInitialize {
+
         @SpirePostfixPatch
         public static void postfix() {
             try {

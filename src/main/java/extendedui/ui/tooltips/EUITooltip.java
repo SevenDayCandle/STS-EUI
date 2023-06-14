@@ -35,9 +35,7 @@ import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.*;
 
 public class EUITooltip {
     private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
@@ -71,7 +69,7 @@ public class EUITooltip {
     public BitmapFont descriptionFont = EUIFontHelper.cardTooltipFont;
     public ColoredString subHeader;
     public ColoredString subText;
-    public EUITooltip child;
+    public List<EUITooltip> children;
     public String ID;
     public String title;
     public String description;
@@ -147,11 +145,10 @@ public class EUITooltip {
     }
 
     public static void queueTooltip(EUITooltip tooltip, float x, float y) {
-        if (tryRender()) {
-            EUITooltip cur = tooltip;
-            while (cur != null) {
-                tooltips.add(cur);
-                cur = cur.child;
+        if (tryQueue()) {
+            tooltips.add(tooltip);
+            if (tooltip.children != null) {
+                tooltips.addAll(tooltip.children);
             }
             genericTipPos.x = x;
             genericTipPos.y = y;
@@ -174,7 +171,7 @@ public class EUITooltip {
     }
 
     public static void queueTooltips(Collection<? extends EUITooltip> tips, float x, float y) {
-        if (tryRender()) {
+        if (tryQueue()) {
             tooltips.addAll(tips);
             genericTipPos.x = x;
             genericTipPos.y = y;
@@ -183,35 +180,35 @@ public class EUITooltip {
     }
 
     public static void queueTooltips(AbstractCreature source) {
-        if (tryRender()) {
+        if (tryQueue()) {
             creature = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromCreature);
         }
     }
 
     public static <T extends AbstractCard & TooltipProvider> void queueTooltips(T source) {
-        if (tryRender()) {
+        if (tryQueue()) {
             provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromCard);
         }
     }
 
     public static <T extends AbstractPotion & TooltipProvider> void queueTooltips(T source) {
-        if (tryRender()) {
+        if (tryQueue()) {
             provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromPotion);
         }
     }
 
     public static <T extends AbstractRelic & TooltipProvider> void queueTooltips(T source) {
-        if (tryRender()) {
+        if (tryQueue()) {
             provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromRelic);
         }
     }
 
     public static <T extends AbstractBlight & TooltipProvider> void queueTooltips(T source) {
-        if (tryRender()) {
+        if (tryQueue()) {
             provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromBlight);
         }
@@ -271,6 +268,7 @@ public class EUITooltip {
                     tooltips.add(tip);
                 }
             }
+            scanListForAdditionalTips(tooltips);
         }
 
         float x;
@@ -356,8 +354,9 @@ public class EUITooltip {
             else {
                 lastProvider = null;
                 if (creature instanceof AbstractMonster) {
-                    if (EUIGameUtils.canViewEnemyIntents((AbstractMonster) creature)) {
-                        EUITooltip tip = fromMonsterIntent((AbstractMonster) creature);
+                    AbstractMonster monster = (AbstractMonster) creature;
+                    if (EUIGameUtils.canViewEnemyIntents(monster) && monster.intent != AbstractMonster.Intent.NONE) {
+                        EUITooltip tip = fromMonsterIntent(monster);
                         if (tip != null) {
                             tooltips.add(tip);
                         }
@@ -384,6 +383,8 @@ public class EUITooltip {
                     tooltips.add(tip);
                 }
             }
+
+            scanListForAdditionalTips(tooltips);
         }
 
         final float original_y = y;
@@ -411,8 +412,12 @@ public class EUITooltip {
             return;
         }
 
-        lastProvider = provider;
-        List<? extends EUITooltip> pTips = provider.getTips();
+        if (lastProvider != provider) {
+            lastProvider = provider;
+            tooltips.clear();
+            tooltips.addAll(provider.getTips());
+            scanListForAdditionalTips(tooltips);
+        }
 
         float x;
         float y;
@@ -441,7 +446,7 @@ public class EUITooltip {
             y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        renderTipsImpl(sb, pTips, x, y);
+        renderTipsImpl(sb, tooltips, x, y);
     }
 
 
@@ -451,8 +456,12 @@ public class EUITooltip {
             return;
         }
 
-        lastProvider = provider;
-        List<? extends EUITooltip> pTips = provider.getTips();
+        if (lastProvider != provider) {
+            lastProvider = provider;
+            tooltips.clear();
+            tooltips.addAll(provider.getTips());
+            scanListForAdditionalTips(tooltips);
+        }
 
         float x;
         float y;
@@ -464,7 +473,7 @@ public class EUITooltip {
             x = 180 * Settings.scale;
             y = 0.7f * Settings.HEIGHT;
         }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && pTips.size() > 2 && !AbstractDungeon.player.hasRelic(relic.relicId)) {
+        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !AbstractDungeon.player.hasRelic(relic.relicId)) {
             x = InputHelper.mX + (60 * Settings.scale);
             y = InputHelper.mY + (180 * Settings.scale);
         }
@@ -481,7 +490,7 @@ public class EUITooltip {
             y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        renderTipsImpl(sb, pTips, x, y);
+        renderTipsImpl(sb, tooltips, x, y);
     }
 
     public static void renderGeneric(SpriteBatch sb) {
@@ -498,7 +507,63 @@ public class EUITooltip {
         }
     }
 
-    private static boolean tryRender() {
+    public static ArrayList<EUITooltip> scanForTips(String rawDesc) {
+        ArrayList<EUITooltip> tips = new ArrayList<>();
+        scanForTips(rawDesc, tips, tips, true);
+        return tips;
+    }
+
+    public static void scanForTips(String rawDesc, ArrayList<? super EUIKeywordTooltip> tips) {
+        scanForTips(rawDesc, tips, tips, true);
+    }
+
+    public static void scanForTips(String rawDesc, ArrayList<? super EUIKeywordTooltip> tips, ArrayList<? super EUIKeywordTooltip> dest, boolean allowNonRenderable) {
+        final Scanner desc = new Scanner(rawDesc);
+        String s;
+        boolean alreadyExists;
+        do {
+            if (!desc.hasNext()) {
+                desc.close();
+                return;
+            }
+
+            s = desc.next();
+            if (s.charAt(0) == '#') {
+                s = s.substring(2);
+            }
+
+            s = s.replace(',', ' ');
+            s = s.replace('.', ' ');
+
+            if (s.length() > 4) {
+                s = s.replace('[', ' ');
+                s = s.replace(']', ' ');
+            }
+
+            s = s.trim();
+            s = s.toLowerCase();
+
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(s);
+            if (tip != null && (allowNonRenderable || tip.isRenderable()) && !tips.contains(tip)) {
+                dest.add(tip);
+            }
+        }
+        while (true);
+    }
+
+    public static void scanListForAdditionalTips(ArrayList<EUITooltip> receiver) {
+        scanListForAdditionalTips(new ArrayList<>(receiver), receiver);
+    }
+
+    public static void scanListForAdditionalTips(ArrayList<EUITooltip> source, ArrayList<EUITooltip> receiver) {
+        for (EUITooltip tip : source) {
+            if (tip.description != null) {
+                scanForTips(tip.description, receiver, receiver, false);
+            }
+        }
+    }
+
+    private static boolean tryQueue() {
         final boolean canRender = canRenderTooltips();
         if (canRender) {
             canRenderTooltips(false);
@@ -604,12 +669,19 @@ public class EUITooltip {
         return this;
     }
 
-    public EUITooltip setChild(EUITooltip other) {
-        this.child = other;
-        // Remove circular children to avoid infinite loops when queueing tooltips
-        if (other.child == this) {
-            other.child = null;
-        }
+    public EUITooltip setChildren(List<EUITooltip> other) {
+        this.children = other;
+
+        return this;
+    }
+
+    public EUITooltip setChildrenFromDescription() {
+        this.children = scanForTips(this.description);
+        return this;
+    }
+
+    public EUITooltip setChildren(EUITooltip... other) {
+        this.children = Arrays.asList(other);
 
         return this;
     }

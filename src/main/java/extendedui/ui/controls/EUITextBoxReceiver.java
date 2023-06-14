@@ -14,6 +14,7 @@ import extendedui.EUIInputManager;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
 
@@ -177,7 +178,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
     public void updateImpl() {
         super.updateImpl();
         if (EUIInputManager.leftClick.isJustReleased()) {
-            if (!isEditing && (hb.hovered || hb.clicked) && EUI.tryClick(this.hb)) {
+            if (!isEditing && (hb.hovered || hb.clicked) && EUI.tryClick(this.hb) && !EUITourTooltip.shouldBlockInteract(this.hb)) {
                 start();
             }
             else if (isEditing && !hb.hovered && !hb.clicked) {
