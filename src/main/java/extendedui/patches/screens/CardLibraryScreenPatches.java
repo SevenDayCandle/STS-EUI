@@ -14,6 +14,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.exporter.EUIExporter;
 import extendedui.utilities.EUIClassUtils;
 
 import java.util.ArrayList;
@@ -89,8 +90,10 @@ public class CardLibraryScreenPatches {
 
             if (!EUI.cardFilters.isActive && EUI.openCardFiltersButton != null) {
                 EUI.openCardFiltersButton.tryUpdate();
+                EUIExporter.exportCardButton.tryUpdate();
             }
-            if (EUI.cardFilters.tryUpdate()) {
+            // Ensure that both update, but only one needs to have updated for this to pass
+            if (EUI.cardFilters.tryUpdate() | EUIExporter.exportDropdown.tryUpdate()) {
                 EUIClassUtils.setField(__instance, "grabbedScreen", false);
             }
             return SpireReturn.Continue();
@@ -114,6 +117,7 @@ public class CardLibraryScreenPatches {
         public static void postfix(CardLibraryScreen __instance, SpriteBatch sb) {
             if (!EUI.cardFilters.isActive && EUI.openCardFiltersButton != null) {
                 EUI.openCardFiltersButton.tryRender(sb);
+                EUIExporter.exportCardButton.tryRender(sb);
             }
         }
 

@@ -38,6 +38,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     private static final HashSet<EUIKeywordTooltip> ICON_UPDATING_LIST = new HashSet<>();
     public static final float BASE_ICON_SIZE = 28;
     protected FuncT0<TextureRegion> iconFunc;
+    protected FuncT0<EUICardPreview> previewFunc;
     protected Float lastModNameHeight;
     public Color backgroundColor;
     public ColoredString modName;
@@ -173,12 +174,22 @@ public class EUIKeywordTooltip extends EUITooltip {
         return this;
     }
 
+    public EUICardPreview createPreview() {
+        return this.previewFunc != null ? previewFunc.invoke() : null;
+    }
+
     public EUIKeywordTooltip forceIcon(boolean value) {
         this.forceIcon = value;
 
         return this;
     }
 
+    @Override
+    public String getTitleOrIcon() {
+        return forceIcon ? getTitleOrIconForced() : super.getTitleOrIcon();
+    }
+
+    @Override
     public float height() {
         if (lastHeight == null) {
             BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
@@ -190,6 +201,7 @@ public class EUIKeywordTooltip extends EUITooltip {
         return lastHeight;
     }
 
+    @Override
     public void invalidateHeight() {
         lastHeight = null;
         lastTextHeight = null;
@@ -197,14 +209,27 @@ public class EUIKeywordTooltip extends EUITooltip {
         lastSubHeaderHeight = null;
     }
 
+    @Override
     public boolean isRenderable() {
         return super.isRenderable() && canHighlight;
     }
 
+    @Override
     public EUIKeywordTooltip makeCopy() {
         return new EUIKeywordTooltip(this);
     }
 
+    @Override
+    public float renderSubheader(SpriteBatch sb, float x, float y) {
+        float subHeight = super.renderSubheader(sb, x, y);
+        if (modName != null) {
+            FontHelper.renderFontLeftTopAligned(sb, descriptionFont, modName.text, x + TEXT_OFFSET_X, y, modName.color);
+            return subHeight + lastModNameHeight;
+        }
+        return subHeight;
+    }
+
+    @Override
     public void renderTitle(SpriteBatch sb, float x, float y) {
         if (icon != null) {
             // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
@@ -216,6 +241,7 @@ public class EUIKeywordTooltip extends EUITooltip {
         }
     }
 
+    @Override
     public EUIKeywordTooltip showText(boolean value) {
         super.showText(value);
 
@@ -355,8 +381,8 @@ public class EUIKeywordTooltip extends EUITooltip {
         return this;
     }
 
-    @Override
-    public String getTitleOrIcon() {
-        return forceIcon ? getTitleOrIconForced() : super.getTitleOrIcon();
+    public EUIKeywordTooltip setPreviewFunc(FuncT0<EUICardPreview> previewFunc) {
+        this.previewFunc = previewFunc;
+        return this;
     }
 }

@@ -52,9 +52,9 @@ public class EUIGameUtils {
     private static final HashMap<AbstractPlayer.PlayerClass, AbstractCard.CardColor> CLASS_TO_COLOR = new HashMap<>();
     private static final HashMap<Class, ModInfo> MOD_INFO_MAPPING = new HashMap<>();
     private static final HashMap<String, AbstractCard.CardColor> RELIC_COLORS = new HashMap<>();
-    public static final Color COLOR_BASIC = new Color(0.58f, 0.58f, 0.58f, 1f);
-    public static final Color COLOR_COMMON = new Color(0.69f, 0.69f, 0.69f, 1f);
-    public static final Color COLOR_CURSE = new Color(0.41f, 0.35f, 0.35f, 1);
+    public static final Color COLOR_BASIC = new Color(0.52f, 0.52f, 0.52f, 1f);
+    public static final Color COLOR_COMMON = new Color(0.7f, 0.7f, 0.7f, 1f);
+    public static final Color COLOR_CURSE = new Color(0.44f, 0.30f, 0.30f, 1);
     public static final Color COLOR_RARE = new Color(1f, 0.8f, 0.35f, 1f);
     public static final Color COLOR_SPECIAL = new Color(0.7f, 1f, 0.5f, 1f);
     public static final Color COLOR_UNCOMMON = new Color(0.45f, 0.82f, 1f, 1f);
