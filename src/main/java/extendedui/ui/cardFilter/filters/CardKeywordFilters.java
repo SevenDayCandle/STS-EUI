@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter;
+package extendedui.ui.cardFilter.filters;
 
 import basemod.abstracts.CustomCard;
 import basemod.helpers.CardModifierManager;
@@ -12,14 +12,14 @@ import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
-import extendedui.EUI;
-import extendedui.EUIGameUtils;
-import extendedui.EUIRM;
-import extendedui.EUIUtils;
+import extendedui.*;
+import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.CustomCardFilterModule;
 import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.KeywordProvider;
+import extendedui.ui.cardFilter.FilterKeywordButton;
+import extendedui.ui.cardFilter.GenericFilters;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
@@ -47,11 +47,11 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
     public CardKeywordFilters() {
         super();
 
-        originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.uiBasegame : c.Name)
+        originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.ui_basegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiOrigins)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_origins)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
@@ -90,7 +90,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiColors)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_colors)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
     }
@@ -406,6 +406,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
             onClick.invoke(button);
         }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
         EUI.customHeader.updateForFilters();
+        EUIExporter.exportCardButton.setOnClick(() -> EUIExporter.openForCards(EUI.customHeader.group.group));
         return this;
     }
 
@@ -417,6 +418,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
             EUI.customHeader.updateForFilters();
         }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
         EUI.customHeader.updateForFilters();
+        EUIExporter.exportCardButton.setOnClick(() -> EUIExporter.openForCards(EUI.customHeader.group.group));
         return this;
     }
 }

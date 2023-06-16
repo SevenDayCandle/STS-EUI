@@ -84,7 +84,13 @@
 			"Extra Settings",
 			"EUI",
 			"EUI Fonts",
-			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options."
+			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options.",
+			"Export",
+			"Export as CSV",
+			"Export as JSON",
+			"Export the items in this group to an external file",
+			"Confirm Overwrite",
+			"{0} already exists. Do you want to replace it?"
 		]
 	},
 	"extendedui:ui_pool": {
@@ -122,7 +128,8 @@
 			"Unseen",
 			"N/A",
 			"Disable Tooltip",
-			"Enable Tooltip"
+			"Enable Tooltip",
+			"Filter out items from this group"
 		]
 	}
 }

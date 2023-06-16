@@ -18,6 +18,7 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.controls.*;
@@ -133,6 +134,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             swapPotionScreen.updateImpl();
             EUI.customHeader.update();
             EUI.openCardFiltersButton.tryUpdate();
+            EUIExporter.exportCardButton.tryUpdate();
             EUI.countingPanel.tryUpdate();
             for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
                 module.update();
@@ -147,6 +149,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             }
         }
         contextMenu.tryUpdate();
+        EUIExporter.exportDropdown.tryUpdate();
     }
 
     @Override
@@ -160,6 +163,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         EUI.countingPanel.tryRender(sb);
         if (!EUI.cardFilters.isActive) {
             EUI.openCardFiltersButton.tryRender(sb);
+            EUIExporter.exportCardButton.tryRender(sb);
         }
         for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
             module.render(sb);

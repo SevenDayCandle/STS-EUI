@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter.filters;
+package extendedui.ui.cardFilter.panels;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.Hitbox;
@@ -9,11 +9,11 @@ import extendedui.ui.cardFilter.CountingPanelStats;
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class CardRarityPaneFilter implements CountingPanelCardFilter {
+public class CardTypePaneFilter implements CountingPanelCardFilter {
     @Override
     public ArrayList<? extends CountingPanelCounter<?>> generateCounters(ArrayList<? extends AbstractCard> cards, Hitbox hb) {
         return CountingPanelStats.basic(c ->
-                        Collections.singleton(CardRarityPanelFilterItem.get(c.rarity)),
+                        Collections.singleton(CardTypePanelFilterItem.get(c.type)),
                 cards).generateCounters(hb, panel -> cards.sort(panel.type));
     }
 }

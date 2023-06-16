@@ -81,7 +81,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         clearButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setColor(Color.FIREBRICK)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.13f)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
                 .setText(EUIRM.strings.misc_clear)
                 .setOnClick(() -> this.clear(true, isAccessedFromCardPool));
 
@@ -117,7 +117,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
                         onClick.invoke(null);
                     }
                 })
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiDescriptionsearch)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_descriptionSearch)
                 .setHeaderSpacing(1f)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
@@ -126,7 +126,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
 
         keywordsSectionLabel = new EUILabel(EUIFontHelper.cardTitleFontSmall,
                 new EUIHitbox(0, 0, scale(48), scale(48)), 0.8f)
-                .setLabel(EUIRM.strings.uiKeywords)
+                .setLabel(EUIRM.strings.ui_keywords)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
         keywordsInstructionLabel = new EUITextBox(EUIRM.images.panel.texture(), new EUIHitbox(0, 0, Settings.WIDTH * 0.48f, scale(64)), EUIFontHelper.cardTooltipFont, 0.85f)
@@ -135,7 +135,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
                 .setAlignment(0.75f, 0.05f, true);
         currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardTitleFontNormal,
                 new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)), 1f)
-                .setLabel(EUIRM.strings.uiTotal)
+                .setLabel(EUIRM.strings.ui_total)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
         currentTotalLabel = new EUILabel(EUIFontHelper.cardTitleFontNormal,
@@ -232,10 +232,10 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     // Shorthand function to be fed to all dropdown filters
     protected <K> String filterNameFunction(List<K> items, FuncT1<String, K> originalFunction) {
         if (items.size() == 0) {
-            return EUIRM.strings.uiAny;
+            return EUIRM.strings.ui_any;
         }
         if (items.size() > 1) {
-            return items.size() + " " + EUIRM.strings.uiItemsselected;
+            return items.size() + " " + EUIRM.strings.ui_itemsSelected;
         }
         return StringUtils.join(EUIUtils.map(items, originalFunction), ", ");
     }
@@ -303,7 +303,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     }
 
     public final void refreshButtonOrder() {
-        sortTypeToggle.setText(EUIRM.strings.sortBy(shouldSortByCount ? EUIRM.strings.uiAmount : CardLibSortHeader.TEXT[2]));
+        sortTypeToggle.setText(EUIRM.strings.sortBy(shouldSortByCount ? EUIRM.strings.ui_amount : CardLibSortHeader.TEXT[2]));
         filterButtons.sort((a, b) -> (shouldSortByCount ? a.cardCount - b.cardCount : StringUtils.compare(a.tooltip.title, b.tooltip.title)) * (sortDesc ? -1 : 1));
 
         int index = 0;
@@ -449,8 +449,8 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     abstract public void renderFilters(SpriteBatch sb);
 
     public enum TooltipOption {
-        DisableTooltip(EUIRM.strings.uiDisableTooltip, filters -> filters.hideKeyword(true)),
-        EnableTooltip(EUIRM.strings.uiEnableTooltip, filters -> filters.hideKeyword(false));
+        DisableTooltip(EUIRM.strings.ui_disableTooltip, filters -> filters.hideKeyword(true)),
+        EnableTooltip(EUIRM.strings.ui_enableTooltip, filters -> filters.hideKeyword(false));
 
         public final String baseName;
         public final ActionT1<GenericFilters<?, ?>> onAct;

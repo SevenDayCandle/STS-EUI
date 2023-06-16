@@ -10,12 +10,9 @@ public interface CountingPanelItem extends Comparator<AbstractCard> {
     default int compare(AbstractCard c1, AbstractCard c2) {
         return getRank(c2) - getRank(c1);
     }
-
-    int getRank(AbstractCard c);
-
     default Color getColor() {
         return Color.WHITE;
     }
-
+    int getRank(AbstractCard c);
     Texture getIcon();
 }

@@ -5,16 +5,27 @@ import com.badlogic.gdx.math.MathUtils;
 import com.google.gson.Gson;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.TipHelper;
+import extendedui.configuration.STSStringConfigItem;
 import extendedui.interfaces.delegates.ActionT3;
 import extendedui.interfaces.delegates.FuncT1;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.Transferable;
+import java.awt.dnd.DnDConstants;
+import java.awt.dnd.DropTarget;
+import java.awt.dnd.DropTargetDropEvent;
+import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.*;
+import java.util.List;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -31,18 +42,88 @@ public abstract class EUIUtils {
     public static final String LEGACY_DOUBLE_SPLIT_LINE = " NL  NL ";
     public static final String SPLIT_LINE = " | ";
 
-    public static boolean all(CharSequence sequence, Predicate<Character> func) {
+    public static <T> List<T> addIf(List<T> res, T[] list, FuncT1<Boolean, T> predicate) {
+        if (list != null) {
+            for (T t : list) {
+                if (predicate.invoke(t)) {
+                    res.add(t);
+                }
+            }
+        }
+
+        return res;
+    }
+
+    public static <T> List<T> addIf(List<T> res, Iterable<? extends T>  list, FuncT1<Boolean, T> predicate) {
+        if (list != null) {
+            for (T t : list) {
+                if (predicate.invoke(t)) {
+                    res.add(t);
+                }
+            }
+        }
+
+        return res;
+    }
+
+    public static <T, N> List<N> addMap(List<N> res, T[] list, FuncT1<N, T> predicate) {
+        if (list != null) {
+            for (T t : list) {
+                res.add(predicate.invoke(t));
+            }
+        }
+
+        return res;
+    }
+
+    public static <T, N> List<N> addMap(List<N> res, Iterable<? extends T> list, FuncT1<N, T> predicate) {
+        if (list != null) {
+            for (T t : list) {
+                res.add(predicate.invoke(t));
+            }
+        }
+
+        return res;
+    }
+
+    public static <T, N> List<N> addMapNonnull(List<N> res, T[] list, FuncT1<N, T> predicate) {
+        if (list != null) {
+            for (T t : list) {
+                N item = predicate.invoke(t);
+                if (item != null) {
+                    res.add(item);
+                }
+            }
+        }
+
+        return res;
+    }
+
+    public static <T, N> List<N> addMapNonnull(List<N> res, Iterable<? extends T> list, FuncT1<N, T> predicate) {
+        if (list != null) {
+            for (T t : list) {
+                N item = predicate.invoke(t);
+                if (item != null) {
+                    res.add(item);
+                }
+            }
+        }
+
+        return res;
+    }
+
+    public static boolean all(CharSequence sequence, FuncT1<Boolean,Character> func) {
         for (int i = 0; i < sequence.length(); i++) {
-            if (!func.test(sequence.charAt(i))) {
+            if (!func.invoke(sequence.charAt(i))) {
                 return false;
             }
         }
         return true;
     }
 
-    public static <T> boolean all(T[] list, Predicate<T> predicate) {
+    public static <T> boolean all(T[] list, FuncT1<Boolean,T> predicate) {
         for (T t : list) {
-            if (!predicate.test(t)) {
+            if (!predicate.invoke(t)) {
                 return false;
             }
         }
@@ -50,9 +131,9 @@ public abstract class EUIUtils {
         return true;
     }
 
-    public static <T> boolean all(Iterable<? extends T> list, Predicate<T> predicate) {
+    public static <T> boolean all(Iterable<? extends T> list, FuncT1<Boolean,T> predicate) {
         for (T t : list) {
-            if (!predicate.test(t)) {
+            if (!predicate.invoke(t)) {
                 return false;
             }
         }
@@ -60,18 +141,18 @@ public abstract class EUIUtils {
         return true;
     }
 
-    public static boolean any(CharSequence sequence, Predicate<Character> func) {
+    public static boolean any(CharSequence sequence, FuncT1<Boolean,Character> func) {
         for (int i = 0; i < sequence.length(); i++) {
-            if (func.test(sequence.charAt(i))) {
+            if (func.invoke(sequence.charAt(i))) {
                 return true;
             }
         }
         return false;
     }
 
-    public static <T> boolean any(T[] list, Predicate<T> predicate) {
+    public static <T> boolean any(T[] list, FuncT1<Boolean,T> predicate) {
         for (T t : list) {
-            if (t != null && predicate.test(t)) {
+            if (t != null && predicate.invoke(t)) {
                 return true;
             }
         }
@@ -79,9 +160,9 @@ public abstract class EUIUtils {
         return false;
     }
 
-    public static <T> boolean any(Iterable<? extends T> list, Predicate<T> predicate) {
+    public static <T> boolean any(Iterable<? extends T> list, FuncT1<Boolean,T> predicate) {
         for (T t : list) {
-            if (predicate.test(t)) {
+            if (predicate.invoke(t)) {
                 return true;
             }
         }
@@ -144,9 +225,9 @@ public abstract class EUIUtils {
         if (list != null) {
             final N[] res = (N[]) Array.newInstance(listClass, list.length);
             for (int i = 0; i < list.length; i++) {
-                T t = list[i];
-                if (t != null) {
-                    res[i] = predicate.invoke(t);
+                N item = predicate.invoke(list[i]);
+                if (item != null) {
+                    res[i] = (item);
                 }
             }
             return res;
@@ -160,9 +241,9 @@ public abstract class EUIUtils {
         if (list != null) {
             final N[] res = (N[]) Array.newInstance(listClass, list.size());
             for (int i = 0; i < list.size(); i++) {
-                T t = list.get(i);
-                if (t != null) {
-                    res[i] = predicate.invoke(t);
+                N item = predicate.invoke(list.get(i));
+                if (item != null) {
+                    res[i] = (item);
                 }
             }
             return res;
@@ -181,11 +262,136 @@ public abstract class EUIUtils {
         }
     }
 
-    public static <T> int count(Iterable<? extends T> list, Predicate<T> predicate) {
+    public static File chooseFile() {
+        return chooseFile(null, null, null);
+    }
+
+    public static File chooseFile(String... exts) {
+        return chooseFile(getFileFilter(exts), null, null);
+    }
+
+    public static File chooseFile(FileNameExtensionFilter extensionFilter) {
+        return chooseFile(extensionFilter, null, null);
+    }
+
+    public static File chooseFile(FileNameExtensionFilter extensionFilter, File currentFile) {
+        return chooseFile(extensionFilter, currentFile, null);
+    }
+
+    public static File chooseFile(FileNameExtensionFilter extensionFilter, STSStringConfigItem pathConfig) {
+        return chooseFile(extensionFilter, new File(pathConfig.get()), pathConfig);
+    }
+
+    public static File chooseFile(FileNameExtensionFilter extensionFilter, File currentFile, STSStringConfigItem pathConfig) {
+        try {
+            JFileChooser fc = createFileChooser(extensionFilter, currentFile);
+            JFrame f = createFrame(fc);
+
+            int result = fc.showOpenDialog(f);
+            f.setVisible(false);
+            f.dispose();
+
+            if (pathConfig != null) {
+                File cd = fc.getCurrentDirectory();
+                if (cd != null && cd.isDirectory()) {
+                    pathConfig.set(cd.getAbsolutePath());
+                }
+            }
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                return fc.getSelectedFile();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            EUIUtils.logError(EUIUtils.class, "Failed to select file");
+        }
+        return null;
+    }
+
+    private static JFileChooser createFileChooser(FileNameExtensionFilter extensionFilter, File currentFile) {
+        JFileChooser fc = new JFileChooser() {
+            @Override
+            public void approveSelection(){
+                File f = getSelectedFile();
+                if(f.exists() && getDialogType() == SAVE_DIALOG) {
+                    int result = JOptionPane.showConfirmDialog(this,
+                            EUIUtils.format(EUIRM.strings.misc_overwriteDesc, f.getName()),
+                            EUIRM.strings.misc_overwrite,
+                            JOptionPane.YES_NO_CANCEL_OPTION);
+                    switch(result) {
+                        case JOptionPane.YES_OPTION:
+                            super.approveSelection();
+                            return;
+                        case JOptionPane.NO_OPTION:
+                            return;
+                        case JOptionPane.CLOSED_OPTION:
+                            return;
+                        case JOptionPane.CANCEL_OPTION:
+                            cancelSelection();
+                            return;
+                    }
+                }
+                super.approveSelection();
+            }
+        };
+        if (extensionFilter != null) {
+            fc.setFileFilter(extensionFilter);
+        }
+        fc.setDropTarget(new DropTarget() {
+            public synchronized void drop(DropTargetDropEvent evt) {
+                try {
+                    evt.acceptDrop(DnDConstants.ACTION_COPY);
+                    Transferable t = evt.getTransferable();
+                    if (t != null && t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
+                        List<File> droppedFiles = (List<File>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
+                        for (File file : droppedFiles) {
+                            fc.setSelectedFiles(droppedFiles.toArray(new File[]{}));
+                        }
+                        evt.dropComplete(true);
+                    }
+                    else {
+                        evt.dropComplete(false);
+                    }
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    evt.dropComplete(false);
+                }
+            }
+        });
+
+        if (currentFile != null && currentFile.exists()) {
+            if (currentFile.isDirectory()) {
+                fc.setCurrentDirectory(currentFile);
+            }
+            else {
+                File cd = currentFile.getParentFile();
+                if (cd != null && cd.isDirectory()) {
+                    fc.setCurrentDirectory(cd);
+                }
+            }
+        }
+
+        return fc;
+    }
+
+    private static JFrame createFrame(JFileChooser fc) {
+        JFrame f = new JFrame();
+        f.toFront();
+        f.setAlwaysOnTop(true);
+        f.setLocationRelativeTo(null);
+        f.setPreferredSize(new Dimension(Settings.WIDTH / 2, Settings.HEIGHT / 2));
+        fc.setPreferredSize(f.getPreferredSize());
+        f.setVisible(true);
+        return f;
+    }
+
+    public static <T> int count(Iterable<? extends T> list, FuncT1<Boolean,T> predicate) {
 
         int count = 0;
         for (T t : list) {
-            if (predicate.test(t)) {
+            if (predicate.invoke(t)) {
                 count += 1;
             }
         }
@@ -201,10 +407,10 @@ public abstract class EUIUtils {
         return GsonReader.fromJson(s, token);
     }
 
-    public static <T> ArrayList<T> filter(T[] array, Predicate<T> predicate) {
+    public static <T> ArrayList<T> filter(T[] array, FuncT1<Boolean, T> predicate) {
         final ArrayList<T> res = new ArrayList<>();
         for (T t : array) {
-            if (t != null && predicate.test(t)) {
+            if (t != null && predicate.invoke(t)) {
                 res.add(t);
             }
         }
@@ -212,10 +418,10 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static <T> ArrayList<T> filter(Iterable<? extends T> list, Predicate<T> predicate) {
+    public static <T> ArrayList<T> filter(Iterable<? extends T> list, FuncT1<Boolean, T> predicate) {
         final ArrayList<T> res = new ArrayList<>();
         for (T t : list) {
-            if (predicate.test(t)) {
+            if (t != null && predicate.invoke(t)) {
                 res.add(t);
             }
         }
@@ -223,9 +429,9 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static <T> T find(T[] array, Predicate<T> predicate) {
+    public static <T> T find(T[] array, FuncT1<Boolean,T> predicate) {
         for (T t : array) {
-            if (t != null && predicate.test(t)) {
+            if (t != null && predicate.invoke(t)) {
                 return t;
             }
         }
@@ -233,9 +439,9 @@ public abstract class EUIUtils {
         return null;
     }
 
-    public static <T> T find(Iterable<? extends T> list, Predicate<T> predicate) {
+    public static <T> T find(Iterable<? extends T> list, FuncT1<Boolean,T> predicate) {
         for (T t : list) {
-            if (predicate.test(t)) {
+            if (predicate.invoke(t)) {
                 return t;
             }
         }
@@ -379,6 +585,10 @@ public abstract class EUIUtils {
         return sb1.toString();
     }
 
+    public static FileNameExtensionFilter getFileFilter(String... filters) {
+        return new FileNameExtensionFilter(EUIUtils.joinStrings(", ", EUIUtils.map(filters, f -> "*." + f)), filters);
+    }
+
     public static Logger getLogger(Object source) {
         if (source == null) {
             return LogManager.getLogger();
@@ -452,6 +662,62 @@ public abstract class EUIUtils {
         final StringJoiner sj = new StringJoiner(delimiter);
         for (T value : values) {
             sj.add(String.valueOf(value));
+        }
+
+        return sj.toString();
+    }
+
+    public static <T> String joinStringsMap(String delimiter, FuncT1<String, T> stringFunc, Iterable<T> values) {
+        final StringJoiner sj = new StringJoiner(delimiter);
+        for (T value : values) {
+            sj.add(stringFunc.invoke(value));
+        }
+
+        return sj.toString();
+    }
+
+    @SafeVarargs
+    public static <T> String joinStringsMap(String delimiter, FuncT1<String, T> stringFunc, T... values) {
+        final StringJoiner sj = new StringJoiner(delimiter);
+        for (T value : values) {
+            sj.add(stringFunc.invoke(value));
+        }
+
+        return sj.toString();
+    }
+
+    @SafeVarargs
+    public static <T> String joinStringsMapLists(String delimiter, FuncT1<String, T> stringFunc, T[]... values) {
+        final StringJoiner sj = new StringJoiner(delimiter);
+        for (T[] array : values) {
+            for (T value : array) {
+                sj.add(stringFunc.invoke(value));
+            }
+        }
+
+        return sj.toString();
+    }
+
+    public static <T> String joinStringsMapNonnull(String delimiter, FuncT1<String, T> stringFunc, Iterable<T> values) {
+        final StringJoiner sj = new StringJoiner(delimiter);
+        for (T value : values) {
+            String s = stringFunc.invoke(value);
+            if (s != null) {
+                sj.add(s);
+            }
+        }
+
+        return sj.toString();
+    }
+
+    @SafeVarargs
+    public static <T> String joinStringsMapNonnull(String delimiter, FuncT1<String, T> stringFunc, T... values) {
+        final StringJoiner sj = new StringJoiner(delimiter);
+        for (T value : values) {
+            String s = stringFunc.invoke(value);
+            if (s != null) {
+                sj.add(s);
+            }
         }
 
         return sj.toString();
@@ -761,6 +1027,53 @@ public abstract class EUIUtils {
             return null;
         }
         return items[Math.min(items.length - 1, index)];
+    }
+
+    public static File saveFile() {
+        return saveFile(null, null, null);
+    }
+
+    public static File saveFile(String... exts) {
+        return saveFile(getFileFilter(exts), null, null);
+    }
+
+    public static File saveFile(FileNameExtensionFilter extensionFilter) {
+        return saveFile(extensionFilter, null, null);
+    }
+
+    public static File saveFile(FileNameExtensionFilter extensionFilter, File currentFile) {
+        return saveFile(extensionFilter, currentFile, null);
+    }
+
+    public static File saveFile(FileNameExtensionFilter extensionFilter, STSStringConfigItem pathConfig) {
+        return saveFile(extensionFilter, new File(pathConfig.get()), pathConfig);
+    }
+
+    public static File saveFile(FileNameExtensionFilter extensionFilter, File currentFile, STSStringConfigItem pathConfig) {
+        try {
+            JFileChooser fc = createFileChooser(extensionFilter, currentFile);
+            JFrame f = createFrame(fc);
+
+            int result = fc.showSaveDialog(f);
+            f.setVisible(false);
+            f.dispose();
+
+            if (pathConfig != null) {
+                File cd = fc.getCurrentDirectory();
+                if (cd != null && cd.isDirectory()) {
+                    pathConfig.set(cd.getAbsolutePath());
+                }
+            }
+
+            if (result == JFileChooser.APPROVE_OPTION) {
+                return fc.getSelectedFile();
+            }
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+            EUIUtils.logError(EUIUtils.class, "Failed to select file");
+        }
+        return null;
     }
 
     public static String serialize(Object o) {

@@ -15,6 +15,7 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomRelicPoolModule;
 import extendedui.ui.controls.EUIButton;
@@ -100,6 +101,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             swapPotionScreen.updateImpl();
             EUI.relicHeader.updateImpl();
             EUI.openRelicFiltersButton.tryUpdate();
+            EUIExporter.exportRelicButton.tryUpdate();
             for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
                 module.update();
             }
@@ -108,6 +110,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             }
         }
         contextMenu.tryUpdate();
+        EUIExporter.exportDropdown.tryUpdate();
     }
 
     @Override
@@ -118,6 +121,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
         EUI.relicHeader.renderImpl(sb);
         if (!EUI.relicFilters.isActive) {
             EUI.openRelicFiltersButton.tryRender(sb);
+            EUIExporter.exportRelicButton.tryRender(sb);
         }
         for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
             module.render(sb);

@@ -8,7 +8,9 @@ import com.megacrit.cardcrawl.helpers.DrawMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
+import extendedui.exporter.EUIExporter;
 import extendedui.STSEffekseerManager;
+import extendedui.ui.tooltips.EUITourTooltip;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import org.apache.logging.log4j.LogManager;
@@ -44,6 +46,7 @@ public class CardCrawlGamePatches {
             EUI.relicFilters.tryRender(sb);
             EUI.potionFilters.tryRender(sb);
             EUI.cardFilters.tryRender(sb);
+            EUIExporter.exportDropdown.tryRender(sb);
             EUI.postRender(sb);
             EUI.priorityPostRender(sb);
         }
@@ -84,6 +87,14 @@ public class CardCrawlGamePatches {
         public static void postfix(CardCrawlGame __instance) {
             STSEffekseerManager.end();
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Terminated STSEffekseerManager");
+        }
+    }
+
+    @SpirePatch(clz = CardCrawlGame.class, method = "startOver")
+    public static class CardCrawlGame_StartOver {
+        @SpirePrefixPatch
+        public static void prefix() {
+            EUITourTooltip.clearTutorialQueue();
         }
     }
 }

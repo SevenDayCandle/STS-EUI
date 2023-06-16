@@ -31,7 +31,6 @@ public abstract class EUIDungeonScreen extends CustomScreen {
 
     @Override
     public void reopen() {
-        EUITourTooltip.clearTutorialQueue();
         Settings.hideRelics = true;
         EUI.disableInteract = true;
         AbstractDungeon.isScreenUp = true;
@@ -47,7 +46,6 @@ public abstract class EUIDungeonScreen extends CustomScreen {
 
     @Override
     public void close() {
-        EUITourTooltip.clearTutorialQueue();
         switchScreen();
     }
 

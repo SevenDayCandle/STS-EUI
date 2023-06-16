@@ -8,10 +8,13 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
+import com.megacrit.cardcrawl.screens.options.OptionsPanel;
+import com.megacrit.cardcrawl.screens.options.SettingsScreen;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.patches.EUIKeyword;
 import extendedui.patches.game.AbstractDungeonPatches;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
+import extendedui.ui.tooltips.EUITourTooltip;
 import org.apache.logging.log4j.LogManager;
 
 import java.util.ArrayList;
@@ -22,7 +25,7 @@ import static extendedui.configuration.EUIConfiguration.shouldReloadEffekseer;
 
 @SpireInitializer
 public class Initializer
-        implements PostInitializeSubscriber, EditStringsSubscriber, EditKeywordsSubscriber, EditCardsSubscriber, StartGameSubscriber, OnStartBattleSubscriber, PostUpdateSubscriber {
+        implements PostInitializeSubscriber, EditStringsSubscriber, EditKeywordsSubscriber, EditCardsSubscriber, StartGameSubscriber, OnStartBattleSubscriber, PostUpdateSubscriber, PostDeathSubscriber {
     public static final String PATH = "localization/extendedui/";
     public static final String JSON_KEYWORD_EXTENSION = "/KeywordExtensions.json";
     public static final String JSON_KEYWORD = "/KeywordStrings.json";
@@ -49,6 +52,11 @@ public class Initializer
         String language = Settings.language.name().toLowerCase();
         this.registerKeywords("eng");
         this.registerKeywords(language);
+    }
+
+    @Override
+    public void receivePostDeath() {
+        EUITourTooltip.clearTutorialQueue();
     }
 
     // EUI's own tooltips should not be highlighted

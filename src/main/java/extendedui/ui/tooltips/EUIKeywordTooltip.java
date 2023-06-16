@@ -124,6 +124,12 @@ public class EUIKeywordTooltip extends EUITooltip {
         return REGISTERED_IDS.entrySet();
     }
 
+    public static void invalidateAllHeights() {
+        for (EUIKeywordTooltip tip : REGISTERED_IDS.values()) {
+            tip.invalidateHeight();
+        }
+    }
+
     public static void postInitialize() {
         for (Map.Entry<String, EUIKeywordTooltip> entry : getEntries()) {
             EUIKeywordTooltip tip = entry.getValue();

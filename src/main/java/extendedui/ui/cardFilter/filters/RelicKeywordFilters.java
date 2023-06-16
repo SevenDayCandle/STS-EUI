@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter;
+package extendedui.ui.cardFilter.filters;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
@@ -10,15 +10,15 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import extendedui.EUI;
-import extendedui.EUIGameUtils;
-import extendedui.EUIRM;
-import extendedui.EUIUtils;
+import extendedui.*;
+import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.CustomRelicFilterModule;
 import extendedui.interfaces.markers.KeywordProvider;
+import extendedui.ui.cardFilter.FilterKeywordButton;
+import extendedui.ui.cardFilter.GenericFilters;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
@@ -43,11 +43,11 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
     public RelicKeywordFilters() {
         super();
 
-        originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.uiBasegame : c.Name)
+        originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.ui_basegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiOrigins)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_origins)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
@@ -67,7 +67,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiColors)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_colors)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
         seenDropdown = new EUIDropdown<SeenValue>(new EUIHitbox(0, 0, scale(240), scale(48))
@@ -75,7 +75,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentSeen, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiSeen)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_seen)
                 .setItems(SeenValue.values())
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
@@ -291,6 +291,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
             onClick.invoke(button);
         }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
         EUI.relicHeader.updateForFilters();
+        EUIExporter.exportRelicButton.setOnClick(() -> EUIExporter.openForRelics(EUI.relicHeader.relicGroup.group));
         return this;
     }
 
@@ -301,12 +302,13 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
             onClick.invoke(button);
         }, EUI.relicHeader.getOriginalRelics(), color, isAccessedFromCardPool);
         EUI.relicHeader.updateForFilters();
+        EUIExporter.exportRelicButton.setOnClick(() -> EUIExporter.openForRelics(EUI.relicHeader.relicGroup.group));
         return this;
     }
 
     public enum SeenValue {
-        Seen(EUIRM.strings.uiSeen, UnlockTracker::isRelicSeen),
-        Unseen(EUIRM.strings.uiUnseen, c -> !UnlockTracker.isRelicSeen(c) && !UnlockTracker.isRelicLocked(c)),
+        Seen(EUIRM.strings.ui_seen, UnlockTracker::isRelicSeen),
+        Unseen(EUIRM.strings.ui_unseen, c -> !UnlockTracker.isRelicSeen(c) && !UnlockTracker.isRelicLocked(c)),
         Locked(SingleRelicViewPopup.TEXT[8], UnlockTracker::isRelicLocked);
 
         public final FuncT1<Boolean, String> evalFunc;

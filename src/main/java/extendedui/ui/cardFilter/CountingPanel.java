@@ -10,8 +10,9 @@ import extendedui.interfaces.markers.CountingPanelCardFilter;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.cardFilter.filters.CardRarityPaneFilter;
-import extendedui.ui.cardFilter.filters.CardTypePaneFilter;
+import extendedui.ui.cardFilter.panels.CardRarityPaneFilter;
+import extendedui.ui.cardFilter.panels.CardTypePaneFilter;
+import extendedui.ui.cardFilter.panels.CardUpgradePaneFilter;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
@@ -20,7 +21,11 @@ import extendedui.utilities.RotatingList;
 import java.util.ArrayList;
 
 public class CountingPanel extends EUIHoverable implements CustomCardPoolModule {
-    protected static final RotatingList<CountingPanelCardFilter> FILTERS = new RotatingList<>(new CardTypePaneFilter(), new CardRarityPaneFilter());
+    protected static final RotatingList<CountingPanelCardFilter> FILTERS = new RotatingList<>(
+            new CardTypePaneFilter(),
+            new CardRarityPaneFilter(),
+            new CardUpgradePaneFilter()
+    );
     public static final float ICON_SIZE = scale(40);
     private long lastFrame;
     protected ArrayList<? extends CountingPanelCounter<?>> counters;

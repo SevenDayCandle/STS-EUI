@@ -5,11 +5,13 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Interpolation;
 import com.megacrit.cardcrawl.actions.AbstractGameAction;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
@@ -39,6 +41,8 @@ public class EUITourTooltip extends EUITooltip {
     protected Hitbox waitOnHitbox;
     protected TourProvider waitOnProvider;
     protected EUIImage linkedImage; // flashes when this tip is up
+    protected AbstractDungeon.CurrentScreen dungeonScreen;
+    protected MainMenuScreen.CurScreen mainMenuScreen;
     private float linkedProgress;
 
     public static void clearTutorialQueue() {
@@ -64,6 +68,50 @@ public class EUITourTooltip extends EUITooltip {
         for (EUITourTooltip tip : tips) {
             if (tip != null) {
                 tutorialQueue.add(tip);
+            }
+        }
+    }
+
+    public static void queueTutorial(AbstractDungeon.CurrentScreen screen, EUITourTooltip tip) {
+        if (tip != null) {
+            tutorialQueue.add(tip.setRenderScreen(screen));
+        }
+    }
+
+    public static void queueTutorial(AbstractDungeon.CurrentScreen screen, EUITourTooltip... tips) {
+        for (EUITourTooltip tip : tips) {
+            if (tip != null) {
+                tutorialQueue.add(tip.setRenderScreen(screen));
+            }
+        }
+    }
+
+    public static void queueTutorial(AbstractDungeon.CurrentScreen screen, Iterable<? extends EUITourTooltip> tips) {
+        for (EUITourTooltip tip : tips) {
+            if (tip != null) {
+                tutorialQueue.add(tip.setRenderScreen(screen));
+            }
+        }
+    }
+
+    public static void queueTutorial(MainMenuScreen.CurScreen screen, EUITourTooltip tip) {
+        if (tip != null) {
+            tutorialQueue.add(tip.setRenderScreen(screen));
+        }
+    }
+
+    public static void queueTutorial(MainMenuScreen.CurScreen screen, EUITourTooltip... tips) {
+        for (EUITourTooltip tip : tips) {
+            if (tip != null) {
+                tutorialQueue.add(tip.setRenderScreen(screen));
+            }
+        }
+    }
+
+    public static void queueTutorial(MainMenuScreen.CurScreen screen, Iterable<? extends EUITourTooltip> tips) {
+        for (EUITourTooltip tip : tips) {
+            if (tip != null) {
+                tutorialQueue.add(tip.setRenderScreen(screen));
             }
         }
     }
@@ -94,7 +142,7 @@ public class EUITourTooltip extends EUITooltip {
 
     public static void render(SpriteBatch sb) {
         EUITourTooltip tip = getNext();
-        if (tip != null) {
+        if (tip != null && tip.canShowForScreen()) {
             tip.update();
             tip.render(sb, tip.x, tip.y, 0);
             if (EUIInputManager.leftClick.isJustPressed() && tip.canDismiss) {
@@ -134,6 +182,7 @@ public class EUITourTooltip extends EUITooltip {
     public EUITourTooltip(Class<? extends AbstractGameAction> waitOnAction, String title, String description) {
         this(Type.Action, title, description);
         this.waitOnAction = waitOnAction;
+        this.dungeonScreen = AbstractDungeon.CurrentScreen.NONE;
         this.canDismiss = false;
     }
 
@@ -175,6 +224,11 @@ public class EUITourTooltip extends EUITooltip {
         this.waitOnAction = other.waitOnAction;
         this.waitOnProvider = other.waitOnProvider;
         this.waitOnHitbox = other.waitOnHitbox;
+    }
+
+    public boolean canShowForScreen() {
+        return (dungeonScreen == null || AbstractDungeon.screen == dungeonScreen)
+                && (mainMenuScreen == null || (CardCrawlGame.mainMenuScreen != null && CardCrawlGame.mainMenuScreen.screen == mainMenuScreen));
     }
 
     protected void onComplete() {
@@ -242,6 +296,30 @@ public class EUITourTooltip extends EUITooltip {
                 ? waitOnHitbox != null ? waitOnHitbox.width + Settings.scale * 40f : Settings.scale * 40f
                 : -(width);
         y += (y < Settings.HEIGHT * 0.9f) ? (Settings.scale * 40f) : -(Settings.scale * 50f);
+        return this;
+    }
+
+    public EUITourTooltip setRenderScreen(AbstractDungeon.CurrentScreen screen) {
+        dungeonScreen = screen;
+        mainMenuScreen = null;
+        return this;
+    }
+
+    public EUITourTooltip setRenderScreen(MainMenuScreen.CurScreen screen) {
+        mainMenuScreen = screen;
+        dungeonScreen = null;
+        return this;
+    }
+
+    public EUITourTooltip setRenderScreenToCurrent() {
+        if (CardCrawlGame.mainMenuScreen != null) {
+            mainMenuScreen = CardCrawlGame.mainMenuScreen.screen;
+            dungeonScreen = null;
+        }
+        else {
+            dungeonScreen = AbstractDungeon.screen;
+            mainMenuScreen = null;
+        }
         return this;
     }
 

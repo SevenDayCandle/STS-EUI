@@ -1,6 +1,7 @@
 package extendedui;
 
 import basemod.BaseMod;
+import basemod.devcommands.ConsoleCommand;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
@@ -22,7 +23,9 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.localization.Keyword;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
+import extendedui.commands.ExportCommand;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.*;
 import extendedui.patches.EUIKeyword;
@@ -30,6 +33,9 @@ import extendedui.text.EUISmartText;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
+import extendedui.ui.cardFilter.filters.CardKeywordFilters;
+import extendedui.ui.cardFilter.filters.PotionKeywordFilters;
+import extendedui.ui.cardFilter.filters.RelicKeywordFilters;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -311,24 +317,30 @@ public class EUI {
         // This needs to be added here instead of the config initialization because we would throw in a null item into the top panel if we did the latter
         EUIConfiguration.disableCompendiumButton.addListener(EUI::toggleCompendiumButton);
 
+        EUITooltip tip = new EUITooltip(EUIRM.strings.ui_filters, EUIRM.strings.ui_filterExplanation);
         openCardFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uiFilters)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.ui_filters)
                 .setOnClick(() -> EUI.cardFilters.toggleFilters())
-                .setColor(Color.GRAY);
+                .setTooltip(tip)
+                .setColor(Color.MAROON);
         openPotionFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uiFilters)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.ui_filters)
                 .setOnClick(() -> EUI.potionFilters.toggleFilters())
-                .setColor(Color.GRAY);
+                .setTooltip(tip)
+                .setColor(Color.MAROON);
         openRelicFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uiFilters)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.ui_filters)
                 .setOnClick(() -> EUI.relicFilters.toggleFilters())
-                .setColor(Color.GRAY);
+                .setTooltip(tip)
+                .setColor(Color.MAROON);
+
+        EUIExporter.initialize();
 
         // Toggling smooth scrolling requires updating the library and card pool screens
         EUIConfiguration.useSnapScrolling.addListener(newValue -> {
@@ -336,11 +348,19 @@ public class EUI {
             EUI.cardsScreen.resetGrid();
         });
 
+        // Toggling keyword icons requires us to update keyword tooltip heights
+        EUIConfiguration.enableDescriptionIcons.addListener(newValue -> {
+            EUIKeywordTooltip.invalidateAllHeights();
+        });
+
         // Register basemod screens
         BaseMod.addCustomScreen(cardsScreen);
         BaseMod.addCustomScreen(relicScreen);
         BaseMod.addCustomScreen(potionScreen);
         BaseMod.addCustomScreen(ftueScreen);
+
+        // Commands
+        ConsoleCommand.addCommand("export", ExportCommand.class);
     }
 
     public static boolean isActiveElement(EUIBase element) {

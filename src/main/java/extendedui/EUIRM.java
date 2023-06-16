@@ -106,9 +106,11 @@ public class EUIRM {
 
         public final TextureCache typeAttack = new TextureCache("images/extendedui/types/Attack.png");
         public final TextureCache typeCurse = new TextureCache("images/extendedui/types/Curse.png");
+        public final TextureCache typeDowngrade = new TextureCache("images/extendedui/types/Downgrade.png");
         public final TextureCache typePower = new TextureCache("images/extendedui/types/Power.png");
         public final TextureCache typeSkill = new TextureCache("images/extendedui/types/Skill.png");
         public final TextureCache typeStatus = new TextureCache("images/extendedui/types/Status.png");
+        public final TextureCache typeUpgrade = new TextureCache("images/extendedui/types/Upgrade.png");
 
         public final TextureCache arrow = new TextureCache("images/extendedui/ui/Arrow.png");
         public final TextureCache border = new TextureCache("images/extendedui/ui/Border.png");
@@ -209,6 +211,12 @@ public class EUIRM {
         public final String misc_effekseerSettings = stringsMisc.TEXT[5];
         public final String misc_fontSettings = stringsMisc.TEXT[6];
         public final String misc_keywordInstructions = stringsMisc.TEXT[7];
+        public final String misc_export = stringsMisc.TEXT[8];
+        public final String misc_exportCSV = stringsMisc.TEXT[9];
+        public final String misc_exportJSON = stringsMisc.TEXT[10];
+        public final String misc_exportDesc = stringsMisc.TEXT[11];
+        public final String misc_overwrite = stringsMisc.TEXT[12];
+        public final String misc_overwriteDesc = stringsMisc.TEXT[13];
 
         public final String uipool_viewPool = stringsUIPool.TEXT[0];
         public final String uipool_viewPoolDescription = stringsUIPool.TEXT[1];
@@ -223,24 +231,25 @@ public class EUIRM {
         public final String uipool_obtainRelic = stringsUIPool.TEXT[10];
         public final String uipool_obtainPotion = stringsUIPool.TEXT[11];
 
-        public final String uiItemsselected = stringsUIFilter.TEXT[0];
-        public final String uiKeywords = stringsUIFilter.TEXT[1];
-        public final String uiAmount = stringsUIFilter.TEXT[2];
-        public final String uiOrigins = stringsUIFilter.TEXT[3];
-        public final String uiColors = stringsUIFilter.TEXT[4];
-        public final String uiTotal = stringsUIFilter.TEXT[5];
-        public final String uiFilters = stringsUIFilter.TEXT[6];
-        public final String uiAny = stringsUIFilter.TEXT[7];
-        public final String uiNomatch = stringsUIFilter.TEXT[8];
-        public final String uiBasegame = stringsUIFilter.TEXT[9];
-        public final String uiNamesearch = stringsUIFilter.TEXT[10];
-        public final String uiDescriptionsearch = stringsUIFilter.TEXT[11];
-        public final String uiBasic = stringsUIFilter.TEXT[12];
-        public final String uiSeen = stringsUIFilter.TEXT[13];
-        public final String uiUnseen = stringsUIFilter.TEXT[14];
-        public final String na = stringsUIFilter.TEXT[15];
-        public final String uiDisableTooltip = stringsUIFilter.TEXT[16];
-        public final String uiEnableTooltip = stringsUIFilter.TEXT[17];
+        public final String ui_itemsSelected = stringsUIFilter.TEXT[0];
+        public final String ui_keywords = stringsUIFilter.TEXT[1];
+        public final String ui_amount = stringsUIFilter.TEXT[2];
+        public final String ui_origins = stringsUIFilter.TEXT[3];
+        public final String ui_colors = stringsUIFilter.TEXT[4];
+        public final String ui_total = stringsUIFilter.TEXT[5];
+        public final String ui_filters = stringsUIFilter.TEXT[6];
+        public final String ui_any = stringsUIFilter.TEXT[7];
+        public final String ui_noMatch = stringsUIFilter.TEXT[8];
+        public final String ui_basegame = stringsUIFilter.TEXT[9];
+        public final String ui_nameSearch = stringsUIFilter.TEXT[10];
+        public final String ui_descriptionSearch = stringsUIFilter.TEXT[11];
+        public final String ui_basic = stringsUIFilter.TEXT[12];
+        public final String ui_seen = stringsUIFilter.TEXT[13];
+        public final String ui_unseen = stringsUIFilter.TEXT[14];
+        public final String ui_na = stringsUIFilter.TEXT[15];
+        public final String ui_disableTooltip = stringsUIFilter.TEXT[16];
+        public final String ui_enableTooltip = stringsUIFilter.TEXT[17];
+        public final String ui_filterExplanation = stringsUIFilter.TEXT[18];
 
         // e.g. English: Red Card -> 0 1, Spanish: Carta roja -> 1 0
         public final String adjNoun(Object adj, Object noun) {

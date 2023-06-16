@@ -10,7 +10,7 @@ public enum CostFilter {
     Cost2("2", 2, 2),
     Cost3("3", 3, 3),
     Cost4Plus("4+", 4, 9999),
-    Unplayable(EUIRM.strings.na, -9999, -2);
+    Unplayable(EUIRM.strings.ui_na, -9999, -2);
 
     public final int lowerBound;
     public final int upperBound;

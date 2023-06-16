@@ -6,6 +6,7 @@ import extendedui.ui.EUIBase;
 public class EUITutorialPage extends EUIBase {
     public String title;
     public String description;
+    protected EUITutorial tutorial;
 
     public EUITutorialPage(String title, String description) {
         this.title = title;
@@ -14,6 +15,11 @@ public class EUITutorialPage extends EUIBase {
 
     public boolean isHovered() {
         return false;
+    }
+
+    protected EUITutorialPage setTutorial(EUITutorial tutorial) {
+        this.tutorial = tutorial;
+        return this;
     }
 
     @Override

@@ -46,6 +46,7 @@ public class EUIConfiguration {
     private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
     private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
     private static final String HIDE_TIP_DESCRIPTION = getFullKey("HideTipDescription");
+    private static final String LAST_EXPORT_PATH = getFullKey("LastExportPath");
     private static final String OVERRIDE_GAME_FONT = getFullKey("OverrideGameFont");
     private static final String PREFIX = "EUI";
     private static final String SHOW_COUNTING_PANEL = getFullKey("ShowCountingPanel");
@@ -78,6 +79,7 @@ public class EUIConfiguration {
     public static STSStringConfigItem cardDescFont = new STSStringConfigItem(CARD_DESC_FONT, "");
     public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT, "");
     public static STSStringConfigItem energyFont = new STSStringConfigItem(ENERGY_FONT, "");
+    public static STSStringConfigItem lastExportPath = new STSStringConfigItem(LAST_EXPORT_PATH, "");
     public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT, "");
     public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT, "");
     public static boolean shouldReloadEffekseer;
@@ -169,6 +171,7 @@ public class EUIConfiguration {
             bannerFont.addConfig(config);
             energyFont.addConfig(config);
             enableCardPoolDebug.addConfig(config);
+            lastExportPath.addConfig(config);
         }
         catch (IOException e) {
             throw new RuntimeException(e);

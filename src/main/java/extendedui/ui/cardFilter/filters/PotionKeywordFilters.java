@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter;
+package extendedui.ui.cardFilter.filters;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
@@ -8,14 +8,14 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
-import extendedui.EUI;
-import extendedui.EUIGameUtils;
-import extendedui.EUIRM;
-import extendedui.EUIUtils;
+import extendedui.*;
+import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.CustomPotionFilterModule;
 import extendedui.interfaces.markers.KeywordProvider;
+import extendedui.ui.cardFilter.FilterKeywordButton;
+import extendedui.ui.cardFilter.GenericFilters;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
@@ -38,11 +38,11 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
     public PotionKeywordFilters() {
         super();
 
-        originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.uiBasegame : c.Name)
+        originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.ui_basegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiOrigins)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_origins)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
@@ -62,7 +62,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.uiColors)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_colors)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
     }
@@ -274,6 +274,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
             onClick.invoke(button);
         }, EUI.potionHeader.getOriginalPotions(), color, isAccessedFromCardPool);
         EUI.potionHeader.updateForFilters();
+        EUIExporter.exportPotionButton.setOnClick(() -> EUIExporter.openForPotions(EUI.potionHeader.group.group));
         return this;
     }
 
@@ -284,6 +285,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
             onClick.invoke(button);
         }, EUI.potionHeader.getOriginalPotions(), color, isAccessedFromCardPool);
         EUI.potionHeader.updateForFilters();
+        EUIExporter.exportPotionButton.setOnClick(() -> EUIExporter.openForPotions(EUI.potionHeader.group.group));
         return this;
     }
 }

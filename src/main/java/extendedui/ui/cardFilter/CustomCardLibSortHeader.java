@@ -172,7 +172,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader {
             typeButton = buttons[1];
             costButton = buttons[2];
             nameButton = Settings.removeAtoZSort ? null : buttons[3];
-            amountButton = new SortHeaderButton(EUIRM.strings.uiAmount, 0f, 0f, this);
+            amountButton = new SortHeaderButton(EUIRM.strings.ui_amount, 0f, 0f, this);
 
             override = EUIUtils.arrayAppend(buttons, amountButton);
 

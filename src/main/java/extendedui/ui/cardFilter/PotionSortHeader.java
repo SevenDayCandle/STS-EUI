@@ -38,9 +38,9 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
         xPosition += CardLibSortHeader.SPACE_X;
         this.nameButton = new SortHeaderButton(CardLibSortHeader.TEXT[2], xPosition, 0.0F, this);
         xPosition += CardLibSortHeader.SPACE_X;
-        this.colorButton = new SortHeaderButton(EUIRM.strings.uiColors, xPosition, 0.0F, this);
+        this.colorButton = new SortHeaderButton(EUIRM.strings.ui_colors, xPosition, 0.0F, this);
         xPosition += CardLibSortHeader.SPACE_X;
-        this.amountButton = new SortHeaderButton(EUIRM.strings.uiAmount, xPosition, 0.0F, this);
+        this.amountButton = new SortHeaderButton(EUIRM.strings.ui_amount, xPosition, 0.0F, this);
         this.buttons = new SortHeaderButton[]{this.rarityButton, this.nameButton, this.colorButton, this.amountButton};
     }
 

@@ -14,6 +14,7 @@ import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomPotionPoolModule;
 import extendedui.ui.controls.EUIButton;
@@ -99,6 +100,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
             swapRelicScreen.updateImpl();
             EUI.potionHeader.updateImpl();
             EUI.openPotionFiltersButton.tryUpdate();
+            EUIExporter.exportPotionButton.tryUpdate();
             for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
                 module.update();
             }
@@ -107,6 +109,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
             }
         }
         contextMenu.tryUpdate();
+        EUIExporter.exportDropdown.tryUpdate();
     }
 
     @Override
@@ -117,6 +120,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
         EUI.potionHeader.renderImpl(sb);
         if (!EUI.potionFilters.isActive) {
             EUI.openPotionFiltersButton.tryRender(sb);
+            EUIExporter.exportPotionButton.tryRender(sb);
         }
         for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
             module.render(sb);

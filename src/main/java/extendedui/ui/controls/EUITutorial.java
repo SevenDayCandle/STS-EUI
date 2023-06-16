@@ -32,7 +32,7 @@ public class EUITutorial extends EUIHoverable {
     }
 
     public EUITutorial(Collection<EUITutorialPage> descriptions) {
-        this(new EUIHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350, 720), EUIRM.images.greySquare.texture(), descriptions);
+        this(new EUIHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350, 900), EUIRM.images.greySquare.texture(), descriptions);
     }
 
     public EUITutorial(EUIHitbox hb, Texture backgroundTexture, Collection<EUITutorialPage> tutorials) {
@@ -58,6 +58,9 @@ public class EUITutorial extends EUIHoverable {
                 .setSmartText(true, false);
 
         this.tutorials.setItems(tutorials);
+        for (EUITutorialPage page : tutorials) {
+            page.setTutorial(this);
+        }
         changePage(0);
 
         this.next = new EUIButton(ImageMaster.POPUP_ARROW,

@@ -45,7 +45,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
         contextMenu = (EUIContextMenu<ContextOption>) new EUIContextMenu<ContextOption>(new EUIHitbox(0, 0, 0, 0), ContextOption::getDisplayName)
                 .setOnChange(options -> {
                     for (ContextOption o : options) {
-                        o.onSelect.invoke();
+                        o.onSelect();
                     }
                 })
                 .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
@@ -152,22 +152,34 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
     }
 
     public enum ContextOption {
-        CardPool(EUIRM.strings.uipool_viewCardPool, EUIHotkeys.openCardPool, () -> EUI.cardsScreen.openScreen(AbstractDungeon.player, getAllCards())),
-        RelicPool(EUIRM.strings.uipool_viewRelicPool, EUIHotkeys.openRelicPool, () -> EUI.relicScreen.openScreen(AbstractDungeon.player, getAllRelics())),
-        PotionPool(EUIRM.strings.uipool_viewPotionPool, EUIHotkeys.openPotionPool, () -> EUI.potionScreen.openScreen(AbstractDungeon.player, getAllPotions()));
+        CardPool(EUIRM.strings.uipool_viewCardPool, EUIHotkeys.openCardPool),
+        RelicPool(EUIRM.strings.uipool_viewRelicPool, EUIHotkeys.openRelicPool),
+        PotionPool(EUIRM.strings.uipool_viewPotionPool, EUIHotkeys.openPotionPool);
 
         public final String baseName;
         public final InputAction hotkey;
-        public final ActionT0 onSelect;
 
-        ContextOption(String name, InputAction hotkey, ActionT0 onSelect) {
+        ContextOption(String name, InputAction hotkey) {
             this.baseName = name;
             this.hotkey = hotkey;
-            this.onSelect = onSelect;
         }
 
         public String getDisplayName() {
             return baseName + " (" + hotkey.getKeyString() + ")";
+        }
+
+        public void onSelect() {
+            switch (this) {
+                case CardPool:
+                    EUI.cardsScreen.openScreen(AbstractDungeon.player, getAllCards());
+                    break;
+                case RelicPool:
+                    EUI.relicScreen.openScreen(AbstractDungeon.player, getAllRelics());
+                    break;
+                case PotionPool:
+                    EUI.potionScreen.openScreen(AbstractDungeon.player, getAllPotions());
+                    break;
+            }
         }
     }
 }

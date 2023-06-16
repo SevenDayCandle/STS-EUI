@@ -49,61 +49,9 @@ public class EUIFileSelector extends EUIHoverable {
     }
 
     protected void chooseFile() {
-        try {
-            JFileChooser fc = new JFileChooser();
-            if (extensionFilter != null) {
-                fc.setFileFilter(extensionFilter);
-            }
-            fc.setDropTarget(new DropTarget() {
-                public synchronized void drop(DropTargetDropEvent evt) {
-                    try {
-                        evt.acceptDrop(DnDConstants.ACTION_COPY);
-                        Transferable t = evt.getTransferable();
-                        if (t != null && t.isDataFlavorSupported(DataFlavor.javaFileListFlavor)) {
-                            List<File> droppedFiles = (List<File>) evt.getTransferable().getTransferData(DataFlavor.javaFileListFlavor);
-                            for (File file : droppedFiles) {
-                                fc.setSelectedFiles(droppedFiles.toArray(new File[]{}));
-                            }
-                            evt.dropComplete(true);
-                        }
-                        else {
-                            evt.dropComplete(false);
-                        }
-                    }
-                    catch (Exception e) {
-                        e.printStackTrace();
-                        evt.dropComplete(false);
-                    }
-                }
-            });
-
-            if (currentFile != null && currentFile.exists()) {
-                File cd = currentFile.getParentFile();
-                if (cd != null && cd.isDirectory()) {
-                    fc.setCurrentDirectory(cd);
-                }
-            }
-
-
-            JFrame f = new JFrame();
-            f.toFront();
-            f.setAlwaysOnTop(true);
-            f.setLocationRelativeTo(null);
-            f.setPreferredSize(new Dimension(Settings.WIDTH / 2, Settings.HEIGHT / 2));
-            fc.setPreferredSize(f.getPreferredSize());
-            f.setVisible(true);
-
-            int result = fc.showOpenDialog(f);
-            f.setVisible(false);
-            f.dispose();
-
-            if (result == JFileChooser.APPROVE_OPTION) {
-                selectFile(fc.getSelectedFile(), true);
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            EUIUtils.logError(this, "Failed to select file");
+        File file = EUIUtils.chooseFile(extensionFilter, currentFile);
+        if (file != null) {
+            selectFile(file, true);
         }
     }
 
@@ -137,7 +85,7 @@ public class EUIFileSelector extends EUIHoverable {
     }
 
     public EUIFileSelector setFileFilters(String... filters) {
-        this.extensionFilter = new FileNameExtensionFilter(EUIUtils.joinStrings(", ", EUIUtils.map(filters, f -> "*." + f)), filters);
+        this.extensionFilter = EUIUtils.getFileFilter(filters);
         return this;
     }
 

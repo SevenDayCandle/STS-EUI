@@ -121,7 +121,7 @@ public class EUIDropdown<T> extends EUIHoverable {
                 .setOnScroll(this::onScroll);
         this.button = new EUIButton(EUIRM.images.rectangularButton.texture(), this.hb)
                 .setColor(Color.GRAY)
-                .setLabel(font, fontScale, currentIndices.size() + " " + EUIRM.strings.uiItemsselected)
+                .setLabel(font, fontScale, currentIndices.size() + " " + EUIRM.strings.ui_itemsSelected)
                 .setOnClick(this::openOrCloseMenu);
         this.clearButton = new EUIButton(EUIRM.images.x.texture(), new OriginRelativeHitbox(hb, hb.height * 0.88f, hb.height * 0.88f, hb.width, 0)
                 .setIsPopupCompatible(true)
@@ -287,7 +287,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     public String makeMultiSelectString(FuncT1<String, T> optionFunc) {
         String prospective = StringUtils.join(EUIUtils.map(getCurrentItems(), optionFunc), ", ");
         float width = button.label.smartText ? EUISmartText.getSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
-        return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.strings.uiItemsselected : prospective;
+        return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.strings.ui_itemsSelected : prospective;
     }
 
     public EUIDropdownRow<T> makeRow(List<? extends T> options, int index) {

@@ -16,6 +16,7 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.EUI;
+import extendedui.exporter.EUIExporter;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
@@ -59,7 +60,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
                 new EUIHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, scale(280), scale(48)))
                 .setOnComplete((v) -> EUI.cardFilters.nameInput.setTextAndCommit(v))
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.7f, Settings.GOLD_COLOR, EUIRM.strings.uiNamesearch)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.7f, Settings.GOLD_COLOR, EUIRM.strings.ui_nameSearch)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
                 .setFont(EUIFontHelper.cardTitleFontSmall, 0.7f)
@@ -125,6 +126,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         boolean shouldDoStandardUpdate = !EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
         if (shouldDoStandardUpdate) {
             EUI.openCardFiltersButton.tryUpdate();
+            EUIExporter.exportCardButton.tryUpdate();
             colorButtons.tryUpdate();
             EUI.customHeader.update();
             upgradeToggle.setPosition(upgradeToggle.hb.cX, CENTER_Y).updateImpl();
@@ -147,6 +149,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
                 EUI.customHeader.justSorted = false;
             }
         }
+        EUIExporter.exportDropdown.tryUpdate();
     }
 
     @Override
@@ -169,6 +172,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         }
         if (!EUI.cardFilters.isActive) {
             EUI.openCardFiltersButton.tryRender(sb);
+            EUIExporter.exportCardButton.tryRender(sb);
         }
         cancelButton.render(sb);
     }

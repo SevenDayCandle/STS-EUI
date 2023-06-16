@@ -84,7 +84,13 @@
 			"其他设置",
 			"EUI",
 			"EUI字体",
-			"#o{Left-Click} 关键字以添加/取消准入必要条件。在按住 #o{{0}} 的情况下 #o{Left-Click} 关键字以添加/取消排除充分条件。 #o{Right-Click} 关键字以访问更多选项。"
+			"#o{Left-Click} 关键字以添加/取消准入必要条件。在按住 #o{{0}} 的情况下 #o{Left-Click} 关键字以添加/取消排除充分条件。 #o{Right-Click} 关键字以访问更多选项。",
+			"Export",
+			"Export as CSV",
+			"Export as JSON",
+			"Export the items in this group to an external file",
+			"Confirm Overwrite",
+			"{0} already exists. Do you want to replace it?"
 		]
 	},
 	"extendedui:ui_pool": {
@@ -122,7 +128,8 @@
 			"未见过",
 			"N/A",
 			"禁用提示描述",
-			"启用提示描述"
+			"启用提示描述",
+			"Filter out items from this group"
 		]
 	}
 }

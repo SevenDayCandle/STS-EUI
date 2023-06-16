@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
 import extendedui.EUI;
 import extendedui.STSEffekseerManager;
+import extendedui.ui.tooltips.EUITourTooltip;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 
@@ -22,6 +23,7 @@ public class AbstractDungeonPatches {
 
         @SpirePrefixPatch
         public static void prefix() {
+            //EUITourTooltip.clearTutorialQueue();
             if (coolerPreviousScreen != null) {
                 AbstractDungeon.previousScreen = coolerPreviousScreen;
                 coolerPreviousScreen = null;

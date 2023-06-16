@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter.filters;
+package extendedui.ui.cardFilter.panels;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -13,9 +13,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class CardRarityPanelFilterItem implements CountingPanelItem, TooltipProvider {
+    protected static final CardRarityPanelFilterItem BASIC = new CardRarityPanelFilterItem(AbstractCard.CardRarity.BASIC);
     protected static final CardRarityPanelFilterItem COMMON = new CardRarityPanelFilterItem(AbstractCard.CardRarity.COMMON);
     protected static final CardRarityPanelFilterItem UNCOMMON = new CardRarityPanelFilterItem(AbstractCard.CardRarity.UNCOMMON);
     protected static final CardRarityPanelFilterItem RARE = new CardRarityPanelFilterItem(AbstractCard.CardRarity.RARE);
+    protected static final CardRarityPanelFilterItem CURSE = new CardRarityPanelFilterItem(AbstractCard.CardRarity.CURSE);
     protected static final CardRarityPanelFilterItem SPECIAL = new CardRarityPanelFilterItem(AbstractCard.CardRarity.SPECIAL);
     public final AbstractCard.CardRarity rarity;
 
@@ -26,12 +28,15 @@ public class CardRarityPanelFilterItem implements CountingPanelItem, TooltipProv
     public static CardRarityPanelFilterItem get(AbstractCard.CardRarity rarity) {
         switch (rarity) {
             case BASIC:
+                return BASIC;
             case COMMON:
                 return COMMON;
             case RARE:
                 return RARE;
             case UNCOMMON:
                 return UNCOMMON;
+            case CURSE:
+                return CURSE;
             default:
                 return SPECIAL;
         }

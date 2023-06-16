@@ -8,7 +8,10 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.screens.compendium.PotionViewScreen;
 import extendedui.EUI;
 import extendedui.EUIUtils;
+import extendedui.exporter.EUIExporter;
 import extendedui.utilities.EUIClassUtils;
+import extendedui.utilities.PotionGroup;
+import extendedui.utilities.RelicGroup;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 
@@ -71,6 +74,7 @@ public class PotionViewScreenPatches {
                     , AbstractCard.CardColor.COLORLESS
                     , false);
             updateForFilters(screen);
+            EUIExporter.exportPotionButton.setOnClick(() -> EUIExporter.openForPotions(EUIUtils.map(allList, PotionGroup.PotionInfo::new)));
 
             return SpireReturn.Continue();
         }
@@ -92,8 +96,10 @@ public class PotionViewScreenPatches {
         public static void prefix(PotionViewScreen __instance) {
             if (!EUI.potionFilters.isActive && EUI.openPotionFiltersButton != null) {
                 EUI.openPotionFiltersButton.tryUpdate();
+                EUIExporter.exportPotionButton.tryUpdate();
             }
-            if (EUI.potionFilters.tryUpdate()) {
+            // Make sure both items update, but only one needs to be pass
+            if (EUI.potionFilters.tryUpdate() | EUIExporter.exportDropdown.tryUpdate()) {
                 EUIClassUtils.setField(__instance, "grabbedScreen", false);
             }
         }
@@ -137,6 +143,7 @@ public class PotionViewScreenPatches {
         public static void postfix(PotionViewScreen __instance, SpriteBatch sb) {
             if (!EUI.potionFilters.isActive && EUI.openPotionFiltersButton != null) {
                 EUI.openPotionFiltersButton.tryRender(sb);
+                EUIExporter.exportPotionButton.tryRender(sb);
             }
         }
     }

@@ -8,7 +8,9 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.compendium.RelicViewScreen;
 import extendedui.EUI;
 import extendedui.EUIUtils;
+import extendedui.exporter.EUIExporter;
 import extendedui.utilities.EUIClassUtils;
+import extendedui.utilities.RelicGroup;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 
@@ -84,6 +86,7 @@ public class RelicViewScreenPatches {
                     , AbstractCard.CardColor.COLORLESS
                     , false);
             updateForFilters();
+            EUIExporter.exportRelicButton.setOnClick(() -> EUIExporter.openForRelics(EUIUtils.map(allList, RelicGroup.RelicInfo::new)));
 
             return SpireReturn.Continue();
         }
@@ -103,10 +106,13 @@ public class RelicViewScreenPatches {
 
         @SpirePrefixPatch
         public static void prefix(RelicViewScreen __instance) {
+            // Export relic button will only be null if open relic button is also null
             if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
                 EUI.openRelicFiltersButton.tryUpdate();
+                EUIExporter.exportRelicButton.tryUpdate();
             }
-            if (EUI.relicFilters.tryUpdate()) {
+            // Make sure both items update, but only one needs to be pass
+            if (EUI.relicFilters.tryUpdate() | EUIExporter.exportDropdown.tryUpdate()) {
                 EUIClassUtils.setField(__instance, "grabbedScreen", false);
             }
         }
@@ -148,8 +154,10 @@ public class RelicViewScreenPatches {
 
         @SpirePrefixPatch
         public static void postfix(RelicViewScreen __instance, SpriteBatch sb) {
+            // Export relic button will only be null if open relic button is also null
             if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
                 EUI.openRelicFiltersButton.tryRender(sb);
+                EUIExporter.exportRelicButton.tryRender(sb);
             }
         }
     }

@@ -33,7 +33,6 @@ import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.TextureCache;
 import extendedui.ui.screens.CardPoolScreen;
-import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import javassist.ClassPool;
 import javassist.CtClass;
@@ -42,7 +41,6 @@ import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Scanner;
 
 import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.*;
 
@@ -360,7 +358,7 @@ public class EUIGameUtils {
     public static String textForRarity(AbstractCard.CardRarity type) {
         switch (type) {
             case BASIC:
-                return EUIRM.strings.uiBasic; // STS calls this rarity "Starter" but this keyword is used by Animator/Clown Emporium to denote something else
+                return EUIRM.strings.ui_basic; // STS calls this rarity "Starter" but this keyword is used by Animator/Clown Emporium to denote something else
 
             case COMMON:
                 return RunHistoryScreen.TEXT[12];
