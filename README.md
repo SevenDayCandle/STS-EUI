@@ -13,6 +13,7 @@ This mod adds the following features:
 - A variant of the filters menu for the relic compendium, as well as an in-game page on the card pool screen to view relics in a run.
 - A mod settings menu that can be accessed mid-run. It can be configured to show all mod settings or to only show certain mod settings.
 - Settings to change the fonts used by this mod and the base game. Font changes may be applied universally or only to certain text types. 
+- The ability to export cards, relics, and potions as CSV or JSON files.
 
 Both the card pool and the card filters components come with hooks that allow modders to render custom components within those screens. The card filter also allows modders to define their own custom filters for their custom cards.
 
