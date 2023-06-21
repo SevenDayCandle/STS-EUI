@@ -2,6 +2,7 @@ package extendedui.ui;
 
 import com.badlogic.gdx.graphics.Texture;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
 
 public class TextureCache {
     private final String path;
@@ -23,12 +24,18 @@ public class TextureCache {
 
     public Texture reload() {
         this.texture = EUIRM.getTexture(this.path, this.mipmap, false);
+        if (this.texture == null) {
+            EUIUtils.logError(EUIRM.class, "Texture does not exist: " + this.path());
+        }
         return this.texture;
     }
 
     public Texture texture() {
         if (this.texture == null) {
             this.texture = EUIRM.getTexture(this.path, this.mipmap, false);
+            if (this.texture == null) {
+                EUIUtils.logError(EUIRM.class, "Texture does not exist: " + this.path());
+            }
         }
         return this.texture;
     }

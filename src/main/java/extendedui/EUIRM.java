@@ -2,11 +2,13 @@ package extendedui;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
+import com.badlogic.gdx.graphics.Pixmap;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import extendedui.interfaces.delegates.FuncT2;
 import extendedui.ui.TextureCache;
+import org.apache.logging.log4j.util.Strings;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,10 +16,37 @@ import java.util.StringJoiner;
 
 public class EUIRM {
     private static final HashMap<String, Texture> externalTextures = new HashMap<>();
-    protected static final HashMap<String, Texture> internalTextures = new HashMap<>();
+    private static final HashMap<String, Texture> internalTextures = new HashMap<>();
     public static final String ID = "extendedui";
     public static Images images = new Images();
     public static Strings strings;
+
+    private static Texture createHalfSizeTexture(FileHandle handle, boolean useMipMap) {
+        Pixmap original = new Pixmap(handle);
+        Pixmap halfSize = new Pixmap(original.getWidth() / 2, original.getHeight() / 2, original.getFormat());
+        halfSize.drawPixmap(original,
+                0, 0, original.getWidth(), original.getHeight(),
+                0, 0, halfSize.getWidth(), halfSize.getHeight()
+        );
+        Texture texture = new Texture(halfSize, useMipMap);
+        original.dispose();
+        halfSize.dispose();
+        return texture;
+    }
+
+    public static Texture createTexture(FileHandle file, boolean useMipMap, boolean halfSize) {
+        if (file.exists()) {
+            Texture texture = halfSize ? createHalfSizeTexture(file, useMipMap) : new Texture(file, useMipMap);
+            if (useMipMap) {
+                texture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
+            }
+            else {
+                texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+            }
+            return texture;
+        }
+        return null;
+    }
 
     public static Texture getExternalTexture(String path) {
         return getExternalTexture(path, true);
@@ -27,10 +56,10 @@ public class EUIRM {
         return getExternalTexture(path, useMipMap, false);
     }
 
-    public static Texture getExternalTexture(String path, boolean useMipMap, boolean suppressError) {
+    public static Texture getExternalTexture(String path, boolean useMipMap, boolean halfSize) {
         Texture texture = externalTextures.get(path);
         if (texture == null) {
-            texture = reloadExternalTexture(path, useMipMap, suppressError);
+            texture = reloadExternalTextureImpl(path, useMipMap, halfSize);
         }
 
         return texture;
@@ -48,10 +77,10 @@ public class EUIRM {
         return getTexture(path, useMipMap, false);
     }
 
-    public static Texture getTexture(String path, boolean useMipMap, boolean suppressError) {
+    public static Texture getTexture(String path, boolean useMipMap, boolean halfSize) {
         Texture texture = internalTextures.get(path);
         if (texture == null) {
-            texture = reloadTexture(path, useMipMap, suppressError);
+            texture = reloadTextureImpl(path, useMipMap, halfSize);
         }
 
         return texture;
@@ -65,37 +94,30 @@ public class EUIRM {
         strings = new Strings();
     }
 
-    private static Texture loadTextureImpl(FileHandle file, boolean useMipMap, boolean suppressError) {
-        if (file.exists()) {
-            Texture texture = new Texture(file, useMipMap);
-            if (useMipMap) {
-                texture.setFilter(Texture.TextureFilter.MipMapLinearLinear, Texture.TextureFilter.Linear);
-            }
-            else {
-                texture.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
-            }
-            return texture;
+    public static Texture reloadExternalTexture(String path, boolean useMipMap, boolean halfSize) {
+        Texture texture = externalTextures.get(path);
+        if (texture != null) {
+            texture.dispose();
         }
-        else {
-            if (suppressError) {
-                EUIUtils.logInfoIfDebug(EUIRM.class, "Texture does not exist: " + file.path());
-            }
-            else {
-                EUIUtils.logError(EUIRM.class, "Texture does not exist: " + file.path());
-            }
-
-        }
-        return null;
+        return reloadTextureImpl(path, useMipMap, halfSize);
     }
 
-    public static Texture reloadExternalTexture(String path, boolean useMipMap, boolean suppressError) {
-        Texture texture = loadTextureImpl(Gdx.files.external(path), useMipMap, suppressError);
+    private static Texture reloadExternalTextureImpl(String path, boolean useMipMap, boolean halfSize) {
+        Texture texture = createTexture(Gdx.files.external(path), useMipMap, halfSize);
         externalTextures.put(path, texture);
         return texture;
     }
 
-    public static Texture reloadTexture(String path, boolean useMipMap, boolean suppressError) {
-        Texture texture = loadTextureImpl(Gdx.files.internal(path), useMipMap, suppressError);
+    public static Texture reloadTexture(String path, boolean useMipMap, boolean halfSize) {
+        Texture texture = internalTextures.get(path);
+        if (texture != null) {
+            texture.dispose();
+        }
+        return reloadTextureImpl(path, useMipMap, halfSize);
+    }
+
+    private static Texture reloadTextureImpl(String path, boolean useMipMap, boolean halfSize) {
+        Texture texture = createTexture(Gdx.files.internal(path), useMipMap, halfSize);
         internalTextures.put(path, texture);
         return texture;
     }
