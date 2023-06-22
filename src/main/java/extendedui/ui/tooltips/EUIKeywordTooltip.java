@@ -221,11 +221,12 @@ public class EUIKeywordTooltip extends EUITooltip {
 
     @Override
     public float renderSubheader(SpriteBatch sb, float x, float y) {
-        float subHeight = super.renderSubheader(sb, x, y);
+        float subHeight = 0;
         if (modName != null) {
             FontHelper.renderFontLeftTopAligned(sb, descriptionFont, modName.text, x + TEXT_OFFSET_X, y, modName.color);
-            return subHeight + lastModNameHeight;
+            subHeight += lastModNameHeight;
         }
+        subHeight += super.renderSubheader(sb, x, y + subHeight);
         return subHeight;
     }
 
