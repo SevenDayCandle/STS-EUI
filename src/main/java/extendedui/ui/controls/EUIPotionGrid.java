@@ -72,7 +72,7 @@ public class EUIPotionGrid extends EUICanvasGrid {
         return this;
     }
 
-    public EUIPotionGrid addPotions(Iterable<AbstractPotion> potions) {
+    public EUIPotionGrid addPotions(Iterable<? extends AbstractPotion> potions) {
         for (AbstractPotion potion : potions) {
             addPotion(potion);
         }
@@ -93,6 +93,12 @@ public class EUIPotionGrid extends EUICanvasGrid {
 
 
         refreshOffset();
+    }
+
+    public EUIPotionGrid canDragScreen(boolean canDrag) {
+        this.canDragScreen = canDrag;
+
+        return this;
     }
 
     public void forceUpdatePotionPositions() {

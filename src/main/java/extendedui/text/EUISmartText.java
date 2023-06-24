@@ -95,6 +95,7 @@ public class EUISmartText {
         }
     }
 
+    // TODO remove orb icons
     public static TextureRegion getSmallIcon(String id, boolean force) {
         switch (id) {
             case "E":

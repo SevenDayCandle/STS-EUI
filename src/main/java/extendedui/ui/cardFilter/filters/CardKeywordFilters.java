@@ -26,6 +26,7 @@ import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.CostFilter;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.FakeLibraryCard;
+import extendedui.utilities.TargetFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -37,11 +38,13 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
     public final HashSet<CostFilter> currentCosts = new HashSet<>();
     public final HashSet<AbstractCard.CardRarity> currentRarities = new HashSet<>();
+    public final HashSet<TargetFilter> currentTargets = new HashSet<>();
     public final HashSet<AbstractCard.CardType> currentTypes = new HashSet<>();
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<CostFilter> costDropdown;
     public final EUIDropdown<AbstractCard.CardRarity> raritiesDropdown;
     public final EUIDropdown<AbstractCard.CardType> typesDropdown;
+    public final EUIDropdown<TargetFilter> targetsDropdown;
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
 
     public CardKeywordFilters() {
@@ -85,6 +88,16 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
                 .setCanAutosizeButton(true)
                 .setItems(AbstractCard.CardType.values());
 
+        targetsDropdown = new EUIDropdown<TargetFilter>(new EUIHitbox(0, 0, scale(240), scale(48))
+                , t -> t.name)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(currentTargets, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, false)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_target)
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(TargetFilter.None);
+
         colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::getColorName)
                 .setOnOpenOrClose(this::updateActive)
@@ -124,6 +137,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         currentNegateFilters.clear();
         currentCosts.clear();
         currentRarities.clear();
+        currentTargets.clear();
         currentTypes.clear();
         currentName = null;
         currentDescription = null;
@@ -131,6 +145,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         originsDropdown.setSelectionIndices((int[]) null, false);
         typesDropdown.setSelectionIndices((int[]) null, false);
         raritiesDropdown.setSelectionIndices((int[]) null, false);
+        targetsDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
         doForFilters(CustomCardFilterModule::reset);
@@ -184,6 +199,11 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
                 return false;
             }
 
+            //Target check
+            if (!currentTargets.isEmpty() && !currentTargets.contains(TargetFilter.forCard(c))) {
+                return false;
+            }
+
             for (CustomCardFilterModule module : EUI.globalCustomCardFilters) {
                 if (!module.isItemValid(c)) {
                     return false;
@@ -218,7 +238,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
                 && currentColors.isEmpty() && currentOrigins.isEmpty()
                 && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
                 && currentCosts.isEmpty() && currentRarities.isEmpty()
-                && currentTypes.isEmpty()
+                && currentTypes.isEmpty() && currentTargets.isEmpty()
                 && EUIUtils.all(getGlobalFilters(), CustomCardFilterModule::isEmpty)
                 && (customModule != null && customModule.isEmpty());
     }
@@ -237,6 +257,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         HashSet<AbstractCard.CardColor> availableColors = new HashSet<>();
         HashSet<AbstractCard.CardRarity> availableRarities = new HashSet<>();
         HashSet<AbstractCard.CardType> availableTypes = new HashSet<>();
+        HashSet<TargetFilter> availableTargets = new HashSet<>();
         if (referenceItems != null) {
             currentTotal = getReferenceCount();
             for (AbstractCard card : referenceItems) {
@@ -249,6 +270,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
                 availableMods.add(EUIGameUtils.getModInfo(card));
                 availableRarities.add(card.rarity);
                 availableTypes.add(card.type);
+                availableTargets.add(TargetFilter.forCard(card));
                 availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost4Plus.lowerBound));
                 availableColors.add(card.color);
             }
@@ -266,6 +288,10 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         ArrayList<AbstractCard.CardType> typesItems = new ArrayList<>(availableTypes);
         typesItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
         typesDropdown.setItems(typesItems);
+
+        ArrayList<TargetFilter> targetItems = new ArrayList<>(availableTargets);
+        targetItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : StringUtils.compare(a.name, b.name));
+        targetsDropdown.setItems(targetItems);
 
         ArrayList<CostFilter> costItems = new ArrayList<>();
         for (CostFilter c : CostFilter.values()) {
@@ -298,16 +324,17 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
 
     @Override
     public void updateFilters() {
-        originsDropdown.setPosition(hb.x - SPACING * 3.65f, DRAW_START_Y + scrollDelta).tryUpdate();
+        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
         if (colorsDropdown.isActive) {
-            colorsDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-            costDropdown.setPosition(colorsDropdown.hb.x + colorsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+            xPos = updateDropdown(colorsDropdown, xPos);
+            xPos = updateDropdown(costDropdown, xPos);
         }
         else {
-            costDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+            xPos = updateDropdown(costDropdown, xPos);
         }
-        raritiesDropdown.setPosition(costDropdown.hb.x + costDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
-        typesDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 2, DRAW_START_Y + scrollDelta).tryUpdate();
+        xPos = updateDropdown(raritiesDropdown, xPos);
+        xPos = updateDropdown(typesDropdown, xPos);
+        xPos = updateDropdown(targetsDropdown, xPos);
         nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         doForFilters(CustomCardFilterModule::update);
@@ -372,6 +399,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
                 || costDropdown.areAnyItemsHovered()
                 || raritiesDropdown.areAnyItemsHovered()
                 || typesDropdown.areAnyItemsHovered()
+                || targetsDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
                 || descriptionInput.hb.hovered
                 || EUIUtils.any(getGlobalFilters(), CustomCardFilterModule::isHovered)
@@ -385,6 +413,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         costDropdown.tryRender(sb);
         raritiesDropdown.tryRender(sb);
         typesDropdown.tryRender(sb);
+        targetsDropdown.tryRender(sb);
         nameInput.tryRender(sb);
         descriptionInput.tryRender(sb);
 

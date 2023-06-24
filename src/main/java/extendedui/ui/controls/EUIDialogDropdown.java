@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.delegates.FuncT2;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.hitboxes.RelativeHitbox;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +30,7 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
 
     public EUIDialogDropdown(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText) {
         super(hb, backgroundTexture, headerText, descriptionText);
-        this.dropdown = new EUIDropdown<T>(new EUIHitbox(hb.x + hb.width / 4, hb.y + hb.height / 4, hb.width / 2, scale(48)))
+        this.dropdown = new EUIDropdown<T>(new RelativeHitbox(hb, hb.width / 2, scale(48), hb.width / 4, hb.height / 4))
                 .setCanAutosize(false, true);
     }
 
@@ -53,6 +54,14 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
     @Override
     public ArrayList<T> getCancelValue() {
         return null;
+    }
+
+    protected String getCancelText() {
+        return CHOICE_TEXT[3];
+    }
+
+    protected String getConfirmText() {
+        return CHOICE_TEXT[2];
     }
 
     public EUIDialogDropdown<T> setItems(List<T> items) {
@@ -83,7 +92,7 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
             this.dropdown.autosize();
             this.hb.width = this.dropdown.hb.width * 2;
             this.hb.x = (Settings.WIDTH - this.hb.width) / 2;
-            this.dropdown.setPosition(hb.x + hb.width / 4, hb.y + hb.height / 4);
+            this.dropdown.setOffset(hb.width / 4, hb.height / 4);
         }
         return this;
     }

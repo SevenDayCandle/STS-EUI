@@ -67,7 +67,7 @@ public class ShaderDebugger implements ImGuiSubscriber {
             effectStop.render(() -> shader = null);
             ImGui.separator();
             if (fragmentShader == null) {
-                fragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 0, 3000, ImGuiInputTextFlags.AllowTabInput);
+                fragmentShader = new DEUITextMultilineInput(INPUT_ID, 0, 700, 3000, ImGuiInputTextFlags.AllowTabInput);
             }
             fragmentShader.render();
         });

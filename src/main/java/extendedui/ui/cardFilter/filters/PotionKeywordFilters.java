@@ -21,6 +21,7 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.PotionGroup;
+import extendedui.utilities.TargetFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -31,8 +32,14 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
     public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
     public final HashSet<AbstractPotion.PotionRarity> currentRarities = new HashSet<>();
+    public final HashSet<AbstractPotion.PotionSize> currentSizes = new HashSet<>();
+    public final HashSet<AbstractPotion.PotionEffect> currentVfx = new HashSet<>();
+    public final HashSet<TargetFilter> currentTargets = new HashSet<>();
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<AbstractPotion.PotionRarity> raritiesDropdown;
+    public final EUIDropdown<AbstractPotion.PotionSize> sizesDropdown;
+    public final EUIDropdown<AbstractPotion.PotionEffect> vfxDropdown;
+    public final EUIDropdown<TargetFilter> targetsDropdown;
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
 
     public PotionKeywordFilters() {
@@ -56,6 +63,36 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(AbstractPotion.PotionRarity.values());
+
+        sizesDropdown = new EUIDropdown<AbstractPotion.PotionSize>(new EUIHitbox(0, 0, scale(240), scale(48))
+                , EUIGameUtils::textForPotionSize)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(currentSizes, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, false)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.potion_size)
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(AbstractPotion.PotionSize.values());
+
+        vfxDropdown = new EUIDropdown<AbstractPotion.PotionEffect>(new EUIHitbox(0, 0, scale(240), scale(48))
+                , EUIGameUtils::textForPotionEffect)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(currentVfx, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, false)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.potion_size)
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(AbstractPotion.PotionEffect.values());
+
+        targetsDropdown = new EUIDropdown<TargetFilter>(new EUIHitbox(0, 0, scale(240), scale(48))
+                , t -> t.name)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(currentTargets, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, false)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_target)
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(TargetFilter.None);
 
         colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::getColorName)
@@ -94,10 +131,16 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
         currentFilters.clear();
         currentNegateFilters.clear();
         currentRarities.clear();
+        currentSizes.clear();
+        currentTargets.clear();
+        currentVfx.clear();
         currentName = null;
         currentDescription = null;
         originsDropdown.setSelectionIndices((int[]) null, false);
         raritiesDropdown.setSelectionIndices((int[]) null, false);
+        sizesDropdown.setSelectionIndices((int[]) null, false);
+        vfxDropdown.setSelectionIndices((int[]) null, false);
+        targetsDropdown.setSelectionIndices((int[]) null, false);
         colorsDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
@@ -112,7 +155,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
     public boolean areFiltersEmpty() {
         return (currentName == null || currentName.isEmpty())
                 && (currentDescription == null || currentDescription.isEmpty())
-                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty()
+                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty() && currentSizes.isEmpty() && currentTargets.isEmpty()
                 && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
                 && EUIUtils.all(getGlobalFilters(), CustomPotionFilterModule::isEmpty)
                 && (customModule != null && customModule.isEmpty());
@@ -130,6 +173,9 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
         HashSet<ModInfo> availableMods = new HashSet<>();
         HashSet<AbstractCard.CardColor> availableColors = new HashSet<>();
         HashSet<AbstractPotion.PotionRarity> availableRarities = new HashSet<>();
+        HashSet<AbstractPotion.PotionSize> availableSizes = new HashSet<>();
+        HashSet<AbstractPotion.PotionEffect> availableVfx = new HashSet<>();
+        HashSet<TargetFilter> availableTargets = new HashSet<>();
         if (referenceItems != null) {
             currentTotal = getReferenceCount();
             for (AbstractPotion potion : referenceItems) {
@@ -142,6 +188,9 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
                 availableMods.add(EUIGameUtils.getModInfo(potion));
                 availableRarities.add(potion.rarity);
                 availableColors.add(EUIGameUtils.getPotionColor(potion.ID));
+                availableSizes.add(potion.size);
+                availableVfx.add(potion.p_effect);
+                availableTargets.add(TargetFilter.forPotion(potion));
             }
             doForFilters(m -> m.initializeSelection(referenceItems));
         }
@@ -153,6 +202,16 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
         ArrayList<AbstractPotion.PotionRarity> rarityItems = new ArrayList<>(availableRarities);
         rarityItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
         raritiesDropdown.setItems(rarityItems);
+
+        sizesDropdown.setItems(availableSizes).sortByLabel();
+
+        ArrayList<AbstractPotion.PotionEffect> vfxItems = new ArrayList<>(availableVfx);
+        vfxItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
+        vfxDropdown.setItems(vfxItems);
+
+        ArrayList<TargetFilter> targetItems = new ArrayList<>(availableTargets);
+        targetItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : StringUtils.compare(a.name, b.name));
+        targetsDropdown.setItems(targetItems);
 
         ArrayList<AbstractCard.CardColor> colorsItems = new ArrayList<>(availableColors);
         colorsItems.sort((a, b) -> a == AbstractCard.CardColor.COLORLESS ? -1 : a == AbstractCard.CardColor.CURSE ? -2 : StringUtils.compare(a.name(), b.name()));
@@ -170,9 +229,12 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
 
     @Override
     public void updateFilters() {
-        originsDropdown.setPosition(hb.x - SPACING * 3.65f, DRAW_START_Y + scrollDelta).tryUpdate();
-        raritiesDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
-        colorsDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
+        xPos = updateDropdown(colorsDropdown, xPos);
+        xPos = updateDropdown(raritiesDropdown, xPos);
+        xPos = updateDropdown(targetsDropdown, xPos);
+        xPos = updateDropdown(sizesDropdown, xPos);
+        xPos = updateDropdown(vfxDropdown, xPos);
         nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         doForFilters(CustomPotionFilterModule::update);
@@ -198,6 +260,9 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
     public boolean isHoveredImpl() {
         return originsDropdown.areAnyItemsHovered()
                 || raritiesDropdown.areAnyItemsHovered()
+                || sizesDropdown.areAnyItemsHovered()
+                || vfxDropdown.areAnyItemsHovered()
+                || targetsDropdown.areAnyItemsHovered()
                 || colorsDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
                 || descriptionInput.hb.hovered
@@ -209,6 +274,9 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
     public void renderFilters(SpriteBatch sb) {
         originsDropdown.tryRender(sb);
         raritiesDropdown.tryRender(sb);
+        targetsDropdown.tryRender(sb);
+        sizesDropdown.tryRender(sb);
+        vfxDropdown.tryRender(sb);
         colorsDropdown.tryRender(sb);
         nameInput.tryRender(sb);
         descriptionInput.tryRender(sb);

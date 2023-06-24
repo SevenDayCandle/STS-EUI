@@ -54,6 +54,7 @@ public class EUIRenderHelpers {
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
     protected static final String SHADER_INVERT_FRAGMENT = "shaders/invertFragment.glsl";
     protected static final String SHADER_RAINBOW_FRAGMENT = "shaders/rainbowFragment.glsl";
+    protected static final String SHADER_RAINBOW_VERTICAL_FRAGMENT = "shaders/rainbowVerticalFragment.glsl";
     protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
     protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.4F);
@@ -65,6 +66,7 @@ public class EUIRenderHelpers {
     protected static ShaderProgram grayscaleShader;
     protected static ShaderProgram invertShader;
     protected static ShaderProgram rainbowShader;
+    protected static ShaderProgram rainbowVerticalShader;
     protected static ShaderProgram sepiaShader;
 
     public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY) {
@@ -427,6 +429,32 @@ public class EUIRenderHelpers {
         pb.setShader(defaultShader);
     }
 
+    public static void drawRainbowVertical(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
+        drawRainbowVertical(sb, EUI.time(), 1, 1, 0.5f, drawFunc);
+    }
+
+    public static void drawRainbowVertical(SpriteBatch sb, float xOffset, float saturation, float brightness, float opacity, ActionT1<SpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = sb.getShader();
+        ShaderProgram rs = getRainbowVerticalShader();
+        sb.setShader(rs);
+        setRainbowVerticalShader(rs, xOffset, saturation, brightness, opacity);
+        drawFunc.invoke(sb);
+        sb.setShader(defaultShader);
+    }
+
+    public static void drawRainbowVertical(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch> drawFunc) {
+        drawRainbowVertical(pb, EUI.time(), 1, 1, 0.5f, drawFunc);
+    }
+
+    public static void drawRainbowVertical(PolygonSpriteBatch pb, float xOffset, float saturation, float brightness, float opacity, ActionT1<PolygonSpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = pb.getShader();
+        ShaderProgram rs = getRainbowVerticalShader();
+        pb.setShader(rs);
+        setRainbowVerticalShader(rs, xOffset, saturation, brightness, opacity);
+        drawFunc.invoke(pb);
+        pb.setShader(defaultShader);
+    }
+
     public static void drawScreen(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         drawBlended(sb, BlendingMode.Screen, drawFunc);
     }
@@ -624,6 +652,13 @@ public class EUIRenderHelpers {
         return rainbowShader;
     }
 
+    protected static ShaderProgram getRainbowVerticalShader() {
+        if (rainbowVerticalShader == null) {
+            rainbowVerticalShader = initializeShader(SHADER_VERTEX, SHADER_RAINBOW_VERTICAL_FRAGMENT);
+        }
+        return rainbowVerticalShader;
+    }
+
     public static ShaderProgram getSepiaShader() {
         if (sepiaShader == null) {
             sepiaShader = initializeShader(SHADER_VERTEX, SHADER_SEPIA_FRAGMENT);
@@ -712,6 +747,14 @@ public class EUIRenderHelpers {
         return rs;
     }
 
+    protected static ShaderProgram setRainbowVerticalShader(ShaderProgram rs, float yOffset, float saturation, float brightness, float opacity) {
+        rs.setUniformf("u_time", yOffset);
+        rs.setUniformf("u_saturation", saturation);
+        rs.setUniformf("u_brightness", brightness);
+        rs.setUniformf("u_opacity", opacity);
+        return rs;
+    }
+
     public static void writeCentered(SpriteBatch sb, BitmapFont font, String text, Hitbox hb, Color color) {
         FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.cY, color);
     }
@@ -771,7 +814,8 @@ public class EUIRenderHelpers {
         Bright,
         Colorize,
         Glitch,
-        Rainbow;
+        Rainbow,
+        RainbowVertical;
 
         public void draw(SpriteBatch sb, ActionT1<SpriteBatch> drawImpl) {
             switch (this) {
@@ -779,6 +823,8 @@ public class EUIRenderHelpers {
                     EUIRenderHelpers.drawGlitched(sb, drawImpl);
                 case Rainbow:
                     EUIRenderHelpers.drawRainbow(sb, drawImpl);
+                case RainbowVertical:
+                    EUIRenderHelpers.drawRainbowVertical(sb, drawImpl);
                 case Grayscale:
                 case Invert:
                 case Sepia:
@@ -796,6 +842,8 @@ public class EUIRenderHelpers {
                     EUIRenderHelpers.drawGlitched(sb, drawImpl);
                 case Rainbow:
                     EUIRenderHelpers.drawRainbow(sb, drawImpl);
+                case RainbowVertical:
+                    EUIRenderHelpers.drawRainbowVertical(sb, drawImpl);
                 case Grayscale:
                 case Invert:
                 case Sepia:

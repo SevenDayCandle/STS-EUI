@@ -84,6 +84,6 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
 
     @Override
     public void updateImpl() {
-        this.seriesDropdown.setPosition(EUI.cardFilters.typesDropdown.hb.x + EUI.cardFilters.typesDropdown.hb.width + SPACING * 2, DRAW_START_Y + EUI.cardFilters.getScrollDelta()).tryUpdate();
+        this.seriesDropdown.setPosition(EUI.cardFilters.targetsDropdown.hb.x + EUI.cardFilters.targetsDropdown.hb.width + SPACING * 2, DRAW_START_Y + EUI.cardFilters.getScrollDelta()).tryUpdate();
     }
 }

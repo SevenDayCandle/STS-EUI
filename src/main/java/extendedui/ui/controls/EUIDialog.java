@@ -18,6 +18,7 @@ import static extendedui.EUIRenderHelpers.DARKENED_SCREEN;
 
 public abstract class EUIDialog<T> extends EUIHoverable {
     protected final static String[] TEXT = CardCrawlGame.languagePack.getUIString("ConfirmPopup").TEXT;
+    protected final static String[] CHOICE_TEXT = CardCrawlGame.languagePack.getUIString("SeedPanel").TEXT;
     protected EUIButton confirm;
     protected EUIButton cancel;
     protected EUILabel header;
@@ -40,23 +41,31 @@ public abstract class EUIDialog<T> extends EUIHoverable {
     public EUIDialog(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText) {
         super(hb);
         this.backgroundImage = new EUIImage(backgroundTexture, hb);
-        this.header = new EUILabel(EUIFontHelper.buttonFont,
+        this.header = getHeader(headerText);
+        this.description = getDescription(descriptionText);
+        this.confirm = getConfirmButton();
+        this.cancel = getCancelButton();
+    }
+
+    protected EUILabel getHeader(String headerText) {
+        return new EUILabel(EUIFontHelper.buttonFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.8f))
                 .setAlignment(0.5f, 0.5f, false)
                 .setLabel(headerText);
-        this.description = new EUILabel(EUIFontHelper.cardTooltipFont,
+    }
+
+    protected EUILabel getDescription(String descriptionText) {
+        return new EUILabel(EUIFontHelper.cardTooltipFont,
                 new RelativeHitbox(hb, hb.width * 0.75f, hb.height, hb.width * 0.15f, hb.height * 0.7f))
                 .setAlignment(0.5f, 0.5f, true)
                 .setSmartText(true, false)
                 .setLabel(descriptionText);
-        this.confirm = getConfirmButton();
-        this.cancel = getCancelButton();
     }
 
     protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.85f, hb.height * 0.15f))
-                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, TEXT[3])
+                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, getCancelText())
                 .setOnClick(() -> {
                     if (onComplete != null) {
                         onComplete.invoke(getCancelValue());
@@ -64,15 +73,23 @@ public abstract class EUIDialog<T> extends EUIHoverable {
                 });
     }
 
+    protected String getCancelText() {
+        return TEXT[3];
+    }
+
     protected EUIButton getConfirmButton() {
         return new EUIButton(ImageMaster.OPTION_YES,
                 new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.15f, hb.height * 0.15f))
-                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, TEXT[2])
+                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, getConfirmText())
                 .setOnClick(() -> {
                     if (onComplete != null) {
                         onComplete.invoke(getConfirmValue());
                     }
                 });
+    }
+
+    protected String getConfirmText() {
+        return TEXT[2];
     }
 
     @Override

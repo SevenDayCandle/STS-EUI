@@ -186,6 +186,10 @@ public class EUIGameUtils {
         return EUIUtils.arrayList(commonRelicPool, uncommonRelicPool, rareRelicPool, bossRelicPool, shopRelicPool);
     }
 
+    public static AbstractRelic.LandingSound getLandingSound(AbstractRelic relic) {
+        return ReflectionHacks.getPrivate(relic, AbstractRelic.class, "landingSFX");
+    }
+
     public static ModInfo getModInfo(Object o) {
         return getModInfo(o.getClass());
     }
@@ -354,30 +358,89 @@ public class EUIGameUtils {
         }
     }
 
+    public static String textForPotionEffect(AbstractPotion.PotionEffect size) {
+        switch (size) {
+            case RAINBOW:
+                return EUIRM.strings.potion_rainbow;
+            case OSCILLATE:
+                return EUIRM.strings.potion_oscillate;
+        }
+        return EUIRM.strings.ui_na;
+    }
+
+    public static String textForPotionSize(AbstractPotion.PotionSize size) {
+        switch (size) {
+            case ANVIL:
+                return EUIRM.strings.potion_anvil;
+            case BOLT:
+                return EUIRM.strings.potion_bolt;
+            case BOTTLE:
+                return EUIRM.strings.potion_bottle;
+            case CARD:
+                return EUIRM.strings.potion_card;
+            case EYE:
+                return EUIRM.strings.potion_eye;
+            case FAIRY:
+                return EUIRM.strings.potion_fairy;
+            case GHOST:
+                return EUIRM.strings.potion_ghost;
+            case H:
+                return EUIRM.strings.potion_h;
+            case HEART:
+                return EUIRM.strings.potion_heart;
+            case JAR:
+                return EUIRM.strings.potion_jar;
+            case M:
+                return EUIRM.strings.potion_m;
+            case MOON:
+                return EUIRM.strings.potion_moon;
+            case S:
+                return EUIRM.strings.potion_s;
+            case SNECKO:
+                return EUIRM.strings.potion_snecko;
+            case SPHERE:
+                return EUIRM.strings.potion_sphere;
+            case SPIKY:
+                return EUIRM.strings.potion_spiky;
+            case T:
+                return EUIRM.strings.potion_t;
+        }
+        return EUIUtils.EMPTY_STRING;
+    }
 
     public static String textForRarity(AbstractCard.CardRarity type) {
         switch (type) {
             case BASIC:
                 return EUIRM.strings.ui_basic; // STS calls this rarity "Starter" but this keyword is used by Animator/Clown Emporium to denote something else
-
             case COMMON:
                 return RunHistoryScreen.TEXT[12];
-
             case UNCOMMON:
                 return RunHistoryScreen.TEXT[13];
-
             case RARE:
                 return RunHistoryScreen.TEXT[14];
-
             case SPECIAL:
                 return RunHistoryScreen.TEXT[15];
-
             case CURSE:
                 return RunHistoryScreen.TEXT[16];
-
             default:
                 return AbstractCard.TEXT[5];
         }
+    }
+
+    public static String textForRelicLandingSound(AbstractRelic.LandingSound sfx) {
+        switch (sfx) {
+            case CLINK:
+                return EUIRM.strings.relic_clink;
+            case FLAT:
+                return EUIRM.strings.relic_flat;
+            case HEAVY:
+                return EUIRM.strings.relic_heavy;
+            case MAGICAL:
+                return EUIRM.strings.relic_magical;
+            case SOLID:
+                return EUIRM.strings.relic_solid;
+        }
+        return EUIUtils.EMPTY_STRING;
     }
 
     public static String textForRelicTier(AbstractRelic.RelicTier type) {

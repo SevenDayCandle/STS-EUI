@@ -20,6 +20,7 @@ import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomFilterModule;
+import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -388,6 +389,11 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
 
         updateFilters();
         contextMenu.tryUpdate();
+    }
+
+    public final float updateDropdown(EUIHoverable element, float xPos) {
+        element.setPosition(xPos, DRAW_START_Y + scrollDelta).tryUpdate();
+        return element.hb.x + element.hb.width + SPACING * 2;
     }
 
     @Override

@@ -48,7 +48,6 @@
             <artifactId>colorful</artifactId>
             <version>0.8.4</version>
         </dependency>
-
     </dependencies>
 
     <build>

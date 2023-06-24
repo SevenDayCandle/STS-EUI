@@ -90,7 +90,11 @@
 			"Export as JSON",
 			"Export the items in this group to an external file",
 			"Confirm Overwrite",
-			"{0} already exists. Do you want to replace it?"
+			"{0} already exists. Do you want to replace it?",
+			"Current",
+			"Hue",
+			"Saturation",
+			"Value"
 		]
 	},
 	"extendedui:ui_pool": {
@@ -109,6 +113,51 @@
 			"Obtain Potion"
 		]
 	},
+	"extendedui:potion": {
+		"TEXT": [
+			"Size",
+			"Visual Effect",
+			"Anvil",
+			"Bolt",
+			"Bottle",
+			"Card",
+			"Eye",
+			"Fairy",
+			"Ghost",
+			"Half",
+			"Heart",
+			"Jar",
+			"Medium",
+			"Moon",
+			"Small",
+			"Snecko",
+			"Sphere",
+			"Spiky",
+			"Tiny",
+			"Rainbow",
+			"Oscillate"
+		]
+	},
+	"extendedui:relic": {
+		"TEXT": [
+			"Landing Sound",
+			"Clink",
+			"Flat",
+			"Heavy",
+			"Magical",
+			"Solid"
+		]
+	},
+	"extendedui:target": {
+		"TEXT": [
+			"None",
+			"All",
+			"All Enemies",
+			"Any Target",
+			"Self",
+			"Single Target"
+		]
+	},
 	"extendedui:ui_filters": {
 		"TEXT": [
 			"Item(s)",
@@ -116,6 +165,7 @@
 			"Amount",
 			"Origin",
 			"Color",
+			"Target",
 			"Results",
 			"Filters",
 			"Any",

@@ -34,9 +34,11 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
     public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
     public final HashSet<AbstractRelic.RelicTier> currentRarities = new HashSet<>();
+    public final HashSet<AbstractRelic.LandingSound> currentSfx = new HashSet<>();
     public final HashSet<SeenValue> currentSeen = new HashSet<>();
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<AbstractRelic.RelicTier> raritiesDropdown;
+    public final EUIDropdown<AbstractRelic.LandingSound> sfxDropdown;
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
     public final EUIDropdown<SeenValue> seenDropdown;
 
@@ -61,6 +63,16 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(AbstractRelic.RelicTier.values());
+
+        sfxDropdown = new EUIDropdown<AbstractRelic.LandingSound>(new EUIHitbox(0, 0, scale(240), scale(48))
+                , EUIGameUtils::textForRelicLandingSound)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(currentSfx, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, false)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(AbstractRelic.LandingSound.values());
 
         colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::getColorName)
@@ -112,6 +124,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
         currentDescription = null;
         originsDropdown.setSelectionIndices((int[]) null, false);
         raritiesDropdown.setSelectionIndices((int[]) null, false);
+        sfxDropdown.setSelectionIndices((int[]) null, false);
         colorsDropdown.setSelectionIndices((int[]) null, false);
         seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
@@ -127,7 +140,8 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
     public boolean areFiltersEmpty() {
         return (currentName == null || currentName.isEmpty())
                 && (currentDescription == null || currentDescription.isEmpty())
-                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty() && currentSeen.isEmpty()
+                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty()
+                && currentSfx.isEmpty() && currentSeen.isEmpty()
                 && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
                 && EUIUtils.all(getGlobalFilters(), CustomRelicFilterModule::isEmpty)
                 && (customModule != null && customModule.isEmpty());
@@ -145,6 +159,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
         HashSet<ModInfo> availableMods = new HashSet<>();
         HashSet<AbstractCard.CardColor> availableColors = new HashSet<>();
         HashSet<AbstractRelic.RelicTier> availableRarities = new HashSet<>();
+        HashSet<AbstractRelic.LandingSound> availableSfx = new HashSet<>();
         if (referenceItems != null) {
             currentTotal = getReferenceCount();
             for (AbstractRelic relic : referenceItems) {
@@ -156,6 +171,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
 
                 availableMods.add(EUIGameUtils.getModInfo(relic));
                 availableRarities.add(relic.tier);
+                availableSfx.add(EUIGameUtils.getLandingSound(relic));
                 availableColors.add(EUIGameUtils.getRelicColor(relic.relicId));
             }
             doForFilters(m -> m.initializeSelection(referenceItems));
@@ -168,6 +184,8 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
         ArrayList<AbstractRelic.RelicTier> rarityItems = new ArrayList<>(availableRarities);
         rarityItems.sort((a, b) -> a == null ? -1 : b == null ? 1 : a.ordinal() - b.ordinal());
         raritiesDropdown.setItems(rarityItems);
+
+        sfxDropdown.setItems(availableSfx).sortByLabel();
 
         ArrayList<AbstractCard.CardColor> colorsItems = new ArrayList<>(availableColors);
         colorsItems.sort((a, b) -> a == AbstractCard.CardColor.COLORLESS ? -1 : a == AbstractCard.CardColor.CURSE ? -2 : StringUtils.compare(a.name(), b.name()));
@@ -185,10 +203,11 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
 
     @Override
     public void updateFilters() {
-        originsDropdown.setPosition(hb.x - SPACING * 3.65f, DRAW_START_Y + scrollDelta).tryUpdate();
-        raritiesDropdown.setPosition(originsDropdown.hb.x + originsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
-        colorsDropdown.setPosition(raritiesDropdown.hb.x + raritiesDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
-        seenDropdown.setPosition(colorsDropdown.hb.x + colorsDropdown.hb.width + SPACING * 3, DRAW_START_Y + scrollDelta).tryUpdate();
+        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
+        xPos = updateDropdown(colorsDropdown, xPos);
+        xPos = updateDropdown(raritiesDropdown, xPos);
+        xPos = updateDropdown(seenDropdown, xPos);
+        xPos = updateDropdown(sfxDropdown, xPos);
         nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         doForFilters(CustomRelicFilterModule::update);
@@ -216,6 +235,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
                 || raritiesDropdown.areAnyItemsHovered()
                 || colorsDropdown.areAnyItemsHovered()
                 || seenDropdown.areAnyItemsHovered()
+                || sfxDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
                 || descriptionInput.hb.hovered
                 || EUIUtils.any(getGlobalFilters(), CustomRelicFilterModule::isHovered)
@@ -228,6 +248,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
         raritiesDropdown.tryRender(sb);
         colorsDropdown.tryRender(sb);
         seenDropdown.tryRender(sb);
+        sfxDropdown.tryRender(sb);
         nameInput.tryRender(sb);
         descriptionInput.tryRender(sb);
         doForFilters(m -> m.render(sb));
@@ -277,6 +298,11 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
 
         //Rarities check
         if (!currentRarities.isEmpty() && !currentRarities.contains(c.tier)) {
+            return false;
+        }
+
+        //Sfx check
+        if (!currentSfx.isEmpty() && !currentSfx.contains(EUIGameUtils.getLandingSound(c))) {
             return false;
         }
 

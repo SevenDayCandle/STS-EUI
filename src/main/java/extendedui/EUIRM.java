@@ -181,6 +181,9 @@ public class EUIRM {
         private final UIStrings stringsGrammar = getUIStrings("grammar");
         private final UIStrings stringsHotkeys = getUIStrings("hotkeys");
         private final UIStrings stringsMisc = getUIStrings("misc");
+        private final UIStrings stringsPotion = getUIStrings("potion");
+        private final UIStrings stringsRelic = getUIStrings("relic");
+        private final UIStrings stringsTarget = getUIStrings("target");
         private final UIStrings stringsUIPool = getUIStrings("ui_pool");
         private final UIStrings stringsUIFilter = getUIStrings("ui_filters");
 
@@ -239,6 +242,46 @@ public class EUIRM {
         public final String misc_exportDesc = stringsMisc.TEXT[11];
         public final String misc_overwrite = stringsMisc.TEXT[12];
         public final String misc_overwriteDesc = stringsMisc.TEXT[13];
+        public final String misc_current = stringsMisc.TEXT[14];
+        public final String misc_hue = stringsMisc.TEXT[15];
+        public final String misc_saturation = stringsMisc.TEXT[16];
+        public final String misc_value = stringsMisc.TEXT[17];
+
+        public final String potion_size = stringsPotion.TEXT[0];
+        public final String potion_visualEffect = stringsPotion.TEXT[1];
+        public final String potion_anvil = stringsPotion.TEXT[2];
+        public final String potion_bolt = stringsPotion.TEXT[3];
+        public final String potion_bottle = stringsPotion.TEXT[4];
+        public final String potion_card = stringsPotion.TEXT[5];
+        public final String potion_eye = stringsPotion.TEXT[6];
+        public final String potion_fairy = stringsPotion.TEXT[7];
+        public final String potion_ghost = stringsPotion.TEXT[8];
+        public final String potion_h = stringsPotion.TEXT[9];
+        public final String potion_heart = stringsPotion.TEXT[10];
+        public final String potion_jar = stringsPotion.TEXT[11];
+        public final String potion_m = stringsPotion.TEXT[12];
+        public final String potion_moon = stringsPotion.TEXT[13];
+        public final String potion_s = stringsPotion.TEXT[14];
+        public final String potion_snecko = stringsPotion.TEXT[15];
+        public final String potion_sphere = stringsPotion.TEXT[16];
+        public final String potion_spiky = stringsPotion.TEXT[17];
+        public final String potion_t = stringsPotion.TEXT[18];
+        public final String potion_rainbow = stringsPotion.TEXT[19];
+        public final String potion_oscillate = stringsPotion.TEXT[20];
+
+        public final String relic_landingSound = stringsRelic.TEXT[0];
+        public final String relic_clink = stringsRelic.TEXT[1];
+        public final String relic_flat = stringsRelic.TEXT[2];
+        public final String relic_heavy = stringsRelic.TEXT[3];
+        public final String relic_magical = stringsRelic.TEXT[4];
+        public final String relic_solid = stringsRelic.TEXT[5];
+
+        public final String target_none = stringsTarget.TEXT[0];
+        public final String target_allCharacter = stringsTarget.TEXT[1];
+        public final String target_allEnemy = stringsTarget.TEXT[2];
+        public final String target_any = stringsTarget.TEXT[3];
+        public final String target_self = stringsTarget.TEXT[4];
+        public final String target_singleTarget = stringsTarget.TEXT[5];
 
         public final String uipool_viewPool = stringsUIPool.TEXT[0];
         public final String uipool_viewPoolDescription = stringsUIPool.TEXT[1];
@@ -258,20 +301,21 @@ public class EUIRM {
         public final String ui_amount = stringsUIFilter.TEXT[2];
         public final String ui_origins = stringsUIFilter.TEXT[3];
         public final String ui_colors = stringsUIFilter.TEXT[4];
-        public final String ui_total = stringsUIFilter.TEXT[5];
-        public final String ui_filters = stringsUIFilter.TEXT[6];
-        public final String ui_any = stringsUIFilter.TEXT[7];
-        public final String ui_noMatch = stringsUIFilter.TEXT[8];
-        public final String ui_basegame = stringsUIFilter.TEXT[9];
-        public final String ui_nameSearch = stringsUIFilter.TEXT[10];
-        public final String ui_descriptionSearch = stringsUIFilter.TEXT[11];
-        public final String ui_basic = stringsUIFilter.TEXT[12];
-        public final String ui_seen = stringsUIFilter.TEXT[13];
-        public final String ui_unseen = stringsUIFilter.TEXT[14];
-        public final String ui_na = stringsUIFilter.TEXT[15];
-        public final String ui_disableTooltip = stringsUIFilter.TEXT[16];
-        public final String ui_enableTooltip = stringsUIFilter.TEXT[17];
-        public final String ui_filterExplanation = stringsUIFilter.TEXT[18];
+        public final String ui_target = stringsUIFilter.TEXT[5];
+        public final String ui_total = stringsUIFilter.TEXT[6];
+        public final String ui_filters = stringsUIFilter.TEXT[7];
+        public final String ui_any = stringsUIFilter.TEXT[8];
+        public final String ui_noMatch = stringsUIFilter.TEXT[9];
+        public final String ui_basegame = stringsUIFilter.TEXT[10];
+        public final String ui_nameSearch = stringsUIFilter.TEXT[11];
+        public final String ui_descriptionSearch = stringsUIFilter.TEXT[12];
+        public final String ui_basic = stringsUIFilter.TEXT[13];
+        public final String ui_seen = stringsUIFilter.TEXT[14];
+        public final String ui_unseen = stringsUIFilter.TEXT[15];
+        public final String ui_na = stringsUIFilter.TEXT[16];
+        public final String ui_disableTooltip = stringsUIFilter.TEXT[17];
+        public final String ui_enableTooltip = stringsUIFilter.TEXT[18];
+        public final String ui_filterExplanation = stringsUIFilter.TEXT[19];
 
         // e.g. English: Red Card -> 0 1, Spanish: Carta roja -> 1 0
         public final String adjNoun(Object adj, Object noun) {
