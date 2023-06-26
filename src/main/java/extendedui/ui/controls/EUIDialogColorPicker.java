@@ -18,6 +18,7 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
     protected EUITextBoxNumericalInput inputHue;
     protected EUITextBoxNumericalInput inputSaturation;
     protected EUITextBoxNumericalInput inputValue;
+    protected EUITextBoxNumericalInput inputAlpha;
     protected EUILabel sampleColorHeader;
     protected EUIImage sampleColor;
 
@@ -26,7 +27,7 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
     }
 
     public EUIDialogColorPicker(String headerText, String descriptionText) {
-        this(headerText, descriptionText, scale(460), scale(780));
+        this(headerText, descriptionText, scale(460), scale(800));
     }
 
     public EUIDialogColorPicker(String headerText, String descriptionText, float w, float h) {
@@ -35,8 +36,8 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
 
     public EUIDialogColorPicker(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText) {
         super(hb, backgroundTexture, headerText, descriptionText);
-        this.picker = new EUIColorPicker(new RelativeHitbox(hb, hb.width / 2.5f, hb.width / 2.5f, hb.width / 2, hb.height / 1.6f));
-        this.inputHue = (EUITextBoxNumericalInput) new EUITextBoxNumericalInput(EUIRM.images.panelRoundedHalfH.texture(), new EUIHitbox(hb.x + hb.width * 0.3f, hb.y + hb.height / 2.7f, hb.width * 0.125f, scale(54)))
+        this.picker = new EUIColorPicker(new RelativeHitbox(hb, hb.width / 2.5f, hb.width / 2.5f, hb.width / 2.3f, hb.height / 1.4f));
+        this.inputHue = (EUITextBoxNumericalInput) new EUITextBoxNumericalInput(EUIRM.images.panelRoundedHalfH.texture(), new EUIHitbox(hb.x + hb.width * 0.3f, hb.y + hb.height / 2.3f, hb.width * 0.125f, scale(54)))
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_hue)
                 .setBackgroundTexture(EUIRM.images.panelRoundedHalfH.texture(), new Color(0.5f, 0.5f, 0.5f, 1f), 1.1f)
                 .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
@@ -54,6 +55,12 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
                 .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.5f)
                 .setFont(EUIFontHelper.cardTitleFontSmall, 1f);
+        this.inputAlpha = (EUITextBoxNumericalInput) new EUITextBoxNumericalInput(EUIRM.images.panelRoundedHalfH.texture(), new EUIHitbox(hb.x + hb.width * 0.3f, inputValue.hb.y - inputValue.hb.height * 1.2f, hb.width * 0.125f, scale(54)))
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_opacity)
+                .setBackgroundTexture(EUIRM.images.panelRoundedHalfH.texture(), new Color(0.5f, 0.5f, 0.5f, 1f), 1.1f)
+                .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
+                .setAlignment(0.5f, 0.5f)
+                .setFont(EUIFontHelper.cardTitleFontSmall, 1f);
         this.sampleColorHeader = new EUILabel(EUIFontHelper.cardTitleFontSmall,
                 new EUIHitbox(hb.x + hb.width * 0.6f, inputSaturation.header.hb.y, scale(50), scale(50)))
                 .setFontScale(0.8f)
@@ -67,6 +74,8 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
                 .setOnComplete(i -> picker.setSat((float) i / HUE_CONSTANT));
         this.inputValue
                 .setOnComplete(i -> picker.setVal((float) i / HUE_CONSTANT));
+        this.inputAlpha
+                .setOnComplete(i -> picker.setAlpha((float) i / HUE_CONSTANT));
         this.picker.setOnChange((__) -> updateInputs());
     }
 
@@ -84,6 +93,7 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
         this.inputHue.renderImpl(sb);
         this.inputSaturation.renderImpl(sb);
         this.inputValue.renderImpl(sb);
+        this.inputAlpha.renderImpl(sb);
         this.sampleColor.renderImpl(sb);
         this.sampleColorHeader.renderImpl(sb);
     }
@@ -95,7 +105,7 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
         this.inputHue.updateImpl();
         this.inputSaturation.updateImpl();
         this.inputValue.updateImpl();
-        this.sampleColor.updateImpl();
+        this.inputAlpha.updateImpl();
         this.sampleColor.updateImpl();
     }
 
@@ -129,6 +139,8 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
                 .forceSetValue((int) (picker.getSat() * HUE_CONSTANT), false);
         this.inputValue
                 .forceSetValue((int) (picker.getVal() * HUE_CONSTANT), false);
+        this.inputAlpha
+                .forceSetValue((int) (picker.getAlpha() * HUE_CONSTANT), false);
         this.sampleColor.setColor(picker.getReturnColor());
     }
 }

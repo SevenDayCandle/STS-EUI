@@ -246,6 +246,7 @@ public class EUIRM {
         public final String misc_hue = stringsMisc.TEXT[15];
         public final String misc_saturation = stringsMisc.TEXT[16];
         public final String misc_value = stringsMisc.TEXT[17];
+        public final String misc_opacity = stringsMisc.TEXT[18];
 
         public final String potion_size = stringsPotion.TEXT[0];
         public final String potion_visualEffect = stringsPotion.TEXT[1];

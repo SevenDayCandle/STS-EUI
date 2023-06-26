@@ -15,32 +15,38 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.utilities.EUIColors;
 
 import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
 
 public class EUIColorPicker extends EUIHoverable {
-    protected static final float HUE_WIDTH = scale(30);
+    protected static final float HUE_WIDTH = scale(26);
 
     private final ShapeRenderer renderer;
     private Color topRight = Color.RED.cpy();
     private float hue;
     private float sat;
     private float val;
+    private float alpha;
     protected Color returnColor = Color.WHITE.cpy();
     protected ActionT1<EUIColorPicker> onChange;
     protected EUIHitbox hueHb;
+    protected EUIHitbox alphaHb;
 
     public EUIColorPicker(EUIHitbox hb) {
         super(hb);
         renderer = new ShapeRenderer();
         hueHb = new RelativeHitbox(hb, HUE_WIDTH, hb.height, hb.width + scale(30), hb.height * 0.5f);
+        alphaHb = new RelativeHitbox(hb, HUE_WIDTH, hb.height, hb.width + HUE_WIDTH + scale(40), hb.height * 0.5f);
     }
 
     public Color getReturnColor() {
         return returnColor;
     }
+
+    public float getAlpha() {return alpha;}
 
     public float getHue() {return hue;}
 
@@ -81,6 +87,8 @@ public class EUIColorPicker extends EUIHoverable {
 
         val = cmax;
 
+        alpha = returnColor.a;
+
         return this;
     }
 
@@ -104,6 +112,12 @@ public class EUIColorPicker extends EUIHoverable {
         }
 
         this.hue = hue;
+    }
+
+    public EUIColorPicker setAlpha(float val) {
+        this.alpha = val;
+        updateReturnColor();
+        return this;
     }
 
     // Assuming Saturation = 1, Value = 1
@@ -130,6 +144,10 @@ public class EUIColorPicker extends EUIHoverable {
         return this;
     }
 
+    protected void setAlphaFromMouse(float my) {
+        setAlpha((my - alphaHb.y) / alphaHb.height);
+    }
+
     protected void setHueFromMouse(float my) {
         setHue((my - hueHb.y) / hueHb.height);
     }
@@ -147,6 +165,7 @@ public class EUIColorPicker extends EUIHoverable {
         returnColor.r = MathUtils.lerp(0, returnColor.r, val);
         returnColor.g = MathUtils.lerp(0, returnColor.g, val);
         returnColor.b = MathUtils.lerp(0, returnColor.b, val);
+        returnColor.a = alpha;
         if (onChange != null) {
             onChange.invoke(this);
         }
@@ -156,11 +175,15 @@ public class EUIColorPicker extends EUIHoverable {
     public void updateImpl() {
         super.updateImpl();
         hueHb.update();
+        alphaHb.update();
         if (hb.hovered && EUIInputManager.leftClick.isPressed()) {
             updateSatValFromMouse(InputHelper.mX, InputHelper.mY);
         }
         else if (hueHb.hovered && EUIInputManager.leftClick.isPressed()) {
             setHueFromMouse(InputHelper.mY);
+        }
+        else if (alphaHb.hovered && EUIInputManager.leftClick.isPressed()) {
+            setAlphaFromMouse(InputHelper.mY);
         }
     }
 
@@ -170,8 +193,10 @@ public class EUIColorPicker extends EUIHoverable {
         renderer.setProjectionMatrix(sb.getProjectionMatrix());
         renderer.begin(ShapeRenderer.ShapeType.Filled);
         renderer.rect(hb.x, hb.y, hb.width, hb.height, Color.BLACK, Color.BLACK, topRight, Color.WHITE);
+        renderer.rect(alphaHb.x, alphaHb.y, alphaHb.width, alphaHb.height, Color.GRAY, Color.GRAY, Color.WHITE, Color.WHITE);
         renderer.end();
         sb.begin();
+        sb.setColor(Color.WHITE);
         EUIRenderHelpers.drawRainbowVertical(sb, 0f, 0.9f, 1, 1f, s ->  {
             s.draw(ImageMaster.WHITE_SQUARE_IMG, hueHb.x, hueHb.y, hueHb.width, hueHb.height);
         });

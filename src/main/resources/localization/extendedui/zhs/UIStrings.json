@@ -94,7 +94,8 @@
 			"Current",
 			"Hue",
 			"Saturation",
-			"Value"
+			"Value",
+			"Opacity"
 		]
 	},
 	"extendedui:ui_pool": {

@@ -133,7 +133,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
 
     protected void obtain(AbstractPotion c) {
         if (c != null && AbstractDungeon.player != null) {
-            AbstractDungeon.player.obtainPotion(c);
+            AbstractDungeon.player.obtainPotion(c.makeCopy());
         }
     }
 

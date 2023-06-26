@@ -557,7 +557,7 @@ public class EUITooltip {
 
     public static void scanListForAdditionalTips(ArrayList<EUITooltip> source, ArrayList<EUITooltip> receiver) {
         for (EUITooltip tip : source) {
-            if (tip.description != null) {
+            if (tip.description != null && tip.isRenderable()) {
                 scanForTips(tip.description, receiver, receiver, false);
             }
         }

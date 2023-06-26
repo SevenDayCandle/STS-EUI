@@ -64,7 +64,7 @@ public abstract class EUIDialog<T> extends EUIHoverable {
 
     protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
-                new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.85f, hb.height * 0.15f))
+                new RelativeHitbox(hb, scale(152), scale(80), hb.width * 0.85f, hb.height * 0.15f))
                 .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, getCancelText())
                 .setOnClick(() -> {
                     if (onComplete != null) {
@@ -79,7 +79,7 @@ public abstract class EUIDialog<T> extends EUIHoverable {
 
     protected EUIButton getConfirmButton() {
         return new EUIButton(ImageMaster.OPTION_YES,
-                new RelativeHitbox(hb, scale(135), scale(70), hb.width * 0.15f, hb.height * 0.15f))
+                new RelativeHitbox(hb, scale(152), scale(80), hb.width * 0.15f, hb.height * 0.15f))
                 .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, getConfirmText())
                 .setOnClick(() -> {
                     if (onComplete != null) {

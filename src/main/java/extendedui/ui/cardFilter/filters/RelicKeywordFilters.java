@@ -82,6 +82,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_colors)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
+
         seenDropdown = new EUIDropdown<SeenValue>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , item -> item.name)
                 .setOnOpenOrClose(this::updateActive)
@@ -206,8 +207,8 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
         float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
         xPos = updateDropdown(colorsDropdown, xPos);
         xPos = updateDropdown(raritiesDropdown, xPos);
-        xPos = updateDropdown(seenDropdown, xPos);
         xPos = updateDropdown(sfxDropdown, xPos);
+        xPos = updateDropdown(seenDropdown, xPos);
         nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         doForFilters(CustomRelicFilterModule::update);
