@@ -13,6 +13,7 @@ import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
 import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.google.gson.reflect.TypeToken;
+import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
@@ -34,6 +35,7 @@ import extendedui.text.EUISmartText;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
+import extendedui.ui.cardFilter.filters.BlightKeywordFilters;
 import extendedui.ui.cardFilter.filters.CardKeywordFilters;
 import extendedui.ui.cardFilter.filters.PotionKeywordFilters;
 import extendedui.ui.cardFilter.filters.RelicKeywordFilters;
@@ -47,6 +49,8 @@ import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.PotionInfo;
+import extendedui.utilities.RelicInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import javax.swing.*;
@@ -59,25 +63,27 @@ public class EUI {
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> preRenderList = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> postRenderList = new ConcurrentLinkedQueue<>();
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> priorityPostRenderList = new ConcurrentLinkedQueue<>();
-    public static final ArrayList<EUIBase> BattleSubscribers = new ArrayList<>();
-    public static final ArrayList<EUIBase> Subscribers = new ArrayList<>();
+    public static final ArrayList<EUIBase> battleSubscribers = new ArrayList<>();
+    public static final ArrayList<EUIBase> subscribers = new ArrayList<>();
     public static final String[] ENERGY_STRINGS = {"[E]", "[R]", "[G]", "[B]", "[W]"};
+    public static final ArrayList<CustomFilterModule<AbstractBlight>> globalCustomBlightFilters = new ArrayList<>();
+    public static final ArrayList<CustomPoolModule<AbstractBlight>> globalCustomBlightLibraryModules = new ArrayList<>(); // TODO use this
     public static final ArrayList<CustomCardFilterModule> globalCustomCardFilters = new ArrayList<>();
     public static final ArrayList<CustomCardPoolModule> globalCustomCardLibraryModules = new ArrayList<>();
     public static final ArrayList<CustomCardPoolModule> globalCustomCardPoolModules = new ArrayList<>();
-    public static final ArrayList<CustomPotionFilterModule> globalCustomPotionFilters = new ArrayList<>();
-    public static final ArrayList<CustomPotionPoolModule> globalCustomPotionLibraryModules = new ArrayList<>(); // TODO use this
-    public static final ArrayList<CustomPotionPoolModule> globalCustomPotionPoolModules = new ArrayList<>();
-    public static final ArrayList<CustomRelicFilterModule> globalCustomRelicFilters = new ArrayList<>();
-    public static final ArrayList<CustomRelicPoolModule> globalCustomRelicLibraryModules = new ArrayList<>(); // TODO use this
-    public static final ArrayList<CustomRelicPoolModule> globalCustomRelicPoolModules = new ArrayList<>();
+    public static final ArrayList<CustomFilterModule<PotionInfo>> globalCustomPotionFilters = new ArrayList<>();
+    public static final ArrayList<CustomPoolModule<PotionInfo>> globalCustomPotionLibraryModules = new ArrayList<>(); // TODO use this
+    public static final ArrayList<CustomPoolModule<PotionInfo>> globalCustomPotionPoolModules = new ArrayList<>();
+    public static final ArrayList<CustomFilterModule<RelicInfo>> globalCustomRelicFilters = new ArrayList<>();
+    public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicLibraryModules = new ArrayList<>(); // TODO use this
+    public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicPoolModules = new ArrayList<>();
     public static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customCardFilters = new HashMap<>();
     public static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardLibraryModules = new HashMap<>();
     public static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardPoolModules = new HashMap<>();
-    public static final HashMap<AbstractCard.CardColor, CustomPotionFilterModule> customPotionFilters = new HashMap<>();
-    public static final HashMap<AbstractCard.CardColor, CustomPotionPoolModule> customPotionPoolModules = new HashMap<>();
-    public static final HashMap<AbstractCard.CardColor, CustomRelicFilterModule> customRelicFilters = new HashMap<>();
-    public static final HashMap<AbstractCard.CardColor, CustomRelicPoolModule> customRelicPoolModules = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomFilterModule<PotionInfo>> customPotionFilters = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomPoolModule<PotionInfo>> customPotionPoolModules = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomFilterModule<RelicInfo>> customRelicFilters = new HashMap<>();
+    public static final HashMap<AbstractCard.CardColor, CustomPoolModule<RelicInfo>> customRelicPoolModules = new HashMap<>();
     private static float delta = 0;
     private static float timer = 0;
     private static int imguiIndex = 0;
@@ -85,12 +91,16 @@ public class EUI {
     private static Hitbox lastClicked;
     protected static EUIBase activeElement;
     public static AbstractCard.CardColor actingColor;
+    public static BlightKeywordFilters blightFilters;
+    public static BlightLibraryScreen blightLibraryScreen;
+    public static BlightSortHeader blightHeader;
     public static AbstractMenuScreen currentScreen;
     public static CardKeywordFilters cardFilters;
     public static CardPoolScreen cardsScreen;
     public static CountingPanel countingPanel;
     public static CustomCardLibSortHeader customHeader;
     public static CustomCardLibraryScreen customLibraryScreen;
+    public static EUIButton openBlightFiltersButton;
     public static EUIButton openCardFiltersButton;
     public static EUIButton openPotionFiltersButton;
     public static EUIButton openRelicFiltersButton;
@@ -107,7 +117,15 @@ public class EUI {
     public static boolean disableInteract;
 
     public static void addBattleSubscriber(EUIBase element) {
-        BattleSubscribers.add(element);
+        battleSubscribers.add(element);
+    }
+
+    public static void addGlobalCustomBlightFilter(CustomFilterModule<AbstractBlight> element) {
+        globalCustomBlightFilters.add(element);
+    }
+
+    public static void addGlobalCustomBlightLibraryModule(CustomPoolModule<AbstractBlight>element) {
+        globalCustomBlightLibraryModules.add(element);
     }
 
     public static void addGlobalCustomCardFilter(CustomCardFilterModule element) {
@@ -122,27 +140,27 @@ public class EUI {
         globalCustomCardPoolModules.add(element);
     }
 
-    public static void addGlobalCustomPotionFilter(CustomPotionFilterModule element) {
+    public static void addGlobalCustomPotionFilter(CustomFilterModule<PotionInfo> element) {
         globalCustomPotionFilters.add(element);
     }
 
-    public static void addGlobalCustomPotionLibraryModule(CustomPotionPoolModule element) {
+    public static void addGlobalCustomPotionLibraryModule(CustomPoolModule<PotionInfo>element) {
         globalCustomPotionLibraryModules.add(element);
     }
 
-    public static void addGlobalCustomPotionPoolModule(CustomPotionPoolModule element) {
+    public static void addGlobalCustomPotionPoolModule(CustomPoolModule<PotionInfo>element) {
         globalCustomPotionPoolModules.add(element);
     }
 
-    public static void addGlobalCustomRelicFilter(CustomRelicFilterModule element) {
+    public static void addGlobalCustomRelicFilter(CustomFilterModule<RelicInfo> element) {
         globalCustomRelicFilters.add(element);
     }
 
-    public static void addGlobalCustomRelicLibraryModule(CustomRelicPoolModule element) {
+    public static void addGlobalCustomRelicLibraryModule(CustomPoolModule<RelicInfo>element) {
         globalCustomRelicLibraryModules.add(element);
     }
 
-    public static void addGlobalCustomRelicPoolModule(CustomRelicPoolModule element) {
+    public static void addGlobalCustomRelicPoolModule(CustomPoolModule<RelicInfo>element) {
         globalCustomRelicPoolModules.add(element);
     }
 
@@ -159,7 +177,7 @@ public class EUI {
     }
 
     public static void addSubscriber(EUIBase element) {
-        Subscribers.add(element);
+        subscribers.add(element);
     }
 
     public static float delta() {
@@ -225,35 +243,35 @@ public class EUI {
         return customCardPoolModules.get(cardColor);
     }
 
-    public static CustomPotionFilterModule getCustomPotionFilter(AbstractPlayer player) {
+    public static CustomFilterModule<PotionInfo> getCustomPotionFilter(AbstractPlayer player) {
         return player != null ? getCustomPotionFilter(player.getCardColor()) : null;
     }
 
-    public static CustomPotionFilterModule getCustomPotionFilter(AbstractCard.CardColor cardColor) {
+    public static CustomFilterModule<PotionInfo> getCustomPotionFilter(AbstractCard.CardColor cardColor) {
         return customPotionFilters.get(cardColor);
     }
 
-    public static CustomPotionPoolModule getCustomPotionPoolModule(AbstractPlayer player) {
+    public static CustomPoolModule<PotionInfo>getCustomPotionPoolModule(AbstractPlayer player) {
         return player != null ? getCustomPotionPoolModule(player.getCardColor()) : null;
     }
 
-    public static CustomPotionPoolModule getCustomPotionPoolModule(AbstractCard.CardColor cardColor) {
+    public static CustomPoolModule<PotionInfo>getCustomPotionPoolModule(AbstractCard.CardColor cardColor) {
         return customPotionPoolModules.get(cardColor);
     }
 
-    public static CustomRelicFilterModule getCustomRelicFilter(AbstractPlayer player) {
+    public static CustomFilterModule<RelicInfo> getCustomRelicFilter(AbstractPlayer player) {
         return player != null ? getCustomRelicFilter(player.getCardColor()) : null;
     }
 
-    public static CustomRelicFilterModule getCustomRelicFilter(AbstractCard.CardColor cardColor) {
+    public static CustomFilterModule<RelicInfo> getCustomRelicFilter(AbstractCard.CardColor cardColor) {
         return customRelicFilters.get(cardColor);
     }
 
-    public static CustomRelicPoolModule getCustomRelicPoolModule(AbstractPlayer player) {
+    public static CustomPoolModule<RelicInfo>getCustomRelicPoolModule(AbstractPlayer player) {
         return player != null ? getCustomRelicPoolModule(player.getCardColor()) : null;
     }
 
-    public static CustomRelicPoolModule getCustomRelicPoolModule(AbstractCard.CardColor cardColor) {
+    public static CustomPoolModule<RelicInfo>getCustomRelicPoolModule(AbstractCard.CardColor cardColor) {
         return customRelicPoolModules.get(cardColor);
     }
 
@@ -297,6 +315,9 @@ public class EUI {
             EUIGameUtils.registerColorPlayer(p.getCardColor(), p.chosenClass);
         }
 
+        blightFilters = new BlightKeywordFilters();
+        blightLibraryScreen = new BlightLibraryScreen();
+        blightHeader = new BlightSortHeader(null);
         cardsScreen = new CardPoolScreen();
         cardFilters = new CardKeywordFilters();
         countingPanel = new CountingPanel();
@@ -319,6 +340,13 @@ public class EUI {
         EUIConfiguration.disableCompendiumButton.addListener(EUI::toggleCompendiumButton);
 
         EUITooltip tip = new EUITooltip(EUIRM.strings.ui_filters, EUIRM.strings.ui_filterExplanation);
+        openBlightFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.ui_filters)
+                .setOnClick(() -> EUI.blightFilters.toggleFilters())
+                .setTooltip(tip)
+                .setColor(Color.MAROON);
         openCardFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
@@ -524,7 +552,7 @@ public class EUI {
             currentScreen.renderImpl(sb);
         }
 
-        for (EUIBase s : Subscribers) {
+        for (EUIBase s : subscribers) {
             s.tryRender(sb);
         }
 
@@ -555,19 +583,19 @@ public class EUI {
         customCardPoolModules.put(cardColor, element);
     }
 
-    public static void setCustomPotionFilter(AbstractCard.CardColor cardColor, CustomPotionFilterModule element) {
+    public static void setCustomPotionFilter(AbstractCard.CardColor cardColor, CustomFilterModule<PotionInfo> element) {
         customPotionFilters.put(cardColor, element);
     }
 
-    public static void setCustomPotionPoolModule(AbstractCard.CardColor cardColor, CustomPotionPoolModule element) {
+    public static void setCustomPotionPoolModule(AbstractCard.CardColor cardColor, CustomPoolModule<PotionInfo>element) {
         customPotionPoolModules.put(cardColor, element);
     }
 
-    public static void setCustomRelicFilter(AbstractCard.CardColor cardColor, CustomRelicFilterModule element) {
+    public static void setCustomRelicFilter(AbstractCard.CardColor cardColor, CustomFilterModule<RelicInfo> element) {
         customRelicFilters.put(cardColor, element);
     }
 
-    public static void setCustomRelicPoolModule(AbstractCard.CardColor cardColor, CustomRelicPoolModule element) {
+    public static void setCustomRelicPoolModule(AbstractCard.CardColor cardColor, CustomPoolModule<RelicInfo>element) {
         customRelicPoolModules.put(cardColor, element);
     }
 
@@ -639,10 +667,10 @@ public class EUI {
             currentScreen.updateImpl();
         }
 
-        for (EUIBase s : BattleSubscribers) {
+        for (EUIBase s : battleSubscribers) {
             s.tryUpdate();
         }
-        for (EUIBase s : Subscribers) {
+        for (EUIBase s : subscribers) {
             s.tryUpdate();
         }
 

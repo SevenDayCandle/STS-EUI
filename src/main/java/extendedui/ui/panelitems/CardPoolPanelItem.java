@@ -21,7 +21,6 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIHotkeys;
-import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.FuncT0;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -82,7 +81,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
 
     public static ArrayList<AbstractRelic> getAllRelics() {
         ArrayList<AbstractRelic> newRelics = new ArrayList<>();
-        for (String relicID : EUIGameUtils.getAllRelicIDs()) {
+        for (String relicID : EUIGameUtils.getInGameRelicIDs()) {
             AbstractRelic original = RelicLibrary.getRelic(relicID);
             if (original instanceof Circlet) {
                 original = BaseMod.getCustomRelic(relicID);

@@ -17,7 +17,7 @@ import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT2;
-import extendedui.interfaces.markers.CustomRelicPoolModule;
+import extendedui.interfaces.markers.CustomPoolModule;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.controls.EUIRelicGrid;
@@ -35,7 +35,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
     @SpireEnum
     public static AbstractDungeon.CurrentScreen RELIC_POOL_SCREEN;
 
-    public static CustomRelicPoolModule customModule;
+    public static CustomPoolModule<RelicInfo> customModule;
     protected final EUIContextMenu<RelicPoolScreen.DebugOption> contextMenu;
     protected final EUIButton swapCardScreen;
     protected final EUIButton swapPotionScreen;
@@ -81,7 +81,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
     @Override
     public void close() {
         super.close();
-        for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+        for (CustomPoolModule<RelicInfo>module : EUI.globalCustomRelicPoolModules) {
             module.onClose();
         }
         if (customModule != null) {
@@ -103,7 +103,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             EUI.relicHeader.updateImpl();
             EUI.openRelicFiltersButton.tryUpdate();
             EUIExporter.exportRelicButton.tryUpdate();
-            for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+            for (CustomPoolModule<RelicInfo>module : EUI.globalCustomRelicPoolModules) {
                 module.update();
             }
             if (customModule != null) {
@@ -124,7 +124,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             EUI.openRelicFiltersButton.tryRender(sb);
             EUIExporter.exportRelicButton.tryRender(sb);
         }
-        for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
+        for (CustomPoolModule<RelicInfo>module : EUI.globalCustomRelicPoolModules) {
             module.render(sb);
         }
         if (customModule != null) {
@@ -171,22 +171,21 @@ public class RelicPoolScreen extends EUIPoolScreen {
         relicGrid.setItems(relics, RelicInfo::new);
 
         EUI.relicFilters.initializeForCustomHeader(relicGrid.group, __ -> {
-            ArrayList<AbstractRelic> headerRelics = EUI.relicHeader.getRelics();
-            for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
-                module.open(headerRelics, color, null);
+            for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
+                module.open(EUI.relicHeader.group.group, color, null);
             }
             if (customModule != null) {
-                customModule.open(headerRelics, color, null);
+                customModule.open(EUI.relicHeader.group.group, color, null);
             }
             relicGrid.forceUpdatePositions();
         }, color, true, false);
 
-        for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
-            module.open(relics, color, null);
+        for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
+            module.open(relicGrid.group.group, color, null);
         }
         customModule = EUI.getCustomRelicPoolModule(player);
         if (customModule != null) {
-            customModule.open(relics, color, null);
+            customModule.open(relicGrid.group.group, color, null);
         }
 
     }

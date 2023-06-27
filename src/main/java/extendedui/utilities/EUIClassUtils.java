@@ -58,6 +58,10 @@ public class EUIClassUtils {
         return ReflectionHacks.privateStaticMethod(className, methodName, EUIUtils.map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(parameters);
     }
 
+    public static <T> T invoke(Object o, Class<?> className, String methodName, Object... parameters) {
+        return ReflectionHacks.privateMethod(className, methodName, EUIUtils.map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(o, parameters);
+    }
+
     public static <T> T invoke(Object o, String methodName, Object... parameters) {
         return getMethod(o, methodName, EUIUtils.map(parameters, Object::getClass).toArray(new Class<?>[]{})).invoke(o, parameters);
     }

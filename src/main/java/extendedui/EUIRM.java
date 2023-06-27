@@ -150,6 +150,7 @@ public class EUIRM {
         public final TextureCache longButton = new TextureCache("images/extendedui/ui/LongButton.png");
         public final TextureCache longButtonBorder = new TextureCache("images/extendedui/ui/LongButtonBorder.png");
         public final TextureCache longInput = new TextureCache("images/extendedui/ui/LongInput.png");
+        public final TextureCache menuBlight = new TextureCache("images/extendedui/ui/MenuBlight.png");
         public final TextureCache minus = new TextureCache("images/extendedui/ui/Minus.png");
         public final TextureCache panel = new TextureCache("images/extendedui/ui/Panel.png");
         public final TextureCache panelBorderB = new TextureCache("images/extendedui/ui/Panel_Border_B.png");
@@ -320,6 +321,7 @@ public class EUIRM {
         public final String ui_disableTooltip = stringsUIFilter.TEXT[17];
         public final String ui_enableTooltip = stringsUIFilter.TEXT[18];
         public final String ui_filterExplanation = stringsUIFilter.TEXT[19];
+        public final String ui_unique = stringsUIFilter.TEXT[20];
 
         // e.g. English: Red Card -> 0 1, Spanish: Carta roja -> 1 0
         public final String adjNoun(Object adj, Object noun) {

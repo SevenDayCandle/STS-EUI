@@ -183,7 +183,8 @@
 			"N/A",
 			"禁用提示描述",
 			"启用提示描述",
-			"Filter out items from this group"
+			"Filter out items from this group",
+			"Unique"
 		]
 	}
 }

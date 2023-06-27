@@ -17,8 +17,9 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 
 public class EUIMainMenuPanelButton extends EUIHoverable {
-    public static final float START_Y = Settings.HEIGHT / 2.0F;
+    public static final float START_Y = -100.0F * Settings.scale;
     public Color color;
+    public Color pColor;
     public Color dColor;
     public Color gColor;
     public String header;
@@ -27,18 +28,23 @@ public class EUIMainMenuPanelButton extends EUIHoverable {
     public Texture portraitImg;
     protected ActionT0 onClick;
     protected float yMod;
-    protected float animTimer = 0.2F;
-    protected float animTime = 0.2F;
+    protected float animTimer = 0.3F;
+    protected float animTime = 0.3F;
     protected float uiScale = 1f;
 
     public EUIMainMenuPanelButton(Texture panelImg, Texture portraitImg, String header, String description, ActionT0 onClick) {
         this(Color.WHITE, Settings.GOLD_COLOR, Settings.CREAM_COLOR, panelImg, portraitImg, header, description, onClick);
     }
 
-    public EUIMainMenuPanelButton(Color color, Color gColor, Color dColor, Texture panelImg, Texture portraitImg, String header, String description, ActionT0 onClick) {
+    public EUIMainMenuPanelButton(Color pColor, Texture panelImg, Texture portraitImg, String header, String description, ActionT0 onClick) {
+        this(pColor, Settings.GOLD_COLOR, Settings.CREAM_COLOR, panelImg, portraitImg, header, description, onClick);
+    }
+
+    public EUIMainMenuPanelButton(Color pColor, Color gColor, Color dColor, Texture panelImg, Texture portraitImg, String header, String description, ActionT0 onClick) {
         super(new EUIHitbox(0, Settings.HEIGHT * 0.5f, scale(400), scale(700)));
         this.onClick = onClick;
-        this.color = color.cpy();
+        this.color = Color.WHITE.cpy();
+        this.pColor = pColor.cpy();
         this.dColor = dColor.cpy();
         this.gColor = gColor.cpy();
         this.panelImg = panelImg;
@@ -54,18 +60,19 @@ public class EUIMainMenuPanelButton extends EUIHoverable {
         }
 
         this.yMod = Interpolation.swingIn.apply(0.0F, START_Y, this.animTimer / this.animTime);
-        this.dColor.a = this.gColor.a = this.color.a = 1.0F - this.animTimer / this.animTime;
+        this.pColor.a = this.dColor.a = this.gColor.a = this.color.a = 1.0F - this.animTimer / this.animTime;
         return this;
     }
 
     public EUIMainMenuPanelButton reposition(float x) {
-        this.hb.translate(x, this.hb.y);
+        this.hb.move(x, Settings.HEIGHT * 0.5f);
         return this;
     }
 
     public void reset() {
-        animTimer = 0.2F;
-        animTime = 0.2F;
+        yMod = 0;
+        animTimer = 0.3F;
+        animTime = 0.3F;
         uiScale = 1f;
     }
 
@@ -101,7 +108,7 @@ public class EUIMainMenuPanelButton extends EUIHoverable {
 
     @Override
     public void renderImpl(SpriteBatch sb) {
-        sb.setColor(this.color);
+        sb.setColor(this.pColor);
         sb.draw(this.panelImg, this.hb.cX - 256.0F, this.hb.cY + this.yMod - 400.0F, 256.0F, 400.0F, 512.0F, 800.0F, this.uiScale * Settings.scale, this.uiScale * Settings.scale, 0.0F, 0, 0, 512, 800, false, false);
         if (this.hb.hovered) {
             sb.setColor(new Color(1.0F, 1.0F, 1.0F, (this.uiScale - 1.0F) * 16.0F));
@@ -110,6 +117,7 @@ public class EUIMainMenuPanelButton extends EUIHoverable {
             sb.setBlendFunction(770, 771);
         }
 
+        sb.setColor(this.color);
         sb.draw(this.portraitImg, this.hb.cX - 158.5F, this.hb.cY + this.yMod - 103.0F + 140.0F * Settings.scale, 158.5F, 103.0F, 317.0F, 206.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 317, 206, false, false);
 
         sb.draw(ImageMaster.MENU_PANEL_FRAME, this.hb.cX - 256.0F, this.hb.cY + this.yMod - 400.0F, 256.0F, 400.0F, 512.0F, 800.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 512, 800, false, false);

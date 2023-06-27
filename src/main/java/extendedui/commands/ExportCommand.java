@@ -6,7 +6,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import extendedui.EUIUtils;
 import extendedui.exporter.EUIExporter;
-import extendedui.ui.cardFilter.CustomCardLibraryScreen;
+import extendedui.ui.screens.CustomCardLibraryScreen;
 
 import java.util.ArrayList;
 

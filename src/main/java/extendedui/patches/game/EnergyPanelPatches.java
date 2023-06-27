@@ -12,7 +12,7 @@ public class EnergyPanelPatches {
     public static class EnergyPanel_Render {
         @SpirePostfixPatch
         public static void postfix(EnergyPanel __instance, SpriteBatch sb) {
-            for (EUIBase s : EUI.BattleSubscribers) {
+            for (EUIBase s : EUI.battleSubscribers) {
                 s.tryRender(sb);
             }
         }

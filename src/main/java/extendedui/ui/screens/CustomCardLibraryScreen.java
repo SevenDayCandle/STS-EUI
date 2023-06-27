@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter;
+package extendedui.ui.screens;
 
 import basemod.BaseMod;
 import basemod.patches.com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen.EverythingFix;
@@ -160,6 +160,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, CENTER_Y - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
         sb.setColor(Color.WHITE);
         upgradeToggle.renderImpl(sb);
+        cancelButton.render(sb);
 
         EUI.customHeader.render(sb);
         quickSearch.tryRender(sb);
@@ -174,7 +175,6 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
             EUI.openCardFiltersButton.tryRender(sb);
             EUIExporter.exportCardButton.tryRender(sb);
         }
-        cancelButton.render(sb);
     }
 
     // Also called by the card filter component

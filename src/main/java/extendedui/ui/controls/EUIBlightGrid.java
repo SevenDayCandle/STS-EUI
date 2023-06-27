@@ -90,6 +90,6 @@ public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
 
     @Override
     protected void renderItem(SpriteBatch sb, AbstractBlight blight) {
-        blight.render(sb, false, Color.WHITE);
+        blight.render(sb, false, Color.BLACK);
     }
 }

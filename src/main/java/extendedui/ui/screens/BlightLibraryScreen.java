@@ -1,0 +1,97 @@
+package extendedui.ui.screens;
+
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.blights.AbstractBlight;
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.BlightHelper;
+import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
+import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
+import extendedui.EUI;
+import extendedui.EUIGameUtils;
+import extendedui.exporter.EUIExporter;
+import extendedui.interfaces.markers.CustomCardPoolModule;
+import extendedui.interfaces.markers.CustomPoolModule;
+import extendedui.ui.AbstractMenuScreen;
+import extendedui.ui.controls.EUIBlightGrid;
+import extendedui.utilities.PotionInfo;
+
+import java.util.ArrayList;
+
+public class BlightLibraryScreen extends AbstractMenuScreen {
+    public EUIBlightGrid grid;
+    public final MenuCancelButton cancelButton;
+
+    public BlightLibraryScreen() {
+        grid = (EUIBlightGrid) new EUIBlightGrid()
+                .setVerticalStart(Settings.HEIGHT * 0.74f)
+                .showScrollbar(true);
+        cancelButton = new MenuCancelButton();
+    }
+
+    @Override
+    public void close() {
+        super.close();
+        for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
+            module.onClose();
+        }
+    }
+
+    @Override
+    public void open() {
+        super.open();
+        this.cancelButton.show(CardLibraryScreen.TEXT[0]);
+
+        grid.clear();
+        grid.add(EUIGameUtils.getAllBlights());
+
+        EUI.blightFilters.initializeForCustomHeader(grid.group, __ -> {
+            for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
+                module.open(EUI.blightHeader.group.group, AbstractCard.CardColor.COLORLESS, null);
+            }
+            grid.moveToTop();
+            grid.forceUpdatePositions();
+        }, AbstractCard.CardColor.COLORLESS, false, true);
+
+        for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
+            module.open(grid.group.group, AbstractCard.CardColor.COLORLESS, null);
+        }
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        boolean shouldDoStandardUpdate = !EUI.blightFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
+        if (shouldDoStandardUpdate) {
+            grid.tryUpdate();
+            cancelButton.update();
+            if (this.cancelButton.hb.clicked) {
+                this.cancelButton.hb.clicked = false;
+                this.cancelButton.hide();
+                close();
+            }
+            EUI.blightHeader.updateImpl();
+            EUI.openBlightFiltersButton.tryUpdate();
+            EUIExporter.exportBlightButton.tryUpdate();
+            for (CustomPoolModule<AbstractBlight>module : EUI.globalCustomBlightLibraryModules) {
+                module.update();
+            }
+        }
+        EUIExporter.exportDropdown.tryUpdate();
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        grid.tryRender(sb);
+        cancelButton.render(sb);
+        EUI.blightHeader.renderImpl(sb);
+        if (!EUI.blightFilters.isActive) {
+            EUI.openBlightFiltersButton.tryRender(sb);
+            EUIExporter.exportBlightButton.tryRender(sb);
+        }
+        for (CustomPoolModule<AbstractBlight>module : EUI.globalCustomBlightLibraryModules) {
+            module.render(sb);
+        }
+    }
+}

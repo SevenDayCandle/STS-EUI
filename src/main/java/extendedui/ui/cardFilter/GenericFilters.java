@@ -337,6 +337,15 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         refreshButtonOrder();
     }
 
+    public void toggleFilters() {
+        if (isActive) {
+            close();
+        }
+        else {
+            open();
+        }
+    }
+
     @Override
     public final void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
@@ -436,15 +445,17 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
 
     abstract public void clearFilters(boolean shouldInvoke, boolean shouldClearColors);
 
-    abstract public ArrayList<T> applyFilters(ArrayList<T> input);
+    public ArrayList<T> applyFilters(ArrayList<T> input) {
+        return EUIUtils.filter(input, this::evaluate);
+    }
 
     abstract public boolean areFiltersEmpty();
+
+    abstract public boolean evaluate(T item);
 
     abstract public ArrayList<U> getGlobalFilters();
 
     abstract protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
-
-    abstract public void toggleFilters();
 
     abstract public void updateFilters();
 

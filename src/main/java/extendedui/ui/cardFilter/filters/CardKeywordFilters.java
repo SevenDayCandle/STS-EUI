@@ -168,92 +168,6 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         doForFilters(CustomCardFilterModule::reset);
     }
 
-    public ArrayList<AbstractCard> applyFilters(ArrayList<AbstractCard> input) {
-        return EUIUtils.filter(input, c -> {
-            //Name check
-            if (currentName != null && !currentName.isEmpty()) {
-                String name = getNameForSort(c);
-                if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
-                    return false;
-                }
-            }
-
-            //Description check
-            if (currentDescription != null && !currentDescription.isEmpty()) {
-                String desc = getDescriptionForSort(c);
-                if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
-                    return false;
-                }
-            }
-
-            //Colors check
-            if (!currentColors.isEmpty() && !currentColors.contains(c.color)) {
-                return false;
-            }
-
-            //Origin check
-            if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt))) {
-                return false;
-            }
-
-            //Tooltips check
-            if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
-                return false;
-            }
-
-            //Negate Tooltips check
-            if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
-                return false;
-            }
-
-            //Rarities check
-            if (!currentRarities.isEmpty() && !currentRarities.contains(c.rarity)) {
-                return false;
-            }
-
-            //Types check
-            if (!currentTypes.isEmpty() && !currentTypes.contains(c.type)) {
-                return false;
-            }
-
-            //Target check
-            if (!currentTargets.isEmpty() && !currentTargets.contains(TargetFilter.forCard(c))) {
-                return false;
-            }
-
-            //Seen check
-            if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c.cardID))) {
-                return false;
-            }
-
-
-            for (CustomCardFilterModule module : EUI.globalCustomCardFilters) {
-                if (!module.isItemValid(c)) {
-                    return false;
-                }
-            }
-
-            //Module check
-            if (customModule != null && !customModule.isItemValid(c)) {
-                return false;
-            }
-
-            //Cost check
-            if (!currentCosts.isEmpty()) {
-                boolean passes = false;
-                for (CostFilter cf : currentCosts) {
-                    if (cf.check(c)) {
-                        passes = true;
-                        break;
-                    }
-                }
-                return passes;
-            }
-
-            return true;
-        });
-    }
-
     @Override
     public boolean areFiltersEmpty() {
         return (currentName == null || currentName.isEmpty())
@@ -264,6 +178,91 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
                 && currentTypes.isEmpty() && currentTargets.isEmpty() && currentSeen.isEmpty()
                 && EUIUtils.all(getGlobalFilters(), CustomCardFilterModule::isEmpty)
                 && (customModule != null && customModule.isEmpty());
+    }
+
+    @Override
+    public boolean evaluate(AbstractCard c) {
+        //Name check
+        if (currentName != null && !currentName.isEmpty()) {
+            String name = getNameForSort(c);
+            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
+                return false;
+            }
+        }
+
+        //Description check
+        if (currentDescription != null && !currentDescription.isEmpty()) {
+            String desc = getDescriptionForSort(c);
+            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
+                return false;
+            }
+        }
+
+        //Colors check
+        if (!currentColors.isEmpty() && !currentColors.contains(c.color)) {
+            return false;
+        }
+
+        //Origin check
+        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt))) {
+            return false;
+        }
+
+        //Tooltips check
+        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
+            return false;
+        }
+
+        //Negate Tooltips check
+        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
+            return false;
+        }
+
+        //Rarities check
+        if (!currentRarities.isEmpty() && !currentRarities.contains(c.rarity)) {
+            return false;
+        }
+
+        //Types check
+        if (!currentTypes.isEmpty() && !currentTypes.contains(c.type)) {
+            return false;
+        }
+
+        //Target check
+        if (!currentTargets.isEmpty() && !currentTargets.contains(TargetFilter.forCard(c))) {
+            return false;
+        }
+
+        //Seen check
+        if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c.cardID))) {
+            return false;
+        }
+
+
+        for (CustomCardFilterModule module : EUI.globalCustomCardFilters) {
+            if (!module.isItemValid(c)) {
+                return false;
+            }
+        }
+
+        //Module check
+        if (customModule != null && !customModule.isItemValid(c)) {
+            return false;
+        }
+
+        //Cost check
+        if (!currentCosts.isEmpty()) {
+            boolean passes = false;
+            for (CostFilter cf : currentCosts) {
+                if (cf.check(c)) {
+                    passes = true;
+                    break;
+                }
+            }
+            return passes;
+        }
+
+        return true;
     }
 
     @Override
@@ -333,15 +332,6 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         }
         else {
             colorsDropdown.setActive(colorsItems.size() > 1);
-        }
-    }
-
-    public void toggleFilters() {
-        if (isActive) {
-            close();
-        }
-        else {
-            open();
         }
     }
 
@@ -459,18 +449,6 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         {
             EUI.customHeader.updateForFilters();
             onClick.invoke(button);
-        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
-        EUI.customHeader.updateForFilters();
-        EUIExporter.exportCardButton.setOnClick(() -> EUIExporter.openForCards(EUI.customHeader.group.group));
-        return this;
-    }
-
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition) {
-        EUI.customHeader.setGroup(group);
-        EUI.customHeader.setupButtons(isFixedPosition);
-        initialize((button) ->
-        {
-            EUI.customHeader.updateForFilters();
         }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
         EUI.customHeader.updateForFilters();
         EUIExporter.exportCardButton.setOnClick(() -> EUIExporter.openForCards(EUI.customHeader.group.group));

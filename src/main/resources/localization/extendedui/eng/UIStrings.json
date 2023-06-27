@@ -183,7 +183,8 @@
 			"N/A",
 			"Disable Tooltip",
 			"Enable Tooltip",
-			"Filter out items from this group"
+			"Filter out items from this group",
+			"Unique"
 		]
 	}
 }

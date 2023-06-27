@@ -4,6 +4,7 @@ import basemod.BaseMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
@@ -17,7 +18,8 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
-import extendedui.ui.cardFilter.CustomCardLibraryScreen;
+import extendedui.interfaces.delegates.ActionT1;
+import extendedui.ui.screens.CustomCardLibraryScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.hitboxes.DraggableHitbox;
@@ -36,13 +38,48 @@ public class EUIExporter {
     public static final String EXT_CSV = "csv";
     public static final String EXT_JSON = "json";
     public static final String NEWLINE = System.getProperty("line.separator");
-    private static Iterable<? extends AbstractCard> currentCards;
-    private static Iterable<? extends PotionInfo> currentPotions;
-    private static Iterable<? extends RelicInfo> currentRelics;
+    private static final Exportable<AbstractBlight> blightExportable = new Exportable<>(EUIExporter::exportBlightCsv, EUIExporter::exportBlightJson);
+    private static final Exportable<AbstractCard> cardExportable = new Exportable<>(EUIExporter::exportCardCsv, EUIExporter::exportCardJson);
+    private static final Exportable<PotionInfo> potionExportable = new Exportable<>(EUIExporter::exportPotionCsv, EUIExporter::exportPotionJson);
+    private static final Exportable<RelicInfo> relicExportable = new Exportable<>(EUIExporter::exportRelicCsv, EUIExporter::exportRelicJson);
+    private static Exportable<?> current = cardExportable;
+    public static EUIButton exportBlightButton;
     public static EUIButton exportCardButton;
     public static EUIButton exportPotionButton;
     public static EUIButton exportRelicButton;
     public static EUIContextMenu<EUIExporter.ContextOption> exportDropdown;
+
+    public static void exportBlightCsv(AbstractBlight c) {
+        exportBlightCsv(Collections.singleton(c));
+    }
+
+    public static void exportBlightCsv(Iterable<? extends AbstractBlight> cards) {
+        File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_CSV), EUIConfiguration.lastExportPath);
+        if (file != null) {
+            exportBlightCsv(cards, file.getAbsolutePath());
+        }
+    }
+
+    private static void exportBlightCsv(Iterable<? extends AbstractBlight> cards, String path) {
+        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(cards, EUIExporter::getRowForBlight);
+        exportImplCsv(rows, path);
+    }
+
+    public static void exportBlightJson(AbstractBlight c) {
+        exportBlightJson(Collections.singleton(c));
+    }
+
+    public static void exportBlightJson(Iterable<? extends AbstractBlight> cards) {
+        File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_JSON), EUIConfiguration.lastExportPath);
+        if (file != null) {
+            exportBlightJson(cards, file.getAbsolutePath());
+        }
+    }
+
+    public static void exportBlightJson(Iterable<? extends AbstractBlight> cards, String path) {
+        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(cards, EUIExporter::getRowForBlight);
+        exportImplJson(rows, path);
+    }
 
     public static void exportCardCsv(AbstractCard c) {
         exportCardCsv(Collections.singleton(c));
@@ -85,12 +122,12 @@ public class EUIExporter {
         }
     }
 
-    private static void exportCardJson(Iterable<? extends AbstractCard> cards, String path) {
+    public static void exportCardJson(Iterable<? extends AbstractCard> cards, String path) {
         ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(cards, EUIExporter::getRowForCard);
         exportImplJson(rows, path);
     }
 
-    private static void exportImplCsv(List<? extends EUIExporterRow> items, String path) {
+    public static void exportImplCsv(List<? extends EUIExporterRow> items, String path) {
         if (!items.isEmpty()) {
             items.sort(EUIExporterRow::compareTo);
             try {
@@ -108,7 +145,7 @@ public class EUIExporter {
         }
     }
 
-    private static void exportImplJson(List<? extends EUIExporterRow> items, String path) {
+    public static void exportImplJson(List<? extends EUIExporterRow> items, String path) {
         if (!items.isEmpty()) {
             items.sort(EUIExporterRow::compareTo);
             try {
@@ -138,7 +175,7 @@ public class EUIExporter {
         }
     }
 
-    private static void exportPotionCsv(Iterable<? extends PotionInfo> potions, String path) {
+    public static void exportPotionCsv(Iterable<? extends PotionInfo> potions, String path) {
         ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(potions, EUIExporter::getRowForPotion);
         exportImplCsv(rows, path);
     }
@@ -158,7 +195,7 @@ public class EUIExporter {
         }
     }
 
-    private static void exportPotionJson(Iterable<? extends PotionInfo> potions, String path) {
+    public static void exportPotionJson(Iterable<? extends PotionInfo> potions, String path) {
         ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(potions, EUIExporter::getRowForPotion);
         exportImplJson(rows, path);
     }
@@ -178,7 +215,7 @@ public class EUIExporter {
         }
     }
 
-    private static void exportRelicCsv(Iterable<? extends RelicInfo> relics, String path) {
+    public static void exportRelicCsv(Iterable<? extends RelicInfo> relics, String path) {
         ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(relics, EUIExporter::getRowForRelic);
         exportImplCsv(rows, path);
     }
@@ -198,20 +235,24 @@ public class EUIExporter {
         }
     }
 
-    private static void exportRelicJson(Iterable<? extends RelicInfo> relics, String path) {
+    public static void exportRelicJson(Iterable<? extends RelicInfo> relics, String path) {
         ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(relics, EUIExporter::getRowForRelic);
         exportImplJson(rows, path);
     }
 
-    private static EUIExporterRow getRowForCard(AbstractCard c) {
+    public static EUIExporterRow getRowForBlight(AbstractBlight c) {
+        return new EUIExporterBlightRow(c);
+    }
+
+    public static EUIExporterRow getRowForCard(AbstractCard c) {
         return new EUIExporterCardRow(c);
     }
 
-    private static EUIExporterRow getRowForPotion(PotionInfo c) {
+    public static EUIExporterRow getRowForPotion(PotionInfo c) {
         return new EUIExporterPotionRow(c);
     }
 
-    private static EUIExporterRow getRowForRelic(RelicInfo c) {
+    public static EUIExporterRow getRowForRelic(RelicInfo c) {
         return new EUIExporterRelicRow(c);
     }
 
@@ -239,7 +280,7 @@ public class EUIExporter {
 
     public static ArrayList<RelicInfo> getRelicInfos() {
         ArrayList<RelicInfo> newRelics = new ArrayList<>();
-        for (String relicID : EUIGameUtils.getAllRelicIDs()) {
+        for (String relicID : EUIGameUtils.getInGameRelicIDs()) {
             AbstractRelic original = RelicLibrary.getRelic(relicID);
             if (original instanceof Circlet) {
                 original = BaseMod.getCustomRelic(relicID);
@@ -252,7 +293,7 @@ public class EUIExporter {
 
     public static ArrayList<RelicInfo> getRelicInfos(AbstractCard.CardColor color) {
         ArrayList<RelicInfo> newRelics = new ArrayList<>();
-        for (String relicID : EUIGameUtils.getAllRelicIDs()) {
+        for (String relicID : EUIGameUtils.getInGameRelicIDs()) {
             AbstractRelic original = RelicLibrary.getRelic(relicID);
             if (original instanceof Circlet) {
                 original = BaseMod.getCustomRelic(relicID);
@@ -282,6 +323,12 @@ public class EUIExporter {
 
     public static void initialize() {
         EUITooltip tip = new EUITooltip(EUIRM.strings.misc_export, EUIRM.strings.misc_exportDesc);
+        exportBlightButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
+                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
+                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.misc_export)
+                .setTooltip(tip)
+                .setColor(Color.GRAY);
         exportCardButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
@@ -311,28 +358,28 @@ public class EUIExporter {
                 .setCanAutosizeButton(true);
     }
 
-    public static void openForCards(Iterable<? extends AbstractCard> items) {
-        currentCards = items;
-        currentRelics = null;
-        currentPotions = null;
+    public static void positionExport() {
         exportDropdown.setPosition(InputHelper.mX - exportDropdown.hb.width, InputHelper.mY - exportDropdown.hb.height * 3);
         exportDropdown.openOrCloseMenu();
+    }
+    public static void openForBlights(Iterable<? extends AbstractBlight> items) {
+        blightExportable.open(items);
+        positionExport();
+    }
+
+    public static void openForCards(Iterable<? extends AbstractCard> items) {
+        cardExportable.open(items);
+        positionExport();
     }
 
     public static void openForPotions(Iterable<? extends PotionInfo> items) {
-        currentPotions = items;
-        currentRelics = null;
-        currentCards = null;
-        exportDropdown.setPosition(InputHelper.mX - exportDropdown.hb.width, InputHelper.mY - exportDropdown.hb.height * 3);
-        exportDropdown.openOrCloseMenu();
+        potionExportable.open(items);
+        positionExport();
     }
 
     public static void openForRelics(Iterable<? extends RelicInfo> items) {
-        currentRelics = items;
-        currentCards = null;
-        currentPotions = null;
-        exportDropdown.setPosition(InputHelper.mX - exportDropdown.hb.width, InputHelper.mY - exportDropdown.hb.height * 3);
-        exportDropdown.openOrCloseMenu();
+        relicExportable.open(items);
+        positionExport();
     }
 
     public enum ContextOption {
@@ -348,28 +395,39 @@ public class EUIExporter {
         public void onSelect() {
             switch (this) {
                 case CSV:
-                    if (currentCards != null) {
-                        exportCardCsv(currentCards);
-                    }
-                    else if (currentPotions != null) {
-                        exportPotionCsv(currentPotions);
-                    }
-                    else if (currentRelics != null) {
-                        exportRelicCsv(currentRelics);
-                    }
+                    current.exportCsv();
                     break;
                 case JSON:
-                    if (currentCards != null) {
-                        exportCardJson(currentCards);
-                    }
-                    else if (currentPotions != null) {
-                        exportPotionJson(currentPotions);
-                    }
-                    else if (currentRelics != null) {
-                        exportRelicJson(currentRelics);
-                    }
+                    current.exportJson();
                     break;
             }
+        }
+    }
+
+    public static class Exportable<T> {
+        public Iterable<? extends T> items;
+        public final ActionT1<Iterable<? extends T>> exportCsv;
+        public final ActionT1<Iterable<? extends T>> exportJson;
+
+        public Exportable(ActionT1<Iterable<? extends T>> exportCsv, ActionT1<Iterable<? extends T>> exportJson) {
+            this.exportCsv = exportCsv;
+            this.exportJson = exportJson;
+        }
+
+        public void open(Iterable<? extends T> items) {
+            current.clear();
+            this.items = items;
+            current = this;
+        }
+
+        public void clear() {items = null;}
+
+        public void exportCsv() {
+            exportCsv.invoke(items);
+        }
+
+        public void exportJson() {
+            exportJson.invoke(items);
         }
     }
 }

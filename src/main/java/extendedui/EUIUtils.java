@@ -838,6 +838,45 @@ public abstract class EUIUtils {
         return new ArrayList<>();
     }
 
+    @SafeVarargs
+    public static <T, N> ArrayList<N> mapAll(FuncT1<N, T> predicate, T[]... lists) {
+        final ArrayList<N> res = new ArrayList<>(EUIUtils.sumInt(lists, Array::getLength));
+        for (T[] list : lists) {
+            for (T t : list) {
+                res.add(predicate.invoke(t));
+            }
+            return res;
+        }
+
+        return new ArrayList<>();
+    }
+
+    @SafeVarargs
+    public static <T, N> ArrayList<N> mapAll(FuncT1<N, T> predicate, Iterable<? extends T>... lists) {
+        final ArrayList<N> res = new ArrayList<>();
+        for (Iterable<? extends T> list : lists) {
+            for (T t : list) {
+                res.add(predicate.invoke(t));
+            }
+            return res;
+        }
+
+        return new ArrayList<>();
+    }
+
+    @SafeVarargs
+    public static <T, N> ArrayList<N> mapAll(FuncT1<N, T> predicate, List<? extends T>... lists) {
+        final ArrayList<N> res = new ArrayList<>(EUIUtils.sumInt(lists, List::size));
+        for (List<? extends T> list : lists) {
+            for (T t : list) {
+                res.add(predicate.invoke(t));
+            }
+            return res;
+        }
+
+        return new ArrayList<>();
+    }
+
     public static <T, N> ArrayList<N> mapAsNonnull(T[] list, FuncT1<N, T> predicate) {
         final ArrayList<N> res = new ArrayList<>();
         if (list != null) {
@@ -1152,7 +1191,29 @@ public abstract class EUIUtils {
         return sum;
     }
 
+    public static <T> float sum(T[] list, FuncT1<Float, T> predicate) {
+        float sum = 0;
+        if (list == null) {
+            return sum;
+        }
+        for (T t : list) {
+            sum += predicate.invoke(t);
+        }
+        return sum;
+    }
+
     public static <T> int sumInt(Iterable<? extends T> list, FuncT1<Integer, T> predicate) {
+        int sum = 0;
+        if (list == null) {
+            return sum;
+        }
+        for (T t : list) {
+            sum += predicate.invoke(t);
+        }
+        return sum;
+    }
+
+    public static <T> int sumInt(T[] list, FuncT1<Integer, T> predicate) {
         int sum = 0;
         if (list == null) {
             return sum;

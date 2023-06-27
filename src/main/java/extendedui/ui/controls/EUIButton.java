@@ -193,6 +193,12 @@ public class EUIButton extends EUIHoverable {
         return this;
     }
 
+    public EUIButton setButtonFlip(boolean flipX, boolean flipY) {
+        this.background.setFlipping(flipX, flipY);
+
+        return this;
+    }
+
     public EUIButton setButtonRotation(float angle) {
         this.background.setRotation(angle);
 

@@ -21,7 +21,7 @@ public class PotionViewScreenPatches {
     public static ArrayList<AbstractPotion> uncommonPotions = new ArrayList<>();
     public static ArrayList<AbstractPotion> rarePotions = new ArrayList<>();
     // THESE NAMES MUST MATCH THE NAMES OF THE POTIONVIEWSCREEN LISTS OR THIS PATCH WILL GO BOOM
-    private static ArrayList<AbstractPotion> allList = new ArrayList<>();
+    private static ArrayList<PotionInfo> allList = new ArrayList<>();
 
     private static void editImpl(javassist.expr.FieldAccess m) throws CannotCompileException {
         switch (m.getFieldName()) {
@@ -39,9 +39,9 @@ public class PotionViewScreenPatches {
             reset(screen);
         }
         else {
-            commonPotions = EUI.potionFilters.applyFilters(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "commonPotions"));
-            uncommonPotions = EUI.potionFilters.applyFilters(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "uncommonPotions"));
-            rarePotions = EUI.potionFilters.applyFilters(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "rarePotions"));
+            commonPotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "commonPotions"));
+            uncommonPotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "uncommonPotions"));
+            rarePotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "rarePotions"));
             resetAllList();
         }
         EUI.potionFilters.refresh(allList);
@@ -60,7 +60,7 @@ public class PotionViewScreenPatches {
     }
 
     private static void resetAllList() {
-        allList = EUIUtils.flatten(commonPotions, uncommonPotions, rarePotions);
+        allList = EUIUtils.mapAll(PotionInfo::new, commonPotions, uncommonPotions, rarePotions);
     }
 
     @SpirePatch(clz = PotionViewScreen.class, method = "open")
@@ -73,7 +73,7 @@ public class PotionViewScreenPatches {
                     , AbstractCard.CardColor.COLORLESS
                     , false);
             updateForFilters(screen);
-            EUIExporter.exportPotionButton.setOnClick(() -> EUIExporter.openForPotions(EUIUtils.map(allList, PotionInfo::new)));
+            EUIExporter.exportPotionButton.setOnClick(() -> EUIExporter.openForPotions(allList));
 
             return SpireReturn.Continue();
         }

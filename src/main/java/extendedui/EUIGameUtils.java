@@ -16,6 +16,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.daily.mods.Diverse;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.BlightHelper;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
 import com.megacrit.cardcrawl.helpers.ModHelper;
 import com.megacrit.cardcrawl.helpers.TipHelper;
@@ -35,12 +36,14 @@ import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.TextureCache;
 import extendedui.ui.screens.CardPoolScreen;
 import extendedui.ui.tooltips.EUITooltip;
+import extendedui.utilities.EUIClassUtils;
 import javassist.ClassPool;
 import javassist.CtClass;
 
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.*;
@@ -119,7 +122,21 @@ public class EUIGameUtils {
         copy.targetAngle = original.targetAngle;
     }
 
-    public static ArrayList<String> getAllRelicIDs() {
+    public static ArrayList<AbstractBlight> getAllBlights() {
+        if (BlightHelper.blights.isEmpty()) {
+            BlightHelper.initialize();
+        }
+        return EUIUtils.map(BlightHelper.blights, EUIGameUtils::getSeenBlight);
+    }
+
+    public static AbstractBlight getSeenBlight(String id) {
+        AbstractBlight blight = BlightHelper.getBlight(id);
+        blight.isSeen = true;
+        EUIClassUtils.invoke(blight, AbstractBlight.class, "initializeTips");
+        return blight;
+    }
+
+    public static ArrayList<String> getInGameRelicIDs() {
         ArrayList<String> result = new ArrayList<>();
         result.addAll(AbstractDungeon.commonRelicPool);
         result.addAll(AbstractDungeon.uncommonRelicPool);

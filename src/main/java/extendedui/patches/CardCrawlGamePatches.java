@@ -46,6 +46,7 @@ public class CardCrawlGamePatches {
             EUI.relicFilters.tryRender(sb);
             EUI.potionFilters.tryRender(sb);
             EUI.cardFilters.tryRender(sb);
+            EUI.blightFilters.tryRender(sb);
             EUIExporter.exportDropdown.tryRender(sb);
             EUI.postRender(sb);
             EUI.priorityPostRender(sb);
