@@ -20,7 +20,8 @@ import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.PotionGroup;
+import extendedui.utilities.ItemGroup;
+import extendedui.utilities.PotionInfo;
 import extendedui.utilities.TargetFilter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -118,7 +119,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
         return c.name;
     }
 
-    public ArrayList<PotionGroup.PotionInfo> applyInfoFilters(ArrayList<PotionGroup.PotionInfo> input) {
+    public ArrayList<PotionInfo> applyInfoFilters(ArrayList<PotionInfo> input) {
         return EUIUtils.filter(input, info -> evaluatePotion(info.potion));
     }
 
@@ -335,7 +336,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
         return customModule == null || customModule.isItemValid(c);
     }
 
-    public PotionKeywordFilters initializeForCustomHeader(PotionGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+    public PotionKeywordFilters initializeForCustomHeader(ItemGroup<PotionInfo> group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
         EUI.potionHeader.setGroup(group).snapToGroup(snapToGroup);
         EUI.potionFilters.initialize(button -> {
             EUI.potionHeader.updateForFilters();
@@ -346,7 +347,7 @@ public class PotionKeywordFilters extends GenericFilters<AbstractPotion, CustomP
         return this;
     }
 
-    public PotionKeywordFilters initializeForCustomHeader(PotionGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+    public PotionKeywordFilters initializeForCustomHeader(ItemGroup<PotionInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
         EUI.potionHeader.setGroup(group).snapToGroup(snapToGroup);
         EUI.potionFilters.initialize(button -> {
             EUI.potionHeader.updateForFilters();

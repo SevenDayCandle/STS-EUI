@@ -10,7 +10,7 @@ import extendedui.EUI;
 import extendedui.EUIUtils;
 import extendedui.exporter.EUIExporter;
 import extendedui.utilities.EUIClassUtils;
-import extendedui.utilities.RelicGroup;
+import extendedui.utilities.RelicInfo;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 
@@ -86,7 +86,7 @@ public class RelicViewScreenPatches {
                     , AbstractCard.CardColor.COLORLESS
                     , false);
             updateForFilters();
-            EUIExporter.exportRelicButton.setOnClick(() -> EUIExporter.openForRelics(EUIUtils.map(allList, RelicGroup.RelicInfo::new)));
+            EUIExporter.exportRelicButton.setOnClick(() -> EUIExporter.openForRelics(EUIUtils.map(allList, RelicInfo::new)));
 
             return SpireReturn.Continue();
         }

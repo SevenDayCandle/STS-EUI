@@ -296,6 +296,9 @@ public class EUIRM {
         public final String uipool_removeFromPool = stringsUIPool.TEXT[9];
         public final String uipool_obtainRelic = stringsUIPool.TEXT[10];
         public final String uipool_obtainPotion = stringsUIPool.TEXT[11];
+        public final String uipool_blightPanel = stringsUIPool.TEXT[12];
+        public final String uipool_blightPanelDesc = stringsUIPool.TEXT[13];
+        public final String uipool_viewBlightPool = stringsUIPool.TEXT[14];
 
         public final String ui_itemsSelected = stringsUIFilter.TEXT[0];
         public final String ui_keywords = stringsUIFilter.TEXT[1];

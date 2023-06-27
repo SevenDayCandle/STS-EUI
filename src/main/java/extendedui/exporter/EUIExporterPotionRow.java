@@ -1,10 +1,8 @@
 package extendedui.exporter;
 
-import basemod.ReflectionHacks;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIGameUtils;
-import extendedui.utilities.PotionGroup;
+import extendedui.utilities.PotionInfo;
 
 public class EUIExporterPotionRow extends EUIExporterRow {
     public String rarity;
@@ -22,7 +20,7 @@ public class EUIExporterPotionRow extends EUIExporterRow {
         potency = potion.getPotency();
     }
 
-    public EUIExporterPotionRow(PotionGroup.PotionInfo potion) {
+    public EUIExporterPotionRow(PotionInfo potion) {
         super(potion.potion.ID, String.valueOf(potion.potionColor), potion.potion.name);
         rarity = String.valueOf(potion.potion.rarity);
         size = String.valueOf(potion.potion.size);

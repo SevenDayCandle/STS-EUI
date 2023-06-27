@@ -23,7 +23,8 @@ import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.RelicGroup;
+import extendedui.utilities.ItemGroup;
+import extendedui.utilities.RelicInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -108,7 +109,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
         return c.name;
     }
 
-    public ArrayList<RelicGroup.RelicInfo> applyInfoFilters(ArrayList<RelicGroup.RelicInfo> input) {
+    public ArrayList<RelicInfo> applyInfoFilters(ArrayList<RelicInfo> input) {
         return EUIUtils.filter(input, info -> evaluateRelic(info.relic));
     }
 
@@ -311,7 +312,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
         return customModule == null || customModule.isItemValid(c);
     }
 
-    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+    public RelicKeywordFilters initializeForCustomHeader(ItemGroup<RelicInfo> group, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
         EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
         EUI.relicFilters.initialize(button -> {
             EUI.relicHeader.updateForFilters();
@@ -322,7 +323,7 @@ public class RelicKeywordFilters extends GenericFilters<AbstractRelic, CustomRel
         return this;
     }
 
-    public RelicKeywordFilters initializeForCustomHeader(RelicGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+    public RelicKeywordFilters initializeForCustomHeader(ItemGroup<RelicInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
         EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
         EUI.relicFilters.initialize(button -> {
             EUI.relicHeader.updateForFilters();

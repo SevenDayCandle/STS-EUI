@@ -24,8 +24,8 @@ import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.PotionGroup;
-import extendedui.utilities.RelicGroup;
+import extendedui.utilities.PotionInfo;
+import extendedui.utilities.RelicInfo;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -37,8 +37,8 @@ public class EUIExporter {
     public static final String EXT_JSON = "json";
     public static final String NEWLINE = System.getProperty("line.separator");
     private static Iterable<? extends AbstractCard> currentCards;
-    private static Iterable<? extends PotionGroup.PotionInfo> currentPotions;
-    private static Iterable<? extends RelicGroup.RelicInfo> currentRelics;
+    private static Iterable<? extends PotionInfo> currentPotions;
+    private static Iterable<? extends RelicInfo> currentRelics;
     public static EUIButton exportCardButton;
     public static EUIButton exportPotionButton;
     public static EUIButton exportRelicButton;
@@ -123,7 +123,7 @@ public class EUIExporter {
         }
     }
 
-    public static void exportPotionCsv(PotionGroup.PotionInfo c) {
+    public static void exportPotionCsv(PotionInfo c) {
         exportPotionCsv(Collections.singleton(c));
     }
 
@@ -131,19 +131,19 @@ public class EUIExporter {
         exportPotionCsv(getPotionInfos(c));
     }
 
-    public static void exportPotionCsv(Iterable<? extends PotionGroup.PotionInfo> potions) {
+    public static void exportPotionCsv(Iterable<? extends PotionInfo> potions) {
         File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_CSV), EUIConfiguration.lastExportPath);
         if (file != null) {
             exportPotionCsv(potions, file.getAbsolutePath());
         }
     }
 
-    private static void exportPotionCsv(Iterable<? extends PotionGroup.PotionInfo> potions, String path) {
+    private static void exportPotionCsv(Iterable<? extends PotionInfo> potions, String path) {
         ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(potions, EUIExporter::getRowForPotion);
         exportImplCsv(rows, path);
     }
 
-    public static void exportPotionJson(PotionGroup.PotionInfo c) {
+    public static void exportPotionJson(PotionInfo c) {
         exportPotionJson(Collections.singleton(c));
     }
 
@@ -151,19 +151,19 @@ public class EUIExporter {
         exportPotionJson(getPotionInfos(c));
     }
 
-    public static void exportPotionJson(Iterable<? extends PotionGroup.PotionInfo> potions) {
+    public static void exportPotionJson(Iterable<? extends PotionInfo> potions) {
         File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_JSON), EUIConfiguration.lastExportPath);
         if (file != null) {
             exportPotionJson(potions, file.getAbsolutePath());
         }
     }
 
-    private static void exportPotionJson(Iterable<? extends PotionGroup.PotionInfo> potions, String path) {
+    private static void exportPotionJson(Iterable<? extends PotionInfo> potions, String path) {
         ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(potions, EUIExporter::getRowForPotion);
         exportImplJson(rows, path);
     }
 
-    public static void exportRelicCsv(RelicGroup.RelicInfo c) {
+    public static void exportRelicCsv(RelicInfo c) {
         exportRelicCsv(Collections.singleton(c));
     }
 
@@ -171,19 +171,19 @@ public class EUIExporter {
         exportRelicCsv(getRelicInfos(c));
     }
 
-    public static void exportRelicCsv(Iterable<? extends RelicGroup.RelicInfo> relics) {
+    public static void exportRelicCsv(Iterable<? extends RelicInfo> relics) {
         File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_CSV), EUIConfiguration.lastExportPath);
         if (file != null) {
             exportRelicCsv(relics, file.getAbsolutePath());
         }
     }
 
-    private static void exportRelicCsv(Iterable<? extends RelicGroup.RelicInfo> relics, String path) {
+    private static void exportRelicCsv(Iterable<? extends RelicInfo> relics, String path) {
         ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(relics, EUIExporter::getRowForRelic);
         exportImplCsv(rows, path);
     }
 
-    public static void exportRelicJson(RelicGroup.RelicInfo c) {
+    public static void exportRelicJson(RelicInfo c) {
         exportRelicJson(Collections.singleton(c));
     }
 
@@ -191,14 +191,14 @@ public class EUIExporter {
         exportRelicJson(getRelicInfos(c));
     }
 
-    public static void exportRelicJson(Iterable<? extends RelicGroup.RelicInfo> relics) {
+    public static void exportRelicJson(Iterable<? extends RelicInfo> relics) {
         File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_JSON), EUIConfiguration.lastExportPath);
         if (file != null) {
             exportRelicJson(relics, file.getAbsolutePath());
         }
     }
 
-    private static void exportRelicJson(Iterable<? extends RelicGroup.RelicInfo> relics, String path) {
+    private static void exportRelicJson(Iterable<? extends RelicInfo> relics, String path) {
         ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(relics, EUIExporter::getRowForRelic);
         exportImplJson(rows, path);
     }
@@ -207,29 +207,29 @@ public class EUIExporter {
         return new EUIExporterCardRow(c);
     }
 
-    private static EUIExporterRow getRowForPotion(PotionGroup.PotionInfo c) {
+    private static EUIExporterRow getRowForPotion(PotionInfo c) {
         return new EUIExporterPotionRow(c);
     }
 
-    private static EUIExporterRow getRowForRelic(RelicGroup.RelicInfo c) {
+    private static EUIExporterRow getRowForRelic(RelicInfo c) {
         return new EUIExporterRelicRow(c);
     }
 
-    public static ArrayList<PotionGroup.PotionInfo> getPotionInfos() {
-        ArrayList<PotionGroup.PotionInfo> potions = new ArrayList<>();
+    public static ArrayList<PotionInfo> getPotionInfos() {
+        ArrayList<PotionInfo> potions = new ArrayList<>();
         for (String potionID : PotionHelper.getPotions(null, true)) {
             AbstractPotion original = PotionHelper.getPotion(potionID);
-            PotionGroup.PotionInfo info = new PotionGroup.PotionInfo(original);
+            PotionInfo info = new PotionInfo(original);
             potions.add(info);
         }
         return potions;
     }
 
-    public static ArrayList<PotionGroup.PotionInfo> getPotionInfos(AbstractCard.CardColor color) {
-        ArrayList<PotionGroup.PotionInfo> potions = new ArrayList<>();
+    public static ArrayList<PotionInfo> getPotionInfos(AbstractCard.CardColor color) {
+        ArrayList<PotionInfo> potions = new ArrayList<>();
         for (String potionID : PotionHelper.getPotions(null, true)) {
             AbstractPotion original = PotionHelper.getPotion(potionID);
-            PotionGroup.PotionInfo info = new PotionGroup.PotionInfo(original);
+            PotionInfo info = new PotionInfo(original);
             if (info.potionColor == color) {
                 potions.add(info);
             }
@@ -237,27 +237,27 @@ public class EUIExporter {
         return potions;
     }
 
-    public static ArrayList<RelicGroup.RelicInfo> getRelicInfos() {
-        ArrayList<RelicGroup.RelicInfo> newRelics = new ArrayList<>();
+    public static ArrayList<RelicInfo> getRelicInfos() {
+        ArrayList<RelicInfo> newRelics = new ArrayList<>();
         for (String relicID : EUIGameUtils.getAllRelicIDs()) {
             AbstractRelic original = RelicLibrary.getRelic(relicID);
             if (original instanceof Circlet) {
                 original = BaseMod.getCustomRelic(relicID);
             }
-            RelicGroup.RelicInfo info = new RelicGroup.RelicInfo(original);
+            RelicInfo info = new RelicInfo(original);
             newRelics.add(info);
         }
         return newRelics;
     }
 
-    public static ArrayList<RelicGroup.RelicInfo> getRelicInfos(AbstractCard.CardColor color) {
-        ArrayList<RelicGroup.RelicInfo> newRelics = new ArrayList<>();
+    public static ArrayList<RelicInfo> getRelicInfos(AbstractCard.CardColor color) {
+        ArrayList<RelicInfo> newRelics = new ArrayList<>();
         for (String relicID : EUIGameUtils.getAllRelicIDs()) {
             AbstractRelic original = RelicLibrary.getRelic(relicID);
             if (original instanceof Circlet) {
                 original = BaseMod.getCustomRelic(relicID);
             }
-            RelicGroup.RelicInfo info = new RelicGroup.RelicInfo(original);
+            RelicInfo info = new RelicInfo(original);
             if (info.relicColor == color) {
                 newRelics.add(info);
             }
@@ -319,7 +319,7 @@ public class EUIExporter {
         exportDropdown.openOrCloseMenu();
     }
 
-    public static void openForPotions(Iterable<? extends PotionGroup.PotionInfo> items) {
+    public static void openForPotions(Iterable<? extends PotionInfo> items) {
         currentPotions = items;
         currentRelics = null;
         currentCards = null;
@@ -327,7 +327,7 @@ public class EUIExporter {
         exportDropdown.openOrCloseMenu();
     }
 
-    public static void openForRelics(Iterable<? extends RelicGroup.RelicInfo> items) {
+    public static void openForRelics(Iterable<? extends RelicInfo> items) {
         currentRelics = items;
         currentCards = null;
         currentPotions = null;

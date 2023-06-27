@@ -7,10 +7,10 @@
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
         <module name="extendedui" />
+        <module name="pinacolada" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="pinacolada" target="1.8" />
       <module name="STS-Effekseeker" target="1.8" />
       <module name="stseffekseer" target="1.8" />
     </bytecodeTargetLevel>

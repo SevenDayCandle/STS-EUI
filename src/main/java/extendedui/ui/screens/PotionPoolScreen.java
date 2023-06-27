@@ -23,6 +23,7 @@ import extendedui.ui.controls.EUIPotionGrid;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.PotionInfo;
 
 import java.util.ArrayList;
 
@@ -42,7 +43,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
 
     public PotionPoolScreen() {
         potionGrid = (EUIPotionGrid) new EUIPotionGrid()
-                .setOnPotionRightClick(this::onRightClick)
+                .setOnRightClick(this::onRightClick)
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);
 
@@ -137,12 +138,12 @@ public class PotionPoolScreen extends EUIPoolScreen {
         }
     }
 
-    protected void onRightClick(AbstractPotion c) {
+    protected void onRightClick(PotionInfo c) {
         if (EUIConfiguration.enableCardPoolDebug.get()) {
-            selected = c;
+            selected = c.potion;
             contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
             contextMenu.refreshText();
-            contextMenu.setItems(getOptions(c));
+            contextMenu.setItems(getOptions(c.potion));
             contextMenu.openOrCloseMenu();
         }
     }
@@ -157,9 +158,9 @@ public class PotionPoolScreen extends EUIPoolScreen {
             return;
         }
 
-        potionGrid.setPotions(potions);
+        potionGrid.setItems(potions, PotionInfo::new);
 
-        EUI.potionFilters.initializeForCustomHeader(potionGrid.potionGroup, __ -> {
+        EUI.potionFilters.initializeForCustomHeader(potionGrid.group, __ -> {
             ArrayList<AbstractPotion> headerPotions = EUI.potionHeader.getPotions();
             for (CustomPotionPoolModule module : EUI.globalCustomPotionPoolModules) {
                 module.open(headerPotions, color, null);
@@ -167,7 +168,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
             if (customModule != null) {
                 customModule.open(headerPotions, color, null);
             }
-            potionGrid.forceUpdatePotionPositions();
+            potionGrid.forceUpdatePositions();
         }, color, true, false);
 
 

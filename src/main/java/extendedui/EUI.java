@@ -29,6 +29,7 @@ import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.*;
 import extendedui.patches.EUIKeyword;
+import extendedui.patches.screens.MenuPanelScreenPatches;
 import extendedui.text.EUISmartText;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.EUIBase;
@@ -341,6 +342,7 @@ public class EUI {
                 .setColor(Color.MAROON);
 
         EUIExporter.initialize();
+        MenuPanelScreenPatches.initialize();
 
         // Toggling smooth scrolling requires updating the library and card pool screens
         EUIConfiguration.useSnapScrolling.addListener(newValue -> {

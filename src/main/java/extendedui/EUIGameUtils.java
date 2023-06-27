@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
+import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
@@ -318,6 +319,15 @@ public class EUIGameUtils {
 
     public static void registerCustomColorName(AbstractCard.CardColor co, String name) {
         EUIGameUtils.CUSTOM_COLOR_NAMES.put(co, name);
+    }
+
+    public static void renderBlightTip(AbstractBlight po) {
+        if (po instanceof TooltipProvider) {
+            EUITooltip.queueTooltips((AbstractBlight & TooltipProvider) po);
+        }
+        else {
+            TipHelper.queuePowerTips(InputHelper.mX + 50.0F * Settings.scale, InputHelper.mY + 50.0F * Settings.scale, po.tips);
+        }
     }
 
     public static void renderPotionTip(AbstractPotion po) {

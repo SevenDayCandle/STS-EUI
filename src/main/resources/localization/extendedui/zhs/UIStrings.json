@@ -111,7 +111,10 @@
 			"增加到牌组",
 			"从池中移除",
 			"获得该遗物",
-			"获得该药水"
+			"获得该药水",
+			"Blight Crypt",
+			"Learn about various Blights that the Spire may inflict upon you.",
+			"Blight Pool"
 		]
 	},
 	"extendedui:potions": {

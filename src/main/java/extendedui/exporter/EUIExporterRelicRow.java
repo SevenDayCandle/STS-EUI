@@ -1,10 +1,8 @@
 package extendedui.exporter;
 
-import basemod.ReflectionHacks;
-import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIGameUtils;
-import extendedui.utilities.RelicGroup;
+import extendedui.utilities.RelicInfo;
 
 public class EUIExporterRelicRow extends EUIExporterRow {
     public String tier;
@@ -18,7 +16,7 @@ public class EUIExporterRelicRow extends EUIExporterRow {
         description = relic.description;
     }
 
-    public EUIExporterRelicRow(RelicGroup.RelicInfo relic) {
+    public EUIExporterRelicRow(RelicInfo relic) {
         super(relic.relic.relicId, String.valueOf(relic.relicColor), relic.relic.name);
         tier = String.valueOf(relic.relic.tier);
         landingSFX = String.valueOf(EUIGameUtils.getLandingSound(relic.relic));

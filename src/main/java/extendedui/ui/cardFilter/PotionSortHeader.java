@@ -10,7 +10,8 @@ import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.ui.EUIBase;
-import extendedui.utilities.PotionGroup;
+import extendedui.utilities.ItemGroup;
+import extendedui.utilities.PotionInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -27,10 +28,10 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
     protected SortHeaderButton colorButton;
     protected SortHeaderButton amountButton;
     public SortHeaderButton[] buttons;
-    public PotionGroup group;
-    public ArrayList<PotionGroup.PotionInfo> originalGroup;
+    public ItemGroup<PotionInfo> group;
+    public ArrayList<PotionInfo> originalGroup;
 
-    public PotionSortHeader(PotionGroup group) {
+    public PotionSortHeader(ItemGroup<PotionInfo> group) {
         this.group = group;
         instance = this;
         float xPosition = START_X;
@@ -99,7 +100,7 @@ public class PotionSortHeader extends EUIBase implements SortHeaderButtonListene
         return this;
     }
 
-    public PotionSortHeader setGroup(PotionGroup group) {
+    public PotionSortHeader setGroup(ItemGroup<PotionInfo> group) {
         EUI.potionFilters.clear(false, true);
         this.group = group;
         this.originalGroup = new ArrayList<>(group.group);

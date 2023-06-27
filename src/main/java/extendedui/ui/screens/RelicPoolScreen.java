@@ -24,6 +24,7 @@ import extendedui.ui.controls.EUIRelicGrid;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.RelicInfo;
 
 import java.util.ArrayList;
 
@@ -43,7 +44,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
 
     public RelicPoolScreen() {
         relicGrid = (EUIRelicGrid) new EUIRelicGrid()
-                .setOnRelicRightClick(this::onRightClick)
+                .setOnRightClick(this::onRightClick)
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);
 
@@ -139,16 +140,16 @@ public class RelicPoolScreen extends EUIPoolScreen {
         }
     }
 
-    protected void onRightClick(AbstractRelic c) {
+    protected void onRightClick(RelicInfo c) {
         if (EUIConfiguration.enableCardPoolDebug.get()) {
-            selected = c;
+            selected = c.relic;
             contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
             contextMenu.refreshText();
-            contextMenu.setItems(getOptions(c));
+            contextMenu.setItems(getOptions(c.relic));
             contextMenu.openOrCloseMenu();
         }
         else {
-            openPopup(c);
+            openPopup(c.relic);
         }
     }
 
@@ -167,9 +168,9 @@ public class RelicPoolScreen extends EUIPoolScreen {
             return;
         }
 
-        relicGrid.setRelics(relics);
+        relicGrid.setItems(relics, RelicInfo::new);
 
-        EUI.relicFilters.initializeForCustomHeader(relicGrid.relicGroup, __ -> {
+        EUI.relicFilters.initializeForCustomHeader(relicGrid.group, __ -> {
             ArrayList<AbstractRelic> headerRelics = EUI.relicHeader.getRelics();
             for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
                 module.open(headerRelics, color, null);
@@ -177,7 +178,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             if (customModule != null) {
                 customModule.open(headerRelics, color, null);
             }
-            relicGrid.forceUpdateRelicPositions();
+            relicGrid.forceUpdatePositions();
         }, color, true, false);
 
         for (CustomRelicPoolModule module : EUI.globalCustomRelicPoolModules) {
@@ -194,7 +195,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
         for (ArrayList<String> relics : EUIGameUtils.getGameRelicPools()) {
             relics.remove(c.relicId);
         }
-        relicGrid.removeRelic(c);
+        relicGrid.remove(c);
     }
 
     public static class DebugOption {

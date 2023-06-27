@@ -1,16 +1,13 @@
 package extendedui.interfaces.markers;
 
-import basemod.IUIElement;
-import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-import extendedui.utilities.PotionGroup;
-
-import java.util.Collection;
+import extendedui.utilities.ItemGroup;
+import extendedui.utilities.PotionInfo;
 
 public interface CustomPotionFilterModule extends CustomFilterModule<AbstractPotion> {
-    default boolean isItemValid(PotionGroup.PotionInfo c) {
+    default boolean isItemValid(PotionInfo c) {
         return isItemValid(c.potion);
     }
-    default void processGroup(PotionGroup group) {
+    default void processGroup(ItemGroup<PotionInfo> group) {
     }
 }

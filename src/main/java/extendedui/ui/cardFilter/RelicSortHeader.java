@@ -10,7 +10,8 @@ import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.ui.EUIBase;
-import extendedui.utilities.RelicGroup;
+import extendedui.utilities.ItemGroup;
+import extendedui.utilities.RelicInfo;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -27,10 +28,10 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
     protected SortHeaderButton colorButton;
     protected SortHeaderButton seenButton;
     public SortHeaderButton[] buttons;
-    public RelicGroup relicGroup;
-    public ArrayList<RelicGroup.RelicInfo> originalGroup;
+    public ItemGroup<RelicInfo> relicGroup;
+    public ArrayList<RelicInfo> originalGroup;
 
-    public RelicSortHeader(RelicGroup relicGroup) {
+    public RelicSortHeader(ItemGroup<RelicInfo> relicGroup) {
         this.relicGroup = relicGroup;
         instance = this;
         float xPosition = START_X;
@@ -99,7 +100,7 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         return this;
     }
 
-    public RelicSortHeader setGroup(RelicGroup relicGroup) {
+    public RelicSortHeader setGroup(ItemGroup<RelicInfo> relicGroup) {
         EUI.relicFilters.clear(false, true);
         this.relicGroup = relicGroup;
         this.originalGroup = new ArrayList<>(relicGroup.group);
@@ -119,7 +120,7 @@ public class RelicSortHeader extends EUIBase implements SortHeaderButtonListener
         return this;
     }
 
-    protected int sortBySeen(RelicGroup.RelicInfo a, RelicGroup.RelicInfo b) {
+    protected int sortBySeen(RelicInfo a, RelicInfo b) {
         int aValue = a == null || a.locked ? 2 : a.relic.isSeen ? 1 : 0;
         int bValue = b == null || b.locked ? 2 : b.relic.isSeen ? 1 : 0;
         return aValue - bValue;

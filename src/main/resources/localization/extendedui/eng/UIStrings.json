@@ -111,7 +111,10 @@
 			"Add Card to Deck",
 			"Remove from Pool",
 			"Obtain Relic",
-			"Obtain Potion"
+			"Obtain Potion",
+			"Blight Crypt",
+			"Learn about various Blights that the Spire may inflict upon you.",
+			"Blight Pool"
 		]
 	},
 	"extendedui:potion": {

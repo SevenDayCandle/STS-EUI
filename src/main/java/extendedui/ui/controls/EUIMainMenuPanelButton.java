@@ -59,7 +59,7 @@ public class EUIMainMenuPanelButton extends EUIHoverable {
     }
 
     public EUIMainMenuPanelButton reposition(float x) {
-        this.hb.x = x;
+        this.hb.translate(x, this.hb.y);
         return this;
     }
 

@@ -10,8 +10,7 @@ import extendedui.EUI;
 import extendedui.EUIUtils;
 import extendedui.exporter.EUIExporter;
 import extendedui.utilities.EUIClassUtils;
-import extendedui.utilities.PotionGroup;
-import extendedui.utilities.RelicGroup;
+import extendedui.utilities.PotionInfo;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
 
@@ -74,7 +73,7 @@ public class PotionViewScreenPatches {
                     , AbstractCard.CardColor.COLORLESS
                     , false);
             updateForFilters(screen);
-            EUIExporter.exportPotionButton.setOnClick(() -> EUIExporter.openForPotions(EUIUtils.map(allList, PotionGroup.PotionInfo::new)));
+            EUIExporter.exportPotionButton.setOnClick(() -> EUIExporter.openForPotions(EUIUtils.map(allList, PotionInfo::new)));
 
             return SpireReturn.Continue();
         }
