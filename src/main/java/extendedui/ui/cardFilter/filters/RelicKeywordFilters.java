@@ -312,7 +312,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
             onClick.invoke(button);
         }, EUI.relicHeader.originalGroup, color, isAccessedFromCardPool);
         EUI.relicHeader.updateForFilters();
-        EUIExporter.exportRelicButton.setOnClick(() -> EUIExporter.openForRelics(EUI.relicHeader.group.group));
+        EUIExporter.exportButton.setOnClick(() -> EUIExporter.relicExportable.openAndPosition(EUI.relicHeader.group.group));
         return this;
     }
 

@@ -90,7 +90,7 @@ public class CardLibraryScreenPatches {
 
             if (!EUI.cardFilters.isActive && EUI.openCardFiltersButton != null) {
                 EUI.openCardFiltersButton.tryUpdate();
-                EUIExporter.exportCardButton.tryUpdate();
+                EUIExporter.exportButton.tryUpdate();
             }
             // Ensure that both update, but only one needs to have updated for this to pass
             if (EUI.cardFilters.tryUpdate() | EUIExporter.exportDropdown.tryUpdate()) {
@@ -117,7 +117,7 @@ public class CardLibraryScreenPatches {
         public static void postfix(CardLibraryScreen __instance, SpriteBatch sb) {
             if (!EUI.cardFilters.isActive && EUI.openCardFiltersButton != null) {
                 EUI.openCardFiltersButton.tryRender(sb);
-                EUIExporter.exportCardButton.tryRender(sb);
+                EUIExporter.exportButton.tryRender(sb);
             }
         }
 

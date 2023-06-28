@@ -335,7 +335,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
             onClick.invoke(button);
         }, EUI.potionHeader.originalGroup, color, isAccessedFromCardPool);
         EUI.potionHeader.updateForFilters();
-        EUIExporter.exportPotionButton.setOnClick(() -> EUIExporter.openForPotions(EUI.potionHeader.group.group));
+        EUIExporter.exportButton.setOnClick(() -> EUIExporter.potionExportable.openAndPosition(EUI.potionHeader.group.group));
         return this;
     }
 }

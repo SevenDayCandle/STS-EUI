@@ -38,15 +38,12 @@ public class EUIExporter {
     public static final String EXT_CSV = "csv";
     public static final String EXT_JSON = "json";
     public static final String NEWLINE = System.getProperty("line.separator");
-    private static final Exportable<AbstractBlight> blightExportable = new Exportable<>(EUIExporter::exportBlightCsv, EUIExporter::exportBlightJson);
-    private static final Exportable<AbstractCard> cardExportable = new Exportable<>(EUIExporter::exportCardCsv, EUIExporter::exportCardJson);
-    private static final Exportable<PotionInfo> potionExportable = new Exportable<>(EUIExporter::exportPotionCsv, EUIExporter::exportPotionJson);
-    private static final Exportable<RelicInfo> relicExportable = new Exportable<>(EUIExporter::exportRelicCsv, EUIExporter::exportRelicJson);
+    public static final Exportable<AbstractBlight> blightExportable = new Exportable<>(EUIExporter::exportBlightCsv, EUIExporter::exportBlightJson);
+    public static final Exportable<AbstractCard> cardExportable = new Exportable<>(EUIExporter::exportCardCsv, EUIExporter::exportCardJson);
+    public static final Exportable<PotionInfo> potionExportable = new Exportable<>(EUIExporter::exportPotionCsv, EUIExporter::exportPotionJson);
+    public static final Exportable<RelicInfo> relicExportable = new Exportable<>(EUIExporter::exportRelicCsv, EUIExporter::exportRelicJson);
     private static Exportable<?> current = cardExportable;
-    public static EUIButton exportBlightButton;
-    public static EUIButton exportCardButton;
-    public static EUIButton exportPotionButton;
-    public static EUIButton exportRelicButton;
+    public static EUIButton exportButton;
     public static EUIContextMenu<EUIExporter.ContextOption> exportDropdown;
 
     public static void exportBlightCsv(AbstractBlight c) {
@@ -323,25 +320,7 @@ public class EUIExporter {
 
     public static void initialize() {
         EUITooltip tip = new EUITooltip(EUIRM.strings.misc_export, EUIRM.strings.misc_exportDesc);
-        exportBlightButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.misc_export)
-                .setTooltip(tip)
-                .setColor(Color.GRAY);
-        exportCardButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.misc_export)
-                .setTooltip(tip)
-                .setColor(Color.GRAY);
-        exportPotionButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.misc_export)
-                .setTooltip(tip)
-                .setColor(Color.GRAY);
-        exportRelicButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+        exportButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
                 .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.misc_export)
@@ -361,25 +340,6 @@ public class EUIExporter {
     public static void positionExport() {
         exportDropdown.setPosition(InputHelper.mX - exportDropdown.hb.width, InputHelper.mY - exportDropdown.hb.height * 3);
         exportDropdown.openOrCloseMenu();
-    }
-    public static void openForBlights(Iterable<? extends AbstractBlight> items) {
-        blightExportable.open(items);
-        positionExport();
-    }
-
-    public static void openForCards(Iterable<? extends AbstractCard> items) {
-        cardExportable.open(items);
-        positionExport();
-    }
-
-    public static void openForPotions(Iterable<? extends PotionInfo> items) {
-        potionExportable.open(items);
-        positionExport();
-    }
-
-    public static void openForRelics(Iterable<? extends RelicInfo> items) {
-        relicExportable.open(items);
-        positionExport();
     }
 
     public enum ContextOption {
@@ -418,6 +378,11 @@ public class EUIExporter {
             current.clear();
             this.items = items;
             current = this;
+        }
+
+        public void openAndPosition(Iterable<? extends T> items) {
+            open(items);
+            positionExport();
         }
 
         public void clear() {items = null;}

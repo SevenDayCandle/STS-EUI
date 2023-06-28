@@ -43,11 +43,6 @@ public class CardCrawlGamePatches {
     public static class CardCrawlGame_PostRender {
         @SpireInsertPatch(locator = Locator.class, localvars = {"sb"})
         public static void insert(CardCrawlGame __instance, SpriteBatch sb) {
-            EUI.relicFilters.tryRender(sb);
-            EUI.potionFilters.tryRender(sb);
-            EUI.cardFilters.tryRender(sb);
-            EUI.blightFilters.tryRender(sb);
-            EUIExporter.exportDropdown.tryRender(sb);
             EUI.postRender(sb);
             EUI.priorityPostRender(sb);
         }

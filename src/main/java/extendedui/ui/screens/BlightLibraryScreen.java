@@ -5,19 +5,14 @@ import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.BlightHelper;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.exporter.EUIExporter;
-import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.interfaces.markers.CustomPoolModule;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.EUIBlightGrid;
-import extendedui.utilities.PotionInfo;
-
-import java.util.ArrayList;
 
 public class BlightLibraryScreen extends AbstractMenuScreen {
     public EUIBlightGrid grid;
@@ -73,7 +68,7 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
             }
             EUI.blightHeader.updateImpl();
             EUI.openBlightFiltersButton.tryUpdate();
-            EUIExporter.exportBlightButton.tryUpdate();
+            EUIExporter.exportButton.tryUpdate();
             for (CustomPoolModule<AbstractBlight>module : EUI.globalCustomBlightLibraryModules) {
                 module.update();
             }
@@ -88,7 +83,7 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
         EUI.blightHeader.renderImpl(sb);
         if (!EUI.blightFilters.isActive) {
             EUI.openBlightFiltersButton.tryRender(sb);
-            EUIExporter.exportBlightButton.tryRender(sb);
+            EUIExporter.exportButton.tryRender(sb);
         }
         for (CustomPoolModule<AbstractBlight>module : EUI.globalCustomBlightLibraryModules) {
             module.render(sb);

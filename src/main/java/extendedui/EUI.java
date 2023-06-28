@@ -423,6 +423,11 @@ public class EUI {
     }
 
     public static void postRender(SpriteBatch sb) {
+        EUI.relicFilters.tryRender(sb);
+        EUI.potionFilters.tryRender(sb);
+        EUI.cardFilters.tryRender(sb);
+        EUI.blightFilters.tryRender(sb);
+        EUIExporter.exportDropdown.tryRender(sb);
         renderImpl(sb, postRenderList.iterator());
     }
 

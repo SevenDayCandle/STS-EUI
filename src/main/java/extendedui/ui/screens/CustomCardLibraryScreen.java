@@ -126,7 +126,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         boolean shouldDoStandardUpdate = !EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
         if (shouldDoStandardUpdate) {
             EUI.openCardFiltersButton.tryUpdate();
-            EUIExporter.exportCardButton.tryUpdate();
+            EUIExporter.exportButton.tryUpdate();
             colorButtons.tryUpdate();
             EUI.customHeader.update();
             upgradeToggle.setPosition(upgradeToggle.hb.cX, CENTER_Y).updateImpl();
@@ -173,7 +173,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         }
         if (!EUI.cardFilters.isActive) {
             EUI.openCardFiltersButton.tryRender(sb);
-            EUIExporter.exportCardButton.tryRender(sb);
+            EUIExporter.exportButton.tryRender(sb);
         }
     }
 

@@ -73,7 +73,7 @@ public class PotionViewScreenPatches {
                     , AbstractCard.CardColor.COLORLESS
                     , false);
             updateForFilters(screen);
-            EUIExporter.exportPotionButton.setOnClick(() -> EUIExporter.openForPotions(allList));
+            EUIExporter.exportButton.setOnClick(() -> EUIExporter.potionExportable.openAndPosition(allList));
 
             return SpireReturn.Continue();
         }
@@ -95,7 +95,7 @@ public class PotionViewScreenPatches {
         public static void prefix(PotionViewScreen __instance) {
             if (!EUI.potionFilters.isActive && EUI.openPotionFiltersButton != null) {
                 EUI.openPotionFiltersButton.tryUpdate();
-                EUIExporter.exportPotionButton.tryUpdate();
+                EUIExporter.exportButton.tryUpdate();
             }
             // Make sure both items update, but only one needs to be pass
             if (EUI.potionFilters.tryUpdate() | EUIExporter.exportDropdown.tryUpdate()) {
@@ -142,7 +142,7 @@ public class PotionViewScreenPatches {
         public static void postfix(PotionViewScreen __instance, SpriteBatch sb) {
             if (!EUI.potionFilters.isActive && EUI.openPotionFiltersButton != null) {
                 EUI.openPotionFiltersButton.tryRender(sb);
-                EUIExporter.exportPotionButton.tryRender(sb);
+                EUIExporter.exportButton.tryRender(sb);
             }
         }
     }

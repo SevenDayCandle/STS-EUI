@@ -86,7 +86,7 @@ public class RelicViewScreenPatches {
                     , AbstractCard.CardColor.COLORLESS
                     , false);
             updateForFilters();
-            EUIExporter.exportRelicButton.setOnClick(() -> EUIExporter.openForRelics(allList));
+            EUIExporter.exportButton.setOnClick(() -> EUIExporter.relicExportable.openAndPosition(allList));
 
             return SpireReturn.Continue();
         }
@@ -109,7 +109,7 @@ public class RelicViewScreenPatches {
             // Export relic button will only be null if open relic button is also null
             if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
                 EUI.openRelicFiltersButton.tryUpdate();
-                EUIExporter.exportRelicButton.tryUpdate();
+                EUIExporter.exportButton.tryUpdate();
             }
             // Make sure both items update, but only one needs to be pass
             if (EUI.relicFilters.tryUpdate() | EUIExporter.exportDropdown.tryUpdate()) {
@@ -157,7 +157,7 @@ public class RelicViewScreenPatches {
             // Export relic button will only be null if open relic button is also null
             if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
                 EUI.openRelicFiltersButton.tryRender(sb);
-                EUIExporter.exportRelicButton.tryRender(sb);
+                EUIExporter.exportButton.tryRender(sb);
             }
         }
     }
