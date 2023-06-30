@@ -48,6 +48,20 @@ public class EUIRM {
         return null;
     }
 
+    public static void dumpExternalTextures() {
+        for (Texture texture : externalTextures.values()) {
+            texture.dispose();
+        }
+        externalTextures.clear();
+    }
+
+    public static void dumpInternalTextures() {
+        for (Texture texture : internalTextures.values()) {
+            texture.dispose();
+        }
+        internalTextures.clear();
+    }
+
     public static Texture getExternalTexture(String path) {
         return getExternalTexture(path, true);
     }
