@@ -42,6 +42,7 @@ public abstract class EUIDungeonScreen extends CustomScreen {
         AbstractDungeon.overlayMenu.showBlackScreen();
         AbstractDungeon.dynamicBanner.hide(); // Hide banners that get in the way
         AbstractDungeon.dungeonMapScreen.map.hideInstantly(); // Because the map won't be hidden properly otherwise
+        AbstractDungeon.gridSelectScreen.hide(); // Because this has to be called at least once to prevent softlocks when upgrading cards
     }
 
     @Override

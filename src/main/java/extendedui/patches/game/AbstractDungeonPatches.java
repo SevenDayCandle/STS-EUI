@@ -23,7 +23,6 @@ public class AbstractDungeonPatches {
 
         @SpirePrefixPatch
         public static void prefix() {
-            //EUITourTooltip.clearTutorialQueue();
             if (coolerPreviousScreen != null) {
                 AbstractDungeon.previousScreen = coolerPreviousScreen;
                 coolerPreviousScreen = null;
