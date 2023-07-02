@@ -33,6 +33,11 @@ public class RelicViewScreenPatches {
         }
     }
 
+    public static ArrayList<AbstractRelic> getAllReics() {
+        reset();
+        return EUIUtils.flatten(starterList, commonList, uncommonList, rareList, bossList, specialList, shopList);
+    }
+
     private static void updateForFilters() {
 
         if (EUI.relicFilters.areFiltersEmpty()) {

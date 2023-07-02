@@ -395,7 +395,7 @@ public class EUITooltip {
         for (int i = 0; i < tooltips.size(); i++) {
             EUITooltip tip = tooltips.get(i);
             offsetChange = EUIRenderHelpers.getTooltipHeight(tip) + BOX_EDGE_H * 3.15F;
-            if ((offset + offsetChange) >= (Settings.HEIGHT * 0.7F)) {
+            if ((offset + offsetChange) < 0) {
                 offset = 0.0F;
                 y = original_y;
                 x += offset_x;
