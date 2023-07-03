@@ -21,7 +21,6 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.text.EUISmartText;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
@@ -36,19 +35,6 @@ import java.util.ArrayList;
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
 public class EUIRenderHelpers {
-    private static final float CARD_TIP_PAD = 12.0F * Settings.scale;
-    private static final float SHADOW_DIST_Y = 14.0F * Settings.scale;
-    private static final float SHADOW_DIST_X = 9.0F * Settings.scale;
-    private static final float BOX_EDGE_H = 32.0F * Settings.scale;
-    private static final float BOX_BODY_H = 64.0F * Settings.scale;
-    private static final float BOX_W = 320.0F * Settings.scale;
-    private static final float TEXT_OFFSET_X = 22.0F * Settings.scale;
-    private static final float HEADER_OFFSET_Y = 12.0F * Settings.scale;
-    private static final float ORB_OFFSET_Y = -8.0F * Settings.scale;
-    private static final float BODY_OFFSET_Y = -20.0F * Settings.scale;
-    private static final float BODY_TEXT_WIDTH = 280.0F * Settings.scale;
-    private static final float TIP_DESC_LINE_SPACING = 26.0F * Settings.scale;
-    private static final float POWER_ICON_OFFSET_X = 40.0F * Settings.scale;
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     protected static final String SHADER_GLITCH_FRAGMENT = "shaders/glitchFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
@@ -69,12 +55,8 @@ public class EUIRenderHelpers {
     protected static ShaderProgram rainbowVerticalShader;
     protected static ShaderProgram sepiaShader;
 
-    public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY) {
-        return tips.isEmpty() ? 0f : (1f - hb_cY / (float) Settings.HEIGHT) * getTallestOffset(tips) - (getTooltipHeight(tips.get(0)) + BOX_EDGE_H * 3.15f) * 0.5f;
-    }
-
     public static float calculateToAvoidOffscreen(ArrayList<EUITooltip> tips, float hb_cY) {
-        return tips.isEmpty() ? 0f : Math.max(0.0F, getTallestOffset(tips) - hb_cY);
+        return tips.isEmpty() ? 0f : Math.max(0.0F, EUITooltip.getTallestOffset(tips) - hb_cY);
     }
 
     public static Color copyColor(Color color, float a) {
@@ -666,25 +648,6 @@ public class EUIRenderHelpers {
         return sepiaShader;
     }
 
-    private static float getTallestOffset(ArrayList<EUITooltip> tips) {
-        float currentOffset = 0f;
-        float maxOffset = 0f;
-
-        for (EUITooltip p : tips) {
-            float offsetChange = getTooltipHeight(p) + BOX_EDGE_H * 3.15F;
-            if ((currentOffset + offsetChange) >= (float) Settings.HEIGHT * 0.7F) {
-                currentOffset = 0f;
-            }
-
-            currentOffset += offsetChange;
-            if (currentOffset > maxOffset) {
-                maxOffset = currentOffset;
-            }
-        }
-
-        return maxOffset;
-    }
-
     public static BitmapFont getTitleFont(AbstractCard card) {
         BitmapFont result;
         final float scale = 1 / (Math.max(14f, card.name.length()) / 14f);
@@ -698,10 +661,6 @@ public class EUIRenderHelpers {
         }
 
         return result;
-    }
-
-    public static float getTooltipHeight(EUITooltip tip) {
-        return -EUISmartText.getSmartHeight(EUIFontHelper.cardTooltipFont, tip.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - 7.0F * Settings.scale;
     }
 
     public static void initializeBuffers() {

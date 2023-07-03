@@ -644,7 +644,7 @@ public class EUI {
     public static boolean tryDragging() {
         final boolean drag = !CardCrawlGame.isPopupOpen && (currentScreen == null || !isDragging) && (isDragging = true);
         if (drag) {
-            EUITooltip.canRenderTooltips(false);
+            EUITooltip.blockTooltips();
         }
 
         return drag;

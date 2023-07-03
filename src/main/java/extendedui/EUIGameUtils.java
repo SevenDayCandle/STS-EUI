@@ -88,7 +88,7 @@ public class EUIGameUtils {
     }
 
     public static boolean canViewEnemyIntents(AbstractMonster mo) {
-        return mo.intent != AbstractMonster.Intent.NONE && !AbstractDungeon.player.hasRelic(RunicDome.ID);
+        return mo.intent != AbstractMonster.Intent.NONE && mo.intent != AbstractMonster.Intent.DEBUG && !AbstractDungeon.player.hasRelic(RunicDome.ID);
     }
 
     public static Color colorForRarity(AbstractCard.CardRarity rarity) {

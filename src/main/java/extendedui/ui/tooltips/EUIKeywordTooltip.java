@@ -131,15 +131,6 @@ public class EUIKeywordTooltip extends EUITooltip {
         }
     }
 
-    public static void postInitialize() {
-        for (Map.Entry<String, EUIKeywordTooltip> entry : getEntries()) {
-            EUIKeywordTooltip tip = entry.getValue();
-            tip.canRender = !EUIConfiguration.getIsTipDescriptionHidden(entry.getKey());
-            tip.headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
-            tip.descriptionFont = EUIFontHelper.cardTooltipFont;
-        }
-    }
-
     public static void registerID(String id, EUIKeywordTooltip tooltip) {
         REGISTERED_IDS.put(id, tooltip);
         tooltip.ID = id;

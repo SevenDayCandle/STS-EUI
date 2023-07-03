@@ -927,12 +927,12 @@ public class EUIDropdown<T> extends EUIHoverable {
 
                 for (int i = 0; i < rows.size(); ++i) {
                     if (this.rows.get(i).update(i >= topVisibleRowIndex && i < topVisibleRowIndex + visibleRowCount(), currentIndices.contains(i))) {
-                        this.setSelectedIndex(this.rows.get(i).index);
-                        isHoveringOver = true;
-                        CardCrawlGame.sound.play("UI_CLICK_2");
                         if (!this.isMultiSelect) {
                             openOrCloseMenu();
                         }
+                        this.setSelectedIndex(this.rows.get(i).index);
+                        isHoveringOver = true;
+                        CardCrawlGame.sound.play("UI_CLICK_2");
                     }
                     else if (this.rows.get(i).hb.hovered) {
                         isHoveringOver = true;

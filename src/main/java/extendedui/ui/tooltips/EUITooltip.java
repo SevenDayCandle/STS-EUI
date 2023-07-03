@@ -25,11 +25,13 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
-import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.markers.IntentProvider;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
+import extendedui.ui.controls.EUIVerticalScrollBar;
+import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
@@ -40,8 +42,10 @@ import java.util.*;
 public class EUITooltip {
     private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
+    private static EUIVerticalScrollBar scrollBar;
     private static final Vector2 genericTipPos = new Vector2(0, 0);
     public static final Color BASE_COLOR = new Color(1f, 0.9725f, 0.8745f, 1f);
+    public static final float POPUP_TOOLTIP_Y_BASE = Settings.HEIGHT * 0.85f;
     public static final float CARD_TIP_PAD = 12f * Settings.scale;
     public static final float BOX_EDGE_H = 32f * Settings.scale;
     public static final float SHADOW_DIST_Y = 14f * Settings.scale;
@@ -57,8 +61,9 @@ public class EUITooltip {
     public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
     public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
     public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
+    public static float popupTooltipY = POPUP_TOOLTIP_Y_BASE;
     private static TooltipProvider provider;
-    private static TooltipProvider lastProvider;
+    private static Object lastProvider;
     private static AbstractCreature creature;
     private static AbstractCreature lastHoveredCreature;
     protected int currentDesc;
@@ -73,7 +78,6 @@ public class EUITooltip {
     public String ID;
     public String title;
     public String description;
-    public boolean renderBg = true;
     public float width = BOX_W;
     public boolean canRender = true;
 
@@ -93,6 +97,10 @@ public class EUITooltip {
         this.canRender = other.canRender;
     }
 
+    public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY) {
+        return tips.isEmpty() ? 0f : (1f - hb_cY / (float) Settings.HEIGHT) * getTallestOffset(tips) - (tips.get(0).getTotalHeight()) * 0.5f;
+    }
+
     public static boolean canRenderPower(AbstractPower po) {
         return po.name != null;
     }
@@ -101,20 +109,17 @@ public class EUITooltip {
         return !EUIClassUtils.getFieldStatic(TipHelper.class, "renderedTipThisFrame", Boolean.class);
     }
 
-    public static void canRenderTooltips(boolean canRender) {
-        ReflectionHacks.setPrivateStatic(TipHelper.class, "renderedTipThisFrame", !canRender);
-
-        if (!canRender) {
-            tooltips.clear();
-            ReflectionHacks.setPrivateStatic(TipHelper.class, "BODY", null);
-            ReflectionHacks.setPrivateStatic(TipHelper.class, "HEADER", null);
-            ReflectionHacks.setPrivateStatic(TipHelper.class, "card", null);
-            ReflectionHacks.setPrivateStatic(TipHelper.class, "KEYWORDS", EMPTY_LIST);
-            ReflectionHacks.setPrivateStatic(TipHelper.class, "POWER_TIPS", EMPTY_LIST);
-            lastHoveredCreature = null;
-            provider = null;
-            lastProvider = null;
-        }
+    public static void blockTooltips() {
+        ReflectionHacks.setPrivateStatic(TipHelper.class, "renderedTipThisFrame", true);
+        tooltips.clear();
+        ReflectionHacks.setPrivateStatic(TipHelper.class, "BODY", null);
+        ReflectionHacks.setPrivateStatic(TipHelper.class, "HEADER", null);
+        ReflectionHacks.setPrivateStatic(TipHelper.class, "card", null);
+        ReflectionHacks.setPrivateStatic(TipHelper.class, "KEYWORDS", EMPTY_LIST);
+        ReflectionHacks.setPrivateStatic(TipHelper.class, "POWER_TIPS", EMPTY_LIST);
+        lastHoveredCreature = null;
+        provider = null;
+        lastProvider = null;
     }
 
     public static EUIKeywordTooltip fromMonsterIntent(AbstractMonster monster) {
@@ -123,10 +128,10 @@ public class EUITooltip {
     }
 
     public static EUIKeywordTooltip fromPowerTip(PowerTip tip) {
-        EUIKeywordTooltip newTip = new EUIKeywordTooltip(tip.header, tip.body);
-        if (newTip.title == null) {
-            newTip.title = "";
+        if (StringUtils.isEmpty(tip.header)) {
+            return null;
         }
+        EUIKeywordTooltip newTip = new EUIKeywordTooltip(tip.header, tip.body);
         if (tip.imgRegion != null) {
             newTip.icon = tip.imgRegion;
         }
@@ -134,6 +139,42 @@ public class EUITooltip {
             newTip.icon = new TextureRegion(tip.img);
         }
         return newTip;
+    }
+
+    public static float getTallestOffset(ArrayList<EUITooltip> tips) {
+        float currentOffset = 0f;
+        float maxOffset = 0f;
+
+        for (EUITooltip p : tips) {
+            float offsetChange = p.getTotalHeight();
+            if ((currentOffset + offsetChange) >= (float) Settings.HEIGHT * 0.7F) {
+                currentOffset = 0f;
+            }
+
+            currentOffset += offsetChange;
+            if (currentOffset > maxOffset) {
+                maxOffset = currentOffset;
+            }
+        }
+
+        return maxOffset;
+    }
+
+    public static boolean isScrollingOnPopup() {
+        return scrollBar.hb.hovered;
+    }
+
+    public static void postInitialize() {
+        scrollBar = new EUIVerticalScrollBar(new EUIHitbox(EUIGameUtils.screenW(0.94f), EUIGameUtils.screenH(0.15f), EUIGameUtils.screenW(0.026f), EUIGameUtils.screenH(0.7f))
+                .setIsPopupCompatible(true))
+                .setOnScroll(EUITooltip::onScroll);
+
+        for (Map.Entry<String, EUIKeywordTooltip> entry : EUIKeywordTooltip.getEntries()) {
+            EUIKeywordTooltip tip = entry.getValue();
+            tip.canRender = !EUIConfiguration.getIsTipDescriptionHidden(entry.getKey());
+            tip.headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
+            tip.descriptionFont = EUIFontHelper.cardTooltipFont;
+        }
     }
 
     public static void queueTooltip(EUITooltip tooltip) {
@@ -146,10 +187,17 @@ public class EUITooltip {
 
     public static void queueTooltip(EUITooltip tooltip, float x, float y) {
         if (tryQueue()) {
-            tooltips.add(tooltip);
-            if (tooltip.children != null) {
-                tooltips.addAll(tooltip.children);
+            if (lastProvider != tooltip) {
+                lastProvider = tooltip;
+                provider = null;
+                lastHoveredCreature = creature = null;
+                tooltips.clear();
+                tooltips.add(tooltip);
+                if (tooltip.children != null) {
+                    tooltips.addAll(tooltip.children);
+                }
             }
+
             genericTipPos.x = x;
             genericTipPos.y = y;
             EUI.addPriorityPostRender(EUITooltip::renderGeneric);
@@ -172,7 +220,13 @@ public class EUITooltip {
 
     public static void queueTooltips(Collection<? extends EUITooltip> tips, float x, float y) {
         if (tryQueue()) {
-            tooltips.addAll(tips);
+            if (lastProvider != tips) {
+                lastProvider = tips;
+                provider = null;
+                lastHoveredCreature = creature = null;
+                tooltips.clear();
+                tooltips.addAll(tips);
+            }
             genericTipPos.x = x;
             genericTipPos.y = y;
             EUI.addPriorityPostRender(EUITooltip::renderGeneric);
@@ -269,13 +323,18 @@ public class EUITooltip {
                 }
             }
             scanListForAdditionalTips(tooltips);
+            scrollBar.scroll(0, true); // Reset tooltip position
         }
 
         float x;
         float y;
+        boolean updateScroll = false;
         if (provider.isPopup()) {
-            x = 0.78f * Settings.WIDTH;
-            y = 0.85f * Settings.HEIGHT;
+            x = 0.73f * Settings.WIDTH;
+            y = popupTooltipY;
+            if (y > Settings.HEIGHT) {
+                updateScroll = true;
+            }
         }
         else {
             x = card.current_x;
@@ -299,19 +358,41 @@ public class EUITooltip {
                 float multi = 1f - (card.current_y / (Settings.HEIGHT * 0.5f));
 
                 y += AbstractCard.IMG_HEIGHT * (0.5f + MathUtils.round(multi * steps));
+                if (y > Settings.HEIGHT * 0.96f) {
+                    y = Settings.HEIGHT * 0.96f;
+                }
             }
             else {
                 y += AbstractCard.IMG_HEIGHT * 0.5f;
             }
         }
 
+        final float original_y = y;
+        final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
         for (int i = 0; i < tooltips.size(); i++) {
             EUITooltip tip = tooltips.get(i);
             if (StringUtils.isEmpty(tip.description)) {
                 continue;
             }
+            float projected = y - tip.getTotalHeight();
+            if (projected <= 0) {
+                if (provider.isPopup()) {
+                    updateScroll = true;
+                }
+                else {
+                    y = original_y;
+                    x += offset_x;
+                }
+            }
 
             y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
+        }
+
+        if (updateScroll) {
+            updateScroll(sb);
+        }
+        else {
+            scrollBar.hb.hovered = false;
         }
 
         EUICardPreview preview = provider.getPreview();
@@ -320,13 +401,22 @@ public class EUITooltip {
         }
     }
 
+    private static void updateScroll(SpriteBatch sb) {
+        scrollBar.update();
+        scrollBar.render(sb);
+    }
+
+    private static void onScroll(float scrollPercentage) {
+        scrollBar.scroll(scrollPercentage, false);
+        popupTooltipY = POPUP_TOOLTIP_Y_BASE + Settings.HEIGHT * 0.1f * tooltips.size() * scrollPercentage;
+    }
+
     public static void renderFromCreature(SpriteBatch sb) {
         if (creature == null) {
             return;
         }
 
         float x;
-        float y = creature.hb.cY + EUIRenderHelpers.calculateAdditionalOffset(tooltips, creature.hb.cY);
         if ((creature.hb.cX + creature.hb.width * 0.5f) < TIP_X_THRESHOLD) {
             x = creature.hb.cX + (creature.hb.width / 2.0F) + TIP_OFFSET_R_X;
         }
@@ -345,17 +435,12 @@ public class EUITooltip {
                 if (intentTip != null) {
                     tooltips.add(intentTip);
                 }
-                EUICardPreview preview = provider.getPreview();
-                if (preview != null) {
-                    float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
-                    preview.render(sb, previewOffset, y, 0.8f, preview.getCard().upgraded);
-                }
             }
             else {
-                lastProvider = null;
+                lastProvider = provider = null;
                 if (creature instanceof AbstractMonster) {
                     AbstractMonster monster = (AbstractMonster) creature;
-                    if (EUIGameUtils.canViewEnemyIntents(monster) && monster.intent != AbstractMonster.Intent.NONE) {
+                    if (EUIGameUtils.canViewEnemyIntents(monster)) {
                         EUITooltip tip = fromMonsterIntent(monster);
                         if (tip != null) {
                             tooltips.add(tip);
@@ -387,22 +472,27 @@ public class EUITooltip {
             scanListForAdditionalTips(tooltips);
         }
 
+        float y = creature.hb.cY + calculateAdditionalOffset(tooltips, creature.hb.cY);
+        if (provider != null) {
+            EUICardPreview preview = provider.getPreview();
+            if (preview != null) {
+                float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
+                preview.render(sb, previewOffset, y, 0.8f, preview.getCard().upgraded);
+            }
+        }
+
         final float original_y = y;
         final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
-        float offset = 0.0F;
 
-        float offsetChange;
         for (int i = 0; i < tooltips.size(); i++) {
             EUITooltip tip = tooltips.get(i);
-            offsetChange = EUIRenderHelpers.getTooltipHeight(tip) + BOX_EDGE_H * 3.15F;
-            if ((offset + offsetChange) < 0) {
-                offset = 0.0F;
+            float projected = y - tip.getTotalHeight();
+            if (projected <= 0) {
                 y = original_y;
                 x += offset_x;
             }
 
             y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
-            offset += offsetChange;
         }
     }
 
@@ -566,7 +656,7 @@ public class EUITooltip {
     private static boolean tryQueue() {
         final boolean canRender = canRenderTooltips();
         if (canRender) {
-            canRenderTooltips(false);
+            ReflectionHacks.setPrivateStatic(TipHelper.class, "renderedTipThisFrame", true);
         }
 
         return canRender;
@@ -582,6 +672,10 @@ public class EUITooltip {
 
     public String getTitleOrIconForced() {
         return this.ID != null ? "†" + this.ID + "]" : this.title;
+    }
+
+    public float getTotalHeight() {
+        return height() + BOX_EDGE_H * 3.15f;
     }
 
     public float height() {

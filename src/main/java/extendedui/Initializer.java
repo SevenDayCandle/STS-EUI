@@ -8,12 +8,10 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireInitializer;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.rooms.AbstractRoom;
-import com.megacrit.cardcrawl.screens.options.OptionsPanel;
-import com.megacrit.cardcrawl.screens.options.SettingsScreen;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.patches.EUIKeyword;
-import extendedui.patches.game.AbstractDungeonPatches;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
+import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
 import org.apache.logging.log4j.LogManager;
 
@@ -104,7 +102,7 @@ public class Initializer
         STSEffekseerManager.initialize();
         ShaderDebugger.initialize();
         HitboxDebugger.initialize();
-        EUIKeywordTooltip.postInitialize();
+        EUITooltip.postInitialize();
     }
 
     private Map<String, EUIKeyword> loadKeywords(String language, String path) {
