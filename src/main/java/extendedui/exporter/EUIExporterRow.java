@@ -1,5 +1,6 @@
 package extendedui.exporter;
 
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIUtils;
 
 import java.lang.reflect.Field;
@@ -35,5 +36,14 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
                 return "";
             }
         }, EUIExporterRow.class.getDeclaredFields(), this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
+    }
+
+    public static String sanitizeDescription(String description) {
+        return description
+                .replaceAll("#[a-z]", "")
+                .replace("[", "")
+                .replace("]", "")
+                .replace("{", "")
+                .replace("}", "");
     }
 }

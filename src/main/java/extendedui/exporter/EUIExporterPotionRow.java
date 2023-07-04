@@ -16,7 +16,7 @@ public class EUIExporterPotionRow extends EUIExporterRow {
         rarity = String.valueOf(potion.rarity);
         size = String.valueOf(potion.size);
         potionColor = String.valueOf(potion.color);
-        description = potion.description;
+        description = sanitizeDescription(potion.description);
         potency = potion.getPotency();
     }
 
@@ -25,7 +25,7 @@ public class EUIExporterPotionRow extends EUIExporterRow {
         rarity = String.valueOf(potion.potion.rarity);
         size = String.valueOf(potion.potion.size);
         potionColor = String.valueOf(potion.potion.color);
-        description = potion.potion.description;
+        description = sanitizeDescription(potion.potion.description);
         potency = potion.potion.getPotency();
     }
 }

@@ -13,13 +13,13 @@ public class EUIExporterRelicRow extends EUIExporterRow {
         super(relic.relicId, String.valueOf(EUIGameUtils.getRelicColor(relic.relicId)), relic.name);
         tier = String.valueOf(relic.tier);
         landingSFX = String.valueOf(EUIGameUtils.getLandingSound(relic));
-        description = relic.description;
+        description = sanitizeDescription(relic.description);
     }
 
     public EUIExporterRelicRow(RelicInfo relic) {
         super(relic.relic.relicId, String.valueOf(relic.relicColor), relic.relic.name);
         tier = String.valueOf(relic.relic.tier);
         landingSFX = String.valueOf(EUIGameUtils.getLandingSound(relic.relic));
-        description = relic.relic.description;
+        description = sanitizeDescription(relic.relic.description);
     }
 }
