@@ -7,8 +7,6 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import extendedui.EUI;
 import extendedui.EUIUtils;
-import extendedui.interfaces.delegates.FuncT1;
-import extendedui.interfaces.delegates.FuncT2;
 import extendedui.ui.cardFilter.SimpleCardFilterModule;
 import extendedui.utilities.EUIClassUtils;
 

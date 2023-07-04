@@ -167,6 +167,10 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         currentFilterCounts.merge(tooltip, count, Integer::sum);
     }
 
+    public ArrayList<T> applyFilters(ArrayList<T> input) {
+        return EUIUtils.filter(input, this::evaluate);
+    }
+
     public void buttonRightClick(FilterKeywordButton button) {
         selectedButton = button;
         contextMenu.setItems(EUIConfiguration.getIsTipDescriptionHidden(button.tooltip.ID) ? TooltipOption.EnableTooltip : TooltipOption.DisableTooltip);
@@ -337,15 +341,6 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         refreshButtonOrder();
     }
 
-    public void toggleFilters() {
-        if (isActive) {
-            close();
-        }
-        else {
-            open();
-        }
-    }
-
     @Override
     public final void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
@@ -400,9 +395,13 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         contextMenu.tryUpdate();
     }
 
-    public final float updateDropdown(EUIHoverable element, float xPos) {
-        element.setPosition(xPos, DRAW_START_Y + scrollDelta).tryUpdate();
-        return element.hb.x + element.hb.width + SPACING * 2;
+    public void toggleFilters() {
+        if (isActive) {
+            close();
+        }
+        else {
+            open();
+        }
     }
 
     @Override
@@ -417,6 +416,11 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     // Shorthand function to be fed to all dropdown filters
     protected void updateActive(boolean whatever) {
         CardCrawlGame.isPopupOpen = this.isActive;
+    }
+
+    public final float updateDropdown(EUIHoverable element, float xPos) {
+        element.setPosition(xPos, DRAW_START_Y + scrollDelta).tryUpdate();
+        return element.hb.x + element.hb.width + SPACING * 2;
     }
 
     private void updateInput() {
@@ -444,10 +448,6 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     }
 
     abstract public void clearFilters(boolean shouldInvoke, boolean shouldClearColors);
-
-    public ArrayList<T> applyFilters(ArrayList<T> input) {
-        return EUIUtils.filter(input, this::evaluate);
-    }
 
     abstract public boolean areFiltersEmpty();
 

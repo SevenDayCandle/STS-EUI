@@ -19,26 +19,17 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         super(backgroundTexture, hb);
     }
 
-    public void forceSetValue(int value, boolean invoke) {
-        cachedValue = MathUtils.clamp(value, min, max);
-        forceUpdateText();
-        if (invoke && onComplete != null) {
-            onComplete.invoke(cachedValue);
-        }
-    }
-
-    public void forceUpdateText() {
-        if (showNegativeAsInfinity && cachedValue < 0) {
-            label.text = label.font.getData().hasGlyph('∞') ? "∞" : "Inf";
+    @Override
+    protected void commit(boolean commit) {
+        if (commit) {
+            if (onComplete != null) {
+                onComplete.invoke(cachedValue);
+            }
+            forceUpdateText();
         }
         else {
-            // Ensure parity between label and cachedValue, in case getText is overwritten
-            label.text = String.valueOf(cachedValue);
+            label.text = originalValue;
         }
-    }
-
-    public int getCachedValue() {
-        return cachedValue;
     }
 
     @Override
@@ -64,16 +55,6 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     @Override
     protected void renderUnderscore(SpriteBatch sb, float cur_x) {
         // Do not render
-    }
-
-    @Override
-    public Integer getValue(String text) {
-        try {
-            return MathUtils.clamp(Integer.parseInt(label.text), min, max);
-        }
-        catch (Exception ignored) {
-            return 0;
-        }
     }
 
     @Override
@@ -103,16 +84,35 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     }
 
     @Override
-    protected void commit(boolean commit) {
-        if (commit) {
-            if (onComplete != null) {
-                onComplete.invoke(cachedValue);
-            }
-            forceUpdateText();
+    public Integer getValue(String text) {
+        try {
+            return MathUtils.clamp(Integer.parseInt(label.text), min, max);
+        }
+        catch (Exception ignored) {
+            return 0;
+        }
+    }
+
+    public void forceSetValue(int value, boolean invoke) {
+        cachedValue = MathUtils.clamp(value, min, max);
+        forceUpdateText();
+        if (invoke && onComplete != null) {
+            onComplete.invoke(cachedValue);
+        }
+    }
+
+    public void forceUpdateText() {
+        if (showNegativeAsInfinity && cachedValue < 0) {
+            label.text = label.font.getData().hasGlyph('∞') ? "∞" : "Inf";
         }
         else {
-            label.text = originalValue;
+            // Ensure parity between label and cachedValue, in case getText is overwritten
+            label.text = String.valueOf(cachedValue);
         }
+    }
+
+    public int getCachedValue() {
+        return cachedValue;
     }
 
     public int getMax() {

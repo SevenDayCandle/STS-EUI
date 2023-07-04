@@ -2,9 +2,6 @@ package extendedui.utilities;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.potions.FairyPotion;
-import com.megacrit.cardcrawl.potions.FirePotion;
-import com.megacrit.cardcrawl.potions.StrengthPotion;
 import extendedui.EUIRM;
 import extendedui.interfaces.markers.CacheableCard;
 

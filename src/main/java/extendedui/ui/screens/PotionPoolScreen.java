@@ -80,7 +80,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
     @Override
     public void close() {
         super.close();
-        for (CustomPoolModule<PotionInfo>module : EUI.globalCustomPotionPoolModules) {
+        for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
             module.onClose();
         }
         if (customModule != null) {
@@ -102,7 +102,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
             EUI.potionHeader.updateImpl();
             EUI.openPotionFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
-            for (CustomPoolModule<PotionInfo>module : EUI.globalCustomPotionPoolModules) {
+            for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
                 module.update();
             }
             if (customModule != null) {
@@ -123,7 +123,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
             EUI.openPotionFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
         }
-        for (CustomPoolModule<PotionInfo>module : EUI.globalCustomPotionPoolModules) {
+        for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
             module.render(sb);
         }
         if (customModule != null) {
@@ -161,7 +161,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
         potionGrid.setItems(potions, PotionInfo::new);
 
         EUI.potionFilters.initializeForCustomHeader(potionGrid.group, __ -> {
-            for (CustomPoolModule<PotionInfo>module : EUI.globalCustomPotionPoolModules) {
+            for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
                 module.open(EUI.potionHeader.group.group, color, null);
             }
             if (customModule != null) {
@@ -171,7 +171,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
         }, color, true, false);
 
 
-        for (CustomPoolModule<PotionInfo>module : EUI.globalCustomPotionPoolModules) {
+        for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
             module.open(potionGrid.group.group, color, null);
         }
         customModule = EUI.getCustomPotionPoolModule(player);

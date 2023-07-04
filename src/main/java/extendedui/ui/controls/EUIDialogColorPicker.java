@@ -3,10 +3,8 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
@@ -79,6 +77,14 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
         this.picker.setOnChange((__) -> updateInputs());
     }
 
+    protected String getCancelText() {
+        return CHOICE_TEXT[3];
+    }
+
+    protected String getConfirmText() {
+        return CHOICE_TEXT[2];
+    }
+
     protected EUILabel getHeader(String headerText) {
         return new EUILabel(EUIFontHelper.buttonFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.88f))
@@ -107,14 +113,6 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
         this.inputValue.updateImpl();
         this.inputAlpha.updateImpl();
         this.sampleColor.updateImpl();
-    }
-
-    protected String getCancelText() {
-        return CHOICE_TEXT[3];
-    }
-
-    protected String getConfirmText() {
-        return CHOICE_TEXT[2];
     }
 
     @Override

@@ -18,6 +18,11 @@ import extendedui.ui.hitboxes.EUIHitbox;
 
 public class EUIMainMenuPanelButton extends EUIHoverable {
     public static final float START_Y = -100.0F * Settings.scale;
+    protected ActionT0 onClick;
+    protected float yMod;
+    protected float animTimer = 0.3F;
+    protected float animTime = 0.3F;
+    protected float uiScale = 1f;
     public Color color;
     public Color pColor;
     public Color dColor;
@@ -26,11 +31,6 @@ public class EUIMainMenuPanelButton extends EUIHoverable {
     public String description;
     public Texture panelImg;
     public Texture portraitImg;
-    protected ActionT0 onClick;
-    protected float yMod;
-    protected float animTimer = 0.3F;
-    protected float animTime = 0.3F;
-    protected float uiScale = 1f;
 
     public EUIMainMenuPanelButton(Texture panelImg, Texture portraitImg, String header, String description, ActionT0 onClick) {
         this(Color.WHITE, Settings.GOLD_COLOR, Settings.CREAM_COLOR, panelImg, portraitImg, header, description, onClick);
@@ -88,7 +88,8 @@ public class EUIMainMenuPanelButton extends EUIHoverable {
             if (InputHelper.justClickedLeft) {
                 this.hb.clickStarted = true;
             }
-        } else {
+        }
+        else {
             this.uiScale = MathHelper.cardScaleLerpSnap(this.uiScale, 1.0F);
         }
 
@@ -123,7 +124,8 @@ public class EUIMainMenuPanelButton extends EUIHoverable {
         sb.draw(ImageMaster.MENU_PANEL_FRAME, this.hb.cX - 256.0F, this.hb.cY + this.yMod - 400.0F, 256.0F, 400.0F, 512.0F, 800.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 512, 800, false, false);
         if (FontHelper.getWidth(FontHelper.damageNumberFont, this.header, 0.8F) > 310.0F * Settings.scale) {
             FontHelper.renderFontCenteredHeight(sb, FontHelper.damageNumberFont, this.header, this.hb.cX - 138.0F * Settings.scale, this.hb.cY + this.yMod + 294.0F * Settings.scale, 280.0F * Settings.scale, this.gColor, 0.7F);
-        } else {
+        }
+        else {
             FontHelper.renderFontCenteredHeight(sb, FontHelper.damageNumberFont, this.header, this.hb.cX - 153.0F * Settings.scale, this.hb.cY + this.yMod + 294.0F * Settings.scale, 310.0F * Settings.scale, this.gColor, 0.8F);
         }
 

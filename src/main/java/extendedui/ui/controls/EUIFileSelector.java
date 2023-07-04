@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.megacrit.cardcrawl.core.Settings;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
@@ -14,16 +13,8 @@ import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUIHeaderlessTooltip;
 import extendedui.utilities.EUIFontHelper;
 
-import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
-import java.awt.*;
-import java.awt.datatransfer.DataFlavor;
-import java.awt.datatransfer.Transferable;
-import java.awt.dnd.DnDConstants;
-import java.awt.dnd.DropTarget;
-import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
-import java.util.List;
 
 public class EUIFileSelector extends EUIHoverable {
     protected File currentFile;

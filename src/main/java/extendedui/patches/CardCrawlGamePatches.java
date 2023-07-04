@@ -8,7 +8,6 @@ import com.megacrit.cardcrawl.helpers.DrawMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
-import extendedui.exporter.EUIExporter;
 import extendedui.STSEffekseerManager;
 import extendedui.ui.tooltips.EUITourTooltip;
 import javassist.CannotCompileException;

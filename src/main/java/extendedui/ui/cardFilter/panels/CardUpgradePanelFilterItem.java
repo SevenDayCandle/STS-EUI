@@ -12,10 +12,9 @@ import java.util.Collections;
 import java.util.List;
 
 public class CardUpgradePanelFilterItem implements CountingPanelItem, TooltipProvider {
-    protected static EUIKeywordTooltip UPGRADE_TIP;
     protected static final CardUpgradePanelFilterItem UPGRADE = new CardUpgradePanelFilterItem(1);
     protected static final CardUpgradePanelFilterItem DOWNGRADE = new CardUpgradePanelFilterItem(0);
-
+    protected static EUIKeywordTooltip UPGRADE_TIP;
     public final int upgradeLevel;
 
     public CardUpgradePanelFilterItem(int upgradeLevel) {

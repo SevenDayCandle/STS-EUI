@@ -38,14 +38,6 @@ public class EUITextBox extends EUIHoverable {
         return this;
     }
 
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        image.render(sb);
-        label.render(sb);
-
-        hb.render(sb);
-    }
-
     public EUITourTooltip makeTour(boolean canDismiss) {
         if (tooltip != null) {
             EUITourTooltip tip = new EUITourTooltip(hb, tooltip.title, tooltip.description);
@@ -54,6 +46,14 @@ public class EUITextBox extends EUIHoverable {
             return tip;
         }
         return null;
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        image.render(sb);
+        label.render(sb);
+
+        hb.render(sb);
     }
 
     public EUITextBox setAlignment(float verticalRatio, float horizontalRatio) {

@@ -34,6 +34,14 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
                 .setCanAutosize(false, true);
     }
 
+    protected String getCancelText() {
+        return CHOICE_TEXT[3];
+    }
+
+    protected String getConfirmText() {
+        return CHOICE_TEXT[2];
+    }
+
     @Override
     public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
@@ -54,14 +62,6 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
     @Override
     public ArrayList<T> getCancelValue() {
         return null;
-    }
-
-    protected String getCancelText() {
-        return CHOICE_TEXT[3];
-    }
-
-    protected String getConfirmText() {
-        return CHOICE_TEXT[2];
     }
 
     public EUIDialogDropdown<T> setItems(List<T> items) {

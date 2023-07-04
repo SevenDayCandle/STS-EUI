@@ -1,7 +1,6 @@
 package extendedui.exporter;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import extendedui.EUIUtils;
 
 public class EUIExporterCardRow extends EUIExporterRow {
     public String type;

@@ -47,21 +47,6 @@ public abstract class EUIDialog<T> extends EUIHoverable {
         this.cancel = getCancelButton();
     }
 
-    protected EUILabel getHeader(String headerText) {
-        return new EUILabel(EUIFontHelper.buttonFont,
-                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.8f))
-                .setAlignment(0.5f, 0.5f, false)
-                .setLabel(headerText);
-    }
-
-    protected EUILabel getDescription(String descriptionText) {
-        return new EUILabel(EUIFontHelper.cardTooltipFont,
-                new RelativeHitbox(hb, hb.width * 0.75f, hb.height, hb.width * 0.15f, hb.height * 0.7f))
-                .setAlignment(0.5f, 0.5f, true)
-                .setSmartText(true, false)
-                .setLabel(descriptionText);
-    }
-
     protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, scale(152), scale(80), hb.width * 0.85f, hb.height * 0.15f))
@@ -90,6 +75,21 @@ public abstract class EUIDialog<T> extends EUIHoverable {
 
     protected String getConfirmText() {
         return TEXT[2];
+    }
+
+    protected EUILabel getDescription(String descriptionText) {
+        return new EUILabel(EUIFontHelper.cardTooltipFont,
+                new RelativeHitbox(hb, hb.width * 0.75f, hb.height, hb.width * 0.15f, hb.height * 0.7f))
+                .setAlignment(0.5f, 0.5f, true)
+                .setSmartText(true, false)
+                .setLabel(descriptionText);
+    }
+
+    protected EUILabel getHeader(String headerText) {
+        return new EUILabel(EUIFontHelper.buttonFont,
+                new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.8f))
+                .setAlignment(0.5f, 0.5f, false)
+                .setLabel(headerText);
     }
 
     @Override

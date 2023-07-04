@@ -2,17 +2,11 @@ package extendedui.ui.cardFilter;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButtonListener;
-import extendedui.EUI;
-import extendedui.EUIRM;
-import extendedui.EUIUtils;
 import extendedui.ui.EUIBase;
 import extendedui.utilities.ItemGroup;
-import extendedui.utilities.PotionInfo;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
@@ -95,6 +89,8 @@ public abstract class GenericSortHeader<T> extends EUIBase implements SortHeader
     }
 
     abstract protected float getFirstY();
+
     abstract protected void sort(SortHeaderButton button, boolean isAscending);
+
     abstract public GenericFilters<T, ?> getFilters();
 }

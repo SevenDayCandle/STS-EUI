@@ -27,12 +27,34 @@ public class RotatingList<T> extends ArrayList<T> {
         super.clear();
     }
 
-    public void resetIndex() {
-        index = 0;
+    public T current() {
+        return current(false);
+    }
+
+    public T current(boolean moveIndex) {
+        T item = isEmpty() ? null : get(index);
+        if (moveIndex) {
+            next(true);
+        }
+
+        return item;
     }
 
     public int getIndex() {
         return index;
+    }
+
+    public T next(boolean moveIndex) {
+        int newIndex = index + 1;
+        if (newIndex >= size()) {
+            newIndex = 0;
+        }
+
+        if (moveIndex) {
+            index = newIndex;
+        }
+
+        return super.get(newIndex);
     }
 
     public T previous(boolean moveIndex) {
@@ -48,34 +70,12 @@ public class RotatingList<T> extends ArrayList<T> {
         return super.get(newIndex);
     }
 
+    public void resetIndex() {
+        index = 0;
+    }
+
     public T setIndex(int index) {
         this.index = index < 0 ? 0 : index < size() ? index : size() - 1;
         return current();
-    }
-
-    public T current() {
-        return current(false);
-    }
-
-    public T current(boolean moveIndex) {
-        T item = isEmpty() ? null : get(index);
-        if (moveIndex) {
-            next(true);
-        }
-
-        return item;
-    }
-
-    public T next(boolean moveIndex) {
-        int newIndex = index + 1;
-        if (newIndex >= size()) {
-            newIndex = 0;
-        }
-
-        if (moveIndex) {
-            index = newIndex;
-        }
-
-        return super.get(newIndex);
     }
 }

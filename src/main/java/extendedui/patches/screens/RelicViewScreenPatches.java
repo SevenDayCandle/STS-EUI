@@ -17,6 +17,8 @@ import javassist.expr.ExprEditor;
 import java.util.ArrayList;
 
 public class RelicViewScreenPatches {
+    // THESE NAMES MUST MATCH THE NAMES OF THE RELICLIBRARY LISTS OR THIS PATCH WILL GO BOOM
+    private static ArrayList<RelicInfo> allList = new ArrayList<>();
     public static ArrayList<AbstractRelic> starterList = new ArrayList<>();
     public static ArrayList<AbstractRelic> commonList = new ArrayList<>();
     public static ArrayList<AbstractRelic> uncommonList = new ArrayList<>();
@@ -24,8 +26,6 @@ public class RelicViewScreenPatches {
     public static ArrayList<AbstractRelic> bossList = new ArrayList<>();
     public static ArrayList<AbstractRelic> specialList = new ArrayList<>();
     public static ArrayList<AbstractRelic> shopList = new ArrayList<>();
-    // THESE NAMES MUST MATCH THE NAMES OF THE RELICLIBRARY LISTS OR THIS PATCH WILL GO BOOM
-    private static ArrayList<RelicInfo> allList = new ArrayList<>();
 
     private static void editImpl(javassist.expr.FieldAccess m) throws CannotCompileException {
         if (m.getClassName().equals(RelicLibrary.class.getName())) {
@@ -36,24 +36,6 @@ public class RelicViewScreenPatches {
     public static ArrayList<AbstractRelic> getAllReics() {
         reset();
         return EUIUtils.flatten(starterList, commonList, uncommonList, rareList, bossList, specialList, shopList);
-    }
-
-    private static void updateForFilters() {
-
-        if (EUI.relicFilters.areFiltersEmpty()) {
-            reset();
-        }
-        else {
-            starterList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.starterList);
-            commonList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.commonList);
-            uncommonList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.uncommonList);
-            rareList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.rareList);
-            bossList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.bossList);
-            specialList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.specialList);
-            shopList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.shopList);
-            resetAllList();
-        }
-        EUI.relicFilters.refresh(allList);
     }
 
     private static void reset() {
@@ -80,10 +62,28 @@ public class RelicViewScreenPatches {
         allList = EUIUtils.mapAll(RelicInfo::new, starterList, commonList, uncommonList, rareList, bossList, specialList, shopList);
     }
 
+    private static void updateForFilters() {
+
+        if (EUI.relicFilters.areFiltersEmpty()) {
+            reset();
+        }
+        else {
+            starterList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.starterList);
+            commonList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.commonList);
+            uncommonList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.uncommonList);
+            rareList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.rareList);
+            bossList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.bossList);
+            specialList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.specialList);
+            shopList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.shopList);
+            resetAllList();
+        }
+        EUI.relicFilters.refresh(allList);
+    }
+
     @SpirePatch(clz = RelicViewScreen.class, method = "open")
     public static class RelicViewScreen_Open {
         @SpirePostfixPatch
-        public static SpireReturn<Void> postfix(RelicViewScreen screen) {
+        public static void postfix(RelicViewScreen screen) {
             reset();
 
             EUI.relicFilters.initialize(__ -> updateForFilters()
@@ -92,8 +92,6 @@ public class RelicViewScreenPatches {
                     , false);
             updateForFilters();
             EUIExporter.exportButton.setOnClick(() -> EUIExporter.relicExportable.openAndPosition(allList));
-
-            return SpireReturn.Continue();
         }
     }
 

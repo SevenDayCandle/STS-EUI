@@ -23,9 +23,15 @@ public abstract class EUIPoolScreen extends EUIDungeonScreen {
         switchScreen();
     }
 
-    public void switchScreen() {
-        super.switchScreen();
-        AbstractDungeon.overlayMenu.hideBlackScreen();
+    public void open() {
+        reopen();
+    }
+
+    @Override
+    public void reopen() {
+        super.reopen();
+        AbstractDungeon.dungeonMapScreen.map.hideInstantly(); // Because the map won't be hidden properly otherwise
+        AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
     }
 
     @Override
@@ -38,14 +44,8 @@ public abstract class EUIPoolScreen extends EUIDungeonScreen {
         switchScreen();
     }
 
-    @Override
-    public void reopen() {
-        super.reopen();
-        AbstractDungeon.dungeonMapScreen.map.hideInstantly(); // Because the map won't be hidden properly otherwise
-        AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
-    }
-
-    public void open() {
-        reopen();
+    public void switchScreen() {
+        super.switchScreen();
+        AbstractDungeon.overlayMenu.hideBlackScreen();
     }
 }

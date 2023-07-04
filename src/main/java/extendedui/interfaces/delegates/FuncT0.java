@@ -6,14 +6,11 @@ import java.lang.invoke.CallSite;
 import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
-import java.util.function.Function;
 
 import static extendedui.utilities.EUIClassUtils.IMPL_LOOKUP;
 
 public interface FuncT0<Result> {
-    Result invoke();
-
-    public static <Result> FuncT0<Result> get(Class<Result> retType, Class<?> invokeClass, String funcName) throws Throwable {
+    static <Result> FuncT0<Result> get(Class<Result> retType, Class<?> invokeClass, String funcName) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         MethodType mType = MethodType.methodType(retType);
         CallSite site = LambdaMetafactory.metafactory(lookup,
@@ -25,4 +22,6 @@ public interface FuncT0<Result> {
         );
         return (FuncT0<Result>) site.getTarget().invokeExact();
     }
+
+    Result invoke();
 }

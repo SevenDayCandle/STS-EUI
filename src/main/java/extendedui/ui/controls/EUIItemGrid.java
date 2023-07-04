@@ -137,7 +137,7 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         int row = 0;
         int column = 0;
         for (T item : group.group) {
-            forceUpdateItemPosition(item,(DRAW_START_X * drawX) + (column * PAD), drawTopY + scrollDelta - (row * padY));
+            forceUpdateItemPosition(item, (DRAW_START_X * drawX) + (column * PAD), drawTopY + scrollDelta - (row * padY));
 
             column += 1;
             if (column >= rowSize) {

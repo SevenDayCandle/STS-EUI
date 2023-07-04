@@ -36,12 +36,6 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
         return this;
     }
 
-    public EUIRelicGrid remove(AbstractRelic relic) {
-        group.group.removeIf(rInfo -> rInfo.relic == relic);
-
-        return this;
-    }
-
     @Override
     public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
@@ -138,5 +132,11 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
                     relic.relic.render(sb, false, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR);
             }
         }
+    }
+
+    public EUIRelicGrid remove(AbstractRelic relic) {
+        group.group.removeIf(rInfo -> rInfo.relic == relic);
+
+        return this;
     }
 }

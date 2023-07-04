@@ -12,7 +12,6 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import com.megacrit.cardcrawl.vfx.AbstractGameEffect;
 import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.STSConfigItem;
@@ -20,33 +19,100 @@ import extendedui.interfaces.markers.TourProvider;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIImage;
 import extendedui.ui.controls.EUIToggle;
-import extendedui.ui.hitboxes.EUIHitbox;
 
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.LinkedList;
-import java.util.Set;
 
 public class EUITourTooltip extends EUITooltip {
     protected static final LinkedList<EUITourTooltip> tutorialQueue = new LinkedList<>();
     protected static final Color TOOLTIP_COLOR = new Color(0.2f, 0.3f, 0.4f, 1f);
 
     public final Type type;
-    public boolean canDismiss = true;
-    public boolean canUpdatePos;
-    public boolean disableInteract;
-    public float x;
-    public float y;
+    private float linkedProgress;
     protected Class<? extends AbstractGameAction> waitOnAction;
     protected Hitbox waitOnHitbox;
     protected TourProvider waitOnProvider;
     protected EUIImage linkedImage; // flashes when this tip is up
     protected AbstractDungeon.CurrentScreen dungeonScreen;
     protected MainMenuScreen.CurScreen mainMenuScreen;
-    private float linkedProgress;
+    public boolean canDismiss = true;
+    public boolean canUpdatePos;
+    public boolean disableInteract;
+    public float x;
+    public float y;
+
+    public EUITourTooltip(Class<? extends AbstractGameAction> waitOnAction, String title, String description) {
+        this(Type.Action, title, description);
+        this.waitOnAction = waitOnAction;
+        this.dungeonScreen = AbstractDungeon.CurrentScreen.NONE;
+        this.canDismiss = false;
+    }
+
+    public EUITourTooltip(EUIButton image, String title, String description) {
+        this(image.hb, title, description);
+        setFlash(image.background);
+    }
+
+    public EUITourTooltip(EUIToggle image, String title, String description) {
+        this(image.hb, title, description);
+        setFlash(image.backgroundImage);
+    }
+
+    public EUITourTooltip(EUIImage image, String title, String description) {
+        this(image.hb, title, description);
+        setFlash(image);
+    }
+
+    public EUITourTooltip(Hitbox waitOnHitbox, String title, String description) {
+        this(Type.Hitbox, title, description);
+        this.waitOnHitbox = waitOnHitbox;
+        setPosition(waitOnHitbox.x, waitOnHitbox.y);
+    }
+
+    public EUITourTooltip(TourProvider provider, String title, String description) {
+        this(Type.Provider, title, description);
+        this.waitOnProvider = provider;
+    }
+
+    // Should only be called by the other constructors
+    protected EUITourTooltip(Type type, String title, String description) {
+        super(title, description);
+        this.type = type;
+    }
+
+    public EUITourTooltip(EUITourTooltip other) {
+        super(other);
+        this.type = other.type;
+        this.waitOnAction = other.waitOnAction;
+        this.waitOnProvider = other.waitOnProvider;
+        this.waitOnHitbox = other.waitOnHitbox;
+    }
 
     public static void clearTutorialQueue() {
         tutorialQueue.clear();
+    }
+
+    public static EUITourTooltip getNext() {
+        return tutorialQueue.peek();
+    }
+
+    public static boolean hasTutorial(EUITourTooltip tip) {
+        return tutorialQueue.contains(tip);
+    }
+
+    public static boolean isQueueEmpty() {
+        return tutorialQueue.isEmpty();
+    }
+
+    public static void queueFirstView(STSConfigItem<Boolean> config, Iterable<? extends EUITourTooltip> tips) {
+        if (EUIConfiguration.triggerOnFirstView(config)) {
+            queueTutorial(tips);
+        }
+    }
+
+    public static void queueFirstView(STSConfigItem<Boolean> config, EUITourTooltip... tips) {
+        if (EUIConfiguration.triggerOnFirstView(config)) {
+            queueTutorial(tips);
+        }
     }
 
     // Disallow nulls because this will lock up the queue
@@ -116,30 +182,6 @@ public class EUITourTooltip extends EUITooltip {
         }
     }
 
-    public static EUITourTooltip getNext() {
-        return tutorialQueue.peek();
-    }
-
-    public static boolean hasTutorial(EUITourTooltip tip) {
-        return tutorialQueue.contains(tip);
-    }
-
-    public static boolean isQueueEmpty() {
-        return tutorialQueue.isEmpty();
-    }
-
-    public static void queueFirstView(STSConfigItem<Boolean> config, Iterable<? extends EUITourTooltip> tips) {
-        if (EUIConfiguration.triggerOnFirstView(config)) {
-            queueTutorial(tips);
-        }
-    }
-
-    public static void queueFirstView(STSConfigItem<Boolean> config, EUITourTooltip... tips) {
-        if (EUIConfiguration.triggerOnFirstView(config)) {
-            queueTutorial(tips);
-        }
-    }
-
     public static void render(SpriteBatch sb) {
         EUITourTooltip tip = getNext();
         if (tip != null && tip.canShowForScreen()) {
@@ -179,53 +221,6 @@ public class EUITourTooltip extends EUITooltip {
         return tip != null && tip.disableInteract && tip.waitOnHitbox != hb;
     }
 
-    public EUITourTooltip(Class<? extends AbstractGameAction> waitOnAction, String title, String description) {
-        this(Type.Action, title, description);
-        this.waitOnAction = waitOnAction;
-        this.dungeonScreen = AbstractDungeon.CurrentScreen.NONE;
-        this.canDismiss = false;
-    }
-
-    public EUITourTooltip(EUIButton image, String title, String description) {
-        this(image.hb, title, description);
-        setFlash(image.background);
-    }
-
-    public EUITourTooltip(EUIToggle image, String title, String description) {
-        this(image.hb, title, description);
-        setFlash(image.backgroundImage);
-    }
-
-    public EUITourTooltip(EUIImage image, String title, String description) {
-        this(image.hb, title, description);
-        setFlash(image);
-    }
-
-    public EUITourTooltip(Hitbox waitOnHitbox, String title, String description) {
-        this(Type.Hitbox, title, description);
-        this.waitOnHitbox = waitOnHitbox;
-        setPosition(waitOnHitbox.x, waitOnHitbox.y);
-    }
-
-    public EUITourTooltip(TourProvider provider, String title, String description) {
-        this(Type.Provider, title, description);
-        this.waitOnProvider = provider;
-    }
-
-    // Should only be called by the other constructors
-    protected EUITourTooltip(Type type, String title, String description) {
-        super(title, description);
-        this.type = type;
-    }
-
-    public EUITourTooltip(EUITourTooltip other) {
-        super(other);
-        this.type = other.type;
-        this.waitOnAction = other.waitOnAction;
-        this.waitOnProvider = other.waitOnProvider;
-        this.waitOnHitbox = other.waitOnHitbox;
-    }
-
     public boolean canShowForScreen() {
         return (dungeonScreen == null || AbstractDungeon.screen == dungeonScreen)
                 && (mainMenuScreen == null || (CardCrawlGame.mainMenuScreen != null && CardCrawlGame.mainMenuScreen.screen == mainMenuScreen));
@@ -253,12 +248,8 @@ public class EUITourTooltip extends EUITooltip {
         return super.render(sb, x, y, index);
     }
 
-    public void renderTitle(SpriteBatch sb, float x, float y) {
-        FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GREEN_TEXT_COLOR);
-    }
-
     public void renderBg(SpriteBatch spriteBatch, float x, float y, float h) {
-        EUIRenderHelpers.drawColorized(spriteBatch, TOOLTIP_COLOR, sb ->  {
+        EUIRenderHelpers.drawColorized(spriteBatch, TOOLTIP_COLOR, sb -> {
             sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
             sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, width, BOX_EDGE_H);
             sb.draw(ImageMaster.KEYWORD_BODY, x + SHADOW_DIST_X, y - h - BOX_EDGE_H - SHADOW_DIST_Y, width, h + BOX_EDGE_H);
@@ -272,6 +263,10 @@ public class EUITourTooltip extends EUITooltip {
             Texture t = EUIRM.images.proceed.texture();
             spriteBatch.draw(t, x + width - t.getWidth(), y - h - BOX_BODY_H - t.getHeight(), t.getWidth(), t.getHeight());
         }
+    }
+
+    public void renderTitle(SpriteBatch sb, float x, float y) {
+        FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GREEN_TEXT_COLOR);
     }
 
     public EUITourTooltip setCanDismiss(boolean canDismiss) {

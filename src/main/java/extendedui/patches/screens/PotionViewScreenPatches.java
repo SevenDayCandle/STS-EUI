@@ -17,11 +17,11 @@ import javassist.expr.ExprEditor;
 import java.util.ArrayList;
 
 public class PotionViewScreenPatches {
+    // THESE NAMES MUST MATCH THE NAMES OF THE POTIONVIEWSCREEN LISTS OR THIS PATCH WILL GO BOOM
+    private static ArrayList<PotionInfo> allList = new ArrayList<>();
     public static ArrayList<AbstractPotion> commonPotions = new ArrayList<>();
     public static ArrayList<AbstractPotion> uncommonPotions = new ArrayList<>();
     public static ArrayList<AbstractPotion> rarePotions = new ArrayList<>();
-    // THESE NAMES MUST MATCH THE NAMES OF THE POTIONVIEWSCREEN LISTS OR THIS PATCH WILL GO BOOM
-    private static ArrayList<PotionInfo> allList = new ArrayList<>();
 
     private static void editImpl(javassist.expr.FieldAccess m) throws CannotCompileException {
         switch (m.getFieldName()) {
@@ -31,20 +31,6 @@ public class PotionViewScreenPatches {
                 m.replace("{ $_ = extendedui.patches.screens.PotionViewScreenPatches." + m.getFieldName() + "; }");
                 break;
         }
-    }
-
-    private static void updateForFilters(PotionViewScreen screen) {
-
-        if (EUI.potionFilters.areFiltersEmpty()) {
-            reset(screen);
-        }
-        else {
-            commonPotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "commonPotions"));
-            uncommonPotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "uncommonPotions"));
-            rarePotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "rarePotions"));
-            resetAllList();
-        }
-        EUI.potionFilters.refresh(allList);
     }
 
     private static void reset(PotionViewScreen screen) {
@@ -61,6 +47,20 @@ public class PotionViewScreenPatches {
 
     private static void resetAllList() {
         allList = EUIUtils.mapAll(PotionInfo::new, commonPotions, uncommonPotions, rarePotions);
+    }
+
+    private static void updateForFilters(PotionViewScreen screen) {
+
+        if (EUI.potionFilters.areFiltersEmpty()) {
+            reset(screen);
+        }
+        else {
+            commonPotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "commonPotions"));
+            uncommonPotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "uncommonPotions"));
+            rarePotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "rarePotions"));
+            resetAllList();
+        }
+        EUI.potionFilters.refresh(allList);
     }
 
     @SpirePatch(clz = PotionViewScreen.class, method = "open")

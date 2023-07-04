@@ -8,7 +8,10 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
-import extendedui.*;
+import extendedui.EUI;
+import extendedui.EUIGameUtils;
+import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.CustomFilterModule;
@@ -158,6 +161,58 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
                 && (customModule != null && customModule.isEmpty());
     }
 
+    public boolean evaluate(PotionInfo c) {
+        //Name check
+        if (currentName != null && !currentName.isEmpty()) {
+            String name = getNameForSort(c.potion);
+            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
+                return false;
+            }
+        }
+
+        //Description check
+        if (currentDescription != null && !currentDescription.isEmpty()) {
+            String desc = getDescriptionForSort(c.potion);
+            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
+                return false;
+            }
+        }
+
+        //Colors check
+        if (!evaluateItem(currentColors, (opt) -> opt == c.potionColor)) {
+            return false;
+        }
+
+        //Origin check
+        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c.potion, opt))) {
+            return false;
+        }
+
+        //Tooltips check
+        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
+            return false;
+        }
+
+        //Negate Tooltips check
+        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
+            return false;
+        }
+
+        //Rarities check
+        if (!currentRarities.isEmpty() && !currentRarities.contains(c.potion.rarity)) {
+            return false;
+        }
+
+        //Module check
+        for (CustomFilterModule<PotionInfo> module : EUI.globalCustomPotionFilters) {
+            if (!module.isItemValid(c)) {
+                return false;
+            }
+        }
+
+        return customModule == null || customModule.isItemValid(c);
+    }
+
     @Override
     public ArrayList<CustomFilterModule<PotionInfo>> getGlobalFilters() {
         return EUI.globalCustomPotionFilters;
@@ -255,7 +310,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
                 || colorsDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
                 || descriptionInput.hb.hovered
-                || EUIUtils.any(getGlobalFilters(), CustomFilterModule<PotionInfo>::isHovered)
+                || EUIUtils.any(getGlobalFilters(), CustomFilterModule::isHovered)
                 || (customModule != null && customModule.isHovered());
     }
 
@@ -274,58 +329,6 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
 
     public boolean evaluate(AbstractPotion c) {
         return evaluate(new PotionInfo(c));
-    }
-
-    public boolean evaluate(PotionInfo c) {
-        //Name check
-        if (currentName != null && !currentName.isEmpty()) {
-            String name = getNameForSort(c.potion);
-            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
-                return false;
-            }
-        }
-
-        //Description check
-        if (currentDescription != null && !currentDescription.isEmpty()) {
-            String desc = getDescriptionForSort(c.potion);
-            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
-                return false;
-            }
-        }
-
-        //Colors check
-        if (!evaluateItem(currentColors, (opt) -> opt == c.potionColor)) {
-            return false;
-        }
-
-        //Origin check
-        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt))) {
-            return false;
-        }
-
-        //Tooltips check
-        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
-            return false;
-        }
-
-        //Negate Tooltips check
-        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
-            return false;
-        }
-
-        //Rarities check
-        if (!currentRarities.isEmpty() && !currentRarities.contains(c.potion.rarity)) {
-            return false;
-        }
-
-        //Module check
-        for (CustomFilterModule<PotionInfo> module : EUI.globalCustomPotionFilters) {
-            if (!module.isItemValid(c)) {
-                return false;
-            }
-        }
-
-        return customModule == null || customModule.isItemValid(c);
     }
 
     public PotionKeywordFilters initializeForCustomHeader(ItemGroup<PotionInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {

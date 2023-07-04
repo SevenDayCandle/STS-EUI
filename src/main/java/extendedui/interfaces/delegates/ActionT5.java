@@ -8,9 +8,7 @@ import java.lang.invoke.MethodType;
 import static extendedui.utilities.EUIClassUtils.IMPL_LOOKUP;
 
 public interface ActionT5<T1, T2, T3, T4, T5> {
-    void invoke(T1 var1, T2 var2, T3 var3, T4 var4, T5 var5);
-
-    public static <P, T1, T2, T3, T4> ActionT5<P, T1, T2, T3, T4> get(Class<P> invokeClass, String funcName, Class<T1> param1, Class<T2> param2, Class<T3> param3, Class<T4> param4) throws Throwable {
+    static <P, T1, T2, T3, T4> ActionT5<P, T1, T2, T3, T4> get(Class<P> invokeClass, String funcName, Class<T1> param1, Class<T2> param2, Class<T3> param3, Class<T4> param4) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         CallSite site = LambdaMetafactory.metafactory(lookup,
                 "invoke",
@@ -22,7 +20,7 @@ public interface ActionT5<T1, T2, T3, T4, T5> {
         return (ActionT5<P, T1, T2, T3, T4>) site.getTarget().invokeExact();
     }
 
-    public static <T1, T2, T3, T4, T5> ActionT5<T1, T2, T3, T4, T5> get(Class<?> invokeClass, String funcName, Class<T1> param1, Class<T2> param2, Class<T3> param3, Class<T4> param4, Class<T5> param5) throws Throwable {
+    static <T1, T2, T3, T4, T5> ActionT5<T1, T2, T3, T4, T5> get(Class<?> invokeClass, String funcName, Class<T1> param1, Class<T2> param2, Class<T3> param3, Class<T4> param4, Class<T5> param5) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         MethodType mType = MethodType.methodType(void.class, param1, param2, param3, param4, param5);
         CallSite site = LambdaMetafactory.metafactory(lookup,
@@ -34,4 +32,6 @@ public interface ActionT5<T1, T2, T3, T4, T5> {
         );
         return (ActionT5<T1, T2, T3, T4, T5>) site.getTarget().invokeExact();
     }
+
+    void invoke(T1 var1, T2 var2, T3 var3, T4 var4, T5 var5);
 }

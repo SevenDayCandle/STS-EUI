@@ -5,7 +5,6 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import extendedui.EUI;
 import extendedui.patches.game.AbstractDungeonPatches;
-import extendedui.ui.tooltips.EUITourTooltip;
 
 public abstract class EUIDungeonScreen extends CustomScreen {
 

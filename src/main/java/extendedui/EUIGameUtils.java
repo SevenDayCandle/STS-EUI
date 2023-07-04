@@ -43,7 +43,6 @@ import javassist.CtClass;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
 
 import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.*;
@@ -129,23 +128,6 @@ public class EUIGameUtils {
         return EUIUtils.map(BlightHelper.blights, EUIGameUtils::getSeenBlight);
     }
 
-    public static AbstractBlight getSeenBlight(String id) {
-        AbstractBlight blight = BlightHelper.getBlight(id);
-        blight.isSeen = true;
-        EUIClassUtils.invoke(blight, AbstractBlight.class, "initializeTips");
-        return blight;
-    }
-
-    public static ArrayList<String> getInGameRelicIDs() {
-        ArrayList<String> result = new ArrayList<>();
-        result.addAll(AbstractDungeon.commonRelicPool);
-        result.addAll(AbstractDungeon.uncommonRelicPool);
-        result.addAll(AbstractDungeon.rareRelicPool);
-        result.addAll(AbstractDungeon.shopRelicPool);
-        result.addAll(AbstractDungeon.bossRelicPool);
-        return result;
-    }
-
     public static OrthographicCamera getCamera() {
         return ReflectionHacks.getPrivate(Gdx.app.getApplicationListener(), CardCrawlGame.class, "camera");
     }
@@ -204,6 +186,16 @@ public class EUIGameUtils {
         return EUIUtils.arrayList(commonRelicPool, uncommonRelicPool, rareRelicPool, bossRelicPool, shopRelicPool);
     }
 
+    public static ArrayList<String> getInGameRelicIDs() {
+        ArrayList<String> result = new ArrayList<>();
+        result.addAll(AbstractDungeon.commonRelicPool);
+        result.addAll(AbstractDungeon.uncommonRelicPool);
+        result.addAll(AbstractDungeon.rareRelicPool);
+        result.addAll(AbstractDungeon.shopRelicPool);
+        result.addAll(AbstractDungeon.bossRelicPool);
+        return result;
+    }
+
     public static AbstractRelic.LandingSound getLandingSound(AbstractRelic relic) {
         return ReflectionHacks.getPrivate(relic, AbstractRelic.class, "landingSFX");
     }
@@ -220,7 +212,7 @@ public class EUIGameUtils {
         CodeSource source = objectClass.getProtectionDomain().getCodeSource();
         try {
             URL jarURL = source.getLocation();
-            // If the class was patched by ModTheSpire, getLocation will be null
+            // If the class was patched by ModTheSpire, getLocation will be null or may be EUI
             if (jarURL == null) {
                 ClassPool pool = Loader.getClassPool();
                 pool.childFirstLookup = true;
@@ -287,6 +279,13 @@ public class EUIGameUtils {
 
     public static AbstractCard.CardColor getRelicColor(String relicID) {
         return RELIC_COLORS.getOrDefault(relicID, AbstractCard.CardColor.COLORLESS);
+    }
+
+    public static AbstractBlight getSeenBlight(String id) {
+        AbstractBlight blight = BlightHelper.getBlight(id);
+        blight.isSeen = true;
+        EUIClassUtils.invoke(blight, AbstractBlight.class, "initializeTips");
+        return blight;
     }
 
     public static ArrayList<CardGroup> getSourceCardPools() {
@@ -368,6 +367,16 @@ public class EUIGameUtils {
         return Settings.WIDTH * value;
     }
 
+    public static String textForPotionEffect(AbstractPotion.PotionEffect size) {
+        switch (size) {
+            case RAINBOW:
+                return EUIRM.strings.potion_rainbow;
+            case OSCILLATE:
+                return EUIRM.strings.potion_oscillate;
+        }
+        return EUIRM.strings.ui_na;
+    }
+
     // Potion rarities use the same names as card rarities
     public static String textForPotionRarity(AbstractPotion.PotionRarity type) {
         switch (type) {
@@ -383,16 +392,6 @@ public class EUIGameUtils {
             default:
                 return AbstractCard.TEXT[5];
         }
-    }
-
-    public static String textForPotionEffect(AbstractPotion.PotionEffect size) {
-        switch (size) {
-            case RAINBOW:
-                return EUIRM.strings.potion_rainbow;
-            case OSCILLATE:
-                return EUIRM.strings.potion_oscillate;
-        }
-        return EUIRM.strings.ui_na;
     }
 
     public static String textForPotionSize(AbstractPotion.PotionSize size) {

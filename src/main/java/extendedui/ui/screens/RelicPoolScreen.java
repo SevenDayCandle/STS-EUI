@@ -81,7 +81,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
     @Override
     public void close() {
         super.close();
-        for (CustomPoolModule<RelicInfo>module : EUI.globalCustomRelicPoolModules) {
+        for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
             module.onClose();
         }
         if (customModule != null) {
@@ -103,7 +103,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             EUI.relicHeader.updateImpl();
             EUI.openRelicFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
-            for (CustomPoolModule<RelicInfo>module : EUI.globalCustomRelicPoolModules) {
+            for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
                 module.update();
             }
             if (customModule != null) {
@@ -124,7 +124,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             EUI.openRelicFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
         }
-        for (CustomPoolModule<RelicInfo>module : EUI.globalCustomRelicPoolModules) {
+        for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
             module.render(sb);
         }
         if (customModule != null) {

@@ -18,7 +18,6 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
-import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.FuncT0;
 import extendedui.patches.EUIKeyword;
 import extendedui.text.EUISmartText;

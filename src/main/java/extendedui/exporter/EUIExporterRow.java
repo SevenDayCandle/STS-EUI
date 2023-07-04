@@ -20,6 +20,10 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
         return ID.compareTo(o.ID);
     }
 
+    public String getCsvHeaderRow() {
+        return EUIUtils.joinStringsMapLists(",", Field::getName, EUIExporterRow.class.getDeclaredFields(), this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
+    }
+
     @Override
     public String toString() {
         // Ensure that the base fields come first
@@ -31,9 +35,5 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
                 return "";
             }
         }, EUIExporterRow.class.getDeclaredFields(), this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
-    }
-
-    public String getCsvHeaderRow() {
-        return EUIUtils.joinStringsMapLists(",", Field::getName, EUIExporterRow.class.getDeclaredFields(), this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
     }
 }

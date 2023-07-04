@@ -9,8 +9,8 @@
 package extendedui.swig;
 
 public class EffekseerManagerCore {
-    protected transient boolean swigCMemOwn;
     private transient long swigCPtr;
+    protected transient boolean swigCMemOwn;
 
     public EffekseerManagerCore() {
         this(EffekseerCoreJNI.new_EffekseerManagerCore(), true);
@@ -220,11 +220,6 @@ public class EffekseerManagerCore {
         EffekseerCoreJNI.EffekseerManagerCore_UpdateHandleToMoveToFrame(swigCPtr, this, handle, v);
     }
 
-    @SuppressWarnings("deprecation")
-    protected void finalize() {
-        delete();
-    }
-
     public synchronized void delete() {
         if (swigCPtr != 0) {
             if (swigCMemOwn) {
@@ -233,6 +228,11 @@ public class EffekseerManagerCore {
             }
             swigCPtr = 0;
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    protected void finalize() {
+        delete();
     }
 
 }

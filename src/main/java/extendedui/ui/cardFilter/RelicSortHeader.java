@@ -1,21 +1,12 @@
 package extendedui.ui.cardFilter;
 
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
-import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButtonListener;
 import extendedui.EUI;
 import extendedui.EUIRM;
-import extendedui.EUIUtils;
-import extendedui.ui.EUIBase;
 import extendedui.utilities.ItemGroup;
-import extendedui.utilities.PotionInfo;
 import extendedui.utilities.RelicInfo;
 import org.apache.commons.lang3.StringUtils;
-
-import java.util.ArrayList;
 
 public class RelicSortHeader extends GenericSortHeader<RelicInfo> {
     public static RelicSortHeader instance;

@@ -4,14 +4,7 @@ import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.OverlayMenu;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.TipHelper;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
-import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import extendedui.EUI;
-import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.ui.tooltips.EUITooltip;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 

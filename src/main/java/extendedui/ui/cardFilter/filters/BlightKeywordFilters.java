@@ -98,6 +98,47 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
                 && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty);
     }
 
+    public boolean evaluate(AbstractBlight c) {
+        //Name check
+        if (currentName != null && !currentName.isEmpty()) {
+            String name = getNameForSort(c);
+            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
+                return false;
+            }
+        }
+
+        //Description check
+        if (currentDescription != null && !currentDescription.isEmpty()) {
+            String desc = getDescriptionForSort(c);
+            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
+                return false;
+            }
+        }
+
+        //Origin check
+        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt))) {
+            return false;
+        }
+
+        //Seen check
+        if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c))) {
+            return false;
+        }
+
+        //Tooltips check
+        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
+            return false;
+        }
+
+        //Negate Tooltips check
+        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
+            return false;
+        }
+
+        //Module check
+        return customModule == null || customModule.isItemValid(c);
+    }
+
     @Override
     public ArrayList<CustomFilterModule<AbstractBlight>> getGlobalFilters() {
         return EUI.globalCustomBlightFilters;
@@ -156,7 +197,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
                 || seenDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
                 || descriptionInput.hb.hovered
-                || EUIUtils.any(getGlobalFilters(), CustomFilterModule<AbstractBlight>::isHovered)
+                || EUIUtils.any(getGlobalFilters(), CustomFilterModule::isHovered)
                 || (customModule != null && customModule.isHovered());
     }
 
@@ -167,47 +208,6 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
         nameInput.tryRender(sb);
         descriptionInput.tryRender(sb);
         doForFilters(m -> m.render(sb));
-    }
-
-    public boolean evaluate(AbstractBlight c) {
-        //Name check
-        if (currentName != null && !currentName.isEmpty()) {
-            String name = getNameForSort(c);
-            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
-                return false;
-            }
-        }
-
-        //Description check
-        if (currentDescription != null && !currentDescription.isEmpty()) {
-            String desc = getDescriptionForSort(c);
-            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
-                return false;
-            }
-        }
-
-        //Origin check
-        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt))) {
-            return false;
-        }
-
-        //Seen check
-        if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c))) {
-            return false;
-        }
-
-        //Tooltips check
-        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
-            return false;
-        }
-
-        //Negate Tooltips check
-        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
-            return false;
-        }
-
-        //Module check
-        return customModule == null || customModule.isItemValid(c);
     }
 
     public BlightKeywordFilters initializeForCustomHeader(ItemGroup<AbstractBlight> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {

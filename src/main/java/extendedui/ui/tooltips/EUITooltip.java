@@ -42,7 +42,6 @@ import java.util.*;
 public class EUITooltip {
     private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
-    private static EUIVerticalScrollBar scrollBar;
     private static final Vector2 genericTipPos = new Vector2(0, 0);
     public static final Color BASE_COLOR = new Color(1f, 0.9725f, 0.8745f, 1f);
     public static final float POPUP_TOOLTIP_Y_BASE = Settings.HEIGHT * 0.85f;
@@ -61,11 +60,12 @@ public class EUITooltip {
     public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
     public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
     public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
-    public static float popupTooltipY = POPUP_TOOLTIP_Y_BASE;
+    private static EUIVerticalScrollBar scrollBar;
     private static TooltipProvider provider;
     private static Object lastProvider;
     private static AbstractCreature creature;
     private static AbstractCreature lastHoveredCreature;
+    public static float popupTooltipY = POPUP_TOOLTIP_Y_BASE;
     protected int currentDesc;
     protected Float lastSubHeaderHeight;
     protected Float lastTextHeight;
@@ -97,6 +97,14 @@ public class EUITooltip {
         this.canRender = other.canRender;
     }
 
+    public static void blockTooltips() {
+        clearVanillaTips();
+        tooltips.clear();
+        lastHoveredCreature = null;
+        provider = null;
+        lastProvider = null;
+    }
+
     public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY) {
         return tips.isEmpty() ? 0f : (1f - hb_cY / (float) Settings.HEIGHT) * getTallestOffset(tips) - (tips.get(0).getTotalHeight()) * 0.5f;
     }
@@ -109,17 +117,13 @@ public class EUITooltip {
         return !EUIClassUtils.getFieldStatic(TipHelper.class, "renderedTipThisFrame", Boolean.class);
     }
 
-    public static void blockTooltips() {
+    public static void clearVanillaTips() {
         ReflectionHacks.setPrivateStatic(TipHelper.class, "renderedTipThisFrame", true);
-        tooltips.clear();
         ReflectionHacks.setPrivateStatic(TipHelper.class, "BODY", null);
         ReflectionHacks.setPrivateStatic(TipHelper.class, "HEADER", null);
         ReflectionHacks.setPrivateStatic(TipHelper.class, "card", null);
         ReflectionHacks.setPrivateStatic(TipHelper.class, "KEYWORDS", EMPTY_LIST);
         ReflectionHacks.setPrivateStatic(TipHelper.class, "POWER_TIPS", EMPTY_LIST);
-        lastHoveredCreature = null;
-        provider = null;
-        lastProvider = null;
     }
 
     public static EUIKeywordTooltip fromMonsterIntent(AbstractMonster monster) {
@@ -162,6 +166,11 @@ public class EUITooltip {
 
     public static boolean isScrollingOnPopup() {
         return scrollBar.hb.hovered;
+    }
+
+    private static void onScroll(float scrollPercentage) {
+        scrollBar.scroll(scrollPercentage, false);
+        popupTooltipY = POPUP_TOOLTIP_Y_BASE + Settings.HEIGHT * 0.1f * tooltips.size() * scrollPercentage;
     }
 
     public static void postInitialize() {
@@ -401,16 +410,6 @@ public class EUITooltip {
         }
     }
 
-    private static void updateScroll(SpriteBatch sb) {
-        scrollBar.update();
-        scrollBar.render(sb);
-    }
-
-    private static void onScroll(float scrollPercentage) {
-        scrollBar.scroll(scrollPercentage, false);
-        popupTooltipY = POPUP_TOOLTIP_Y_BASE + Settings.HEIGHT * 0.1f * tooltips.size() * scrollPercentage;
-    }
-
     public static void renderFromCreature(SpriteBatch sb) {
         if (creature == null) {
             return;
@@ -539,7 +538,6 @@ public class EUITooltip {
         renderTipsImpl(sb, tooltips, x, y);
     }
 
-
     public static void renderFromRelic(SpriteBatch sb) {
         AbstractRelic relic = EUIUtils.safeCast(provider, AbstractRelic.class);
         if (relic == null) {
@@ -656,10 +654,15 @@ public class EUITooltip {
     private static boolean tryQueue() {
         final boolean canRender = canRenderTooltips();
         if (canRender) {
-            ReflectionHacks.setPrivateStatic(TipHelper.class, "renderedTipThisFrame", true);
+            clearVanillaTips();
         }
 
         return canRender;
+    }
+
+    private static void updateScroll(SpriteBatch sb) {
+        scrollBar.update();
+        scrollBar.render(sb);
     }
 
     public EUITooltip formatDescription(Object... items) {
@@ -769,14 +772,14 @@ public class EUITooltip {
         return this;
     }
 
-    public EUITooltip setChildrenFromDescription() {
-        this.children = scanForTips(this.description);
-        return this;
-    }
-
     public EUITooltip setChildren(EUITooltip... other) {
         this.children = Arrays.asList(other);
 
+        return this;
+    }
+
+    public EUITooltip setChildrenFromDescription() {
+        this.children = scanForTips(this.description);
         return this;
     }
 

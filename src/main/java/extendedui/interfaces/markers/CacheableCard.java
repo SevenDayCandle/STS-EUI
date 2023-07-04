@@ -5,5 +5,6 @@ import extendedui.utilities.TargetFilter;
 
 public interface CacheableCard extends CustomFilterable {
     AbstractCard getCachedUpgrade();
+
     TargetFilter getTargetFilter();
 }

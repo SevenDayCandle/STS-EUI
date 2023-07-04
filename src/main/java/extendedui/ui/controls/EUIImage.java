@@ -244,6 +244,40 @@ public class EUIImage extends EUIHoverable {
         return this;
     }
 
+    public EUIImage setHitbox(EUIHitbox hb) {
+        this.hb = hb;
+
+        return this;
+    }
+
+    public EUIImage setPosition(float cX, float cY) {
+        this.hb.move(cX, cY);
+
+        return this;
+    }
+
+    public EUIImage setTooltip(String title, String description) {
+        return setTooltip(new EUITooltip(title, description));
+    }
+
+    public EUIImage setTooltip(EUITooltip tooltip) {
+        super.setTooltip(tooltip);
+
+        return this;
+    }
+
+    public EUIImage translate(float x, float y) {
+        this.hb.translate(x, y);
+
+        return this;
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        updateColor();
+    }
+
     public EUIImage setOriginalDimensions(int srcWidth, int srcHeight) {
         this.srcWidth = srcWidth;
         this.srcHeight = srcHeight;
@@ -297,40 +331,6 @@ public class EUIImage extends EUIHoverable {
         this.srcHeight = texture.getHeight();
 
         return this;
-    }
-
-    public EUIImage translate(float x, float y) {
-        this.hb.translate(x, y);
-
-        return this;
-    }
-
-    public EUIImage setHitbox(EUIHitbox hb) {
-        this.hb = hb;
-
-        return this;
-    }
-
-    public EUIImage setPosition(float cX, float cY) {
-        this.hb.move(cX, cY);
-
-        return this;
-    }
-
-    public EUIImage setTooltip(String title, String description) {
-        return setTooltip(new EUITooltip(title, description));
-    }
-
-    public EUIImage setTooltip(EUITooltip tooltip) {
-        super.setTooltip(tooltip);
-
-        return this;
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-        updateColor();
     }
 
     public boolean tryRenderCentered(SpriteBatch sb) {

@@ -1,18 +1,19 @@
 package extendedui.ui.cardFilter.filters;
 
-import basemod.devcommands.relic.Relic;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.PowerTip;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
-import extendedui.*;
+import extendedui.EUI;
+import extendedui.EUIGameUtils;
+import extendedui.EUIRM;
+import extendedui.EUIUtils;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
@@ -111,6 +112,10 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         return c.name;
     }
 
+    public ArrayList<AbstractRelic> applyFiltersToRelics(ArrayList<AbstractRelic> input) {
+        return EUIUtils.filter(input, this::evaluate);
+    }
+
     @Override
     public void clearFilters(boolean shouldInvoke, boolean shouldClearColors) {
         if (shouldClearColors) {
@@ -143,13 +148,65 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
                 && (customModule != null && customModule.isEmpty());
     }
 
+    public boolean evaluate(RelicInfo c) {
+        //Name check
+        if (currentName != null && !currentName.isEmpty()) {
+            String name = getNameForSort(c.relic);
+            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
+                return false;
+            }
+        }
+
+        //Description check
+        if (currentDescription != null && !currentDescription.isEmpty()) {
+            String desc = getDescriptionForSort(c.relic);
+            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
+                return false;
+            }
+        }
+
+        //Colors check
+        if (!evaluateItem(currentColors, (opt) -> opt == c.relicColor)) {
+            return false;
+        }
+
+        //Origin check
+        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c.relic, opt))) {
+            return false;
+        }
+
+        //Seen check
+        if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c.relic.relicId))) {
+            return false;
+        }
+
+        //Tooltips check
+        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
+            return false;
+        }
+
+        //Negate Tooltips check
+        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
+            return false;
+        }
+
+        //Rarities check
+        if (!currentRarities.isEmpty() && !currentRarities.contains(c.relic.tier)) {
+            return false;
+        }
+
+        //Sfx check
+        if (!currentSfx.isEmpty() && !currentSfx.contains(EUIGameUtils.getLandingSound(c.relic))) {
+            return false;
+        }
+
+        //Module check
+        return customModule == null || customModule.isItemValid(c);
+    }
+
     @Override
     public ArrayList<CustomFilterModule<RelicInfo>> getGlobalFilters() {
         return EUI.globalCustomRelicFilters;
-    }
-
-    public ArrayList<AbstractRelic> applyFiltersToRelics(ArrayList<AbstractRelic> input) {
-        return EUIUtils.filter(input, this::evaluate);
     }
 
     @Override
@@ -169,7 +226,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
                     }
                 }
 
-                availableMods.add(EUIGameUtils.getModInfo(relic));
+                availableMods.add(EUIGameUtils.getModInfo(relic.relic));
                 availableRarities.add(relic.relic.tier);
                 availableSfx.add(EUIGameUtils.getLandingSound(relic.relic));
                 availableColors.add(EUIGameUtils.getRelicColor(relic.relic.relicId));
@@ -229,7 +286,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
                 || sfxDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
                 || descriptionInput.hb.hovered
-                || EUIUtils.any(getGlobalFilters(), CustomFilterModule<RelicInfo>::isHovered)
+                || EUIUtils.any(getGlobalFilters(), CustomFilterModule::isHovered)
                 || (customModule != null && customModule.isHovered());
     }
 
@@ -247,62 +304,6 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
 
     public boolean evaluate(AbstractRelic c) {
         return evaluate(new RelicInfo(c));
-    }
-
-    public boolean evaluate(RelicInfo c) {
-        //Name check
-        if (currentName != null && !currentName.isEmpty()) {
-            String name = getNameForSort(c.relic);
-            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
-                return false;
-            }
-        }
-
-        //Description check
-        if (currentDescription != null && !currentDescription.isEmpty()) {
-            String desc = getDescriptionForSort(c.relic);
-            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
-                return false;
-            }
-        }
-
-        //Colors check
-        if (!evaluateItem(currentColors, (opt) -> opt == c.relicColor)) {
-            return false;
-        }
-
-        //Origin check
-        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt))) {
-            return false;
-        }
-
-        //Seen check
-        if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c.relic.relicId))) {
-            return false;
-        }
-
-        //Tooltips check
-        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
-            return false;
-        }
-
-        //Negate Tooltips check
-        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
-            return false;
-        }
-
-        //Rarities check
-        if (!currentRarities.isEmpty() && !currentRarities.contains(c.relic.tier)) {
-            return false;
-        }
-
-        //Sfx check
-        if (!currentSfx.isEmpty() && !currentSfx.contains(EUIGameUtils.getLandingSound(c.relic))) {
-            return false;
-        }
-
-        //Module check
-        return customModule == null || customModule.isItemValid(c);
     }
 
     public RelicKeywordFilters initializeForCustomHeader(ItemGroup<RelicInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {

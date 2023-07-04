@@ -22,6 +22,16 @@ public class MasterDeckViewScreenPatches {
     public static final CardGroup fakeMasterDeck = new CardGroup(CardGroup.CardGroupType.MASTER_DECK);
     public static MasterDeckViewScreen screen; // Can be used for card pool modules to reference
 
+    public static CardGroup getFakeMasterDeck() {
+        fakeMasterDeck.clear();
+        if (AbstractDungeon.player != null) {
+            for (AbstractCard c : AbstractDungeon.player.masterDeck.group) {
+                fakeMasterDeck.addToBottom(c);
+            }
+        }
+        return fakeMasterDeck;
+    }
+
     public static void updateForFilters() {
         if (EUI.cardFilters.areFiltersEmpty()) {
             getFakeMasterDeck();
@@ -41,16 +51,6 @@ public class MasterDeckViewScreenPatches {
             }
         }
         EUI.cardFilters.refresh(fakeMasterDeck.group);
-    }
-
-    public static CardGroup getFakeMasterDeck() {
-        fakeMasterDeck.clear();
-        if (AbstractDungeon.player != null) {
-            for (AbstractCard c : AbstractDungeon.player.masterDeck.group) {
-                fakeMasterDeck.addToBottom(c);
-            }
-        }
-        return fakeMasterDeck;
     }
 
     @SpirePatch(clz = MasterDeckViewScreen.class, method = "open")

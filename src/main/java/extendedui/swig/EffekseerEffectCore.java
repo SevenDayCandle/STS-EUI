@@ -9,8 +9,8 @@
 package extendedui.swig;
 
 public class EffekseerEffectCore {
-    protected transient boolean swigCMemOwn;
     private transient long swigCPtr;
+    protected transient boolean swigCMemOwn;
 
     public EffekseerEffectCore() {
         this(EffekseerCoreJNI.new_EffekseerEffectCore(), true);
@@ -101,11 +101,6 @@ public class EffekseerEffectCore {
         return EffekseerCoreJNI.EffekseerEffectCore_LoadTexture(swigCPtr, this, data, len, index, type.swigValue());
     }
 
-    @SuppressWarnings("deprecation")
-    protected void finalize() {
-        delete();
-    }
-
     public synchronized void delete() {
         if (swigCPtr != 0) {
             if (swigCMemOwn) {
@@ -114,6 +109,11 @@ public class EffekseerEffectCore {
             }
             swigCPtr = 0;
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    protected void finalize() {
+        delete();
     }
 
 }

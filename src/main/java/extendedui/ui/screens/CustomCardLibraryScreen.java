@@ -16,10 +16,10 @@ import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
 import extendedui.EUI;
-import extendedui.exporter.EUIExporter;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.*;
@@ -73,42 +73,6 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         ScissorStack.calculateScissors(EUIGameUtils.getCamera(), EUIGameUtils.getSpriteBatch().getTransformMatrix(), clipBounds, scissors);
     }
 
-    public void initialize(CardLibraryScreen screen) {
-        // CardLibraryScreen needs to be re-initialized whenever the save slot changes
-        CardLists.clear();
-        colorButtons.clear();
-
-        // Let's just re-use the hard sorting work that basemod and the base game has done for us :)
-        CardLists.put(AbstractCard.CardColor.RED, EUIClassUtils.getField(screen, "redCards"));
-        CardLists.put(AbstractCard.CardColor.GREEN, EUIClassUtils.getField(screen, "greenCards"));
-        CardLists.put(AbstractCard.CardColor.BLUE, EUIClassUtils.getField(screen, "blueCards"));
-        CardLists.put(AbstractCard.CardColor.PURPLE, EUIClassUtils.getField(screen, "purpleCards"));
-        CardLists.put(AbstractCard.CardColor.CURSE, EUIClassUtils.getField(screen, "curseCards"));
-        CardLists.put(AbstractCard.CardColor.COLORLESS, EUIClassUtils.getField(screen, "colorlessCards"));
-        CardLists.putAll(EverythingFix.Fields.cardGroupMap);
-
-        // Add custom buttons. Base game colors come first.
-        makeColorButton(AbstractCard.CardColor.COLORLESS);
-        makeColorButton(AbstractCard.CardColor.CURSE);
-        makeColorButton(AbstractCard.CardColor.RED);
-        makeColorButton(AbstractCard.CardColor.GREEN);
-        makeColorButton(AbstractCard.CardColor.BLUE);
-        makeColorButton(AbstractCard.CardColor.PURPLE);
-
-        // Mod colors are sorted alphabetically
-        BaseMod.getCardColors().stream().sorted(Comparator.comparing(EUIGameUtils::getColorName)).forEach(this::makeColorButton);
-    }
-
-    protected void makeColorButton(AbstractCard.CardColor co) {
-        colorButtons.addButton(button -> setActiveColor(co), EUIGameUtils.getColorName(co))
-                .setColor(EUIGameUtils.getColorColor(co));
-    }
-
-    public void open() {
-        super.open();
-        openImpl();
-    }
-
     @Override
     public void close() {
         super.close();
@@ -117,6 +81,36 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         }
         if (customModule != null) {
             customModule.onClose();
+        }
+    }
+
+    public void open() {
+        super.open();
+        openImpl();
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        colorButtons.tryRender(sb);
+        cardGrid.renderWithScissors(sb, scissors);
+        sb.setColor(EUIGameUtils.getColorColor(currentColor));
+        sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, CENTER_Y - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
+        sb.setColor(Color.WHITE);
+        upgradeToggle.renderImpl(sb);
+        cancelButton.render(sb);
+
+        EUI.customHeader.render(sb);
+        quickSearch.tryRender(sb);
+
+        for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+            module.render(sb);
+        }
+        if (customModule != null) {
+            customModule.render(sb);
+        }
+        if (!EUI.cardFilters.isActive) {
+            EUI.openCardFiltersButton.tryRender(sb);
+            EUIExporter.exportButton.tryRender(sb);
         }
     }
 
@@ -152,29 +146,35 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         EUIExporter.exportDropdown.tryUpdate();
     }
 
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        colorButtons.tryRender(sb);
-        cardGrid.renderWithScissors(sb, scissors);
-        sb.setColor(EUIGameUtils.getColorColor(currentColor));
-        sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, CENTER_Y - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
-        sb.setColor(Color.WHITE);
-        upgradeToggle.renderImpl(sb);
-        cancelButton.render(sb);
+    public void initialize(CardLibraryScreen screen) {
+        // CardLibraryScreen needs to be re-initialized whenever the save slot changes
+        CardLists.clear();
+        colorButtons.clear();
 
-        EUI.customHeader.render(sb);
-        quickSearch.tryRender(sb);
+        // Let's just re-use the hard sorting work that basemod and the base game has done for us :)
+        CardLists.put(AbstractCard.CardColor.RED, EUIClassUtils.getField(screen, "redCards"));
+        CardLists.put(AbstractCard.CardColor.GREEN, EUIClassUtils.getField(screen, "greenCards"));
+        CardLists.put(AbstractCard.CardColor.BLUE, EUIClassUtils.getField(screen, "blueCards"));
+        CardLists.put(AbstractCard.CardColor.PURPLE, EUIClassUtils.getField(screen, "purpleCards"));
+        CardLists.put(AbstractCard.CardColor.CURSE, EUIClassUtils.getField(screen, "curseCards"));
+        CardLists.put(AbstractCard.CardColor.COLORLESS, EUIClassUtils.getField(screen, "colorlessCards"));
+        CardLists.putAll(EverythingFix.Fields.cardGroupMap);
 
-        for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
-            module.render(sb);
-        }
-        if (customModule != null) {
-            customModule.render(sb);
-        }
-        if (!EUI.cardFilters.isActive) {
-            EUI.openCardFiltersButton.tryRender(sb);
-            EUIExporter.exportButton.tryRender(sb);
-        }
+        // Add custom buttons. Base game colors come first.
+        makeColorButton(AbstractCard.CardColor.COLORLESS);
+        makeColorButton(AbstractCard.CardColor.CURSE);
+        makeColorButton(AbstractCard.CardColor.RED);
+        makeColorButton(AbstractCard.CardColor.GREEN);
+        makeColorButton(AbstractCard.CardColor.BLUE);
+        makeColorButton(AbstractCard.CardColor.PURPLE);
+
+        // Mod colors are sorted alphabetically
+        BaseMod.getCardColors().stream().sorted(Comparator.comparing(EUIGameUtils::getColorName)).forEach(this::makeColorButton);
+    }
+
+    protected void makeColorButton(AbstractCard.CardColor co) {
+        colorButtons.addButton(button -> setActiveColor(co), EUIGameUtils.getColorName(co))
+                .setColor(EUIGameUtils.getColorColor(co));
     }
 
     // Also called by the card filter component

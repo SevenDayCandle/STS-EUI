@@ -8,7 +8,6 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.ui.buttons.DynamicBanner;
 import extendedui.EUI;
 import extendedui.STSEffekseerManager;
-import extendedui.ui.tooltips.EUITourTooltip;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 

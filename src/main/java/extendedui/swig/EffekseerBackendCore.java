@@ -9,8 +9,8 @@
 package extendedui.swig;
 
 public class EffekseerBackendCore {
-    protected transient boolean swigCMemOwn;
     private transient long swigCPtr;
+    protected transient boolean swigCMemOwn;
 
     public EffekseerBackendCore() {
         this(EffekseerCoreJNI.new_EffekseerBackendCore(), true);
@@ -37,11 +37,6 @@ public class EffekseerBackendCore {
         return (obj == null) ? 0 : obj.swigCPtr;
     }
 
-    @SuppressWarnings("deprecation")
-    protected void finalize() {
-        delete();
-    }
-
     public synchronized void delete() {
         if (swigCPtr != 0) {
             if (swigCMemOwn) {
@@ -50,6 +45,11 @@ public class EffekseerBackendCore {
             }
             swigCPtr = 0;
         }
+    }
+
+    @SuppressWarnings("deprecation")
+    protected void finalize() {
+        delete();
     }
 
 }

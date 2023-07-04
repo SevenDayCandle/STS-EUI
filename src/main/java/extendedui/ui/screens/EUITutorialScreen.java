@@ -36,6 +36,15 @@ public class EUITutorialScreen extends AbstractMenuScreen {
     }
 
     @Override
+    public void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
+        if (current != null) {
+            current.renderImpl(sb);
+        }
+        button.render(sb);
+    }
+
+    @Override
     public void updateImpl() {
         super.updateImpl();
         if (current != null) {
@@ -50,15 +59,6 @@ public class EUITutorialScreen extends AbstractMenuScreen {
         if (this.button.hb.clicked || InputHelper.pressedEscape) {
             exitScreen();
         }
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-        if (current != null) {
-            current.renderImpl(sb);
-        }
-        button.render(sb);
     }
 
     public void exitScreen() {

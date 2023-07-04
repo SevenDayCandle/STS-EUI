@@ -28,7 +28,10 @@ import extendedui.commands.ExportCommand;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.markers.*;
+import extendedui.interfaces.markers.CustomCardFilterModule;
+import extendedui.interfaces.markers.CustomCardPoolModule;
+import extendedui.interfaces.markers.CustomFilterModule;
+import extendedui.interfaces.markers.CustomPoolModule;
 import extendedui.patches.EUIKeyword;
 import extendedui.patches.screens.MenuPanelScreenPatches;
 import extendedui.text.EUISmartText;
@@ -56,7 +59,10 @@ import org.apache.commons.lang3.StringUtils;
 import javax.swing.*;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class EUI {
@@ -124,7 +130,7 @@ public class EUI {
         globalCustomBlightFilters.add(element);
     }
 
-    public static void addGlobalCustomBlightLibraryModule(CustomPoolModule<AbstractBlight>element) {
+    public static void addGlobalCustomBlightLibraryModule(CustomPoolModule<AbstractBlight> element) {
         globalCustomBlightLibraryModules.add(element);
     }
 
@@ -144,11 +150,11 @@ public class EUI {
         globalCustomPotionFilters.add(element);
     }
 
-    public static void addGlobalCustomPotionLibraryModule(CustomPoolModule<PotionInfo>element) {
+    public static void addGlobalCustomPotionLibraryModule(CustomPoolModule<PotionInfo> element) {
         globalCustomPotionLibraryModules.add(element);
     }
 
-    public static void addGlobalCustomPotionPoolModule(CustomPoolModule<PotionInfo>element) {
+    public static void addGlobalCustomPotionPoolModule(CustomPoolModule<PotionInfo> element) {
         globalCustomPotionPoolModules.add(element);
     }
 
@@ -156,11 +162,11 @@ public class EUI {
         globalCustomRelicFilters.add(element);
     }
 
-    public static void addGlobalCustomRelicLibraryModule(CustomPoolModule<RelicInfo>element) {
+    public static void addGlobalCustomRelicLibraryModule(CustomPoolModule<RelicInfo> element) {
         globalCustomRelicLibraryModules.add(element);
     }
 
-    public static void addGlobalCustomRelicPoolModule(CustomPoolModule<RelicInfo>element) {
+    public static void addGlobalCustomRelicPoolModule(CustomPoolModule<RelicInfo> element) {
         globalCustomRelicPoolModules.add(element);
     }
 
@@ -251,11 +257,11 @@ public class EUI {
         return customPotionFilters.get(cardColor);
     }
 
-    public static CustomPoolModule<PotionInfo>getCustomPotionPoolModule(AbstractPlayer player) {
+    public static CustomPoolModule<PotionInfo> getCustomPotionPoolModule(AbstractPlayer player) {
         return player != null ? getCustomPotionPoolModule(player.getCardColor()) : null;
     }
 
-    public static CustomPoolModule<PotionInfo>getCustomPotionPoolModule(AbstractCard.CardColor cardColor) {
+    public static CustomPoolModule<PotionInfo> getCustomPotionPoolModule(AbstractCard.CardColor cardColor) {
         return customPotionPoolModules.get(cardColor);
     }
 
@@ -267,11 +273,11 @@ public class EUI {
         return customRelicFilters.get(cardColor);
     }
 
-    public static CustomPoolModule<RelicInfo>getCustomRelicPoolModule(AbstractPlayer player) {
+    public static CustomPoolModule<RelicInfo> getCustomRelicPoolModule(AbstractPlayer player) {
         return player != null ? getCustomRelicPoolModule(player.getCardColor()) : null;
     }
 
-    public static CustomPoolModule<RelicInfo>getCustomRelicPoolModule(AbstractCard.CardColor cardColor) {
+    public static CustomPoolModule<RelicInfo> getCustomRelicPoolModule(AbstractCard.CardColor cardColor) {
         return customRelicPoolModules.get(cardColor);
     }
 
@@ -592,7 +598,7 @@ public class EUI {
         customPotionFilters.put(cardColor, element);
     }
 
-    public static void setCustomPotionPoolModule(AbstractCard.CardColor cardColor, CustomPoolModule<PotionInfo>element) {
+    public static void setCustomPotionPoolModule(AbstractCard.CardColor cardColor, CustomPoolModule<PotionInfo> element) {
         customPotionPoolModules.put(cardColor, element);
     }
 
@@ -600,7 +606,7 @@ public class EUI {
         customRelicFilters.put(cardColor, element);
     }
 
-    public static void setCustomRelicPoolModule(AbstractCard.CardColor cardColor, CustomPoolModule<RelicInfo>element) {
+    public static void setCustomRelicPoolModule(AbstractCard.CardColor cardColor, CustomPoolModule<RelicInfo> element) {
         customRelicPoolModules.put(cardColor, element);
     }
 

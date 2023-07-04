@@ -10,7 +10,6 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
 import extendedui.HitboxDebugger;
 import extendedui.ui.EUIBase;
-import extendedui.ui.tooltips.EUITourTooltip;
 
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
 import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;

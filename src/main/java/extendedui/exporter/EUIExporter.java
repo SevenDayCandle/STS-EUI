@@ -19,11 +19,11 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.ui.screens.CustomCardLibraryScreen;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.screens.CustomCardLibraryScreen;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.PotionInfo;
@@ -40,9 +40,9 @@ public class EUIExporter {
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final Exportable<AbstractBlight> blightExportable = new Exportable<>(EUIExporter::exportBlightCsv, EUIExporter::exportBlightJson);
     public static final Exportable<AbstractCard> cardExportable = new Exportable<>(EUIExporter::exportCardCsv, EUIExporter::exportCardJson);
+    private static Exportable<?> current = cardExportable;
     public static final Exportable<PotionInfo> potionExportable = new Exportable<>(EUIExporter::exportPotionCsv, EUIExporter::exportPotionJson);
     public static final Exportable<RelicInfo> relicExportable = new Exportable<>(EUIExporter::exportRelicCsv, EUIExporter::exportRelicJson);
-    private static Exportable<?> current = cardExportable;
     public static EUIButton exportButton;
     public static EUIContextMenu<EUIExporter.ContextOption> exportDropdown;
 
@@ -237,20 +237,12 @@ public class EUIExporter {
         exportImplJson(rows, path);
     }
 
-    public static EUIExporterRow getRowForBlight(AbstractBlight c) {
-        return new EUIExporterBlightRow(c);
-    }
-
-    public static EUIExporterRow getRowForCard(AbstractCard c) {
-        return new EUIExporterCardRow(c);
-    }
-
-    public static EUIExporterRow getRowForPotion(PotionInfo c) {
-        return new EUIExporterPotionRow(c);
-    }
-
-    public static EUIExporterRow getRowForRelic(RelicInfo c) {
-        return new EUIExporterRelicRow(c);
+    private static FileHandle getExportFile(String path) {
+        FileHandle handle = Gdx.files.absolute(path);
+        if (handle.exists()) {
+            handle.delete();
+        }
+        return handle;
     }
 
     public static ArrayList<PotionInfo> getPotionInfos() {
@@ -303,19 +295,20 @@ public class EUIExporter {
         return newRelics;
     }
 
-    private static FileHandle getExportFile(String path) {
-        FileHandle handle = Gdx.files.absolute(path);
-        if (handle.exists()) {
-            handle.delete();
-        }
-        return handle;
+    public static EUIExporterRow getRowForBlight(AbstractBlight c) {
+        return new EUIExporterBlightRow(c);
     }
 
-    private static void writeConfig(File file) {
-        File parentFile = file.getParentFile();
-        if (parentFile != null && parentFile.isDirectory()) {
-            EUIConfiguration.lastExportPath.set(parentFile.getAbsolutePath());
-        }
+    public static EUIExporterRow getRowForCard(AbstractCard c) {
+        return new EUIExporterCardRow(c);
+    }
+
+    public static EUIExporterRow getRowForPotion(PotionInfo c) {
+        return new EUIExporterPotionRow(c);
+    }
+
+    public static EUIExporterRow getRowForRelic(RelicInfo c) {
+        return new EUIExporterRelicRow(c);
     }
 
     public static void initialize() {
@@ -342,6 +335,13 @@ public class EUIExporter {
         exportDropdown.openOrCloseMenu();
     }
 
+    private static void writeConfig(File file) {
+        File parentFile = file.getParentFile();
+        if (parentFile != null && parentFile.isDirectory()) {
+            EUIConfiguration.lastExportPath.set(parentFile.getAbsolutePath());
+        }
+    }
+
     public enum ContextOption {
         CSV(EUIRM.strings.misc_exportCSV),
         JSON(EUIRM.strings.misc_exportJSON);
@@ -365,13 +365,25 @@ public class EUIExporter {
     }
 
     public static class Exportable<T> {
-        public Iterable<? extends T> items;
         public final ActionT1<Iterable<? extends T>> exportCsv;
         public final ActionT1<Iterable<? extends T>> exportJson;
+        public Iterable<? extends T> items;
 
         public Exportable(ActionT1<Iterable<? extends T>> exportCsv, ActionT1<Iterable<? extends T>> exportJson) {
             this.exportCsv = exportCsv;
             this.exportJson = exportJson;
+        }
+
+        public void clear() {
+            items = null;
+        }
+
+        public void exportCsv() {
+            exportCsv.invoke(items);
+        }
+
+        public void exportJson() {
+            exportJson.invoke(items);
         }
 
         public void open(Iterable<? extends T> items) {
@@ -383,16 +395,6 @@ public class EUIExporter {
         public void openAndPosition(Iterable<? extends T> items) {
             open(items);
             positionExport();
-        }
-
-        public void clear() {items = null;}
-
-        public void exportCsv() {
-            exportCsv.invoke(items);
-        }
-
-        public void exportJson() {
-            exportJson.invoke(items);
         }
     }
 }

@@ -24,9 +24,8 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
-import java.util.*;
 import java.util.List;
-import java.util.function.Predicate;
+import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -54,7 +53,7 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static <T> List<T> addIf(List<T> res, Iterable<? extends T>  list, FuncT1<Boolean, T> predicate) {
+    public static <T> List<T> addIf(List<T> res, Iterable<? extends T> list, FuncT1<Boolean, T> predicate) {
         if (list != null) {
             for (T t : list) {
                 if (predicate.invoke(t)) {
@@ -112,7 +111,7 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static boolean all(CharSequence sequence, FuncT1<Boolean,Character> func) {
+    public static boolean all(CharSequence sequence, FuncT1<Boolean, Character> func) {
         for (int i = 0; i < sequence.length(); i++) {
             if (!func.invoke(sequence.charAt(i))) {
                 return false;
@@ -121,7 +120,7 @@ public abstract class EUIUtils {
         return true;
     }
 
-    public static <T> boolean all(T[] list, FuncT1<Boolean,T> predicate) {
+    public static <T> boolean all(T[] list, FuncT1<Boolean, T> predicate) {
         for (T t : list) {
             if (!predicate.invoke(t)) {
                 return false;
@@ -131,7 +130,7 @@ public abstract class EUIUtils {
         return true;
     }
 
-    public static <T> boolean all(Iterable<? extends T> list, FuncT1<Boolean,T> predicate) {
+    public static <T> boolean all(Iterable<? extends T> list, FuncT1<Boolean, T> predicate) {
         for (T t : list) {
             if (!predicate.invoke(t)) {
                 return false;
@@ -141,7 +140,7 @@ public abstract class EUIUtils {
         return true;
     }
 
-    public static boolean any(CharSequence sequence, FuncT1<Boolean,Character> func) {
+    public static boolean any(CharSequence sequence, FuncT1<Boolean, Character> func) {
         for (int i = 0; i < sequence.length(); i++) {
             if (func.invoke(sequence.charAt(i))) {
                 return true;
@@ -150,7 +149,7 @@ public abstract class EUIUtils {
         return false;
     }
 
-    public static <T> boolean any(T[] list, FuncT1<Boolean,T> predicate) {
+    public static <T> boolean any(T[] list, FuncT1<Boolean, T> predicate) {
         for (T t : list) {
             if (t != null && predicate.invoke(t)) {
                 return true;
@@ -160,7 +159,7 @@ public abstract class EUIUtils {
         return false;
     }
 
-    public static <T> boolean any(Iterable<? extends T> list, FuncT1<Boolean,T> predicate) {
+    public static <T> boolean any(Iterable<? extends T> list, FuncT1<Boolean, T> predicate) {
         for (T t : list) {
             if (predicate.invoke(t)) {
                 return true;
@@ -309,17 +308,29 @@ public abstract class EUIUtils {
         return null;
     }
 
+    public static <T> int count(Iterable<? extends T> list, FuncT1<Boolean, T> predicate) {
+
+        int count = 0;
+        for (T t : list) {
+            if (predicate.invoke(t)) {
+                count += 1;
+            }
+        }
+
+        return count;
+    }
+
     private static JFileChooser createFileChooser(FileNameExtensionFilter extensionFilter, File currentFile) {
         JFileChooser fc = new JFileChooser() {
             @Override
-            public void approveSelection(){
+            public void approveSelection() {
                 File f = getSelectedFile();
-                if(f.exists() && getDialogType() == SAVE_DIALOG) {
+                if (f.exists() && getDialogType() == SAVE_DIALOG) {
                     int result = JOptionPane.showConfirmDialog(this,
                             EUIUtils.format(EUIRM.strings.misc_overwriteDesc, f.getName()),
                             EUIRM.strings.misc_overwrite,
                             JOptionPane.YES_NO_CANCEL_OPTION);
-                    switch(result) {
+                    switch (result) {
                         case JOptionPane.YES_OPTION:
                             super.approveSelection();
                             return;
@@ -387,18 +398,6 @@ public abstract class EUIUtils {
         return f;
     }
 
-    public static <T> int count(Iterable<? extends T> list, FuncT1<Boolean,T> predicate) {
-
-        int count = 0;
-        for (T t : list) {
-            if (predicate.invoke(t)) {
-                count += 1;
-            }
-        }
-
-        return count;
-    }
-
     public static <T> T deserialize(String s, Class<T> tokenClass) {
         return GsonReader.fromJson(s, tokenClass);
     }
@@ -429,7 +428,7 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static <T> T find(T[] array, FuncT1<Boolean,T> predicate) {
+    public static <T> T find(T[] array, FuncT1<Boolean, T> predicate) {
         for (T t : array) {
             if (t != null && predicate.invoke(t)) {
                 return t;
@@ -439,7 +438,7 @@ public abstract class EUIUtils {
         return null;
     }
 
-    public static <T> T find(Iterable<? extends T> list, FuncT1<Boolean,T> predicate) {
+    public static <T> T find(Iterable<? extends T> list, FuncT1<Boolean, T> predicate) {
         for (T t : list) {
             if (predicate.invoke(t)) {
                 return t;
@@ -845,10 +844,8 @@ public abstract class EUIUtils {
             for (T t : list) {
                 res.add(predicate.invoke(t));
             }
-            return res;
         }
-
-        return new ArrayList<>();
+        return res;
     }
 
     @SafeVarargs
@@ -858,10 +855,8 @@ public abstract class EUIUtils {
             for (T t : list) {
                 res.add(predicate.invoke(t));
             }
-            return res;
         }
-
-        return new ArrayList<>();
+        return res;
     }
 
     @SafeVarargs
@@ -871,10 +866,8 @@ public abstract class EUIUtils {
             for (T t : list) {
                 res.add(predicate.invoke(t));
             }
-            return res;
         }
-
-        return new ArrayList<>();
+        return res;
     }
 
     public static <T, N> ArrayList<N> mapAsNonnull(T[] list, FuncT1<N, T> predicate) {

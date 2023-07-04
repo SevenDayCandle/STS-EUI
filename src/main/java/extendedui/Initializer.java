@@ -39,37 +39,8 @@ public class Initializer
         Initializer initializer = new Initializer();
     }
 
-    @Override
-    public void receiveEditCards() {
-        EUIRM.initialize();
-    }
-
-    @Override
-    public void receiveEditKeywords() {
-        EUI.registerBasegameKeywords();
-        String language = Settings.language.name().toLowerCase();
-        this.registerKeywords("eng");
-        this.registerKeywords(language);
-    }
-
-    @Override
-    public void receivePostDeath() {
-        EUITourTooltip.clearTutorialQueue();
-    }
-
-    // EUI's own tooltips should not be highlighted
-    private void registerKeywords(String language) {
-        ArrayList<EUIKeywordTooltip> tips = EUI.registerKeywords(Gdx.files.internal(PATH + language + JSON_KEYWORD));
-        for (EUIKeywordTooltip tip : tips) {
-            tip.canHighlight(false).showText(false);
-        }
-    }
-
-    @Override
-    public void receiveEditStrings() {
-        String language = Settings.language.name().toLowerCase();
-        this.loadUIStrings("eng");
-        this.loadUIStrings(language);
+    private Map<String, EUIKeyword> loadKeywords(String language, String path) {
+        return EUI.loadKeywords(Gdx.files.internal(PATH + language + path));
     }
 
     private void loadUIStrings(String language) {
@@ -85,11 +56,36 @@ public class Initializer
     }
 
     @Override
+    public void receiveEditCards() {
+        EUIRM.initialize();
+    }
+
+    @Override
+    public void receiveEditKeywords() {
+        EUI.registerBasegameKeywords();
+        String language = Settings.language.name().toLowerCase();
+        this.registerKeywords("eng");
+        this.registerKeywords(language);
+    }
+
+    @Override
+    public void receiveEditStrings() {
+        String language = Settings.language.name().toLowerCase();
+        this.loadUIStrings("eng");
+        this.loadUIStrings(language);
+    }
+
+    @Override
     public void receiveOnBattleStart(AbstractRoom abstractRoom) {
         if (EUIConfiguration.flushOnRoomStart.get()) {
             STSEffekseerManager.reset();
             LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager");
         }
+    }
+
+    @Override
+    public void receivePostDeath() {
+        EUITourTooltip.clearTutorialQueue();
     }
 
     @Override
@@ -105,10 +101,6 @@ public class Initializer
         EUITooltip.postInitialize();
     }
 
-    private Map<String, EUIKeyword> loadKeywords(String language, String path) {
-        return EUI.loadKeywords(Gdx.files.internal(PATH + language + path));
-    }
-
     @Override
     public void receivePostUpdate() {
         EUIInputManager.postUpdate();
@@ -122,5 +114,13 @@ public class Initializer
             shouldReloadEffekseer = false;
         }
         EUIKeywordTooltip.updateTooltipIcons();
+    }
+
+    // EUI's own tooltips should not be highlighted
+    private void registerKeywords(String language) {
+        ArrayList<EUIKeywordTooltip> tips = EUI.registerKeywords(Gdx.files.internal(PATH + language + JSON_KEYWORD));
+        for (EUIKeywordTooltip tip : tips) {
+            tip.canHighlight(false).showText(false);
+        }
     }
 }

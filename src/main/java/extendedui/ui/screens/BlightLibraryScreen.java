@@ -15,8 +15,8 @@ import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.EUIBlightGrid;
 
 public class BlightLibraryScreen extends AbstractMenuScreen {
-    public EUIBlightGrid grid;
     public final MenuCancelButton cancelButton;
+    public EUIBlightGrid grid;
 
     public BlightLibraryScreen() {
         grid = (EUIBlightGrid) new EUIBlightGrid()
@@ -55,6 +55,20 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
     }
 
     @Override
+    public void renderImpl(SpriteBatch sb) {
+        grid.tryRender(sb);
+        cancelButton.render(sb);
+        EUI.blightHeader.renderImpl(sb);
+        if (!EUI.blightFilters.isActive) {
+            EUI.openBlightFiltersButton.tryRender(sb);
+            EUIExporter.exportButton.tryRender(sb);
+        }
+        for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
+            module.render(sb);
+        }
+    }
+
+    @Override
     public void updateImpl() {
         super.updateImpl();
         boolean shouldDoStandardUpdate = !EUI.blightFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
@@ -69,24 +83,10 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
             EUI.blightHeader.updateImpl();
             EUI.openBlightFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
-            for (CustomPoolModule<AbstractBlight>module : EUI.globalCustomBlightLibraryModules) {
+            for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
                 module.update();
             }
         }
         EUIExporter.exportDropdown.tryUpdate();
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        grid.tryRender(sb);
-        cancelButton.render(sb);
-        EUI.blightHeader.renderImpl(sb);
-        if (!EUI.blightFilters.isActive) {
-            EUI.openBlightFiltersButton.tryRender(sb);
-            EUIExporter.exportButton.tryRender(sb);
-        }
-        for (CustomPoolModule<AbstractBlight>module : EUI.globalCustomBlightLibraryModules) {
-            module.render(sb);
-        }
     }
 }

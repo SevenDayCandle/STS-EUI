@@ -3,11 +3,9 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import extendedui.EUIUtils;
-import extendedui.utilities.RelicInfo;
 
 public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
 
@@ -29,7 +27,7 @@ public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
 
         return this;
     }
-    
+
     @Override
     public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);

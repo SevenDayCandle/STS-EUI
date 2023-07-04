@@ -43,14 +43,14 @@ public class CardRarityPanelFilterItem implements CountingPanelItem, TooltipProv
     }
 
     @Override
-    public int getRank(AbstractCard c) {
-        int ordinal = c.rarity.ordinal();
-        return c.rarity == rarity ? ordinal + 1000 : ordinal;
+    public Color getColor() {
+        return EUIGameUtils.colorForRarity(rarity);
     }
 
     @Override
-    public Color getColor() {
-        return EUIGameUtils.colorForRarity(rarity);
+    public int getRank(AbstractCard c) {
+        int ordinal = c.rarity.ordinal();
+        return c.rarity == rarity ? ordinal + 1000 : ordinal;
     }
 
     @Override

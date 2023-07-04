@@ -10,9 +10,7 @@ import java.lang.invoke.MethodType;
 import static extendedui.utilities.EUIClassUtils.IMPL_LOOKUP;
 
 public interface ActionT2<T1, T2> {
-    void invoke(T1 arg1, T2 arg2);
-
-    public static <P, T1> ActionT2<P, T1> get(Class<P> invokeClass, String funcName, Class<T1> param1) throws Throwable {
+    static <P, T1> ActionT2<P, T1> get(Class<P> invokeClass, String funcName, Class<T1> param1) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         CallSite site = LambdaMetafactory.metafactory(lookup,
                 "invoke",
@@ -24,7 +22,7 @@ public interface ActionT2<T1, T2> {
         return (ActionT2<P, T1>) site.getTarget().invokeExact();
     }
 
-    public static <T1, T2> ActionT2<T1, T2> get(Class<?> invokeClass, String funcName, Class<T1> param1, Class<T2> param2) throws Throwable {
+    static <T1, T2> ActionT2<T1, T2> get(Class<?> invokeClass, String funcName, Class<T1> param1, Class<T2> param2) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         MethodType mType = MethodType.methodType(void.class, param1, param2);
         CallSite site = LambdaMetafactory.metafactory(lookup,
@@ -36,4 +34,6 @@ public interface ActionT2<T1, T2> {
         );
         return (ActionT2<T1, T2>) site.getTarget().invokeExact();
     }
+
+    void invoke(T1 arg1, T2 arg2);
 }

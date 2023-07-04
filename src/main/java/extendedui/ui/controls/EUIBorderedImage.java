@@ -62,9 +62,9 @@ public class EUIBorderedImage extends EUIImage {
 
     protected void renderCorners(SpriteBatch sb, float x, float y, float width, float height, float texWidth, float texHeight) {
         sb.draw(cornerTL, x - texWidth, y + height, 0, 0, texWidth, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, cornerTL.getWidth(), cornerTL.getHeight(), flipX, flipY);
-        sb.draw(cornerTR, x + width, y + height, 0, 0,texWidth, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, cornerTR.getWidth(), cornerTR.getHeight(), flipX, flipY);
+        sb.draw(cornerTR, x + width, y + height, 0, 0, texWidth, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, cornerTR.getWidth(), cornerTR.getHeight(), flipX, flipY);
         sb.draw(cornerBL, x - texWidth, y - texHeight, 0, 0, texWidth, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, cornerBL.getWidth(), cornerBL.getHeight(), flipX, flipY);
-        sb.draw(cornerBR, x + width, y - texHeight, 0, 0,texWidth, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, cornerBR.getWidth(), cornerBR.getHeight(), flipX, flipY);
+        sb.draw(cornerBR, x + width, y - texHeight, 0, 0, texWidth, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, cornerBR.getWidth(), cornerBR.getHeight(), flipX, flipY);
 
         sb.draw(borderB, x, y - texHeight, 0, 0, width, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, borderB.getWidth(), borderB.getHeight(), flipX, flipY);
         sb.draw(borderL, x - texHeight, y, 0, 0, texWidth, height, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, borderL.getWidth(), borderL.getHeight(), flipX, flipY);

@@ -8,7 +8,6 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.localization.UIStrings;
 import extendedui.interfaces.delegates.FuncT2;
 import extendedui.ui.TextureCache;
-import org.apache.logging.log4j.util.Strings;
 
 import java.util.HashMap;
 import java.util.List;
@@ -342,13 +341,14 @@ public class EUIRM {
             return EUIUtils.format(stringsGrammar.TEXT[0], adj, noun);
         }
 
+        // e.g. English: O1 and O2, Spanish: O1 y O2
+        public final String and(Object obj1, Object obj2) {
+            return EUIUtils.format(stringsGrammar.TEXT[13], obj1, obj2);
+        }
+
         // e.g. English: Card #2 -> 0 1, Spanish: Carta #2 -> 0 1
         public final String generic2(Object noun, Object number) {
             return EUIUtils.format(stringsGrammar.TEXT[4], noun, number);
-        }
-
-        public final String joinWithAnd(List<String> values) {
-            return joinWith(this::and, values);
         }
 
         public final String joinWith(FuncT2<String, String, String> strFunc, List<String> values) {
@@ -366,15 +366,6 @@ public class EUIRM {
             }
 
             return strFunc.invoke(sj.toString(), values.get(i));
-        }
-
-        // e.g. English: O1 and O2, Spanish: O1 y O2
-        public final String and(Object obj1, Object obj2) {
-            return EUIUtils.format(stringsGrammar.TEXT[13], obj1, obj2);
-        }
-
-        public final String joinWithAnd(String... values) {
-            return joinWith(this::and, values);
         }
 
         public final String joinWith(FuncT2<String, String, String> strFunc, String... values) {
@@ -395,13 +386,16 @@ public class EUIRM {
             return strFunc.invoke(sj.toString(), values[i]);
         }
 
-        public final String joinWithOr(List<String> values) {
-            return joinWith(this::or, values);
+        public final String joinWithAnd(List<String> values) {
+            return joinWith(this::and, values);
         }
 
-        // e.g. English: O1 or O2, Spanish: O1 o O2
-        public final String or(Object obj1, Object obj2) {
-            return EUIUtils.format(stringsGrammar.TEXT[14], obj1, obj2);
+        public final String joinWithAnd(String... values) {
+            return joinWith(this::and, values);
+        }
+
+        public final String joinWithOr(List<String> values) {
+            return joinWith(this::or, values);
         }
 
         public final String joinWithOr(String... values) {
@@ -440,6 +434,11 @@ public class EUIRM {
         // e.g. English: Two Cards In Hand, Spanish: Dos cartas en la mano
         public final String numNounPlace(Object num, Object noun, Object place) {
             return EUIUtils.format(stringsGrammar.TEXT[6], num, noun, place);
+        }
+
+        // e.g. English: O1 or O2, Spanish: O1 o O2
+        public final String or(Object obj1, Object obj2) {
+            return EUIUtils.format(stringsGrammar.TEXT[14], obj1, obj2);
         }
 
         // e.g. English: Discard -> Discarded, Spanish: Descarta -> Descartada
