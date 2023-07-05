@@ -5,6 +5,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
 import extendedui.utilities.RelicInfo;
 
@@ -96,6 +97,15 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
 
     @Override
     protected void renderItem(SpriteBatch sb, RelicInfo relic) {
+        if (relic.faded) {
+            EUIRenderHelpers.drawBlendedWithShader(sb, EUIRenderHelpers.BlendingMode.Multiply, EUIRenderHelpers.ShaderMode.Grayscale, s -> renderRelicImpl(s, relic));
+        }
+        else {
+            renderRelicImpl(sb, relic);
+        }
+    }
+
+    protected void renderRelicImpl(SpriteBatch sb, RelicInfo relic) {
         if (relic.locked) {
             switch (relic.relicColor) {
                 case RED:

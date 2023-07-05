@@ -145,6 +145,10 @@ public class EUITooltip {
         return newTip;
     }
 
+    public static TooltipProvider getCurrentProvider() {
+        return provider;
+    }
+
     public static float getTallestOffset(ArrayList<EUITooltip> tips) {
         float currentOffset = 0f;
         float maxOffset = 0f;

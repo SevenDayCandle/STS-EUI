@@ -227,6 +227,13 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         return this;
     }
 
+    public EUIItemGrid<T> setOnRender(ActionT2<SpriteBatch, T> onRender) {
+        this.onRender = onRender;
+
+        return this;
+    }
+
+
     public EUIItemGrid<T> setOnRightClick(ActionT1<T> onRightClick) {
         this.onRightClick = onRightClick;
 

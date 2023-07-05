@@ -9,6 +9,7 @@ public class RelicInfo {
     public final AbstractRelic relic;
     public final AbstractCard.CardColor relicColor;
     public final boolean locked;
+    public boolean faded;
 
     public RelicInfo(AbstractRelic relic) {
         this.relic = relic;
