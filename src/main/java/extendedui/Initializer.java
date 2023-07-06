@@ -28,6 +28,7 @@ public class Initializer
     public static final String JSON_KEYWORD_EXTENSION = "/KeywordExtensions.json";
     public static final String JSON_KEYWORD = "/KeywordStrings.json";
     public static final String JSON_UI = "/UIStrings.json";
+    public static final String ENG_LOWER = "eng";
 
     public Initializer() {
         EUIConfiguration.load();
@@ -64,15 +65,21 @@ public class Initializer
     public void receiveEditKeywords() {
         EUI.registerBasegameKeywords();
         String language = Settings.language.name().toLowerCase();
-        this.registerKeywords("eng");
-        this.registerKeywords(language);
+        this.registerKeywords(ENG_LOWER);
+        EUI.registerGrammar(loadKeywords(ENG_LOWER, JSON_KEYWORD_EXTENSION));
+        if (!ENG_LOWER.equals(language)) {
+            this.registerKeywords(language);
+            EUI.registerGrammar(loadKeywords(language, JSON_KEYWORD_EXTENSION));
+        }
     }
 
     @Override
     public void receiveEditStrings() {
         String language = Settings.language.name().toLowerCase();
-        this.loadUIStrings("eng");
-        this.loadUIStrings(language);
+        this.loadUIStrings(ENG_LOWER);
+        if (!ENG_LOWER.equals(language)) {
+            this.loadUIStrings(language);
+        }
     }
 
     @Override
@@ -92,7 +99,6 @@ public class Initializer
     public void receivePostInitialize() {
         EUIConfiguration.postInitialize();
         EUI.initialize();
-        EUI.registerGrammar(loadKeywords("eng", JSON_KEYWORD_EXTENSION));
         EUI.registerKeywordIcons();
         EUIRenderHelpers.initializeBuffers();
         STSEffekseerManager.initialize();
