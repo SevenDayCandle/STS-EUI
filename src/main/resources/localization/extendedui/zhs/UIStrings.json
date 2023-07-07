@@ -39,7 +39,8 @@
 			"为不同的文本类型分别指定字体，未指定的类型将使用默认字体。如果不勾选，所有的文本类型都将使用唯一指定字体。",
 			"本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。",
 			"启用游戏内百科大全中的多种debug功能（右击项目访问）。",
-			"重新启用所有被本mod关闭的提示描述。"
+			"重新启用所有被本mod关闭的提示描述。",
+			"{#b:No tooltips are currently disabled.}"
 		]
 	},
 	"extendedui:grammar": {
@@ -95,7 +96,8 @@
 			"Hue",
 			"Saturation",
 			"Value",
-			"Opacity"
+			"Opacity",
+			"{#r:This tooltip is disabled}"
 		]
 	},
 	"extendedui:ui_pool": {
@@ -181,8 +183,6 @@
 			"已见过",
 			"未见过",
 			"N/A",
-			"禁用提示描述",
-			"启用提示描述",
 			"Filter out items from this group",
 			"Unique"
 		]

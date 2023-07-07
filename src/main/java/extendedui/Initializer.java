@@ -11,7 +11,6 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.patches.EUIKeyword;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
-import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
 import org.apache.logging.log4j.LogManager;
 
@@ -104,7 +103,7 @@ public class Initializer
         STSEffekseerManager.initialize();
         ShaderDebugger.initialize();
         HitboxDebugger.initialize();
-        EUITooltip.postInitialize();
+        EUIKeywordTooltip.postInitialize();
     }
 
     @Override
@@ -126,7 +125,7 @@ public class Initializer
     private void registerKeywords(String language) {
         ArrayList<EUIKeywordTooltip> tips = EUI.registerKeywords(Gdx.files.internal(PATH + language + JSON_KEYWORD));
         for (EUIKeywordTooltip tip : tips) {
-            tip.canHighlight(false).showText(false);
+            tip.canHighlight(false).setCanAdd(false);
         }
     }
 }

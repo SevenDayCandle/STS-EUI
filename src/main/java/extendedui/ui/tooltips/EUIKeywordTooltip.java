@@ -18,6 +18,7 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.FuncT0;
 import extendedui.patches.EUIKeyword;
 import extendedui.text.EUISmartText;
@@ -52,6 +53,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     public float iconmultiH = 1;
     public float iconmultiW = 1;
     public boolean useLogic = false;
+    public boolean canAdd = true;
 
     public EUIKeywordTooltip(String title) {
         super(title);
@@ -100,6 +102,14 @@ public class EUIKeywordTooltip extends EUITooltip {
         this.plural = other.plural;
         this.useLogic = other.useLogic;
         this.modName = other.modName;
+        this.canAdd = other.canAdd;
+        this.canHighlight = other.canHighlight;
+    }
+
+    public static void clearHidden() {
+        for (EUIKeywordTooltip tooltip : REGISTERED_IDS.values()) {
+            tooltip.canAdd = true;
+        }
     }
 
     public static EUIKeywordTooltip findByID(String id) {
@@ -130,6 +140,15 @@ public class EUIKeywordTooltip extends EUITooltip {
         }
     }
 
+    public static void postInitialize() {
+        for (Map.Entry<String, EUIKeywordTooltip> entry : getEntries()) {
+            EUIKeywordTooltip tip = entry.getValue();
+            tip.canAdd = !EUIConfiguration.getIsTipDescriptionHidden(entry.getKey());
+            tip.headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
+            tip.descriptionFont = EUIFontHelper.cardTooltipFont;
+        }
+    }
+
     public static void registerID(String id, EUIKeywordTooltip tooltip) {
         REGISTERED_IDS.put(id, tooltip);
         tooltip.ID = id;
@@ -142,7 +161,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     public static void setHideTooltip(String id, boolean value) {
         EUIKeywordTooltip tooltip = findByID(id);
         if (tooltip != null) {
-            tooltip.canRender = !value;
+            tooltip.canAdd = !value;
         }
     }
 
@@ -186,7 +205,7 @@ public class EUIKeywordTooltip extends EUITooltip {
             lastTextHeight = EUISmartText.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastModNameHeight = (modName != null) ? EUISmartText.getSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
             lastSubHeaderHeight = (subHeader != null) ? EUISmartText.getSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-            lastHeight = (!canRender || StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastModNameHeight + lastSubHeaderHeight) - 7f * Settings.scale);
+            lastHeight = (!canAdd || StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastModNameHeight + lastSubHeaderHeight) - 7f * Settings.scale);
         }
         return lastHeight;
     }
@@ -201,7 +220,7 @@ public class EUIKeywordTooltip extends EUITooltip {
 
     @Override
     public boolean isRenderable() {
-        return super.isRenderable() && canHighlight;
+        return super.isRenderable() && canHighlight && canAdd;
     }
 
     @Override
@@ -232,9 +251,8 @@ public class EUIKeywordTooltip extends EUITooltip {
         }
     }
 
-    @Override
-    public EUIKeywordTooltip showText(boolean value) {
-        super.showText(value);
+    public EUIKeywordTooltip setCanAdd(boolean value) {
+        this.canAdd = value;
 
         return this;
     }

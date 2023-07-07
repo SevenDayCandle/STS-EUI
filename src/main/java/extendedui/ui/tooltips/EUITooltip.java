@@ -26,12 +26,9 @@ import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIUtils;
-import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.markers.IntentProvider;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
-import extendedui.ui.controls.EUIVerticalScrollBar;
-import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
@@ -76,7 +73,6 @@ public class EUITooltip {
     public String title;
     public String description;
     public float width = BOX_W;
-    public boolean canRender = true;
 
     public EUITooltip(String title) {
         this(title, EUIUtils.EMPTY_STRING);
@@ -91,7 +87,6 @@ public class EUITooltip {
         this.title = other.title;
         this.description = other.description;
         this.subHeader = other.subHeader;
-        this.canRender = other.canRender;
     }
 
     public static void blockTooltips() {
@@ -163,15 +158,6 @@ public class EUITooltip {
         }
 
         return maxOffset;
-    }
-
-    public static void postInitialize() {
-        for (Map.Entry<String, EUIKeywordTooltip> entry : EUIKeywordTooltip.getEntries()) {
-            EUIKeywordTooltip tip = entry.getValue();
-            tip.canRender = !EUIConfiguration.getIsTipDescriptionHidden(entry.getKey());
-            tip.headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
-            tip.descriptionFont = EUIFontHelper.cardTooltipFont;
-        }
     }
 
     public static void queueTooltip(EUITooltip tooltip) {
@@ -271,8 +257,16 @@ public class EUITooltip {
             return;
         }
 
-        lastProvider = provider;
-        List<? extends EUITooltip> pTips = provider.getTips();
+        if (lastProvider != provider) {
+            lastProvider = provider;
+            tooltips.clear();
+            for (EUITooltip tip : provider.getTipsForRender()) {
+                if (tip.isRenderable()) {
+                    tooltips.add(tip);
+                }
+            }
+            scanListForAdditionalTips(tooltips);
+        }
 
         float x;
         float y;
@@ -284,7 +278,7 @@ public class EUITooltip {
             x = 180 * Settings.scale;
             y = 0.7f * Settings.HEIGHT;
         }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && pTips.size() > 2 && !AbstractDungeon.player.hasBlight(blight.blightID)) {
+        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !AbstractDungeon.player.hasBlight(blight.blightID)) {
             x = InputHelper.mX + (60 * Settings.scale);
             y = InputHelper.mY + (180 * Settings.scale);
         }
@@ -301,7 +295,7 @@ public class EUITooltip {
             y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        renderTipsImpl(sb, pTips, x, y);
+        renderTipsImpl(sb, tooltips, x, y);
     }
 
     public static void renderFromCard(SpriteBatch sb) {
@@ -467,7 +461,11 @@ public class EUITooltip {
         if (lastProvider != provider) {
             lastProvider = provider;
             tooltips.clear();
-            tooltips.addAll(provider.getTips());
+            for (EUITooltip tip : provider.getTipsForRender()) {
+                if (tip.isRenderable()) {
+                    tooltips.add(tip);
+                }
+            }
             scanListForAdditionalTips(tooltips);
         }
 
@@ -510,7 +508,11 @@ public class EUITooltip {
         if (lastProvider != provider) {
             lastProvider = provider;
             tooltips.clear();
-            tooltips.addAll(provider.getTips());
+            for (EUITooltip tip : provider.getTipsForRender()) {
+                if (tip.isRenderable()) {
+                    tooltips.add(tip);
+                }
+            }
             scanListForAdditionalTips(tooltips);
         }
 
@@ -551,10 +553,7 @@ public class EUITooltip {
     protected static void renderTipsImpl(SpriteBatch sb, List<? extends EUITooltip> tips, float x, float y) {
         for (int i = 0; i < tips.size(); i++) {
             final EUITooltip tip = tips.get(i);
-
-            if (tip.isRenderable()) {
-                y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
-            }
+            y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
         }
     }
 
@@ -644,7 +643,7 @@ public class EUITooltip {
             BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
             lastTextHeight = EUISmartText.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastSubHeaderHeight = (subHeader != null) ? EUISmartText.getSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-            lastHeight = (!canRender || StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastSubHeaderHeight) - 7f * Settings.scale);
+            lastHeight = (StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastSubHeaderHeight) - 7f * Settings.scale);
         }
         return lastHeight;
     }
@@ -660,7 +659,7 @@ public class EUITooltip {
     }
 
     public boolean isRenderable() {
-        return canRender;
+        return true;
     }
 
     public EUITooltip makeCopy() {
@@ -791,12 +790,6 @@ public class EUITooltip {
     public EUITooltip setWidth(float width) {
         this.width = width;
         invalidateHeight();
-
-        return this;
-    }
-
-    public EUITooltip showText(boolean value) {
-        this.canRender = value;
 
         return this;
     }

@@ -39,7 +39,8 @@
 			"If checked, different text types (e.g. button text, tip title text) will use different fonts, and text types without any font specified will fall back on the default font. Otherwise, all text types will use the font you specify below.",
 			"This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well.",
 			"If checked, enables various debugging functions to be used in the card pool screen by right-clicking cards in its grid.",
-			"Re-enable all tooltips that were turned off by this mod."
+			"Re-enable all tooltips that were turned off by this mod.",
+			"{#b:No tooltips are currently disabled.}"
 		]
 	},
 	"extendedui:grammar": {
@@ -95,7 +96,8 @@
 			"Hue",
 			"Saturation",
 			"Value",
-			"Opacity"
+			"Opacity",
+			"{#r:This tooltip is disabled}"
 		]
 	},
 	"extendedui:ui_pool": {
@@ -181,8 +183,6 @@
 			"Seen",
 			"Unseen",
 			"N/A",
-			"Disable Tooltip",
-			"Enable Tooltip",
 			"Filter out items from this group",
 			"Unique"
 		]

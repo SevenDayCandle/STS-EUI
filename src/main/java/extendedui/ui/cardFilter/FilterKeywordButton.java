@@ -8,12 +8,14 @@ import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUIInputManager;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.cardFilter.filters.CardKeywordFilters;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.ui.tooltips.EUIHeaderlessTooltip;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
@@ -23,6 +25,7 @@ import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
 import static extendedui.ui.tooltips.EUIKeywordTooltip.BASE_ICON_SIZE;
 
 public class FilterKeywordButton extends EUIHoverable {
+    private static EUIHeaderlessTooltip DISABLED_TIP;
     private static final Color ACTIVE_COLOR = new Color(0.76f, 0.76f, 0.76f, 1f);
     private static final Color NEGATE_COLOR = new Color(0.62f, 0.32f, 0.28f, 1f);
     private static final Color PANEL_COLOR = new Color(0.3f, 0.3f, 0.3f, 1f);
@@ -43,11 +46,19 @@ public class FilterKeywordButton extends EUIHoverable {
     public EUILabel countText;
     public EUIKeywordTooltip keywordTooltip;
 
+    public static EUITooltip getDisabledTip() {
+        if (DISABLED_TIP == null) {
+            DISABLED_TIP = new EUIHeaderlessTooltip(EUIRM.strings.misc_tooltipDisabled);
+        }
+        return DISABLED_TIP;
+    }
+
     public FilterKeywordButton(GenericFilters<?, ?> filters, EUIKeywordTooltip tooltip) {
         super(filters.hb);
 
         this.filters = filters;
-        this.tooltip = this.keywordTooltip = tooltip;
+
+        this.keywordTooltip = tooltip;
 
         backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), RelativeHitbox.fromPercentages(filters.hb, 1, 1, 0.5f, BASE_OFFSET_Y).setIsPopupCompatible(true))
                 .setClickDelay(0.01f)
@@ -67,7 +78,7 @@ public class FilterKeywordButton extends EUIHoverable {
                 .setFont(EUIFontHelper.cardTooltipFont, 0.8f)
                 .setColor(this.filters.currentFilters.contains(this.keywordTooltip) ? Color.DARK_GRAY : Color.WHITE)
                 .setAlignment(0.5f, 0.49f) // 0.1f
-                .setLabel(this.tooltip.title);
+                .setLabel(this.keywordTooltip.title);
 
         countText = new EUILabel(EUIFontHelper.cardDescriptionFontNormal,
                 RelativeHitbox.fromPercentages(hb, 0.28f, 1, BASE_COUNT_OFFSET_X, 0f))
@@ -75,11 +86,12 @@ public class FilterKeywordButton extends EUIHoverable {
                 .setAlignment(0.5f, 0.51f) // 0.1f
                 .setColor(Settings.GOLD_COLOR)
                 .setLabel(this.filters.currentNegateFilters.contains(this.keywordTooltip) ? "X" : cardCount);
+
+        afterToggleRight(EUIConfiguration.getIsTipDescriptionHidden(keywordTooltip.ID));
     }
 
-    // TODO
-    public void afterToggleRight() {
-
+    public void afterToggleRight(boolean value) {
+        tooltip = value ? getDisabledTip() : keywordTooltip;
     }
 
     public void doToggle() {

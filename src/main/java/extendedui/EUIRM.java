@@ -237,6 +237,7 @@ public class EUIRM {
         public final String configdesc_overrideGameFont = stringsConfigDesc.TEXT[10];
         public final String configdesc_enableDebug = stringsConfigDesc.TEXT[11];
         public final String configdesc_reenableTooltips = stringsConfigDesc.TEXT[12];
+        public final String configdesc_reenableTooltipsNone = stringsConfigDesc.TEXT[13];
 
         public final String hotkey_cycle = stringsHotkeys.TEXT[0];
         public final String hotkey_openCardPool = stringsHotkeys.TEXT[1];
@@ -261,6 +262,7 @@ public class EUIRM {
         public final String misc_saturation = stringsMisc.TEXT[16];
         public final String misc_value = stringsMisc.TEXT[17];
         public final String misc_opacity = stringsMisc.TEXT[18];
+        public final String misc_tooltipDisabled = stringsMisc.TEXT[19];
 
         public final String potion_size = stringsPotion.TEXT[0];
         public final String potion_visualEffect = stringsPotion.TEXT[1];
@@ -331,10 +333,8 @@ public class EUIRM {
         public final String ui_seen = stringsUIFilter.TEXT[14];
         public final String ui_unseen = stringsUIFilter.TEXT[15];
         public final String ui_na = stringsUIFilter.TEXT[16];
-        public final String ui_disableTooltip = stringsUIFilter.TEXT[17];
-        public final String ui_enableTooltip = stringsUIFilter.TEXT[18];
-        public final String ui_filterExplanation = stringsUIFilter.TEXT[19];
-        public final String ui_unique = stringsUIFilter.TEXT[20];
+        public final String ui_filterExplanation = stringsUIFilter.TEXT[17];
+        public final String ui_unique = stringsUIFilter.TEXT[18];
 
         // e.g. English: Red Card -> 0 1, Spanish: Carta roja -> 1 0
         public final String adjNoun(Object adj, Object noun) {

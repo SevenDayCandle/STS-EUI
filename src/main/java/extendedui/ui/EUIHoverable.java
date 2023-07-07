@@ -100,7 +100,7 @@ public abstract class EUIHoverable extends EUIBase {
 
     public void updateImpl() {
         this.hb.update();
-        if (this.hb.hovered && tooltip != null && tooltip.canRender) {
+        if (this.hb.hovered && tooltip != null) {
             EUITooltip.queueTooltip(tooltip);
         }
     }

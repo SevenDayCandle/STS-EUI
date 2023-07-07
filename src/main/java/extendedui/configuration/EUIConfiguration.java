@@ -9,9 +9,12 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.ActionT0;
 import extendedui.ui.EUIHoverable;
+import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.settings.BasemodSettingsPage;
 import extendedui.ui.settings.ExtraModSettingsPanel;
@@ -85,6 +88,7 @@ public class EUIConfiguration {
     private static SpireConfig config;
     private static int counter;
     protected static BasemodSettingsPage settingsBlock;
+    protected static EUITooltip reenableTip;
     protected static ModPanel panel;
     public static ExtraModSettingsPanel.Category effekseerCategory;
     public static ExtraModSettingsPanel.Category fontCategory;
@@ -113,6 +117,18 @@ public class EUIConfiguration {
         settingsBlock.addUIElement(page, new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.cardDescriptionFontNormal, option.get(), panel, (__) -> {
         }, (c) -> option.set(c.enabled)));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
+    }
+
+    public static void clearHiddenTips(boolean flush) {
+        tips = new HashSet<>();
+        config.setString(HIDE_TIP_DESCRIPTION, EUIUtils.joinStrings("|", tips));
+
+        if (flush) {
+            save();
+        }
+
+        EUIKeywordTooltip.clearHidden();
+        updateReenableTooltip();
     }
 
     public static String getFullKey(String base) {
@@ -148,6 +164,7 @@ public class EUIConfiguration {
         }
 
         EUIKeywordTooltip.setHideTooltip(id, value);
+        updateReenableTooltip();
     }
 
     public static void load() {
@@ -179,8 +196,8 @@ public class EUIConfiguration {
         }
     }
 
-    protected static EUILabel makeModLabel(ExtraModSettingsPanel.Category category, String label, BitmapFont font) {
-        return ExtraModSettingsPanel.addLabel(category, label, font);
+    protected static EUIButton makeModButton(ExtraModSettingsPanel.Category category, String label, ActionT0 onClick) {
+        return ExtraModSettingsPanel.addButton(category, label, onClick);
     }
 
     protected static ModSettingsPathSelector makeModPathSelection(ExtraModSettingsPanel.Category category, STSConfigItem<String> option, String label, String... exts) {
@@ -205,6 +222,8 @@ public class EUIConfiguration {
         panel = new ModPanel();
         panel.addUIElement(settingsBlock);
 
+        reenableTip = new EUITooltip(EUIRM.strings.config_reenableTooltips, EUIRM.strings.configdesc_reenableTooltips);
+
         // Add EUI options
         effekseerCategory = new ExtraModSettingsPanel.Category(EUIRM.strings.misc_effekseerSettings);
         fontCategory = new ExtraModSettingsPanel.Category(EUIRM.strings.misc_fontSettings);
@@ -220,6 +239,8 @@ public class EUIConfiguration {
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.config_overrideGameFont, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
+        EUIButton clearButton = makeModButton(effekseerCategory, EUIRM.strings.config_reenableTooltips, () -> clearHiddenTips(true));
+        clearButton.setTooltip(reenableTip);
         ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardDescFont, EUIRM.strings.config_cardDescFont, FONT_EXTS).setTooltip(EUIRM.strings.config_cardDescFont, EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector cardTitleFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardTitleFont, EUIRM.strings.config_cardTitleFont, FONT_EXTS).setTooltip(EUIRM.strings.config_cardTitleFont, EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector tipDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, tipDescFont, EUIRM.strings.config_tipDescFont, FONT_EXTS).setTooltip(EUIRM.strings.config_tipDescFont, EUIRM.strings.configdesc_restartRequired);
@@ -228,6 +249,8 @@ public class EUIConfiguration {
         ModSettingsPathSelector bannerFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, bannerFont, EUIRM.strings.config_bannerFont, FONT_EXTS).setTooltip(EUIRM.strings.config_bannerFont, EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector energyFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, energyFont, EUIRM.strings.config_energyFont, FONT_EXTS).setTooltip(EUIRM.strings.config_energyFont, EUIRM.strings.configdesc_restartRequired);
 
+        verifyHideTipsList();
+        updateReenableTooltip();
 
         // Add basemod options
         int yPos = BASE_OPTION_OFFSET_Y;
@@ -242,6 +265,8 @@ public class EUIConfiguration {
         yPos = addToggle(0, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);
         yPos = addToggle(0, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
+        EUIButton clearButton2 = (EUIButton) clearButton.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        yPos = addGenericElement(0, clearButton2, yPos);
 
         yPos = BASE_OPTION_OFFSET_Y;
         yPos = addToggle(1, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
@@ -304,6 +329,10 @@ public class EUIConfiguration {
             return true;
         }
         return false;
+    }
+
+    public static void updateReenableTooltip() {
+        reenableTip.setDescription(tips == null || tips.isEmpty() ? EUIUtils.joinStrings(EUIUtils.SPLIT_LINE, EUIRM.strings.configdesc_reenableTooltips, EUIRM.strings.configdesc_reenableTooltipsNone) : EUIRM.strings.configdesc_reenableTooltips);
     }
 
     public static void verifyHideTipsList() {

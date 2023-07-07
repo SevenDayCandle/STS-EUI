@@ -56,6 +56,21 @@ public class EUIButton extends EUIHoverable {
         return interactable && (onLeftClick != null || onLeftPreClick != null);
     }
 
+    public EUIButton makeCopy() {
+        EUIButton copy = new EUIButton(this.background.texture, this.hb.makeCopy())
+                .setOnClick(onLeftClick)
+                .setOnPreClick(onLeftPreClick)
+                .setOnRightClick(onRightClick);
+        if (border != null) {
+            copy.setBorder(border.texture, border.color);
+        }
+        if (label != null) {
+            copy.setLabel(label.font, label.fontScale, label.text);
+        }
+        copy.setTooltip(this.tooltip);
+        return copy;
+    }
+
     public EUITourTooltip makeTour(boolean canDismiss) {
         if (tooltip != null) {
             EUITourTooltip tip = new EUITourTooltip(hb, tooltip.title, tooltip.description);
@@ -450,14 +465,6 @@ public class EUIButton extends EUIHoverable {
         else {
             this.label.setFontScaleRelative(1f);
         }
-        return this;
-    }
-
-    public EUIButton showTooltip(boolean show) {
-        if (tooltip != null) {
-            this.tooltip.canRender = show;
-        }
-
         return this;
     }
 

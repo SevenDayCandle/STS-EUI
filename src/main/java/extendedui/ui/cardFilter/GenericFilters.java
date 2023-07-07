@@ -46,7 +46,6 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     protected final HashMap<EUIKeywordTooltip, Integer> currentFilterCounts = new HashMap<>();
     public final EUIButton clearButton;
     public final EUIButton closeButton;
-    public final EUIContextMenu<TooltipOption> contextMenu;
     public final EUILabel currentTotalHeaderLabel;
     public final EUILabel currentTotalLabel;
     public final EUILabel keywordsSectionLabel;
@@ -85,16 +84,6 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
                 .setText(EUIRM.strings.misc_clear)
                 .setOnClick(() -> this.clear(true, isAccessedFromCardPool));
-
-        contextMenu = (EUIContextMenu<TooltipOption>) new EUIContextMenu<TooltipOption>(new EUIHitbox(0, 0, 0, 0), t -> t.baseName)
-                .setOnChange(options -> {
-                    for (TooltipOption o : options) {
-                        o.onAct.invoke(this);
-                    }
-                })
-                .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
-                .setItems(TooltipOption.values())
-                .setCanAutosizeButton(true);
 
         nameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
                 new EUIHitbox(0, 0, scale(320), scale(40)).setIsPopupCompatible(true))
@@ -173,20 +162,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
 
     public void buttonRightClick(FilterKeywordButton button) {
         selectedButton = button;
-        contextMenu.setItems(EUIConfiguration.getIsTipDescriptionHidden(button.tooltip.ID) ? TooltipOption.EnableTooltip : TooltipOption.DisableTooltip);
-        float actualMX;
-        float actualMY;
-        if (CardCrawlGame.isPopupOpen) {
-            actualMX = popupMX;
-            actualMY = popupMY;
-        }
-        else {
-            actualMX = InputHelper.mX;
-            actualMY = InputHelper.mY;
-        }
-        contextMenu.setPosition(actualMX > Settings.WIDTH * 0.75f ? actualMX - contextMenu.hb.width : actualMX, actualMY);
-        contextMenu.refreshText();
-        contextMenu.openOrCloseMenu();
+        hideKeyword(!EUIConfiguration.getIsTipDescriptionHidden(button.keywordTooltip.ID));
     }
 
     public final void clear(boolean shouldInvoke, boolean shouldClearColors) {
@@ -251,8 +227,8 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
 
     private void hideKeyword(boolean value) {
         if (selectedButton != null) {
-            EUIConfiguration.hideTipDescription(selectedButton.tooltip.ID, value, true);
-            selectedButton.afterToggleRight();
+            EUIConfiguration.hideTipDescription(selectedButton.keywordTooltip.ID, value, true);
+            selectedButton.afterToggleRight(value);
         }
     }
 
@@ -362,7 +338,6 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         }
 
         renderFilters(sb);
-        contextMenu.tryRender(sb);
     }
 
     @Override
@@ -392,7 +367,6 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         }
 
         updateFilters();
-        contextMenu.tryUpdate();
     }
 
     public void toggleFilters() {
@@ -464,17 +438,4 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     abstract public boolean isHoveredImpl();
 
     abstract public void renderFilters(SpriteBatch sb);
-
-    public enum TooltipOption {
-        DisableTooltip(EUIRM.strings.ui_disableTooltip, filters -> filters.hideKeyword(true)),
-        EnableTooltip(EUIRM.strings.ui_enableTooltip, filters -> filters.hideKeyword(false));
-
-        public final String baseName;
-        public final ActionT1<GenericFilters<?, ?>> onAct;
-
-        TooltipOption(String name, ActionT1<GenericFilters<?, ?>> onAct) {
-            this.baseName = name;
-            this.onAct = onAct;
-        }
-    }
 }

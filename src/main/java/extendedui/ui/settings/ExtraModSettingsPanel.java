@@ -13,11 +13,14 @@ import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUIGameUtils;
 import extendedui.EUIInputManager;
+import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.STSConfigItem;
+import extendedui.interfaces.delegates.ActionT0;
 import extendedui.text.EUISmartText;
 import extendedui.ui.EUIBase;
 import extendedui.ui.TextureCache;
+import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIButtonList;
 import extendedui.ui.controls.EUIImage;
 import extendedui.ui.controls.EUILabel;
@@ -60,6 +63,20 @@ public class ExtraModSettingsPanel extends EUIBase {
             list.add(toggle);
             offsets.put(cat, offY -= toggle.hb.height * 1.1f);
             return toggle;
+        }
+        return null;
+    }
+
+    public static EUIButton addButton(Category cat, String text, ActionT0 onClick) {
+        ArrayList<IUIElement> list = configCategories.get(cat);
+        float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
+        if (list != null) {
+            EUIButton button = new EUIButton(EUIRM.images.rectangularButton.texture(), new RelativeHitbox(hb, OPTION_SIZE * 7, OPTION_SIZE, OPTION_SIZE * 7f, offY))
+                    .setLabel(text)
+                    .setOnClick(onClick);
+            list.add(button);
+            offsets.put(cat, offY -= button.hb.height * 1.2f);
+            return button;
         }
         return null;
     }
