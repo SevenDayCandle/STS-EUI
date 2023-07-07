@@ -44,7 +44,6 @@ public class EUITooltip {
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
     private static final Vector2 genericTipPos = new Vector2(0, 0);
     public static final Color BASE_COLOR = new Color(1f, 0.9725f, 0.8745f, 1f);
-    public static final float POPUP_TOOLTIP_Y_BASE = Settings.HEIGHT * 0.85f;
     public static final float CARD_TIP_PAD = 12f * Settings.scale;
     public static final float BOX_EDGE_H = 32f * Settings.scale;
     public static final float SHADOW_DIST_Y = 14f * Settings.scale;
@@ -60,12 +59,10 @@ public class EUITooltip {
     public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
     public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
     public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
-    private static EUIVerticalScrollBar scrollBar;
     private static TooltipProvider provider;
     private static Object lastProvider;
     private static AbstractCreature creature;
     private static AbstractCreature lastHoveredCreature;
-    public static float popupTooltipY = POPUP_TOOLTIP_Y_BASE;
     protected int currentDesc;
     protected Float lastSubHeaderHeight;
     protected Float lastTextHeight;
@@ -168,20 +165,7 @@ public class EUITooltip {
         return maxOffset;
     }
 
-    public static boolean isScrollingOnPopup() {
-        return scrollBar.hb.hovered;
-    }
-
-    private static void onScroll(float scrollPercentage) {
-        scrollBar.scroll(scrollPercentage, false);
-        popupTooltipY = POPUP_TOOLTIP_Y_BASE + Settings.HEIGHT * 0.1f * tooltips.size() * scrollPercentage;
-    }
-
     public static void postInitialize() {
-        scrollBar = new EUIVerticalScrollBar(new EUIHitbox(EUIGameUtils.screenW(0.94f), EUIGameUtils.screenH(0.15f), EUIGameUtils.screenW(0.026f), EUIGameUtils.screenH(0.7f))
-                .setIsPopupCompatible(true))
-                .setOnScroll(EUITooltip::onScroll);
-
         for (Map.Entry<String, EUIKeywordTooltip> entry : EUIKeywordTooltip.getEntries()) {
             EUIKeywordTooltip tip = entry.getValue();
             tip.canRender = !EUIConfiguration.getIsTipDescriptionHidden(entry.getKey());
@@ -336,48 +320,35 @@ public class EUITooltip {
                 }
             }
             scanListForAdditionalTips(tooltips);
-            scrollBar.scroll(0, true); // Reset tooltip position
         }
 
-        float x;
-        float y;
-        boolean updateScroll = false;
-        if (provider.isPopup()) {
-            x = 0.73f * Settings.WIDTH;
-            y = popupTooltipY;
-            if (y > Settings.HEIGHT) {
-                updateScroll = true;
+        float x = card.current_x;
+        float y = card.current_y - BOX_EDGE_H;
+        if (card.current_x < (float) Settings.WIDTH * 0.7f) {
+            x += AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD;
+        }
+        else {
+            x -= AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD + BOX_W;
+        }
+
+        float size = 0;
+        for (EUITooltip tip : tooltips) {
+            if (!StringUtils.isEmpty(tip.description)) {
+                size += 1f;
+            }
+        }
+
+        if (size > 3f && card.current_y < Settings.HEIGHT * 0.5f && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.CARD_REWARD) {
+            float steps = (tooltips.size() - 3) * 0.4f;
+            float multi = 1f - (card.current_y / (Settings.HEIGHT * 0.5f));
+
+            y += AbstractCard.IMG_HEIGHT * (0.5f + MathUtils.round(multi * steps));
+            if (y > Settings.HEIGHT * 0.96f) {
+                y = Settings.HEIGHT * 0.96f;
             }
         }
         else {
-            x = card.current_x;
-            if (card.current_x < (float) Settings.WIDTH * 0.7f) {
-                x += AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD;
-            }
-            else {
-                x -= AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD + BOX_W;
-            }
-
-            y = card.current_y - BOX_EDGE_H;
-            float size = 0;
-            for (EUITooltip tip : tooltips) {
-                if (!StringUtils.isEmpty(tip.description)) {
-                    size += 1f;
-                }
-            }
-
-            if (size > 3f && card.current_y < Settings.HEIGHT * 0.5f && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.CARD_REWARD) {
-                float steps = (tooltips.size() - 3) * 0.4f;
-                float multi = 1f - (card.current_y / (Settings.HEIGHT * 0.5f));
-
-                y += AbstractCard.IMG_HEIGHT * (0.5f + MathUtils.round(multi * steps));
-                if (y > Settings.HEIGHT * 0.96f) {
-                    y = Settings.HEIGHT * 0.96f;
-                }
-            }
-            else {
-                y += AbstractCard.IMG_HEIGHT * 0.5f;
-            }
+            y += AbstractCard.IMG_HEIGHT * 0.5f;
         }
 
         final float original_y = y;
@@ -388,24 +359,12 @@ public class EUITooltip {
                 continue;
             }
             float projected = y - tip.getTotalHeight();
-            if (projected <= 0) {
-                if (provider.isPopup()) {
-                    updateScroll = true;
-                }
-                else {
-                    y = original_y;
-                    x += offset_x;
-                }
+            if (projected <= 0 && !provider.isPopup()) {
+                y = original_y;
+                x += offset_x;
             }
 
             y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
-        }
-
-        if (updateScroll) {
-            updateScroll(sb);
-        }
-        else {
-            scrollBar.hb.hovered = false;
         }
 
         EUICardPreview preview = provider.getPreview();
@@ -662,11 +621,6 @@ public class EUITooltip {
         }
 
         return canRender;
-    }
-
-    private static void updateScroll(SpriteBatch sb) {
-        scrollBar.update();
-        scrollBar.render(sb);
     }
 
     public EUITooltip formatDescription(Object... items) {

@@ -84,7 +84,7 @@
 			"Extra Settings",
 			"EUI",
 			"EUI Fonts",
-			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword for more options.",
+			"#o{Left-Click} a keyword to toggle filtering of it. #o{Left-Click} a keyword while holding #o{{0}} to do a negative search with it. #o{Right-Click} a keyword to toggle it on or off.",
 			"Export",
 			"Export as CSV",
 			"Export as JSON",

@@ -270,10 +270,14 @@ public class EUIButton extends EUIHoverable {
                 }
             }
 
-            if (this.hb.clicked && EUI.tryClick(this.hb)) {
+            if (didClick()) {
                 onLeftClick();
             }
         }
+    }
+
+    protected boolean didClick() {
+        return this.hb.clicked && EUI.tryClick(this.hb);
     }
 
     public EUIButton setHoverBlendColor(Color color) {

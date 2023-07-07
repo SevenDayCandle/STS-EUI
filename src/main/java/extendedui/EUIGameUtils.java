@@ -469,7 +469,7 @@ public class EUIGameUtils {
         return EUIUtils.EMPTY_STRING;
     }
 
-    public static String textForRelicTier(AbstractRelic.RelicTier type) {
+    public static String  textForRelicTier(AbstractRelic.RelicTier type) {
         switch (type) {
             case STARTER:
                 return SingleRelicViewPopup.TEXT[6];

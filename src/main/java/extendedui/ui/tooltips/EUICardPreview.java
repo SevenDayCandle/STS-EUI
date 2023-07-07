@@ -7,6 +7,7 @@ import com.badlogic.gdx.math.Vector2;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.configuration.EUIHotkeys;
@@ -70,6 +71,14 @@ public class EUICardPreview implements CardObject {
     }
 
     public void render(SpriteBatch sb, AbstractCard card, boolean upgraded, boolean isPopup) {
+        render(sb, card.current_x, card.current_y, card.drawScale, upgraded, isPopup);
+    }
+
+    public void render(SpriteBatch sb, AbstractRelic card, boolean upgraded, boolean isPopup) {
+        render(sb, card.currentX, card.currentY, card.scale, upgraded, isPopup);
+    }
+
+    public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean isPopup) {
         if (isPopup) {
             float x = (float) Settings.WIDTH * 0.2f - 10f * Settings.scale;
             float y = (float) Settings.HEIGHT * 0.25f;
@@ -77,9 +86,9 @@ public class EUICardPreview implements CardObject {
             render(sb, x, y, scale, upgraded);
         }
         else if (AbstractDungeon.player == null || !AbstractDungeon.player.isDraggingCard) {
-            float x = card.current_x + (AbstractCard.IMG_WIDTH * 0.9f + 16f) * ((card.current_x > Settings.WIDTH * 0.7f) ? card.drawScale : -card.drawScale);
-            float y = card.current_y + (AbstractCard.IMG_HEIGHT * 0.1f) * card.drawScale;
-            float scale = card.drawScale * 0.8f;
+            float x = curX + (AbstractCard.IMG_WIDTH * 0.9f + 16f) * ((curX > Settings.WIDTH * 0.7f) ? drawScale : -drawScale);
+            float y = curY + (AbstractCard.IMG_HEIGHT * 0.1f) * drawScale;
+            float scale = drawScale * 0.8f;
             render(sb, x, y, scale, upgraded);
         }
     }
