@@ -48,6 +48,7 @@ public class EUIConfiguration {
     private static final String DISABLE_EFFEKSEER = getFullKey("DisableEffekseer");
     private static final String ENABLE_CARD_POOL_DEBUG = getFullKey("EnableCardPoolDebug");
     private static final String ENABLE_DESCRIPTION_ICONS = getFullKey("EnableDescriptionIcons");
+    private static final String ENABLE_EXPAND_TOOLTIPS = getFullKey("EnableExpandTooltips");
     private static final String ENERGY_FONT = getFullKey("EnergyFont");
     private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
     private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
@@ -67,6 +68,7 @@ public class EUIConfiguration {
     public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
     public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(ENABLE_CARD_POOL_DEBUG, false);
     public static STSConfigItem<Boolean> enableDescriptionIcons = new STSConfigItem<>(ENABLE_DESCRIPTION_ICONS, false);
+    public static STSConfigItem<Boolean> enableExpandTooltips = new STSConfigItem<>(ENABLE_EXPAND_TOOLTIPS, false);
     public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(FLUSH_ON_GAME_START, false);
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
@@ -173,8 +175,9 @@ public class EUIConfiguration {
             showCountingPanel.addConfig(config);
             useVanillaCompendium.addConfig(config);
             disableCompendiumButton.addConfig(config);
-            enableDescriptionIcons.addConfig(config);
             disableEffekseer.addConfig(config);
+            enableDescriptionIcons.addConfig(config);
+            enableExpandTooltips.addConfig(config);
             flushOnGameStart.addConfig(config);
             flushOnRoomStart.addConfig(config);
             showModSettings.addConfig(config);
@@ -235,6 +238,7 @@ public class EUIConfiguration {
         makeModToggle(effekseerCategory, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, EUIRM.strings.configdesc_disableCompendiumButton);
         makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.config_disableEffekseer, EUIRM.strings.configdesc_disableEffekseer);
         makeModToggle(effekseerCategory, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, EUIRM.strings.configdesc_enableDescriptionIcons);
+        makeModToggle(effekseerCategory, enableExpandTooltips, EUIRM.strings.config_enableExpandTooltips, EUIRM.strings.configdesc_enableExpandTooltips);
         makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
@@ -261,6 +265,7 @@ public class EUIConfiguration {
         yPos = addToggle(0, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, yPos, EUIRM.strings.configdesc_disableCompendiumButton);
         yPos = addToggle(0, disableEffekseer, EUIRM.strings.config_disableEffekseer, yPos, EUIRM.strings.configdesc_disableEffekseer);
         yPos = addToggle(0, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, yPos, EUIRM.strings.configdesc_enableDescriptionIcons);
+        yPos = addToggle(0, enableExpandTooltips, EUIRM.strings.config_enableExpandTooltips, yPos, EUIRM.strings.configdesc_enableExpandTooltips);
         yPos = addToggle(0, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(0, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);

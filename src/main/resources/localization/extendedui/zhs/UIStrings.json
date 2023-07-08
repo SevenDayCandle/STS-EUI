@@ -22,6 +22,7 @@
 			"能量字体",
 			"横幅字体",
 			"启用debug功能",
+			"Enable expanded Tooltips",
 			"重新启用提示描述"
 		]
 	},
@@ -39,6 +40,7 @@
 			"为不同的文本类型分别指定字体，未指定的类型将使用默认字体。如果不勾选，所有的文本类型都将使用唯一指定字体。",
 			"本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。",
 			"启用游戏内百科大全中的多种debug功能（右击项目访问）。",
+			"If checked, keywords mentioned in tooltips on cards, relics, and potions will also have their tooltips shown.",
 			"重新启用所有被本mod关闭的提示描述。",
 			"{#b:No tooltips are currently disabled.}"
 		]

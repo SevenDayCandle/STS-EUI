@@ -898,6 +898,11 @@ public abstract class EUIUtils {
         return res;
     }
 
+    @SafeVarargs
+    public static <T extends Comparable<T>> T max(T... list) {
+        return max(list, l -> l);
+    }
+
     public static <T, N extends Comparable<N>> N max(T[] list, FuncT1<N, T> getProperty) {
         N best = null;
         for (T t : list) {
@@ -931,6 +936,11 @@ public abstract class EUIUtils {
             return 0;
         }
         return sum(list, predicate) / list.size();
+    }
+
+    @SafeVarargs
+    public static <T extends Comparable<T>> T min(T... list) {
+        return min(list, l -> l);
     }
 
     public static <T, N extends Comparable<N>> N min(T[] list, FuncT1<N, T> getProperty) {

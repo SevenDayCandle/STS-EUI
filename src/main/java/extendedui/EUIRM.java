@@ -222,7 +222,8 @@ public class EUIRM {
         public final String config_energyFont = stringsConfig.TEXT[18];
         public final String config_bannerFont = stringsConfig.TEXT[19];
         public final String config_enableDebug = stringsConfig.TEXT[20];
-        public final String config_reenableTooltips = stringsConfig.TEXT[21];
+        public final String config_enableExpandTooltips = stringsConfig.TEXT[21];
+        public final String config_reenableTooltips = stringsConfig.TEXT[22];
 
         public final String configdesc_restartRequired = stringsConfigDesc.TEXT[0];
         public final String configdesc_showCountingPanel = stringsConfigDesc.TEXT[1];
@@ -236,8 +237,9 @@ public class EUIRM {
         public final String configdesc_useSeparateFonts = stringsConfigDesc.TEXT[9];
         public final String configdesc_overrideGameFont = stringsConfigDesc.TEXT[10];
         public final String configdesc_enableDebug = stringsConfigDesc.TEXT[11];
-        public final String configdesc_reenableTooltips = stringsConfigDesc.TEXT[12];
-        public final String configdesc_reenableTooltipsNone = stringsConfigDesc.TEXT[13];
+        public final String configdesc_enableExpandTooltips = stringsConfigDesc.TEXT[12];
+        public final String configdesc_reenableTooltips = stringsConfigDesc.TEXT[13];
+        public final String configdesc_reenableTooltipsNone = stringsConfigDesc.TEXT[14];
 
         public final String hotkey_cycle = stringsHotkeys.TEXT[0];
         public final String hotkey_openCardPool = stringsHotkeys.TEXT[1];

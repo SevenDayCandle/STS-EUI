@@ -26,6 +26,7 @@ import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIUtils;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.markers.IntentProvider;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUISmartText;
@@ -606,9 +607,11 @@ public class EUITooltip {
     }
 
     public static void scanListForAdditionalTips(ArrayList<EUITooltip> source, ArrayList<EUITooltip> receiver) {
-        for (EUITooltip tip : source) {
-            if (tip.description != null && tip.isRenderable()) {
-                scanForTips(tip.description, receiver, receiver, false);
+        if (EUIConfiguration.enableExpandTooltips.get()) {
+            for (EUITooltip tip : source) {
+                if (tip.description != null && tip.isRenderable()) {
+                    scanForTips(tip.description, receiver, receiver, false);
+                }
             }
         }
     }
