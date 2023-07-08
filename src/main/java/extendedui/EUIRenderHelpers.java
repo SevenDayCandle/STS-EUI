@@ -12,8 +12,6 @@ import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
-import com.github.tommyettinger.colorful.Shaders;
-import com.github.tommyettinger.colorful.rgb.ColorTools;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
@@ -36,6 +34,8 @@ import java.util.ArrayList;
 
 public class EUIRenderHelpers {
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
+    protected static final String SHADER_BRIGHTER_FRAGMENT = "shaders/brighterFragment.glsl";
+    protected static final String SHADER_COLORIZE_FRAGMENT = "shaders/colorizeFragment.glsl";
     protected static final String SHADER_GLITCH_FRAGMENT = "shaders/glitchFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
     protected static final String SHADER_INVERT_FRAGMENT = "shaders/invertFragment.glsl";
@@ -120,10 +120,6 @@ public class EUIRenderHelpers {
     }
 
     public static void drawBrighter(SpriteBatch sb, Color color, ActionT1<SpriteBatch> drawFunc) {
-        drawColoredWithShader(sb, getBrightShader(), ColorTools.fromColor(color), drawFunc);
-    }
-
-    public static void drawBrighter(SpriteBatch sb, float color, ActionT1<SpriteBatch> drawFunc) {
         drawColoredWithShader(sb, getBrightShader(), color, drawFunc);
     }
 
@@ -166,27 +162,17 @@ public class EUIRenderHelpers {
         sb.setColor(Color.WHITE);
     }
 
-    public static void drawColored(SpriteBatch sb, float color, ActionT1<SpriteBatch> drawFunc) {
-        sb.setColor(color);
-        drawFunc.invoke(sb);
-        sb.setColor(Color.WHITE);
-    }
-
     public static void drawColored(SpriteBatch sb, Color color, ActionT1<SpriteBatch> drawFunc) {
         sb.setColor(color);
         drawFunc.invoke(sb);
         sb.setColor(Color.WHITE);
     }
 
-    public static void drawColoredWithShader(SpriteBatch sb, ShaderProgram shader, float colorfulColor, ActionT1<SpriteBatch> drawFunc) {
-        drawWithShader(sb, shader, (s) -> drawColored(s, colorfulColor, drawFunc));
+    public static void drawColoredWithShader(SpriteBatch sb, ShaderProgram shader, Color color, ActionT1<SpriteBatch> drawFunc) {
+        drawWithShader(sb, shader, (s) -> drawColored(s, color, drawFunc));
     }
 
     public static void drawColorized(SpriteBatch sb, Color color, ActionT1<SpriteBatch> drawFunc) {
-        drawColoredWithShader(sb, getColorizeShader(), ColorTools.fromColor(color), drawFunc);
-    }
-
-    public static void drawColorized(SpriteBatch sb, float color, ActionT1<SpriteBatch> drawFunc) {
         drawColoredWithShader(sb, getColorizeShader(), color, drawFunc);
     }
 
@@ -560,14 +546,14 @@ public class EUIRenderHelpers {
 
     public static ShaderProgram getBrightShader() {
         if (brighterShader == null) {
-            brighterShader = Shaders.makeRGBAShader();
+            brighterShader = initializeShader(SHADER_VERTEX, SHADER_BRIGHTER_FRAGMENT);
         }
         return brighterShader;
     }
 
     public static ShaderProgram getColorizeShader() {
         if (colorizeShader == null) {
-            colorizeShader = new ShaderProgram(Shaders.vertexShader, Shaders.fragmentShaderColorize);
+            colorizeShader = initializeShader(SHADER_VERTEX, SHADER_COLORIZE_FRAGMENT);
         }
         return colorizeShader;
     }

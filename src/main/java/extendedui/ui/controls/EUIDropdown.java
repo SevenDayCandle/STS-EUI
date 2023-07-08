@@ -665,9 +665,9 @@ public class EUIDropdown<T> extends EUIHoverable {
     public EUIDropdown<T> setSelection(T selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
-            for (int i = 0; i < rows.size(); i++) {
-                if (selection.equals(rows.get(i).item)) {
-                    currentIndices.add(i);
+            for (EUIDropdownRow<T> row : rows) {
+                if (selection.equals(row.item)) {
+                    currentIndices.add(row.index);
                     break;
                 }
             }
@@ -679,9 +679,9 @@ public class EUIDropdown<T> extends EUIHoverable {
     public EUIDropdown<T> setSelection(FuncT1<Boolean, T> selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
-            for (int i = 0; i < rows.size(); i++) {
-                if (selection.invoke(rows.get(i).item)) {
-                    currentIndices.add(i);
+            for (EUIDropdownRow<T> row : rows) {
+                if (selection.invoke(row.item)) {
+                    currentIndices.add(row.index);
                 }
             }
         }
@@ -692,9 +692,9 @@ public class EUIDropdown<T> extends EUIHoverable {
     public <K> EUIDropdown<T> setSelection(Collection<K> selection, FuncT1<K, T> convertFunc, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
-            for (int i = 0; i < rows.size(); i++) {
-                if (selection.contains(convertFunc.invoke(rows.get(i).item))) {
-                    currentIndices.add(i);
+            for (EUIDropdownRow<T> row : rows) {
+                if (selection.contains(convertFunc.invoke(row.item))) {
+                    currentIndices.add(row.index);
                 }
             }
         }
@@ -705,9 +705,9 @@ public class EUIDropdown<T> extends EUIHoverable {
     public EUIDropdown<T> setSelection(Collection<T> selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
-            for (int i = 0; i < rows.size(); i++) {
-                if (selection.contains(rows.get(i).item)) {
-                    currentIndices.add(i);
+            for (EUIDropdownRow<T> row : rows) {
+                if (selection.contains(row.item)) {
+                    currentIndices.add(row.index);
                 }
             }
         }
@@ -927,12 +927,17 @@ public class EUIDropdown<T> extends EUIHoverable {
 
                 for (int i = 0; i < rows.size(); ++i) {
                     if (this.rows.get(i).update(i >= topVisibleRowIndex && i < topVisibleRowIndex + visibleRowCount(), currentIndices.contains(i))) {
-                        if (!this.isMultiSelect) {
-                            openOrCloseMenu();
-                        }
                         this.setSelectedIndex(this.rows.get(i).index);
                         isHoveringOver = true;
                         CardCrawlGame.sound.play("UI_CLICK_2");
+                        if (!this.isMultiSelect) {
+                            if (Settings.isControllerMode) {
+                                CInputActionSet.cancel.unpress();
+                                CInputHelper.setCursor(this.hb);
+                            }
+                            openOrCloseMenu();
+                            return;
+                        }
                     }
                     else if (this.rows.get(i).hb.hovered) {
                         isHoveringOver = true;
