@@ -23,6 +23,7 @@
 			"横幅字体",
 			"启用debug功能",
 			"Enable expanded Tooltips",
+			"Always use EUI tooltip rendering",
 			"重新启用提示描述"
 		]
 	},
@@ -41,6 +42,7 @@
 			"本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。",
 			"启用游戏内百科大全中的多种debug功能（右击项目访问）。",
 			"If checked, keywords mentioned in tooltips on cards, relics, and potions will also have their tooltips shown.",
+			"If checked, all tooltip rendering will be managed by EUI. This may cause incompatibility issues with mods that modify base game tooltip rendering.",
 			"重新启用所有被本mod关闭的提示描述。",
 			"{#b:No tooltips are currently disabled.}"
 		]

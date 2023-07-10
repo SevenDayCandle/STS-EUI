@@ -60,6 +60,7 @@ public class EUIConfiguration {
     private static final String SHOW_MOD_SETTINGS = getFullKey("ShowModSettings");
     private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
     private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
+    private static final String USE_EUI_TOOLTIPS = getFullKey("UseEUITooltips");
     private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
     private static final String USE_SNAP_SCROLLING = getFullKey("UseSnapScrolling");
     private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
@@ -74,6 +75,7 @@ public class EUIConfiguration {
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
     public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(SHOW_COUNTING_PANEL, false);
     public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(SHOW_MOD_SETTINGS, false);
+    public static STSConfigItem<Boolean> useEUITooltips = new STSConfigItem<>(USE_EUI_TOOLTIPS, false);
     public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(USE_SEPARATE_FONTS, false);
     public static STSConfigItem<Boolean> useSnapScrolling = new STSConfigItem<>(USE_SNAP_SCROLLING, false);
     public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
@@ -181,6 +183,7 @@ public class EUIConfiguration {
             flushOnGameStart.addConfig(config);
             flushOnRoomStart.addConfig(config);
             showModSettings.addConfig(config);
+            useEUITooltips.addConfig(config);
             useSnapScrolling.addConfig(config);
             useSeparateFonts.addConfig(config);
             overrideGameFont.addConfig(config);
@@ -239,6 +242,7 @@ public class EUIConfiguration {
         makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.config_disableEffekseer, EUIRM.strings.configdesc_disableEffekseer);
         makeModToggle(effekseerCategory, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, EUIRM.strings.configdesc_enableDescriptionIcons);
         makeModToggle(effekseerCategory, enableExpandTooltips, EUIRM.strings.config_enableExpandTooltips, EUIRM.strings.configdesc_enableExpandTooltips);
+        makeModToggle(effekseerCategory, useEUITooltips, EUIRM.strings.config_useEUITooltips, EUIRM.strings.configdesc_useEUITooltips);
         makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
@@ -266,12 +270,13 @@ public class EUIConfiguration {
         yPos = addToggle(0, disableEffekseer, EUIRM.strings.config_disableEffekseer, yPos, EUIRM.strings.configdesc_disableEffekseer);
         yPos = addToggle(0, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, yPos, EUIRM.strings.configdesc_enableDescriptionIcons);
         yPos = addToggle(0, enableExpandTooltips, EUIRM.strings.config_enableExpandTooltips, yPos, EUIRM.strings.configdesc_enableExpandTooltips);
+        yPos = addToggle(0, enableExpandTooltips, EUIRM.strings.config_useEUITooltips, yPos, EUIRM.strings.configdesc_useEUITooltips);
         yPos = addToggle(0, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(0, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);
         yPos = addToggle(0, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
-        EUIButton clearButton2 = (EUIButton) clearButton.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
-        yPos = addGenericElement(0, clearButton2, yPos);
+        EUIButton clearButton2 = (EUIButton) clearButton.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos - BASE_OPTION_OPTION_HEIGHT);
+        yPos = addGenericElement(0, clearButton2, yPos - BASE_OPTION_OPTION_HEIGHT);
 
         yPos = BASE_OPTION_OFFSET_Y;
         yPos = addToggle(1, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);

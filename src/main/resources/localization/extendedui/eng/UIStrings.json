@@ -23,6 +23,7 @@
 			"Banner Font",
 			"Enable debug functionality",
 			"Enable expanded Tooltips",
+			"Always use EUI tooltip rendering",
 			"Re-enable Tooltips"
 		]
 	},
@@ -41,6 +42,7 @@
 			"This mod manages its fonts separately from the base game, so its font settings will not affect base game fonts by default. Checking this setting will allow these font settings to affect the base game as well.",
 			"If checked, enables various debugging functions to be used in the card pool screen by right-clicking cards in its grid.",
 			"If checked, keywords mentioned in tooltips on cards, relics, and potions will also have their tooltips shown.",
+			"If checked, all tooltip rendering will be managed by EUI. This may cause incompatibility issues with mods that modify base game tooltip rendering.",
 			"Re-enable all tooltips that were turned off by this mod.",
 			"{#b:No tooltips are currently disabled.}"
 		]

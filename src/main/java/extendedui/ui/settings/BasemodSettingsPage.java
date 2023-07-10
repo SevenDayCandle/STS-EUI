@@ -71,6 +71,6 @@ public class BasemodSettingsPage implements IUIElement {
             currentItems = selected;
         }
         leftButton.setInteractable(current > 0);
-        rightButton.setInteractable(current < pages.size() - 1);
+        rightButton.setInteractable(current <= pages.size() - 1);
     }
 }

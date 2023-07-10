@@ -57,10 +57,8 @@ public class EUITooltip {
     public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
     public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
     public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
-    private static TooltipProvider provider;
+    private static Object provider;
     private static Object lastProvider;
-    private static AbstractCreature creature;
-    private static AbstractCreature lastHoveredCreature;
     protected int currentDesc;
     protected Float lastSubHeaderHeight;
     protected Float lastTextHeight;
@@ -93,9 +91,31 @@ public class EUITooltip {
     public static void blockTooltips() {
         clearVanillaTips();
         tooltips.clear();
-        lastHoveredCreature = null;
         provider = null;
         lastProvider = null;
+    }
+
+    protected static void addGenericTips(Iterable<PowerTip> vanillaTips) {
+        if (provider instanceof TooltipProvider) {
+            for (EUITooltip tip : ((TooltipProvider) provider).getTipsForRender()) {
+                if (tip.isRenderable()) {
+                    tooltips.add(tip);
+                }
+            }
+        }
+        else {
+            for (PowerTip sk : vanillaTips) {
+                EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
+                if (tip != null){
+                    if (tip.isRenderable()) {
+                        tooltips.add(tip);
+                    }
+                }
+                else {
+                    tooltips.add(new EUITooltip(sk.header, sk.body));
+                }
+            }
+        }
     }
 
     public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY) {
@@ -138,10 +158,6 @@ public class EUITooltip {
         return newTip;
     }
 
-    public static TooltipProvider getCurrentProvider() {
-        return provider;
-    }
-
     public static float getTallestOffset(ArrayList<EUITooltip> tips) {
         float currentOffset = 0f;
         float maxOffset = 0f;
@@ -174,7 +190,6 @@ public class EUITooltip {
             if (lastProvider != tooltip) {
                 lastProvider = tooltip;
                 provider = null;
-                lastHoveredCreature = creature = null;
                 tooltips.clear();
                 tooltips.add(tooltip);
                 if (tooltip.children != null) {
@@ -207,7 +222,6 @@ public class EUITooltip {
             if (lastProvider != tips) {
                 lastProvider = tips;
                 provider = null;
-                lastHoveredCreature = creature = null;
                 tooltips.clear();
                 tooltips.addAll(tips);
             }
@@ -219,33 +233,33 @@ public class EUITooltip {
 
     public static void queueTooltips(AbstractCreature source) {
         if (tryQueue()) {
-            creature = source;
+            provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromCreature);
         }
     }
 
-    public static <T extends AbstractCard & TooltipProvider> void queueTooltips(T source) {
+    public static void queueTooltips(AbstractCard source) {
         if (tryQueue()) {
             provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromCard);
         }
     }
 
-    public static <T extends AbstractPotion & TooltipProvider> void queueTooltips(T source) {
+    public static void queueTooltips(AbstractPotion source) {
         if (tryQueue()) {
             provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromPotion);
         }
     }
 
-    public static <T extends AbstractRelic & TooltipProvider> void queueTooltips(T source) {
+    public static void queueTooltips(AbstractRelic source) {
         if (tryQueue()) {
             provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromRelic);
         }
     }
 
-    public static <T extends AbstractBlight & TooltipProvider> void queueTooltips(T source) {
+    public static  void queueTooltips(AbstractBlight source) {
         if (tryQueue()) {
             provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromBlight);
@@ -261,11 +275,7 @@ public class EUITooltip {
         if (lastProvider != provider) {
             lastProvider = provider;
             tooltips.clear();
-            for (EUITooltip tip : provider.getTipsForRender()) {
-                if (tip.isRenderable()) {
-                    tooltips.add(tip);
-                }
-            }
+            addGenericTips(blight.tips);
             scanListForAdditionalTips(tooltips);
         }
 
@@ -307,11 +317,12 @@ public class EUITooltip {
 
         if (lastProvider != provider) {
             lastProvider = provider;
-            lastHoveredCreature = null;
             tooltips.clear();
-            for (EUITooltip tip : provider.getTipsForRender()) {
-                if (tip.isRenderable()) {
-                    tooltips.add(tip);
+            if (provider instanceof TooltipProvider) {
+                for (EUITooltip tip : ((TooltipProvider) provider).getTipsForRender()) {
+                    if (tip.isRenderable()) {
+                        tooltips.add(tip);
+                    }
                 }
             }
             scanListForAdditionalTips(tooltips);
@@ -348,13 +359,14 @@ public class EUITooltip {
 
         final float original_y = y;
         final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
+
         for (int i = 0; i < tooltips.size(); i++) {
             EUITooltip tip = tooltips.get(i);
             if (StringUtils.isEmpty(tip.description)) {
                 continue;
             }
             float projected = y - tip.getTotalHeight();
-            if (projected <= 0 && !provider.isPopup()) {
+            if (projected <= 0) {
                 y = original_y;
                 x += offset_x;
             }
@@ -362,13 +374,17 @@ public class EUITooltip {
             y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
         }
 
-        EUICardPreview preview = provider.getPreview();
-        if (preview != null) {
-            preview.render(sb, card, card.upgraded || EUIGameUtils.canShowUpgrades(false), provider.isPopup());
+        if (provider instanceof TooltipProvider) {
+            boolean popUp = ((TooltipProvider) provider).isPopup();
+            EUICardPreview preview = ((TooltipProvider) provider).getPreview();
+            if (preview != null) {
+                preview.render(sb, card, card.upgraded || EUIGameUtils.canShowUpgrades(false), popUp);
+            }
         }
     }
 
     public static void renderFromCreature(SpriteBatch sb) {
+        AbstractCreature creature = EUIUtils.safeCast(provider, AbstractCreature.class);
         if (creature == null) {
             return;
         }
@@ -381,8 +397,8 @@ public class EUITooltip {
             x = creature.hb.cX - (creature.hb.width / 2.0F) + TIP_OFFSET_L_X;
         }
 
-        if (lastHoveredCreature != creature) {
-            lastHoveredCreature = creature;
+        if (lastProvider != creature) {
+            lastProvider = creature;
 
             tooltips.clear();
 
@@ -430,8 +446,8 @@ public class EUITooltip {
         }
 
         float y = creature.hb.cY + calculateAdditionalOffset(tooltips, creature.hb.cY);
-        if (provider != null) {
-            EUICardPreview preview = provider.getPreview();
+        if (provider instanceof TooltipProvider) {
+            EUICardPreview preview = ((TooltipProvider) provider).getPreview();
             if (preview != null) {
                 float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
                 preview.render(sb, previewOffset, y, 0.8f, preview.getCard().upgraded);
@@ -462,11 +478,7 @@ public class EUITooltip {
         if (lastProvider != provider) {
             lastProvider = provider;
             tooltips.clear();
-            for (EUITooltip tip : provider.getTipsForRender()) {
-                if (tip.isRenderable()) {
-                    tooltips.add(tip);
-                }
-            }
+            addGenericTips(potion.tips);
             scanListForAdditionalTips(tooltips);
         }
 
@@ -509,11 +521,7 @@ public class EUITooltip {
         if (lastProvider != provider) {
             lastProvider = provider;
             tooltips.clear();
-            for (EUITooltip tip : provider.getTipsForRender()) {
-                if (tip.isRenderable()) {
-                    tooltips.add(tip);
-                }
-            }
+            addGenericTips(relic.tips);
             scanListForAdditionalTips(tooltips);
         }
 
