@@ -33,6 +33,7 @@ import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.interfaces.markers.CustomFilterModule;
 import extendedui.interfaces.markers.CustomPoolModule;
 import extendedui.patches.EUIKeyword;
+import extendedui.patches.game.TooltipPatches;
 import extendedui.patches.screens.MenuPanelScreenPatches;
 import extendedui.text.EUISmartText;
 import extendedui.ui.AbstractMenuScreen;
@@ -202,6 +203,7 @@ public class EUI {
         activeElement = null;
         currentScreen = null;
         lastClicked = null;
+        TooltipPatches.clearTips();
         EUITourTooltip.clearTutorialQueue();
     }
 

@@ -21,9 +21,15 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class TooltipPatches {
-    private static AbstractCard lastCard;
     private static ArrayList<EUITooltip> currentTips;
+    private static EUITooltip currentSingleTip;
     private static Object lastTips;
+
+    public static void clearTips() {
+        lastTips = null;
+        currentTips = null;
+        currentSingleTip = null;
+    }
 
     @SpirePatch(clz = AbstractMonster.class, method = "renderTip", paramtypez = {SpriteBatch.class})
     public static class AbstractMonster_RenderTip {
@@ -70,21 +76,6 @@ public class TooltipPatches {
         }
     }
 
-    @SpirePatch(clz = AbstractPotion.class, method = "renderTip", paramtypez = {SpriteBatch.class})
-    public static class AbstractPotion_RenderTips {
-        @SpirePrefixPatch
-        public static SpireReturn<Void> prefix(AbstractPotion __instance, SpriteBatch sb) {
-            if (EUIConfiguration.useEUITooltips.get()) {
-                if (EUITooltip.canRenderTooltips()) {
-                    EUITooltip.queueTooltips(__instance);
-                }
-                return SpireReturn.Return();
-            }
-
-            return SpireReturn.Continue();
-        }
-    }
-
     @SpirePatch(clz = AbstractRelic.class, method = "renderTip", paramtypez = {SpriteBatch.class})
     public static class AbstractRelic_RenderTips {
         @SpirePrefixPatch
@@ -107,9 +98,27 @@ public class TooltipPatches {
             if (EUIConfiguration.useEUITooltips.get()) {
                 if (lastTips != powerTips) {
                     lastTips = powerTips;
-                    currentTips = EUIUtils.map(powerTips, tip -> new EUITooltip(tip.header, tip.body));
+                    currentTips = EUIUtils.map(powerTips, tip -> new EUIKeywordTooltip(tip.header, tip.body));
                 }
                 EUITooltip.queueTooltips(currentTips);
+                return SpireReturn.Return();
+            }
+
+            return SpireReturn.Continue();
+        }
+    }
+
+    @SpirePatch(clz = TipHelper.class, method = "renderGenericTip")
+    public static class TipHelper_RenderGenericTip {
+        @SpirePrefixPatch
+        public static SpireReturn<Void> prefix(float x, float y, String header, String body) {
+            if (EUIConfiguration.useEUITooltips.get()) {
+                // Intentional pointer comparison with header object
+                if (lastTips != header) {
+                    lastTips = header;
+                    currentSingleTip = new EUITooltip(header, body);
+                }
+                EUITooltip.queueTooltip(currentSingleTip);
                 return SpireReturn.Return();
             }
 
@@ -122,8 +131,8 @@ public class TooltipPatches {
         @SpirePrefixPatch
         public static SpireReturn<Void> prefix(AbstractCard c, SpriteBatch sb) {
             if (EUIConfiguration.useEUITooltips.get()) {
-                if (lastCard != c) {
-                    lastCard = c;
+                if (lastTips != c) {
+                    lastTips = c;
                     currentTips = EUIUtils.map(c.keywords, EUIKeywordTooltip::findByName);
                 }
                 EUITooltip.queueTooltips(currentTips);
