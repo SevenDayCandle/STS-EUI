@@ -98,7 +98,13 @@ public class TooltipPatches {
             if (EUIConfiguration.useEUITooltips.get()) {
                 if (lastTips != powerTips) {
                     lastTips = powerTips;
-                    currentTips = EUIUtils.map(powerTips, tip -> new EUIKeywordTooltip(tip.header, tip.body));
+                    currentTips = EUIUtils.map(powerTips, tip -> {
+                        EUIKeywordTooltip kTip = EUIKeywordTooltip.findByName(tip.header.toLowerCase());
+                        if (kTip != null) {
+                            return kTip.isRenderable() ? kTip : null;
+                        }
+                        return new EUIKeywordTooltip(tip.header, tip.body);
+                    });
                 }
                 EUITooltip.queueTooltips(currentTips);
                 return SpireReturn.Return();
@@ -133,7 +139,10 @@ public class TooltipPatches {
             if (EUIConfiguration.useEUITooltips.get()) {
                 if (lastTips != c) {
                     lastTips = c;
-                    currentTips = EUIUtils.map(c.keywords, EUIKeywordTooltip::findByName);
+                    currentTips = EUIUtils.mapAsNonnull(c.keywords, k -> {
+                        EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(k);
+                        return tip != null && tip.isRenderable() ? tip : null;
+                    });
                 }
                 EUITooltip.queueTooltips(currentTips);
                 return SpireReturn.Return();

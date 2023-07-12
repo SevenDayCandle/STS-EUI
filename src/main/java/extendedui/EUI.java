@@ -65,6 +65,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.regex.Pattern;
 
 public class EUI {
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> preRenderList = new ConcurrentLinkedQueue<>();
@@ -537,9 +538,16 @@ public class EUI {
     public static ArrayList<EUIKeywordTooltip> registerKeywords(Map<String, EUIKeyword> keywords) {
         ArrayList<EUIKeywordTooltip> tooltips = new ArrayList<>();
         for (Map.Entry<String, EUIKeyword> pair : keywords.entrySet()) {
+            String key = pair.getKey();
             EUIKeyword keyword = pair.getValue();
             EUIKeywordTooltip tooltip = new EUIKeywordTooltip(keyword);
-            EUIKeywordTooltip.registerID(pair.getKey(), tooltip);
+
+            String[] split = splitID(key);
+            if (split.length > 1) {
+                tooltip.setModID(split[0]);
+            }
+
+            EUIKeywordTooltip.registerID(key, tooltip);
             EUIKeywordTooltip.registerName(keyword.NAME.toLowerCase(), tooltip);
             if (keyword.PLURAL != null) {
                 // Emulate a plural parsing
@@ -610,6 +618,10 @@ public class EUI {
 
     public static void setCustomRelicPoolModule(AbstractCard.CardColor cardColor, CustomPoolModule<RelicInfo> element) {
         customRelicPoolModules.put(cardColor, element);
+    }
+
+    public static String[] splitID(String id) {
+        return id.split(Pattern.quote(":"), 2);
     }
 
     public static float time() {

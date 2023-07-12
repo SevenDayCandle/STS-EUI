@@ -95,25 +95,6 @@ public class EUISmartText {
         }
     }
 
-    // TODO remove orb icons
-    public static TextureRegion getSmallIcon(String id, boolean force) {
-        switch (id) {
-            case "E":
-                return AbstractDungeon.player != null ? AbstractDungeon.player.getOrb() : AbstractCard.orb_red;
-            case "CARD":
-                return AbstractCard.orb_card;
-            case "POTION":
-                return AbstractCard.orb_potion;
-            case "RELIC":
-                return AbstractCard.orb_relic;
-            case "SPECIAL":
-                return AbstractCard.orb_special;
-            default:
-                EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(id);
-                return (tooltip != null && (force || tooltip.forceIcon)) ? tooltip.icon : null;
-        }
-    }
-
     public static float getSmartHeight(BitmapFont font, String text, float lineWidth) {
         return getSmartHeight(font, text, lineWidth, font.getLineHeight());
     }
@@ -136,11 +117,6 @@ public class EUISmartText {
 
     public static float getSmartWidth(BitmapFont font, String text, float lineSpacing) {
         return getSmartWidth(font, text, Integer.MAX_VALUE, lineSpacing);
-    }
-
-    private static Color getTooltipBackgroundColor(String id) {
-        EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(id);
-        return (tooltip != null) ? tooltip.backgroundColor : null;
     }
 
     private static void obtainBlockColor() {
@@ -380,8 +356,18 @@ public class EUISmartText {
         }
 
         String iconID = EUIUtils.popBuilder(subBuilder);
-        Color backgroundColor = getTooltipBackgroundColor(iconID);
-        TextureRegion icon = getSmallIcon(iconID, force);
+        EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(iconID);
+        Color backgroundColor;
+        TextureRegion icon;
+        if (tooltip != null) {
+            backgroundColor = tooltip.backgroundColor;
+            icon = (force || tooltip.forceIcon) ? tooltip.icon : null;
+        }
+        else {
+            backgroundColor = null;
+            icon = null;
+        }
+
         if (icon != null) {
             final float orbWidth = icon.getRegionWidth();
             final float orbHeight = icon.getRegionHeight();
@@ -425,7 +411,7 @@ public class EUISmartText {
         }
         else {
             wordColor = Settings.GOLD_COLOR;
-            writeWord(sb, iconID, x, y, lineWidth, lineSpacing);
+            writeWord(sb, tooltip != null ? tooltip.title : iconID, x, y, lineWidth, lineSpacing);
         }
     }
 

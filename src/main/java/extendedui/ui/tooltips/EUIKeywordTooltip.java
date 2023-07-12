@@ -66,12 +66,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     public EUIKeywordTooltip(String title, String description, String modID) {
         super(title, description);
 
-        if (WhatMod.enabled && modID != null) {
-            ModInfo found = EUIGameUtils.getModInfoFromID(modID);
-            if (found != null) {
-                modName = new ColoredString(found.Name, Settings.PURPLE_COLOR);
-            }
-        }
+        setModID(modID);
     }
 
     public EUIKeywordTooltip(Keyword keyword) {
@@ -205,7 +200,7 @@ public class EUIKeywordTooltip extends EUITooltip {
             lastTextHeight = EUISmartText.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastModNameHeight = (modName != null) ? EUISmartText.getSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
             lastSubHeaderHeight = (subHeader != null) ? EUISmartText.getSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
-            lastHeight = (!canAdd || StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastModNameHeight + lastSubHeaderHeight) - 7f * Settings.scale);
+            lastHeight = (-(lastTextHeight + lastModNameHeight + lastSubHeaderHeight) - 7f * Settings.scale);
         }
         return lastHeight;
     }
@@ -386,6 +381,17 @@ public class EUIKeywordTooltip extends EUITooltip {
     public EUIKeywordTooltip setIconSizeMulti(float w, float h) {
         this.iconmultiW = w;
         this.iconmultiH = h;
+
+        return this;
+    }
+
+    public EUIKeywordTooltip setModID(String modID) {
+        if (WhatMod.enabled && modID != null) {
+            ModInfo found = EUIGameUtils.getModInfoFromID(modID);
+            if (found != null) {
+                modName = new ColoredString(found.Name, Settings.PURPLE_COLOR);
+            }
+        }
 
         return this;
     }

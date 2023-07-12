@@ -10,7 +10,9 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
+import extendedui.EUIUtils;
 import extendedui.ui.settings.ExtraModSettingsPanel;
+import org.apache.commons.lang3.StringUtils;
 
 public class BasemodPatches {
     // Create EUI variants of Basemod keywords to show in the relic filter screen
@@ -20,11 +22,22 @@ public class BasemodPatches {
     public static class BaseMod_AddKeyword {
         @SpirePostfixPatch
         public static void postfix(String modID, String proper, String[] names, String description) {
+            // The actual keyword as used in-text is in the format modID:title, with title capitalized and spaces replaced with underscores
             String title = BaseMod.getKeywordUnique(names[0]);
+            String tipID = names[0];
             if (title == null) {
                 title = names[0];
+                tipID = EUIUtils.capitalize(title);
             }
-            EUI.tryRegisterTooltip(names[0], modID, title, description, names);
+
+            // ModIDs are prepended with colons
+            if (!StringUtils.isEmpty(modID)) {
+                tipID = modID + EUIUtils.capitalize(title).replace(" ", "_");
+                EUI.tryRegisterTooltip(tipID, modID.substring(0, modID.length() - 1), title, description, names);
+            }
+            else {
+                EUI.tryRegisterTooltip(tipID, null, title, description, names);
+            }
         }
     }
 
