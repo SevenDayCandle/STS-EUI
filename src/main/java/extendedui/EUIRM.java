@@ -187,6 +187,7 @@ public class EUIRM {
         public final TextureCache tag = new TextureCache("images/extendedui/ui/Tag.png");
         public final TextureCache warning = new TextureCache("images/extendedui/ui/Warning.png");
         public final TextureCache x = new TextureCache("images/extendedui/ui/X.png");
+        public final TextureCache xButton = new TextureCache("images/extendedui/ui/XButton.png");
     }
 
     public static class Strings {
