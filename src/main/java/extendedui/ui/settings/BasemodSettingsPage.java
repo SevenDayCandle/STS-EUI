@@ -32,6 +32,7 @@ public class BasemodSettingsPage implements IUIElement {
     public void addUIElement(int page, IUIElement element) {
         while (pages.size() <= page) {
             pages.add(new ArrayList<>());
+            rightButton.setInteractable(true); // Current will always be incrementable after we add a new page
         }
         pages.get(page).add(element);
     }
@@ -71,6 +72,6 @@ public class BasemodSettingsPage implements IUIElement {
             currentItems = selected;
         }
         leftButton.setInteractable(current > 0);
-        rightButton.setInteractable(current <= pages.size() - 1);
+        rightButton.setInteractable(current <= pages.size() - 2);
     }
 }

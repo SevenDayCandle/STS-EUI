@@ -275,8 +275,8 @@ public class EUIConfiguration {
         yPos = addToggle(0, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);
         yPos = addToggle(0, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
-        EUIButton clearButton2 = (EUIButton) clearButton.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos - BASE_OPTION_OPTION_HEIGHT);
-        yPos = addGenericElement(0, clearButton2, yPos - BASE_OPTION_OPTION_HEIGHT);
+        EUIButton clearButton2 = (EUIButton) clearButton.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos - BASE_OPTION_OPTION_HEIGHT * 2);
+        yPos = addGenericElement(0, clearButton2, yPos - BASE_OPTION_OPTION_HEIGHT * 2);
 
         yPos = BASE_OPTION_OFFSET_Y;
         yPos = addToggle(1, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
