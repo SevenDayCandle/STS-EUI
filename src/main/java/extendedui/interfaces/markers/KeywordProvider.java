@@ -1,11 +1,18 @@
 package extendedui.interfaces.markers;
 
+import extendedui.EUIUtils;
 import extendedui.ui.tooltips.EUICardPreview;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
+import extendedui.ui.tooltips.EUIPreview;
+import extendedui.utilities.RotatingList;
 
 import java.util.List;
 
 public interface KeywordProvider extends TooltipProvider {
+
+    default void fillPreviews(RotatingList<EUIPreview> list) {
+    }
+
     default List<EUIKeywordTooltip> getTipsForFilters() {
         return getTipsForRender();
     }
@@ -26,7 +33,7 @@ public interface KeywordProvider extends TooltipProvider {
         return false;
     }
 
-    default EUICardPreview getPreview() {
+    default EUIPreview getPreview() {
         return null;
     }
 }

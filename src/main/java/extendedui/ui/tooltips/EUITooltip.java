@@ -376,7 +376,7 @@ public class EUITooltip {
 
         if (provider instanceof TooltipProvider) {
             boolean popUp = ((TooltipProvider) provider).isPopup();
-            EUICardPreview preview = ((TooltipProvider) provider).getPreview();
+            EUIPreview preview = ((TooltipProvider) provider).getPreview();
             if (preview != null) {
                 preview.render(sb, card, card.upgraded || EUIGameUtils.canShowUpgrades(false), popUp);
             }
@@ -447,10 +447,10 @@ public class EUITooltip {
 
         float y = creature.hb.cY + calculateAdditionalOffset(tooltips, creature.hb.cY);
         if (provider instanceof TooltipProvider) {
-            EUICardPreview preview = ((TooltipProvider) provider).getPreview();
+            EUIPreview preview = ((TooltipProvider) provider).getPreview();
             if (preview != null) {
                 float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
-                preview.render(sb, previewOffset, y, 0.8f, preview.getCard().upgraded);
+                preview.render(sb, previewOffset, y, 0.8f, false);
             }
         }
 

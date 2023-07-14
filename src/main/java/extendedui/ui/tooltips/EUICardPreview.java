@@ -5,19 +5,19 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.CardObject;
 import extendedui.interfaces.markers.KeywordProvider;
 
-public class EUICardPreview implements CardObject {
+public class EUICardPreview extends EUIPreview implements CardObject {
     public AbstractCard defaultPreview;
     public AbstractCard upgradedPreview;
-    public boolean isMultiPreview;
+
+    public EUICardPreview(AbstractCard card) {
+        this(card, false);
+    }
 
     public EUICardPreview(AbstractCard card, boolean upgrade) {
         this.defaultPreview = card;
@@ -35,14 +35,6 @@ public class EUICardPreview implements CardObject {
         }
     }
 
-    public static EUICardPreview generatePreviewCard(AbstractCard card) {
-        return generatePreviewCard(card, false);
-    }
-
-    public static EUICardPreview generatePreviewCard(AbstractCard card, boolean upgrade) {
-        return new EUICardPreview(card, upgrade);
-    }
-
     @Override
     public AbstractCard getCard() {
         return defaultPreview;
@@ -50,6 +42,11 @@ public class EUICardPreview implements CardObject {
 
     public AbstractCard getPreview(boolean upgraded) {
         return upgraded && upgradedPreview != null ? upgradedPreview : defaultPreview;
+    }
+
+    @Override
+    public boolean matches(String preview) {
+        return defaultPreview.cardID.equals(preview);
     }
 
     public void render(SpriteBatch sb, float x, float y, float scale, boolean upgraded) {
@@ -67,29 +64,6 @@ public class EUICardPreview implements CardObject {
                     AbstractCard.IMG_WIDTH * 0.6f, font.getLineHeight() * 1.8f, Color.DARK_GRAY, 0.75f, 1);
             EUIRenderHelpers.writeOnCard(sb, preview, font, cyclePreviewText, 0, -AbstractCard.RAW_H * 0.55f, Color.MAGENTA);
             EUIRenderHelpers.resetFont(font);
-        }
-    }
-
-    public void render(SpriteBatch sb, AbstractCard card, boolean upgraded, boolean isPopup) {
-        render(sb, card.current_x, card.current_y, card.drawScale, upgraded, isPopup);
-    }
-
-    public void render(SpriteBatch sb, AbstractRelic card, boolean upgraded, boolean isPopup) {
-        render(sb, card.currentX, card.currentY, card.scale, upgraded, isPopup);
-    }
-
-    public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean isPopup) {
-        if (isPopup) {
-            float x = (float) Settings.WIDTH * 0.2f - 10f * Settings.scale;
-            float y = (float) Settings.HEIGHT * 0.25f;
-            float scale = 1f;
-            render(sb, x, y, scale, upgraded);
-        }
-        else if (AbstractDungeon.player == null || !AbstractDungeon.player.isDraggingCard) {
-            float x = curX + (AbstractCard.IMG_WIDTH * 0.9f + 16f) * ((curX > Settings.WIDTH * 0.7f) ? drawScale : -drawScale);
-            float y = curY + (AbstractCard.IMG_HEIGHT * 0.1f) * drawScale;
-            float scale = drawScale * 0.8f;
-            render(sb, x, y, scale, upgraded);
         }
     }
 }

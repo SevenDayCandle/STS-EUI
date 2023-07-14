@@ -36,10 +36,9 @@ public class EUIDropdown<T> extends EUIHoverable {
     protected static final float ROW_WIDTH_MULT = 3.4028235E38F;
     protected static final float ARROW_ICON_W = 30.0F * Settings.scale;
     protected static final float ARROW_ICON_H = 30.0F * Settings.scale;
-    protected static final float BORDER_SIZE = Settings.scale * 10.0F;
+    protected static final float BORDER_SIZE = Settings.scale * 8.0F;
     protected static final float BOX_EDGE_H = 32.0F * Settings.scale;
     protected static final float BOX_BODY_H = 64.0F * Settings.scale;
-    protected static final float ICON_WIDTH = 64.0F * Settings.scale;
     protected static final float SCROLLBAR_WIDTH = 24.0F * Settings.scale;
     protected static final float SCROLLBAR_PADDING = 8.0F * Settings.scale;
     protected static final float TOGGLE_OFFSET = 5f;
@@ -195,9 +194,9 @@ public class EUIDropdown<T> extends EUIHoverable {
     public float calculateRowWidth() {
         float w = 0;
         for (EUIDropdownRow<T> row : rows) {
-            w = Math.max(w, EUISmartText.getSmartWidth(this.font, row.getTextForWidth(), ROW_WIDTH_MULT, ROW_WIDTH_MULT) + ICON_WIDTH);
+            w = Math.max(w, EUISmartText.getSmartWidth(this.font, row.getTextForWidth(), ROW_WIDTH_MULT, ROW_WIDTH_MULT));
         }
-        return w;
+        return w + BOX_BODY_H;
     }
 
     public void clear() {
@@ -375,24 +374,25 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     protected void renderBorder(SpriteBatch sb, float x, float bottom, float width, float height) {
-        float BOX_W = width + 2.0F * BORDER_SIZE;
-        float FRAME_X = x - BORDER_SIZE;
-        sb.setColor(Color.WHITE);
+        float boxW = width + 2.0F * BORDER_SIZE;
+        float frameX = x - BORDER_SIZE / 2;
         float bottomY = bottom - BORDER_SIZE;
-        sb.draw(ImageMaster.KEYWORD_BOT, FRAME_X, bottomY, BOX_W, rowHeight);
-        float middleHeight = height - 2.0F * rowHeight - BORDER_SIZE;
-        sb.draw(ImageMaster.KEYWORD_BODY, FRAME_X, bottomY + rowHeight, BOX_W, middleHeight);
-        sb.draw(ImageMaster.KEYWORD_TOP, FRAME_X, bottom + middleHeight + BORDER_SIZE, BOX_W, rowHeight);
-    }
+        float middleHeight = height - rowHeight - BORDER_SIZE;
+        float middleY = bottomY + BORDER_SIZE;
+        float topY = bottom + middleHeight;
+        sb.setColor(Color.GRAY);
 
-    protected void renderBorderFromTop(SpriteBatch sb, float x, float top, float width, float height) {
-        float BORDER_TOP_Y = top - BOX_EDGE_H + BORDER_SIZE;
-        float BOX_W = width + 2.0F * BORDER_SIZE;
-        float FRAME_X = x - BORDER_SIZE;
-        sb.setColor(Color.WHITE);
-        sb.draw(ImageMaster.KEYWORD_TOP, FRAME_X, BORDER_TOP_Y, BOX_W, BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BODY, FRAME_X, BORDER_TOP_Y - height - BOX_EDGE_H, BOX_W, height + BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BOT, FRAME_X, BORDER_TOP_Y - height - BOX_BODY_H, BOX_W, BOX_EDGE_H);
+        sb.draw(EUIRM.images.smallPanelCornerBL.texture(), frameX, bottomY, BORDER_SIZE, BORDER_SIZE);
+        sb.draw(EUIRM.images.smallPanelBorderB.texture(), frameX + BORDER_SIZE, bottomY, boxW, BORDER_SIZE);
+        sb.draw(EUIRM.images.smallPanelCornerBR.texture(), frameX + BORDER_SIZE + boxW, bottomY, BORDER_SIZE, BORDER_SIZE);
+
+        sb.draw(EUIRM.images.smallPanelBorderL.texture(), frameX, middleY, BORDER_SIZE, middleHeight);
+        sb.draw(EUIRM.images.darkSquare.texture(), frameX + BORDER_SIZE, middleY, boxW, middleHeight);
+        sb.draw(EUIRM.images.smallPanelBorderR.texture(), frameX + BORDER_SIZE + boxW, middleY, BORDER_SIZE, middleHeight);
+
+        sb.draw(EUIRM.images.smallPanelCornerTL.texture(), frameX, topY, BORDER_SIZE, BORDER_SIZE);
+        sb.draw(EUIRM.images.smallPanelBorderT.texture(), frameX + BORDER_SIZE, topY, boxW, BORDER_SIZE);
+        sb.draw(EUIRM.images.smallPanelCornerTR.texture(), frameX + BORDER_SIZE + boxW, topY, BORDER_SIZE, BORDER_SIZE);
     }
 
     @Override
@@ -902,11 +902,11 @@ public class EUIDropdown<T> extends EUIHoverable {
             this.layoutRowsBelow(hb.x, newOrigin);
             topY = this.yPositionForRowBelow(newOrigin, -1);
             bottomY = this.yPositionForRowBelow(newOrigin, rowCount);
-            this.scrollBar.hb.setOffsetY(this.hb.height * 2);
+            this.scrollBar.hb.setOffsetY(this.hb.height * 2 + BORDER_SIZE / 2);
         }
         else {
             this.layoutRowsBelow(hb.x, hb.y);
-            this.scrollBar.hb.setOffsetY(-this.visibleRowCount() * this.rowHeight - (headerRow != null ? headerRow.hb.height : 0));
+            this.scrollBar.hb.setOffsetY(-this.visibleRowCount() * this.rowHeight - (headerRow != null ? headerRow.hb.height : 0) + BORDER_SIZE / 2);
         }
     }
 

@@ -151,10 +151,10 @@ public class EUIRM {
         public final TextureCache border = new TextureCache("images/extendedui/ui/Border.png");
         public final TextureCache cardPool = new TextureCache("images/extendedui/ui/CardPool.png");
         public final TextureCache cardpoolPride = new TextureCache("images/extendedui/ui/CardPool2.png");
+        public final TextureCache darkSquare = new TextureCache("images/extendedui/ui/DarkSquare.png");
         public final TextureCache divider = new TextureCache("images/extendedui/ui/Divider.png");
         public final TextureCache draggable = new TextureCache("images/extendedui/ui/Draggable.png");
         public final TextureCache fileSelectButton = new TextureCache("images/extendedui/ui/FileSelectButton.png");
-        public final TextureCache fullSquare = new TextureCache("images/extendedui/ui/FullSquare.png");
         public final TextureCache greySquare = new TextureCache("images/extendedui/ui/GreySquare.png");
         public final TextureCache hexagonalButton = new TextureCache("images/extendedui/ui/HexagonalButton.png");
         public final TextureCache hexagonalButtonBorder = new TextureCache("images/extendedui/ui/HexagonalButtonBorder.png");
@@ -181,6 +181,14 @@ public class EUIRM {
         public final TextureCache plus = new TextureCache("images/extendedui/ui/Plus.png");
         public final TextureCache proceed = new TextureCache("images/extendedui/ui/Proceed.png");
         public final TextureCache rectangularButton = new TextureCache("images/extendedui/ui/RectangularButton.png");
+        public final TextureCache smallPanelBorderB = new TextureCache("images/extendedui/ui/SmallPanel_Border_B.png");
+        public final TextureCache smallPanelBorderL = new TextureCache("images/extendedui/ui/SmallPanel_Border_L.png");
+        public final TextureCache smallPanelBorderR = new TextureCache("images/extendedui/ui/SmallPanel_Border_R.png");
+        public final TextureCache smallPanelBorderT = new TextureCache("images/extendedui/ui/SmallPanel_Border_T.png");
+        public final TextureCache smallPanelCornerBL = new TextureCache("images/extendedui/ui/SmallPanel_Corner_BL.png");
+        public final TextureCache smallPanelCornerBR = new TextureCache("images/extendedui/ui/SmallPanel_Corner_BR.png");
+        public final TextureCache smallPanelCornerTL = new TextureCache("images/extendedui/ui/SmallPanel_Corner_TL.png");
+        public final TextureCache smallPanelCornerTR = new TextureCache("images/extendedui/ui/SmallPanel_Corner_TR.png");
         public final TextureCache squaredButton = new TextureCache("images/extendedui/ui/SquaredButton.png");
         public final TextureCache squaredButton2 = new TextureCache("images/extendedui/ui/SquaredButton2.png");
         public final TextureCache swap = new TextureCache("images/extendedui/ui/Swap.png");
