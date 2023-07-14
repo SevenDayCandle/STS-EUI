@@ -98,7 +98,7 @@ public class TooltipPatches {
             if (EUIConfiguration.useEUITooltips.get()) {
                 if (lastTips != powerTips) {
                     lastTips = powerTips;
-                    currentTips = EUIUtils.map(powerTips, tip -> {
+                    currentTips = EUIUtils.mapAsNonnull(powerTips, tip -> {
                         EUIKeywordTooltip kTip = EUIKeywordTooltip.findByName(tip.header.toLowerCase());
                         if (kTip != null) {
                             return kTip.isRenderable() ? kTip : null;

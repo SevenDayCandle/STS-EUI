@@ -35,7 +35,7 @@ public class EUIDropdownRow<T> {
         this.label = new EUILabel(dr.font, new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f))
                 .setFont(dr.font, dr.fontScale)
                 .setLabel(dr.labelFunction.invoke(item))
-                .setAlignment(0.5f, 0f, dr.isOptionSmartText);
+                .setAlignment(dr.isOptionSmartText ? 0.79f : 0.54f, 0f, dr.isOptionSmartText);
         if (dr.colorFunctionOption != null) {
             this.label.setColor(dr.colorFunctionOption.invoke(item));
         }
@@ -145,7 +145,7 @@ public class EUIDropdownRow<T> {
     }
 
     public EUIDropdownRow<T> updateAlignment() {
-        this.label.setAlignment(dr.isOptionSmartText ? 1f : 0.5f, 0f, dr.isOptionSmartText);
+        this.label.setAlignment(dr.isOptionSmartText ? 0.79f : 0.54f, 0f, dr.isOptionSmartText);
         this.label.setHitbox(new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f));
         return this;
     }

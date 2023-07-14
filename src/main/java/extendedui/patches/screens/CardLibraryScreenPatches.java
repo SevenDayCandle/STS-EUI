@@ -58,7 +58,7 @@ public class CardLibraryScreenPatches {
     public static class CardLibraryScreen_DidChangeTab {
         private static CardLibSortHeader defaultHeader;
 
-        @SpireInsertPatch(rloc = 0)
+        @SpirePrefixPatch
         public static void insert(CardLibraryScreen screen, ColorTabBar tabBar, ColorTabBar.CurrentTab newSelection) {
             Hitbox upgradeHitbox = tabBar.viewUpgradeHb;
             upgradeHitbox.width = 260 * Settings.scale;

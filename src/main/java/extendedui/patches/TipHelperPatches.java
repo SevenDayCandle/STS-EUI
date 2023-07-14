@@ -16,6 +16,7 @@ public class TipHelperPatches {
     }
 
     // Make a proxy arraylist that only renders tooltips that can be seen
+    // TODO edit renderKeywords instead
     @SpirePatch(clz = TipHelper.class, method = "render")
     public static class TipHelperPatches_Render {
         @SpireInstrumentPatch

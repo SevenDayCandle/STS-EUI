@@ -316,7 +316,7 @@ public class EUIExporter {
         exportButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.misc_export)
+                .setLabel(EUIFontHelper.buttonFont, 0.7f, EUIRM.strings.misc_export)
                 .setTooltip(tip)
                 .setColor(Color.GRAY);
         exportDropdown = (EUIContextMenu<EUIExporter.ContextOption>) new EUIContextMenu<EUIExporter.ContextOption>(new EUIHitbox(0, 0, 0, 0), c -> c.baseName)

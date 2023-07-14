@@ -26,6 +26,7 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.*;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -417,6 +418,7 @@ public abstract class EUIUtils {
         return res;
     }
 
+    /* Creates a NEW arraylist with the filtered values. If you want to do the filtering in place and the iterable is already a list, use filterInPlace instead */
     public static <T> ArrayList<T> filter(Iterable<? extends T> list, FuncT1<Boolean, T> predicate) {
         final ArrayList<T> res = new ArrayList<>();
         for (T t : list) {
@@ -426,6 +428,53 @@ public abstract class EUIUtils {
         }
 
         return res;
+    }
+
+    /* Retains only elements in the list that pass the filter. MODIFIES the list being called in */
+    public static <T, U extends Collection<T>> U filterInPlace(U list, FuncT1<Boolean, T> predicate) {
+        list.removeIf(t -> !predicate.invoke(t));
+        return list;
+    }
+
+    public static <T, N> ArrayList<N> filterMap(T[] list, FuncT1<Boolean, T> predicate, FuncT1<N, T> mapFunc) {
+        if (list != null) {
+            final ArrayList<N> res = new ArrayList<>();
+            for (T t : list) {
+                if (predicate.invoke(t)) {
+                    res.add(mapFunc.invoke(t));
+                }
+            }
+            return res;
+        }
+
+        return new ArrayList<>();
+    }
+
+    public static <T, N> ArrayList<N> filterMap(Iterable<? extends T> list, FuncT1<Boolean, T> predicate, FuncT1<N, T> mapFunc) {
+        final ArrayList<N> res = new ArrayList<>();
+        if (list != null) {
+            for (T t : list) {
+                if (predicate.invoke(t)) {
+                    res.add(mapFunc.invoke(t));
+                }
+            }
+        }
+
+        return res;
+    }
+
+    public static <T, N> ArrayList<N> filterMap(List<? extends T> list, FuncT1<Boolean, T> predicate, FuncT1<N, T> mapFunc) {
+        if (list != null) {
+            final ArrayList<N> res = new ArrayList<>(list.size());
+            for (T t : list) {
+                if (predicate.invoke(t)) {
+                    res.add(mapFunc.invoke(t));
+                }
+            }
+            return res;
+        }
+
+        return new ArrayList<>();
     }
 
     public static <T> T find(T[] array, FuncT1<Boolean, T> predicate) {

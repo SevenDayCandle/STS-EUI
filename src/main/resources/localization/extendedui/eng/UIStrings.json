@@ -93,7 +93,7 @@
 			"Save Table",
 			"Save as CSV",
 			"Save as JSON",
-			"Export the items in this group to an external file",
+			"Save a CSV or JSON sheet with information on the items on this group.",
 			"Confirm Overwrite",
 			"{0} already exists. Do you want to replace it?",
 			"Current",

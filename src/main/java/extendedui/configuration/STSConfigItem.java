@@ -28,6 +28,9 @@ public class STSConfigItem<T> {
         if (this.config.has(this.key)) {
             this.value = parseValue(this.config.getString(this.key));
         }
+        else {
+            this.value = this.defaultValue;
+        }
         return this;
     }
 
