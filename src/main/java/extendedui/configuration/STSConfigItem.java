@@ -23,8 +23,8 @@ public class STSConfigItem<T> {
         this.defaultValue = value = defaultValue;
     }
 
-    public final STSConfigItem<T> addConfig(SpireConfig Config) {
-        this.config = Config;
+    public final STSConfigItem<T> addConfig(SpireConfig config) {
+        this.config = config;
         if (this.config.has(this.key)) {
             this.value = parseValue(this.config.getString(this.key));
         }

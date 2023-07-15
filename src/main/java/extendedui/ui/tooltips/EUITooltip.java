@@ -510,6 +510,14 @@ public class EUITooltip {
         }
 
         renderTipsImpl(sb, tooltips, x, y);
+
+        if (provider instanceof TooltipProvider) {
+            boolean popUp = ((TooltipProvider) provider).isPopup();
+            EUIPreview preview = ((TooltipProvider) provider).getPreview();
+            if (preview != null) {
+                preview.render(sb, potion, false, popUp);
+            }
+        }
     }
 
     public static void renderFromRelic(SpriteBatch sb) {
@@ -553,6 +561,14 @@ public class EUITooltip {
         }
 
         renderTipsImpl(sb, tooltips, x, y);
+
+        if (provider instanceof TooltipProvider) {
+            boolean popUp = ((TooltipProvider) provider).isPopup();
+            EUIPreview preview = ((TooltipProvider) provider).getPreview();
+            if (preview != null) {
+                preview.render(sb, relic, false, popUp);
+            }
+        }
     }
 
     public static void renderGeneric(SpriteBatch sb) {

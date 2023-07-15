@@ -17,6 +17,8 @@ import static extendedui.ui.tooltips.EUITooltip.*;
 public class EUIRelicPreview extends EUIPreview {
     public static final float BOX_W = AbstractCard.IMG_WIDTH * 0.8f;
     public static final float BODY_TEXT_WIDTH = BOX_W - Settings.scale * 40f;
+    public static final float HEADER_OFFSET_Y = - 33.0F * Settings.scale;
+    public static final float BODY_OFFSET_Y = -60f * Settings.scale;
     protected static AbstractRelic last;
     protected static float lastHeight;
     public AbstractRelic preview;
@@ -77,9 +79,9 @@ public class EUIRelicPreview extends EUIPreview {
         preview.scale = scale;
         preview.render(sb);
 
-        FontHelper.renderFontCentered(sb, EUIFontHelper.cardTooltipTitleFontNormal, preview.name, c, y + HEADER_OFFSET_Y - AbstractRelic.PAD_X / 2, Settings.GOLD_COLOR);
+        FontHelper.renderFontCentered(sb, EUIFontHelper.cardTooltipTitleFontNormal, preview.name, c, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         if (!StringUtils.isEmpty(preview.description)) {
-            EUISmartText.write(sb, EUIFontHelper.cardTooltipFont, preview.description, x + TEXT_OFFSET_X, y + BODY_OFFSET_Y - AbstractRelic.PAD_X / 2, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+            EUISmartText.write(sb, EUIFontHelper.cardTooltipFont, preview.description, x + TEXT_OFFSET_X, y + BODY_OFFSET_Y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
         }
     }
 }

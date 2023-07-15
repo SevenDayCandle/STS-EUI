@@ -15,7 +15,7 @@ public interface TooltipProvider {
     }
 
     default EUIPreview getPreview() {
-        return null;
+        return EUIPreview.getPreview(this);
     }
 
     default List<? extends EUITooltip> getTipsForRender() {

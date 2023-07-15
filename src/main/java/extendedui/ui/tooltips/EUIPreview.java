@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.TooltipProvider;
@@ -48,11 +49,15 @@ public abstract class EUIPreview {
     }
 
     public void render(SpriteBatch sb, AbstractCard card, boolean upgraded, boolean isPopup) {
-        render(sb, card.current_x, card.current_y, card.drawScale, upgraded, isPopup);
+        render(sb, card.current_x, card.current_y, 0.83f, upgraded, isPopup);
+    }
+
+    public void render(SpriteBatch sb, AbstractPotion card, boolean upgraded, boolean isPopup) {
+        render(sb, card.posX + card.hb.width, card.posY, 0.83f, upgraded, isPopup);
     }
 
     public void render(SpriteBatch sb, AbstractRelic card, boolean upgraded, boolean isPopup) {
-        render(sb, card.currentX, card.currentY, card.scale, upgraded, isPopup);
+        render(sb, card.currentX + card.hb.width, card.currentY, 0.83f, upgraded, isPopup);
     }
 
     public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean isPopup) {

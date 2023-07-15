@@ -10,9 +10,6 @@ import java.util.List;
 
 public interface KeywordProvider extends TooltipProvider {
 
-    default void fillPreviews(RotatingList<EUIPreview> list) {
-    }
-
     default List<EUIKeywordTooltip> getTipsForFilters() {
         return getTipsForRender();
     }
@@ -27,13 +24,5 @@ public interface KeywordProvider extends TooltipProvider {
     @Override
     default List<EUIKeywordTooltip> getTipsForRender() {
         return getTips();
-    }
-
-    default boolean isPopup() {
-        return false;
-    }
-
-    default EUIPreview getPreview() {
-        return null;
     }
 }
