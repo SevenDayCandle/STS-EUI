@@ -30,9 +30,6 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMX;
-import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
-
 public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends EUICanvasGrid {
     protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;

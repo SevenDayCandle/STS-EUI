@@ -88,13 +88,6 @@ public class EUITooltip {
         this.subHeader = other.subHeader;
     }
 
-    public static void blockTooltips() {
-        clearVanillaTips();
-        tooltips.clear();
-        provider = null;
-        lastProvider = null;
-    }
-
     protected static void addGenericTips(Iterable<PowerTip> vanillaTips) {
         if (provider instanceof TooltipProvider) {
             for (EUITooltip tip : ((TooltipProvider) provider).getTipsForRender()) {
@@ -106,7 +99,7 @@ public class EUITooltip {
         else {
             for (PowerTip sk : vanillaTips) {
                 EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
-                if (tip != null){
+                if (tip != null) {
                     if (tip.isRenderable()) {
                         tooltips.add(tip);
                     }
@@ -116,6 +109,13 @@ public class EUITooltip {
                 }
             }
         }
+    }
+
+    public static void blockTooltips() {
+        clearVanillaTips();
+        tooltips.clear();
+        provider = null;
+        lastProvider = null;
     }
 
     public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY) {
@@ -259,7 +259,7 @@ public class EUITooltip {
         }
     }
 
-    public static  void queueTooltips(AbstractBlight source) {
+    public static void queueTooltips(AbstractBlight source) {
         if (tryQueue()) {
             provider = source;
             EUI.addPriorityPostRender(EUITooltip::renderFromBlight);
@@ -403,7 +403,7 @@ public class EUITooltip {
             tooltips.clear();
 
             if (creature instanceof IntentProvider) {
-                lastProvider = provider = (TooltipProvider) creature;
+                lastProvider = provider = creature;
                 EUITooltip intentTip = ((IntentProvider) creature).getIntentTip();
                 if (intentTip != null) {
                     tooltips.add(intentTip);

@@ -4,18 +4,15 @@ import basemod.BaseMod;
 import basemod.ModLabeledToggleButton;
 import basemod.ModMinMaxSlider;
 import basemod.ModPanel;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUIButton;
-import extendedui.ui.controls.EUILabel;
 import extendedui.ui.settings.BasemodSettingsPage;
 import extendedui.ui.settings.ExtraModSettingsPanel;
 import extendedui.ui.settings.ModSettingsPathSelector;
@@ -33,13 +30,8 @@ import java.util.HashSet;
 
 public class EUIConfiguration {
 
-    //@Formatter: Off
+    // @Formatter: Off
     private static final ArrayList<STSConfigItem<?>> CONFIG_ITEMS = new ArrayList<>();
-    public static final int BASE_OPTION_OFFSET_X = 400;
-    public static final int BASE_OPTION_OFFSET_X2 = 580;
-    public static final int BASE_OPTION_OFFSET_Y = 720;
-    public static final int BASE_OPTION_OPTION_HEIGHT = 32;
-    public static final int BASE_SPRITES_DEFAULT = 6000;
     private static final String BANNER_FONT = getFullKey("BannerFont");
     private static final String BUTTON_FONT = getFullKey("ButtonFont");
     private static final String CARD_DESC_FONT = getFullKey("CardDescFont");
@@ -65,6 +57,13 @@ public class EUIConfiguration {
     private static final String USE_SNAP_SCROLLING = getFullKey("UseSnapScrolling");
     private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
     private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "fnt");
+
+    public static final int BASE_OPTION_OFFSET_X = 400;
+    public static final int BASE_OPTION_OFFSET_X2 = 580;
+    public static final int BASE_OPTION_OFFSET_Y = 720;
+    public static final int BASE_OPTION_OPTION_HEIGHT = 32;
+    public static final int BASE_SPRITES_DEFAULT = 6000;
+
     public static STSConfigItem<Boolean> disableCompendiumButton = new STSConfigItem<>(DISABLE_COMPENDIUM_BUTTON, false);
     public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
     public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(ENABLE_CARD_POOL_DEBUG, false);
@@ -87,7 +86,7 @@ public class EUIConfiguration {
     public static STSStringConfigItem lastExportPath = new STSStringConfigItem(LAST_EXPORT_PATH, "");
     public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT, "");
     public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT, "");
-    //@Formatter: On
+    // @Formatter: On
     private static HashSet<String> tips = null;
     private static SpireConfig config;
     private static int counter;

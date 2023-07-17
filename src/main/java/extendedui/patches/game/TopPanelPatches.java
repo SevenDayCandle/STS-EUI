@@ -45,7 +45,7 @@ public class TopPanelPatches {
         @SpireInsertPatch(locator = Locator.class, localvars = {"p"})
         public static SpireReturn<Void> insert(TopPanel __instance, AbstractPotion p) {
             if (p instanceof TooltipProvider) {
-                EUITooltip.queueTooltips((AbstractPotion & TooltipProvider) p);
+                EUITooltip.queueTooltips(p);
                 return SpireReturn.Return(null);
             }
             return SpireReturn.Continue();

@@ -1,8 +1,5 @@
 package extendedui.interfaces.markers;
 
-import extendedui.EUIUtils;
-import extendedui.ui.tooltips.EUICardPreview;
-import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUIPreview;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.RotatingList;

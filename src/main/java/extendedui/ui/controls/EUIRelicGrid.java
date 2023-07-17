@@ -105,6 +105,12 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
         }
     }
 
+    public EUIRelicGrid remove(AbstractRelic relic) {
+        group.group.removeIf(rInfo -> rInfo.relic == relic);
+
+        return this;
+    }
+
     protected void renderRelicImpl(SpriteBatch sb, RelicInfo relic) {
         if (relic.locked) {
             switch (relic.relicColor) {
@@ -142,11 +148,5 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
                     relic.relic.render(sb, false, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR);
             }
         }
-    }
-
-    public EUIRelicGrid remove(AbstractRelic relic) {
-        group.group.removeIf(rInfo -> rInfo.relic == relic);
-
-        return this;
     }
 }

@@ -25,7 +25,6 @@ import extendedui.text.EUISmartText;
 import extendedui.ui.TextureCache;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIFontHelper;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.HashMap;
 import java.util.HashSet;
@@ -246,12 +245,6 @@ public class EUIKeywordTooltip extends EUITooltip {
         }
     }
 
-    public EUIKeywordTooltip setCanAdd(boolean value) {
-        this.canAdd = value;
-
-        return this;
-    }
-
     public String parsePlural(int amount) {
         if (plural == null) {
             plural = EUIRM.strings.plural(title);
@@ -309,6 +302,12 @@ public class EUIKeywordTooltip extends EUITooltip {
 
     public EUIKeywordTooltip setBadgeBackground(Color color) {
         this.backgroundColor = color;
+
+        return this;
+    }
+
+    public EUIKeywordTooltip setCanAdd(boolean value) {
+        this.canAdd = value;
 
         return this;
     }

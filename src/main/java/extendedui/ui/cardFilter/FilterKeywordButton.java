@@ -25,7 +25,6 @@ import static com.megacrit.cardcrawl.core.CardCrawlGame.popupMY;
 import static extendedui.ui.tooltips.EUIKeywordTooltip.BASE_ICON_SIZE;
 
 public class FilterKeywordButton extends EUIHoverable {
-    private static EUIHeaderlessTooltip DISABLED_TIP;
     private static final Color ACTIVE_COLOR = new Color(0.76f, 0.76f, 0.76f, 1f);
     private static final Color NEGATE_COLOR = new Color(0.62f, 0.32f, 0.28f, 1f);
     private static final Color PANEL_COLOR = new Color(0.3f, 0.3f, 0.3f, 1f);
@@ -35,6 +34,7 @@ public class FilterKeywordButton extends EUIHoverable {
     public static final float BASE_COUNT_OFFSET_X = -0.21f;
     public static final float BASE_IMAGE_OFFSET_X = -0.29f;
     public static final float BASE_IMAGE_OFFSET_Y = -0.16f;
+    private static EUIHeaderlessTooltip DISABLED_TIP;
     public final GenericFilters<?, ?> filters;
     private ActionT1<FilterKeywordButton> onToggle;
     private ActionT1<FilterKeywordButton> onRightClick;
@@ -45,13 +45,6 @@ public class FilterKeywordButton extends EUIHoverable {
     public EUILabel titleText;
     public EUILabel countText;
     public EUIKeywordTooltip keywordTooltip;
-
-    public static EUITooltip getDisabledTip() {
-        if (DISABLED_TIP == null) {
-            DISABLED_TIP = new EUIHeaderlessTooltip(EUIRM.strings.misc_tooltipDisabled);
-        }
-        return DISABLED_TIP;
-    }
 
     public FilterKeywordButton(GenericFilters<?, ?> filters, EUIKeywordTooltip tooltip) {
         super(filters.hb);
@@ -88,6 +81,13 @@ public class FilterKeywordButton extends EUIHoverable {
                 .setLabel(this.filters.currentNegateFilters.contains(this.keywordTooltip) ? "X" : cardCount);
 
         afterToggleRight(EUIConfiguration.getIsTipDescriptionHidden(keywordTooltip.ID));
+    }
+
+    public static EUITooltip getDisabledTip() {
+        if (DISABLED_TIP == null) {
+            DISABLED_TIP = new EUIHeaderlessTooltip(EUIRM.strings.misc_tooltipDisabled);
+        }
+        return DISABLED_TIP;
     }
 
     public void afterToggleRight(boolean value) {

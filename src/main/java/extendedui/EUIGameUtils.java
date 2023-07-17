@@ -339,7 +339,7 @@ public class EUIGameUtils {
 
     public static void renderBlightTip(AbstractBlight po) {
         if (po instanceof TooltipProvider) {
-            EUITooltip.queueTooltips((AbstractBlight & TooltipProvider) po);
+            EUITooltip.queueTooltips(po);
         }
         else {
             TipHelper.queuePowerTips(InputHelper.mX + 50.0F * Settings.scale, InputHelper.mY + 50.0F * Settings.scale, po.tips);
@@ -348,7 +348,7 @@ public class EUIGameUtils {
 
     public static void renderPotionTip(AbstractPotion po) {
         if (po instanceof TooltipProvider) {
-            EUITooltip.queueTooltips((AbstractPotion & TooltipProvider) po);
+            EUITooltip.queueTooltips(po);
         }
         else {
             TipHelper.queuePowerTips(InputHelper.mX + 50.0F * Settings.scale, InputHelper.mY + 50.0F * Settings.scale, po.tips);
@@ -469,7 +469,7 @@ public class EUIGameUtils {
         return EUIUtils.EMPTY_STRING;
     }
 
-    public static String  textForRelicTier(AbstractRelic.RelicTier type) {
+    public static String textForRelicTier(AbstractRelic.RelicTier type) {
         switch (type) {
             case STARTER:
                 return SingleRelicViewPopup.TEXT[6];

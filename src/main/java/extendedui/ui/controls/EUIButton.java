@@ -52,6 +52,10 @@ public class EUIButton extends EUIHoverable {
                 .setDimensions(width, height);
     }
 
+    protected boolean didClick() {
+        return this.hb.clicked && EUI.tryClick(this.hb);
+    }
+
     public boolean isInteractable() {
         return interactable && (onLeftClick != null || onLeftPreClick != null);
     }
@@ -289,10 +293,6 @@ public class EUIButton extends EUIHoverable {
                 onLeftClick();
             }
         }
-    }
-
-    protected boolean didClick() {
-        return this.hb.clicked && EUI.tryClick(this.hb);
     }
 
     public EUIButton setHoverBlendColor(Color color) {
