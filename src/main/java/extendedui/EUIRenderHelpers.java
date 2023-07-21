@@ -749,6 +749,10 @@ public class EUIRenderHelpers {
         public void draw(SpriteBatch sb, ActionT1<SpriteBatch> drawImpl) {
             EUIRenderHelpers.drawBlended(sb, this, drawImpl);
         }
+
+        public void draw(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawImpl) {
+            EUIRenderHelpers.drawBlended(sb, this, drawImpl);
+        }
     }
 
     public enum ShaderMode {

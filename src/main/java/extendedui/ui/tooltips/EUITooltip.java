@@ -676,7 +676,7 @@ public class EUITooltip {
     }
 
     public boolean idEquals(EUITooltip tooltip) {
-        return tooltip != null && ID.equals(tooltip.ID);
+        return tooltip != null && ID != null && ID.equals(tooltip.ID);
     }
 
     public void invalidateHeight() {
