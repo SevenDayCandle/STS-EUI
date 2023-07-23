@@ -1,6 +1,7 @@
 package extendedui.patches.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireInstrumentPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
@@ -15,6 +16,8 @@ import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
+import javassist.CannotCompileException;
+import javassist.expr.ExprEditor;
 
 import java.util.ArrayList;
 
@@ -27,6 +30,10 @@ public class TooltipPatches {
         lastTips = null;
         currentTips = null;
         currentSingleTip = null;
+    }
+
+    public static ArrayList<String> getFilteredKeywords(ArrayList<String> original) {
+        return EUIUtils.filter(original, o -> !EUIConfiguration.getIsTipDescriptionHiddenByName(o));
     }
 
     @SpirePatch(clz = AbstractMonster.class, method = "renderTip", paramtypez = {SpriteBatch.class})
@@ -147,6 +154,22 @@ public class TooltipPatches {
             }
 
             return SpireReturn.Continue();
+        }
+    }
+
+    // Make a proxy arraylist that only renders tooltips that can be seen
+    // TODO edit renderKeywords instead
+    @SpirePatch(clz = TipHelper.class, method = "render")
+    public static class TipHelperPatches_Render {
+        @SpireInstrumentPatch
+        public static ExprEditor instrument() {
+            return new ExprEditor() {
+                public void edit(javassist.expr.FieldAccess m) throws CannotCompileException {
+                    if (m.getFieldName().equals("KEYWORDS")) {
+                        m.replace("{ $_ = extendedui.patches.game.TooltipPatches.getFilteredKeywords(KEYWORDS); }");
+                    }
+                }
+            };
         }
     }
 }

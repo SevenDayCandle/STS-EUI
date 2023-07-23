@@ -203,6 +203,10 @@ public class EUITooltip {
         }
     }
 
+    public static void queueTooltips(EUITooltip... tips) {
+        queueTooltips(Arrays.asList(tips));
+    }
+
     public static void queueTooltips(Collection<? extends EUITooltip> tips) {
         float maxWidth = tips.size() > 0 ? EUIUtils.max(tips, tip -> tip.width) : BOX_W;
         float estHeight = EUIUtils.sum(tips, EUITooltip::height);
