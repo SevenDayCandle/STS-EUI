@@ -406,6 +406,7 @@ public abstract class EUIUtils {
         return GsonReader.fromJson(s, token);
     }
 
+    /* Creates a NEW arraylist with the filtered values. If you want to do the filtering in place and the iterable is already a list, use filterInPlace instead */
     public static <T> ArrayList<T> filter(T[] array, FuncT1<Boolean, T> predicate) {
         final ArrayList<T> res = new ArrayList<>();
         for (T t : array) {
@@ -944,6 +945,41 @@ public abstract class EUIUtils {
         }
 
         return res;
+    }
+
+    public static <T, N> HashSet<N> mapAsSet(T[] list, FuncT1<N, T> predicate) {
+        if (list != null) {
+            final HashSet<N> res = new HashSet<>(list.length);
+            for (T t : list) {
+                res.add(predicate.invoke(t));
+            }
+            return res;
+        }
+
+        return new HashSet<>();
+    }
+
+    public static <T, N> HashSet<N> mapAsSet(Iterable<? extends T> list, FuncT1<N, T> predicate) {
+        final HashSet<N> res = new HashSet<>();
+        if (list != null) {
+            for (T t : list) {
+                res.add(predicate.invoke(t));
+            }
+        }
+
+        return res;
+    }
+
+    public static <T, N> HashSet<N> mapAsSet(List<? extends T> list, FuncT1<N, T> predicate) {
+        if (list != null) {
+            final HashSet<N> res = new HashSet<>(list.size());
+            for (T t : list) {
+                res.add(predicate.invoke(t));
+            }
+            return res;
+        }
+
+        return new HashSet<>();
     }
 
     @SafeVarargs
