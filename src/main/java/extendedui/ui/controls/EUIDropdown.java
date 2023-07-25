@@ -219,6 +219,10 @@ public class EUIDropdown<T> extends EUIHoverable {
         return EUIUtils.map(this.rows, row -> row.item);
     }
 
+    public EUIHitbox getClearButtonHitbox() {
+        return clearButton.hb;
+    }
+
     public int getCurrentIndex() {
         return currentIndices.isEmpty() || currentIndices.first() >= this.rows.size() ? 0 : currentIndices.first();
     }
@@ -825,6 +829,9 @@ public class EUIDropdown<T> extends EUIHoverable {
             }
 
             this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
+        }
+        else {
+            this.button.setText(EUIUtils.EMPTY_STRING);
         }
         if (shouldInvoke && onChange != null) {
             onChange.invoke(getCurrentItems());
