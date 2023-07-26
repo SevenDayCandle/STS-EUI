@@ -147,24 +147,26 @@ public class EUIHitbox extends Hitbox {
             }
 
             if (isPopupCompatible && CardCrawlGame.isPopupOpen) {
-                actualMX = popupMX;
-                actualMY = popupMY;
-            }
-            else {
-                actualMX = InputHelper.mX;
-                actualMY = InputHelper.mY;
-            }
-
-            if (!this.hovered) {
-                this.hovered = actualMX > x && actualMX < x + this.width && actualMY > y && actualMY < y + this.height;
-                if (this.hovered) {
-                    this.justHovered = true;
+                updateHoverLogic(x, y, popupMX, popupMY);
+                if (!hovered) {
+                    updateHoverLogic(x, y, InputHelper.mX, InputHelper.mY);
                 }
             }
             else {
-                this.hovered = actualMX > x && actualMX < x + this.width && actualMY > y && actualMY < y + this.height;
+                updateHoverLogic(x, y, InputHelper.mX, InputHelper.mY);
             }
+        }
+    }
 
+    protected void updateHoverLogic(float x, float y, float actualMX, float actualMY) {
+        if (!this.hovered) {
+            this.hovered = actualMX > x && actualMX < x + this.width && actualMY > y && actualMY < y + this.height;
+            if (this.hovered) {
+                this.justHovered = true;
+            }
+        }
+        else {
+            this.hovered = actualMX > x && actualMX < x + this.width && actualMY > y && actualMY < y + this.height;
         }
     }
 

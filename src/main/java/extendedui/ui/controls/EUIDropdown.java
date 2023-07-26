@@ -145,7 +145,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     public boolean areAnyItemsHovered() {
-        if (this.hb.hovered || (this.isMultiSelect && currentIndices.size() != 0 && this.clearButton.hb.hovered)) {
+        if (this.hb.hovered || (shouldShowClear() && this.clearButton.hb.hovered)) {
             return true;
         }
         if (isOpen) {
@@ -216,7 +216,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     public ArrayList<T> getAllItems() {
-        return EUIUtils.map(this.rows, row -> row.item);
+        return EUIUtils.map(getRowsForSelectionUpdate(), row -> row.item);
     }
 
     public EUIHitbox getClearButtonHitbox() {
@@ -234,7 +234,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     public ArrayList<T> getCurrentItems() {
         ArrayList<T> items = new ArrayList<>();
         for (Integer i : currentIndices) {
-            items.add(this.rows.get(i).item);
+            items.add(getRowsForSelectionUpdate().get(i).item);
         }
         return items;
     }
@@ -250,6 +250,10 @@ public class EUIDropdown<T> extends EUIHoverable {
 
     public float getRowHeight() {
         return rowHeight;
+    }
+
+    protected ArrayList<EUIDropdownRow<T>> getRowsForSelectionUpdate() {
+        return rows;
     }
 
     protected boolean isUsingNonMouseControl() {
@@ -405,7 +409,7 @@ public class EUIDropdown<T> extends EUIHoverable {
         this.hb.render(sb);
         this.button.tryRender(sb);
         this.header.tryRender(sb);
-        if ((this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0) {
+        if (shouldShowClear()) {
             this.clearButton.renderImpl(sb);
         }
         if (this.rows.size() > 0) {
@@ -769,6 +773,10 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
+    protected boolean shouldShowClear() {
+        return (this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0;
+    }
+
     protected boolean shouldShowSlider() {
         return this.rows.size() > this.maxRows;
     }
@@ -811,19 +819,19 @@ public class EUIDropdown<T> extends EUIHoverable {
     protected void updateButtons() {
         this.button.updateImpl();
         this.header.tryUpdate();
-        if ((this.isMultiSelect || this.showClearForSingle) && currentIndices.size() != 0) {
+        if (shouldShowClear()) {
             this.clearButton.updateImpl();
         }
     }
 
     public void updateForSelection(boolean shouldInvoke) {
-        int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
         if (isMultiSelect) {
             this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : makeMultiSelectString());
         }
         else if (currentIndices.size() > 0) {
-            this.topVisibleRowIndex = Math.min(temp, this.rows.size() - this.visibleRowCount());
-            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : rows.get(temp).label.text);
+            int temp = currentIndices.first();
+            this.topVisibleRowIndex = Math.min(temp, getRowsForSelectionUpdate().size() - this.visibleRowCount());
+            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : getRowsForSelectionUpdate().get(temp).label.text);
             if (colorFunctionButton != null) {
                 this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
             }
@@ -924,7 +932,7 @@ public class EUIDropdown<T> extends EUIHoverable {
                 boolean isHoveringOver = this.hb.hovered;
                 this.updateNonMouseInput();
 
-                if (this.isMultiSelect && this.clearButton.hb.hovered) {
+                if (shouldShowClear() && this.clearButton.hb.hovered) {
                     isHoveringOver = true;
                 }
 

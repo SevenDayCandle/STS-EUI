@@ -13,8 +13,8 @@ import extendedui.utilities.EUIFontHelper;
 import java.util.ArrayList;
 
 public class EUIButtonList extends EUIBase {
-    public static final float ICON_SIZE = scale(40);
-    public static final float BUTTON_W = scale(200);
+    public static final float ICON_SIZE = scale(48);
+    public static final float BUTTON_W = scale(250);
     public static final float BUTTON_H = scale(51);
     public static final float STARTING_X = scale(160);
     public static final float STARTING_Y = Settings.HEIGHT * 0.92f;
@@ -54,7 +54,7 @@ public class EUIButtonList extends EUIBase {
     public EUIButton addButton(ActionT1<EUIButton> onClick, String title) {
         EUIButton button = new EUIButton(ImageMaster.COLOR_TAB_BAR, new EUIHitbox(buttonWidth, buttonHeight))
                 .setLabel(EUIFontHelper.buttonFont, fontScale, title)
-                .setButtonScale(1f, 1.2f)
+                .setButtonScale(1f, 1.5f)
                 .setOnClick((b) -> {
                     selectButton(b);
                     onClick.invoke(b);

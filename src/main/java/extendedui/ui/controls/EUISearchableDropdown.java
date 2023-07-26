@@ -44,17 +44,8 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
     }
 
     @Override
-    public ArrayList<T> getAllItems() {
-        return EUIUtils.map(this.originalRows, row -> row.item);
-    }
-
-    @Override
-    public ArrayList<T> getCurrentItems() {
-        ArrayList<T> items = new ArrayList<>();
-        for (Integer i : currentIndices) {
-            items.add(this.originalRows.get(i).item);
-        }
-        return items;
+    protected ArrayList<EUIDropdownRow<T>> getRowsForSelectionUpdate() {
+        return originalRows;
     }
 
     public void openOrCloseMenu() {
@@ -103,26 +94,6 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
     public EUISearchableDropdown<T> setOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
         super.setOnOpenOrClose(onOpenOrClose);
         return this;
-    }
-
-    @Override
-    public void updateForSelection(boolean shouldInvoke) {
-        int temp = currentIndices.size() > 0 ? currentIndices.first() : 0;
-        if (isMultiSelect) {
-            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : makeMultiSelectString());
-        }
-        else if (currentIndices.size() > 0) {
-            this.topVisibleRowIndex = Math.min(temp, this.originalRows.size() - this.visibleRowCount());
-            this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : originalRows.get(temp).label.text);
-            if (colorFunctionButton != null) {
-                this.button.label.setColor(colorFunctionButton.invoke(getCurrentItems()));
-            }
-
-            this.scrollBar.scroll(this.scrollPercentForTopVisibleRowIndex(this.topVisibleRowIndex), false);
-        }
-        if (shouldInvoke && onChange != null) {
-            onChange.invoke(getCurrentItems());
-        }
     }
 
     protected void initialize() {

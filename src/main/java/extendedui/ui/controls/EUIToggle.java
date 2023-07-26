@@ -21,7 +21,7 @@ import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIFontHelper;
 
 public class EUIToggle extends EUIHoverable {
-    public static final float DEFAULT_TICK = 48;
+    public static final float DEFAULT_TICK = scale(48);
     public String text = "";
     public boolean toggled = false;
     public boolean interactable = true;
@@ -72,7 +72,7 @@ public class EUIToggle extends EUIHoverable {
     }
 
     public float getAutoWidth() {
-        return tickSize * Settings.scale + EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
+        return tickSize + EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
     }
 
     public boolean isToggled() {
@@ -113,11 +113,11 @@ public class EUIToggle extends EUIHoverable {
 
         if (fontSize != 1) {
             font.getData().setScale(fontSize);
-            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f * Settings.scale), hb.cY, fontColor);
+            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f), hb.cY, fontColor);
             EUIRenderHelpers.resetFont(font);
         }
         else {
-            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f * Settings.scale), hb.cY, fontColor);
+            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f), hb.cY, fontColor);
         }
 
         EUIImage image = toggled ? tickedImage : untickedImage;

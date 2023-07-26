@@ -239,7 +239,7 @@ public class EUITourTooltip extends EUITooltip {
             }
             else {
                 float maxLen = Math.max(linkedImage.texture.getWidth(), linkedImage.texture.getHeight());
-                float lerp = Interpolation.exp5Out.apply(0f, 0.9f + 170f / maxLen, linkedProgress);
+                float lerp = Interpolation.exp5Out.apply(0f, 0.9f + 190f / maxLen, linkedProgress);
                 linkedImage.setScale(lerp, lerp);
                 linkedImage.renderCentered(sb, EUIRenderHelpers.ShaderMode.Colorize, EUIRenderHelpers.BlendingMode.Glowing, linkedImage.hb, new Color(0.5f, 0.8f, 1f, 1 - linkedProgress));
                 linkedProgress += EUI.delta();

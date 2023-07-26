@@ -167,15 +167,16 @@ public class EUIImage extends EUIHoverable {
 
     protected void renderCenteredImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
         if (background != null) {
-            final float scale = background.scale * Settings.scale;
+            final float w = width * background.scale;
+            final float h = height * background.scale;
             final int s_w = background.texture.getWidth();
             final int s_h = background.texture.getHeight();
             sb.setColor(background.color != null ? background.color : targetColor);
-            sb.draw(background.texture, x, y, width / 2f, height / 2f, width, height, scaleX * scale, scaleY * scale, rotation, 0, 0, s_w, s_h, flipX, flipY);
+            sb.draw(background.texture, x, y, width / 2f, height / 2f, w, h, scaleX, scaleY, rotation, 0, 0, s_w, s_h, flipX, flipY);
         }
 
         sb.setColor(targetColor);
-        sb.draw(texture, x, y, width / 2f, height / 2f, width, height, scaleX * Settings.scale, scaleY * Settings.scale, rotation, 0, 0, srcWidth, srcHeight, flipX, flipY);
+        sb.draw(texture, x, y, width / 2f, height / 2f, width, height, scaleX, scaleY, rotation, 0, 0, srcWidth, srcHeight, flipX, flipY);
     }
 
     public void renderImpl(SpriteBatch sb) {
