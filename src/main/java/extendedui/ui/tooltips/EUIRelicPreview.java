@@ -76,6 +76,10 @@ public class EUIRelicPreview extends EUIPreview {
         float c = x + BOX_W / 2;
         preview.currentX = c;
         preview.currentY = y;
+        if (preview.currentY - h < 0) {
+            preview.currentY = h;
+        }
+
         preview.scale = scale;
         preview.render(sb);
 

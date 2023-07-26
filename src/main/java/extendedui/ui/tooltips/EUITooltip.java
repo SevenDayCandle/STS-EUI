@@ -55,6 +55,7 @@ public class EUITooltip {
     public static final float BODY_TEXT_WIDTH = 320f * Settings.scale;
     public static final float TIP_DESC_LINE_SPACING = 26f * Settings.scale;
     public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
+    public static final float TIP_Y_LIMIT = Settings.HEIGHT * 0.97f;
     public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
     public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
     private static Object provider;
@@ -116,6 +117,19 @@ public class EUITooltip {
         tooltips.clear();
         provider = null;
         lastProvider = null;
+    }
+
+    protected static float boundY(float y) {
+        if (y > TIP_Y_LIMIT) {
+            y = TIP_Y_LIMIT;
+        }
+        else if (tooltips.size() > 0) {
+            float firstH = tooltips.get(0).getTotalHeight() + SHADOW_DIST_X;
+            if (y < firstH) {
+                y = firstH;
+            }
+        }
+        return y;
     }
 
     public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY) {
@@ -287,7 +301,7 @@ public class EUITooltip {
         float y;
         if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
             x = InputHelper.mX - (350 * Settings.scale);
-            y = InputHelper.mY - (50 * Settings.scale);
+            y = boundY(InputHelper.mY - (50 * Settings.scale));
         }
         else if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.RELIC_VIEW) {
             x = 180 * Settings.scale;
@@ -295,19 +309,19 @@ public class EUITooltip {
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !AbstractDungeon.player.hasBlight(blight.blightID)) {
             x = InputHelper.mX + (60 * Settings.scale);
-            y = InputHelper.mY + (180 * Settings.scale);
+            y = boundY(InputHelper.mY + (180 * Settings.scale));
         }
         else if (AbstractDungeon.player != null && AbstractDungeon.player.hasBlight(blight.blightID)) {
             x = InputHelper.mX + (60 * Settings.scale);
-            y = InputHelper.mY - (30 * Settings.scale);
+            y = boundY(InputHelper.mY - (30 * Settings.scale));
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
             x = 360 * Settings.scale;
-            y = InputHelper.mY + (50 * Settings.scale);
+            y = boundY(InputHelper.mY + (50 * Settings.scale));
         }
         else {
             x = InputHelper.mX + (50 * Settings.scale);
-            y = InputHelper.mY + (50 * Settings.scale);
+            y = boundY(InputHelper.mY + (50 * Settings.scale));
         }
 
         renderTipsImpl(sb, tooltips, x, y);
@@ -353,13 +367,12 @@ public class EUITooltip {
             float multi = 1f - (card.current_y / (Settings.HEIGHT * 0.5f));
 
             y += AbstractCard.IMG_HEIGHT * (0.5f + MathUtils.round(multi * steps));
-            if (y > Settings.HEIGHT * 0.96f) {
-                y = Settings.HEIGHT * 0.96f;
-            }
         }
         else {
             y += AbstractCard.IMG_HEIGHT * 0.5f;
         }
+
+        y = boundY(y);
 
         final float original_y = y;
         final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
@@ -464,7 +477,7 @@ public class EUITooltip {
         for (int i = 0; i < tooltips.size(); i++) {
             EUITooltip tip = tooltips.get(i);
             float projected = y - tip.getTotalHeight();
-            if (projected <= 0) {
+            if (projected < 0) {
                 y = original_y;
                 x += offset_x;
             }
@@ -490,7 +503,7 @@ public class EUITooltip {
         float y;
         if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
             x = InputHelper.mX - (350 * Settings.scale);
-            y = InputHelper.mY - (50 * Settings.scale);
+            y = boundY(InputHelper.mY - (50 * Settings.scale));
         }
         else if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.POTION_VIEW) {
             x = 150 * Settings.scale;
@@ -498,19 +511,19 @@ public class EUITooltip {
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && potion.tips.size() > 2 && !AbstractDungeon.player.hasPotion(potion.ID)) {
             x = InputHelper.mX + (60 * Settings.scale);
-            y = InputHelper.mY + (180 * Settings.scale);
+            y = boundY(InputHelper.mY + (180 * Settings.scale));
         }
         else if (AbstractDungeon.player != null && AbstractDungeon.player.hasPotion(potion.ID)) {
             x = InputHelper.mX + (60 * Settings.scale);
-            y = InputHelper.mY - (30 * Settings.scale);
+            y = boundY(InputHelper.mY - (30 * Settings.scale));
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
             x = 360 * Settings.scale;
-            y = InputHelper.mY + (50 * Settings.scale);
+            y = boundY(InputHelper.mY + (50 * Settings.scale));
         }
         else {
             x = InputHelper.mX + (50 * Settings.scale);
-            y = InputHelper.mY + (50 * Settings.scale);
+            y = boundY(InputHelper.mY + (50 * Settings.scale));
         }
 
         renderTipsImpl(sb, tooltips, x, y);
@@ -541,7 +554,7 @@ public class EUITooltip {
         float y;
         if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
             x = InputHelper.mX - (350 * Settings.scale);
-            y = InputHelper.mY - (50 * Settings.scale);
+            y = boundY(InputHelper.mY - (50 * Settings.scale));
         }
         else if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.RELIC_VIEW) {
             x = 180 * Settings.scale;
@@ -549,19 +562,19 @@ public class EUITooltip {
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !AbstractDungeon.player.hasRelic(relic.relicId)) {
             x = InputHelper.mX + (60 * Settings.scale);
-            y = InputHelper.mY + (180 * Settings.scale);
+            y = boundY(InputHelper.mY + (180 * Settings.scale));
         }
         else if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(relic.relicId)) {
             x = InputHelper.mX + (60 * Settings.scale);
-            y = InputHelper.mY - (30 * Settings.scale);
+            y = boundY(InputHelper.mY - (30 * Settings.scale));
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
             x = 360 * Settings.scale;
-            y = InputHelper.mY + (50 * Settings.scale);
+            y = boundY(InputHelper.mY + (50 * Settings.scale));
         }
         else {
             x = InputHelper.mX + (50 * Settings.scale);
-            y = InputHelper.mY + (50 * Settings.scale);
+            y = boundY(InputHelper.mY + (50 * Settings.scale));
         }
 
         renderTipsImpl(sb, tooltips, x, y);
