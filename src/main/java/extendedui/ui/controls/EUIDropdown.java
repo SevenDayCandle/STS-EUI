@@ -388,7 +388,7 @@ public class EUIDropdown<T> extends EUIHoverable {
         float middleHeight = height - rowHeight - BORDER_SIZE;
         float middleY = bottomY + BORDER_SIZE;
         float topY = bottom + middleHeight;
-        sb.setColor(Color.GRAY);
+        sb.setColor(Color.LIGHT_GRAY);
 
         sb.draw(EUIRM.images.smallPanelCornerBL.texture(), frameX, bottomY, BORDER_SIZE, BORDER_SIZE);
         sb.draw(EUIRM.images.smallPanelBorderB.texture(), frameX + BORDER_SIZE, bottomY, boxW, BORDER_SIZE);

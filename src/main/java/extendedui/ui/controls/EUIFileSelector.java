@@ -28,7 +28,7 @@ public class EUIFileSelector extends EUIHoverable {
     public EUIButton clearButton;
 
     public EUIFileSelector(EUIHitbox hb) {
-        this(hb, EUIRM.images.panel.texture());
+        this(hb, EUIRM.images.longInput.texture());
     }
 
     public EUIFileSelector(EUIHitbox hb, Texture texture) {

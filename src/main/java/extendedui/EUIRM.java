@@ -165,7 +165,6 @@ public class EUIRM {
         public final TextureCache longInput = new TextureCache("images/extendedui/ui/LongInput.png");
         public final TextureCache menuBlight = new TextureCache("images/extendedui/ui/MenuBlight.png");
         public final TextureCache minus = new TextureCache("images/extendedui/ui/Minus.png");
-        public final TextureCache panel = new TextureCache("images/extendedui/ui/Panel.png");
         public final TextureCache panelBorderB = new TextureCache("images/extendedui/ui/Panel_Border_B.png");
         public final TextureCache panelBorderL = new TextureCache("images/extendedui/ui/Panel_Border_L.png");
         public final TextureCache panelBorderR = new TextureCache("images/extendedui/ui/Panel_Border_R.png");
@@ -193,6 +192,15 @@ public class EUIRM {
         public final TextureCache squaredButton2 = new TextureCache("images/extendedui/ui/SquaredButton2.png");
         public final TextureCache swap = new TextureCache("images/extendedui/ui/Swap.png");
         public final TextureCache tag = new TextureCache("images/extendedui/ui/Tag.png");
+        public final TextureCache vanillaTip = new TextureCache("images/extendedui/ui/VanillaTip.png");
+        public final TextureCache vanillaTipBorderB = new TextureCache("images/extendedui/ui/VanillaTip_Border_B.png");
+        public final TextureCache vanillaTipBorderL = new TextureCache("images/extendedui/ui/VanillaTip_Border_L.png");
+        public final TextureCache vanillaTipBorderR = new TextureCache("images/extendedui/ui/VanillaTip_Border_R.png");
+        public final TextureCache vanillaTipBorderT = new TextureCache("images/extendedui/ui/VanillaTip_Border_T.png");
+        public final TextureCache vanillaTipCornerBL = new TextureCache("images/extendedui/ui/VanillaTip_Corner_BL.png");
+        public final TextureCache vanillaTipCornerBR = new TextureCache("images/extendedui/ui/VanillaTip_Corner_BR.png");
+        public final TextureCache vanillaTipCornerTL = new TextureCache("images/extendedui/ui/VanillaTip_Corner_TL.png");
+        public final TextureCache vanillaTipCornerTR = new TextureCache("images/extendedui/ui/VanillaTip_Corner_TR.png");
         public final TextureCache warning = new TextureCache("images/extendedui/ui/Warning.png");
         public final TextureCache x = new TextureCache("images/extendedui/ui/X.png");
         public final TextureCache xButton = new TextureCache("images/extendedui/ui/XButton.png");

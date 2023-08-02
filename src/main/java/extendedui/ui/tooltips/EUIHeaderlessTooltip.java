@@ -1,7 +1,9 @@
 package extendedui.ui.tooltips;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.core.Settings;
 import extendedui.EUIUtils;
 import extendedui.text.EUISmartText;
 import extendedui.utilities.EUIFontHelper;
@@ -33,7 +35,8 @@ public class EUIHeaderlessTooltip extends EUITooltip {
         verifyFonts();
         final float h = height();
 
-        renderBg(sb, x, y, h);
+        renderBg(sb, Settings.TOP_PANEL_SHADOW_COLOR, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, h);
+        renderBg(sb, Color.WHITE, x, y, h);
         renderSubtext(sb, x, y);
         renderDescription(sb, x, y);
 

@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Vector2;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.configuration.EUIHotkeys;
@@ -73,7 +74,7 @@ public class EUICardPreview extends EUIPreview implements CardObject {
         if (isMultiPreview) {
             String cyclePreviewText = EUIRM.strings.keyToCycle(EUIHotkeys.cycle.getKeyString());
             BitmapFont font = EUIRenderHelpers.getDescriptionFont(preview, 0.9f);
-            EUIRenderHelpers.drawOnCardAuto(sb, preview, EUIRM.images.panel.texture(), new Vector2(0, -AbstractCard.RAW_H * 0.55f),
+            EUIRenderHelpers.drawOnCardAuto(sb, preview, EUIRM.images.panelRounded.texture(), new Vector2(0, -AbstractCard.RAW_H * 0.55f),
                     AbstractCard.IMG_WIDTH * 0.6f, font.getLineHeight() * 1.8f, Color.DARK_GRAY, 0.75f, 1);
             EUIRenderHelpers.writeOnCard(sb, preview, font, cyclePreviewText, 0, -AbstractCard.RAW_H * 0.55f, Color.MAGENTA);
             EUIRenderHelpers.resetFont(font);

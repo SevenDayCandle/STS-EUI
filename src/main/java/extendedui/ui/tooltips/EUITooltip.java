@@ -25,6 +25,7 @@ import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
+import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.markers.IntentProvider;
@@ -41,23 +42,24 @@ public class EUITooltip {
     private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
     private static final Vector2 genericTipPos = new Vector2(0, 0);
+    protected static final float BORDER_SIZE = Settings.scale * 32.0F;
     public static final Color BASE_COLOR = new Color(1f, 0.9725f, 0.8745f, 1f);
-    public static final float CARD_TIP_PAD = 12f * Settings.scale;
-    public static final float BOX_EDGE_H = 32f * Settings.scale;
-    public static final float SHADOW_DIST_Y = 14f * Settings.scale;
-    public static final float SHADOW_DIST_X = 9f * Settings.scale;
+    public static final float BODY_OFFSET_Y = -20f * Settings.scale;
+    public static final float BODY_TEXT_WIDTH = 320f * Settings.scale;
     public static final float BOX_BODY_H = 64f * Settings.scale;
-    public static final float TEXT_OFFSET_X = 22f * Settings.scale;
+    public static final float BOX_EDGE_H = 32f * Settings.scale;
+    public static final float BOX_W = 360f * Settings.scale;
+    public static final float CARD_TIP_PAD = 12f * Settings.scale;
     public static final float HEADER_OFFSET_Y = 12f * Settings.scale;
     public static final float ORB_OFFSET_Y = -8f * Settings.scale;
-    public static final float BODY_OFFSET_Y = -20f * Settings.scale;
-    public static final float BOX_W = 360f * Settings.scale;
-    public static final float BODY_TEXT_WIDTH = 320f * Settings.scale;
+    public static final float SHADOW_DIST_X = 9f * Settings.scale;
+    public static final float SHADOW_DIST_Y = 14f * Settings.scale;
+    public static final float TEXT_OFFSET_X = 22f * Settings.scale;
     public static final float TIP_DESC_LINE_SPACING = 26f * Settings.scale;
+    public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
+    public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
     public static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
     public static final float TIP_Y_LIMIT = Settings.HEIGHT * 0.97f;
-    public static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
-    public static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
     private static Object provider;
     private static Object lastProvider;
     protected int currentDesc;
@@ -713,8 +715,8 @@ public class EUITooltip {
     public float render(SpriteBatch sb, float x, float y, int index) {
         verifyFonts();
         final float h = height();
-
-        renderBg(sb, x, y, h);
+        renderBg(sb, Settings.TOP_PANEL_SHADOW_COLOR, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, h);
+        renderBg(sb, Color.WHITE, x, y, h);
         renderTitle(sb, x, y);
         renderSubtext(sb, x, y);
 
@@ -725,15 +727,22 @@ public class EUITooltip {
         return h;
     }
 
-    public void renderBg(SpriteBatch sb, float x, float y, float h) {
-        sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
-        sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, width, BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BODY, x + SHADOW_DIST_X, y - h - BOX_EDGE_H - SHADOW_DIST_Y, width, h + BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BOT, x + SHADOW_DIST_X, y - h - BOX_BODY_H - SHADOW_DIST_Y, width, BOX_EDGE_H);
-        sb.setColor(Color.WHITE);
-        sb.draw(ImageMaster.KEYWORD_TOP, x, y, width, BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BODY, x, y - h - BOX_EDGE_H, width, h + BOX_EDGE_H);
-        sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, width, BOX_EDGE_H);
+    public void renderBg(SpriteBatch sb, Color color, float x, float y, float h) {
+        float totalHeight = h + BORDER_SIZE;
+        float boxW = width - BORDER_SIZE * 2;
+        float middleY = y - totalHeight;
+        float bottomY = middleY - BORDER_SIZE;
+        float topY = middleY + totalHeight;
+        sb.setColor(color);
+        sb.draw(EUIRM.images.vanillaTipCornerBL.texture(), x, bottomY, BORDER_SIZE, BORDER_SIZE);
+        sb.draw(EUIRM.images.vanillaTipBorderB.texture(), x + BORDER_SIZE, bottomY, boxW, BORDER_SIZE);
+        sb.draw(EUIRM.images.vanillaTipCornerBR.texture(), x + BORDER_SIZE + boxW, bottomY, BORDER_SIZE, BORDER_SIZE);
+        sb.draw(EUIRM.images.vanillaTipBorderL.texture(), x, middleY, BORDER_SIZE, totalHeight);
+        sb.draw(EUIRM.images.vanillaTip.texture(), x + BORDER_SIZE, middleY, boxW, totalHeight);
+        sb.draw(EUIRM.images.vanillaTipBorderR.texture(), x + BORDER_SIZE + boxW, middleY, BORDER_SIZE, totalHeight);
+        sb.draw(EUIRM.images.vanillaTipCornerTL.texture(), x, topY, BORDER_SIZE, BORDER_SIZE);
+        sb.draw(EUIRM.images.vanillaTipBorderT.texture(), x + BORDER_SIZE, topY, boxW, BORDER_SIZE);
+        sb.draw(EUIRM.images.vanillaTipCornerTR.texture(), x + BORDER_SIZE + boxW, topY, BORDER_SIZE, BORDER_SIZE);
     }
 
     public void renderDescription(SpriteBatch sb, float x, float y) {

@@ -116,10 +116,10 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
                 .setLabel(EUIRM.strings.ui_keywords)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
-        keywordsInstructionLabel = new EUITextBox(EUIRM.images.panel.texture(), new EUIHitbox(0, 0, Settings.WIDTH * 0.48f, scale(64)), EUIFontHelper.cardTooltipFont, 0.85f)
+        keywordsInstructionLabel = new EUITextBox(EUIRM.images.greySquare.texture(), new EUIHitbox(0, 0, Settings.WIDTH * 0.4f, scale(64)), EUIFontHelper.cardTooltipFont, 0.85f)
                 .setColors(Color.BLACK, Settings.CREAM_COLOR)
                 .setLabel(EUIRM.strings.misc_keywordInstructions)
-                .setAlignment(0.75f, 0.05f, true);
+                .setAlignment(0.75f, 0.02f, true);
         currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardTitleFontNormal,
                 new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)), 1f)
                 .setLabel(EUIRM.strings.ui_total)
@@ -342,7 +342,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         super.updateImpl();
         hb.y = DRAW_START_Y + scrollDelta - SPACING * 10;
         keywordsSectionLabel.setPosition(hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 7).updateImpl();
-        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.205f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 10f).updateImpl();
+        keywordsInstructionLabel.setPosition(Settings.WIDTH * 0.172f + hb.x - SPACING * 2, DRAW_START_Y + scrollDelta - SPACING * 10f).updateImpl();
         sortTypeToggle.setPosition(keywordsSectionLabel.hb.x + SPACING * 11, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
         sortDirectionToggle.setPosition(sortTypeToggle.hb.x + sortTypeToggle.hb.width + SPACING * 1.4f, DRAW_START_Y + scrollDelta - SPACING * 7).tryUpdate();
         currentTotalHeaderLabel.updateImpl();

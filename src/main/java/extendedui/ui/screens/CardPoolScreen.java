@@ -49,14 +49,14 @@ public class CardPoolScreen extends EUIPoolScreen {
         resetGrid();
 
         upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
-                .setBackground(EUIRM.images.panel.texture(), Color.DARK_GRAY)
+                .setBackground(EUIRM.images.greySquare.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.8f)
                 .setFont(EUIFontHelper.cardDescriptionFontLarge, 0.5f)
                 .setText(SingleCardViewPopup.TEXT[6])
                 .setOnToggle(EUI::toggleViewUpgrades);
 
         colorlessToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
-                .setBackground(EUIRM.images.panel.texture(), Color.DARK_GRAY)
+                .setBackground(EUIRM.images.greySquare.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
                 .setFont(EUIFontHelper.cardDescriptionFontLarge, 0.5f)
                 .setText(EUIRM.strings.uipool_showColorless)

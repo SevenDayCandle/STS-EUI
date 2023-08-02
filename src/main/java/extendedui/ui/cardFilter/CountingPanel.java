@@ -10,21 +10,23 @@ import extendedui.interfaces.markers.CountingPanelCardFilter;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.cardFilter.panels.CardRarityPaneFilter;
-import extendedui.ui.cardFilter.panels.CardTypePaneFilter;
-import extendedui.ui.cardFilter.panels.CardUpgradePaneFilter;
+import extendedui.ui.cardFilter.panels.CardRarityPanelFilter;
+import extendedui.ui.cardFilter.panels.CardTypePanelFilter;
+import extendedui.ui.cardFilter.panels.CardUpgradePanelFilter;
 import extendedui.ui.controls.EUIButton;
+import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.RotatingList;
 
 import java.util.ArrayList;
 
 public class CountingPanel extends EUIHoverable implements CustomCardPoolModule {
     protected static final RotatingList<CountingPanelCardFilter> FILTERS = new RotatingList<>(
-            new CardTypePaneFilter(),
-            new CardRarityPaneFilter(),
-            new CardUpgradePaneFilter()
+            new CardTypePanelFilter(),
+            new CardRarityPanelFilter(),
+            new CardUpgradePanelFilter()
     );
     public static final float ICON_SIZE = scale(40);
     private long lastFrame;
@@ -34,8 +36,9 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
 
     public CountingPanel() {
         super(new DraggableHitbox(screenW(0.025f), screenH(0.65f), scale(140), scale(50), false));
-        swapButton = new EUIButton(EUIRM.images.swap.texture(), new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, ICON_SIZE, 0))
+        swapButton = new EUIButton(EUIRM.images.swap.texture(), new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, 0, 0))
                 .setOnClick(this::swap);
+        swapButton.setLabel(new EUILabel(EUIFontHelper.buttonFont, hb, 0.8f, 0.5f, 2.5f, false));
     }
 
     public static void register(CountingPanelCardFilter filter) {
@@ -87,6 +90,7 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
         if (cards != null) {
             CountingPanelCardFilter filter = FILTERS.current();
             if (filter != null) {
+                swapButton.setText(filter.getTitle());
                 counters = filter.generateCounters(cards, hb);
             }
         }

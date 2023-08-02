@@ -233,6 +233,9 @@ public class EUITourTooltip extends EUITooltip {
     }
 
     public float render(SpriteBatch sb, float x, float y, int index) {
+        verifyFonts();
+        final float h = height();
+
         if (linkedImage != null) {
             if (linkedProgress > 1) {
                 linkedImage = null;
@@ -245,24 +248,21 @@ public class EUITourTooltip extends EUITooltip {
                 linkedProgress += EUI.delta();
             }
         }
-        return super.render(sb, x, y, index);
-    }
 
-    public void renderBg(SpriteBatch spriteBatch, float x, float y, float h) {
-        EUIRenderHelpers.drawColorized(spriteBatch, TOOLTIP_COLOR, sb -> {
-            sb.setColor(Settings.TOP_PANEL_SHADOW_COLOR);
-            sb.draw(ImageMaster.KEYWORD_TOP, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, width, BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BODY, x + SHADOW_DIST_X, y - h - BOX_EDGE_H - SHADOW_DIST_Y, width, h + BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BOT, x + SHADOW_DIST_X, y - h - BOX_BODY_H - SHADOW_DIST_Y, width, BOX_EDGE_H);
-            sb.setColor(TOOLTIP_COLOR);
-            sb.draw(ImageMaster.KEYWORD_TOP, x, y, width, BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BODY, x, y - h - BOX_EDGE_H, width, h + BOX_EDGE_H);
-            sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, width, BOX_EDGE_H);
-        });
+        renderBg(sb, Settings.TOP_PANEL_SHADOW_COLOR, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, h);
+        EUIRenderHelpers.ShaderMode.Colorize.draw(sb, s -> renderBg(s, TOOLTIP_COLOR, x, y, h));
+        renderTitle(sb, x, y);
+        renderSubtext(sb, x, y);
         if (canDismiss) {
             Texture t = EUIRM.images.proceed.texture();
-            spriteBatch.draw(t, x + width - t.getWidth(), y - h - BOX_BODY_H - t.getHeight(), t.getWidth(), t.getHeight());
+            sb.draw(t, x + width - t.getWidth(), y - h - BOX_BODY_H - t.getHeight(), t.getWidth(), t.getHeight());
         }
+
+        float yOff = y + BODY_OFFSET_Y;
+        yOff += renderSubheader(sb, x, yOff);
+        renderDescription(sb, x, yOff);
+
+        return h;
     }
 
     public void renderTitle(SpriteBatch sb, float x, float y) {

@@ -25,6 +25,13 @@ public class CardUpgradePanelFilterItem implements CountingPanelItem, TooltipPro
         return upgradeLevel > 0 ? UPGRADE : DOWNGRADE;
     }
 
+    public static String getUpgradeTitle() {
+        if (UPGRADE_TIP == null) {
+            UPGRADE_TIP = EUIKeywordTooltip.findByID("Upgrade");
+        }
+        return UPGRADE_TIP != null ? UPGRADE_TIP.title : "";
+    }
+
     @Override
     public int getRank(AbstractCard c) {
         return c.timesUpgraded >= upgradeLevel ? c.timesUpgraded + 1000 : c.timesUpgraded;
@@ -41,9 +48,6 @@ public class CardUpgradePanelFilterItem implements CountingPanelItem, TooltipPro
     }
 
     protected String getUpgradeName() {
-        if (UPGRADE_TIP == null) {
-            UPGRADE_TIP = EUIKeywordTooltip.findByID("Upgrade");
-        }
-        return UPGRADE_TIP != null ? EUIRM.strings.numNoun("+" + upgradeLevel, UPGRADE_TIP.title) : String.valueOf(upgradeLevel);
+        return EUIRM.strings.numNoun("+" + upgradeLevel, getUpgradeTitle());
     }
 }

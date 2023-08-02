@@ -107,7 +107,6 @@ public class EUIConfiguration {
     protected static int addSlider(int page, STSConfigItem<Integer> option, String label, int ypos, int min, int max) {
         settingsBlock.addUIElement(page, new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.get(), "%d", panel, (c) -> {
             option.set(MathUtils.round(c.getValue()));
-            shouldReloadEffekseer = true;
         }));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
     }

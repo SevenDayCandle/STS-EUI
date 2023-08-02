@@ -338,7 +338,9 @@ public class EUIKeywordTooltip extends EUITooltip {
     }
 
     public EUIKeywordTooltip setIcon(Texture texture) {
-        this.icon = new TextureRegion(texture);
+        if (texture != null) {
+            this.icon = new TextureRegion(texture);
+        }
 
         return this;
     }
