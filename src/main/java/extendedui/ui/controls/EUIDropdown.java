@@ -377,7 +377,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     protected void renderArrows(SpriteBatch sb) {
         float arrowIconX = hb.x + hb.width - ARROW_ICON_SIZE - Settings.scale * 4.0F;
         Texture dropdownArrowIcon = this.isOpen ? ImageMaster.OPTION_TOGGLE_ON : ImageMaster.FILTER_ARROW;
-        sb.draw(dropdownArrowIcon, arrowIconX, hb.y + (hb.height / 7), ARROW_ICON_SIZE, ARROW_ICON_SIZE);
+        sb.draw(dropdownArrowIcon, arrowIconX, hb.y + (hb.height / 6f), ARROW_ICON_SIZE, ARROW_ICON_SIZE);
     }
 
     protected void renderBorder(SpriteBatch sb, float x, float bottom, float width, float height) {

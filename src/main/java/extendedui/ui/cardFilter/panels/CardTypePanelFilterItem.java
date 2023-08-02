@@ -3,8 +3,10 @@ package extendedui.ui.cardFilter.panels;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIGameUtils;
+import extendedui.EUIUtils;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 
 import java.util.Collections;
@@ -51,6 +53,7 @@ public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvid
 
     @Override
     public List<EUITooltip> getTips() {
-        return Collections.singletonList(new EUITooltip(EUIGameUtils.textForType(type)));
+        EUITooltip tip = EUIKeywordTooltip.findByID(EUIUtils.capitalize(type.name()));
+        return Collections.singletonList(tip != null ? tip : new EUITooltip(EUIGameUtils.textForType(type)));
     }
 }

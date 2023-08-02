@@ -7,6 +7,7 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 
 import java.util.Collections;

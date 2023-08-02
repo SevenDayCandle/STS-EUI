@@ -38,7 +38,7 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
         super(new DraggableHitbox(screenW(0.025f), screenH(0.65f), scale(140), scale(50), false));
         swapButton = new EUIButton(EUIRM.images.swap.texture(), new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, 0, 0))
                 .setOnClick(this::swap);
-        swapButton.setLabel(new EUILabel(EUIFontHelper.buttonFont, hb, 0.8f, 0.5f, 2.5f, false));
+        swapButton.setLabel(new EUILabel(EUIFontHelper.buttonFont, hb, 0.8f, 0.5f, 2.41f, false));
     }
 
     public static void register(CountingPanelCardFilter filter) {
