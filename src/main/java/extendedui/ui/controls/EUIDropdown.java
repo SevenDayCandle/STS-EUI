@@ -34,8 +34,7 @@ import java.util.*;
 public class EUIDropdown<T> extends EUIHoverable {
     protected static final int DEFAULT_MAX_ROWS = 15;
     protected static final float ROW_WIDTH_MULT = 3.4028235E38F;
-    protected static final float ARROW_ICON_W = 30.0F * Settings.scale;
-    protected static final float ARROW_ICON_H = 30.0F * Settings.scale;
+    protected static final float ARROW_ICON_SIZE = 24.0F * Settings.scale;
     protected static final float BORDER_SIZE = Settings.scale * 8.0F;
     protected static final float BOX_EDGE_H = 32.0F * Settings.scale;
     protected static final float BOX_BODY_H = 64.0F * Settings.scale;
@@ -376,9 +375,9 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     protected void renderArrows(SpriteBatch sb) {
-        float arrowIconX = hb.x + hb.width - ARROW_ICON_W - Settings.scale * 10.0F;
+        float arrowIconX = hb.x + hb.width - ARROW_ICON_SIZE - Settings.scale * 4.0F;
         Texture dropdownArrowIcon = this.isOpen ? ImageMaster.OPTION_TOGGLE_ON : ImageMaster.FILTER_ARROW;
-        sb.draw(dropdownArrowIcon, arrowIconX, hb.y + hb.height / 4, ARROW_ICON_W, ARROW_ICON_H);
+        sb.draw(dropdownArrowIcon, arrowIconX, hb.y + (hb.height / 7), ARROW_ICON_SIZE, ARROW_ICON_SIZE);
     }
 
     protected void renderBorder(SpriteBatch sb, float x, float bottom, float width, float height) {
