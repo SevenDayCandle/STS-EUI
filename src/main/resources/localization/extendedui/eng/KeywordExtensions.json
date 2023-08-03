@@ -40,6 +40,7 @@
 	},
 	"Scry": {
 		"PAST": "Scried",
+		"PLURAL": "${0}@>1:Scries@:Scry$",
 		"PRESENT": "Scries",
 		"PROGRESSIVE": "Scrying"
 	},

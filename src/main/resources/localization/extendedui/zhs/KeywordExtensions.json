@@ -1,45 +1,60 @@
 {
+	"Block": {
+		"PAST": "blocked",
+		"PRESENT": "blocks",
+		"PROGRESSIVE": "blocking"
+	},
 	"Channel": {
 		"PAST": "Channeled",
-		"PRESENT": "Channels"
+		"PRESENT": "Channels",
+		"PROGRESSIVE": "Channeling"
 	},
 	"Curse": {
 		"PLURAL": "${0}@>1:Curses@:Curse$"
 	},
 	"Exhaust": {
 		"PAST": "Exhausted",
-		"PRESENT": "Exhausts"
+		"PRESENT": "Exhausts",
+		"PROGRESSIVE": "Exhausting"
 	},
 	"Evoke": {
 		"PAST": "Evoked",
-		"PRESENT": "Evokes"
+		"PRESENT": "Evokes",
+		"PROGRESSIVE": "Evoking"
 	},
 	"Fetch":
 	{
 		"PAST": "Fetched",
-		"PRESENT": "Fetches"
+		"PRESENT": "Fetches",
+		"PROGRESSIVE": "Fetching"
 	},
 	"Purge": {
 		"PAST": "Purged",
-		"PRESENT": "Purges"
+		"PRESENT": "Purges",
+		"PROGRESSIVE": "Purging"
 	},
 	"Retain": {
 		"PAST": "Retained",
-		"PRESENT": "Retains"
+		"PRESENT": "Retains",
+		"PROGRESSIVE": "Retaining"
 	},
 	"Scry": {
 		"PAST": "Scried",
-		"PRESENT": "Scries"
+		"PLURAL": "${0}@>1:Scries@:Scry$",
+		"PRESENT": "Scries",
+		"PROGRESSIVE": "Scrying"
 	},
 	"Status": {
 		"PLURAL": "${0}@>1:Statuses@:Status$"
 	},
 	"Transform": {
 		"PAST": "Transformed",
-		"PRESENT": "Transforms"
+		"PRESENT": "Transforms",
+		"PROGRESSIVE": "Transforming"
 	},
 	"Upgrade": {
 		"PAST": "Upgraded",
-		"PRESENT": "Upgrades"
+		"PRESENT": "Upgrades",
+		"PROGRESSIVE": "Upgrading"
 	}
 }
