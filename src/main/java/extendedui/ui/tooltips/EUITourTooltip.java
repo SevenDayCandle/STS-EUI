@@ -255,6 +255,7 @@ public class EUITourTooltip extends EUITooltip {
         renderSubtext(sb, x, y);
         if (canDismiss) {
             Texture t = EUIRM.images.proceed.texture();
+            sb.setColor(Color.WHITE);
             sb.draw(t, x + width - t.getWidth(), y - h - BOX_BODY_H - t.getHeight(), t.getWidth(), t.getHeight());
         }
 

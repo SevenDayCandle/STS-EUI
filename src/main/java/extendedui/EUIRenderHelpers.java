@@ -770,10 +770,13 @@ public class EUIRenderHelpers {
             switch (this) {
                 case Glitch:
                     EUIRenderHelpers.drawGlitched(sb, drawImpl);
+                    return;
                 case Rainbow:
                     EUIRenderHelpers.drawRainbow(sb, drawImpl);
+                    return;
                 case RainbowVertical:
                     EUIRenderHelpers.drawRainbowVertical(sb, drawImpl);
+                    return;
                 case Grayscale:
                 case Invert:
                 case Sepia:
@@ -789,10 +792,13 @@ public class EUIRenderHelpers {
             switch (this) {
                 case Glitch:
                     EUIRenderHelpers.drawGlitched(sb, drawImpl);
+                    return;
                 case Rainbow:
                     EUIRenderHelpers.drawRainbow(sb, drawImpl);
+                    return;
                 case RainbowVertical:
                     EUIRenderHelpers.drawRainbowVertical(sb, drawImpl);
+                    return;
                 case Grayscale:
                 case Invert:
                 case Sepia:
