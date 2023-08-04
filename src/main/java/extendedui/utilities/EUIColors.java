@@ -45,7 +45,17 @@ public class EUIColors {
         return GREEN;
     }
 
-    public static Color lerp(Color current, Color target, float amount) {
+    public static void lerp(Color current, Color target, float amount) {
+        lerp(current, current, target, amount);
+    }
+    public static void lerp(Color toFill, Color current, Color target, float amount) {
+        toFill.r = MathUtils.lerp(current.r, target.r, amount);
+        toFill.g = MathUtils.lerp(current.g, target.g, amount);
+        toFill.b = MathUtils.lerp(current.b, target.b, amount);
+        toFill.a = MathUtils.lerp(current.a, target.a, amount);
+    }
+
+    public static Color lerpNew(Color current, Color target, float amount) {
         current = current.cpy();
         current.r = MathUtils.lerp(current.r, target.r, amount);
         current.g = MathUtils.lerp(current.g, target.g, amount);

@@ -4,7 +4,6 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import extendedui.EUIRenderHelpers;
 import extendedui.ui.EUIHoverable;
@@ -225,15 +224,15 @@ public class EUIImage extends EUIHoverable {
     }
 
     public EUIImage setColor(float r, float g, float b, float a) {
-        this.color = new Color(r, g, b, a);
-        this.sourceColor = this.color.cpy();
+        this.color.set(r, g, b, a);
+        this.sourceColor.set(this.color);
 
         return this;
     }
 
     public EUIImage setColor(Color color) {
-        this.color = color.cpy();
-        this.sourceColor = this.color.cpy();
+        this.color.set(color);
+        this.sourceColor.set(this.color);
 
         return this;
     }
@@ -346,7 +345,7 @@ public class EUIImage extends EUIHoverable {
     public void updateColor() {
         if (targetColor != null && baseTransitionTime > 0) {
             transitionTime -= Gdx.graphics.getRawDeltaTime();
-            this.color = EUIColors.lerp(targetColor, sourceColor, transitionTime / baseTransitionTime);
+            EUIColors.lerp(this.color, targetColor, sourceColor, transitionTime / baseTransitionTime);
             if (transitionTime <= 0) {
                 this.color = this.sourceColor = this.targetColor;
                 this.targetColor = null;
