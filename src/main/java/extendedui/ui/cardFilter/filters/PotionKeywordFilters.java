@@ -33,18 +33,18 @@ import java.util.HashSet;
 import java.util.List;
 
 public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilterModule<PotionInfo>> {
-    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
-    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
-    public final HashSet<AbstractPotion.PotionRarity> currentRarities = new HashSet<>();
-    public final HashSet<AbstractPotion.PotionSize> currentSizes = new HashSet<>();
-    public final HashSet<AbstractPotion.PotionEffect> currentVfx = new HashSet<>();
-    public final HashSet<TargetFilter> currentTargets = new HashSet<>();
-    public final EUIDropdown<ModInfo> originsDropdown;
+    public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
+    public final EUIDropdown<AbstractPotion.PotionEffect> vfxDropdown;
     public final EUIDropdown<AbstractPotion.PotionRarity> raritiesDropdown;
     public final EUIDropdown<AbstractPotion.PotionSize> sizesDropdown;
-    public final EUIDropdown<AbstractPotion.PotionEffect> vfxDropdown;
+    public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<TargetFilter> targetsDropdown;
-    public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
+    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
+    public final HashSet<AbstractPotion.PotionEffect> currentVfx = new HashSet<>();
+    public final HashSet<AbstractPotion.PotionRarity> currentRarities = new HashSet<>();
+    public final HashSet<AbstractPotion.PotionSize> currentSizes = new HashSet<>();
+    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
+    public final HashSet<TargetFilter> currentTargets = new HashSet<>();
 
     public PotionKeywordFilters() {
         super();
@@ -199,7 +199,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         }
 
         //Rarities check
-        if (!currentRarities.isEmpty() && !currentRarities.contains(c.potion.rarity)) {
+        if (!evaluateItem(currentRarities, c.potion.rarity)) {
             return false;
         }
 

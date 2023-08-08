@@ -40,20 +40,20 @@ import java.util.HashSet;
 import java.util.List;
 
 public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardFilterModule> {
-    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
-    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
-    public final HashSet<CostFilter> currentCosts = new HashSet<>();
-    public final HashSet<AbstractCard.CardRarity> currentRarities = new HashSet<>();
-    public final HashSet<TargetFilter> currentTargets = new HashSet<>();
-    public final HashSet<AbstractCard.CardType> currentTypes = new HashSet<>();
     public final ArrayList<SeenValue> currentSeen = new ArrayList<>();
-    public final EUIDropdown<ModInfo> originsDropdown;
-    public final EUIDropdown<CostFilter> costDropdown;
+    public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
     public final EUIDropdown<AbstractCard.CardRarity> raritiesDropdown;
     public final EUIDropdown<AbstractCard.CardType> typesDropdown;
-    public final EUIDropdown<TargetFilter> targetsDropdown;
-    public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
+    public final EUIDropdown<CostFilter> costDropdown;
+    public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<SeenValue> seenDropdown;
+    public final EUIDropdown<TargetFilter> targetsDropdown;
+    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
+    public final HashSet<AbstractCard.CardRarity> currentRarities = new HashSet<>();
+    public final HashSet<AbstractCard.CardType> currentTypes = new HashSet<>();
+    public final HashSet<CostFilter> currentCosts = new HashSet<>();
+    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
+    public final HashSet<TargetFilter> currentTargets = new HashSet<>();
 
     public CardKeywordFilters() {
         super();

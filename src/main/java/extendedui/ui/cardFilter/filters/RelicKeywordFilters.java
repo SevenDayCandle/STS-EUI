@@ -35,16 +35,16 @@ import java.util.HashSet;
 import java.util.List;
 
 public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterModule<RelicInfo>> {
-    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
-    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
-    public final HashSet<AbstractRelic.RelicTier> currentRarities = new HashSet<>();
-    public final HashSet<AbstractRelic.LandingSound> currentSfx = new HashSet<>();
     public final ArrayList<SeenValue> currentSeen = new ArrayList<>();
-    public final EUIDropdown<ModInfo> originsDropdown;
-    public final EUIDropdown<AbstractRelic.RelicTier> raritiesDropdown;
-    public final EUIDropdown<AbstractRelic.LandingSound> sfxDropdown;
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
+    public final EUIDropdown<AbstractRelic.LandingSound> sfxDropdown;
+    public final EUIDropdown<AbstractRelic.RelicTier> raritiesDropdown;
+    public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<SeenValue> seenDropdown;
+    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
+    public final HashSet<AbstractRelic.LandingSound> currentSfx = new HashSet<>();
+    public final HashSet<AbstractRelic.RelicTier> currentRarities = new HashSet<>();
+    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
 
     public RelicKeywordFilters() {
         super();
@@ -191,12 +191,12 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         }
 
         //Rarities check
-        if (!currentRarities.isEmpty() && !currentRarities.contains(c.relic.tier)) {
+        if (!evaluateItem(currentRarities, c.relic.tier)) {
             return false;
         }
 
         //Sfx check
-        if (!currentSfx.isEmpty() && !currentSfx.contains(EUIGameUtils.getLandingSound(c.relic))) {
+        if (!evaluateItem(currentSfx, EUIGameUtils.getLandingSound(c.relic))) {
             return false;
         }
 

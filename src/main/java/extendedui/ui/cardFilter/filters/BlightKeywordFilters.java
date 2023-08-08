@@ -33,10 +33,10 @@ import java.util.List;
 
 public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomFilterModule<AbstractBlight>> {
     protected final static String[] TEXT = CardCrawlGame.languagePack.getUIString("ConfirmPopup").TEXT;
-    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
     public final ArrayList<UniqueValue> currentSeen = new ArrayList<>();
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<UniqueValue> seenDropdown;
+    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
 
     public BlightKeywordFilters() {
         super();
