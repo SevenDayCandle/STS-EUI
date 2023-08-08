@@ -38,6 +38,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     public static final float PAD_Y = scale(45);
     public static final float SPACING = Settings.scale * 18f;
     public static final int ROW_SIZE = 8;
+    public static final int THRESHOLD = ROW_SIZE * 3;
     protected final ArrayList<FilterKeywordButton> filterButtons = new ArrayList<>();
     protected final EUIHitbox hb;
     protected final HashMap<EUIKeywordTooltip, Integer> currentFilterCounts = new HashMap<>();
@@ -193,7 +194,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     }
 
     // Shorthand function to be fed to all dropdown filters
-    protected <K> boolean evaluateItem(HashSet<K> set, FuncT1<Boolean, K> evalFunc) {
+    protected <K> boolean evaluateItem(Collection<K> set, FuncT1<Boolean, K> evalFunc) {
         boolean passes = true;
         if (!set.isEmpty()) {
             passes = false;
@@ -203,6 +204,28 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
                     break;
                 }
             }
+        }
+        return passes;
+    }
+
+    protected <K> boolean evaluateItem(K[] set, FuncT1<Boolean, K> evalFunc) {
+        boolean passes = true;
+        if (set.length > 0) {
+            passes = false;
+            for (K opt : set) {
+                if (evalFunc.invoke(opt)) {
+                    passes = true;
+                    break;
+                }
+            }
+        }
+        return passes;
+    }
+
+    protected <K> boolean evaluateItem(HashSet<K> set, K evalValue) {
+        boolean passes = true;
+        if (!set.isEmpty()) {
+            return (set.contains(evalValue));
         }
         return passes;
     }
@@ -233,6 +256,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         clear(false, true);
         currentFilterCounts.clear();
         filterButtons.clear();
+        scrollDelta = 0;
         currentTotal = 0;
 
         EUI.actingColor = color;
@@ -262,7 +286,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     }
 
     // Shorthand function to be fed to all dropdown filters
-    protected <K> void onFilterChanged(HashSet<K> set, List<K> items) {
+    protected <K> void onFilterChanged(Collection<K> set, List<K> items) {
         set.clear();
         set.addAll(items);
         if (onClick != null) {
@@ -312,6 +336,19 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         currentTotalLabel.setLabel(currentTotal);
 
         refreshButtonOrder();
+    }
+
+    @Override
+    public void refreshOffset() {
+        sizeCache = currentSize();
+        upperScrollBound = 0;
+        lowerScrollBound = 0;
+
+        if (sizeCache > THRESHOLD) {
+            int offset = (sizeCache - THRESHOLD - 1) / rowSize;
+            upperScrollBound += padY * (offset + 2);
+            //lowerScrollBound -= padY * (offset - 1);
+        }
     }
 
     @Override
