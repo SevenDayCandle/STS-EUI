@@ -40,6 +40,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     protected FuncT0<EUICardPreview> previewFunc;
     protected Float lastModNameHeight;
     public Color backgroundColor;
+    public Color iconColor = Color.WHITE;
     public ColoredString modName;
     public String past;
     public String plural;
@@ -282,7 +283,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     }
 
     public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height) {
-        renderTipEnergy(sb, region, x, y, width, height, Settings.scale, Settings.scale, Color.WHITE);
+        renderTipEnergy(sb, region, x, y, width, height, Settings.scale, Settings.scale, iconColor);
     }
 
     public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height, float scaleX, float scaleY, Color renderColor) {
@@ -369,6 +370,12 @@ public class EUIKeywordTooltip extends EUITooltip {
         else {
             EUIUtils.logWarning(this, "Could not load region at " + imagePath);
         }
+        return this;
+    }
+
+    public EUIKeywordTooltip setIconColor(Color color) {
+        this.iconColor = color;
+
         return this;
     }
 
