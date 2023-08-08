@@ -34,7 +34,7 @@ import java.util.List;
 public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomFilterModule<AbstractBlight>> {
     protected final static String[] TEXT = CardCrawlGame.languagePack.getUIString("ConfirmPopup").TEXT;
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
-    public final HashSet<UniqueValue> currentSeen = new HashSet<>();
+    public final ArrayList<UniqueValue> currentSeen = new ArrayList<>();
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<UniqueValue> seenDropdown;
 
@@ -116,7 +116,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
         }
 
         //Origin check
-        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt))) {
+        if (!evaluateItem(currentOrigins, EUIGameUtils.getModInfo(c))) {
             return false;
         }
 

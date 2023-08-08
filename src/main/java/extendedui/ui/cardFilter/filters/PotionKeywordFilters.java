@@ -179,12 +179,12 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         }
 
         //Colors check
-        if (!evaluateItem(currentColors, (opt) -> opt == c.potionColor)) {
+        if (!evaluateItem(currentColors, c.potionColor)) {
             return false;
         }
 
         //Origin check
-        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c.potion, opt))) {
+        if (!evaluateItem(currentOrigins, EUIGameUtils.getModInfo(c.potion))) {
             return false;
         }
 

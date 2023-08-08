@@ -328,6 +328,11 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     public void openOrCloseMenu() {
+        // Empty dropdowns will cause the game to softlock
+        if (getRowsForSelectionUpdate().size() <= 0) {
+            return;
+        }
+
         if (this.isOpen) {
             EUI.setActiveElement(null);
             CardCrawlGame.isPopupOpen = false;

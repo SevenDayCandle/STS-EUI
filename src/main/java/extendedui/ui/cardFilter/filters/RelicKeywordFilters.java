@@ -39,7 +39,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
     public final HashSet<AbstractRelic.RelicTier> currentRarities = new HashSet<>();
     public final HashSet<AbstractRelic.LandingSound> currentSfx = new HashSet<>();
-    public final HashSet<SeenValue> currentSeen = new HashSet<>();
+    public final ArrayList<SeenValue> currentSeen = new ArrayList<>();
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<AbstractRelic.RelicTier> raritiesDropdown;
     public final EUIDropdown<AbstractRelic.LandingSound> sfxDropdown;
@@ -166,12 +166,12 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         }
 
         //Colors check
-        if (!evaluateItem(currentColors, (opt) -> opt == c.relicColor)) {
+        if (!evaluateItem(currentColors, c.relicColor)) {
             return false;
         }
 
         //Origin check
-        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c.relic, opt))) {
+        if (!evaluateItem(currentOrigins, EUIGameUtils.getModInfo(c.relic))) {
             return false;
         }
 

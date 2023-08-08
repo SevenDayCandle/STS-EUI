@@ -44,9 +44,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
     public final HashSet<CostFilter> currentCosts = new HashSet<>();
     public final HashSet<AbstractCard.CardRarity> currentRarities = new HashSet<>();
-    public final HashSet<SeenValue> currentSeen = new HashSet<>();
     public final HashSet<TargetFilter> currentTargets = new HashSet<>();
     public final HashSet<AbstractCard.CardType> currentTypes = new HashSet<>();
+    public final ArrayList<SeenValue> currentSeen = new ArrayList<>();
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<CostFilter> costDropdown;
     public final EUIDropdown<AbstractCard.CardRarity> raritiesDropdown;
@@ -202,12 +202,12 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         }
 
         //Colors check
-        if (!currentColors.isEmpty() && !currentColors.contains(c.color)) {
+        if (!evaluateItem(currentColors, c.color)) {
             return false;
         }
 
         //Origin check
-        if (!evaluateItem(currentOrigins, (opt) -> EUIGameUtils.isObjectFromMod(c, opt))) {
+        if (!evaluateItem(currentOrigins, EUIGameUtils.getModInfo(c))) {
             return false;
         }
 
@@ -222,17 +222,17 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         }
 
         //Rarities check
-        if (!currentRarities.isEmpty() && !currentRarities.contains(c.rarity)) {
+        if (!evaluateItem(currentRarities, c.rarity)) {
             return false;
         }
 
         //Types check
-        if (!currentTypes.isEmpty() && !currentTypes.contains(c.type)) {
+        if (!evaluateItem(currentTypes, c.type)) {
             return false;
         }
 
         //Target check
-        if (!currentTargets.isEmpty() && !currentTargets.contains(TargetFilter.forCard(c))) {
+        if (!evaluateItem(currentTargets, TargetFilter.forCard(c))) {
             return false;
         }
 
