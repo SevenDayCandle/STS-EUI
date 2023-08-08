@@ -58,10 +58,10 @@ public class EUIToggle extends EUIHoverable {
 
     public EUIToggle autosize(Float resizeMultiplier, Float resizeHeight) {
         if (resizeMultiplier != null) {
-            this.hb.width = getAutoWidth();
+            this.hb.width = getAutoWidth() * resizeMultiplier;
         }
         if (resizeHeight != null) {
-            this.hb.height = getAutoHeight();
+            this.hb.height = getAutoHeight() * resizeHeight;
         }
 
         return this;
