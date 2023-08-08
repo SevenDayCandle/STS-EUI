@@ -133,7 +133,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             swapRelicScreen.updateImpl();
             swapPotionScreen.updateImpl();
             EUI.customHeader.update();
-            EUI.openCardFiltersButton.tryUpdate();
+            EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
             EUI.countingPanel.tryUpdate();
             for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
@@ -162,7 +162,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         swapPotionScreen.renderImpl(sb);
         EUI.countingPanel.tryRender(sb);
         if (!EUI.cardFilters.isActive) {
-            EUI.openCardFiltersButton.tryRender(sb);
+            EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
         }
         for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {

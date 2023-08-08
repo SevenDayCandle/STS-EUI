@@ -108,10 +108,7 @@ public class EUI {
     public static CountingPanel countingPanel;
     public static CustomCardLibSortHeader customHeader;
     public static CustomCardLibraryScreen customLibraryScreen;
-    public static EUIButton openBlightFiltersButton;
-    public static EUIButton openCardFiltersButton;
-    public static EUIButton openPotionFiltersButton;
-    public static EUIButton openRelicFiltersButton;
+    public static EUIButton openFiltersButton;
     public static EUITutorialScreen tutorialScreen;
     public static FakeFtueScreen ftueScreen;
     public static ExtraModSettingsPanel modSettingsScreen;
@@ -349,32 +346,10 @@ public class EUI {
         EUIConfiguration.disableCompendiumButton.addListener(EUI::toggleCompendiumButton);
 
         EUITooltip tip = new EUITooltip(EUIRM.strings.ui_filters, EUIRM.strings.ui_filterExplanation);
-        openBlightFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
+        openFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
                 .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.ui_filters)
-                .setOnClick(() -> EUI.blightFilters.toggleFilters())
-                .setTooltip(tip)
-                .setColor(Color.MAROON);
-        openCardFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.ui_filters)
-                .setOnClick(() -> EUI.cardFilters.toggleFilters())
-                .setTooltip(tip)
-                .setColor(Color.MAROON);
-        openPotionFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.ui_filters)
-                .setOnClick(() -> EUI.potionFilters.toggleFilters())
-                .setTooltip(tip)
-                .setColor(Color.MAROON);
-        openRelicFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
-                .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
-                .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.ui_filters)
-                .setOnClick(() -> EUI.relicFilters.toggleFilters())
                 .setTooltip(tip)
                 .setColor(Color.MAROON);
 

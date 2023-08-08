@@ -60,7 +60,7 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
         cancelButton.render(sb);
         EUI.blightHeader.renderImpl(sb);
         if (!EUI.blightFilters.isActive) {
-            EUI.openBlightFiltersButton.tryRender(sb);
+            EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
         }
         for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
@@ -81,7 +81,7 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
                 close();
             }
             EUI.blightHeader.updateImpl();
-            EUI.openBlightFiltersButton.tryUpdate();
+            EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
             for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
                 module.update();

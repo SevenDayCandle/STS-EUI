@@ -109,7 +109,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
             customModule.render(sb);
         }
         if (!EUI.cardFilters.isActive) {
-            EUI.openCardFiltersButton.tryRender(sb);
+            EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
         }
     }
@@ -119,7 +119,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         super.updateImpl();
         boolean shouldDoStandardUpdate = !EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
         if (shouldDoStandardUpdate) {
-            EUI.openCardFiltersButton.tryUpdate();
+            EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
             colorButtons.tryUpdate();
             EUI.customHeader.update();

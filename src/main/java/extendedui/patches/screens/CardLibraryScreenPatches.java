@@ -76,6 +76,7 @@ public class CardLibraryScreenPatches {
         @SpirePostfixPatch
         public static void postfix(CardLibraryScreen screen, ColorTabBar tabBar, ColorTabBar.CurrentTab newSelection) {
             EUI.cardFilters.initialize(__ -> EUI.customHeader.updateForFilters(), EUI.customHeader.originalGroup, newSelection == ColorTabBarFix.Enums.MOD ? ColorTabBarFix.Fields.getModTab().color : AbstractCard.CardColor.COLORLESS, false);
+            EUI.openFiltersButton.setOnClick(() -> EUI.cardFilters.toggleFilters());
             EUI.customHeader.updateForFilters();
         }
     }
@@ -91,8 +92,8 @@ public class CardLibraryScreenPatches {
                 return SpireReturn.Return();
             }
 
-            if (!EUI.cardFilters.isActive && EUI.openCardFiltersButton != null) {
-                EUI.openCardFiltersButton.tryUpdate();
+            if (!EUI.cardFilters.isActive && EUI.openFiltersButton != null) {
+                EUI.openFiltersButton.tryUpdate();
                 EUIExporter.exportButton.tryUpdate();
             }
             // Ensure that both update, but only one needs to have updated for this to pass
@@ -118,8 +119,8 @@ public class CardLibraryScreenPatches {
     public static class CardLibraryScreen_Render {
         @SpirePrefixPatch
         public static void postfix(CardLibraryScreen __instance, SpriteBatch sb) {
-            if (!EUI.cardFilters.isActive && EUI.openCardFiltersButton != null) {
-                EUI.openCardFiltersButton.tryRender(sb);
+            if (!EUI.cardFilters.isActive && EUI.openFiltersButton != null) {
+                EUI.openFiltersButton.tryRender(sb);
                 EUIExporter.exportButton.tryRender(sb);
             }
         }

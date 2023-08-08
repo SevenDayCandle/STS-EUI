@@ -91,6 +91,7 @@ public class RelicViewScreenPatches {
                     , AbstractCard.CardColor.COLORLESS
                     , false);
             updateForFilters();
+            EUI.openFiltersButton.setOnClick(() -> EUI.relicFilters.toggleFilters());
             EUIExporter.exportButton.setOnClick(() -> EUIExporter.relicExportable.openAndPosition(allList));
         }
     }
@@ -110,8 +111,8 @@ public class RelicViewScreenPatches {
         @SpirePrefixPatch
         public static void prefix(RelicViewScreen __instance) {
             // Export relic button will only be null if open relic button is also null
-            if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
-                EUI.openRelicFiltersButton.tryUpdate();
+            if (!EUI.relicFilters.isActive && EUI.openFiltersButton != null) {
+                EUI.openFiltersButton.tryUpdate();
                 EUIExporter.exportButton.tryUpdate();
             }
             // Make sure both items update, but only one needs to be pass
@@ -158,8 +159,8 @@ public class RelicViewScreenPatches {
         @SpirePrefixPatch
         public static void postfix(RelicViewScreen __instance, SpriteBatch sb) {
             // Export relic button will only be null if open relic button is also null
-            if (!EUI.relicFilters.isActive && EUI.openRelicFiltersButton != null) {
-                EUI.openRelicFiltersButton.tryRender(sb);
+            if (!EUI.relicFilters.isActive && EUI.openFiltersButton != null) {
+                EUI.openFiltersButton.tryRender(sb);
                 EUIExporter.exportButton.tryRender(sb);
             }
         }

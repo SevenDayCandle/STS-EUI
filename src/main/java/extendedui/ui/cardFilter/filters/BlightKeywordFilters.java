@@ -217,6 +217,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
             onClick.invoke(button);
         }, EUI.blightHeader.originalGroup, color, isAccessedFromCardPool);
         EUI.blightHeader.updateForFilters();
+        EUI.openFiltersButton.setOnClick(() -> EUI.blightFilters.toggleFilters());
         EUIExporter.exportButton.setOnClick(() -> EUIExporter.blightExportable.openAndPosition(EUI.blightHeader.group.group));
         return this;
     }

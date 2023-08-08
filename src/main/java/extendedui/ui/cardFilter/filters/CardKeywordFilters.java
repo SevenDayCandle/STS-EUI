@@ -454,6 +454,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
             onClick.invoke(button);
         }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
         EUI.customHeader.updateForFilters();
+        EUI.openFiltersButton.setOnClick(() -> EUI.cardFilters.toggleFilters());
         EUIExporter.exportButton.setOnClick(() -> EUIExporter.cardExportable.openAndPosition(EUI.customHeader.group.group));
         return this;
     }

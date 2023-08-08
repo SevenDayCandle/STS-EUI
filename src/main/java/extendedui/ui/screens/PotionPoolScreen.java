@@ -100,7 +100,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
             swapCardScreen.updateImpl();
             swapRelicScreen.updateImpl();
             EUI.potionHeader.updateImpl();
-            EUI.openPotionFiltersButton.tryUpdate();
+            EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
             for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
                 module.update();
@@ -120,7 +120,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
         swapRelicScreen.renderImpl(sb);
         EUI.potionHeader.renderImpl(sb);
         if (!EUI.potionFilters.isActive) {
-            EUI.openPotionFiltersButton.tryRender(sb);
+            EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
         }
         for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {

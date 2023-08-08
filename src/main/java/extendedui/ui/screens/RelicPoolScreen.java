@@ -101,7 +101,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             swapCardScreen.updateImpl();
             swapPotionScreen.updateImpl();
             EUI.relicHeader.updateImpl();
-            EUI.openRelicFiltersButton.tryUpdate();
+            EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
             for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
                 module.update();
@@ -121,7 +121,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
         swapPotionScreen.renderImpl(sb);
         EUI.relicHeader.renderImpl(sb);
         if (!EUI.relicFilters.isActive) {
-            EUI.openRelicFiltersButton.tryRender(sb);
+            EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
         }
         for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
