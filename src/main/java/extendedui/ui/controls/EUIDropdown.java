@@ -121,7 +121,7 @@ public class EUIDropdown<T> extends EUIHoverable {
                 .setColor(Color.GRAY)
                 .setLabel(font, fontScale, currentIndices.size() + " " + EUIRM.strings.ui_itemsSelected)
                 .setOnClick(this::openOrCloseMenu);
-        this.clearButton = new EUIButton(EUIRM.images.xButton.texture(), new OriginRelativeHitbox(hb, hb.height * 0.75f, hb.height * 0.75f, hb.width, hb.height * 0.2f)
+        this.clearButton = new EUIButton(EUIRM.images.xButton.texture(), new OriginRelativeHitbox(hb, hb.height * 0.75f, hb.height * 0.75f, hb.width, hb.height * 0.35f)
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnClick(this::clear);

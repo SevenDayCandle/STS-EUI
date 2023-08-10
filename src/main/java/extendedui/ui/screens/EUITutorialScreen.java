@@ -48,11 +48,11 @@ public class EUITutorialScreen extends AbstractMenuScreen {
     public void updateImpl() {
         super.updateImpl();
         if (current != null) {
-            current.updateImpl();
-            if (InputHelper.justClickedLeft && !current.isHovered()) {
+            if (InputHelper.justClickedLeft && !current.isHovered() && !CardCrawlGame.isPopupOpen) {
                 exitScreen();
                 return;
             }
+            current.updateImpl();
         }
 
         button.update();

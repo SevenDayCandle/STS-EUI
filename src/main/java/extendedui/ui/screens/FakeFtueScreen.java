@@ -2,6 +2,7 @@ package extendedui.ui.screens;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
@@ -51,11 +52,11 @@ public class FakeFtueScreen extends EUIDungeonScreen {
     @Override
     public void update() {
         if (current != null) {
-            current.updateImpl();
-            if (InputHelper.justClickedLeft && !current.isHovered()) {
+            if (InputHelper.justClickedLeft && !current.isHovered() && !CardCrawlGame.isPopupOpen) {
                 exitScreen();
                 return;
             }
+            current.updateImpl();
         }
 
         button.update();

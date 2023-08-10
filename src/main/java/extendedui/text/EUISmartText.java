@@ -17,9 +17,9 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.ArrayList;
 
 public class EUISmartText {
-    private static final String NEWLINE = "NL";
     private static final StringBuilder builder = new StringBuilder();
     private static final GlyphLayout layout = new GlyphLayout();
+    public static final String NEWLINE = "NL";
     public static final Color ORANGE_TEXT_COLOR = new Color(1.0F, 0.5F, 0.25F, 1F);
     public static final Color INDIGO_TEXT_COLOR = new Color(0.65F, 0.47F, 1.F, 1F);
     public static final Color PINK_TEXT_COLOR = new Color(1.0F, 0.37F, 0.65F, 1F);

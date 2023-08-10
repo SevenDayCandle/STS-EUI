@@ -18,10 +18,7 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
     public static String sanitizeDescription(String description) {
         return description
                 .replaceAll("#[a-z]", "")
-                .replace("[", "")
-                .replace("]", "")
-                .replace("{", "")
-                .replace("}", "");
+                .replaceAll("[\\[\\]{}]", "");
     }
 
     @Override
