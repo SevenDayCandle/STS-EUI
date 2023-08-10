@@ -43,6 +43,7 @@ public class EUIRenderHelpers {
     protected static final String SHADER_RAINBOW_VERTICAL_FRAGMENT = "shaders/rainbowVerticalFragment.glsl";
     protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
     protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
+    public static final float DEG_TO_RAD = 0.017453292f;
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.4F);
     private static FrameBuffer maskBuffer;
     protected static ShaderProgram blurShader;
@@ -253,69 +254,75 @@ public class EUIRenderHelpers {
     }
 
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Color color, float drawX, float drawY, float width, float height) {
-        drawOnCardAuto(sb, card, img, new Vector2(drawX, drawY), width, height, color, color.a, 1, 0);
+        drawOnCardAuto(sb, card, img, drawX, drawY, width, height, color, color.a, 1, 0);
     }
 
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale, float imgRotation) {
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale, float imgRotation) {
         if (card.angle != 0) {
-            offset.rotate(card.angle);
+            float radians = card.angle * DEG_TO_RAD;
+            float cos = (float)Math.cos(radians);
+            float sin = (float)Math.sin(radians);
+            drawX = drawX * cos - drawY * sin;
+            drawY = drawX * sin + drawY * cos;
         }
 
-        offset.scl(Settings.scale * card.drawScale);
+        float scl = Settings.scale * card.drawScale;
+        drawX = drawX * scl;
+        drawY = drawY * scl;
 
-        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + offset.x, card.current_y + offset.y, width, height, imgScale, imgRotation);
+        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + drawX, card.current_y + drawY, width, height, imgScale, imgRotation);
     }
 
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height) {
-        drawOnCardAuto(sb, card, img, new Vector2(drawX, drawY), width, height, Color.WHITE, card.transparency, 1, 0);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height) {
-        drawOnCardAuto(sb, card, img, offset, width, height, Color.WHITE, card.transparency, 1, 0);
+        drawOnCardAuto(sb, card, img, drawX, drawY, width, height, Color.WHITE, card.transparency, 1, 0);
     }
 
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, float drawX, float drawY, float width, float height) {
-        drawOnCardAuto(sb, card, img.texture, new Vector2(drawX, drawY), width, height, img.color, img.color.a * card.transparency, 1, 0);
+        drawOnCardAuto(sb, card, img.texture, drawX, drawY, width, height, img.color, img.color.a * card.transparency, 1, 0);
     }
 
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, float drawX, float drawY, float width, float height, float scale) {
-        drawOnCardAuto(sb, card, img.texture, new Vector2(drawX, drawY), width, height, img.color, img.color.a * card.transparency, scale, 0);
+        drawOnCardAuto(sb, card, img.texture, drawX, drawY, width, height, img.color, img.color.a * card.transparency, scale, 0);
     }
 
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, ColoredTexture img, Vector2 offset, float width, float height) {
-        drawOnCardAuto(sb, card, img.texture, offset, width, height, img.color, img.color.a * card.transparency, 1, 0);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale) {
-        drawOnCardAuto(sb, card, img, offset, width, height, color, alpha, imgScale, 0f);
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale) {
+        drawOnCardAuto(sb, card, img, drawX, drawY, width, height, color, alpha, imgScale, 0f);
     }
 
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, float drawX, float drawY, float width, float height) {
-        drawOnCardAuto(sb, card, img, new Vector2(drawX, drawY), width, height, Color.WHITE, card.transparency, 1);
+        drawOnCardAuto(sb, card, img, drawX, drawY, width, height, Color.WHITE, card.transparency, 1);
     }
 
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale) {
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale) {
         if (card.angle != 0) {
-            offset.rotate(card.angle);
+            float radians = card.angle * DEG_TO_RAD;
+            float cos = (float)Math.cos(radians);
+            float sin = (float)Math.sin(radians);
+            drawX = drawX * cos - drawY * sin;
+            drawY = drawX * sin + drawY * cos;
         }
 
-        offset.scl(Settings.scale * card.drawScale);
+        float scl = Settings.scale * card.drawScale;
+        drawX = drawX * scl;
+        drawY = drawY * scl;
 
-        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + offset.x, card.current_y + offset.y, width, height, imgScale);
+        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + drawX, card.current_y + drawY, width, height, imgScale);
     }
 
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, Vector2 offset, float width, float height) {
-        drawOnCardAuto(sb, card, img, offset, width, height, Color.WHITE, card.transparency, 1);
-    }
-
-    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, Vector2 offset, float width, float height, Color color, float alpha, float imgScale, float imgRotation, boolean flipX, boolean flipY) {
+    public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale, float imgRotation, boolean flipX, boolean flipY) {
         if (card.angle != 0) {
-            offset.rotate(card.angle);
+            float radians = card.angle * DEG_TO_RAD;
+            float cos = (float)Math.cos(radians);
+            float sin = (float)Math.sin(radians);
+            drawX = drawX * cos - drawY * sin;
+            drawY = drawX * sin + drawY * cos;
         }
 
-        offset.scl(Settings.scale * card.drawScale);
+        float scl = Settings.scale * card.drawScale;
+        drawX = drawX * scl;
+        drawY = drawY * scl;
 
-        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + offset.x, card.current_y + offset.y, width, height, imgScale, imgRotation, flipX, flipY);
+        drawOnCardCentered(sb, card, new Color(color.r, color.g, color.b, alpha), img, card.current_x + drawX, card.current_y + drawY, width, height, imgScale, imgRotation, flipX, flipY);
     }
     //
 
