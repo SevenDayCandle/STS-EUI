@@ -232,6 +232,7 @@ public class EUITourTooltip extends EUITooltip {
         }
     }
 
+    @Override
     public float render(SpriteBatch sb, float x, float y, int index) {
         verifyFonts();
         final float h = height();
@@ -266,6 +267,7 @@ public class EUITourTooltip extends EUITooltip {
         return h;
     }
 
+    @Override
     public void renderTitle(SpriteBatch sb, float x, float y) {
         FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GREEN_TEXT_COLOR);
     }

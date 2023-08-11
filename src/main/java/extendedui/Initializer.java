@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.rooms.AbstractRoom;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.patches.EUIKeyword;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
+import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
 import org.apache.logging.log4j.LogManager;
 

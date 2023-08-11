@@ -14,7 +14,6 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -62,6 +61,8 @@ public class EUITooltip {
     public static final float TIP_Y_LIMIT = Settings.HEIGHT * 0.97f;
     private static Object provider;
     private static Object lastProvider;
+    public static Color TIP_BUFF = Color.WHITE;
+    public static Color TIP_DEBUFF = Color.WHITE;
     protected int currentDesc;
     protected Float lastSubHeaderHeight;
     protected Float lastTextHeight;
@@ -443,6 +444,7 @@ public class EUITooltip {
 
             for (AbstractPower p : creature.powers) {
                 if (canRenderPower(p)) {
+                    // Background colors should be handled by the provider
                     if (p instanceof TooltipProvider) {
                         tooltips.add(((TooltipProvider) p).getTooltip());
                         continue;
@@ -455,6 +457,14 @@ public class EUITooltip {
 
                     if (tip.icon == null && p.img != null) {
                         tip.setIcon(p.img, 6);
+                    }
+
+                    switch (p.type) {
+                        case BUFF:
+                            tip.setBackgroundColor(TIP_BUFF);
+                            break;
+                        case DEBUFF:
+                            tip.setBackgroundColor(TIP_DEBUFF);
                     }
 
                     tooltips.add(tip);

@@ -39,7 +39,8 @@ public class EUIKeywordTooltip extends EUITooltip {
     protected FuncT0<TextureRegion> iconFunc;
     protected FuncT0<EUICardPreview> previewFunc;
     protected Float lastModNameHeight;
-    public Color backgroundColor;
+    public Color badgeColor;
+    public Color backgroundColor = Color.WHITE;
     public Color iconColor = Color.WHITE;
     public ColoredString modName;
     public String past;
@@ -224,6 +225,22 @@ public class EUIKeywordTooltip extends EUITooltip {
     }
 
     @Override
+    public float render(SpriteBatch sb, float x, float y, int index) {
+        verifyFonts();
+        final float h = height();
+        renderBg(sb, Settings.TOP_PANEL_SHADOW_COLOR, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, h);
+        renderBg(sb, backgroundColor, x, y, h);
+        renderTitle(sb, x, y);
+        renderSubtext(sb, x, y);
+
+        float yOff = y + BODY_OFFSET_Y;
+        yOff += renderSubheader(sb, x, yOff);
+        renderDescription(sb, x, yOff);
+
+        return h;
+    }
+
+    @Override
     public float renderSubheader(SpriteBatch sb, float x, float y) {
         float subHeight = 0;
         if (modName != null) {
@@ -287,8 +304,8 @@ public class EUIKeywordTooltip extends EUITooltip {
     }
 
     public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height, float scaleX, float scaleY, Color renderColor) {
-        if (backgroundColor != null) {
-            sb.setColor(backgroundColor);
+        if (badgeColor != null) {
+            sb.setColor(badgeColor);
             sb.draw(EUIRM.images.baseBadge.texture(), x, y, 0f, 0f,
                     width, height, scaleX, scaleY, 0f,
                     region.getRegionX(), region.getRegionY(), region.getRegionWidth(),
@@ -302,6 +319,12 @@ public class EUIKeywordTooltip extends EUITooltip {
     }
 
     public EUIKeywordTooltip setBadgeBackground(Color color) {
+        this.badgeColor = color;
+
+        return this;
+    }
+
+    public EUIKeywordTooltip setBackgroundColor(Color color) {
         this.backgroundColor = color;
 
         return this;

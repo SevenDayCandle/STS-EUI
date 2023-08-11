@@ -358,7 +358,7 @@ public class EUISmartText {
         Color backgroundColor;
         TextureRegion icon;
         if (tooltip != null) {
-            backgroundColor = tooltip.backgroundColor;
+            backgroundColor = tooltip.badgeColor;
             icon = (force || tooltip.forceIcon) ? tooltip.icon : null;
         }
         else {
