@@ -20,6 +20,7 @@ import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomFilterModule;
 import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.KeywordProvider;
+import extendedui.patches.game.TooltipPatches;
 import extendedui.ui.cardFilter.FilterKeywordButton;
 import extendedui.ui.cardFilter.GenericFilters;
 import extendedui.ui.controls.EUIDropdown;
@@ -268,9 +269,18 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         }
 
         ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
-        for (PowerTip sk : c.relic.tips) {
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
-            if (tip != null && !dynamicTooltips.contains(tip)) {
+        // Skip the first tip
+        for (int i = 1; i < c.relic.tips.size(); i++) {
+            PowerTip sk = c.relic.tips.get(i);
+            String key = TooltipPatches.PowerTip_Keyword.value.get(sk);
+            if (key == null) {
+                key = StringUtils.lowerCase(sk.header);
+            }
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(key);
+            if (tip == null) {
+                tip = getTemporaryTip(sk);
+            }
+            if (!dynamicTooltips.contains(tip)) {
                 dynamicTooltips.add(tip);
             }
         }

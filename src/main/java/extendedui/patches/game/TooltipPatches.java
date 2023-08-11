@@ -1,22 +1,25 @@
 package extendedui.patches.game;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireInstrumentPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
-import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
+import com.evacipated.cardcrawl.modthespire.lib.*;
+import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
+import com.megacrit.cardcrawl.core.OverlayMenu;
+import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import extendedui.EUI;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import javassist.CannotCompileException;
+import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
 
 import java.util.ArrayList;
@@ -25,6 +28,7 @@ public class TooltipPatches {
     private static ArrayList<EUITooltip> currentTips;
     private static EUITooltip currentSingleTip;
     private static Object lastTips;
+    private static String capturedKeyword; // God dammit
 
     public static void clearTips() {
         lastTips = null;
@@ -66,6 +70,20 @@ public class TooltipPatches {
         }
     }
 
+    @SpirePatch(clz = AbstractBlight.class, method = "initializeTips")
+    public static class AbstractBlight_InitializeTips {
+
+        @SpireInsertPatch(locator = Locator.class, localvars = {"s"})
+        public static void method(AbstractBlight __instance, String s) {
+            capturedKeyword = s;
+        }
+
+        @SpireInsertPatch(locator = Locator2.class)
+        public static void method2(AbstractBlight __instance) {
+            PowerTip_Keyword.value.set(__instance.tips.get(__instance.tips.size() - 1), capturedKeyword);
+        }
+    }
+
     @SpirePatch(clz = AbstractBlight.class, method = "renderTip", paramtypez = {SpriteBatch.class})
     public static class AbstractBlight_RenderTips {
         @SpirePrefixPatch
@@ -78,6 +96,20 @@ public class TooltipPatches {
             }
 
             return SpireReturn.Continue();
+        }
+    }
+
+    @SpirePatch(clz = AbstractRelic.class, method = "initializeTips")
+    public static class AbstractRelic_InitializeTips {
+
+        @SpireInsertPatch(locator = Locator.class, localvars = {"s"})
+        public static void method(AbstractRelic __instance, String s) {
+            capturedKeyword = s;
+        }
+
+        @SpireInsertPatch(locator = Locator2.class)
+        public static void method2(AbstractRelic __instance) {
+            PowerTip_Keyword.value.set(__instance.tips.get(__instance.tips.size() - 1), capturedKeyword);
         }
     }
 
@@ -170,6 +202,31 @@ public class TooltipPatches {
                     }
                 }
             };
+        }
+    }
+
+    @SpirePatch(
+            clz = PowerTip.class,
+            method = "<class>"
+    )
+    public static class PowerTip_Keyword {
+        // Records the keyword used to create this tip, to be used for reverse lookups in the EUI filter menu
+        public static SpireField<String> value = new SpireField<>(() -> {
+            return null;
+        });
+    }
+
+    private static class Locator extends SpireInsertLocator {
+        public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+            Matcher finalMatcher = new Matcher.FieldAccessMatcher(GameDictionary.class, "parentWord");
+            return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+        }
+    }
+
+    private static class Locator2 extends SpireInsertLocator {
+        public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+            Matcher finalMatcher = new Matcher.MethodCallMatcher(TipHelper.class, "capitalize");
+            return new int[] {LineFinder.findInOrder(ctMethodToPatch, finalMatcher)[0] + 1};
         }
     }
 }

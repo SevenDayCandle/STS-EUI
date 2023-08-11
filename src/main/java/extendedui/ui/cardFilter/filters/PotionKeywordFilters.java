@@ -29,6 +29,7 @@ import extendedui.utilities.TargetFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -285,15 +286,20 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
     }
 
     public List<EUIKeywordTooltip> getAllTooltips(PotionInfo c) {
-        KeywordProvider eC = EUIUtils.safeCast(c, KeywordProvider.class);
+        KeywordProvider eC = EUIUtils.safeCast(c.potion, KeywordProvider.class);
         if (eC != null) {
             return eC.getTipsForFilters();
         }
 
         ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
-        for (PowerTip sk : c.potion.tips) {
+        // Skip the first tip
+        for (int i = 1; i < c.potion.tips.size(); i++) {
+            PowerTip sk = c.potion.tips.get(i);
             EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
-            if (tip != null && !dynamicTooltips.contains(tip)) {
+            if (tip == null) {
+                tip = getTemporaryTip(sk);
+            }
+            if (!dynamicTooltips.contains(tip)) {
                 dynamicTooltips.add(tip);
             }
         }

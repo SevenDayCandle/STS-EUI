@@ -182,9 +182,14 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
         }
 
         ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
-        for (PowerTip sk : c.tips) {
+        // Skip the first tip
+        for (int i = 1; i < c.tips.size(); i++) {
+            PowerTip sk = c.tips.get(i);
             EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
-            if (tip != null && !dynamicTooltips.contains(tip)) {
+            if (tip == null) {
+                tip = getTemporaryTip(sk);
+            }
+            if (!dynamicTooltips.contains(tip)) {
                 dynamicTooltips.add(tip);
             }
         }

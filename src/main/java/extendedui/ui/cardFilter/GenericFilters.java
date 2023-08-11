@@ -1,11 +1,13 @@
 package extendedui.ui.cardFilter;
 
+import basemod.devcommands.power.Power;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -31,6 +33,7 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.*;
 
 public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends EUICanvasGrid {
+    protected static final HashMap<String, EUIKeywordTooltip> TEMPORARY_TIPS = new HashMap<>(); // Because AbstractPotion HAS NO STANDARDIZED WAY OF ADDING TIPS, there's no way for us to infer where the tip came from
     protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
     public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.87f;
@@ -149,6 +152,15 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
                 });
     }
 
+    protected static EUIKeywordTooltip getTemporaryTip(PowerTip sk) {
+        EUIKeywordTooltip tip = TEMPORARY_TIPS.get(sk.header);
+        if (tip == null) {
+            tip = new EUIKeywordTooltip(sk.header, sk.body);
+            TEMPORARY_TIPS.put(sk.header, tip);
+        }
+        return tip;
+    }
+
     public void addManualKeyword(EUIKeywordTooltip tooltip, int count) {
         filterButtons.add(new FilterKeywordButton(this, tooltip).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(count));
         currentFilterCounts.merge(tooltip, count, Integer::sum);
@@ -254,11 +266,11 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
 
     public final GenericFilters<T, U> initialize(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
         clear(false, true);
+        TEMPORARY_TIPS.clear();
         currentFilterCounts.clear();
         filterButtons.clear();
         scrollDelta = 0;
         currentTotal = 0;
-
         EUI.actingColor = color;
         EUIKeywordTooltip.updateTooltipIcons();
         this.onClick = onClick;
