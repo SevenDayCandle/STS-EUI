@@ -17,6 +17,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
@@ -36,6 +37,8 @@ import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class EUITooltip {
     private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
@@ -622,37 +625,74 @@ public class EUITooltip {
     }
 
     public static void scanForTips(String rawDesc, ArrayList<? super EUIKeywordTooltip> tips, ArrayList<? super EUIKeywordTooltip> dest, boolean allowNonRenderable) {
-        final Scanner desc = new Scanner(rawDesc);
+        StringBuilder sb = new StringBuilder();
         String s;
-        boolean alreadyExists;
-        do {
-            if (!desc.hasNext()) {
-                desc.close();
-                return;
-            }
-
-            s = desc.next();
-            if (s.charAt(0) == '#') {
-                s = s.substring(2);
-            }
-
-            s = s.replace(',', ' ');
-            s = s.replace('.', ' ');
-
-            if (s.length() > 4) {
-                s = s.replace('[', ' ');
-                s = s.replace(']', ' ');
-            }
-
-            s = s.trim();
-            s = s.toLowerCase();
-
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(s);
-            if (tip != null && (allowNonRenderable || tip.isRenderable()) && !tips.contains(tip)) {
-                dest.add(tip);
+        EUIKeywordTooltip tip;
+        for (int i = 0; i < rawDesc.length(); i++) {
+            char c = rawDesc.charAt(i);
+            switch (c) {
+                case '[':
+                case '†':
+                    while (i + 1 < rawDesc.length()) {
+                        i += 1;
+                        c = rawDesc.charAt(i);
+                        if (c == ']') {
+                            i += 1; // Skip this character
+                            break;
+                        }
+                        else {
+                            sb.append(c);
+                        }
+                    }
+                    tip = EUIKeywordTooltip.findByID(sb.toString());
+                    if (tip != null && (allowNonRenderable || tip.isRenderable()) && !tips.contains(tip)) {
+                        dest.add(tip);
+                    }
+                    sb.setLength(0);
+                    break;
+                case '{':
+                    while (i + 1 < rawDesc.length()) {
+                        i += 1;
+                        c = rawDesc.charAt(i);
+                        if (c == ':') {
+                            sb.setLength(0);
+                        }
+                        else if (c == '}') {
+                            i += 1;  // Skip this character
+                            break;
+                        }
+                        else {
+                            sb.append(c);
+                        }
+                    }
+                    s = sb.toString();
+                    tip = EUIKeywordTooltip.findByName(s);
+                    if (tip != null && (allowNonRenderable || tip.isRenderable()) && !tips.contains(tip)) {
+                        dest.add(tip);
+                    }
+                    sb.setLength(0);
+                    break;
+                case '#':
+                    i += 1;  // Denotes a color
+                    break;
+                default:
+                    if (!Character.isWhitespace(c)) {
+                        sb.append(c);
+                        break;
+                    }
+                case '?':
+                case '!':
+                case '。':
+                case '.':
+                case ',':
+                    s = sb.toString();
+                    tip = EUIKeywordTooltip.findByName(s);
+                    if (tip != null && (allowNonRenderable || tip.isRenderable()) && !tips.contains(tip)) {
+                        dest.add(tip);
+                    }
+                    sb.setLength(0);
             }
         }
-        while (true);
     }
 
     public static void scanListForAdditionalTips(ArrayList<EUITooltip> receiver) {
