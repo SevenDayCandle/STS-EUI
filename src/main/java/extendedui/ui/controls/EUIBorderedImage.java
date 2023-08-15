@@ -49,17 +49,6 @@ public class EUIBorderedImage extends EUIImage {
         renderCorners(sb, x, y, width, height, texWidth, texHeight);
     }
 
-    protected void renderImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
-        float texWidth = cornerTL.getWidth() * Settings.scale;
-        float texHeight = cornerBR.getWidth() * Settings.scale;
-        x += texWidth;
-        y += texHeight;
-        width = width - 2 * texWidth;
-        height = height - 2 * texHeight;
-        super.renderImpl(sb, x, y, width, height, targetColor);
-        renderCorners(sb, x, y, width, height, texWidth, texHeight);
-    }
-
     protected void renderCorners(SpriteBatch sb, float x, float y, float width, float height, float texWidth, float texHeight) {
         sb.draw(cornerTL, x - texWidth, y + height, 0, 0, texWidth, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, cornerTL.getWidth(), cornerTL.getHeight(), flipX, flipY);
         sb.draw(cornerTR, x + width, y + height, 0, 0, texWidth, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, cornerTR.getWidth(), cornerTR.getHeight(), flipX, flipY);
@@ -70,6 +59,17 @@ public class EUIBorderedImage extends EUIImage {
         sb.draw(borderL, x - texHeight, y, 0, 0, texWidth, height, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, borderL.getWidth(), borderL.getHeight(), flipX, flipY);
         sb.draw(borderR, x + width, y, 0, 0, texWidth, height, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, borderR.getWidth(), borderR.getHeight(), flipX, flipY);
         sb.draw(borderT, x, y + height, 0, 0, width, texHeight, scaleX * borderScale, scaleY * borderScale, rotation, 0, 0, borderT.getWidth(), borderT.getHeight(), flipX, flipY);
+    }
+
+    protected void renderImpl(SpriteBatch sb, float x, float y, float width, float height, Color targetColor) {
+        float texWidth = cornerTL.getWidth() * Settings.scale;
+        float texHeight = cornerBR.getWidth() * Settings.scale;
+        x += texWidth;
+        y += texHeight;
+        width = width - 2 * texWidth;
+        height = height - 2 * texHeight;
+        super.renderImpl(sb, x, y, width, height, targetColor);
+        renderCorners(sb, x, y, width, height, texWidth, texHeight);
     }
 
     public EUIBorderedImage setBorder(Texture borderB, Texture borderL, Texture borderR, Texture borderT, Texture cornerBL, Texture cornerBR, Texture cornerTL, Texture cornerTR) {

@@ -57,19 +57,6 @@ public abstract class EUICanvas extends EUIBase {
         }
     }
 
-    @Override
-    public void updateImpl() {
-        if (!EUI.doesActiveElementExist()) {
-            if (shouldShowScrollbar()) {
-                scrollBar.updateImpl();
-                updateScrolling(scrollBar.isDragging);
-            }
-            else {
-                updateScrolling(false);
-            }
-        }
-    }
-
     public EUICanvas setScrollBounds(float lowerScrollBound, float upperScrollBound) {
         this.lowerScrollBound = lowerScrollBound;
         this.upperScrollBound = Math.max(lowerScrollBound, upperScrollBound);
@@ -84,6 +71,19 @@ public abstract class EUICanvas extends EUIBase {
         this.autoShowScrollbar = showScrollbar;
 
         return this;
+    }
+
+    @Override
+    public void updateImpl() {
+        if (!EUI.doesActiveElementExist()) {
+            if (shouldShowScrollbar()) {
+                scrollBar.updateImpl();
+                updateScrolling(scrollBar.isDragging);
+            }
+            else {
+                updateScrolling(false);
+            }
+        }
     }
 
     protected void updateScrolling(boolean isDraggingScrollBar) {

@@ -35,10 +35,10 @@ public abstract class EUIUtils {
     private static final Gson GsonReader = new Gson();
     private static final StringBuilder sb1 = new StringBuilder();
     private static final StringBuilder sb2 = new StringBuilder();
+    private static final String NEWLINE = "NL";
     public static final Random RNG = new Random();
     public static final String EMPTY_STRING = "";
     public static final String DOUBLE_SPLIT_LINE = " || ";
-    private static final String NEWLINE = "NL";
     public static final String LEGACY_DOUBLE_SPLIT_LINE = " NL  NL ";
     public static final String SPLIT_LINE = " | ";
 

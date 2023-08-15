@@ -29,7 +29,6 @@ import extendedui.utilities.TargetFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
@@ -128,6 +127,16 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
     }
 
     @Override
+    public boolean areFiltersEmpty() {
+        return (currentName == null || currentName.isEmpty())
+                && (currentDescription == null || currentDescription.isEmpty())
+                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty() && currentSizes.isEmpty() && currentTargets.isEmpty()
+                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
+                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty)
+                && (customModule != null && customModule.isEmpty());
+    }
+
+    @Override
     public void clearFilters(boolean shouldInvoke, boolean shouldClearColors) {
         if (shouldClearColors) {
             currentColors.clear();
@@ -150,16 +159,6 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         nameInput.setLabel("");
         descriptionInput.setLabel("");
         doForFilters(CustomFilterModule::reset);
-    }
-
-    @Override
-    public boolean areFiltersEmpty() {
-        return (currentName == null || currentName.isEmpty())
-                && (currentDescription == null || currentDescription.isEmpty())
-                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty() && currentSizes.isEmpty() && currentTargets.isEmpty()
-                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
-                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty)
-                && (customModule != null && customModule.isEmpty());
     }
 
     public boolean evaluate(PotionInfo c) {
@@ -214,9 +213,46 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         return customModule == null || customModule.isItemValid(c);
     }
 
+    public boolean evaluate(AbstractPotion c) {
+        return evaluate(new PotionInfo(c));
+    }
+
+    public List<EUIKeywordTooltip> getAllTooltips(PotionInfo c) {
+        KeywordProvider eC = EUIUtils.safeCast(c.potion, KeywordProvider.class);
+        if (eC != null) {
+            return eC.getTipsForFilters();
+        }
+
+        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
+        // Skip the first tip
+        for (int i = 1; i < c.potion.tips.size(); i++) {
+            PowerTip sk = c.potion.tips.get(i);
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
+            if (tip == null) {
+                tip = getTemporaryTip(sk);
+            }
+            if (!dynamicTooltips.contains(tip)) {
+                dynamicTooltips.add(tip);
+            }
+        }
+        return dynamicTooltips;
+    }
+
     @Override
     public ArrayList<CustomFilterModule<PotionInfo>> getGlobalFilters() {
         return EUI.globalCustomPotionFilters;
+    }
+
+    public PotionKeywordFilters initializeForCustomHeader(ItemGroup<PotionInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.potionHeader.setGroup(group).snapToGroup(snapToGroup);
+        initialize(button -> {
+            EUI.potionHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.potionHeader.originalGroup, color, isAccessedFromCardPool);
+        EUI.potionHeader.updateForFilters();
+        EUI.openFiltersButton.setOnClick(() -> EUI.potionFilters.toggleFilters());
+        EUIExporter.exportButton.setOnClick(() -> EUIExporter.potionExportable.openAndPosition(EUI.potionHeader.group.group));
+        return this;
     }
 
     @Override
@@ -273,40 +309,6 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
     }
 
     @Override
-    public void updateFilters() {
-        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
-        xPos = updateDropdown(colorsDropdown, xPos);
-        xPos = updateDropdown(raritiesDropdown, xPos);
-        xPos = updateDropdown(targetsDropdown, xPos);
-        xPos = updateDropdown(sizesDropdown, xPos);
-        xPos = updateDropdown(vfxDropdown, xPos);
-        nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
-        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
-        doForFilters(CustomFilterModule<PotionInfo>::update);
-    }
-
-    public List<EUIKeywordTooltip> getAllTooltips(PotionInfo c) {
-        KeywordProvider eC = EUIUtils.safeCast(c.potion, KeywordProvider.class);
-        if (eC != null) {
-            return eC.getTipsForFilters();
-        }
-
-        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
-        // Skip the first tip
-        for (int i = 1; i < c.potion.tips.size(); i++) {
-            PowerTip sk = c.potion.tips.get(i);
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
-            if (tip == null) {
-                tip = getTemporaryTip(sk);
-            }
-            if (!dynamicTooltips.contains(tip)) {
-                dynamicTooltips.add(tip);
-            }
-        }
-        return dynamicTooltips;
-    }
-
-    @Override
     public boolean isHoveredImpl() {
         return originsDropdown.areAnyItemsHovered()
                 || raritiesDropdown.areAnyItemsHovered()
@@ -333,19 +335,16 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         doForFilters(m -> m.render(sb));
     }
 
-    public boolean evaluate(AbstractPotion c) {
-        return evaluate(new PotionInfo(c));
-    }
-
-    public PotionKeywordFilters initializeForCustomHeader(ItemGroup<PotionInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
-        EUI.potionHeader.setGroup(group).snapToGroup(snapToGroup);
-        initialize(button -> {
-            EUI.potionHeader.updateForFilters();
-            onClick.invoke(button);
-        }, EUI.potionHeader.originalGroup, color, isAccessedFromCardPool);
-        EUI.potionHeader.updateForFilters();
-        EUI.openFiltersButton.setOnClick(() -> EUI.potionFilters.toggleFilters());
-        EUIExporter.exportButton.setOnClick(() -> EUIExporter.potionExportable.openAndPosition(EUI.potionHeader.group.group));
-        return this;
+    @Override
+    public void updateFilters() {
+        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
+        xPos = updateDropdown(colorsDropdown, xPos);
+        xPos = updateDropdown(raritiesDropdown, xPos);
+        xPos = updateDropdown(targetsDropdown, xPos);
+        xPos = updateDropdown(sizesDropdown, xPos);
+        xPos = updateDropdown(vfxDropdown, xPos);
+        nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        doForFilters(CustomFilterModule<PotionInfo>::update);
     }
 }

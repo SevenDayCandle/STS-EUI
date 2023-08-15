@@ -93,45 +93,6 @@ public class PotionPoolScreen extends EUIPoolScreen {
         return POTION_POOL_SCREEN;
     }
 
-    @Override
-    public void update() {
-        if (!EUI.potionFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
-            potionGrid.tryUpdate();
-            swapCardScreen.updateImpl();
-            swapRelicScreen.updateImpl();
-            EUI.potionHeader.updateImpl();
-            EUI.openFiltersButton.tryUpdate();
-            EUIExporter.exportButton.tryUpdate();
-            for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
-                module.update();
-            }
-            if (customModule != null) {
-                customModule.update();
-            }
-        }
-        contextMenu.tryUpdate();
-        EUIExporter.exportDropdown.tryUpdate();
-    }
-
-    @Override
-    public void render(SpriteBatch sb) {
-        potionGrid.tryRender(sb);
-        swapCardScreen.renderImpl(sb);
-        swapRelicScreen.renderImpl(sb);
-        EUI.potionHeader.renderImpl(sb);
-        if (!EUI.potionFilters.isActive) {
-            EUI.openFiltersButton.tryRender(sb);
-            EUIExporter.exportButton.tryRender(sb);
-        }
-        for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
-            module.render(sb);
-        }
-        if (customModule != null) {
-            customModule.render(sb);
-        }
-        contextMenu.tryRender(sb);
-    }
-
     protected void obtain(AbstractPotion c) {
         if (c != null && AbstractDungeon.player != null) {
             AbstractDungeon.player.obtainPotion(c.makeCopy());
@@ -178,6 +139,45 @@ public class PotionPoolScreen extends EUIPoolScreen {
         if (customModule != null) {
             customModule.open(potionGrid.group.group, color, null);
         }
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        potionGrid.tryRender(sb);
+        swapCardScreen.renderImpl(sb);
+        swapRelicScreen.renderImpl(sb);
+        EUI.potionHeader.renderImpl(sb);
+        if (!EUI.potionFilters.isActive) {
+            EUI.openFiltersButton.tryRender(sb);
+            EUIExporter.exportButton.tryRender(sb);
+        }
+        for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
+            module.render(sb);
+        }
+        if (customModule != null) {
+            customModule.render(sb);
+        }
+        contextMenu.tryRender(sb);
+    }
+
+    @Override
+    public void update() {
+        if (!EUI.potionFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
+            potionGrid.tryUpdate();
+            swapCardScreen.updateImpl();
+            swapRelicScreen.updateImpl();
+            EUI.potionHeader.updateImpl();
+            EUI.openFiltersButton.tryUpdate();
+            EUIExporter.exportButton.tryUpdate();
+            for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
+                module.update();
+            }
+            if (customModule != null) {
+                customModule.update();
+            }
+        }
+        contextMenu.tryUpdate();
+        EUIExporter.exportDropdown.tryUpdate();
     }
 
     public static class DebugOption {

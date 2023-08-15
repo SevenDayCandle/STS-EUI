@@ -102,12 +102,31 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
     }
 
     @Override
+    protected void onClick() {
+        super.onClick();
+
+        EUI.cardsScreen.openScreen(AbstractDungeon.player, getAllCards());
+    }
+
+    @Override
     protected void onRightClick() {
         super.onRightClick();
 
         contextMenu.setPosition(InputHelper.mX > Settings.WIDTH * 0.75f ? InputHelper.mX - contextMenu.hb.width : InputHelper.mX, InputHelper.mY);
         contextMenu.refreshText();
         contextMenu.openOrCloseMenu();
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        super.render(sb);
+
+        contextMenu.tryRender(sb);
+    }
+
+    public void setAdditionalStringFunction(FuncT0<String> func) {
+        additionalTextFunc = func;
+        update();
     }
 
     @Override
@@ -129,25 +148,6 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
         }
 
         contextMenu.tryUpdate();
-    }
-
-    @Override
-    protected void onClick() {
-        super.onClick();
-
-        EUI.cardsScreen.openScreen(AbstractDungeon.player, getAllCards());
-    }
-
-    @Override
-    public void render(SpriteBatch sb) {
-        super.render(sb);
-
-        contextMenu.tryRender(sb);
-    }
-
-    public void setAdditionalStringFunction(FuncT0<String> func) {
-        additionalTextFunc = func;
-        update();
     }
 
     public enum ContextOption {

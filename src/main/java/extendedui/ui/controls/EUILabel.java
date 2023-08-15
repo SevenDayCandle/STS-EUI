@@ -200,16 +200,6 @@ public class EUILabel extends EUIHoverable {
         return this;
     }
 
-    public EUILabel setTooltip(String title, String description) {
-        return setTooltip(new EUITooltip(title, description));
-    }
-
-    public EUILabel setTooltip(EUITooltip tooltip) {
-        super.setTooltip(tooltip);
-
-        return this;
-    }
-
     public EUILabel setSmartText(boolean smartText) {
         return setSmartText(smartText, true);
     }
@@ -224,6 +214,16 @@ public class EUILabel extends EUIHoverable {
         this.smartText = smartText;
         this.smartPadEnd = smartPadEnd;
         this.smartTextResize = smartTextResize;
+        return this;
+    }
+
+    public EUILabel setTooltip(String title, String description) {
+        return setTooltip(new EUITooltip(title, description));
+    }
+
+    public EUILabel setTooltip(EUITooltip tooltip) {
+        super.setTooltip(tooltip);
+
         return this;
     }
 }

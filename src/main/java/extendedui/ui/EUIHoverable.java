@@ -12,24 +12,16 @@ public abstract class EUIHoverable extends EUIBase {
         this.hb = hb;
     }
 
-    public void set(float xPos, float yPos) {
-        translate(xPos, yPos);
-    }
-
-    public void setX(float xPos) {
-        translate(xPos, hb.y);
-    }
-
-    public void setY(float yPos) {
-        translate(hb.x, yPos);
-    }
-
     public float getX() {
         return hb.x;
     }
 
     public float getY() {
         return hb.y;
+    }
+
+    public void set(float xPos, float yPos) {
+        translate(xPos, yPos);
     }
 
     public EUIHoverable setDimensions(float width, float height) {
@@ -80,6 +72,14 @@ public abstract class EUIHoverable extends EUIBase {
         this.tooltip = tooltip;
 
         return this;
+    }
+
+    public void setX(float xPos) {
+        translate(xPos, hb.y);
+    }
+
+    public void setY(float yPos) {
+        translate(hb.x, yPos);
     }
 
     // Move the hitbox's bottom-left corner to the specified coordinates

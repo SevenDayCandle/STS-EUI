@@ -76,6 +76,15 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
     }
 
     @Override
+    public boolean areFiltersEmpty() {
+        return (currentName == null || currentName.isEmpty())
+                && (currentDescription == null || currentDescription.isEmpty())
+                && currentOrigins.isEmpty() && currentSeen.isEmpty()
+                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
+                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty);
+    }
+
+    @Override
     public void clearFilters(boolean shouldInvoke, boolean shouldClearColors) {
         currentOrigins.clear();
         currentFilters.clear();
@@ -87,15 +96,6 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
         nameInput.setLabel("");
         descriptionInput.setLabel("");
         doForFilters(CustomFilterModule::reset);
-    }
-
-    @Override
-    public boolean areFiltersEmpty() {
-        return (currentName == null || currentName.isEmpty())
-                && (currentDescription == null || currentDescription.isEmpty())
-                && currentOrigins.isEmpty() && currentSeen.isEmpty()
-                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
-                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty);
     }
 
     public boolean evaluate(AbstractBlight c) {
@@ -139,9 +139,42 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
         return customModule == null || customModule.isItemValid(c);
     }
 
+    public List<EUIKeywordTooltip> getAllTooltips(AbstractBlight c) {
+        KeywordProvider eC = EUIUtils.safeCast(c, KeywordProvider.class);
+        if (eC != null) {
+            return eC.getTipsForFilters();
+        }
+
+        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
+        // Skip the first tip
+        for (int i = 1; i < c.tips.size(); i++) {
+            PowerTip sk = c.tips.get(i);
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
+            if (tip == null) {
+                tip = getTemporaryTip(sk);
+            }
+            if (!dynamicTooltips.contains(tip)) {
+                dynamicTooltips.add(tip);
+            }
+        }
+        return dynamicTooltips;
+    }
+
     @Override
     public ArrayList<CustomFilterModule<AbstractBlight>> getGlobalFilters() {
         return EUI.globalCustomBlightFilters;
+    }
+
+    public BlightKeywordFilters initializeForCustomHeader(ItemGroup<AbstractBlight> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.blightHeader.setGroup(group).snapToGroup(snapToGroup);
+        initialize(button -> {
+            EUI.blightHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.blightHeader.originalGroup, color, isAccessedFromCardPool);
+        EUI.blightHeader.updateForFilters();
+        EUI.openFiltersButton.setOnClick(() -> EUI.blightFilters.toggleFilters());
+        EUIExporter.exportButton.setOnClick(() -> EUIExporter.blightExportable.openAndPosition(EUI.blightHeader.group.group));
+        return this;
     }
 
     @Override
@@ -167,36 +200,6 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
     }
 
     @Override
-    public void updateFilters() {
-        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
-        xPos = updateDropdown(seenDropdown, xPos);
-        nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
-        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
-        doForFilters(CustomFilterModule<AbstractBlight>::update);
-    }
-
-    public List<EUIKeywordTooltip> getAllTooltips(AbstractBlight c) {
-        KeywordProvider eC = EUIUtils.safeCast(c, KeywordProvider.class);
-        if (eC != null) {
-            return eC.getTipsForFilters();
-        }
-
-        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
-        // Skip the first tip
-        for (int i = 1; i < c.tips.size(); i++) {
-            PowerTip sk = c.tips.get(i);
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
-            if (tip == null) {
-                tip = getTemporaryTip(sk);
-            }
-            if (!dynamicTooltips.contains(tip)) {
-                dynamicTooltips.add(tip);
-            }
-        }
-        return dynamicTooltips;
-    }
-
-    @Override
     public boolean isHoveredImpl() {
         return originsDropdown.areAnyItemsHovered()
                 || seenDropdown.areAnyItemsHovered()
@@ -215,16 +218,13 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
         doForFilters(m -> m.render(sb));
     }
 
-    public BlightKeywordFilters initializeForCustomHeader(ItemGroup<AbstractBlight> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
-        EUI.blightHeader.setGroup(group).snapToGroup(snapToGroup);
-        initialize(button -> {
-            EUI.blightHeader.updateForFilters();
-            onClick.invoke(button);
-        }, EUI.blightHeader.originalGroup, color, isAccessedFromCardPool);
-        EUI.blightHeader.updateForFilters();
-        EUI.openFiltersButton.setOnClick(() -> EUI.blightFilters.toggleFilters());
-        EUIExporter.exportButton.setOnClick(() -> EUIExporter.blightExportable.openAndPosition(EUI.blightHeader.group.group));
-        return this;
+    @Override
+    public void updateFilters() {
+        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
+        xPos = updateDropdown(seenDropdown, xPos);
+        nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        doForFilters(CustomFilterModule<AbstractBlight>::update);
     }
 
     public enum UniqueValue {

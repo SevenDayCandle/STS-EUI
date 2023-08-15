@@ -31,9 +31,28 @@ public class EUIControllerButton extends EUIButton {
         controllerKey.unpress();
     }
 
+    public void renderButton(SpriteBatch sb) {
+        super.renderButton(sb, interactable);
+        if (Settings.isControllerMode) {
+            sb.draw(controllerKey.getKeyImg(), hb.cX - 32f, hb.cY - 32f + 100f * Settings.scale, 32f, 32f, 64f, 64f, Settings.scale, Settings.scale, 0f, 0, 0, 64, 64, false, false);
+        }
+    }
+
+    public void renderButtonCentered(SpriteBatch sb) {
+        super.renderButtonCentered(sb, interactable);
+        if (Settings.isControllerMode) {
+            sb.draw(controllerKey.getKeyImg(), hb.cX - 32f, hb.cY - 32f + 100f * Settings.scale, 32f, 32f, 64f, 64f, Settings.scale, Settings.scale, 0f, 0, 0, 64, 64, false, false);
+        }
+    }
+
     public EUIControllerButton setButtonFlip(boolean flipX, boolean flipY) {
         super.setButtonFlip(flipX, flipY);
 
+        return this;
+    }
+
+    public EUIControllerButton setControllerKey(CInputAction key) {
+        this.controllerKey = key;
         return this;
     }
 
@@ -58,25 +77,6 @@ public class EUIControllerButton extends EUIButton {
     public <S> EUIControllerButton setOnClick(S item, ActionT2<S, EUIButton> onClick) {
         super.setOnClick(item, onClick);
 
-        return this;
-    }
-
-    public void renderButton(SpriteBatch sb) {
-        super.renderButton(sb, interactable);
-        if (Settings.isControllerMode) {
-            sb.draw(controllerKey.getKeyImg(), hb.cX - 32f, hb.cY - 32f + 100f * Settings.scale, 32f, 32f, 64f, 64f, Settings.scale, Settings.scale, 0f, 0, 0, 64, 64, false, false);
-        }
-    }
-
-    public void renderButtonCentered(SpriteBatch sb) {
-        super.renderButtonCentered(sb, interactable);
-        if (Settings.isControllerMode) {
-            sb.draw(controllerKey.getKeyImg(), hb.cX - 32f, hb.cY - 32f + 100f * Settings.scale, 32f, 32f, 64f, 64f, Settings.scale, Settings.scale, 0f, 0, 0, 64, 64, false, false);
-        }
-    }
-
-    public EUIControllerButton setControllerKey(CInputAction key) {
-        this.controllerKey = key;
         return this;
     }
 }

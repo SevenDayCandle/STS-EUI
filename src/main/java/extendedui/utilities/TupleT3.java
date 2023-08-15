@@ -27,11 +27,6 @@ public class TupleT3<V1, V2, V3> {
     }
 
     @Override
-    public int hashCode() {
-        return Objects.hash(v1, v2, v3);
-    }
-
-    @Override
     public boolean equals(Object other) {
         if (other instanceof TupleT3) {
             TupleT3 b = (TupleT3) other;
@@ -42,8 +37,8 @@ public class TupleT3<V1, V2, V3> {
     }
 
     @Override
-    public String toString() {
-        return this.v1 + ": " + this.v2 + ", " + this.v3;
+    public int hashCode() {
+        return Objects.hash(v1, v2, v3);
     }
 
     public TupleT3<V1, V2, V3> set(V1 v1, V2 v2, V3 v3) {
@@ -51,5 +46,10 @@ public class TupleT3<V1, V2, V3> {
         this.v2 = v2;
         this.v3 = v3;
         return this;
+    }
+
+    @Override
+    public String toString() {
+        return this.v1 + ": " + this.v2 + ", " + this.v3;
     }
 }

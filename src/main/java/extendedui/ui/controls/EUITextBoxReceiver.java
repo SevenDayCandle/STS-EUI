@@ -37,6 +37,11 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         originalTextColor = this.label.textColor.cpy();
     }
 
+    @Override
+    public boolean acceptCharacter(char c) {
+        return label.font.getData().hasGlyph(c);
+    }
+
     protected void commit(boolean commit) {
         if (commit) {
             if (onComplete != null) {
@@ -62,14 +67,6 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
     }
 
     @Override
-    public void setText(String s) {
-        label.text = s;
-        if (onUpdate != null) {
-            onUpdate.invoke(getValue(label.text));
-        }
-    }
-
-    @Override
     public boolean isDone() {
         return !isEditing;
     }
@@ -81,16 +78,18 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
     }
 
     @Override
-    public boolean acceptCharacter(char c) {
-        return label.font.getData().hasGlyph(c);
-    }
-
-    @Override
     public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
         float cur_x = FontHelper.layout.width;
         header.tryRender(sb);
         renderUnderscore(sb, cur_x);
+    }
+
+    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
+        if (isEditing) {
+            EUI.addPriorityPostRender(s ->
+                    FontHelper.renderFontLeft(sb, label.font, "_", hb.x + cur_x + hb.width * label.horizontalRatio, hb.y + hb.height / 2, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
+        }
     }
 
     public EUITextBoxReceiver<T> setColors(Color backgroundColor, Color textColor) {
@@ -106,21 +105,6 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         originalTextColor = textColor.cpy();
 
         return this;
-    }
-
-    @Override
-    public EUITextBoxReceiver<T> setPosition(float x, float y) {
-        this.hb.move(x, y);
-        this.header.hb.move(x, y + hb.height * headerSpacing);
-
-        return this;
-    }
-
-    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
-        if (isEditing) {
-            EUI.addPriorityPostRender(s ->
-                    FontHelper.renderFontLeft(sb, label.font, "_", hb.x + cur_x + hb.width * label.horizontalRatio, hb.y + hb.height / 2, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
-        }
     }
 
     public EUITextBoxReceiver<T> setFontColor(Color textColor, Color editTextColor) {
@@ -155,6 +139,22 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         return this;
     }
 
+    @Override
+    public EUITextBoxReceiver<T> setPosition(float x, float y) {
+        this.hb.move(x, y);
+        this.header.hb.move(x, y + hb.height * headerSpacing);
+
+        return this;
+    }
+
+    @Override
+    public void setText(String s) {
+        label.text = s;
+        if (onUpdate != null) {
+            onUpdate.invoke(getValue(label.text));
+        }
+    }
+
     public void setTextAndCommit(String text) {
         this.label.setLabel(text);
         if (onComplete != null) {
@@ -174,6 +174,14 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         return this;
     }
 
+    public void start() {
+        isEditing = true;
+        EUI.setActiveElement(this);
+        TextInput.startTextReceiver(this);
+        label.setColor(editTextColor);
+        originalValue = label.text;
+    }
+
     @Override
     public void updateImpl() {
         super.updateImpl();
@@ -190,14 +198,6 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         }
 
         header.tryUpdate();
-    }
-
-    public void start() {
-        isEditing = true;
-        EUI.setActiveElement(this);
-        TextInput.startTextReceiver(this);
-        label.setColor(editTextColor);
-        originalValue = label.text;
     }
 
     abstract T getValue(String text);

@@ -30,6 +30,11 @@ public class RelicSortHeader extends GenericSortHeader<RelicInfo> {
     }
 
     @Override
+    public GenericFilters<RelicInfo, ?> getFilters() {
+        return EUI.relicFilters;
+    }
+
+    @Override
     protected float getFirstY() {
         return group.group.get(0).relic.hb.y;
     }
@@ -53,11 +58,6 @@ public class RelicSortHeader extends GenericSortHeader<RelicInfo> {
             this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.relic.tier.ordinal() - b.relic.tier.ordinal()) * (isAscending ? 1 : -1));
             this.group.sort((a, b) -> sortBySeen(a, b) * (isAscending ? 1 : -1));
         }
-    }
-
-    @Override
-    public GenericFilters<RelicInfo, ?> getFilters() {
-        return EUI.relicFilters;
     }
 
     protected int sortBySeen(RelicInfo a, RelicInfo b) {

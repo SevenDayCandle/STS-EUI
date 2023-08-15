@@ -51,14 +51,14 @@ public abstract class AbstractMenuScreen extends EUIBase {
 
     }
 
+    public void reopen() {
+
+    }
+
     public void updateImpl() {
         if (EUIInputManager.tryEscape()) {
             close();
         }
-    }
-
-    public void reopen() {
-
     }
 
 }

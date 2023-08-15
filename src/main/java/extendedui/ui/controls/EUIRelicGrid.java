@@ -38,12 +38,16 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
+    public void forceUpdateItemPosition(RelicInfo relic, float x, float y) {
+        relic.relic.currentX = relic.relic.targetX = x;
+        relic.relic.currentY = relic.relic.targetY = y;
+        relic.relic.hb.update();
+        relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
+    }
 
-        if (hovered != null) {
-            hovered.relic.renderTip(sb);
-        }
+    @Override
+    public Hitbox getHitbox(RelicInfo item) {
+        return item.relic.hb;
     }
 
     @Override
@@ -58,40 +62,18 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
         return 0;
     }
 
-    @Override
-    public void updateItemPosition(RelicInfo relic, float x, float y) {
-        relic.relic.targetX = x;
-        relic.relic.targetY = y;
-        relic.relic.currentX = EUIUtils.lerpSnap(relic.relic.currentX, relic.relic.targetX, LERP_SPEED);
-        relic.relic.currentY = EUIUtils.lerpSnap(relic.relic.currentY, relic.relic.targetY, LERP_SPEED);
+    public EUIRelicGrid remove(AbstractRelic relic) {
+        group.group.removeIf(rInfo -> rInfo.relic == relic);
+
+        return this;
     }
 
     @Override
-    public Hitbox getHitbox(RelicInfo item) {
-        return item.relic.hb;
-    }
+    public void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
 
-    @Override
-    public void forceUpdateItemPosition(RelicInfo relic, float x, float y) {
-        relic.relic.currentX = relic.relic.targetX = x;
-        relic.relic.currentY = relic.relic.targetY = y;
-        relic.relic.hb.update();
-        relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
-    }
-
-    @Override
-    protected void updateHoverLogic(RelicInfo relic, int i) {
-        relic.relic.hb.update();
-        relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
-
-        if (relic.relic.hb.hovered) {
-
-            hovered = relic;
-            hoveredIndex = i;
-            relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(hoveredScale));
-        }
-        else {
-            relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(targetScale));
+        if (hovered != null) {
+            hovered.relic.renderTip(sb);
         }
     }
 
@@ -103,12 +85,6 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
         else {
             renderRelicImpl(sb, relic);
         }
-    }
-
-    public EUIRelicGrid remove(AbstractRelic relic) {
-        group.group.removeIf(rInfo -> rInfo.relic == relic);
-
-        return this;
     }
 
     protected void renderRelicImpl(SpriteBatch sb, RelicInfo relic) {
@@ -148,5 +124,29 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
                     relic.relic.render(sb, false, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR);
             }
         }
+    }
+
+    @Override
+    protected void updateHoverLogic(RelicInfo relic, int i) {
+        relic.relic.hb.update();
+        relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
+
+        if (relic.relic.hb.hovered) {
+
+            hovered = relic;
+            hoveredIndex = i;
+            relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(hoveredScale));
+        }
+        else {
+            relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(targetScale));
+        }
+    }
+
+    @Override
+    public void updateItemPosition(RelicInfo relic, float x, float y) {
+        relic.relic.targetX = x;
+        relic.relic.targetY = y;
+        relic.relic.currentX = EUIUtils.lerpSnap(relic.relic.currentX, relic.relic.targetX, LERP_SPEED);
+        relic.relic.currentY = EUIUtils.lerpSnap(relic.relic.currentY, relic.relic.targetY, LERP_SPEED);
     }
 }

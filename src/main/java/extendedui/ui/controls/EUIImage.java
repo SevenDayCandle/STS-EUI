@@ -250,37 +250,15 @@ public class EUIImage extends EUIHoverable {
         return this;
     }
 
-    public EUIImage setPosition(float cX, float cY) {
-        this.hb.move(cX, cY);
-
-        return this;
-    }
-
-    public EUIImage setTooltip(String title, String description) {
-        return setTooltip(new EUITooltip(title, description));
-    }
-
-    public EUIImage setTooltip(EUITooltip tooltip) {
-        super.setTooltip(tooltip);
-
-        return this;
-    }
-
-    public EUIImage translate(float x, float y) {
-        this.hb.translate(x, y);
-
-        return this;
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-        updateColor();
-    }
-
     public EUIImage setOriginalDimensions(int srcWidth, int srcHeight) {
         this.srcWidth = srcWidth;
         this.srcHeight = srcHeight;
+
+        return this;
+    }
+
+    public EUIImage setPosition(float cX, float cY) {
+        this.hb.move(cX, cY);
 
         return this;
     }
@@ -333,6 +311,22 @@ public class EUIImage extends EUIHoverable {
         return this;
     }
 
+    public EUIImage setTooltip(String title, String description) {
+        return setTooltip(new EUITooltip(title, description));
+    }
+
+    public EUIImage setTooltip(EUITooltip tooltip) {
+        super.setTooltip(tooltip);
+
+        return this;
+    }
+
+    public EUIImage translate(float x, float y) {
+        this.hb.translate(x, y);
+
+        return this;
+    }
+
     public boolean tryRenderCentered(SpriteBatch sb) {
         if (isActive) {
             this.hb.render(sb);
@@ -351,5 +345,11 @@ public class EUIImage extends EUIHoverable {
                 this.targetColor = null;
             }
         }
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        updateColor();
     }
 }

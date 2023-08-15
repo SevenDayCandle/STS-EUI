@@ -38,20 +38,13 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
         return CHOICE_TEXT[3];
     }
 
+    @Override
+    public ArrayList<T> getCancelValue() {
+        return null;
+    }
+
     protected String getConfirmText() {
         return CHOICE_TEXT[2];
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-        this.dropdown.tryRender(sb);
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-        this.dropdown.tryUpdate();
     }
 
     @Override
@@ -60,8 +53,9 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
     }
 
     @Override
-    public ArrayList<T> getCancelValue() {
-        return null;
+    public void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
+        this.dropdown.tryRender(sb);
     }
 
     public EUIDialogDropdown<T> setItems(List<T> items) {
@@ -95,5 +89,11 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
             this.dropdown.setOffset(hb.width / 4, hb.height / 4);
         }
         return this;
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        this.dropdown.tryUpdate();
     }
 }

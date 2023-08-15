@@ -47,21 +47,7 @@ public class BasemodSettingsPage implements IUIElement {
     }
 
     @Override
-    public void update() {
-        leftButton.update();
-        rightButton.update();
-        for (IUIElement element : currentItems) {
-            element.update();
-        }
-    }
-
-    @Override
     public int renderLayer() {
-        return 0;
-    }
-
-    @Override
-    public int updateOrder() {
         return 0;
     }
 
@@ -73,5 +59,19 @@ public class BasemodSettingsPage implements IUIElement {
         }
         leftButton.setInteractable(current > 0);
         rightButton.setInteractable(current <= pages.size() - 2);
+    }
+
+    @Override
+    public void update() {
+        leftButton.update();
+        rightButton.update();
+        for (IUIElement element : currentItems) {
+            element.update();
+        }
+    }
+
+    @Override
+    public int updateOrder() {
+        return 0;
     }
 }

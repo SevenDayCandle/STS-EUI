@@ -119,59 +119,6 @@ public class EUICardGrid extends EUICanvasGrid {
         return this;
     }
 
-    @Override
-    public boolean isHovered() {
-        return super.isHovered() || hoveredCard != null;
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-        renderCards(sb);
-        if (hoveredCard != null) {
-            hoveredCard.renderHoverShadow(sb);
-            renderCard(sb, hoveredCard);
-            hoveredCard.renderCardTip(sb);
-        }
-
-        if (message != null) {
-            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
-        }
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-
-        updateCards();
-        updateNonMouseInput();
-
-        if (hoveredCard != null && hoveredCard.hb.hovered) {
-            if (EUIInputManager.rightClick.isJustPressed() && onCardRightClick != null) {
-                onCardRightClick.invoke(hoveredCard);
-                return;
-            }
-
-            if (InputHelper.justClickedLeft && !EUITourTooltip.shouldBlockInteract(hoveredCard.hb)) {
-                hoveredCard.hb.clickStarted = true;
-            }
-
-            if (hoveredCard.hb.clicked || CInputActionSet.select.isJustPressed()) {
-                hoveredCard.hb.clicked = false;
-
-                if (onCardClick != null) {
-                    onCardClick.invoke(hoveredCard);
-                }
-            }
-        }
-    }
-
-    public EUICardGrid showScrollbar(boolean showScrollbar) {
-        this.autoShowScrollbar = showScrollbar;
-
-        return this;
-    }
-
     public EUICardGrid canRenderUpgrades(boolean canRenderUpgrades) {
         this.canRenderUpgrades = canRenderUpgrades;
 
@@ -192,6 +139,11 @@ public class EUICardGrid extends EUICanvasGrid {
 
 
         refreshOffset();
+    }
+
+    @Override
+    public int currentSize() {
+        return cards.size();
     }
 
     public void forceUpdateCardPositions() {
@@ -234,6 +186,11 @@ public class EUICardGrid extends EUICanvasGrid {
     }
 
     @Override
+    public boolean isHovered() {
+        return super.isHovered() || hoveredCard != null;
+    }
+
+    @Override
     public void refreshOffset() {
         sizeCache = currentSize();
         upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
@@ -242,11 +199,6 @@ public class EUICardGrid extends EUICanvasGrid {
             int offset = ((sizeCache / rowSize) - ((sizeCache % rowSize > 0) ? 1 : 2));
             upperScrollBound += this.padY * offset;
         }
-    }
-
-    @Override
-    public int currentSize() {
-        return cards.size();
     }
 
     public EUICardGrid removeCard(AbstractCard card) {
@@ -283,6 +235,21 @@ public class EUICardGrid extends EUICanvasGrid {
             if (card != hoveredCard) {
                 renderCard(sb, card);
             }
+        }
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
+        renderCards(sb);
+        if (hoveredCard != null) {
+            hoveredCard.renderHoverShadow(sb);
+            renderCard(sb, hoveredCard);
+            hoveredCard.renderCardTip(sb);
+        }
+
+        if (message != null) {
+            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
         }
     }
 
@@ -374,6 +341,12 @@ public class EUICardGrid extends EUICanvasGrid {
         return this;
     }
 
+    public EUICardGrid showScrollbar(boolean showScrollbar) {
+        this.autoShowScrollbar = showScrollbar;
+
+        return this;
+    }
+
     protected void updateCards() {
         hoveredCard = null;
 
@@ -399,6 +372,33 @@ public class EUICardGrid extends EUICanvasGrid {
             if (column >= rowSize) {
                 column = 0;
                 row += 1;
+            }
+        }
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+
+        updateCards();
+        updateNonMouseInput();
+
+        if (hoveredCard != null && hoveredCard.hb.hovered) {
+            if (EUIInputManager.rightClick.isJustPressed() && onCardRightClick != null) {
+                onCardRightClick.invoke(hoveredCard);
+                return;
+            }
+
+            if (InputHelper.justClickedLeft && !EUITourTooltip.shouldBlockInteract(hoveredCard.hb)) {
+                hoveredCard.hb.clickStarted = true;
+            }
+
+            if (hoveredCard.hb.clicked || CInputActionSet.select.isJustPressed()) {
+                hoveredCard.hb.clicked = false;
+
+                if (onCardClick != null) {
+                    onCardClick.invoke(hoveredCard);
+                }
             }
         }
     }

@@ -248,53 +248,6 @@ public class EUIButton extends EUIHoverable {
         return this;
     }
 
-    public EUIButton setPosition(float cX, float cY) {
-        this.hb.move(cX, cY);
-
-        return this;
-    }
-
-    public EUIButton setTooltip(String title, String description) {
-        return setTooltip(new EUITooltip(title, description));
-    }
-
-    public EUIButton setTooltip(EUITooltip tooltip) {
-        super.setTooltip(tooltip);
-
-        return this;
-    }
-
-    @Override
-    public void updateImpl() {
-        if (currentClickDelay > 0) {
-            this.currentClickDelay -= EUI.delta();
-        }
-
-        super.updateImpl();
-        background.updateColor();
-
-        if (isInteractable() && !EUITourTooltip.shouldBlockInteract(this.hb)) {
-            if (this.hb.justHovered) {
-                onJustHovered();
-            }
-
-            if (this.hb.hovered) {
-                if (currentClickDelay <= 0) {
-                    if (EUIInputManager.rightClick.isJustPressed() && EUI.tryClick(this.hb)) {
-                        onRightClick();
-                    }
-                    else if (InputHelper.justClickedLeft) {
-                        onClickStart();
-                    }
-                }
-            }
-
-            if (didClick()) {
-                onLeftClick();
-            }
-        }
-    }
-
     public EUIButton setHoverBlendColor(Color color) {
         this.hoverBlendColor = color;
         return this;
@@ -393,6 +346,12 @@ public class EUIButton extends EUIHoverable {
         return this;
     }
 
+    public EUIButton setPosition(float cX, float cY) {
+        this.hb.move(cX, cY);
+
+        return this;
+    }
+
     public EUIButton setShaderMode(EUIRenderHelpers.ShaderMode shaderMode) {
         this.background.setShaderMode(shaderMode);
         return this;
@@ -468,6 +427,16 @@ public class EUIButton extends EUIHoverable {
         return this;
     }
 
+    public EUIButton setTooltip(String title, String description) {
+        return setTooltip(new EUITooltip(title, description));
+    }
+
+    public EUIButton setTooltip(EUITooltip tooltip) {
+        super.setTooltip(tooltip);
+
+        return this;
+    }
+
     public boolean tryRenderCentered(SpriteBatch sb) {
         if (isActive) {
             this.hb.render(sb);
@@ -475,6 +444,37 @@ public class EUIButton extends EUIHoverable {
         }
 
         return isActive;
+    }
+
+    @Override
+    public void updateImpl() {
+        if (currentClickDelay > 0) {
+            this.currentClickDelay -= EUI.delta();
+        }
+
+        super.updateImpl();
+        background.updateColor();
+
+        if (isInteractable() && !EUITourTooltip.shouldBlockInteract(this.hb)) {
+            if (this.hb.justHovered) {
+                onJustHovered();
+            }
+
+            if (this.hb.hovered) {
+                if (currentClickDelay <= 0) {
+                    if (EUIInputManager.rightClick.isJustPressed() && EUI.tryClick(this.hb)) {
+                        onRightClick();
+                    }
+                    else if (InputHelper.justClickedLeft) {
+                        onClickStart();
+                    }
+                }
+            }
+
+            if (didClick()) {
+                onLeftClick();
+            }
+        }
     }
 
     protected void verifyLabel() {

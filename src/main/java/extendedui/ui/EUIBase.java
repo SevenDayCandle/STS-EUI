@@ -27,15 +27,7 @@ public abstract class EUIBase implements IUIElement {
         tryRender(sb);
     }
 
-    public void update() {
-        tryUpdate();
-    }
-
     public int renderLayer() {
-        return 1;
-    }
-
-    public int updateOrder() {
         return 1;
     }
 
@@ -59,6 +51,14 @@ public abstract class EUIBase implements IUIElement {
         }
 
         return isActive;
+    }
+
+    public void update() {
+        tryUpdate();
+    }
+
+    public int updateOrder() {
+        return 1;
     }
 
     public abstract void renderImpl(SpriteBatch sb);

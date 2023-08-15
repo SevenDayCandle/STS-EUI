@@ -16,27 +16,39 @@ public class FakeLibraryCard extends AbstractCard {
     }
 
     @Override
+    public void calculateCardDamage(AbstractMonster mo) {
+
+    }
+
+    @Override
     public void initializeDescription() {
 
     }
 
     @Override
-    public void upgrade() {
-
-    }
-
-    @Override
-    public void use(AbstractPlayer abstractPlayer, AbstractMonster abstractMonster) {
-
-    }
-
-    @Override
-    public void renderInLibrary(SpriteBatch sb) {
-        renderImpl(sb);
+    public AbstractCard makeCopy() {
+        return new FakeLibraryCard();
     }
 
     @Override
     public void render(SpriteBatch sb, boolean selected) {
+        renderImpl(sb);
+    }
+
+    @Override
+    public void renderCardPreview(SpriteBatch sb) {
+    }
+
+    @Override
+    public void renderCardPreviewInSingleView(SpriteBatch sb) {
+    }
+
+    private void renderImpl(SpriteBatch sb) {
+        FontHelper.renderFontLeft(sb, EUIFontHelper.cardTitleFontNormal, EUIRM.strings.ui_noMatch, hb.cX, hb.cY + hb.height / 4, Color.WHITE);
+    }
+
+    @Override
+    public void renderInLibrary(SpriteBatch sb) {
         renderImpl(sb);
     }
 
@@ -51,24 +63,12 @@ public class FakeLibraryCard extends AbstractCard {
     }
 
     @Override
-    public void renderCardPreviewInSingleView(SpriteBatch sb) {
-    }
-
-    @Override
-    public void renderCardPreview(SpriteBatch sb) {
-    }
-
-    @Override
-    public void calculateCardDamage(AbstractMonster mo) {
+    public void upgrade() {
 
     }
 
     @Override
-    public AbstractCard makeCopy() {
-        return new FakeLibraryCard();
-    }
+    public void use(AbstractPlayer abstractPlayer, AbstractMonster abstractMonster) {
 
-    private void renderImpl(SpriteBatch sb) {
-        FontHelper.renderFontLeft(sb, EUIFontHelper.cardTitleFontNormal, EUIRM.strings.ui_noMatch, hb.cX, hb.cY + hb.height / 4, Color.WHITE);
     }
 }

@@ -118,6 +118,17 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
     }
 
     @Override
+    public boolean areFiltersEmpty() {
+        return (currentName == null || currentName.isEmpty())
+                && (currentDescription == null || currentDescription.isEmpty())
+                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty()
+                && currentSfx.isEmpty() && currentSeen.isEmpty()
+                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
+                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty)
+                && (customModule != null && customModule.isEmpty());
+    }
+
+    @Override
     public void clearFilters(boolean shouldInvoke, boolean shouldClearColors) {
         if (shouldClearColors) {
             currentColors.clear();
@@ -136,17 +147,6 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         nameInput.setLabel("");
         descriptionInput.setLabel("");
         doForFilters(CustomFilterModule::reset);
-    }
-
-    @Override
-    public boolean areFiltersEmpty() {
-        return (currentName == null || currentName.isEmpty())
-                && (currentDescription == null || currentDescription.isEmpty())
-                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty()
-                && currentSfx.isEmpty() && currentSeen.isEmpty()
-                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
-                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty)
-                && (customModule != null && customModule.isEmpty());
     }
 
     public boolean evaluate(RelicInfo c) {
@@ -205,9 +205,50 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         return customModule == null || customModule.isItemValid(c);
     }
 
+    public boolean evaluate(AbstractRelic c) {
+        return evaluate(new RelicInfo(c));
+    }
+
+    public List<EUIKeywordTooltip> getAllTooltips(RelicInfo c) {
+        KeywordProvider eC = EUIUtils.safeCast(c.relic, KeywordProvider.class);
+        if (eC != null) {
+            return eC.getTipsForFilters();
+        }
+
+        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
+        // Skip the first tip
+        for (int i = 1; i < c.relic.tips.size(); i++) {
+            PowerTip sk = c.relic.tips.get(i);
+            String key = TooltipPatches.PowerTip_Keyword.value.get(sk);
+            if (key == null) {
+                key = StringUtils.lowerCase(sk.header);
+            }
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(key);
+            if (tip == null) {
+                tip = getTemporaryTip(sk);
+            }
+            if (!dynamicTooltips.contains(tip)) {
+                dynamicTooltips.add(tip);
+            }
+        }
+        return dynamicTooltips;
+    }
+
     @Override
     public ArrayList<CustomFilterModule<RelicInfo>> getGlobalFilters() {
         return EUI.globalCustomRelicFilters;
+    }
+
+    public RelicKeywordFilters initializeForCustomHeader(ItemGroup<RelicInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
+        initialize(button -> {
+            EUI.relicHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.relicHeader.originalGroup, color, isAccessedFromCardPool);
+        EUI.relicHeader.updateForFilters();
+        EUI.openFiltersButton.setOnClick(() -> EUI.relicFilters.toggleFilters());
+        EUIExporter.exportButton.setOnClick(() -> EUIExporter.relicExportable.openAndPosition(EUI.relicHeader.group.group));
+        return this;
     }
 
     @Override
@@ -251,43 +292,6 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
     }
 
     @Override
-    public void updateFilters() {
-        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
-        xPos = updateDropdown(colorsDropdown, xPos);
-        xPos = updateDropdown(raritiesDropdown, xPos);
-        xPos = updateDropdown(sfxDropdown, xPos);
-        xPos = updateDropdown(seenDropdown, xPos);
-        nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
-        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
-        doForFilters(CustomFilterModule<RelicInfo>::update);
-    }
-
-    public List<EUIKeywordTooltip> getAllTooltips(RelicInfo c) {
-        KeywordProvider eC = EUIUtils.safeCast(c.relic, KeywordProvider.class);
-        if (eC != null) {
-            return eC.getTipsForFilters();
-        }
-
-        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
-        // Skip the first tip
-        for (int i = 1; i < c.relic.tips.size(); i++) {
-            PowerTip sk = c.relic.tips.get(i);
-            String key = TooltipPatches.PowerTip_Keyword.value.get(sk);
-            if (key == null) {
-                key = StringUtils.lowerCase(sk.header);
-            }
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(key);
-            if (tip == null) {
-                tip = getTemporaryTip(sk);
-            }
-            if (!dynamicTooltips.contains(tip)) {
-                dynamicTooltips.add(tip);
-            }
-        }
-        return dynamicTooltips;
-    }
-
-    @Override
     public boolean isHoveredImpl() {
         return originsDropdown.areAnyItemsHovered()
                 || raritiesDropdown.areAnyItemsHovered()
@@ -312,20 +316,16 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         doForFilters(m -> m.render(sb));
     }
 
-    public boolean evaluate(AbstractRelic c) {
-        return evaluate(new RelicInfo(c));
-    }
-
-    public RelicKeywordFilters initializeForCustomHeader(ItemGroup<RelicInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
-        EUI.relicHeader.setGroup(group).snapToGroup(snapToGroup);
-        initialize(button -> {
-            EUI.relicHeader.updateForFilters();
-            onClick.invoke(button);
-        }, EUI.relicHeader.originalGroup, color, isAccessedFromCardPool);
-        EUI.relicHeader.updateForFilters();
-        EUI.openFiltersButton.setOnClick(() -> EUI.relicFilters.toggleFilters());
-        EUIExporter.exportButton.setOnClick(() -> EUIExporter.relicExportable.openAndPosition(EUI.relicHeader.group.group));
-        return this;
+    @Override
+    public void updateFilters() {
+        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
+        xPos = updateDropdown(colorsDropdown, xPos);
+        xPos = updateDropdown(raritiesDropdown, xPos);
+        xPos = updateDropdown(sfxDropdown, xPos);
+        xPos = updateDropdown(seenDropdown, xPos);
+        nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        doForFilters(CustomFilterModule<RelicInfo>::update);
     }
 
     public enum SeenValue {

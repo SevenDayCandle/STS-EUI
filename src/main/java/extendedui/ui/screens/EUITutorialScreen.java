@@ -35,6 +35,23 @@ public class EUITutorialScreen extends AbstractMenuScreen {
         CardCrawlGame.isPopupOpen = false;
     }
 
+    public void exitScreen() {
+        this.button.hb.clicked = false;
+        this.button.hide();
+        close();
+    }
+
+    public void open(EUITutorial ftue) {
+        super.open();
+        current = ftue;
+        this.button.show(CardLibraryScreen.TEXT[0]);
+    }
+
+    public void open(EUITutorial ftue, ActionT0 onClose) {
+        open(ftue);
+        this.onClose = onClose;
+    }
+
     @Override
     public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
@@ -59,22 +76,5 @@ public class EUITutorialScreen extends AbstractMenuScreen {
         if (this.button.hb.clicked || InputHelper.pressedEscape) {
             exitScreen();
         }
-    }
-
-    public void exitScreen() {
-        this.button.hb.clicked = false;
-        this.button.hide();
-        close();
-    }
-
-    public void open(EUITutorial ftue) {
-        super.open();
-        current = ftue;
-        this.button.show(CardLibraryScreen.TEXT[0]);
-    }
-
-    public void open(EUITutorial ftue, ActionT0 onClose) {
-        open(ftue);
-        this.onClose = onClose;
     }
 }

@@ -3,7 +3,6 @@ package extendedui.ui.cardFilter.panels;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
-import extendedui.EUIRM;
 import extendedui.interfaces.markers.CountingPanelCardFilter;
 import extendedui.ui.cardFilter.CountingPanelCounter;
 import extendedui.ui.cardFilter.CountingPanelStats;

@@ -124,56 +124,6 @@ public class CardPoolScreen extends EUIPoolScreen {
         return CARD_POOL_SCREEN;
     }
 
-    @Override
-    public void update() {
-        if (!EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
-            cardGrid.tryUpdate();
-            upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
-            colorlessToggle.update();
-            swapRelicScreen.updateImpl();
-            swapPotionScreen.updateImpl();
-            EUI.customHeader.update();
-            EUI.openFiltersButton.tryUpdate();
-            EUIExporter.exportButton.tryUpdate();
-            EUI.countingPanel.tryUpdate();
-            for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
-                module.update();
-            }
-            if (customModule != null) {
-                customModule.update();
-            }
-            // TODO tie this to the custom header to ensure that the source grid is always updated instantly
-            if (EUI.customHeader.justSorted) {
-                cardGrid.forceUpdateCardPositions();
-                EUI.customHeader.justSorted = false;
-            }
-        }
-        contextMenu.tryUpdate();
-        EUIExporter.exportDropdown.tryUpdate();
-    }
-
-    @Override
-    public void render(SpriteBatch sb) {
-        cardGrid.tryRender(sb);
-        EUI.customHeader.render(sb);
-        upgradeToggle.renderImpl(sb);
-        colorlessToggle.render(sb);
-        swapRelicScreen.renderImpl(sb);
-        swapPotionScreen.renderImpl(sb);
-        EUI.countingPanel.tryRender(sb);
-        if (!EUI.cardFilters.isActive) {
-            EUI.openFiltersButton.tryRender(sb);
-            EUIExporter.exportButton.tryRender(sb);
-        }
-        for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
-            module.render(sb);
-        }
-        if (customModule != null) {
-            customModule.render(sb);
-        }
-        contextMenu.tryRender(sb);
-    }
-
     protected void onRightClick(AbstractCard c) {
         if (EUIConfiguration.enableCardPoolDebug.get()) {
             selected = c;
@@ -240,12 +190,62 @@ public class CardPoolScreen extends EUIPoolScreen {
         EUI.countingPanel.open(cardGrid.cards.group, EUI.actingColor, null);
     }
 
+    @Override
+    public void render(SpriteBatch sb) {
+        cardGrid.tryRender(sb);
+        EUI.customHeader.render(sb);
+        upgradeToggle.renderImpl(sb);
+        colorlessToggle.render(sb);
+        swapRelicScreen.renderImpl(sb);
+        swapPotionScreen.renderImpl(sb);
+        EUI.countingPanel.tryRender(sb);
+        if (!EUI.cardFilters.isActive) {
+            EUI.openFiltersButton.tryRender(sb);
+            EUIExporter.exportButton.tryRender(sb);
+        }
+        for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
+            module.render(sb);
+        }
+        if (customModule != null) {
+            customModule.render(sb);
+        }
+        contextMenu.tryRender(sb);
+    }
+
     public void resetGrid() {
         cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
         cardGrid.showScrollbar(true)
                 .canRenderUpgrades(true)
                 .setOnCardRightClick(this::onRightClick)
                 .setVerticalStart(Settings.HEIGHT * 0.66f);
+    }
+
+    @Override
+    public void update() {
+        if (!EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
+            cardGrid.tryUpdate();
+            upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
+            colorlessToggle.update();
+            swapRelicScreen.updateImpl();
+            swapPotionScreen.updateImpl();
+            EUI.customHeader.update();
+            EUI.openFiltersButton.tryUpdate();
+            EUIExporter.exportButton.tryUpdate();
+            EUI.countingPanel.tryUpdate();
+            for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
+                module.update();
+            }
+            if (customModule != null) {
+                customModule.update();
+            }
+            // TODO tie this to the custom header to ensure that the source grid is always updated instantly
+            if (EUI.customHeader.justSorted) {
+                cardGrid.forceUpdateCardPositions();
+                EUI.customHeader.justSorted = false;
+            }
+        }
+        contextMenu.tryUpdate();
+        EUIExporter.exportDropdown.tryUpdate();
     }
 
     public static class DebugOption {

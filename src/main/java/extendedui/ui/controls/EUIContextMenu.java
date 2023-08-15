@@ -67,11 +67,6 @@ public class EUIContextMenu<T> extends EUIDropdown<T> {
         return this;
     }
 
-    public EUIContextMenu<T> setPosition(float x, float y) {
-        super.setPosition(x, y);
-        return this;
-    }
-
     public EUIContextMenu<T> setOnChange(ActionT1<List<T>> onChange) {
         super.setOnChange(onChange);
         return this;
@@ -79,6 +74,11 @@ public class EUIContextMenu<T> extends EUIDropdown<T> {
 
     public EUIContextMenu<T> setOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
         super.setOnOpenOrClose(onOpenOrClose);
+        return this;
+    }
+
+    public EUIContextMenu<T> setPosition(float x, float y) {
+        super.setPosition(x, y);
         return this;
     }
 

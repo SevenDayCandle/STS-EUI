@@ -75,6 +75,13 @@ public class EUIVerticalScrollBar extends EUIHoverable {
         return this;
     }
 
+    private float toPercentage(float position) {
+        float minY = this.hb.y + this.hb.height - borderHeight;
+        float maxY = this.hb.y + borderHeight;
+
+        return clamp(MathHelper.percentFromValueBetween(minY, maxY, position));
+    }
+
     public void updateImpl() {
         cursorDrawPosition = MathHelper.scrollSnapLerpSpeed(cursorDrawPosition, fromPercentage(currentScrollPercent));
 
@@ -91,12 +98,5 @@ public class EUIVerticalScrollBar extends EUIHoverable {
         else if (hb.hovered && InputHelper.isMouseDown) {
             isDragging = true;
         }
-    }
-
-    private float toPercentage(float position) {
-        float minY = this.hb.y + this.hb.height - borderHeight;
-        float maxY = this.hb.y + borderHeight;
-
-        return clamp(MathHelper.percentFromValueBetween(minY, maxY, position));
     }
 }

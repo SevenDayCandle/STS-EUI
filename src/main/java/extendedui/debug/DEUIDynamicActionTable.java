@@ -35,14 +35,14 @@ public class DEUIDynamicActionTable<T> extends DEUIDynamicTable<T> {
         }
     }
 
-    public DEUIDynamicActionTable<T> setItems(Iterable<? extends T> items, FuncT1<String[], T> renderFunc) {
-        super.setItems(items, renderFunc);
-        return this;
-    }
-
     public DEUIDynamicActionTable<T> setClick(ActionT1<T> clickFunc, String text) {
         this.clickFunc = clickFunc;
         this.clickText = text;
+        return this;
+    }
+
+    public DEUIDynamicActionTable<T> setItems(Iterable<? extends T> items, FuncT1<String[], T> renderFunc) {
+        super.setItems(items, renderFunc);
         return this;
     }
 }

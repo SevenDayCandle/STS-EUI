@@ -46,6 +46,17 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     }
 
     @Override
+    public void initializeSelection(Collection<? extends AbstractCard> cards) {
+        HashSet<T> availableSeries = new HashSet<>();
+        for (AbstractCard card : cards) {
+            availableSeries.add(objectFunc.invoke(card));
+        }
+        ArrayList<T> seriesItems = EUIUtils.filter(availableSeries, Objects::nonNull);
+        seriesItems.sort((a, b) -> StringUtils.compare(nameFunc.invoke(a), nameFunc.invoke(b)));
+        seriesDropdown.setItems(seriesItems).setActive(seriesItems.size() > 0);
+    }
+
+    @Override
     public boolean isEmpty() {
         return currentSeries.isEmpty();
     }
@@ -61,25 +72,14 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     }
 
     @Override
-    public void initializeSelection(Collection<? extends AbstractCard> cards) {
-        HashSet<T> availableSeries = new HashSet<>();
-        for (AbstractCard card : cards) {
-            availableSeries.add(objectFunc.invoke(card));
-        }
-        ArrayList<T> seriesItems = EUIUtils.filter(availableSeries, Objects::nonNull);
-        seriesItems.sort((a, b) -> StringUtils.compare(nameFunc.invoke(a), nameFunc.invoke(b)));
-        seriesDropdown.setItems(seriesItems).setActive(seriesItems.size() > 0);
+    public void renderImpl(SpriteBatch sb) {
+        this.seriesDropdown.tryRender(sb);
     }
 
     @Override
     public void reset() {
         currentSeries.clear();
         seriesDropdown.setSelectionIndices((int[]) null, false);
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        this.seriesDropdown.tryRender(sb);
     }
 
     @Override

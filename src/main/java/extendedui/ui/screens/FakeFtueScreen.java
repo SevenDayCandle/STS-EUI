@@ -40,37 +40,8 @@ public class FakeFtueScreen extends EUIDungeonScreen {
     }
 
     @Override
-    public void openingSettings() {
-
-    }
-
-    @Override
     public AbstractDungeon.CurrentScreen curScreen() {
         return FAKE_FTUE_SCREEN;
-    }
-
-    @Override
-    public void update() {
-        if (current != null) {
-            if (InputHelper.justClickedLeft && !current.isHovered() && !CardCrawlGame.isPopupOpen) {
-                exitScreen();
-                return;
-            }
-            current.updateImpl();
-        }
-
-        button.update();
-        if (this.button.hb.clicked || EUIInputManager.tryEscape()) {
-            exitScreen();
-        }
-    }
-
-    @Override
-    public void render(SpriteBatch sb) {
-        if (current != null) {
-            current.renderImpl(sb);
-        }
-        button.render(sb);
     }
 
     public void exitScreen() {
@@ -87,5 +58,34 @@ public class FakeFtueScreen extends EUIDungeonScreen {
     public void openScreen(EUITutorial ftue, ActionT0 onClose) {
         openScreen(ftue);
         this.onClose = onClose;
+    }
+
+    @Override
+    public void openingSettings() {
+
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        if (current != null) {
+            current.renderImpl(sb);
+        }
+        button.render(sb);
+    }
+
+    @Override
+    public void update() {
+        if (current != null) {
+            if (InputHelper.justClickedLeft && !current.isHovered() && !CardCrawlGame.isPopupOpen) {
+                exitScreen();
+                return;
+            }
+            current.updateImpl();
+        }
+
+        button.update();
+        if (this.button.hb.clicked || EUIInputManager.tryEscape()) {
+            exitScreen();
+        }
     }
 }

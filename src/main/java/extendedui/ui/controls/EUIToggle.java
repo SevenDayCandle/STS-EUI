@@ -187,36 +187,6 @@ public class EUIToggle extends EUIHoverable {
         return this;
     }
 
-    public EUIToggle setTooltip(EUITooltip tooltip) {
-        super.setTooltip(tooltip);
-
-        return this;
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-
-        if (!interactable) {
-            return;
-        }
-
-        if (hb.justHovered) {
-            CardCrawlGame.sound.playA("UI_HOVER", -0.3f);
-        }
-
-        if (hb.hovered && InputHelper.justClickedLeft && !EUITourTooltip.shouldBlockInteract(hb)) {
-            hb.clickStarted = true;
-        }
-
-        if (hb.clicked) {
-            hb.clicked = false;
-            CardCrawlGame.sound.playA("UI_CLICK_1", -0.2f);
-
-            toggle();
-        }
-    }
-
     public EUIToggle setText(String text) {
         this.text = text;
 
@@ -241,6 +211,12 @@ public class EUIToggle extends EUIHoverable {
         return this;
     }
 
+    public EUIToggle setTooltip(EUITooltip tooltip) {
+        super.setTooltip(tooltip);
+
+        return this;
+    }
+
     public void toggle() {
         toggle(!toggled);
     }
@@ -252,6 +228,30 @@ public class EUIToggle extends EUIHoverable {
             if (onToggle != null) {
                 onToggle.invoke(value);
             }
+        }
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+
+        if (!interactable) {
+            return;
+        }
+
+        if (hb.justHovered) {
+            CardCrawlGame.sound.playA("UI_HOVER", -0.3f);
+        }
+
+        if (hb.hovered && InputHelper.justClickedLeft && !EUITourTooltip.shouldBlockInteract(hb)) {
+            hb.clickStarted = true;
+        }
+
+        if (hb.clicked) {
+            hb.clicked = false;
+            CardCrawlGame.sound.playA("UI_CLICK_1", -0.2f);
+
+            toggle();
         }
     }
 }

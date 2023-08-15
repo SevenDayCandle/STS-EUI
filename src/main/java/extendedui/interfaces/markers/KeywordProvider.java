@@ -15,10 +15,10 @@ public interface KeywordProvider extends TooltipProvider {
         return getTips();
     }
 
-    @Override
-    List<EUIKeywordTooltip> getTips();
-
     // For use with cards that should act differently when rendered through EUICardPreview
     default void setIsPreview(boolean value) {
     }
+
+    @Override
+    List<EUIKeywordTooltip> getTips();
 }

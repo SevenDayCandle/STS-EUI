@@ -84,68 +84,6 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         }
     }
 
-    public void open() {
-        super.open();
-        openImpl();
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        colorButtons.tryRender(sb);
-        cardGrid.renderWithScissors(sb, scissors);
-        sb.setColor(EUIGameUtils.getColorColor(currentColor));
-        sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, CENTER_Y - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
-        sb.setColor(Color.WHITE);
-        upgradeToggle.renderImpl(sb);
-        cancelButton.render(sb);
-
-        EUI.customHeader.render(sb);
-        quickSearch.tryRender(sb);
-
-        for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
-            module.render(sb);
-        }
-        if (customModule != null) {
-            customModule.render(sb);
-        }
-        if (!EUI.cardFilters.isActive) {
-            EUI.openFiltersButton.tryRender(sb);
-            EUIExporter.exportButton.tryRender(sb);
-        }
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-        boolean shouldDoStandardUpdate = !EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
-        if (shouldDoStandardUpdate) {
-            EUI.openFiltersButton.tryUpdate();
-            EUIExporter.exportButton.tryUpdate();
-            colorButtons.tryUpdate();
-            EUI.customHeader.update();
-            upgradeToggle.setPosition(upgradeToggle.hb.cX, CENTER_Y).updateImpl();
-            quickSearch.tryUpdate();
-            cardGrid.tryUpdate();
-            cancelButton.update();
-            if (this.cancelButton.hb.clicked) {
-                this.cancelButton.hb.clicked = false;
-                this.cancelButton.hide();
-                close();
-            }
-            for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
-                module.update();
-            }
-            if (customModule != null) {
-                customModule.update();
-            }
-            if (EUI.customHeader.justSorted) {
-                cardGrid.forceUpdateCardPositions();
-                EUI.customHeader.justSorted = false;
-            }
-        }
-        EUIExporter.exportDropdown.tryUpdate();
-    }
-
     public void initialize(CardLibraryScreen screen) {
         // CardLibraryScreen needs to be re-initialized whenever the save slot changes
         CardLists.clear();
@@ -177,6 +115,11 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
                 .setColor(EUIGameUtils.getColorColor(co));
     }
 
+    public void open() {
+        super.open();
+        openImpl();
+    }
+
     // Also called by the card filter component
     public void openImpl() {
         refreshGroups();
@@ -196,6 +139,31 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
                     c.unlock();
                 }
             }
+        }
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        colorButtons.tryRender(sb);
+        cardGrid.renderWithScissors(sb, scissors);
+        sb.setColor(EUIGameUtils.getColorColor(currentColor));
+        sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, CENTER_Y - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
+        sb.setColor(Color.WHITE);
+        upgradeToggle.renderImpl(sb);
+        cancelButton.render(sb);
+
+        EUI.customHeader.render(sb);
+        quickSearch.tryRender(sb);
+
+        for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+            module.render(sb);
+        }
+        if (customModule != null) {
+            customModule.render(sb);
+        }
+        if (!EUI.cardFilters.isActive) {
+            EUI.openFiltersButton.tryRender(sb);
+            EUIExporter.exportButton.tryRender(sb);
         }
     }
 
@@ -246,5 +214,37 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     protected void toggleUpgrades(boolean value) {
         EUI.toggleViewUpgrades(value);
         upgradeToggle.setToggle(value);
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        boolean shouldDoStandardUpdate = !EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
+        if (shouldDoStandardUpdate) {
+            EUI.openFiltersButton.tryUpdate();
+            EUIExporter.exportButton.tryUpdate();
+            colorButtons.tryUpdate();
+            EUI.customHeader.update();
+            upgradeToggle.setPosition(upgradeToggle.hb.cX, CENTER_Y).updateImpl();
+            quickSearch.tryUpdate();
+            cardGrid.tryUpdate();
+            cancelButton.update();
+            if (this.cancelButton.hb.clicked) {
+                this.cancelButton.hb.clicked = false;
+                this.cancelButton.hide();
+                close();
+            }
+            for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
+                module.update();
+            }
+            if (customModule != null) {
+                customModule.update();
+            }
+            if (EUI.customHeader.justSorted) {
+                cardGrid.forceUpdateCardPositions();
+                EUI.customHeader.justSorted = false;
+            }
+        }
+        EUIExporter.exportDropdown.tryUpdate();
     }
 }

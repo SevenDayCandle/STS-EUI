@@ -54,14 +54,6 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase {
         counterImage.renderImpl(sb);
     }
 
-    @Override
-    public void updateImpl() {
-        backgroundButton.updateImpl();
-        counterText.updateImpl();
-        counterpercentageText.updateImpl();
-        counterImage.updateImpl();
-    }
-
     public CountingPanelCounter<T> setIndex(int index) {
         float y = -(index + 1) * backgroundButton.hb.height * 1.05f;
         backgroundButton.hb.setOffsetY(y);
@@ -70,5 +62,13 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase {
         counterImage.hb.setOffsetY(y);
 
         return this;
+    }
+
+    @Override
+    public void updateImpl() {
+        backgroundButton.updateImpl();
+        counterText.updateImpl();
+        counterpercentageText.updateImpl();
+        counterImage.updateImpl();
     }
 }

@@ -598,33 +598,6 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
-    public EUIDropdown<T> setPosition(float x, float y) {
-        this.hb.translate(x, y);
-        positionClearButton();
-        updateRowPositions();
-        return this;
-    }
-
-    public EUIDropdown<T> setTooltip(String name, String desc) {
-        super.setTooltip(name, desc);
-        this.header.setTooltip(this.tooltip);
-        return this;
-    }
-
-    public EUIDropdown<T> setTooltip(EUITooltip tip) {
-        super.setTooltip(tip);
-        this.header.setTooltip(tip);
-        return this;
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-        updateButtons();
-        updateRows();
-        justOpened = false;
-    }
-
     public EUIDropdown<T> setOnChange(ActionT1<List<T>> onChange) {
         this.onChange = onChange;
         return this;
@@ -639,6 +612,13 @@ public class EUIDropdown<T> extends EUIHoverable {
     public EUIDropdown<T> setOnOpenOrClose(ActionT1<Boolean> onOpenOrClose) {
         this.onOpenOrClose = onOpenOrClose;
 
+        return this;
+    }
+
+    public EUIDropdown<T> setPosition(float x, float y) {
+        this.hb.translate(x, y);
+        positionClearButton();
+        updateRowPositions();
         return this;
     }
 
@@ -772,6 +752,18 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
+    public EUIDropdown<T> setTooltip(String name, String desc) {
+        super.setTooltip(name, desc);
+        this.header.setTooltip(this.tooltip);
+        return this;
+    }
+
+    public EUIDropdown<T> setTooltip(EUITooltip tip) {
+        super.setTooltip(tip);
+        this.header.setTooltip(tip);
+        return this;
+    }
+
     public EUIDropdown<T> setTooltipFunction(FuncT1<Collection<EUITooltip>, T> tooltipFunction) {
         this.tooltipFunction = tooltipFunction;
         return this;
@@ -848,6 +840,14 @@ public class EUIDropdown<T> extends EUIHoverable {
         if (shouldInvoke && onChange != null) {
             onChange.invoke(getCurrentItems());
         }
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        updateButtons();
+        updateRows();
+        justOpened = false;
     }
 
     protected void updateNonMouseInput() {

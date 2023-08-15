@@ -28,6 +28,31 @@ public class EUIPotionGrid extends EUIItemGrid<PotionInfo> {
         return this;
     }
 
+    @Override
+    public void forceUpdateItemPosition(PotionInfo potion, float x, float y) {
+        potion.potion.posX = x;
+        potion.potion.posY = y;
+        potion.potion.hb.update();
+        potion.potion.hb.move(potion.potion.posX, potion.potion.posY);
+    }
+
+    @Override
+    public Hitbox getHitbox(PotionInfo item) {
+        return item.potion.hb;
+    }
+
+    @Override
+    protected float getScrollDistance(PotionInfo potion, int index) {
+        float scrollDistance = 1f / getRowCount();
+        if (potion.potion.posY > drawTopY) {
+            return -scrollDistance;
+        }
+        else if (potion.potion.posY < 0) {
+            return scrollDistance;
+        }
+        return 0;
+    }
+
     public EUIPotionGrid remove(AbstractPotion potion) {
         group.group.removeIf(rInfo -> rInfo.potion == potion);
 
@@ -44,34 +69,8 @@ public class EUIPotionGrid extends EUIItemGrid<PotionInfo> {
     }
 
     @Override
-    protected float getScrollDistance(PotionInfo potion, int index) {
-        float scrollDistance = 1f / getRowCount();
-        if (potion.potion.posY > drawTopY) {
-            return -scrollDistance;
-        }
-        else if (potion.potion.posY < 0) {
-            return scrollDistance;
-        }
-        return 0;
-    }
-
-    @Override
-    public void updateItemPosition(PotionInfo potion, float x, float y) {
-        potion.potion.posX = EUIUtils.lerpSnap(potion.potion.posX, x, LERP_SPEED);
-        potion.potion.posY = EUIUtils.lerpSnap(potion.potion.posY, y, LERP_SPEED);
-    }
-
-    @Override
-    public Hitbox getHitbox(PotionInfo item) {
-        return item.potion.hb;
-    }
-
-    @Override
-    public void forceUpdateItemPosition(PotionInfo potion, float x, float y) {
-        potion.potion.posX = x;
-        potion.potion.posY = y;
-        potion.potion.hb.update();
-        potion.potion.hb.move(potion.potion.posX, potion.potion.posY);
+    protected void renderItem(SpriteBatch sb, PotionInfo potion) {
+        potion.potion.render(sb);
     }
 
     @Override
@@ -89,7 +88,8 @@ public class EUIPotionGrid extends EUIItemGrid<PotionInfo> {
     }
 
     @Override
-    protected void renderItem(SpriteBatch sb, PotionInfo potion) {
-        potion.potion.render(sb);
+    public void updateItemPosition(PotionInfo potion, float x, float y) {
+        potion.potion.posX = EUIUtils.lerpSnap(potion.potion.posX, x, LERP_SPEED);
+        potion.potion.posY = EUIUtils.lerpSnap(potion.potion.posY, y, LERP_SPEED);
     }
 }

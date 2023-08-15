@@ -200,6 +200,12 @@ public class ExtraModSettingsPanel extends EUIBase {
         button.render(sb);
     }
 
+    public void setActiveItem(Category info) {
+        if (getCategories().containsKey(info)) {
+            activeMod = info;
+        }
+    }
+
     @Override
     public void updateImpl() {
         background.tryUpdate();
@@ -217,12 +223,6 @@ public class ExtraModSettingsPanel extends EUIBase {
             this.button.hb.clicked = false;
             this.button.hide();
             close();
-        }
-    }
-
-    public void setActiveItem(Category info) {
-        if (getCategories().containsKey(info)) {
-            activeMod = info;
         }
     }
 

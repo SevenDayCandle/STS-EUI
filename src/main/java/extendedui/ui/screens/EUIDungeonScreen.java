@@ -8,6 +8,11 @@ import extendedui.patches.game.AbstractDungeonPatches;
 
 public abstract class EUIDungeonScreen extends CustomScreen {
 
+    @Override
+    public void close() {
+        switchScreen();
+    }
+
     public boolean isScreenNonEmpty(AbstractDungeon.CurrentScreen s) {
         return !(s == null || s == AbstractDungeon.CurrentScreen.NONE);
     }
@@ -29,6 +34,11 @@ public abstract class EUIDungeonScreen extends CustomScreen {
     }
 
     @Override
+    public void openingSettings() {
+        switchScreen();
+    }
+
+    @Override
     public void reopen() {
         Settings.hideRelics = true;
         EUI.disableInteract = true;
@@ -42,16 +52,6 @@ public abstract class EUIDungeonScreen extends CustomScreen {
         AbstractDungeon.dynamicBanner.hide(); // Hide banners that get in the way
         AbstractDungeon.dungeonMapScreen.map.hideInstantly(); // Because the map won't be hidden properly otherwise
         AbstractDungeon.gridSelectScreen.hide(); // Because this has to be called at least once to prevent softlocks when upgrading cards
-    }
-
-    @Override
-    public void close() {
-        switchScreen();
-    }
-
-    @Override
-    public void openingSettings() {
-        switchScreen();
     }
 
     public void switchScreen() {

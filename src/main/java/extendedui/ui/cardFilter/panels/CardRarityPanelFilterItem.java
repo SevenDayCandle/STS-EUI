@@ -7,7 +7,6 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 
 import java.util.Collections;
@@ -49,14 +48,14 @@ public class CardRarityPanelFilterItem implements CountingPanelItem, TooltipProv
     }
 
     @Override
-    public int getRank(AbstractCard c) {
-        int ordinal = c.rarity.ordinal();
-        return c.rarity == rarity ? ordinal + 1000 : ordinal;
+    public Texture getIcon() {
+        return EUIRM.images.squaredButton2.texture();
     }
 
     @Override
-    public Texture getIcon() {
-        return EUIRM.images.squaredButton2.texture();
+    public int getRank(AbstractCard c) {
+        int ordinal = c.rarity.ordinal();
+        return c.rarity == rarity ? ordinal + 1000 : ordinal;
     }
 
     @Override

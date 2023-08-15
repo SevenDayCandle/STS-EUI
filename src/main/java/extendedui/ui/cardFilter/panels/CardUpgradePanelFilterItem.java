@@ -33,13 +33,13 @@ public class CardUpgradePanelFilterItem implements CountingPanelItem, TooltipPro
     }
 
     @Override
-    public int getRank(AbstractCard c) {
-        return c.timesUpgraded >= upgradeLevel ? c.timesUpgraded + 1000 : c.timesUpgraded;
+    public Texture getIcon() {
+        return upgradeLevel > 0 ? EUIRM.images.typeUpgrade.texture() : EUIRM.images.typeDowngrade.texture();
     }
 
     @Override
-    public Texture getIcon() {
-        return upgradeLevel > 0 ? EUIRM.images.typeUpgrade.texture() : EUIRM.images.typeDowngrade.texture();
+    public int getRank(AbstractCard c) {
+        return c.timesUpgraded >= upgradeLevel ? c.timesUpgraded + 1000 : c.timesUpgraded;
     }
 
     @Override

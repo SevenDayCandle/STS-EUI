@@ -79,16 +79,6 @@ public class EUIButtonList extends EUIBase {
         downButton.tryRenderCentered(sb);
     }
 
-    @Override
-    public void updateImpl() {
-        for (EUIButton b : buttons) {
-            b.tryUpdate();
-        }
-        upButton.tryUpdate();
-        downButton.tryUpdate();
-        updateNonMouseInput();
-    }
-
     public void selectButton(EUIButton button) {
         for (int i = 0; i < buttons.size(); i++) {
             EUIButton b = buttons.get(i);
@@ -122,6 +112,16 @@ public class EUIButtonList extends EUIBase {
 
         upButton.setActive(topButtonIndex > 0);
         downButton.setActive(topButtonIndex < buttons.size() - visibleButtons);
+    }
+
+    @Override
+    public void updateImpl() {
+        for (EUIButton b : buttons) {
+            b.tryUpdate();
+        }
+        upButton.tryUpdate();
+        downButton.tryUpdate();
+        updateNonMouseInput();
     }
 
     protected void updateNonMouseInput() {

@@ -1,6 +1,5 @@
 package extendedui.ui.cardFilter;
 
-import basemod.devcommands.power.Power;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -386,6 +385,34 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         renderFilters(sb);
     }
 
+    public void toggleFilters() {
+        if (isActive) {
+            close();
+        }
+        else {
+            open();
+        }
+    }
+
+    @Override
+    public final boolean tryUpdate() {
+        super.tryUpdate();
+        if (EUIHotkeys.toggleFilters.isJustPressed()) {
+            toggleFilters();
+        }
+        return isActive;
+    }
+
+    // Shorthand function to be fed to all dropdown filters
+    protected void updateActive(boolean whatever) {
+        CardCrawlGame.isPopupOpen = this.isActive;
+    }
+
+    public final float updateDropdown(EUIHoverable element, float xPos) {
+        element.setPosition(xPos, DRAW_START_Y + scrollDelta).tryUpdate();
+        return element.hb.x + element.hb.width + SPACING * 2;
+    }
+
     @Override
     public final void updateImpl() {
         super.updateImpl();
@@ -413,34 +440,6 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         }
 
         updateFilters();
-    }
-
-    public void toggleFilters() {
-        if (isActive) {
-            close();
-        }
-        else {
-            open();
-        }
-    }
-
-    @Override
-    public final boolean tryUpdate() {
-        super.tryUpdate();
-        if (EUIHotkeys.toggleFilters.isJustPressed()) {
-            toggleFilters();
-        }
-        return isActive;
-    }
-
-    // Shorthand function to be fed to all dropdown filters
-    protected void updateActive(boolean whatever) {
-        CardCrawlGame.isPopupOpen = this.isActive;
-    }
-
-    public final float updateDropdown(EUIHoverable element, float xPos) {
-        element.setPosition(xPos, DRAW_START_Y + scrollDelta).tryUpdate();
-        return element.hb.x + element.hb.width + SPACING * 2;
     }
 
     private void updateInput() {

@@ -64,9 +64,23 @@ public class DraggableHitbox extends EUIHitbox {
         return copy;
     }
 
+    public DraggableHitbox setBounds(float min_x, float max_x, float min_y, float max_y) {
+        this.minX = min_x;
+        this.maxX = max_x;
+        this.minY = min_y;
+        this.maxY = max_y;
+
+        return this;
+    }
+
     public DraggableHitbox setCenter(float cX, float cY) {
         move(cX, cY);
 
+        return this;
+    }
+
+    public DraggableHitbox setOnDragFinish(ActionT1<DraggableHitbox> onDragFinish) {
+        this.onDragFinish = onDragFinish;
         return this;
     }
 
@@ -114,19 +128,5 @@ public class DraggableHitbox extends EUIHitbox {
 
             dragStart = null;
         }
-    }
-
-    public DraggableHitbox setBounds(float min_x, float max_x, float min_y, float max_y) {
-        this.minX = min_x;
-        this.maxX = max_x;
-        this.minY = min_y;
-        this.maxY = max_y;
-
-        return this;
-    }
-
-    public DraggableHitbox setOnDragFinish(ActionT1<DraggableHitbox> onDragFinish) {
-        this.onDragFinish = onDragFinish;
-        return this;
     }
 }

@@ -21,12 +21,12 @@ public class EUIDialogYesNo extends EUIDialog<Boolean> {
     }
 
     @Override
-    public Boolean getConfirmValue() {
-        return true;
+    public Boolean getCancelValue() {
+        return false;
     }
 
     @Override
-    public Boolean getCancelValue() {
-        return false;
+    public Boolean getConfirmValue() {
+        return true;
     }
 }

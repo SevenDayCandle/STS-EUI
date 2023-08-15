@@ -38,6 +38,11 @@ public class EUIRelicPreview extends EUIPreview {
     }
 
     @Override
+    public boolean matches(String preview) {
+        return this.preview.relicId.equals(preview);
+    }
+
+    @Override
     public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean isPopup) {
         if (isPopup) {
             float x = (float) Settings.WIDTH * 0.2f - 10f * Settings.scale;
@@ -51,11 +56,6 @@ public class EUIRelicPreview extends EUIPreview {
             float scale = drawScale * 0.8f;
             render(sb, x, y, scale, upgraded);
         }
-    }
-
-    @Override
-    public boolean matches(String preview) {
-        return this.preview.relicId.equals(preview);
     }
 
     @Override

@@ -20,6 +20,11 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     }
 
     @Override
+    public boolean acceptCharacter(char c) {
+        return Character.isDigit(c) || c == '-';
+    }
+
+    @Override
     protected void commit(boolean commit) {
         if (commit) {
             if (onComplete != null) {
@@ -29,67 +34,6 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         }
         else {
             label.text = originalValue;
-        }
-    }
-
-    @Override
-    public String getCurrentText() {
-        return !hasEntered && clearOnInitialEntry ? "" : label.text;
-    }
-
-    @Override
-    public void setText(String s) {
-        hasEntered = true;
-        label.text = s;
-        cachedValue = getValue(label.text);
-        if (onUpdate != null) {
-            onUpdate.invoke(cachedValue);
-        }
-    }
-
-    @Override
-    public boolean acceptCharacter(char c) {
-        return Character.isDigit(c) || c == '-';
-    }
-
-    @Override
-    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
-        // Do not render
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-        if (isEditing) {
-            if (InputHelper.scrolledDown) {
-                setValue(cachedValue - 1);
-            }
-            else if (InputHelper.scrolledUp) {
-                setValue(cachedValue + 1);
-            }
-        }
-    }
-
-    @Override
-    public void start() {
-        super.start();
-        if (!NumberUtils.isCreatable(label.text)) {
-            label.text = "";
-            cachedValue = 0;
-        }
-        else {
-            cachedValue = getValue(label.text);
-        }
-        hasEntered = false;
-    }
-
-    @Override
-    public Integer getValue(String text) {
-        try {
-            return MathUtils.clamp(Integer.parseInt(label.text), min, max);
-        }
-        catch (Exception ignored) {
-            return 0;
         }
     }
 
@@ -115,6 +59,11 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         return cachedValue;
     }
 
+    @Override
+    public String getCurrentText() {
+        return !hasEntered && clearOnInitialEntry ? "" : label.text;
+    }
+
     public int getMax() {
         return max;
     }
@@ -123,10 +72,35 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         return min;
     }
 
+    @Override
+    public Integer getValue(String text) {
+        try {
+            return MathUtils.clamp(Integer.parseInt(label.text), min, max);
+        }
+        catch (Exception ignored) {
+            return 0;
+        }
+    }
+
+    @Override
+    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
+        // Do not render
+    }
+
     public EUITextBoxNumericalInput setLimits(int min, int max) {
         this.min = min;
         this.max = Math.max(max, min);
         return this;
+    }
+
+    @Override
+    public void setText(String s) {
+        hasEntered = true;
+        label.text = s;
+        cachedValue = getValue(label.text);
+        if (onUpdate != null) {
+            onUpdate.invoke(cachedValue);
+        }
     }
 
     protected void setValue(int value) {
@@ -136,5 +110,31 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     public EUITextBoxNumericalInput showNegativeAsInfinity(boolean val) {
         showNegativeAsInfinity = val;
         return this;
+    }
+
+    @Override
+    public void start() {
+        super.start();
+        if (!NumberUtils.isCreatable(label.text)) {
+            label.text = "";
+            cachedValue = 0;
+        }
+        else {
+            cachedValue = getValue(label.text);
+        }
+        hasEntered = false;
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        if (isEditing) {
+            if (InputHelper.scrolledDown) {
+                setValue(cachedValue - 1);
+            }
+            else if (InputHelper.scrolledUp) {
+                setValue(cachedValue + 1);
+            }
+        }
     }
 }

@@ -65,11 +65,27 @@ public class EUIHitbox extends Hitbox {
         return copy;
     }
 
+    @Override
+    public void move(float cX, float cY) {
+        this.targetCx = this.cX = cX;
+        this.targetCy = this.cY = cY;
+        this.x = cX - this.width / 2f;
+        this.y = cY - this.height / 2f;
+    }
+
     protected void moveInternal(float cX, float cY) {
         this.cX = cX;
         this.cY = cY;
         this.x = cX - this.width / 2f;
         this.y = cY - this.height / 2f;
+    }
+
+    @Override
+    public void resize(float w, float h) {
+        this.width = w;
+        this.height = h;
+        this.targetCx = this.cX = x + this.width / 2f;
+        this.targetCy = this.cY = y + this.height / 2f;
     }
 
     public EUIHitbox setCenter(float cX, float cY) {
@@ -108,6 +124,14 @@ public class EUIHitbox extends Hitbox {
         this.targetCy = cY;
 
         return this;
+    }
+
+    @Override
+    public void translate(float x, float y) {
+        this.x = x;
+        this.y = y;
+        this.targetCx = this.cX = x + this.width / 2f;
+        this.targetCy = this.cY = y + this.height / 2f;
     }
 
     @Override
@@ -168,29 +192,5 @@ public class EUIHitbox extends Hitbox {
         else {
             this.hovered = actualMX > x && actualMX < x + this.width && actualMY > y && actualMY < y + this.height;
         }
-    }
-
-    @Override
-    public void move(float cX, float cY) {
-        this.targetCx = this.cX = cX;
-        this.targetCy = this.cY = cY;
-        this.x = cX - this.width / 2f;
-        this.y = cY - this.height / 2f;
-    }
-
-    @Override
-    public void translate(float x, float y) {
-        this.x = x;
-        this.y = y;
-        this.targetCx = this.cX = x + this.width / 2f;
-        this.targetCy = this.cY = y + this.height / 2f;
-    }
-
-    @Override
-    public void resize(float w, float h) {
-        this.width = w;
-        this.height = h;
-        this.targetCx = this.cX = x + this.width / 2f;
-        this.targetCy = this.cY = y + this.height / 2f;
     }
 }

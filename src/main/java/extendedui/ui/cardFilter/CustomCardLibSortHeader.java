@@ -55,54 +55,6 @@ public class CustomCardLibSortHeader extends CardLibSortHeader {
         return falseGroup.group;
     }
 
-    protected SortHeaderButton getPackmasterButton() {
-        try {
-            return EUIClassUtils.getRFieldStatic("thePackmaster.patches.CompendiumPatches", "packButton");
-        }
-        catch (Exception ignored) {
-            return null;
-        }
-    }
-
-    public ArrayList<AbstractCard> getVisibleCards() {
-        return this.group != null ? this.group.group : new ArrayList<>();
-    }
-
-    public boolean isHovered() {
-        return buttons != null && EUIUtils.any(buttons, button -> button.hb.hovered);
-    }
-
-    public void resetSort() {
-        this.justSorted = true;
-        group.sortAlphabetically(true);
-        group.sortByRarity(true);
-        group.sortByStatus(true);
-
-        for (SortHeaderButton button : buttons) {
-            button.reset();
-        }
-    }
-
-    @Override
-    public void setGroup(CardGroup group) {
-        EUI.cardFilters.clear(false, true);
-        if (this.group != null && this.originalGroup != null) {
-            this.group.group = this.originalGroup;
-        }
-        this.originalGroup = new ArrayList<>(group.group);
-        if (group.group.size() > 0) {
-            fakeLibraryCard.current_x = group.group.get(0).current_x;
-            fakeLibraryCard.current_y = group.group.get(0).current_y;
-        }
-
-        if (EUI.cardFilters.customModule != null) {
-            EUI.cardFilters.customModule.processGroup(group);
-        }
-
-        this.group = group;
-        resetSort();
-    }
-
     @Override
     public void didChangeOrder(SortHeaderButton button, boolean isAscending) {
         this.lastUsedButton = button;
@@ -144,6 +96,23 @@ public class CustomCardLibSortHeader extends CardLibSortHeader {
         }
     }
 
+    protected SortHeaderButton getPackmasterButton() {
+        try {
+            return EUIClassUtils.getRFieldStatic("thePackmaster.patches.CompendiumPatches", "packButton");
+        }
+        catch (Exception ignored) {
+            return null;
+        }
+    }
+
+    public ArrayList<AbstractCard> getVisibleCards() {
+        return this.group != null ? this.group.group : new ArrayList<>();
+    }
+
+    public boolean isHovered() {
+        return buttons != null && EUIUtils.any(buttons, button -> button.hb.hovered);
+    }
+
     @Override
     public void render(SpriteBatch sb) {
         // The bar position should remain static when viewing the custom library screen or the card pool
@@ -154,6 +123,37 @@ public class CustomCardLibSortHeader extends CardLibSortHeader {
         else {
             super.render(sb);
         }
+    }
+
+    public void resetSort() {
+        this.justSorted = true;
+        group.sortAlphabetically(true);
+        group.sortByRarity(true);
+        group.sortByStatus(true);
+
+        for (SortHeaderButton button : buttons) {
+            button.reset();
+        }
+    }
+
+    @Override
+    public void setGroup(CardGroup group) {
+        EUI.cardFilters.clear(false, true);
+        if (this.group != null && this.originalGroup != null) {
+            this.group.group = this.originalGroup;
+        }
+        this.originalGroup = new ArrayList<>(group.group);
+        if (group.group.size() > 0) {
+            fakeLibraryCard.current_x = group.group.get(0).current_x;
+            fakeLibraryCard.current_y = group.group.get(0).current_y;
+        }
+
+        if (EUI.cardFilters.customModule != null) {
+            EUI.cardFilters.customModule.processGroup(group);
+        }
+
+        this.group = group;
+        resetSort();
     }
 
     private void setupButton(SortHeaderButton button, float start, int index) {

@@ -48,6 +48,23 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
         return originalRows;
     }
 
+    protected void initialize() {
+        this.originalRows = this.rows;
+        searchInput = (EUITextInput) new EUITextInput(button.label.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f))
+                .setOnUpdate(this::onUpdate)
+                .setLabel("");
+    }
+
+    protected void onUpdate(String searchInput) {
+        if (searchInput == null || searchInput.isEmpty()) {
+            this.rows = this.originalRows;
+        }
+        else {
+            this.rows = EUIUtils.filter(this.originalRows, row -> row.getText() != null && row.getText().toLowerCase().contains(searchInput.toLowerCase()));
+            this.topVisibleRowIndex = 0;
+        }
+    }
+
     public void openOrCloseMenu() {
         super.openOrCloseMenu();
         button.showText = !this.isOpen;
@@ -75,17 +92,6 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
         return this;
     }
 
-    public EUISearchableDropdown<T> setPosition(float x, float y) {
-        super.setPosition(x, y);
-        return this;
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-        this.searchInput.tryUpdate();
-    }
-
     public EUISearchableDropdown<T> setOnChange(ActionT1<List<T>> onChange) {
         super.setOnChange(onChange);
         return this;
@@ -96,21 +102,15 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
         return this;
     }
 
-    protected void initialize() {
-        this.originalRows = this.rows;
-        searchInput = (EUITextInput) new EUITextInput(button.label.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f))
-                .setOnUpdate(this::onUpdate)
-                .setLabel("");
+    public EUISearchableDropdown<T> setPosition(float x, float y) {
+        super.setPosition(x, y);
+        return this;
     }
 
-    protected void onUpdate(String searchInput) {
-        if (searchInput == null || searchInput.isEmpty()) {
-            this.rows = this.originalRows;
-        }
-        else {
-            this.rows = EUIUtils.filter(this.originalRows, row -> row.getText() != null && row.getText().toLowerCase().contains(searchInput.toLowerCase()));
-            this.topVisibleRowIndex = 0;
-        }
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+        this.searchInput.tryUpdate();
     }
 
 }

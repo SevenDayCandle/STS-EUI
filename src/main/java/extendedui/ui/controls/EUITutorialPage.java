@@ -22,13 +22,13 @@ public class EUITutorialPage extends EUIBase {
 
     }
 
-    @Override
-    public void updateImpl() {
-
-    }
-
     protected EUITutorialPage setTutorial(EUITutorial tutorial) {
         this.tutorial = tutorial;
         return this;
+    }
+
+    @Override
+    public void updateImpl() {
+
     }
 }

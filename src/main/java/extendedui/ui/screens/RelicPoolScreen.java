@@ -94,45 +94,6 @@ public class RelicPoolScreen extends EUIPoolScreen {
         return RELIC_POOL_SCREEN;
     }
 
-    @Override
-    public void update() {
-        if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
-            relicGrid.tryUpdate();
-            swapCardScreen.updateImpl();
-            swapPotionScreen.updateImpl();
-            EUI.relicHeader.updateImpl();
-            EUI.openFiltersButton.tryUpdate();
-            EUIExporter.exportButton.tryUpdate();
-            for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
-                module.update();
-            }
-            if (customModule != null) {
-                customModule.update();
-            }
-        }
-        contextMenu.tryUpdate();
-        EUIExporter.exportDropdown.tryUpdate();
-    }
-
-    @Override
-    public void render(SpriteBatch sb) {
-        relicGrid.tryRender(sb);
-        swapCardScreen.renderImpl(sb);
-        swapPotionScreen.renderImpl(sb);
-        EUI.relicHeader.renderImpl(sb);
-        if (!EUI.relicFilters.isActive) {
-            EUI.openFiltersButton.tryRender(sb);
-            EUIExporter.exportButton.tryRender(sb);
-        }
-        for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
-            module.render(sb);
-        }
-        if (customModule != null) {
-            customModule.render(sb);
-        }
-        contextMenu.tryRender(sb);
-    }
-
     protected void obtain(AbstractRelic c) {
         if (c != null) {
             AbstractRelic copy = c.makeCopy();
@@ -195,6 +156,45 @@ public class RelicPoolScreen extends EUIPoolScreen {
             relics.remove(c.relicId);
         }
         relicGrid.remove(c);
+    }
+
+    @Override
+    public void render(SpriteBatch sb) {
+        relicGrid.tryRender(sb);
+        swapCardScreen.renderImpl(sb);
+        swapPotionScreen.renderImpl(sb);
+        EUI.relicHeader.renderImpl(sb);
+        if (!EUI.relicFilters.isActive) {
+            EUI.openFiltersButton.tryRender(sb);
+            EUIExporter.exportButton.tryRender(sb);
+        }
+        for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
+            module.render(sb);
+        }
+        if (customModule != null) {
+            customModule.render(sb);
+        }
+        contextMenu.tryRender(sb);
+    }
+
+    @Override
+    public void update() {
+        if (!EUI.relicFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
+            relicGrid.tryUpdate();
+            swapCardScreen.updateImpl();
+            swapPotionScreen.updateImpl();
+            EUI.relicHeader.updateImpl();
+            EUI.openFiltersButton.tryUpdate();
+            EUIExporter.exportButton.tryUpdate();
+            for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
+                module.update();
+            }
+            if (customModule != null) {
+                customModule.update();
+            }
+        }
+        contextMenu.tryUpdate();
+        EUIExporter.exportDropdown.tryUpdate();
     }
 
     public static class DebugOption {

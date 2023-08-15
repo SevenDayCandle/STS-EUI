@@ -224,45 +224,6 @@ public class EUIKeywordTooltip extends EUITooltip {
         return new EUIKeywordTooltip(this);
     }
 
-    @Override
-    public float render(SpriteBatch sb, float x, float y, int index) {
-        verifyFonts();
-        final float h = height();
-        renderBg(sb, Settings.TOP_PANEL_SHADOW_COLOR, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, h);
-        renderBg(sb, backgroundColor, x, y, h);
-        renderTitle(sb, x, y);
-        renderSubtext(sb, x, y);
-
-        float yOff = y + BODY_OFFSET_Y;
-        yOff += renderSubheader(sb, x, yOff);
-        renderDescription(sb, x, yOff);
-
-        return h;
-    }
-
-    @Override
-    public float renderSubheader(SpriteBatch sb, float x, float y) {
-        float subHeight = 0;
-        if (modName != null) {
-            FontHelper.renderFontLeftTopAligned(sb, descriptionFont, modName.text, x + TEXT_OFFSET_X, y, modName.color);
-            subHeight += lastModNameHeight;
-        }
-        subHeight += super.renderSubheader(sb, x, y + subHeight);
-        return subHeight;
-    }
-
-    @Override
-    public void renderTitle(SpriteBatch sb, float x, float y) {
-        if (icon != null) {
-            // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
-            renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, BASE_ICON_SIZE * iconmultiW, BASE_ICON_SIZE * iconmultiH);
-            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
-        }
-        else {
-            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
-        }
-    }
-
     public String parsePlural(int amount) {
         if (plural == null) {
             plural = EUIRM.strings.plural(title);
@@ -299,6 +260,33 @@ public class EUIKeywordTooltip extends EUITooltip {
         return progressive;
     }
 
+    @Override
+    public float render(SpriteBatch sb, float x, float y, int index) {
+        verifyFonts();
+        final float h = height();
+        renderBg(sb, Settings.TOP_PANEL_SHADOW_COLOR, x + SHADOW_DIST_X, y - SHADOW_DIST_Y, h);
+        renderBg(sb, backgroundColor, x, y, h);
+        renderTitle(sb, x, y);
+        renderSubtext(sb, x, y);
+
+        float yOff = y + BODY_OFFSET_Y;
+        yOff += renderSubheader(sb, x, yOff);
+        renderDescription(sb, x, yOff);
+
+        return h;
+    }
+
+    @Override
+    public float renderSubheader(SpriteBatch sb, float x, float y) {
+        float subHeight = 0;
+        if (modName != null) {
+            FontHelper.renderFontLeftTopAligned(sb, descriptionFont, modName.text, x + TEXT_OFFSET_X, y, modName.color);
+            subHeight += lastModNameHeight;
+        }
+        subHeight += super.renderSubheader(sb, x, y + subHeight);
+        return subHeight;
+    }
+
     public void renderTipEnergy(SpriteBatch sb, TextureRegion region, float x, float y, float width, float height) {
         renderTipEnergy(sb, region, x, y, width, height, Settings.scale, Settings.scale, iconColor);
     }
@@ -318,14 +306,26 @@ public class EUIKeywordTooltip extends EUITooltip {
                 region.getRegionHeight(), false, false);
     }
 
-    public EUIKeywordTooltip setBadgeBackground(Color color) {
-        this.badgeColor = color;
-
-        return this;
+    @Override
+    public void renderTitle(SpriteBatch sb, float x, float y) {
+        if (icon != null) {
+            // To render it on the right: x + BOX_W - TEXT_OFFSET_X - 28 * Settings.scale
+            renderTipEnergy(sb, icon, x + TEXT_OFFSET_X, y + ORB_OFFSET_Y, BASE_ICON_SIZE * iconmultiW, BASE_ICON_SIZE * iconmultiH);
+            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X * 2.5f, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+        }
+        else {
+            FontHelper.renderFontLeftTopAligned(sb, headerFont, title, x + TEXT_OFFSET_X, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+        }
     }
 
     public EUIKeywordTooltip setBackgroundColor(Color color) {
         this.backgroundColor = color;
+
+        return this;
+    }
+
+    public EUIKeywordTooltip setBadgeBackground(Color color) {
+        this.badgeColor = color;
 
         return this;
     }
@@ -375,6 +375,12 @@ public class EUIKeywordTooltip extends EUITooltip {
         return this;
     }
 
+    public EUIKeywordTooltip setIconColor(Color color) {
+        this.iconColor = color;
+
+        return this;
+    }
+
     public EUIKeywordTooltip setIconFromPath(String imagePath) {
         if (Gdx.files.internal(imagePath).exists()) {
             setIcon(EUIRM.getTexture(imagePath));
@@ -393,12 +399,6 @@ public class EUIKeywordTooltip extends EUITooltip {
         else {
             EUIUtils.logWarning(this, "Could not load region at " + imagePath);
         }
-        return this;
-    }
-
-    public EUIKeywordTooltip setIconColor(Color color) {
-        this.iconColor = color;
-
         return this;
     }
 

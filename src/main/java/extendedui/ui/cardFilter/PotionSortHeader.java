@@ -30,6 +30,11 @@ public class PotionSortHeader extends GenericSortHeader<PotionInfo> {
     }
 
     @Override
+    public GenericFilters<PotionInfo, ?> getFilters() {
+        return EUI.potionFilters;
+    }
+
+    @Override
     protected float getFirstY() {
         return this.group.group.get(0).potion.posY;
     }
@@ -53,10 +58,5 @@ public class PotionSortHeader extends GenericSortHeader<PotionInfo> {
             this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal()) * (isAscending ? 1 : -1));
             this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency()) * (isAscending ? 1 : -1));
         }
-    }
-
-    @Override
-    public GenericFilters<PotionInfo, ?> getFilters() {
-        return EUI.potionFilters;
     }
 }

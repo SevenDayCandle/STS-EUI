@@ -23,6 +23,13 @@ public abstract class PCLTopPanelItem extends TopPanelItem {
         return EUIRM.getID(type.getSimpleName());
     }
 
+    @Override
+    protected void onClick() {
+        if (this.onLeftClick != null) {
+            this.onLeftClick.invoke(this);
+        }
+    }
+
     protected void onRightClick() {
         if (this.onRightClick != null) {
             this.onRightClick.invoke(this);
@@ -61,13 +68,6 @@ public abstract class PCLTopPanelItem extends TopPanelItem {
             if (this.hitbox.hovered && InputHelper.justClickedRight && this.rightClickable) {
                 this.onRightClick();
             }
-        }
-    }
-
-    @Override
-    protected void onClick() {
-        if (this.onLeftClick != null) {
-            this.onLeftClick.invoke(this);
         }
     }
 }

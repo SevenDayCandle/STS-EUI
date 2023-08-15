@@ -41,15 +41,6 @@ public abstract class GenericSortHeader<T> extends EUIBase implements SortHeader
         }
     }
 
-    @Override
-    public void updateImpl() {
-        float scrolledY = snapToGroup && this.group != null && this.group.size() > 0 ? getFirstY() + 230.0F * Settings.yScale : baseY;
-        for (SortHeaderButton button : buttons) {
-            button.update();
-            button.updateScrollPosition(scrolledY);
-        }
-    }
-
     public GenericSortHeader<T> setBaseY(float value) {
         this.baseY = value;
         return this;
@@ -85,6 +76,15 @@ public abstract class GenericSortHeader<T> extends EUIBase implements SortHeader
             }
             didChangeOrder(lastUsedButton, isAscending);
             getFilters().refresh(group.group);
+        }
+    }
+
+    @Override
+    public void updateImpl() {
+        float scrolledY = snapToGroup && this.group != null && this.group.size() > 0 ? getFirstY() + 230.0F * Settings.yScale : baseY;
+        for (SortHeaderButton button : buttons) {
+            button.update();
+            button.updateScrollPosition(scrolledY);
         }
     }
 

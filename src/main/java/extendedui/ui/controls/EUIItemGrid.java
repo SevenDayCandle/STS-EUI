@@ -93,31 +93,6 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         return this;
     }
 
-    @Override
-    public boolean isHovered() {
-        return super.isHovered() || hovered != null;
-    }
-
-    @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-
-        renderItems(sb);
-
-        if (message != null) {
-            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
-        }
-    }
-
-    @Override
-    public void updateImpl() {
-        super.updateImpl();
-
-        updateRelics();
-        updateNonMouseInput();
-        updateClickLogic();
-    }
-
     public void clear() {
         this.sizeCache = 0;
         this.hovered = null;
@@ -131,6 +106,11 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
 
 
         refreshOffset();
+    }
+
+    @Override
+    public int currentSize() {
+        return group.size();
     }
 
     public void forceUpdatePositions() {
@@ -152,6 +132,11 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
     }
 
     @Override
+    public boolean isHovered() {
+        return super.isHovered() || hovered != null;
+    }
+
+    @Override
     public void refreshOffset() {
         sizeCache = currentSize();
         upperScrollBound = Settings.DEFAULT_SCROLL_LIMIT;
@@ -162,15 +147,21 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         }
     }
 
-    @Override
-    public int currentSize() {
-        return group.size();
-    }
-
     public EUIItemGrid<T> remove(T item) {
         group.group.removeIf(rInfo -> rInfo == item);
 
         return this;
+    }
+
+    @Override
+    public void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
+
+        renderItems(sb);
+
+        if (message != null) {
+            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
+        }
     }
 
     protected void renderItems(SpriteBatch sb) {
@@ -233,7 +224,6 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         return this;
     }
 
-
     public EUIItemGrid<T> setOnRightClick(ActionT1<T> onRightClick) {
         this.onRightClick = onRightClick;
 
@@ -266,6 +256,15 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
                 }
             }
         }
+    }
+
+    @Override
+    public void updateImpl() {
+        super.updateImpl();
+
+        updateRelics();
+        updateNonMouseInput();
+        updateClickLogic();
     }
 
     protected void updateNonMouseInput() {

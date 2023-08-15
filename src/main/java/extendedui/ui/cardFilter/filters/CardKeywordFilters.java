@@ -141,8 +141,15 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
     }
 
     @Override
-    public int getReferenceCount() {
-        return (referenceItems.size() == 1 && referenceItems.get(0) instanceof FakeLibraryCard) ? 0 : referenceItems.size();
+    public boolean areFiltersEmpty() {
+        return (currentName == null || currentName.isEmpty())
+                && (currentDescription == null || currentDescription.isEmpty())
+                && currentColors.isEmpty() && currentOrigins.isEmpty()
+                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
+                && currentCosts.isEmpty() && currentRarities.isEmpty()
+                && currentTypes.isEmpty() && currentTargets.isEmpty() && currentSeen.isEmpty()
+                && EUIUtils.all(getGlobalFilters(), CustomCardFilterModule::isEmpty)
+                && (customModule != null && customModule.isEmpty());
     }
 
     @Override
@@ -169,18 +176,6 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         nameInput.setLabel("");
         descriptionInput.setLabel("");
         doForFilters(CustomCardFilterModule::reset);
-    }
-
-    @Override
-    public boolean areFiltersEmpty() {
-        return (currentName == null || currentName.isEmpty())
-                && (currentDescription == null || currentDescription.isEmpty())
-                && currentColors.isEmpty() && currentOrigins.isEmpty()
-                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
-                && currentCosts.isEmpty() && currentRarities.isEmpty()
-                && currentTypes.isEmpty() && currentTargets.isEmpty() && currentSeen.isEmpty()
-                && EUIUtils.all(getGlobalFilters(), CustomCardFilterModule::isEmpty)
-                && (customModule != null && customModule.isEmpty());
     }
 
     @Override
@@ -268,9 +263,80 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         return true;
     }
 
+    public List<EUIKeywordTooltip> getAllTooltips(AbstractCard c) {
+        KeywordProvider eC = EUIUtils.safeCast(c, KeywordProvider.class);
+        if (eC != null) {
+            return eC.getTipsForFilters();
+        }
+
+        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
+        if (c.isInnate) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
+            if (tip != null) {
+                dynamicTooltips.add(tip);
+            }
+        }
+        if (c.isEthereal) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.ETHEREAL.NAMES[0]);
+            if (tip != null) {
+                dynamicTooltips.add(tip);
+            }
+        }
+        if (c.selfRetain) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.RETAIN.NAMES[0]);
+            if (tip != null) {
+                dynamicTooltips.add(tip);
+            }
+        }
+        if (c.exhaust) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
+            if (tip != null) {
+                dynamicTooltips.add(tip);
+            }
+        }
+        for (String sk : c.keywords) {
+            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(sk);
+            if (tip != null && !dynamicTooltips.contains(tip)) {
+                dynamicTooltips.add(tip);
+            }
+        }
+        if (c instanceof CustomCard) {
+            List<TooltipInfo> infos = ((CustomCard) c).getCustomTooltips();
+            ModInfo mi = EUIGameUtils.getModInfo(c);
+            if (infos != null && mi != null) {
+                for (TooltipInfo info : infos) {
+                    EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(mi.ID.toLowerCase() + ":" + info.title);
+                    if (tip != null && !dynamicTooltips.contains(tip)) {
+                        dynamicTooltips.add(tip);
+                    }
+                }
+            }
+        }
+        return dynamicTooltips;
+    }
+
     @Override
     public ArrayList<CustomCardFilterModule> getGlobalFilters() {
         return EUI.globalCustomCardFilters;
+    }
+
+    @Override
+    public int getReferenceCount() {
+        return (referenceItems.size() == 1 && referenceItems.get(0) instanceof FakeLibraryCard) ? 0 : referenceItems.size();
+    }
+
+    public CardKeywordFilters initializeForCustomHeader(CardGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition) {
+        EUI.customHeader.setGroup(group);
+        EUI.customHeader.setupButtons(isFixedPosition);
+        initialize((button) ->
+        {
+            EUI.customHeader.updateForFilters();
+            onClick.invoke(button);
+        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
+        EUI.customHeader.updateForFilters();
+        EUI.openFiltersButton.setOnClick(() -> EUI.cardFilters.toggleFilters());
+        EUIExporter.exportButton.setOnClick(() -> EUIExporter.cardExportable.openAndPosition(EUI.customHeader.group.group));
+        return this;
     }
 
     @Override
@@ -339,77 +405,6 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
     }
 
     @Override
-    public void updateFilters() {
-        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
-        if (colorsDropdown.isActive) {
-            xPos = updateDropdown(colorsDropdown, xPos);
-            xPos = updateDropdown(costDropdown, xPos);
-        }
-        else {
-            xPos = updateDropdown(costDropdown, xPos);
-        }
-        xPos = updateDropdown(raritiesDropdown, xPos);
-        xPos = updateDropdown(typesDropdown, xPos);
-        xPos = updateDropdown(targetsDropdown, xPos);
-        xPos = updateDropdown(seenDropdown, xPos);
-        nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
-        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
-        doForFilters(CustomCardFilterModule::update);
-    }
-
-    public List<EUIKeywordTooltip> getAllTooltips(AbstractCard c) {
-        KeywordProvider eC = EUIUtils.safeCast(c, KeywordProvider.class);
-        if (eC != null) {
-            return eC.getTipsForFilters();
-        }
-
-        ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
-        if (c.isInnate) {
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
-            if (tip != null) {
-                dynamicTooltips.add(tip);
-            }
-        }
-        if (c.isEthereal) {
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.ETHEREAL.NAMES[0]);
-            if (tip != null) {
-                dynamicTooltips.add(tip);
-            }
-        }
-        if (c.selfRetain) {
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.RETAIN.NAMES[0]);
-            if (tip != null) {
-                dynamicTooltips.add(tip);
-            }
-        }
-        if (c.exhaust) {
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
-            if (tip != null) {
-                dynamicTooltips.add(tip);
-            }
-        }
-        for (String sk : c.keywords) {
-            EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(sk);
-            if (tip != null && !dynamicTooltips.contains(tip)) {
-                dynamicTooltips.add(tip);
-            }
-        }
-        if (c instanceof CustomCard) {
-            List<TooltipInfo> infos = ((CustomCard) c).getCustomTooltips();
-            ModInfo mi = EUIGameUtils.getModInfo(c);
-            if (infos != null && mi != null) {
-                for (TooltipInfo info : infos) {
-                    EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(mi.ID.toLowerCase() + ":" + info.title);
-                    if (tip != null && !dynamicTooltips.contains(tip)) {
-                        dynamicTooltips.add(tip);
-                    }
-                }
-            }
-        }
-        return dynamicTooltips;
-    }
-
-    @Override
     public boolean isHoveredImpl() {
         return originsDropdown.areAnyItemsHovered()
                 || colorsDropdown.areAnyItemsHovered()
@@ -445,18 +440,23 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         doForFilters(m -> m.render(sb));
     }
 
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition) {
-        EUI.customHeader.setGroup(group);
-        EUI.customHeader.setupButtons(isFixedPosition);
-        initialize((button) ->
-        {
-            EUI.customHeader.updateForFilters();
-            onClick.invoke(button);
-        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
-        EUI.customHeader.updateForFilters();
-        EUI.openFiltersButton.setOnClick(() -> EUI.cardFilters.toggleFilters());
-        EUIExporter.exportButton.setOnClick(() -> EUIExporter.cardExportable.openAndPosition(EUI.customHeader.group.group));
-        return this;
+    @Override
+    public void updateFilters() {
+        float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
+        if (colorsDropdown.isActive) {
+            xPos = updateDropdown(colorsDropdown, xPos);
+            xPos = updateDropdown(costDropdown, xPos);
+        }
+        else {
+            xPos = updateDropdown(costDropdown, xPos);
+        }
+        xPos = updateDropdown(raritiesDropdown, xPos);
+        xPos = updateDropdown(typesDropdown, xPos);
+        xPos = updateDropdown(targetsDropdown, xPos);
+        xPos = updateDropdown(seenDropdown, xPos);
+        nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
+        doForFilters(CustomCardFilterModule::update);
     }
 
     public enum SeenValue {

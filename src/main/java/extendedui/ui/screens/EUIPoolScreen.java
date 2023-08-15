@@ -14,6 +14,15 @@ public abstract class EUIPoolScreen extends EUIDungeonScreen {
     }
 
     @Override
+    public void close() {
+        switchScreen();
+    }
+
+    public void open() {
+        reopen();
+    }
+
+    @Override
     public void openingDeck() {
         switchScreen();
     }
@@ -23,8 +32,9 @@ public abstract class EUIPoolScreen extends EUIDungeonScreen {
         switchScreen();
     }
 
-    public void open() {
-        reopen();
+    @Override
+    public void openingSettings() {
+        switchScreen();
     }
 
     @Override
@@ -32,16 +42,6 @@ public abstract class EUIPoolScreen extends EUIDungeonScreen {
         super.reopen();
         AbstractDungeon.dungeonMapScreen.map.hideInstantly(); // Because the map won't be hidden properly otherwise
         AbstractDungeon.overlayMenu.cancelButton.show(MasterDeckViewScreen.TEXT[1]);
-    }
-
-    @Override
-    public void close() {
-        switchScreen();
-    }
-
-    @Override
-    public void openingSettings() {
-        switchScreen();
     }
 
     public void switchScreen() {

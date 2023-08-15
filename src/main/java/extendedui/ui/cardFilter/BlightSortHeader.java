@@ -24,6 +24,11 @@ public class BlightSortHeader extends GenericSortHeader<AbstractBlight> {
     }
 
     @Override
+    public GenericFilters<AbstractBlight, ?> getFilters() {
+        return EUI.blightFilters;
+    }
+
+    @Override
     protected float getFirstY() {
         return group.group.get(0).hb.y;
     }
@@ -40,11 +45,6 @@ public class BlightSortHeader extends GenericSortHeader<AbstractBlight> {
             this.group.sort((a, b) -> (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.blightID, b.blightID)) * (isAscending ? 1 : -1));
             this.group.sort((a, b) -> sortByUnique(a, b) * (isAscending ? 1 : -1));
         }
-    }
-
-    @Override
-    public GenericFilters<AbstractBlight, ?> getFilters() {
-        return EUI.blightFilters;
     }
 
     protected int sortByUnique(AbstractBlight a, AbstractBlight b) {

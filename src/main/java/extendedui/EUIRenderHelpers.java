@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.graphics.glutils.FrameBuffer;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.math.MathUtils;
-import com.badlogic.gdx.math.Vector2;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
@@ -260,8 +259,8 @@ public class EUIRenderHelpers {
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale, float imgRotation) {
         if (card.angle != 0) {
             float radians = card.angle * DEG_TO_RAD;
-            float cos = (float)Math.cos(radians);
-            float sin = (float)Math.sin(radians);
+            float cos = (float) Math.cos(radians);
+            float sin = (float) Math.sin(radians);
             drawX = drawX * cos - drawY * sin;
             drawY = drawX * sin + drawY * cos;
         }
@@ -296,8 +295,8 @@ public class EUIRenderHelpers {
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale) {
         if (card.angle != 0) {
             float radians = card.angle * DEG_TO_RAD;
-            float cos = (float)Math.cos(radians);
-            float sin = (float)Math.sin(radians);
+            float cos = (float) Math.cos(radians);
+            float sin = (float) Math.sin(radians);
             drawX = drawX * cos - drawY * sin;
             drawY = drawX * sin + drawY * cos;
         }
@@ -312,8 +311,8 @@ public class EUIRenderHelpers {
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale, float imgRotation, boolean flipX, boolean flipY) {
         if (card.angle != 0) {
             float radians = card.angle * DEG_TO_RAD;
-            float cos = (float)Math.cos(radians);
-            float sin = (float)Math.sin(radians);
+            float cos = (float) Math.cos(radians);
+            float sin = (float) Math.sin(radians);
             drawX = drawX * cos - drawY * sin;
             drawY = drawX * sin + drawY * cos;
         }

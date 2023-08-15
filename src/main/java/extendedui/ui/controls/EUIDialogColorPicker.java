@@ -81,8 +81,18 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
         return CHOICE_TEXT[3];
     }
 
+    @Override
+    public Color getCancelValue() {
+        return null;
+    }
+
     protected String getConfirmText() {
         return CHOICE_TEXT[2];
+    }
+
+    @Override
+    public Color getConfirmValue() {
+        return picker.getReturnColor();
     }
 
     protected EUILabel getHeader(String headerText) {
@@ -90,6 +100,11 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.88f))
                 .setAlignment(0.5f, 0.5f, false)
                 .setLabel(headerText);
+    }
+
+    public void open(Color initial) {
+        picker.setColor(initial);
+        updateInputs();
     }
 
     @Override
@@ -113,21 +128,6 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
         this.inputValue.updateImpl();
         this.inputAlpha.updateImpl();
         this.sampleColor.updateImpl();
-    }
-
-    @Override
-    public Color getConfirmValue() {
-        return picker.getReturnColor();
-    }
-
-    @Override
-    public Color getCancelValue() {
-        return null;
-    }
-
-    public void open(Color initial) {
-        picker.setColor(initial);
-        updateInputs();
     }
 
     protected void updateInputs() {

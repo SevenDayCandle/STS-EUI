@@ -29,12 +29,16 @@ public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
+    public void forceUpdateItemPosition(AbstractBlight blight, float x, float y) {
+        blight.currentX = blight.targetX = x;
+        blight.currentY = blight.targetY = y;
+        blight.hb.update();
+        blight.hb.move(blight.currentX, blight.currentY);
+    }
 
-        if (hovered != null) {
-            hovered.renderTip(sb);
-        }
+    @Override
+    public Hitbox getHitbox(AbstractBlight item) {
+        return item.hb;
     }
 
     @Override
@@ -50,24 +54,17 @@ public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
     }
 
     @Override
-    public void updateItemPosition(AbstractBlight blight, float x, float y) {
-        blight.targetX = x;
-        blight.targetY = y;
-        blight.currentX = EUIUtils.lerpSnap(blight.currentX, blight.targetX, LERP_SPEED);
-        blight.currentY = EUIUtils.lerpSnap(blight.currentY, blight.targetY, LERP_SPEED);
+    public void renderImpl(SpriteBatch sb) {
+        super.renderImpl(sb);
+
+        if (hovered != null) {
+            hovered.renderTip(sb);
+        }
     }
 
     @Override
-    public Hitbox getHitbox(AbstractBlight item) {
-        return item.hb;
-    }
-
-    @Override
-    public void forceUpdateItemPosition(AbstractBlight blight, float x, float y) {
-        blight.currentX = blight.targetX = x;
-        blight.currentY = blight.targetY = y;
-        blight.hb.update();
-        blight.hb.move(blight.currentX, blight.currentY);
+    protected void renderItem(SpriteBatch sb, AbstractBlight blight) {
+        blight.render(sb, false, Color.BLACK);
     }
 
     @Override
@@ -87,7 +84,10 @@ public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
     }
 
     @Override
-    protected void renderItem(SpriteBatch sb, AbstractBlight blight) {
-        blight.render(sb, false, Color.BLACK);
+    public void updateItemPosition(AbstractBlight blight, float x, float y) {
+        blight.targetX = x;
+        blight.targetY = y;
+        blight.currentX = EUIUtils.lerpSnap(blight.currentX, blight.targetX, LERP_SPEED);
+        blight.currentY = EUIUtils.lerpSnap(blight.currentY, blight.targetY, LERP_SPEED);
     }
 }

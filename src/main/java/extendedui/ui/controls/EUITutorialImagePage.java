@@ -21,11 +21,6 @@ public class EUITutorialImagePage extends EUITutorialPage {
         image.render(sb);
     }
 
-    @Override
-    public void updateImpl() {
-        image.updateImpl();
-    }
-
     protected EUITutorialPage setTutorial(EUITutorial tutorial) {
         super.setTutorial(tutorial);
         float w = this.image.hb.width;
@@ -38,5 +33,10 @@ public class EUITutorialImagePage extends EUITutorialPage {
         }
         this.image.hb = new RelativeHitbox(tutorial.hb, w, h, tutorial.hb.width * 0.5f, tutorial.hb.height * 0.33f);
         return this;
+    }
+
+    @Override
+    public void updateImpl() {
+        image.updateImpl();
     }
 }
