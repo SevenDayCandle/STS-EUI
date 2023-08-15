@@ -722,12 +722,16 @@ public class EUITooltip {
         return setDescription(EUIUtils.format(description, items));
     }
 
+    public String getTitleHighlighted() {
+        return '{' + title + '}';
+    }
+
     public String getTitleOrIcon() {
-        return (ID != null) ? "[" + ID + "]" : title;
+        return (ID != null) ? '[' + ID + ']' : title;
     }
 
     public String getTitleOrIconForced() {
-        return this.ID != null ? "†" + this.ID + "]" : this.title;
+        return this.ID != null ? '†' + this.ID + ']' : this.title;
     }
 
     public float getTotalHeight() {
