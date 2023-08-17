@@ -42,7 +42,6 @@ public class EUIRenderHelpers {
     protected static final String SHADER_RAINBOW_VERTICAL_FRAGMENT = "shaders/rainbowVerticalFragment.glsl";
     protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
     protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
-    public static final float DEG_TO_RAD = 0.017453292f;
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.4F);
     private static FrameBuffer maskBuffer;
     protected static ShaderProgram blurShader;
@@ -258,11 +257,13 @@ public class EUIRenderHelpers {
 
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale, float imgRotation) {
         if (card.angle != 0) {
-            float radians = card.angle * DEG_TO_RAD;
+            float radians = card.angle * MathUtils.degRad;
             float cos = (float) Math.cos(radians);
             float sin = (float) Math.sin(radians);
-            drawX = drawX * cos - drawY * sin;
-            drawY = drawX * sin + drawY * cos;
+            float newX = drawX * cos - drawY * sin;
+            float newY = drawX * sin + drawY * cos;
+            drawX = newX;
+            drawY = newY;
         }
 
         float scl = Settings.scale * card.drawScale;
@@ -294,11 +295,13 @@ public class EUIRenderHelpers {
 
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, TextureRegion img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale) {
         if (card.angle != 0) {
-            float radians = card.angle * DEG_TO_RAD;
+            float radians = card.angle * MathUtils.degRad;
             float cos = (float) Math.cos(radians);
             float sin = (float) Math.sin(radians);
-            drawX = drawX * cos - drawY * sin;
-            drawY = drawX * sin + drawY * cos;
+            float newX = drawX * cos - drawY * sin;
+            float newY = drawX * sin + drawY * cos;
+            drawX = newX;
+            drawY = newY;
         }
 
         float scl = Settings.scale * card.drawScale;
@@ -310,11 +313,13 @@ public class EUIRenderHelpers {
 
     public static void drawOnCardAuto(SpriteBatch sb, AbstractCard card, Texture img, float drawX, float drawY, float width, float height, Color color, float alpha, float imgScale, float imgRotation, boolean flipX, boolean flipY) {
         if (card.angle != 0) {
-            float radians = card.angle * DEG_TO_RAD;
+            float radians = card.angle * MathUtils.degRad;
             float cos = (float) Math.cos(radians);
             float sin = (float) Math.sin(radians);
-            drawX = drawX * cos - drawY * sin;
-            drawY = drawX * sin + drawY * cos;
+            float newX = drawX * cos - drawY * sin;
+            float newY = drawX * sin + drawY * cos;
+            drawX = newX;
+            drawY = newY;
         }
 
         float scl = Settings.scale * card.drawScale;
@@ -719,10 +724,16 @@ public class EUIRenderHelpers {
     }
 
     public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color, boolean roundY) {
-        final float scale = card.drawScale * Settings.scale;
+        writeOnCard(sb, card, font, text, x, y, card.drawScale * Settings.scale, color, false);
+    }
 
+    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, float scale, Color color, boolean roundY) {
+        writeOnCard(sb, card, font, text, x, y, scale, card.angle, color, false);
+    }
+
+    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, float scale, float angle, Color color, boolean roundY) {
         color = EUIColors.copy(color, color.a * card.transparency);
-        FontHelper.renderRotatedText(sb, font, text, card.current_x, card.current_y, x * scale, y * scale, card.angle, roundY, color);
+        FontHelper.renderRotatedText(sb, font, text, card.current_x, card.current_y, x * scale, y * scale, angle, roundY, color);
     }
 
     public enum BlendingMode {
