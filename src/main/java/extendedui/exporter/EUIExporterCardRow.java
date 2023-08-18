@@ -1,8 +1,11 @@
 package extendedui.exporter;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import extendedui.EUIGameUtils;
+import extendedui.EUIUtils;
 
 public class EUIExporterCardRow extends EUIExporterRow {
+    public String assetURL;
     public String type;
     public String rarity;
     public String cardTarget;
@@ -19,7 +22,8 @@ public class EUIExporterCardRow extends EUIExporterRow {
     public String effects;
 
     public EUIExporterCardRow(AbstractCard card) {
-        super(card.cardID, String.valueOf(card.color), card.name);
+        super(card.cardID, EUIGameUtils.getModID(card), String.valueOf(card.color), card.name);
+        assetURL = card.assetUrl;
         type = String.valueOf(card.type);
         rarity = String.valueOf(card.rarity);
         cardTarget = String.valueOf(card.target);

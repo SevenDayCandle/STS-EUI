@@ -40,7 +40,6 @@ public class EUIDropdown<T> extends EUIHoverable {
     protected static final float BOX_BODY_H = 64.0F * Settings.scale;
     protected static final float SCROLLBAR_WIDTH = 24.0F * Settings.scale;
     protected static final float SCROLLBAR_PADDING = 8.0F * Settings.scale;
-    protected static final float TOGGLE_OFFSET = 5f;
     protected static final float PREVIEW_OFFSET_X = AbstractCard.IMG_WIDTH * 0.6f;
     protected final EUIButton button;
     protected final EUIButton clearButton;

@@ -17,7 +17,9 @@ import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 
 public class EUIDropdownRow<T> {
-    public static final float LABEL_OFFSET = 50;
+    protected static final float TOGGLE_OFFSET = Settings.scale * 5f;
+    protected static final float TOGGLE_SIZE = Settings.scale * 40;
+    protected static final float LABEL_OFFSET = Settings.scale * 44;
     public final EUIDropdown<T> dr;
     public T item;
     public EUIHitbox hb;
@@ -31,7 +33,7 @@ public class EUIDropdownRow<T> {
         this.hb = hb;
         this.item = item;
         this.index = index;
-        this.checkbox = new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED, new RelativeHitbox(hb, 48f, 48f, 0f, -EUIDropdown.TOGGLE_OFFSET));
+        this.checkbox = new EUIImage(ImageMaster.COLOR_TAB_BOX_UNTICKED, new RelativeHitbox(hb, TOGGLE_SIZE, TOGGLE_SIZE, 0f, -TOGGLE_OFFSET));
         this.label = new EUILabel(dr.font, new RelativeHitbox(hb, this.hb.width - (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2f), this.hb.height, dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2, 0f))
                 .setFont(dr.font, dr.fontScale)
                 .setLabel(dr.labelFunction.invoke(item))
@@ -66,7 +68,7 @@ public class EUIDropdownRow<T> {
 
     public void move(float x, float y) {
         this.hb.translate(x, y);
-        this.checkbox.hb.translate(x, y - EUIDropdown.TOGGLE_OFFSET);
+        this.checkbox.hb.translate(x, y - TOGGLE_OFFSET);
         this.label.hb.translate(x + (dr.isMultiSelect ? LABEL_OFFSET : LABEL_OFFSET / 2), y);
     }
 

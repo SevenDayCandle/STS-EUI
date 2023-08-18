@@ -35,6 +35,8 @@ public class EUIRenderHelpers {
     protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     protected static final String SHADER_BRIGHTER_FRAGMENT = "shaders/brighterFragment.glsl";
     protected static final String SHADER_COLORIZE_FRAGMENT = "shaders/colorizeFragment.glsl";
+    protected static final String SHADER_COLORIZE_CRT_FRAGMENT = "shaders/colorizeCrtFragment.glsl";
+    protected static final String SHADER_CRT_FRAGMENT = "shaders/crtFragment.glsl";
     protected static final String SHADER_GLITCH_FRAGMENT = "shaders/glitchFragment.glsl";
     protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
     protected static final String SHADER_INVERT_FRAGMENT = "shaders/invertFragment.glsl";
@@ -47,6 +49,8 @@ public class EUIRenderHelpers {
     protected static ShaderProgram blurShader;
     protected static ShaderProgram brighterShader;
     protected static ShaderProgram colorizeShader;
+    protected static ShaderProgram colorizeCrtShader;
+    protected static ShaderProgram crtShader;
     protected static ShaderProgram glitchShader;
     protected static ShaderProgram grayscaleShader;
     protected static ShaderProgram invertShader;
@@ -181,6 +185,58 @@ public class EUIRenderHelpers {
 
     public static void drawColorized(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
         drawWithShader(sb, getColorizeShader(), drawFunc);
+    }
+
+    public static void drawColorizedCRT(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
+        drawColorizedCRT(sb, EUI.time(), 1.4f, 0.1f, 0.3f, drawFunc);
+    }
+
+    public static void drawColorizedCRT(SpriteBatch sb, float xOffset, float xFuzz, float rgbOffset, float vertJerk, ActionT1<SpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = sb.getShader();
+        ShaderProgram rs = getColorizeCRTShader();
+        sb.setShader(rs);
+        setCRTShader(rs, xOffset, xFuzz, rgbOffset, vertJerk);
+        drawFunc.invoke(sb);
+        sb.setShader(defaultShader);
+    }
+
+    public static void drawColorizedCRT(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch> drawFunc) {
+        drawColorizedCRT(pb, EUI.time(), 1.4f, 0.1f, 0.3f, drawFunc);
+    }
+
+    public static void drawColorizedCRT(PolygonSpriteBatch pb, float xOffset, float xFuzz, float rgbOffset, float vertJerk, ActionT1<PolygonSpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = pb.getShader();
+        ShaderProgram rs = getColorizeCRTShader();
+        pb.setShader(rs);
+        setCRTShader(rs, xOffset, xFuzz, rgbOffset, vertJerk);
+        drawFunc.invoke(pb);
+        pb.setShader(defaultShader);
+    }
+
+    public static void drawCRT(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
+        drawCRT(sb, EUI.time(), 1.4f, 0.1f, 0.3f, drawFunc);
+    }
+
+    public static void drawCRT(SpriteBatch sb, float xOffset, float xFuzz, float rgbOffset, float vertJerk, ActionT1<SpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = sb.getShader();
+        ShaderProgram rs = getCRTShader();
+        sb.setShader(rs);
+        setCRTShader(rs, xOffset, xFuzz, rgbOffset, vertJerk);
+        drawFunc.invoke(sb);
+        sb.setShader(defaultShader);
+    }
+
+    public static void drawCRT(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch> drawFunc) {
+        drawCRT(pb, EUI.time(), 1.4f, 0.1f, 0.3f, drawFunc);
+    }
+
+    public static void drawCRT(PolygonSpriteBatch pb, float xOffset, float xFuzz, float rgbOffset, float vertJerk, ActionT1<PolygonSpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = pb.getShader();
+        ShaderProgram rs = getCRTShader();
+        pb.setShader(rs);
+        setCRTShader(rs, xOffset, xFuzz, rgbOffset, vertJerk);
+        drawFunc.invoke(pb);
+        pb.setShader(defaultShader);
     }
 
     public static void drawGlitched(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
@@ -569,6 +625,20 @@ public class EUIRenderHelpers {
         return colorizeShader;
     }
 
+    protected static ShaderProgram getColorizeCRTShader() {
+        if (crtShader == null) {
+            crtShader = initializeShader(SHADER_VERTEX, SHADER_COLORIZE_CRT_FRAGMENT);
+        }
+        return crtShader;
+    }
+
+    protected static ShaderProgram getCRTShader() {
+        if (crtShader == null) {
+            crtShader = initializeShader(SHADER_VERTEX, SHADER_CRT_FRAGMENT);
+        }
+        return crtShader;
+    }
+
     public static TextureRegion getCroppedRegion(Texture texture, int div) {
         final int w = texture.getWidth();
         final int h = texture.getHeight();
@@ -690,6 +760,14 @@ public class EUIRenderHelpers {
         font.getData().setScale(1);
     }
 
+    protected static ShaderProgram setCRTShader(ShaderProgram rs, float xOffset, float xFuzz, float rgbOffset, float jerk) {
+        rs.setUniformf("u_time", xOffset);
+        rs.setUniformf("u_horzFuzz", xFuzz);
+        rs.setUniformf("u_rgbOffset", rgbOffset);
+        rs.setUniformf("u_vertJerk", jerk);
+        return rs;
+    }
+
     protected static ShaderProgram setGlitchShader(ShaderProgram rs, float xOffset) {
         rs.setUniformf("u_time", xOffset);
         return rs;
@@ -781,7 +859,9 @@ public class EUIRenderHelpers {
         Colorize,
         Glitch,
         Rainbow,
-        RainbowVertical;
+        RainbowVertical,
+        CRT,
+        ColorizeCRT;
 
         public void draw(SpriteBatch sb, ActionT1<SpriteBatch> drawImpl) {
             switch (this) {
@@ -793,6 +873,12 @@ public class EUIRenderHelpers {
                     return;
                 case RainbowVertical:
                     EUIRenderHelpers.drawRainbowVertical(sb, drawImpl);
+                    return;
+                case CRT:
+                    EUIRenderHelpers.drawCRT(sb, drawImpl);
+                    return;
+                case ColorizeCRT:
+                    EUIRenderHelpers.drawColorizedCRT(sb, drawImpl);
                     return;
                 case Grayscale:
                 case Invert:
@@ -815,6 +901,12 @@ public class EUIRenderHelpers {
                     return;
                 case RainbowVertical:
                     EUIRenderHelpers.drawRainbowVertical(sb, drawImpl);
+                    return;
+                case CRT:
+                    EUIRenderHelpers.drawCRT(sb, drawImpl);
+                    return;
+                case ColorizeCRT:
+                    EUIRenderHelpers.drawColorizedCRT(sb, drawImpl);
                     return;
                 case Grayscale:
                 case Invert:

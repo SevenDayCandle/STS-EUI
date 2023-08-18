@@ -6,11 +6,13 @@ import java.lang.reflect.Field;
 
 public class EUIExporterRow implements Comparable<EUIExporterRow> {
     public String ID;
+    public String modID;
     public String color;
     public String name;
 
-    public EUIExporterRow(String id, String color, String name) {
+    public EUIExporterRow(String id, String modID, String color, String name) {
         ID = id;
+        this.modID = modID;
         this.color = color;
         this.name = name;
     }

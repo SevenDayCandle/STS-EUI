@@ -200,6 +200,15 @@ public class EUIGameUtils {
         return ReflectionHacks.getPrivate(relic, AbstractRelic.class, "landingSFX");
     }
 
+    public static String getModID(Object o) {
+        return getModID(o.getClass());
+    }
+
+    public static String getModID(Class<?> objectClass) {
+        ModInfo info = getModInfo(objectClass);
+        return info != null ? info.ID : EUIUtils.EMPTY_STRING;
+    }
+
     public static ModInfo getModInfo(Object o) {
         return getModInfo(o.getClass());
     }

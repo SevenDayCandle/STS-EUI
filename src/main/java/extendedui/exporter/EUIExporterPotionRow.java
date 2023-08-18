@@ -12,7 +12,7 @@ public class EUIExporterPotionRow extends EUIExporterRow {
     public int potency;
 
     public EUIExporterPotionRow(AbstractPotion potion) {
-        super(potion.ID, String.valueOf(EUIGameUtils.getPotionColor(potion.ID)), potion.name);
+        super(potion.ID, EUIGameUtils.getModID(potion), String.valueOf(EUIGameUtils.getPotionColor(potion.ID)), potion.name);
         rarity = String.valueOf(potion.rarity);
         size = String.valueOf(potion.size);
         potionColor = String.valueOf(potion.color);
@@ -21,7 +21,7 @@ public class EUIExporterPotionRow extends EUIExporterRow {
     }
 
     public EUIExporterPotionRow(PotionInfo potion) {
-        super(potion.potion.ID, String.valueOf(potion.potionColor), potion.potion.name);
+        super(potion.potion.ID, EUIGameUtils.getModID(potion.potion), String.valueOf(potion.potionColor), potion.potion.name);
         rarity = String.valueOf(potion.potion.rarity);
         size = String.valueOf(potion.potion.size);
         potionColor = String.valueOf(potion.potion.color);
