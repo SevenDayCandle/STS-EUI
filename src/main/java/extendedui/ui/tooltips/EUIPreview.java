@@ -48,24 +48,9 @@ public abstract class EUIPreview {
         }
     }
 
-    public void render(SpriteBatch sb, AbstractCard card, boolean upgraded, boolean isPopup) {
-        render(sb, card.current_x, card.current_y, 0.83f, upgraded, isPopup);
-    }
-
-    public void render(SpriteBatch sb, AbstractPotion card, boolean upgraded, boolean isPopup) {
-        render(sb, card.posX + card.hb.width, card.posY, 0.83f, upgraded, isPopup);
-    }
-
-    public void render(SpriteBatch sb, AbstractRelic card, boolean upgraded, boolean isPopup) {
-        render(sb, card.currentX + card.hb.width, card.currentY, 0.83f, upgraded, isPopup);
-    }
-
-    public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean isPopup) {
-        if (isPopup) {
-            float x = (float) Settings.WIDTH * 0.2f - 10f * Settings.scale;
-            float y = (float) Settings.HEIGHT * 0.25f;
-            float scale = 1f;
-            render(sb, x, y, scale, upgraded);
+    public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean fromPopup) {
+        if (fromPopup) {
+            render(sb, curX, curY, 1f, upgraded);
         }
         else if (AbstractDungeon.player == null || !AbstractDungeon.player.isDraggingCard) {
             float x = curX + (AbstractCard.IMG_WIDTH * 0.9f + 16f) * ((curX > Settings.WIDTH * 0.7f) ? drawScale : -drawScale);

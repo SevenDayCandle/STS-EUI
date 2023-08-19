@@ -25,13 +25,13 @@ public class EUITutorialImagePage extends EUITutorialPage {
         super.setTutorial(tutorial);
         float w = this.image.hb.width;
         float h = this.image.hb.height;
-        float hMax = tutorial.hb.height * 0.38f;
+        float hMax = tutorial.hb.height * 0.49f;
         if (h > hMax) {
             float ratio = hMax / h;
             h = hMax;
             w = w * ratio;
         }
-        this.image.hb = new RelativeHitbox(tutorial.hb, w, h, tutorial.hb.width * 0.5f, tutorial.hb.height * 0.33f);
+        this.image.hb = new RelativeHitbox(tutorial.hb, w, h, tutorial.hb.width * 0.5f, h / 2 + scale(60));
         return this;
     }
 

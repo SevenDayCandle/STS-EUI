@@ -1,5 +1,6 @@
 package extendedui.patches.game;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
@@ -10,6 +11,7 @@ import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
@@ -18,6 +20,7 @@ import extendedui.ui.tooltips.EUITooltip;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
+import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 
@@ -96,6 +99,20 @@ public class TooltipPatches {
         }
     }
 
+    @SpirePatch(clz = AbstractPotion.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {String.class, String.class, AbstractPotion.PotionRarity.class, AbstractPotion.PotionSize.class, AbstractPotion.PotionColor.class})
+    @SpirePatch(clz = AbstractPotion.class, method = SpirePatch.CONSTRUCTOR, paramtypez = {String.class, String.class, AbstractPotion.PotionRarity.class, AbstractPotion.PotionSize.class, AbstractPotion.PotionEffect.class, Color.class, Color.class, Color.class})
+    public static class AbstractPotion_Ctor {
+        @SpirePostfixPatch
+        public static void postfix(AbstractPotion __instance) {
+            // Skip the first tip
+            // Assign the headers as keywords since we know these are keywords. Not the best solution but we have no other way of getting keywords since tip additions are hardcoded -_-
+            for (int i = 1; i < __instance.tips.size(); i++) {
+                PowerTip sk = __instance.tips.get(i);
+                PowerTip_Keyword.value.set(__instance.tips.get(__instance.tips.size() - 1), sk.header.toLowerCase());
+            }
+        }
+    }
+
     @SpirePatch(clz = AbstractRelic.class, method = "initializeTips")
     public static class AbstractRelic_InitializeTips {
 
@@ -107,6 +124,7 @@ public class TooltipPatches {
         @SpireInsertPatch(locator = Locator2.class)
         public static void method2(AbstractRelic __instance) {
             PowerTip_Keyword.value.set(__instance.tips.get(__instance.tips.size() - 1), capturedKeyword);
+            capturedKeyword = null;
         }
     }
 
@@ -133,11 +151,19 @@ public class TooltipPatches {
                 if (lastTips != powerTips) {
                     lastTips = powerTips;
                     currentTips = EUIUtils.mapAsNonnull(powerTips, tip -> {
-                        EUIKeywordTooltip kTip = EUIKeywordTooltip.findByName(tip.header.toLowerCase());
-                        if (kTip != null) {
-                            return kTip.isRenderable() ? kTip : null;
+                        EUIKeywordTooltip kTip = null;
+                        String key = TooltipPatches.PowerTip_Keyword.value.get(tip);
+                        if (key != null) {
+                            kTip = EUIKeywordTooltip.findByName(key);
+                            if (kTip != null) {
+                                return kTip.isRenderable() ? kTip : null;
+                            }
                         }
-                        return new EUIKeywordTooltip(tip.header, tip.body);
+                        kTip = new EUIKeywordTooltip(tip.header, tip.body);
+                        if (tip.img != null) {
+                            kTip.setIcon(tip.img);
+                        }
+                        return kTip;
                     });
                 }
                 EUITooltip.queueTooltips(currentTips);

@@ -18,7 +18,7 @@ import java.util.Collection;
 import static extendedui.EUIRenderHelpers.DARKENED_SCREEN;
 
 public class EUITutorial extends EUIHoverable {
-    private static final float ICON_SIZE = 96f * Settings.scale;
+    private static final float ICON_SIZE = 128f * Settings.scale;
     private int page;
     private EUITutorialPage current;
     protected EUISearchableDropdown<EUITutorialPage> tutorials;
@@ -32,14 +32,14 @@ public class EUITutorial extends EUIHoverable {
     }
 
     public EUITutorial(Collection<EUITutorialPage> descriptions) {
-        this(new EUIHitbox(Settings.WIDTH / 2.0F - 675.0F, Settings.OPTION_Y - 360.0F, 1350, 900), EUIRM.images.greySquare.texture(), descriptions);
+        this(defaultHitbox(), EUIRM.images.greySquare.texture(), descriptions);
     }
 
     public EUITutorial(EUIHitbox hb, Texture backgroundTexture, Collection<EUITutorialPage> tutorials) {
         super(hb);
         this.backgroundImage = new EUIBorderedImage(backgroundTexture, hb);
 
-        this.tutorials = (EUISearchableDropdown<EUITutorialPage>) new EUISearchableDropdown<EUITutorialPage>(new RelativeHitbox(hb, hb.width, scale(53), hb.width * 0.5f, hb.height * 0.77f), p -> p.title)
+        this.tutorials = (EUISearchableDropdown<EUITutorialPage>) new EUISearchableDropdown<EUITutorialPage>(new RelativeHitbox(hb, hb.width, scale(53), hb.width * 0.5f, hb.height - scale(120)), p -> p.title)
                 .setFontForButton(EUIFontHelper.cardTooltipTitleFontNormal, 1f)
                 .setOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = isOpen;
@@ -53,7 +53,7 @@ public class EUITutorial extends EUIHoverable {
                 }
         );
         this.description = new EUILabel(EUIFontHelper.cardTooltipFont,
-                new RelativeHitbox(hb, hb.width * 0.8f, hb.height, hb.width * 0.1f, hb.height * 0.65f))
+                new RelativeHitbox(hb, hb.width * 0.8f, hb.height, hb.width * 0.1f, hb.height - scale(200)))
                 .setAlignment(0.5f, 0.5f, true)
                 .setSmartText(true, false);
 
@@ -78,6 +78,12 @@ public class EUITutorial extends EUIHoverable {
 
     public EUITutorial(EUIHitbox hb, Texture backgroundTexture, EUITutorialPage... descriptions) {
         this(hb, backgroundTexture, Arrays.asList(descriptions));
+    }
+
+    protected static EUIHitbox defaultHitbox() {
+        float x = scale(1000);
+        float y = scale(700);
+        return new EUIHitbox(Settings.WIDTH * 0.5f - x / 2, Settings.HEIGHT * 0.5f - y / 2, x, y);
     }
 
     protected void changePage(int newPage) {

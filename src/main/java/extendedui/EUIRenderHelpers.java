@@ -746,14 +746,28 @@ public class EUIRenderHelpers {
         return i < s.length() && c == s.charAt(i);
     }
 
-    public static float lerpScale(float initial, float target) {
-        if (initial > target) {
-            initial = MathUtils.lerp(initial, 1.0F, Gdx.graphics.getDeltaTime() * 10.0F);
-            if (initial - target < 0.05F) {
-                initial = target;
+    // SuperFastMode patches MathHelper's methods so we have to use our own version
+    public static float lerp(float fromValue, float toValue, float progress) {
+        return fromValue + (toValue - fromValue) * progress;
+    }
+
+    public static float lerpScale(float startX, float targetX) {
+        return lerpSnap(startX, targetX, 10f, 0.05f);
+    }
+
+    public static float lerpSnap(float startX, float targetX, float rate) {
+        return lerpSnap(startX, targetX, rate, Settings.CARD_SNAP_THRESHOLD);
+    }
+
+    public static float lerpSnap(float startX, float targetX, float rate, float threshold) {
+        if (startX != targetX) {
+            startX = lerp(startX, targetX, Gdx.graphics.getDeltaTime() * rate);
+            if (Math.abs(startX - targetX) < threshold) {
+                startX = targetX;
             }
         }
-        return initial;
+
+        return startX;
     }
 
     public static void resetFont(BitmapFont font) {

@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.MathHelper;
-import extendedui.EUIUtils;
+import extendedui.EUIRenderHelpers;
 
 public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
 
@@ -87,7 +87,7 @@ public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
     public void updateItemPosition(AbstractBlight blight, float x, float y) {
         blight.targetX = x;
         blight.targetY = y;
-        blight.currentX = EUIUtils.lerpSnap(blight.currentX, blight.targetX, LERP_SPEED);
-        blight.currentY = EUIUtils.lerpSnap(blight.currentY, blight.targetY, LERP_SPEED);
+        blight.currentX = EUIRenderHelpers.lerpSnap(blight.currentX, blight.targetX, LERP_SPEED);
+        blight.currentY = EUIRenderHelpers.lerpSnap(blight.currentY, blight.targetY, LERP_SPEED);
     }
 }

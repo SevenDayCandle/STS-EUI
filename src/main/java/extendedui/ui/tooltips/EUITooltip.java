@@ -178,6 +178,13 @@ public class EUITooltip {
         return newTip;
     }
 
+    protected static EUIPreview getProviderPreview() {
+        if (provider instanceof TooltipProvider) {
+            return ((TooltipProvider) provider).getPreview();
+        }
+        return null;
+    }
+
     public static float getTallestOffset(ArrayList<EUITooltip> tips) {
         float currentOffset = 0f;
         float maxOffset = 0f;
@@ -401,7 +408,7 @@ public class EUITooltip {
             boolean popUp = ((TooltipProvider) provider).isPopup();
             EUIPreview preview = ((TooltipProvider) provider).getPreview();
             if (preview != null) {
-                preview.render(sb, card, card.upgraded || EUIGameUtils.canShowUpgrades(false), popUp);
+                preview.render(sb, card.current_x, card.current_y, 0.83f, card.upgraded || EUIGameUtils.canShowUpgrades(false), popUp);
             }
         }
     }
@@ -514,40 +521,52 @@ public class EUITooltip {
             scanListForAdditionalTips(tooltips);
         }
 
+        boolean hasPotion = AbstractDungeon.player != null && AbstractDungeon.player.hasPotion(potion.ID);
         float x;
         float y;
-        if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
-            x = InputHelper.mX - (350 * Settings.scale);
-            y = boundY(InputHelper.mY - (50 * Settings.scale));
-        }
-        else if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.POTION_VIEW) {
+        if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.POTION_VIEW) {
             x = 150 * Settings.scale;
             y = 800.0F * Settings.scale;
+            renderTipsImpl(sb, tooltips, x, y);
+            EUIPreview preview = getProviderPreview();
+            if (preview != null) {
+                preview.render(sb, 360 * Settings.scale, 0.25f * Settings.HEIGHT, 0.83f, false, false);
+            }
         }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && potion.tips.size() > 2 && !AbstractDungeon.player.hasPotion(potion.ID)) {
-            x = InputHelper.mX + (60 * Settings.scale);
-            y = boundY(InputHelper.mY + (180 * Settings.scale));
-        }
-        else if (AbstractDungeon.player != null && AbstractDungeon.player.hasPotion(potion.ID)) {
-            x = InputHelper.mX + (60 * Settings.scale);
-            y = boundY(InputHelper.mY - (30 * Settings.scale));
-        }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
-            x = 360 * Settings.scale;
+        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD && !hasPotion) {
+            x = 350 * Settings.scale;
             y = boundY(InputHelper.mY + (50 * Settings.scale));
+            renderTipsImpl(sb, tooltips, x, y);
+            EUIPreview preview = getProviderPreview();
+            if (preview != null) {
+                preview.render(sb, x, y, 0.83f, false, false);
+            }
         }
         else {
-            x = InputHelper.mX + (50 * Settings.scale);
-            y = boundY(InputHelper.mY + (50 * Settings.scale));
-        }
+            if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
+                x = InputHelper.mX - (350 * Settings.scale);
+                y = boundY(InputHelper.mY - (50 * Settings.scale));
+            }
+            else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && potion.tips.size() > 2 && !hasPotion) {
+                x = InputHelper.mX + (60 * Settings.scale);
+                y = boundY(InputHelper.mY + (180 * Settings.scale));
+            }
+            else if (hasPotion) {
+                x = InputHelper.mX + (60 * Settings.scale);
+                y = boundY(InputHelper.mY - (30 * Settings.scale));
+            }
+            else {
+                x = InputHelper.mX + (50 * Settings.scale);
+                y = boundY(InputHelper.mY + (50 * Settings.scale));
+            }
 
-        renderTipsImpl(sb, tooltips, x, y);
+            renderTipsImpl(sb, tooltips, x, y);
 
-        if (provider instanceof TooltipProvider) {
-            boolean popUp = ((TooltipProvider) provider).isPopup();
-            EUIPreview preview = ((TooltipProvider) provider).getPreview();
-            if (preview != null) {
-                preview.render(sb, potion, false, popUp);
+            if (provider instanceof TooltipProvider) {
+                EUIPreview preview = ((TooltipProvider) provider).getPreview();
+                if (preview != null) {
+                    preview.render(sb, potion.posX + potion.hb.width, potion.posY, 0.83f, false, false);
+                }
             }
         }
     }
@@ -565,40 +584,55 @@ public class EUITooltip {
             scanListForAdditionalTips(tooltips);
         }
 
+        boolean hasRelic = AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(relic.relicId);
         float x;
         float y;
-        if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
-            x = InputHelper.mX - (350 * Settings.scale);
-            y = boundY(InputHelper.mY - (50 * Settings.scale));
-        }
-        else if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.RELIC_VIEW) {
+        if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.RELIC_VIEW) {
             x = 180 * Settings.scale;
             y = 0.7f * Settings.HEIGHT;
+            renderTipsImpl(sb, tooltips, x, y);
+            EUIPreview preview = getProviderPreview();
+            if (preview != null) {
+                preview.render(sb, 655 * Settings.scale, 0.1f * Settings.HEIGHT, 0.83f, false, false);
+            }
         }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !AbstractDungeon.player.hasRelic(relic.relicId)) {
-            x = InputHelper.mX + (60 * Settings.scale);
-            y = boundY(InputHelper.mY + (180 * Settings.scale));
-        }
-        else if (AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(relic.relicId)) {
-            x = InputHelper.mX + (60 * Settings.scale);
-            y = boundY(InputHelper.mY - (30 * Settings.scale));
-        }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
-            x = 360 * Settings.scale;
+        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD && !hasRelic) {
+            x = 350 * Settings.scale;
             y = boundY(InputHelper.mY + (50 * Settings.scale));
+            renderTipsImpl(sb, tooltips, x, y);
+            EUIPreview preview = getProviderPreview();
+            if (preview != null) {
+                preview.render(sb, 410 * Settings.scale, y, 0.83f, false, false);
+            }
         }
         else {
-            x = InputHelper.mX + (50 * Settings.scale);
-            y = boundY(InputHelper.mY + (50 * Settings.scale));
-        }
+            if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
+                x = InputHelper.mX - (350 * Settings.scale);
+                y = boundY(InputHelper.mY - (50 * Settings.scale));
+            }
+            else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !hasRelic) {
+                x = InputHelper.mX + (60 * Settings.scale);
+                y = boundY(InputHelper.mY + (180 * Settings.scale));
+            }
+            else if (hasRelic) {
+                x = InputHelper.mX + (60 * Settings.scale);
+                y = boundY(InputHelper.mY - (30 * Settings.scale));
+            }
+            else {
+                x = InputHelper.mX + (50 * Settings.scale);
+                y = boundY(InputHelper.mY + (50 * Settings.scale));
+            }
 
-        renderTipsImpl(sb, tooltips, x, y);
-
-        if (provider instanceof TooltipProvider) {
-            boolean popUp = ((TooltipProvider) provider).isPopup();
-            EUIPreview preview = ((TooltipProvider) provider).getPreview();
+            renderTipsImpl(sb, tooltips, x, y);
+            EUIPreview preview = getProviderPreview();
             if (preview != null) {
-                preview.render(sb, relic, false, popUp);
+                if (x > Settings.WIDTH * 0.2) {
+                    x -= relic.hb.width;
+                }
+                else {
+                    x += BOX_W * 2;
+                }
+                preview.render(sb, x, y, 0.83f, false, false);
             }
         }
     }

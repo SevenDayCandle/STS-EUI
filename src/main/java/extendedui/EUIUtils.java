@@ -635,7 +635,7 @@ public abstract class EUIUtils {
     }
 
     public static FileNameExtensionFilter getFileFilter(String... filters) {
-        return new FileNameExtensionFilter(EUIUtils.joinStrings(", ", EUIUtils.map(filters, f -> "*." + f)), filters);
+        return new FileNameExtensionFilter(EUIUtils.joinStringsMap(", ", f -> "*." + f, filters), filters);
     }
 
     public static Logger getLogger(Object source) {
@@ -799,21 +799,6 @@ public abstract class EUIUtils {
         }
 
         return sj.toString();
-    }
-
-    public static float lerpSnap(float startX, float targetX, float rate) {
-        return lerpSnap(startX, targetX, rate, Settings.CARD_SNAP_THRESHOLD);
-    }
-
-    public static float lerpSnap(float startX, float targetX, float rate, float threshold) {
-        if (startX != targetX) {
-            startX = MathUtils.lerp(startX, targetX, Gdx.graphics.getDeltaTime() * rate);
-            if (Math.abs(startX - targetX) < threshold) {
-                startX = targetX;
-            }
-        }
-
-        return startX;
     }
 
     public static void logError(Object source, String format, Object... values) {

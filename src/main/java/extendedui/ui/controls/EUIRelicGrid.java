@@ -6,7 +6,6 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIRenderHelpers;
-import extendedui.EUIUtils;
 import extendedui.utilities.RelicInfo;
 
 public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
@@ -146,7 +145,7 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
     public void updateItemPosition(RelicInfo relic, float x, float y) {
         relic.relic.targetX = x;
         relic.relic.targetY = y;
-        relic.relic.currentX = EUIUtils.lerpSnap(relic.relic.currentX, relic.relic.targetX, LERP_SPEED);
-        relic.relic.currentY = EUIUtils.lerpSnap(relic.relic.currentY, relic.relic.targetY, LERP_SPEED);
+        relic.relic.currentX = EUIRenderHelpers.lerpSnap(relic.relic.currentX, relic.relic.targetX, LERP_SPEED);
+        relic.relic.currentY = EUIRenderHelpers.lerpSnap(relic.relic.currentY, relic.relic.targetY, LERP_SPEED);
     }
 }

@@ -43,8 +43,8 @@ public class EUIRelicPreview extends EUIPreview {
     }
 
     @Override
-    public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean isPopup) {
-        if (isPopup) {
+    public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean fromPopup) {
+        if (fromPopup) {
             float x = (float) Settings.WIDTH * 0.2f - 10f * Settings.scale;
             float y = (float) Settings.HEIGHT * 0.25f;
             float scale = 1f;

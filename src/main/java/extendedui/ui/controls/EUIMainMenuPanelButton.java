@@ -9,9 +9,9 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
-import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -110,13 +110,13 @@ public class EUIMainMenuPanelButton extends EUIHoverable {
         }
 
         if (this.hb.hovered) {
-            this.uiScale = MathHelper.fadeLerpSnap(this.uiScale, 1.025F);
+            this.uiScale = EUIRenderHelpers.lerpSnap(this.uiScale, 1.025F, 12.0F, 0.01F);
             if (InputHelper.justClickedLeft) {
                 this.hb.clickStarted = true;
             }
         }
         else {
-            this.uiScale = MathHelper.cardScaleLerpSnap(this.uiScale, 1.0F);
+            this.uiScale = EUIRenderHelpers.lerpSnap(this.uiScale, 1.0F, 7.5F);
         }
 
         if (this.hb.hovered && CInputActionSet.select.isJustPressed()) {

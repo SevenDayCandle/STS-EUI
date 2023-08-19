@@ -206,12 +206,12 @@ public class EUIColorPicker extends EUIHoverable {
     }
 
     protected void updateReturnColor() {
-        returnColor.r = MathUtils.lerp(1, topRight.r, sat);
-        returnColor.g = MathUtils.lerp(1, topRight.g, sat);
-        returnColor.b = MathUtils.lerp(1, topRight.b, sat);
-        returnColor.r = MathUtils.lerp(0, returnColor.r, val);
-        returnColor.g = MathUtils.lerp(0, returnColor.g, val);
-        returnColor.b = MathUtils.lerp(0, returnColor.b, val);
+        returnColor.r = EUIRenderHelpers.lerp(1, topRight.r, sat);
+        returnColor.g = EUIRenderHelpers.lerp(1, topRight.g, sat);
+        returnColor.b = EUIRenderHelpers.lerp(1, topRight.b, sat);
+        returnColor.r = EUIRenderHelpers.lerp(0, returnColor.r, val);
+        returnColor.g = EUIRenderHelpers.lerp(0, returnColor.g, val);
+        returnColor.b = EUIRenderHelpers.lerp(0, returnColor.b, val);
         returnColor.a = alpha;
         if (onChange != null) {
             onChange.invoke(this);

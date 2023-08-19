@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import extendedui.EUIGameUtils;
-import extendedui.EUIUtils;
+import extendedui.EUIRenderHelpers;
 import extendedui.utilities.PotionInfo;
 
 public class EUIPotionGrid extends EUIItemGrid<PotionInfo> {
@@ -89,7 +89,7 @@ public class EUIPotionGrid extends EUIItemGrid<PotionInfo> {
 
     @Override
     public void updateItemPosition(PotionInfo potion, float x, float y) {
-        potion.potion.posX = EUIUtils.lerpSnap(potion.potion.posX, x, LERP_SPEED);
-        potion.potion.posY = EUIUtils.lerpSnap(potion.potion.posY, y, LERP_SPEED);
+        potion.potion.posX = EUIRenderHelpers.lerpSnap(potion.potion.posX, x, LERP_SPEED);
+        potion.potion.posY = EUIRenderHelpers.lerpSnap(potion.potion.posY, y, LERP_SPEED);
     }
 }

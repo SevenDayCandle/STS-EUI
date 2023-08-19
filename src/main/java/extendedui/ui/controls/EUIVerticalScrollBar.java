@@ -3,9 +3,11 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -83,7 +85,7 @@ public class EUIVerticalScrollBar extends EUIHoverable {
     }
 
     public void updateImpl() {
-        cursorDrawPosition = MathHelper.scrollSnapLerpSpeed(cursorDrawPosition, fromPercentage(currentScrollPercent));
+        cursorDrawPosition = EUIRenderHelpers.lerpSnap(cursorDrawPosition, fromPercentage(currentScrollPercent), 10.0F, Settings.UI_SNAP_THRESHOLD);
 
         super.updateImpl();
 

@@ -3,6 +3,7 @@ package extendedui.utilities;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.core.Settings;
+import extendedui.EUIRenderHelpers;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 
@@ -50,18 +51,18 @@ public class EUIColors {
     }
 
     public static void lerp(Color toFill, Color current, Color target, float amount) {
-        toFill.r = MathUtils.lerp(current.r, target.r, amount);
-        toFill.g = MathUtils.lerp(current.g, target.g, amount);
-        toFill.b = MathUtils.lerp(current.b, target.b, amount);
-        toFill.a = MathUtils.lerp(current.a, target.a, amount);
+        toFill.r = EUIRenderHelpers.lerp(current.r, target.r, amount);
+        toFill.g = EUIRenderHelpers.lerp(current.g, target.g, amount);
+        toFill.b = EUIRenderHelpers.lerp(current.b, target.b, amount);
+        toFill.a = EUIRenderHelpers.lerp(current.a, target.a, amount);
     }
 
     public static Color lerpNew(Color current, Color target, float amount) {
         current = current.cpy();
-        current.r = MathUtils.lerp(current.r, target.r, amount);
-        current.g = MathUtils.lerp(current.g, target.g, amount);
-        current.b = MathUtils.lerp(current.b, target.b, amount);
-        current.a = MathUtils.lerp(current.a, target.a, amount);
+        current.r = EUIRenderHelpers.lerp(current.r, target.r, amount);
+        current.g = EUIRenderHelpers.lerp(current.g, target.g, amount);
+        current.b = EUIRenderHelpers.lerp(current.b, target.b, amount);
+        current.a = EUIRenderHelpers.lerp(current.a, target.a, amount);
         return current;
     }
 
