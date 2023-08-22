@@ -52,7 +52,7 @@ public class EUIFontHelper {
     public static BitmapFont cardDescFontBase;
     public static BitmapFont cardDescFontBaseL;
     public static BitmapFont cardTipBodyFont;
-    public static BitmapFont cardTipTitleFont;
+    public static BitmapFont cardTipTitleFontBase;
     public static BitmapFont cardTitleFontBase;
     public static BitmapFont cardTitleFontSmall;
     public static BitmapFont cardTitleFontNormal;
@@ -250,7 +250,7 @@ public class EUIFontHelper {
         param.borderWidth = 2.0F * Settings.scale;
         param.shadowOffsetX = 1;
         param.shadowOffsetY = 1;
-        EUIFontHelper.cardTipTitleFont = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.tipTitleFont, fontFileBold) : boldFile, 23, true);
+        EUIFontHelper.cardTipTitleFontBase = prepFont(useSeparateFonts ? getCustomFont(EUIConfiguration.tipTitleFont, fontFileBold) : boldFile, 23, true);
 
         param.gamma = 1.2F;
         param.borderGamma = 1.2F;
@@ -273,8 +273,8 @@ public class EUIFontHelper {
         EUIFontHelper.cardIconFontLarge = prepFont(cardDescFontBase, 38, 2.25f, 0.7f);
         EUIFontHelper.cardIconFontSmall = prepFont(cardDescFontBase, 19, 1f, 0.3f);
         EUIFontHelper.cardTooltipFont = prepFont(cardTipBodyFont, 19, 0f, 2f);
-        EUIFontHelper.cardTooltipTitleFontNormal = prepFont(cardTipTitleFont, 23, 0f, 1f);
-        EUIFontHelper.cardTooltipTitleFontLarge = prepFont(cardTipTitleFont, 26, 0f, 2f);
+        EUIFontHelper.cardTooltipTitleFontNormal = prepFont(cardTipTitleFontBase, 23, 0f, 1f);
+        EUIFontHelper.cardTooltipTitleFontLarge = prepFont(cardTipTitleFontBase, 26, 0f, 2f);
         EUIFontHelper.buttonFontSmall = prepFont(buttonFont, 24, 2f, 1f);
         EUIFontHelper.buttonFontLarge = prepFont(buttonFont, 46, 4f, 3f);
         EUIFontHelper.bannerFontLarge = prepFont(bannerFont, 72, 4f, 0f);
