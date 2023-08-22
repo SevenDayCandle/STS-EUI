@@ -263,7 +263,7 @@ public class EUIFontHelper {
 
         Color bc1 = new Color(0.35F, 0.35F, 0.35F, 1.0F);
         Color sc1 = new Color(0, 0, 0, 0.25f);
-        EUIFontHelper.cardTitleFontSmall = prepFont(cardTitleFontBase, 25, 2f, bc1, 3f, sc1);
+        EUIFontHelper.cardTitleFontSmall = prepFont(cardTitleFontBase, 25, 2f, bc1, 2f, sc1);
         EUIFontHelper.cardTitleFontNormal = prepFont(cardTitleFontBase, 27, 2f, bc1, 3f, sc1);
         EUIFontHelper.cardTitleFontLarge = prepFont(cardTitleFontBase, 46, 4f, bc1, 3f, sc1);
         EUIFontHelper.cardTypeFont = prepFont(cardDescFontBase, 17f, 0, null, 1f, sc1);
@@ -275,7 +275,7 @@ public class EUIFontHelper {
         EUIFontHelper.cardTooltipFont = prepFont(cardTipBodyFont, 19, 0f, 2f);
         EUIFontHelper.cardTooltipTitleFontNormal = prepFont(cardTipTitleFont, 23, 0f, 1f);
         EUIFontHelper.cardTooltipTitleFontLarge = prepFont(cardTipTitleFont, 26, 0f, 2f);
-        EUIFontHelper.buttonFontSmall = prepFont(buttonFont, 20, 4f, 3f);
+        EUIFontHelper.buttonFontSmall = prepFont(buttonFont, 24, 2f, 1f);
         EUIFontHelper.buttonFontLarge = prepFont(buttonFont, 46, 4f, 3f);
         EUIFontHelper.bannerFontLarge = prepFont(bannerFont, 72, 4f, 0f);
         EUIFontHelper.bannerFontExtraLarge = prepFont(bannerFont, 115.0F, 6f, 0f);
