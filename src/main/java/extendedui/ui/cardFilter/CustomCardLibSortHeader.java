@@ -157,17 +157,14 @@ public class CustomCardLibSortHeader extends CardLibSortHeader {
     }
 
     private void setupButton(SortHeaderButton button, float start, int index) {
-        override[index] = button;
-        Hitbox hitbox = button.hb;
-        hitbox.resize(hitbox.width - WIDTH_DEC, hitbox.height);
-        hitbox.move(start + (CustomCardLibSortHeader.SPACE_X * index), isFixedPosition ? CENTER_Y : hitbox.cY);
+        button.hb.resize(button.hb.width - WIDTH_DEC, button.hb.height);
+        button.hb.move(start + (CustomCardLibSortHeader.SPACE_X * index), isFixedPosition ? CENTER_Y : button.hb.cY);
     }
 
     public void setupButtons(boolean isFixedPosition) {
         this.isFixedPosition = isFixedPosition;
 
         if (override == null) {
-            final float start = buttons[0].hb.cX;
             rarityButton = buttons[0];
             typeButton = buttons[1];
             costButton = buttons[2];
@@ -175,10 +172,11 @@ public class CustomCardLibSortHeader extends CardLibSortHeader {
             amountButton = new SortHeaderButton(EUIRM.strings.ui_amount, 0f, 0f, this);
 
             override = EUIUtils.arrayAppend(buttons, amountButton);
+        }
 
-            for (int i = 0; i < override.length; i++) {
-                setupButton(override[i], start, i);
-            }
+        final float start = buttons[0].hb.cX;
+        for (int i = 0; i < override.length; i++) {
+            setupButton(override[i], start, i);
         }
 
         this.buttons = override;
