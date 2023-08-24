@@ -190,6 +190,7 @@ public class EUIFontHelper {
 
     /* Because EUIFontHelper creates its fonts separately from the base game, mods that alter the game's font will not affect it.
      * Thus, EUIFontHelper requires its own version of a font configuration to allow users to make changes to them */
+    // TODO remove duplicate base fonts and patch base game fonts to use linear filtering options
     public static void initialize() {
         boolean useSeparateFonts = EUIConfiguration.useSeparateFonts.get();
         generators.clear();
