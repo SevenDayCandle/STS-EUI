@@ -516,6 +516,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     public EUIDropdown<T> setItems(List<? extends T> options) {
+        this.topVisibleRowIndex = 0;
         this.currentIndices.clear();
         this.rows.clear();
         for (int i = 0; i < options.size(); i++) {
