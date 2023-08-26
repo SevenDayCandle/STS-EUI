@@ -16,8 +16,7 @@ public class CardAmountComparator implements Comparator<AbstractCard> {
     }
 
     public static int calculateRank(AbstractCard card) {
-        return card.baseDamage > 0 ? card.baseDamage :
-                Math.max(card.baseBlock, 0);
+        return Math.max(card.baseDamage, card.baseBlock);
     }
 
     public int compare(AbstractCard c1, AbstractCard c2) {

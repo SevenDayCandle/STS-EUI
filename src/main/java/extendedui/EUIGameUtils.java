@@ -86,8 +86,16 @@ public class EUIGameUtils {
                 || AbstractDungeon.screen == CardPoolScreen.CARD_POOL_SCREEN);
     }
 
+    public static boolean canViewAnyEnemyIntent() {
+        return !AbstractDungeon.player.hasRelic(RunicDome.ID);
+    }
+
     public static boolean canViewEnemyIntents(AbstractMonster mo) {
-        return mo.intent != AbstractMonster.Intent.NONE && mo.intent != AbstractMonster.Intent.DEBUG && !AbstractDungeon.player.hasRelic(RunicDome.ID);
+        return canViewEnemyIntents(mo.intent);
+    }
+
+    public static boolean canViewEnemyIntents(AbstractMonster.Intent intent) {
+        return intent != AbstractMonster.Intent.NONE && intent != AbstractMonster.Intent.DEBUG && canViewAnyEnemyIntent();
     }
 
     public static Color colorForRarity(AbstractCard.CardRarity rarity) {
