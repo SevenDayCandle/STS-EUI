@@ -160,7 +160,7 @@
 	},
 	"extendedui:target": {
 		"TEXT": [
-			"None",
+			"Player",
 			"All",
 			"All Enemies",
 			"Any Target",

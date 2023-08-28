@@ -9,9 +9,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.evacipated.cardcrawl.mod.stslib.Keyword;
+import com.evacipated.cardcrawl.mod.stslib.StSLib;
+import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
+import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIGameUtils;
@@ -130,13 +135,7 @@ public class EUIKeywordTooltip extends EUITooltip {
         return REGISTERED_IDS.entrySet();
     }
 
-    public static void invalidateAllHeights() {
-        for (EUIKeywordTooltip tip : REGISTERED_IDS.values()) {
-            tip.invalidateHeight();
-        }
-    }
-
-    public static void postInitialize() {
+    public static void initializeVisibilityStatus() {
         for (Map.Entry<String, EUIKeywordTooltip> entry : getEntries()) {
             EUIKeywordTooltip tip = entry.getValue();
             tip.canAdd = !EUIConfiguration.getIsTipDescriptionHidden(entry.getKey());
@@ -145,9 +144,51 @@ public class EUIKeywordTooltip extends EUITooltip {
         }
     }
 
+    public static void invalidateAllHeights() {
+        for (EUIKeywordTooltip tip : REGISTERED_IDS.values()) {
+            tip.invalidateHeight();
+        }
+    }
+
+    public static void postInitialize() {
+        initializeVisibilityStatus();
+        registerKeywordIcons();
+    }
+
     public static void registerID(String id, EUIKeywordTooltip tooltip) {
         REGISTERED_IDS.put(id, tooltip);
         tooltip.ID = id;
+    }
+
+    public static void registerKeywordIcons() {
+        // Add CommonKeywordIcon and CustomIconHelper pictures to keywords. This REQUIRES stslib to run
+        if (Loader.isModLoaded("stslib")) {
+            for (EUIKeywordTooltip tooltip : EUIUtils.map(getEntries(), Map.Entry::getValue)) {
+                String title = tooltip.title;
+                // CommonKeywordIcon
+                if (title.equals(GameDictionary.INNATE.NAMES[0])) {
+                    tooltip.setIcon(StSLib.BADGE_INNATE);
+                }
+                else if (title.equals(GameDictionary.ETHEREAL.NAMES[0])) {
+                    tooltip.setIcon(StSLib.BADGE_ETHEREAL);
+                }
+                else if (title.equals(GameDictionary.RETAIN.NAMES[0])) {
+                    tooltip.setIcon(StSLib.BADGE_RETAIN);
+                }
+                else if (title.equals(GameDictionary.EXHAUST.NAMES[0])) {
+                    tooltip.setIcon(StSLib.BADGE_EXHAUST);
+                }
+                // CustomIconHelper IDs start with "[" and end with "Icon]"
+                else {
+                    String iconName = '[' + title + AbstractCustomIcon.CODE_ENDING;
+                    AbstractCustomIcon icon = CustomIconHelper.getIcon(iconName);
+                    if (icon != null) {
+                        tooltip.setIcon(icon.region);
+                        EUIKeywordTooltip.registerName(iconName, tooltip);
+                    }
+                }
+            }
+        }
     }
 
     public static void registerName(String name, EUIKeywordTooltip tooltip) {

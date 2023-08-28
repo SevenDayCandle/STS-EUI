@@ -591,8 +591,7 @@ public class EUIRenderHelpers {
     public static TextureAtlas.AtlasRegion generateIcon(Texture texture) {
         final int h = texture.getHeight();
         final int w = texture.getWidth();
-        final int section = h / 2;
-        return new TextureAtlas.AtlasRegion(texture, (w - section) / 2, 0, section, section);
+        return new TextureAtlas.AtlasRegion(texture, (w - h) / 2, 0, h, h);
     }
 
     public static float getAngleDegrees(float aX, float aY, float bX, float bY) {

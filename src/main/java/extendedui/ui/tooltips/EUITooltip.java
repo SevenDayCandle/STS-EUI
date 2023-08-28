@@ -461,7 +461,10 @@ public class EUITooltip {
                     }
 
                     final EUIKeywordTooltip tip = new EUIKeywordTooltip(p.name, p.description);
-                    if (p.region48 != null) {
+                    if (p.region128 != null) {
+                        tip.icon = p.region128;
+                    }
+                    else if (p.region48 != null) {
                         tip.icon = p.region48;
                     }
 

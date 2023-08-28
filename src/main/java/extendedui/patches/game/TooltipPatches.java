@@ -40,11 +40,15 @@ public class TooltipPatches {
         return EUIUtils.filter(original, o -> !EUIConfiguration.getIsTipDescriptionHiddenByName(o));
     }
 
+    public static boolean useEUIForPowers() {
+        return EUIConfiguration.useEUITooltips.get();
+    }
+
     @SpirePatch(clz = AbstractMonster.class, method = "renderTip", paramtypez = {SpriteBatch.class})
     public static class AbstractMonster_RenderTip {
         @SpirePrefixPatch
         public static SpireReturn<Void> prefix(AbstractMonster __instance, SpriteBatch sb) {
-            if (EUIConfiguration.useEUITooltips.get()) {
+            if (useEUIForPowers()) {
                 if (__instance.reticleAlpha == 0) {
                     EUITooltip.queueTooltips(__instance);
                 }
@@ -59,7 +63,7 @@ public class TooltipPatches {
     public static class AbstractPlayer_RenderPowerTips {
         @SpirePrefixPatch
         public static SpireReturn<Void> prefix(AbstractPlayer __instance, SpriteBatch sb) {
-            if (EUIConfiguration.useEUITooltips.get()) {
+            if (useEUIForPowers()) {
                 if (EUITooltip.canRenderTooltips()) {
                     EUITooltip.queueTooltips(__instance);
                 }

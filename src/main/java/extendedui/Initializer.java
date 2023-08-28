@@ -98,7 +98,6 @@ public class Initializer
     public void receivePostInitialize() {
         EUIConfiguration.postInitialize();
         EUI.initialize();
-        EUI.registerKeywordIcons();
         EUIRenderHelpers.initializeBuffers();
         STSEffekseerManager.initialize();
         ShaderDebugger.initialize();

@@ -73,7 +73,6 @@ public class EUI {
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> priorityPostRenderList = new ConcurrentLinkedQueue<>();
     public static final ArrayList<EUIBase> battleSubscribers = new ArrayList<>();
     public static final ArrayList<EUIBase> subscribers = new ArrayList<>();
-    public static final String[] ENERGY_STRINGS = {"[E]", "[R]", "[G]", "[B]", "[W]"};
     public static final ArrayList<CustomFilterModule<AbstractBlight>> globalCustomBlightFilters = new ArrayList<>();
     public static final ArrayList<CustomPoolModule<AbstractBlight>> globalCustomBlightLibraryModules = new ArrayList<>(); // TODO use this
     public static final ArrayList<CustomCardFilterModule> globalCustomCardFilters = new ArrayList<>();
@@ -85,6 +84,9 @@ public class EUI {
     public static final ArrayList<CustomFilterModule<RelicInfo>> globalCustomRelicFilters = new ArrayList<>();
     public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicLibraryModules = new ArrayList<>(); // TODO use this
     public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicPoolModules = new ArrayList<>();
+    public static final String ENERGY_ID = "E";
+    public static final String ENERGY_TIP = "[E]";
+    public static final String[] ENERGY_STRINGS = {ENERGY_TIP, "[R]", "[G]", "[B]", "[W]"};
     public static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customCardFilters = new HashMap<>();
     public static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardLibraryModules = new HashMap<>();
     public static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardPoolModules = new HashMap<>();
@@ -442,7 +444,7 @@ public class EUI {
     public static void registerBasegameKeywords() {
 
         // Energy tooltips are not present in GameDictionary
-        EUIKeywordTooltip energyTooltip = tryRegisterTooltip("E", null, TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).setIconFunc(EUI::getEnergyIcon);
+        EUIKeywordTooltip energyTooltip = tryRegisterTooltip(ENERGY_ID, null, TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).setIconFunc(EUI::getEnergyIcon);
         EUIKeywordTooltip.registerName(StringUtils.lowerCase(TipHelper.TEXT[0]), energyTooltip);
 
         // Read directly from fields to obtain the actual IDs to use, which are language-invariant
@@ -473,35 +475,6 @@ public class EUI {
                 existing.plural = grammar.PLURAL;
                 existing.present = grammar.PRESENT;
                 existing.progressive = grammar.PROGRESSIVE;
-            }
-        }
-    }
-
-    // Add CommonKeywordIcon pictures to keywords. This REQUIRES stslib to run
-    public static void registerKeywordIcons() {
-        if (Loader.isModLoaded("stslib")) {
-            for (EUIKeywordTooltip tooltip : EUIUtils.map(EUIKeywordTooltip.getEntries(), Map.Entry::getValue)) {
-                String title = tooltip.title;
-                // Add CommonKeywordIcon pictures to keywords
-                if (title.equals(GameDictionary.INNATE.NAMES[0])) {
-                    tooltip.setIcon(StSLib.BADGE_INNATE);
-                }
-                else if (title.equals(GameDictionary.ETHEREAL.NAMES[0])) {
-                    tooltip.setIcon(StSLib.BADGE_ETHEREAL);
-                }
-                else if (title.equals(GameDictionary.RETAIN.NAMES[0])) {
-                    tooltip.setIcon(StSLib.BADGE_RETAIN);
-                }
-                else if (title.equals(GameDictionary.EXHAUST.NAMES[0])) {
-                    tooltip.setIcon(StSLib.BADGE_EXHAUST);
-                }
-                else {
-                    // Add Custom Icons
-                    AbstractCustomIcon icon = CustomIconHelper.getIcon(title);
-                    if (icon != null) {
-                        tooltip.setIcon(icon.region);
-                    }
-                }
             }
         }
     }
