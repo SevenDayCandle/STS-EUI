@@ -4,6 +4,7 @@ import basemod.BaseMod;
 import basemod.ModPanel;
 import basemod.helpers.RelicType;
 import com.badlogic.gdx.graphics.Texture;
+import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -15,7 +16,7 @@ import extendedui.ui.settings.ExtraModSettingsPanel;
 import org.apache.commons.lang3.StringUtils;
 
 public class BasemodPatches {
-    // Create EUI variants of Basemod keywords to show in the relic filter screen
+    // Create EUI variants of Basemod keywords to show in the filter screen
     @SpirePatch(clz = BaseMod.class,
             method = "addKeyword",
             paramtypez = {String.class, String.class, String[].class, String.class})

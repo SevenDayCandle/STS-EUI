@@ -5,6 +5,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
+import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
 import com.megacrit.cardcrawl.core.Settings;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
@@ -355,15 +357,20 @@ public class EUISmartText {
 
         String iconID = EUIUtils.popBuilder(subBuilder);
         EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(iconID);
-        Color backgroundColor;
-        TextureRegion icon;
+        Color backgroundColor = null;
+        TextureRegion icon = null;
         if (tooltip != null) {
             backgroundColor = tooltip.badgeColor;
             icon = (force || tooltip.forceIcon) ? tooltip.icon : null;
         }
         else {
-            backgroundColor = null;
-            icon = null;
+            // Check for custom keyword icons
+            String iconName = '[' + iconID + ']';
+            AbstractCustomIcon customIcon = CustomIconHelper.getIcon(iconName);
+            if (customIcon != null) {
+                // TODO get the actual corresponding keyword name if keyword icons are turned off
+                icon = customIcon.region;
+            }
         }
 
         if (icon != null) {
