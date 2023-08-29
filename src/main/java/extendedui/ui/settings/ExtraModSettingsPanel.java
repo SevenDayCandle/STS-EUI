@@ -43,7 +43,7 @@ public class ExtraModSettingsPanel extends EUIBase {
     protected static final HashMap<Category, Float> offsets = new HashMap<>();
     protected static final EUIHitbox hb = new EUIHitbox(screenW(0.5f) - scale(700), Settings.OPTION_Y - scale(400), scale(1400), scale(800));
     protected final MenuCancelButton button;
-    protected final EUIButtonList buttons = new EUIButtonList(7, screenW(0.077f), hb.y + scale(700), EUIButtonList.BUTTON_W, EUIButtonList.BUTTON_H).setFontScale(0.6f);
+    protected final EUIButtonList buttons = new EUIButtonList(7, screenW(0.077f), hb.y + scale(750), EUIButtonList.BUTTON_W, EUIButtonList.BUTTON_H).setFontScale(0.6f);
     protected final EUIImage background;
     private Category activeMod;
     private String prevOpenString;
