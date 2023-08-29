@@ -232,6 +232,24 @@ public class TooltipPatches {
         }
     }
 
+    @SpirePatch(clz = TipHelper.class, method = "renderPowerTips")
+    public static class TipHelperPatches_RenderPowerTips {
+
+        // Ensure that the tip region is always rendered at Settings.scale * 32f regardless of the actual image size
+        // Needed to prevent image from rendering outside of the tip if the region is of the wrong size (e.g. from Fabricate dynamic power regions)
+        @SpireInstrumentPatch
+        public static ExprEditor instrument() {
+            return new ExprEditor() {
+                public void edit(javassist.expr.FieldAccess m) throws CannotCompileException {
+                    String fieldName = m.getFieldName();
+                    if (fieldName.equals("packedWidth") || fieldName.equals("packedHeight")) {
+                        m.replace("{ $_ = 32f; }");
+                    }
+                }
+            };
+        }
+    }
+
     @SpirePatch(
             clz = PowerTip.class,
             method = "<class>"
