@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.Settings;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.configuration.EUIHotkeys;
@@ -71,9 +72,9 @@ public class EUICardPreview extends EUIPreview implements CardObject {
         if (isMultiPreview) {
             String cyclePreviewText = EUIRM.strings.keyToCycle(EUIHotkeys.cycle.getKeyString());
             BitmapFont font = EUIRenderHelpers.getDescriptionFont(preview, 0.9f);
-            EUIRenderHelpers.drawOnCardAuto(sb, preview, EUIRM.images.panelRounded.texture(), 0, -AbstractCard.RAW_H * 0.55f,
-                    AbstractCard.IMG_WIDTH * 0.6f, font.getLineHeight() * 1.8f, Color.DARK_GRAY, 0.75f, 1);
-            EUIRenderHelpers.writeOnCard(sb, preview, font, cyclePreviewText, 0, -AbstractCard.RAW_H * 0.55f, Color.MAGENTA);
+            EUIRenderHelpers.drawOnCardAuto(sb, preview, EUIRM.images.panelRoundedHalfH.texture(), 0, -AbstractCard.RAW_H * 0.55f,
+                    AbstractCard.IMG_WIDTH * 0.6f, font.getLineHeight() * 1.8f, Color.DARK_GRAY, 0.9f, 1);
+            EUIRenderHelpers.writeOnCard(sb, preview, font, cyclePreviewText, 0, -AbstractCard.RAW_H * 0.55f, Settings.PURPLE_COLOR);
             EUIRenderHelpers.resetFont(font);
         }
     }
