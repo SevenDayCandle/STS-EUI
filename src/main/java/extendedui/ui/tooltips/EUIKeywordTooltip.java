@@ -39,6 +39,7 @@ import java.util.Set;
 public class EUIKeywordTooltip extends EUITooltip {
     private static final HashMap<String, EUIKeywordTooltip> REGISTERED_NAMES = new HashMap<>();
     private static final HashMap<String, EUIKeywordTooltip> REGISTERED_IDS = new HashMap<>();
+    private static final HashMap<String, EUIKeywordTooltip> TEMP_IDS = new HashMap<>();
     private static final HashSet<EUIKeywordTooltip> ICON_UPDATING_LIST = new HashSet<>();
     public static final float BASE_ICON_SIZE = 28;
     protected FuncT0<TextureRegion> iconFunc;
@@ -113,8 +114,22 @@ public class EUIKeywordTooltip extends EUITooltip {
         }
     }
 
+    public static void clearTemp() {
+        TEMP_IDS.clear();
+    }
+
+    /* Search for an existing ID, ignoring temporary IDs */
     public static EUIKeywordTooltip findByID(String id) {
         return REGISTERED_IDS.get(id);
+    }
+
+    /* Search for an existing ID, then fall back on temporary IDs */
+    public static EUIKeywordTooltip findByIDTemp(String id) {
+        EUIKeywordTooltip tip = REGISTERED_IDS.get(id);
+        if (tip != null) {
+            return tip;
+        }
+        return TEMP_IDS.get(id);
     }
 
     public static EUIKeywordTooltip findByName(String name) {
@@ -160,6 +175,11 @@ public class EUIKeywordTooltip extends EUITooltip {
         tooltip.ID = id;
     }
 
+    public static void registerIDTemp(String id, EUIKeywordTooltip tooltip) {
+        TEMP_IDS.put(id, tooltip);
+        tooltip.ID = id;
+    }
+
     public static void registerKeywordIcons() {
         // Add CommonKeywordIcon and CustomIconHelper pictures to keywords. This REQUIRES stslib to run
         if (Loader.isModLoaded("stslib")) {
@@ -195,8 +215,16 @@ public class EUIKeywordTooltip extends EUITooltip {
         REGISTERED_NAMES.put(name, tooltip);
     }
 
+    public static void removeTemp(EUIKeywordTooltip tip) {
+        TEMP_IDS.remove(tip.ID);
+    }
+
+    public static void removeTemp(String id) {
+        TEMP_IDS.remove(id);
+    }
+
     public static void setHideTooltip(String id, boolean value) {
-        EUIKeywordTooltip tooltip = findByID(id);
+        EUIKeywordTooltip tooltip = findByIDTemp(id);
         if (tooltip != null) {
             tooltip.canAdd = !value;
         }

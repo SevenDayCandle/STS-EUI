@@ -681,7 +681,7 @@ public class EUITooltip {
                             sb.append(c);
                         }
                     }
-                    tip = EUIKeywordTooltip.findByID(sb.toString());
+                    tip = EUIKeywordTooltip.findByIDTemp(sb.toString());
                     if (tip != null && (allowNonRenderable || tip.isRenderable()) && !tips.contains(tip)) {
                         dest.add(tip);
                     }

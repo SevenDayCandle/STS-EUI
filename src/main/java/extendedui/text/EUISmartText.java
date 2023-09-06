@@ -356,7 +356,7 @@ public class EUISmartText {
         }
 
         String iconID = EUIUtils.popBuilder(subBuilder);
-        EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByID(iconID);
+        EUIKeywordTooltip tooltip = EUIKeywordTooltip.findByIDTemp(iconID);
         Color backgroundColor = null;
         TextureRegion icon = null;
         if (tooltip != null) {

@@ -40,11 +40,11 @@ public class EUIExporter {
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final Exportable<AbstractBlight> blightExportable = new Exportable<>(EUIExporter::exportBlightCsv, EUIExporter::exportBlightJson);
     public static final Exportable<AbstractCard> cardExportable = new Exportable<>(EUIExporter::exportCardCsv, EUIExporter::exportCardJson);
-    private static Exportable<?> current = cardExportable;
     public static final Exportable<PotionInfo> potionExportable = new Exportable<>(EUIExporter::exportPotionCsv, EUIExporter::exportPotionJson);
     public static final Exportable<RelicInfo> relicExportable = new Exportable<>(EUIExporter::exportRelicCsv, EUIExporter::exportRelicJson);
     public static EUIButton exportButton;
     public static EUIContextMenu<EUIExporter.ContextOption> exportDropdown;
+    private static Exportable<?> current = cardExportable;
 
     public static void exportBlightCsv(AbstractBlight c) {
         exportBlightCsv(Collections.singleton(c));
