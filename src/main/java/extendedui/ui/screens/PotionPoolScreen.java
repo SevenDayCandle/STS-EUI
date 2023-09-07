@@ -186,7 +186,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
         public final String name;
         public final ActionT2<PotionPoolScreen, AbstractPotion> onSelect;
 
-        DebugOption(String name, ActionT2<PotionPoolScreen, AbstractPotion> onSelect) {
+        public DebugOption(String name, ActionT2<PotionPoolScreen, AbstractPotion> onSelect) {
             this.name = name;
             this.onSelect = onSelect;
         }
