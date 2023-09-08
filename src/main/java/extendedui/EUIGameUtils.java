@@ -201,6 +201,7 @@ public class EUIGameUtils {
         result.addAll(AbstractDungeon.rareRelicPool);
         result.addAll(AbstractDungeon.shopRelicPool);
         result.addAll(AbstractDungeon.bossRelicPool);
+        result.removeIf(UnlockTracker::isRelicLocked);
         return result;
     }
 

@@ -43,6 +43,7 @@ public class EUIRenderHelpers {
     protected static final String SHADER_RAINBOW_FRAGMENT = "shaders/rainbowFragment.glsl";
     protected static final String SHADER_RAINBOW_VERTICAL_FRAGMENT = "shaders/rainbowVerticalFragment.glsl";
     protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
+    protected static final String SHADER_SILHOUETTE_FRAGMENT = "shaders/silhouetteFragment.glsl";
     protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.4F);
     private static FrameBuffer maskBuffer;
@@ -57,6 +58,7 @@ public class EUIRenderHelpers {
     protected static ShaderProgram rainbowShader;
     protected static ShaderProgram rainbowVerticalShader;
     protected static ShaderProgram sepiaShader;
+    protected static ShaderProgram silhouetteShader;
 
     public static float calculateToAvoidOffscreen(ArrayList<EUITooltip> tips, float hb_cY) {
         return tips.isEmpty() ? 0f : Math.max(0.0F, EUITooltip.getTallestOffset(tips) - hb_cY);
@@ -108,16 +110,13 @@ public class EUIRenderHelpers {
     }
 
     public static void drawBlur(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
-        drawBlur(sb, 2, 1, 1, 1, drawFunc);
+        drawBlur(sb, 2, 1, 1, drawFunc);
     }
 
-    public static void drawBlur(SpriteBatch sb, float radius, float resolution, float xDir, float yDir, ActionT1<SpriteBatch> drawFunc) {
+    public static void drawBlur(SpriteBatch sb, float radius, float xDir, float yDir, ActionT1<SpriteBatch> drawFunc) {
         ShaderProgram defaultShader = sb.getShader();
-        ShaderProgram bs = getBlurShader();
+        ShaderProgram bs = setBlurShader(radius, xDir, yDir);
         sb.setShader(bs);
-        bs.setUniformf("u_radius", radius);
-        bs.setUniformf("u_resolution", resolution);
-        bs.setUniform2fv("u_dir", new float[]{xDir, yDir}, 0, 2);
         drawFunc.invoke(sb);
         sb.setShader(defaultShader);
     }
@@ -502,6 +501,24 @@ public class EUIRenderHelpers {
         drawWithShader(sb, getSepiaShader(), drawFunc);
     }
 
+    public static void drawSilhouette(SpriteBatch sb, Color color, ActionT1<SpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = sb.getShader();
+        ShaderProgram rs = getSilhouetteShader();
+        sb.setShader(rs);
+        setSilhouetteShader(rs, color);
+        drawFunc.invoke(sb);
+        sb.setShader(defaultShader);
+    }
+
+    public static void drawSilhouette(PolygonSpriteBatch sb, Color color, ActionT1<PolygonSpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = sb.getShader();
+        ShaderProgram rs = getSilhouetteShader();
+        sb.setShader(rs);
+        setSilhouetteShader(rs, color);
+        drawFunc.invoke(sb);
+        sb.setShader(defaultShader);
+    }
+
     public static void drawWithMask(SpriteBatch sb, ActionT1<SpriteBatch> maskFunc, ActionT1<SpriteBatch> drawFunc) {
         sb.end();
 
@@ -714,6 +731,13 @@ public class EUIRenderHelpers {
         return sepiaShader;
     }
 
+    public static ShaderProgram getSilhouetteShader() {
+        if (silhouetteShader == null) {
+            silhouetteShader = initializeShader(SHADER_VERTEX, SHADER_SILHOUETTE_FRAGMENT);
+        }
+        return silhouetteShader;
+    }
+
     public static BitmapFont getTitleFont(AbstractCard card) {
         BitmapFont result;
         final float scale = 1 / (Math.max(14f, card.name.length()) / 14f);
@@ -773,6 +797,13 @@ public class EUIRenderHelpers {
         font.getData().setScale(1);
     }
 
+    protected static ShaderProgram setBlurShader(float radius, float xDir, float yDir) {
+        ShaderProgram rs = getBlurShader();
+        rs.setUniformf("u_radius", radius);
+        rs.setUniform2fv("u_dir", new float[]{xDir, yDir}, 0, 2);
+        return rs;
+    }
+
     protected static ShaderProgram setCRTShader(ShaderProgram rs, float xOffset, float xFuzz, float rgbOffset, float jerk) {
         rs.setUniformf("u_time", xOffset);
         rs.setUniformf("u_horzFuzz", xFuzz);
@@ -799,6 +830,11 @@ public class EUIRenderHelpers {
         rs.setUniformf("u_saturation", saturation);
         rs.setUniformf("u_brightness", brightness);
         rs.setUniformf("u_opacity", opacity);
+        return rs;
+    }
+
+    protected static ShaderProgram setSilhouetteShader(ShaderProgram rs, Color color) {
+        rs.setUniform3fv("u_borderColor", new float[]{color.r, color.g, color.b}, 0, 3);
         return rs;
     }
 
@@ -874,7 +910,8 @@ public class EUIRenderHelpers {
         Rainbow,
         RainbowVertical,
         CRT,
-        ColorizeCRT;
+        ColorizeCRT,
+        Silhouette;
 
         public void draw(SpriteBatch sb, ActionT1<SpriteBatch> drawImpl) {
             switch (this) {
@@ -892,6 +929,9 @@ public class EUIRenderHelpers {
                     return;
                 case ColorizeCRT:
                     EUIRenderHelpers.drawColorizedCRT(sb, drawImpl);
+                    return;
+                case Silhouette:
+                    EUIRenderHelpers.drawSilhouette(sb, Color.WHITE, drawImpl);
                     return;
                 case Grayscale:
                 case Invert:
@@ -920,6 +960,9 @@ public class EUIRenderHelpers {
                     return;
                 case ColorizeCRT:
                     EUIRenderHelpers.drawColorizedCRT(sb, drawImpl);
+                    return;
+                case Silhouette:
+                    EUIRenderHelpers.drawSilhouette(sb, sb.getColor(), drawImpl);
                     return;
                 case Grayscale:
                 case Invert:

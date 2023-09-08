@@ -5,6 +5,7 @@ import basemod.interfaces.ImGuiSubscriber;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.megacrit.cardcrawl.core.Settings;
 import extendedui.debug.DEUIButton;
 import extendedui.debug.DEUITextMultilineInput;
 import extendedui.debug.DEUIWindow;
@@ -77,6 +78,7 @@ public class ShaderDebugger implements ImGuiSubscriber {
     private void renderShader() {
         if (shader != null) {
             shader.setUniformf("u_time", EUI.time());
+            shader.setUniform2fv("u_resolution", new float[]{Settings.WIDTH, Settings.HEIGHT}, 0, 2);
             EUI.addPostRender(s -> EUIRenderHelpers.drawWithShader(s, shader, testImage::tryRender));
         }
     }

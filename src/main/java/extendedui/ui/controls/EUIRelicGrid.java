@@ -1,10 +1,12 @@
 package extendedui.ui.controls;
 
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.MathHelper;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.utilities.RelicInfo;
 
@@ -20,6 +22,20 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
 
     public EUIRelicGrid(float horizontalAlignment) {
         this(horizontalAlignment, true);
+    }
+
+    public static Color getOutlineColor(RelicInfo item) {
+        switch (item.relicColor) {
+            case RED:
+                return Settings.RED_RELIC_COLOR;
+            case GREEN:
+                return Settings.GREEN_RELIC_COLOR;
+            case BLUE:
+                return Settings.BLUE_RELIC_COLOR;
+            case PURPLE:
+                return Settings.PURPLE_RELIC_COLOR;
+        }
+        return Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR;
     }
 
     public EUIRelicGrid add(AbstractRelic relic) {
@@ -79,49 +95,23 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
     @Override
     protected void renderItem(SpriteBatch sb, RelicInfo relic) {
         if (relic.faded) {
-            EUIRenderHelpers.drawBlendedWithShader(sb, EUIRenderHelpers.BlendingMode.Multiply, EUIRenderHelpers.ShaderMode.Grayscale, s -> renderRelicImpl(s, relic));
+            EUIRenderHelpers.drawWithShader(sb, EUIRenderHelpers.ShaderMode.Sepia, s -> renderRelicImpl(s, relic, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR));
+            EUIRenderHelpers.drawBlendedWithShader(sb, EUIRenderHelpers.BlendingMode.Multiply, EUIRenderHelpers.ShaderMode.Grayscale, s -> renderRelicImpl(s, relic, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR));
+            // We don't have to worry about offsetX/offsetY in the grid
+            sb.setColor(Color.WHITE);
+            sb.draw(EUIRM.images.xThin.texture(), relic.relic.hb.x + relic.relic.hb.width / 4, relic.relic.hb.y + relic.relic.hb.height / 4, 32, 32, 64, 64, relic.relic.scale, relic.relic.scale, 0, 0, 0, 100, 100, false, false);
         }
         else {
-            renderRelicImpl(sb, relic);
+            renderRelicImpl(sb, relic, getOutlineColor(relic));
         }
     }
 
-    protected void renderRelicImpl(SpriteBatch sb, RelicInfo relic) {
+    protected void renderRelicImpl(SpriteBatch sb, RelicInfo relic, Color renderColor) {
         if (relic.locked) {
-            switch (relic.relicColor) {
-                case RED:
-                    relic.relic.renderLock(sb, Settings.RED_RELIC_COLOR);
-                    break;
-                case GREEN:
-                    relic.relic.renderLock(sb, Settings.GREEN_RELIC_COLOR);
-                    break;
-                case BLUE:
-                    relic.relic.renderLock(sb, Settings.BLUE_RELIC_COLOR);
-                    break;
-                case PURPLE:
-                    relic.relic.renderLock(sb, Settings.PURPLE_RELIC_COLOR);
-                    break;
-                default:
-                    relic.relic.renderLock(sb, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR);
-            }
+            relic.relic.renderLock(sb, renderColor);
         }
         else {
-            switch (relic.relicColor) {
-                case RED:
-                    relic.relic.render(sb, false, Settings.RED_RELIC_COLOR);
-                    break;
-                case GREEN:
-                    relic.relic.render(sb, false, Settings.GREEN_RELIC_COLOR);
-                    break;
-                case BLUE:
-                    relic.relic.render(sb, false, Settings.BLUE_RELIC_COLOR);
-                    break;
-                case PURPLE:
-                    relic.relic.render(sb, false, Settings.PURPLE_RELIC_COLOR);
-                    break;
-                default:
-                    relic.relic.render(sb, false, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR);
-            }
+            relic.relic.render(sb, false, renderColor);
         }
     }
 
@@ -131,7 +121,6 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
         relic.relic.hb.move(relic.relic.currentX, relic.relic.currentY);
 
         if (relic.relic.hb.hovered) {
-
             hovered = relic;
             hoveredIndex = i;
             relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(hoveredScale));
