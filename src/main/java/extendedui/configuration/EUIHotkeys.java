@@ -13,21 +13,11 @@ public class EUIHotkeys {
     private static final String KEYMAP_OPEN_POTION_POOL = EUIConfiguration.getFullKey("OpenPotionPool");
     private static final String KEYMAP_OPEN_RELIC_POOL = EUIConfiguration.getFullKey("OpenRelicPool");
     private static final String KEYMAP_TOGGLE_FILTERS = EUIConfiguration.getFullKey("ToggleFilters");
-    public static final HashMap<Integer, Integer> EQUIVALENT_KEYS = new HashMap<>();
     public static InputAction cycle;
     public static InputAction openCardPool;
     public static InputAction openPotionPool;
     public static InputAction openRelicPool;
     public static InputAction toggleFilters;
-
-    static {
-        EQUIVALENT_KEYS.put(Input.Keys.ALT_LEFT, Input.Keys.ALT_RIGHT);
-        EQUIVALENT_KEYS.put(Input.Keys.ALT_RIGHT, Input.Keys.ALT_LEFT);
-        EQUIVALENT_KEYS.put(Input.Keys.CONTROL_LEFT, Input.Keys.CONTROL_RIGHT);
-        EQUIVALENT_KEYS.put(Input.Keys.CONTROL_RIGHT, Input.Keys.CONTROL_LEFT);
-        EQUIVALENT_KEYS.put(Input.Keys.SHIFT_LEFT, Input.Keys.SHIFT_RIGHT);
-        EQUIVALENT_KEYS.put(Input.Keys.SHIFT_RIGHT, Input.Keys.SHIFT_LEFT);
-    }
 
     public static void load() {
         cycle = new InputAction(InputActionSet.prefs.getInteger(KEYMAP_CYCLE, Input.Keys.CONTROL_LEFT));

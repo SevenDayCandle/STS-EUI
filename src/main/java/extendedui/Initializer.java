@@ -17,7 +17,6 @@ import org.apache.logging.log4j.LogManager;
 import java.util.ArrayList;
 import java.util.Map;
 
-import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
 import static extendedui.configuration.EUIConfiguration.shouldReloadEffekseer;
 
 @SpireInitializer
@@ -114,7 +113,7 @@ public class Initializer
     public void receiveStartGame() {
         if (EUIConfiguration.flushOnGameStart.get() || shouldReloadEffekseer) {
             STSEffekseerManager.reset();
-            LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager. Particles: " + BASE_SPRITES_DEFAULT);
+            LogManager.getLogger(STSEffekseerManager.class.getName()).info("Reset STSEffekseerManager.");
             shouldReloadEffekseer = false;
         }
         EUIKeywordTooltip.updateTooltipIcons();

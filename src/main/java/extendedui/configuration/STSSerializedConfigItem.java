@@ -6,9 +6,6 @@ import extendedui.EUIUtils;
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
 public class STSSerializedConfigItem<T> extends STSConfigItem<T> {
-    protected final TypeToken<T> token = new TypeToken<T>() {
-    };
-
     public STSSerializedConfigItem(String Key, T defaultValue) {
         super(Key, defaultValue);
     }

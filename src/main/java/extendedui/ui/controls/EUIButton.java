@@ -29,9 +29,9 @@ public class EUIButton extends EUIHoverable {
     public float clickDelay = 0f;
     public boolean interactable = true;
     public boolean showText = true;
-    public ActionT1<EUIButton> onLeftClick;
-    public ActionT1<EUIButton> onLeftPreClick;
-    public ActionT1<EUIButton> onRightClick;
+    private ActionT1<EUIButton> onLeftClick;
+    private ActionT1<EUIButton> onLeftPreClick;
+    private ActionT1<EUIButton> onRightClick;
     public Color hoverBlendColor;
 
     public EUIButton(Texture buttonTexture, float x, float y) {

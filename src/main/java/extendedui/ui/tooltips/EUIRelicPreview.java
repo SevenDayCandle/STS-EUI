@@ -15,12 +15,12 @@ import org.apache.commons.lang3.StringUtils;
 import static extendedui.ui.tooltips.EUITooltip.*;
 
 public class EUIRelicPreview extends EUIPreview {
-    public static final float BOX_W = AbstractCard.IMG_WIDTH * 0.8f;
-    public static final float BODY_TEXT_WIDTH = BOX_W - Settings.scale * 40f;
-    public static final float HEADER_OFFSET_Y = -33.0F * Settings.scale;
-    public static final float BODY_OFFSET_Y = -60f * Settings.scale;
-    protected static AbstractRelic last;
-    protected static float lastHeight;
+    private static final float BOX_W = AbstractCard.IMG_WIDTH * 0.8f;
+    private static final float BODY_TEXT_WIDTH = BOX_W - Settings.scale * 40f;
+    private static final float HEADER_OFFSET_Y = -33.0F * Settings.scale;
+    private static final float BODY_OFFSET_Y = -60f * Settings.scale;
+    private static AbstractRelic last;
+    private static float lastHeight;
     public AbstractRelic preview;
 
     public EUIRelicPreview(AbstractRelic relic) {

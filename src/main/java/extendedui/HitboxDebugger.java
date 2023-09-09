@@ -11,13 +11,13 @@ import extendedui.ui.hitboxes.RelativeHitbox;
 import imgui.ImGui;
 
 public class HitboxDebugger implements ImGuiSubscriber {
-    protected static final String WINDOW_ID = "Hitbox";
-    protected static final String HITBOX_ADDRESS = "Address";
-    protected static final String HITBOX_X_ID = "X##hbX";
-    protected static final String HITBOX_Y_ID = "Y##hbY";
-    protected static final String HITBOX_W_ID = "W##hbW";
-    protected static final String HITBOX_H_ID = "H##hbH";
-    protected static HitboxDebugger instance;
+    private static final String WINDOW_ID = "Hitbox";
+    private static final String HITBOX_ADDRESS = "Address";
+    private static final String HITBOX_X_ID = "X##hbX";
+    private static final String HITBOX_Y_ID = "Y##hbY";
+    private static final String HITBOX_W_ID = "W##hbW";
+    private static final String HITBOX_H_ID = "H##hbH";
+    private static HitboxDebugger instance;
     private final DEUIWindow effectWindow;
     private final DEUIFloatInput hbX;
     private final DEUIFloatInput hbY;

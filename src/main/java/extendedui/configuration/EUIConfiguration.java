@@ -32,60 +32,35 @@ public class EUIConfiguration {
 
     // @Formatter: Off
     private static final ArrayList<STSConfigItem<?>> CONFIG_ITEMS = new ArrayList<>();
-    private static final String BANNER_FONT = getFullKey("BannerFont");
-    private static final String BUTTON_FONT = getFullKey("ButtonFont");
-    private static final String CARD_DESC_FONT = getFullKey("CardDescFont");
-    private static final String CARD_TITLE_FONT = getFullKey("CardTitleFont");
-    private static final String DISABLE_COMPENDIUM_BUTTON = getFullKey("DisableCompendiumButton");
-    private static final String DISABLE_EFFEKSEER = getFullKey("DisableEffekseer");
-    private static final String ENABLE_CARD_POOL_DEBUG = getFullKey("EnableCardPoolDebug");
-    private static final String ENABLE_DESCRIPTION_ICONS = getFullKey("EnableDescriptionIcons");
-    private static final String ENABLE_EXPAND_TOOLTIPS = getFullKey("EnableExpandTooltips");
-    private static final String ENERGY_FONT = getFullKey("EnergyFont");
-    private static final String FLUSH_ON_GAME_START = getFullKey("FlushOnGameStart");
-    private static final String FLUSH_ON_ROOM_START = getFullKey("FlushOnRoomStart");
-    private static final String HIDE_TIP_DESCRIPTION = getFullKey("HideTipDescription");
-    private static final String LAST_EXPORT_PATH = getFullKey("LastExportPath");
-    private static final String OVERRIDE_GAME_FONT = getFullKey("OverrideGameFont");
     private static final String PREFIX = "EUI";
-    private static final String SHOW_COUNTING_PANEL = getFullKey("ShowCountingPanel");
-    private static final String SHOW_MOD_SETTINGS = getFullKey("ShowModSettings");
-    private static final String TIP_DESC_FONT = getFullKey("TipDescFont");
-    private static final String TITLE_TITLE_FONT = getFullKey("TipTitleFont");
-    private static final String USE_EUI_TOOLTIPS = getFullKey("UseEUITooltips");
-    private static final String USE_SEPARATE_FONTS = getFullKey("UseSeparateFonts");
-    private static final String USE_SNAP_SCROLLING = getFullKey("UseSnapScrolling");
-    private static final String USE_VANILLA_COMPENDIUM = getFullKey("UseVanillaCompendium");
     private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "fnt");
+    private static final int BASE_OPTION_OFFSET_X = 400;
+    private static final int BASE_OPTION_OFFSET_X2 = 580;
+    private static final int BASE_OPTION_OFFSET_Y = 720;
+    private static final int BASE_OPTION_OPTION_HEIGHT = 32;
 
-    public static final int BASE_OPTION_OFFSET_X = 400;
-    public static final int BASE_OPTION_OFFSET_X2 = 580;
-    public static final int BASE_OPTION_OFFSET_Y = 720;
-    public static final int BASE_OPTION_OPTION_HEIGHT = 32;
-    public static final int BASE_SPRITES_DEFAULT = 6000;
-
-    public static STSConfigItem<Boolean> disableCompendiumButton = new STSConfigItem<>(DISABLE_COMPENDIUM_BUTTON, false);
-    public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(DISABLE_EFFEKSEER, false);
-    public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(ENABLE_CARD_POOL_DEBUG, false);
-    public static STSConfigItem<Boolean> enableDescriptionIcons = new STSConfigItem<>(ENABLE_DESCRIPTION_ICONS, false);
-    public static STSConfigItem<Boolean> enableExpandTooltips = new STSConfigItem<>(ENABLE_EXPAND_TOOLTIPS, false);
-    public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(FLUSH_ON_GAME_START, false);
-    public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(FLUSH_ON_ROOM_START, false);
-    public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(OVERRIDE_GAME_FONT, false);
-    public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(SHOW_COUNTING_PANEL, false);
-    public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(SHOW_MOD_SETTINGS, false);
-    public static STSConfigItem<Boolean> useEUITooltips = new STSConfigItem<>(USE_EUI_TOOLTIPS, false);
-    public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(USE_SEPARATE_FONTS, false);
-    public static STSConfigItem<Boolean> useSnapScrolling = new STSConfigItem<>(USE_SNAP_SCROLLING, false);
-    public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(USE_VANILLA_COMPENDIUM, false);
-    public static STSStringConfigItem bannerFont = new STSStringConfigItem(BANNER_FONT, "");
-    public static STSStringConfigItem buttonFont = new STSStringConfigItem(BUTTON_FONT, "");
-    public static STSStringConfigItem cardDescFont = new STSStringConfigItem(CARD_DESC_FONT, "");
-    public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(CARD_TITLE_FONT, "");
-    public static STSStringConfigItem energyFont = new STSStringConfigItem(ENERGY_FONT, "");
-    public static STSStringConfigItem lastExportPath = new STSStringConfigItem(LAST_EXPORT_PATH, "");
-    public static STSStringConfigItem tipDescFont = new STSStringConfigItem(TIP_DESC_FONT, "");
-    public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(TITLE_TITLE_FONT, "");
+    public static STSConfigItem<Boolean> disableCompendiumButton = new STSConfigItem<>(getFullKey("DisableCompendiumButton"), false);
+    public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(getFullKey("DisableEffekseer"), false);
+    public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(getFullKey("EnableCardPoolDebug"), false);
+    public static STSConfigItem<Boolean> enableDescriptionIcons = new STSConfigItem<>(getFullKey("EnableDescriptionIcons"), false);
+    public static STSConfigItem<Boolean> enableExpandTooltips = new STSConfigItem<>(getFullKey("EnableExpandTooltips"), false);
+    public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(getFullKey("FlushOnGameStart"), false);
+    public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(getFullKey("FlushOnRoomStart"), false);
+    public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(getFullKey("OverrideGameFont"), false);
+    public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(getFullKey("ShowCountingPanel"), false);
+    public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(getFullKey("ShowModSettings"), false);
+    public static STSConfigItem<Boolean> useEUITooltips = new STSConfigItem<>(getFullKey("UseEUITooltips"), false);
+    public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(getFullKey("UseSeparateFonts"), false);
+    public static STSConfigItem<Boolean> useSnapScrolling = new STSConfigItem<>(getFullKey("UseSnapScrolling"), false);
+    public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(getFullKey("UseVanillaCompendium"), false);
+    public static STSStringConfigItem bannerFont = new STSStringConfigItem(getFullKey("BannerFont"), "");
+    public static STSStringConfigItem buttonFont = new STSStringConfigItem(getFullKey("ButtonFont"), "");
+    public static STSStringConfigItem cardDescFont = new STSStringConfigItem(getFullKey("CardDescFont"), "");
+    public static STSStringConfigItem cardTitleFont = new STSStringConfigItem(getFullKey("CardTitleFont"), "");
+    public static STSStringConfigItem energyFont = new STSStringConfigItem(getFullKey("EnergyFont"), "");
+    public static STSStringConfigItem lastExportPath = new STSStringConfigItem(getFullKey("LastExportPath"), "");
+    public static STSStringConfigItem tipDescFont = new STSStringConfigItem(getFullKey("TipDescFont"), "");
+    public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(getFullKey("TipTitleFont"), "");
     // @Formatter: On
     private static HashSet<String> tips = null;
     private static SpireConfig config;
@@ -123,7 +98,7 @@ public class EUIConfiguration {
 
     public static void clearHiddenTips(boolean flush) {
         tips = new HashSet<>();
-        config.setString(HIDE_TIP_DESCRIPTION, EUIUtils.joinStrings("|", tips));
+        config.setString(getFullKey("HideTipDescription"), EUIUtils.joinStrings("|", tips));
 
         if (flush) {
             save();
@@ -159,7 +134,7 @@ public class EUIConfiguration {
             tips.remove(id);
         }
 
-        config.setString(HIDE_TIP_DESCRIPTION, EUIUtils.joinStrings("|", tips));
+        config.setString(getFullKey("HideTipDescription"), EUIUtils.joinStrings("|", tips));
 
         if (flush) {
             save();
@@ -279,19 +254,19 @@ public class EUIConfiguration {
         yPos = BASE_OPTION_OFFSET_Y;
         yPos = addToggle(1, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         yPos = addToggle(1, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
-        ModSettingsPathSelector cardDescFontSelector2 = (ModSettingsPathSelector) cardDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector cardDescFontSelector2 = new ModSettingsPathSelector(cardDescFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(1, cardDescFontSelector2, yPos) + 2;
-        ModSettingsPathSelector cardTitleFontSelector2 = (ModSettingsPathSelector) cardTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector cardTitleFontSelector2 = new ModSettingsPathSelector(cardTitleFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(1, cardTitleFontSelector2, yPos) + 2;
-        ModSettingsPathSelector tipDescFontSelector2 = (ModSettingsPathSelector) tipDescFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector tipDescFontSelector2 = new ModSettingsPathSelector(tipDescFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(1, tipDescFontSelector2, yPos) + 2;
-        ModSettingsPathSelector tipTitleFontSelector2 = (ModSettingsPathSelector) tipTitleFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector tipTitleFontSelector2 = new ModSettingsPathSelector(tipTitleFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(1, tipTitleFontSelector2, yPos) + 2;
-        ModSettingsPathSelector buttonFontSelector2 = (ModSettingsPathSelector) buttonFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector buttonFontSelector2 = new ModSettingsPathSelector(buttonFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(1, buttonFontSelector2, yPos) + 2;
-        ModSettingsPathSelector bannerFontSelector2 = (ModSettingsPathSelector) bannerFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector bannerFontSelector2 = new ModSettingsPathSelector(bannerFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(1, buttonFontSelector2, yPos) + 2;
-        ModSettingsPathSelector energyFontSelector2 = (ModSettingsPathSelector) energyFontSelector.makeCopy().translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector energyFontSelector2 = new ModSettingsPathSelector(energyFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
         yPos = addGenericElement(1, buttonFontSelector2, yPos) + 2;
         BaseMod.registerModBadge(ImageMaster.loadImage("images/extendedui/modBadge.png"), PREFIX, "PinaColada, EatYourBeetS", "", panel);
 
@@ -347,8 +322,8 @@ public class EUIConfiguration {
         if (tips == null) {
             tips = new HashSet<>();
 
-            if (config.has(HIDE_TIP_DESCRIPTION)) {
-                Collections.addAll(tips, config.getString(HIDE_TIP_DESCRIPTION).split("\\|"));
+            if (config.has(getFullKey("HideTipDescription"))) {
+                Collections.addAll(tips, config.getString(getFullKey("HideTipDescription")).split("\\|"));
             }
         }
     }

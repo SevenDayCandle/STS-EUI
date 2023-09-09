@@ -10,6 +10,7 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.ui.settings.ModSettingsPathSelector;
 import extendedui.ui.tooltips.EUIHeaderlessTooltip;
 import extendedui.utilities.EUIFontHelper;
 
@@ -17,27 +18,35 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
 public class EUIFileSelector extends EUIHoverable {
-    protected File currentFile;
-    protected FileNameExtensionFilter extensionFilter;
-    protected ActionT1<File> onUpdate;
-    protected float headerSpacing = 0.1f;
-    public boolean showFullPath;
+    private File currentFile;
+    private FileNameExtensionFilter extensionFilter;
+    private ActionT1<File> onUpdate;
+    private float headerSpacing = 0.1f;
+    protected boolean showFullPath;
     public EUILabel header;
     public EUITextBox filePath;
     public EUIButton selectButton;
     public EUIButton clearButton;
 
     public EUIFileSelector(EUIHitbox hb) {
-        this(hb, EUIRM.images.longInput.texture());
+        this(hb, EUIRM.images.longInput.texture(), 0.1f);
     }
 
-    public EUIFileSelector(EUIHitbox hb, Texture texture) {
+    public EUIFileSelector(EUIHitbox hb, Texture texture, float headerSpacing) {
         super(hb);
+        this.headerSpacing = headerSpacing;
         this.header = new EUILabel(EUIFontHelper.cardTitleFontSmall, hb).setAlignment(0.5f, 0.0f, false);
         this.filePath = new EUITextBox(texture, new RelativeHitbox(hb, hb.width, hb.height, hb.width * (1.5f + headerSpacing), hb.height * 0.5f));
         this.filePath.setAlignment(0.5f, 0.1f);
         this.selectButton = new EUIButton(EUIRM.images.fileSelectButton.texture(), new RelativeHitbox(hb, hb.height, hb.height, hb.width * (2.1f + headerSpacing), hb.height * 0.5f)).setOnClick(this::chooseFile);
         this.clearButton = new EUIButton(EUIRM.images.xButton.texture(), new RelativeHitbox(selectButton.hb, hb.height, hb.height, selectButton.hb.width * 1.5f, hb.height * 0.5f)).setOnClick(() -> this.selectFile(null, true));
+    }
+
+    public EUIFileSelector(EUIFileSelector other) {
+        this(other.hb, EUIRM.images.longInput.texture(), other.headerSpacing);
+        this.extensionFilter = new FileNameExtensionFilter(other.extensionFilter.getDescription(), other.extensionFilter.getExtensions());
+        this.tooltip = other.tooltip;
+        this.showFullPath = other.showFullPath;
     }
 
     protected void chooseFile() {

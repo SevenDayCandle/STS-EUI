@@ -22,7 +22,7 @@ import extendedui.ui.controls.EUIToggle;
 import java.util.LinkedList;
 
 public class EUITourTooltip extends EUITooltip {
-    protected static final LinkedList<EUITourTooltip> tutorialQueue = new LinkedList<>();
+    private static final LinkedList<EUITourTooltip> tutorialQueue = new LinkedList<>();
     protected static final Color TOOLTIP_COLOR = new Color(0.2f, 0.3f, 0.4f, 1f);
 
     public final Type type;

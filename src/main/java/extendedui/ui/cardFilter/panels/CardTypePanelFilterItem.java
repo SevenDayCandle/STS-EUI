@@ -13,11 +13,11 @@ import java.util.Collections;
 import java.util.List;
 
 public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvider {
-    protected static final CardTypePanelFilterItem ATTACK = new CardTypePanelFilterItem(AbstractCard.CardType.ATTACK);
-    protected static final CardTypePanelFilterItem CURSE = new CardTypePanelFilterItem(AbstractCard.CardType.CURSE);
-    protected static final CardTypePanelFilterItem POWER = new CardTypePanelFilterItem(AbstractCard.CardType.POWER);
-    protected static final CardTypePanelFilterItem SKILL = new CardTypePanelFilterItem(AbstractCard.CardType.SKILL);
-    protected static final CardTypePanelFilterItem STATUS = new CardTypePanelFilterItem(AbstractCard.CardType.STATUS);
+    private static final CardTypePanelFilterItem ATTACK = new CardTypePanelFilterItem(AbstractCard.CardType.ATTACK);
+    private static final CardTypePanelFilterItem CURSE = new CardTypePanelFilterItem(AbstractCard.CardType.CURSE);
+    private static final CardTypePanelFilterItem POWER = new CardTypePanelFilterItem(AbstractCard.CardType.POWER);
+    private static final CardTypePanelFilterItem SKILL = new CardTypePanelFilterItem(AbstractCard.CardType.SKILL);
+    private static final CardTypePanelFilterItem STATUS = new CardTypePanelFilterItem(AbstractCard.CardType.STATUS);
 
     public final AbstractCard.CardType type;
 

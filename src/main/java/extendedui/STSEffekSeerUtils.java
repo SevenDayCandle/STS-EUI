@@ -20,8 +20,8 @@ public class STSEffekSeerUtils {
     private static final int MIN_PREFIX_LENGTH = 3;
     private static final String LIBRARY_NAME = "EffekseerNativeForJava";
     private static final String PATH_PREFIX = "STSEffekSeerUtils";
-    public static final float DEFAULT_MAGNIFICATION = 50f;
-    public static final float EFFEKSEER_COLOR_RATE = 255f;
+    private static final float DEFAULT_MAGNIFICATION = 50f;
+    private static final float EFFEKSEER_COLOR_RATE = 255f;
     private static File temporaryDir;
 
     private static File createTemporaryDirectory(String prefix) throws IOException {

@@ -8,14 +8,14 @@ import extendedui.EUIRM;
 import extendedui.ui.hitboxes.EUIHitbox;
 
 public class EUIBorderedImage extends EUIImage {
-    public Texture borderB = EUIRM.images.panelBorderB.texture();
-    public Texture borderL = EUIRM.images.panelBorderL.texture();
-    public Texture borderR = EUIRM.images.panelBorderR.texture();
-    public Texture borderT = EUIRM.images.panelBorderT.texture();
-    public Texture cornerBL = EUIRM.images.panelCornerBL.texture();
-    public Texture cornerBR = EUIRM.images.panelCornerBR.texture();
-    public Texture cornerTL = EUIRM.images.panelCornerTL.texture();
-    public Texture cornerTR = EUIRM.images.panelCornerTR.texture();
+    private Texture borderB = EUIRM.images.panelBorderB.texture();
+    private Texture borderL = EUIRM.images.panelBorderL.texture();
+    private Texture borderR = EUIRM.images.panelBorderR.texture();
+    private Texture borderT = EUIRM.images.panelBorderT.texture();
+    private Texture cornerBL = EUIRM.images.panelCornerBL.texture();
+    private Texture cornerBR = EUIRM.images.panelCornerBR.texture();
+    private Texture cornerTL = EUIRM.images.panelCornerTL.texture();
+    private Texture cornerTR = EUIRM.images.panelCornerTR.texture();
     public float borderScale = 1;
 
     public EUIBorderedImage(Texture texture) {

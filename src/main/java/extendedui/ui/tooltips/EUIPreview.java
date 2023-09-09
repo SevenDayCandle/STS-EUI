@@ -11,7 +11,7 @@ import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.utilities.RotatingList;
 
 public abstract class EUIPreview {
-    public static final RotatingList<EUIPreview> PREVIEWS = new RotatingList<>();
+    private static final RotatingList<EUIPreview> PREVIEWS = new RotatingList<>();
     private static TooltipProvider lastProvider = null;
     public boolean isMultiPreview;
 

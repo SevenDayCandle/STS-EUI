@@ -32,33 +32,33 @@ import java.util.ArrayList;
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
 public class EUIRenderHelpers {
-    protected static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
-    protected static final String SHADER_BRIGHTER_FRAGMENT = "shaders/brighterFragment.glsl";
-    protected static final String SHADER_COLORIZE_FRAGMENT = "shaders/colorizeFragment.glsl";
-    protected static final String SHADER_COLORIZE_CRT_FRAGMENT = "shaders/colorizeCrtFragment.glsl";
-    protected static final String SHADER_CRT_FRAGMENT = "shaders/crtFragment.glsl";
-    protected static final String SHADER_GLITCH_FRAGMENT = "shaders/glitchFragment.glsl";
-    protected static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
-    protected static final String SHADER_INVERT_FRAGMENT = "shaders/invertFragment.glsl";
-    protected static final String SHADER_RAINBOW_FRAGMENT = "shaders/rainbowFragment.glsl";
-    protected static final String SHADER_RAINBOW_VERTICAL_FRAGMENT = "shaders/rainbowVerticalFragment.glsl";
-    protected static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
-    protected static final String SHADER_SILHOUETTE_FRAGMENT = "shaders/silhouetteFragment.glsl";
-    protected static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
+    private static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
+    private static final String SHADER_BRIGHTER_FRAGMENT = "shaders/brighterFragment.glsl";
+    private static final String SHADER_COLORIZE_FRAGMENT = "shaders/colorizeFragment.glsl";
+    private static final String SHADER_COLORIZE_CRT_FRAGMENT = "shaders/colorizeCrtFragment.glsl";
+    private static final String SHADER_CRT_FRAGMENT = "shaders/crtFragment.glsl";
+    private static final String SHADER_GLITCH_FRAGMENT = "shaders/glitchFragment.glsl";
+    private static final String SHADER_GRAYSCALE_FRAGMENT = "shaders/grayscaleFragment.glsl";
+    private static final String SHADER_INVERT_FRAGMENT = "shaders/invertFragment.glsl";
+    private static final String SHADER_RAINBOW_FRAGMENT = "shaders/rainbowFragment.glsl";
+    private static final String SHADER_RAINBOW_VERTICAL_FRAGMENT = "shaders/rainbowVerticalFragment.glsl";
+    private static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
+    private static final String SHADER_SILHOUETTE_FRAGMENT = "shaders/silhouetteFragment.glsl";
+    static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.4F);
     private static FrameBuffer maskBuffer;
-    protected static ShaderProgram blurShader;
-    protected static ShaderProgram brighterShader;
-    protected static ShaderProgram colorizeShader;
-    protected static ShaderProgram colorizeCrtShader;
-    protected static ShaderProgram crtShader;
-    protected static ShaderProgram glitchShader;
-    protected static ShaderProgram grayscaleShader;
-    protected static ShaderProgram invertShader;
-    protected static ShaderProgram rainbowShader;
-    protected static ShaderProgram rainbowVerticalShader;
-    protected static ShaderProgram sepiaShader;
-    protected static ShaderProgram silhouetteShader;
+    private static ShaderProgram blurShader;
+    private static ShaderProgram brighterShader;
+    private static ShaderProgram colorizeShader;
+    private static ShaderProgram colorizeCrtShader;
+    private static ShaderProgram crtShader;
+    private static ShaderProgram glitchShader;
+    private static ShaderProgram grayscaleShader;
+    private static ShaderProgram invertShader;
+    private static ShaderProgram rainbowShader;
+    private static ShaderProgram rainbowVerticalShader;
+    private static ShaderProgram sepiaShader;
+    private static ShaderProgram silhouetteShader;
 
     public static float calculateToAvoidOffscreen(ArrayList<EUITooltip> tips, float hb_cY) {
         return tips.isEmpty() ? 0f : Math.max(0.0F, EUITooltip.getTallestOffset(tips) - hb_cY);

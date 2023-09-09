@@ -2,6 +2,7 @@ package extendedui.ui.settings;
 
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.listeners.STSConfigListener;
+import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUIFileSelector;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIFontHelper;
@@ -21,11 +22,13 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
         setOnUpdate(this::onUpdateFile);
     }
 
-    public ModSettingsPathSelector makeCopy() {
-        ModSettingsPathSelector other = new ModSettingsPathSelector(new EUIHitbox(hb), config, this.header.text);
-        other.extensionFilter = new FileNameExtensionFilter(this.extensionFilter.getDescription(), this.extensionFilter.getExtensions());
-        other.tooltip = this.tooltip;
-        return other;
+    public ModSettingsPathSelector(ModSettingsPathSelector other) {
+        super(other);
+        this.config = other.config;
+        this.header.setLabel(other.header.text).setFont(EUIFontHelper.cardDescriptionFontNormal, 1f);
+        this.filePath.setFont(EUIFontHelper.cardDescriptionFontNormal, 1f);
+        this.config.addListener(this);
+        setOnUpdate(this::onUpdateFile);
     }
 
     @Override
@@ -39,6 +42,12 @@ public class ModSettingsPathSelector extends EUIFileSelector implements STSConfi
 
     public ModSettingsPathSelector setFileFilters(String... filters) {
         super.setFileFilters(filters);
+        return this;
+    }
+
+    public ModSettingsPathSelector translate(float x, float y) {
+        super.translate(x, y);
+
         return this;
     }
 }

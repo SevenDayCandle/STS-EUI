@@ -22,36 +22,34 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-import static extendedui.configuration.EUIConfiguration.BASE_SPRITES_DEFAULT;
-
 public class STSEffekseerManager implements ImGuiSubscriber {
     private static final ConcurrentLinkedQueue<Integer> PlayingHandles = new ConcurrentLinkedQueue<>();
     private static final HashMap<String, EffekseerEffectCore> ParticleEffects = new HashMap<>();
-    protected static final ArrayList<String> AvailablePaths = new ArrayList<>();
-    protected static final float ZPOS = 99;
-    protected static final String WINDOW_ID = "Effekseer";
-    protected static final String WINDOW_TABLE_ID = "Playing Effects";
-    protected static final String EFFECT_LIST_ID = "Effect List";
-    protected static final String EFFECT_LIST_POS_X_ID = "X##posX";
-    protected static final String EFFECT_LIST_POS_Y_ID = "Y##posY";
-    protected static final String EFFECT_LIST_ROT_X_ID = "X##rotX";
-    protected static final String EFFECT_LIST_ROT_Y_ID = "Y##rotY";
-    protected static final String EFFECT_LIST_ROT_Z_ID = "Z##rotZ";
-    protected static final String EFFECT_LIST_SCALE_X_ID = "X##scaleX";
-    protected static final String EFFECT_LIST_SCALE_Y_ID = "Y##scaleY";
-    protected static final String EFFECT_LIST_SCALE_Z_ID = "Z##scaleZ";
-    protected static final String EFFECT_LIST_COLOR_R_ID = "R##colorR";
-    protected static final String EFFECT_LIST_COLOR_G_ID = "G##colorG";
-    protected static final String EFFECT_LIST_COLOR_B_ID = "B##colorB";
-    protected static final String EFFECT_LIST_COLOR_A_ID = "A##colorA";
-    protected static final String EFFECT_LIST_PLAY_ID = "Play";
-    protected static final String EFFECT_LIST_TOGGLE_ID = "Show Playing";
-    protected static final String TABLE_ID = "Current Playing Effects";
-    public static final float BASE_ANIMATION_SPEED = 60f;
+    private static final ArrayList<String> AvailablePaths = new ArrayList<>();
+    private static final float ZPOS = 99;
+    private static final String WINDOW_ID = "Effekseer";
+    private static final String WINDOW_TABLE_ID = "Playing Effects";
+    private static final String EFFECT_LIST_ID = "Effect List";
+    private static final String EFFECT_LIST_POS_X_ID = "X##posX";
+    private static final String EFFECT_LIST_POS_Y_ID = "Y##posY";
+    private static final String EFFECT_LIST_ROT_X_ID = "X##rotX";
+    private static final String EFFECT_LIST_ROT_Y_ID = "Y##rotY";
+    private static final String EFFECT_LIST_ROT_Z_ID = "Z##rotZ";
+    private static final String EFFECT_LIST_SCALE_X_ID = "X##scaleX";
+    private static final String EFFECT_LIST_SCALE_Y_ID = "Y##scaleY";
+    private static final String EFFECT_LIST_SCALE_Z_ID = "Z##scaleZ";
+    private static final String EFFECT_LIST_COLOR_R_ID = "R##colorR";
+    private static final String EFFECT_LIST_COLOR_G_ID = "G##colorG";
+    private static final String EFFECT_LIST_COLOR_B_ID = "B##colorB";
+    private static final String EFFECT_LIST_COLOR_A_ID = "A##colorA";
+    private static final String EFFECT_LIST_PLAY_ID = "Play";
+    private static final String EFFECT_LIST_TOGGLE_ID = "Show Playing";
+    private static final String TABLE_ID = "Current Playing Effects";
+    private static final float BASE_ANIMATION_SPEED = 60f;
+    private static final int BASE_SPRITES_DEFAULT = 6000;
     private static EffekseerManagerCore managerCore;
     private static boolean enabled = false;
-    protected static float animationSpeed = BASE_ANIMATION_SPEED;
-    protected static STSEffekseerManager instance;
+    private static float animationSpeed = BASE_ANIMATION_SPEED;
     private final DEUIWindow effectWindow;
     private final DEUIListBox<String> effectList;
     private final DEUICloseableWindow handleWindow;
@@ -146,7 +144,7 @@ public class STSEffekseerManager implements ImGuiSubscriber {
             managerCore = new EffekseerManagerCore();
             managerCore.Initialize(BASE_SPRITES_DEFAULT);
             enabled = true;
-            instance = new STSEffekseerManager();
+            STSEffekseerManager instance = new STSEffekseerManager();
             BaseMod.subscribe(instance);
         }
         catch (Error | Exception e) {

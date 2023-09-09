@@ -16,7 +16,7 @@ import java.util.StringJoiner;
 public class EUIRM {
     private static final HashMap<String, Texture> externalTextures = new HashMap<>();
     private static final HashMap<String, Texture> internalTextures = new HashMap<>();
-    public static final String ID = "extendedui";
+    private static final String ID = "extendedui";
     public static Images images = new Images();
     public static Strings strings;
 

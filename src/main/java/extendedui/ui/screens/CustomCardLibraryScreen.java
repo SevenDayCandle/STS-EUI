@@ -34,7 +34,7 @@ import static extendedui.ui.cardFilter.CustomCardLibSortHeader.CENTER_Y;
 
 public class CustomCardLibraryScreen extends AbstractMenuScreen {
     protected static final float ICON_SIZE = scale(40);
-    public static final int VISIBLE_BUTTONS = 14;
+    private static final int VISIBLE_BUTTONS = 14;
     public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
     public static AbstractCard.CardColor currentColor = AbstractCard.CardColor.COLORLESS;
     public static CustomCardPoolModule customModule;
@@ -43,7 +43,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     public final EUIToggle upgradeToggle;
     public final MenuCancelButton cancelButton;
     protected int topButtonIndex;
-    protected Rectangle scissors;
+    private final Rectangle scissors;
     public EUICardGrid cardGrid;
 
     public CustomCardLibraryScreen() {

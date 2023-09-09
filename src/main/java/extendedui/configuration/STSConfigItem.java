@@ -11,8 +11,8 @@ import java.util.HashMap;
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */
 
 public class STSConfigItem<T> {
-    protected static final HashMap<Class<?>, Method> METHOD_HASH_MAP = new HashMap<>();
-    protected final ArrayList<STSConfigListener<T>> listeners = new ArrayList<>();
+    private static final HashMap<Class<?>, Method> METHOD_HASH_MAP = new HashMap<>();
+    private final ArrayList<STSConfigListener<T>> listeners = new ArrayList<>();
     protected final T defaultValue;
     public final String key;
     protected SpireConfig config;

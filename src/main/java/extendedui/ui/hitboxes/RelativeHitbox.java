@@ -3,7 +3,7 @@ package extendedui.ui.hitboxes;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 
 public class RelativeHitbox extends EUIHitbox {
-    public Hitbox parentHB;
+    protected Hitbox parentHB;
     public float offsetX;
     public float offsetY;
 
