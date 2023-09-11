@@ -15,7 +15,15 @@ public class OriginRelativeHitbox extends RelativeHitbox {
         this(hb, width, height, 0, 0);
     }
 
-    public RelativeHitbox makeCopy() {
+    public static OriginRelativeHitbox fromPercentages(Hitbox hb, float percentWidth, float percentHeight) {
+        return new OriginRelativeHitbox(hb, percentWidth * hb.width, percentHeight * hb.height);
+    }
+
+    public static OriginRelativeHitbox fromPercentages(Hitbox hb, float percentWidth, float percentHeight, float percentOffsetX, float percentOffsetY) {
+        return new OriginRelativeHitbox(hb, percentWidth * hb.width, percentHeight * hb.height, percentOffsetX * hb.width, percentOffsetY * hb.height);
+    }
+
+    public OriginRelativeHitbox makeCopy() {
         OriginRelativeHitbox copy = new OriginRelativeHitbox(this.parentHB, width, height, offsetX, offsetY);
         copy.lerpSpeed = this.lerpSpeed;
         copy.parentElement = this.parentElement;

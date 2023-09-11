@@ -203,6 +203,16 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
             return false;
         }
 
+        //Size check
+        if (!evaluateItem(currentSizes, c.potion.size)) {
+            return false;
+        }
+
+        //Vfx check
+        if (!evaluateItem(currentVfx, c.potion.p_effect)) {
+            return false;
+        }
+
         //Module check
         for (CustomFilterModule<PotionInfo> module : EUI.globalCustomPotionFilters) {
             if (!module.isItemValid(c)) {

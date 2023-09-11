@@ -23,7 +23,7 @@ public abstract class EUICanvas extends EUIBase {
 
     public EUICanvas() {
         this.scrollBar = new EUIVerticalScrollBar(new EUIHitbox(screenW(0.93f), screenH(0.15f), screenW(0.03f), screenH(0.7f)))
-                .setOnScroll(this::onScroll);
+                .setOnScroll(this::updateScrollbarDrag);
     }
 
     public EUICanvas canDragScreen(boolean canDrag) {
@@ -44,10 +44,7 @@ public abstract class EUICanvas extends EUIBase {
         scrollBar.scroll(0, true);
     }
 
-    protected void onScroll(float newPercent) {
-        if (!EUI.doesActiveElementExist()) {
-            scrollDelta = MathHelper.valueFromPercentBetween(lowerScrollBound, upperScrollBound, newPercent);
-        }
+    protected void onScroll(float scrollDelta) {
     }
 
     @Override
@@ -86,7 +83,15 @@ public abstract class EUICanvas extends EUIBase {
         }
     }
 
+    protected void updateScrollbarDrag(float newPercent) {
+        if (!EUI.doesActiveElementExist()) {
+            scrollDelta = MathHelper.valueFromPercentBetween(lowerScrollBound, upperScrollBound, newPercent);
+            onScroll(scrollDelta);
+        }
+    }
+
     protected void updateScrolling(boolean isDraggingScrollBar) {
+        float prevScroll = scrollDelta;
         if (!isDraggingScrollBar) {
             if (draggingScreen) {
                 if (InputHelper.isMouseDown && EUI.tryDragging()) {
@@ -118,6 +123,9 @@ public abstract class EUICanvas extends EUIBase {
             scrollDelta = instantSnap ? upperScrollBound : MathHelper.scrollSnapLerpSpeed(scrollDelta, upperScrollBound);
         }
 
-        scrollBar.scroll(MathHelper.percentFromValueBetween(lowerScrollBound, upperScrollBound, scrollDelta), false);
+        if (prevScroll != scrollDelta) {
+            scrollBar.scroll(MathHelper.percentFromValueBetween(lowerScrollBound, upperScrollBound, scrollDelta), false);
+            onScroll(scrollDelta);
+        }
     }
 }
