@@ -657,11 +657,11 @@ public class EUITooltip {
         return tips;
     }
 
-    public static void scanForTips(String rawDesc, ArrayList<? super EUIKeywordTooltip> tips) {
+    public static void scanForTips(String rawDesc, Collection<? super EUIKeywordTooltip> tips) {
         scanForTips(rawDesc, tips, tips, true);
     }
 
-    public static void scanForTips(String rawDesc, ArrayList<? super EUIKeywordTooltip> tips, ArrayList<? super EUIKeywordTooltip> dest, boolean allowNonRenderable) {
+    public static void scanForTips(String rawDesc, Collection<? super EUIKeywordTooltip> tips, Collection<? super EUIKeywordTooltip> dest, boolean allowNonRenderable) {
         StringBuilder sb = new StringBuilder();
         String s;
         EUIKeywordTooltip tip;
@@ -732,11 +732,11 @@ public class EUITooltip {
         }
     }
 
-    public static void scanListForAdditionalTips(ArrayList<EUITooltip> receiver) {
+    public static void scanListForAdditionalTips(Collection<EUITooltip> receiver) {
         scanListForAdditionalTips(new ArrayList<>(receiver), receiver);
     }
 
-    public static void scanListForAdditionalTips(ArrayList<EUITooltip> source, ArrayList<EUITooltip> receiver) {
+    public static void scanListForAdditionalTips(Collection<EUITooltip> source, Collection<EUITooltip> receiver) {
         if (EUIConfiguration.enableExpandTooltips.get()) {
             for (EUITooltip tip : source) {
                 if (tip.description != null && tip.isRenderable()) {
