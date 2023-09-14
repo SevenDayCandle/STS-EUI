@@ -5,7 +5,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
-import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.math.Vector2;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -41,27 +40,28 @@ import java.util.Collection;
 import java.util.List;
 
 public class EUITooltip {
-    private final static ArrayList<String> EMPTY_LIST = new ArrayList<>();
+    private static final ArrayList<String> EMPTY_LIST = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
     private static final Vector2 genericTipPos = new Vector2(0, 0);
-    private static final float BORDER_SIZE = Settings.scale * 32.0F;
-    static final Color BASE_COLOR = new Color(1f, 0.9725f, 0.8745f, 1f);
-    static final float BODY_OFFSET_Y = -20f * Settings.scale;
-    static final float BODY_TEXT_WIDTH = 320f * Settings.scale;
-    static final float BOX_BODY_H = 64f * Settings.scale;
-    static final float BOX_EDGE_H = 32f * Settings.scale;
-    static final float BOX_W = 360f * Settings.scale;
-    static final float CARD_TIP_PAD = 12f * Settings.scale;
-    static final float HEADER_OFFSET_Y = 12f * Settings.scale;
-    static final float ORB_OFFSET_Y = -8f * Settings.scale;
-    static final float SHADOW_DIST_X = 9f * Settings.scale;
-    static final float SHADOW_DIST_Y = 14f * Settings.scale;
-    static final float TEXT_OFFSET_X = 22f * Settings.scale;
-    static final float TIP_DESC_LINE_SPACING = 26f * Settings.scale;
-    private static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
-    private static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
-    private static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
-    static final float TIP_Y_LIMIT = Settings.HEIGHT * 0.97f;
+    protected static final float BORDER_SIZE = Settings.scale * 32.0F;
+    protected static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
+    protected static final float TIP_OFFSET_R_X = 20.0F * Settings.scale;
+    protected static final float TIP_X_THRESHOLD = (Settings.WIDTH * 0.5f); // 1544.0F * Settings.scale;
+    protected static final Color BASE_COLOR = new Color(1f, 0.9725f, 0.8745f, 1f);
+    protected static final float BODY_OFFSET_Y = -20f * Settings.scale;
+    protected static final float BODY_TEXT_WIDTH = 320f * Settings.scale;
+    protected static final float BOX_BODY_H = 64f * Settings.scale;
+    protected static final float BOX_EDGE_H = 32f * Settings.scale;
+    protected static final float BOX_W = 360f * Settings.scale;
+    protected static final float CARD_TIP_PAD = 12f * Settings.scale;
+    protected static final float HEADER_OFFSET_Y = 12f * Settings.scale;
+    protected static final float ORB_OFFSET_Y = -8f * Settings.scale;
+    protected static final float SHADOW_DIST_X = 9f * Settings.scale;
+    protected static final float SHADOW_DIST_Y = 14f * Settings.scale;
+    protected static final float TEXT_OFFSET_X = 22f * Settings.scale;
+    protected static final float TIP_DESC_LINE_SPACING = 26f * Settings.scale;
+    protected static final float TIP_Y_LIMIT = Settings.HEIGHT * 0.97f;
+    public static final float BOX_RENDER_OFFSET = BOX_EDGE_H * 3.15f;
     private static Object provider;
     private static Object lastProvider;
     public static Color TIP_BUFF = Color.WHITE;
@@ -123,19 +123,6 @@ public class EUITooltip {
         tooltips.clear();
         provider = null;
         lastProvider = null;
-    }
-
-    protected static float boundY(float y) {
-        if (y > TIP_Y_LIMIT) {
-            y = TIP_Y_LIMIT;
-        }
-        else if (tooltips.size() > 0) {
-            float firstH = tooltips.get(0).getTotalHeight() + SHADOW_DIST_X;
-            if (y < firstH) {
-                y = firstH;
-            }
-        }
-        return y;
     }
 
     public static float calculateAdditionalOffset(ArrayList<EUITooltip> tips, float hb_cY) {
@@ -297,7 +284,7 @@ public class EUITooltip {
         }
     }
 
-    public static void renderFromBlight(SpriteBatch sb) {
+    private static void renderFromBlight(SpriteBatch sb) {
         AbstractBlight blight = EUIUtils.safeCast(provider, AbstractBlight.class);
         if (blight == null) {
             return;
@@ -314,7 +301,7 @@ public class EUITooltip {
         float y;
         if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
             x = InputHelper.mX - (350 * Settings.scale);
-            y = boundY(InputHelper.mY - (50 * Settings.scale));
+            y = InputHelper.mY - (50 * Settings.scale);
         }
         else if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.RELIC_VIEW) {
             x = 180 * Settings.scale;
@@ -322,25 +309,25 @@ public class EUITooltip {
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !AbstractDungeon.player.hasBlight(blight.blightID)) {
             x = InputHelper.mX + (60 * Settings.scale);
-            y = boundY(InputHelper.mY + (180 * Settings.scale));
+            y = InputHelper.mY + (180 * Settings.scale);
         }
         else if (AbstractDungeon.player != null && AbstractDungeon.player.hasBlight(blight.blightID)) {
             x = InputHelper.mX + (60 * Settings.scale);
-            y = boundY(InputHelper.mY - (30 * Settings.scale));
+            y = InputHelper.mY - (30 * Settings.scale);
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD) {
             x = 360 * Settings.scale;
-            y = boundY(InputHelper.mY + (50 * Settings.scale));
+            y = InputHelper.mY + (50 * Settings.scale);
         }
         else {
             x = InputHelper.mX + (50 * Settings.scale);
-            y = boundY(InputHelper.mY + (50 * Settings.scale));
+            y = InputHelper.mY + (50 * Settings.scale);
         }
 
-        renderTipsImpl(sb, tooltips, x, y);
+        renderTipsImpl(sb, x, y);
     }
 
-    public static void renderFromCard(SpriteBatch sb) {
+    private static void renderFromCard(SpriteBatch sb) {
         AbstractCard card = EUIUtils.safeCast(provider, AbstractCard.class);
         if (card == null) {
             return;
@@ -356,11 +343,19 @@ public class EUITooltip {
                     }
                 }
             }
+            else {
+                for (String k : card.keywords) {
+                    EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(k);
+                    if (tip != null && tip.isRenderable()) {
+                        tooltips.add(tip);
+                    }
+                }
+            }
             scanListForAdditionalTips(tooltips);
         }
 
         float x = card.current_x;
-        float y = card.current_y - BOX_EDGE_H;
+        float y = card.current_y - BOX_EDGE_H + AbstractCard.IMG_HEIGHT * 0.5f;
         if (card.current_x < (float) Settings.WIDTH * 0.7f) {
             x += AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD;
         }
@@ -368,41 +363,7 @@ public class EUITooltip {
             x -= AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD + BOX_W;
         }
 
-        float size = 0;
-        for (EUITooltip tip : tooltips) {
-            if (!StringUtils.isEmpty(tip.description)) {
-                size += 1f;
-            }
-        }
-
-        if (size > 3f && card.current_y < Settings.HEIGHT * 0.5f && AbstractDungeon.screen != AbstractDungeon.CurrentScreen.CARD_REWARD) {
-            float steps = (tooltips.size() - 3) * 0.4f;
-            float multi = 1f - (card.current_y / (Settings.HEIGHT * 0.5f));
-
-            y += AbstractCard.IMG_HEIGHT * (0.5f + MathUtils.round(multi * steps));
-        }
-        else {
-            y += AbstractCard.IMG_HEIGHT * 0.5f;
-        }
-
-        y = boundY(y);
-
-        final float original_y = y;
-        final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
-
-        for (int i = 0; i < tooltips.size(); i++) {
-            EUITooltip tip = tooltips.get(i);
-            if (StringUtils.isEmpty(tip.description)) {
-                continue;
-            }
-            float projected = y - tip.getTotalHeight();
-            if (projected <= 0) {
-                y = original_y;
-                x += offset_x;
-            }
-
-            y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
-        }
+        renderTipsImpl(sb, x, y);
 
         if (provider instanceof TooltipProvider) {
             boolean popUp = ((TooltipProvider) provider).isPopup();
@@ -413,7 +374,7 @@ public class EUITooltip {
         }
     }
 
-    public static void renderFromCreature(SpriteBatch sb) {
+    private static void renderFromCreature(SpriteBatch sb) {
         AbstractCreature creature = EUIUtils.safeCast(provider, AbstractCreature.class);
         if (creature == null) {
             return;
@@ -496,22 +457,10 @@ public class EUITooltip {
             }
         }
 
-        final float original_y = y;
-        final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
-
-        for (int i = 0; i < tooltips.size(); i++) {
-            EUITooltip tip = tooltips.get(i);
-            float projected = y - tip.getTotalHeight();
-            if (projected < 0) {
-                y = original_y;
-                x += offset_x;
-            }
-
-            y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
-        }
+        renderTipsImpl(sb, x, y);
     }
 
-    public static void renderFromPotion(SpriteBatch sb) {
+    private static void renderFromPotion(SpriteBatch sb) {
         AbstractPotion potion = EUIUtils.safeCast(provider, AbstractPotion.class);
         if (potion == null) {
             return;
@@ -530,7 +479,7 @@ public class EUITooltip {
         if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.POTION_VIEW) {
             x = 150 * Settings.scale;
             y = 800.0F * Settings.scale;
-            renderTipsImpl(sb, tooltips, x, y);
+            renderTipsImpl(sb, x, y);
             EUIPreview preview = getProviderPreview();
             if (preview != null) {
                 preview.render(sb, 360 * Settings.scale, 0.25f * Settings.HEIGHT, 0.83f, false, false);
@@ -538,8 +487,8 @@ public class EUITooltip {
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD && !hasPotion) {
             x = 350 * Settings.scale;
-            y = boundY(InputHelper.mY + (50 * Settings.scale));
-            renderTipsImpl(sb, tooltips, x, y);
+            y = InputHelper.mY + (50 * Settings.scale);
+            renderTipsImpl(sb, x, y);
             EUIPreview preview = getProviderPreview();
             if (preview != null) {
                 preview.render(sb, x, y, 0.83f, false, false);
@@ -548,22 +497,22 @@ public class EUITooltip {
         else {
             if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
                 x = InputHelper.mX - (350 * Settings.scale);
-                y = boundY(InputHelper.mY - (50 * Settings.scale));
+                y = InputHelper.mY - (50 * Settings.scale);
             }
             else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && potion.tips.size() > 2 && !hasPotion) {
                 x = InputHelper.mX + (60 * Settings.scale);
-                y = boundY(InputHelper.mY + (180 * Settings.scale));
+                y = InputHelper.mY + (180 * Settings.scale);
             }
             else if (hasPotion) {
                 x = InputHelper.mX + (60 * Settings.scale);
-                y = boundY(InputHelper.mY - (30 * Settings.scale));
+                y = InputHelper.mY - (30 * Settings.scale);
             }
             else {
                 x = InputHelper.mX + (50 * Settings.scale);
-                y = boundY(InputHelper.mY + (50 * Settings.scale));
+                y = InputHelper.mY + (50 * Settings.scale);
             }
 
-            renderTipsImpl(sb, tooltips, x, y);
+            renderTipsImpl(sb, x, y);
 
             if (provider instanceof TooltipProvider) {
                 EUIPreview preview = ((TooltipProvider) provider).getPreview();
@@ -574,7 +523,7 @@ public class EUITooltip {
         }
     }
 
-    public static void renderFromRelic(SpriteBatch sb) {
+    private static void renderFromRelic(SpriteBatch sb) {
         AbstractRelic relic = EUIUtils.safeCast(provider, AbstractRelic.class);
         if (relic == null) {
             return;
@@ -593,7 +542,7 @@ public class EUITooltip {
         if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.RELIC_VIEW) {
             x = 180 * Settings.scale;
             y = 0.7f * Settings.HEIGHT;
-            renderTipsImpl(sb, tooltips, x, y);
+            renderTipsImpl(sb, x, y);
             EUIPreview preview = getProviderPreview();
             if (preview != null) {
                 preview.render(sb, 655 * Settings.scale, 0.1f * Settings.HEIGHT, 0.83f, false, false);
@@ -601,8 +550,8 @@ public class EUITooltip {
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD && !hasRelic) {
             x = 350 * Settings.scale;
-            y = boundY(InputHelper.mY + (50 * Settings.scale));
-            renderTipsImpl(sb, tooltips, x, y);
+            y = InputHelper.mY + (50 * Settings.scale);
+            renderTipsImpl(sb, x, y);
             EUIPreview preview = getProviderPreview();
             if (preview != null) {
                 preview.render(sb, 410 * Settings.scale, y, 0.83f, false, false);
@@ -611,22 +560,22 @@ public class EUITooltip {
         else {
             if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
                 x = InputHelper.mX - (350 * Settings.scale);
-                y = boundY(InputHelper.mY - (50 * Settings.scale));
+                y = InputHelper.mY - (50 * Settings.scale);
             }
             else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !hasRelic) {
                 x = InputHelper.mX + (60 * Settings.scale);
-                y = boundY(InputHelper.mY + (180 * Settings.scale));
+                y = InputHelper.mY + (180 * Settings.scale);
             }
             else if (hasRelic) {
                 x = InputHelper.mX + (60 * Settings.scale);
-                y = boundY(InputHelper.mY - (30 * Settings.scale));
+                y = InputHelper.mY - (30 * Settings.scale);
             }
             else {
                 x = InputHelper.mX + (50 * Settings.scale);
-                y = boundY(InputHelper.mY + (50 * Settings.scale));
+                y = InputHelper.mY + (50 * Settings.scale);
             }
 
-            renderTipsImpl(sb, tooltips, x, y);
+            renderTipsImpl(sb, x, y);
             EUIPreview preview = getProviderPreview();
             if (preview != null) {
                 if (x > Settings.WIDTH * 0.2) {
@@ -640,14 +589,35 @@ public class EUITooltip {
         }
     }
 
-    public static void renderGeneric(SpriteBatch sb) {
-        renderTipsImpl(sb, tooltips, genericTipPos.x, genericTipPos.y);
+    private static void renderGeneric(SpriteBatch sb) {
+        renderTipsImpl(sb, genericTipPos.x, genericTipPos.y);
     }
 
-    protected static void renderTipsImpl(SpriteBatch sb, List<? extends EUITooltip> tips, float x, float y) {
-        for (int i = 0; i < tips.size(); i++) {
-            final EUITooltip tip = tips.get(i);
-            y -= tip.render(sb, x, y, i) + BOX_EDGE_H * 3.15f;
+    private static void renderTipsImpl(SpriteBatch sb, float x, float y) {
+        // Attempt to push up the tooltip rendering start as far up as possible if the tooltips would go off the screen
+        float projected_end = y + SHADOW_DIST_Y - 1;
+        for (EUITooltip tip : tooltips) {
+            projected_end -= tip.getTotalHeight();
+        }
+        if (projected_end < 0) {
+            y = y - projected_end;
+        }
+
+        if (y > TIP_Y_LIMIT) {
+            y = TIP_Y_LIMIT;
+        }
+
+        float original_y = y;
+        final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
+        for (int i = 0; i < tooltips.size(); i++) {
+            EUITooltip tip = tooltips.get(i);
+            float projected = y - tip.getTotalHeight();
+            if (projected < -SHADOW_DIST_Y) {
+                y = original_y;
+                x += offset_x;
+            }
+
+            y -= tip.render(sb, x, y, i) + BOX_RENDER_OFFSET;
         }
     }
 
@@ -702,7 +672,7 @@ public class EUITooltip {
                             sb.append(c);
                         }
                     }
-                    s = sb.toString();
+                    s = StringUtils.lowerCase(sb.toString());
                     tip = EUIKeywordTooltip.findByName(s);
                     if (tip != null && (allowNonRenderable || tip.isRenderable()) && !tips.contains(tip)) {
                         dest.add(tip);
@@ -722,7 +692,7 @@ public class EUITooltip {
                 case '。':
                 case '.':
                 case ',':
-                    s = sb.toString();
+                    s = StringUtils.lowerCase(sb.toString());
                     tip = EUIKeywordTooltip.findByName(s);
                     if (tip != null && (allowNonRenderable || tip.isRenderable()) && !tips.contains(tip)) {
                         dest.add(tip);
@@ -772,7 +742,7 @@ public class EUITooltip {
     }
 
     public float getTotalHeight() {
-        return height() + BOX_EDGE_H * 3.15f;
+        return height() + BOX_RENDER_OFFSET;
     }
 
     public float height() {

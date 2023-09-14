@@ -201,14 +201,7 @@ public class TooltipPatches {
         @SpirePrefixPatch
         public static SpireReturn<Void> prefix(AbstractCard c, SpriteBatch sb) {
             if (EUIConfiguration.useEUITooltips.get()) {
-                if (lastTips != c) {
-                    lastTips = c;
-                    currentTips = EUIUtils.mapAsNonnull(c.keywords, k -> {
-                        EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(k);
-                        return tip != null && tip.isRenderable() ? tip : null;
-                    });
-                }
-                EUITooltip.queueTooltips(currentTips);
+                EUITooltip.queueTooltips(c);
                 return SpireReturn.Return();
             }
 
