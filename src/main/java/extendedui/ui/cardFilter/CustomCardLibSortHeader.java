@@ -17,8 +17,8 @@ import extendedui.utilities.FakeLibraryCard;
 import java.util.ArrayList;
 
 public class CustomCardLibSortHeader extends CardLibSortHeader {
-    public static final float SPACE_X = 166f * Settings.scale;
-    public static final float WIDTH_DEC = 30 * Settings.scale;
+    public static final float SPACE_X = 155f * Settings.xScale;
+    public static final float RESIZED_X = 148 * Settings.xScale;
     public static final float CENTER_Y = Settings.HEIGHT * 0.88f;
     private static CardGroup falseGroup;
     private static FakeLibraryCard fakeLibraryCard;
@@ -157,7 +157,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader {
     }
 
     private void setupButton(SortHeaderButton button, float start, int index) {
-        button.hb.resize(button.hb.width - WIDTH_DEC, button.hb.height);
+        button.hb.resize(RESIZED_X, button.hb.height);
         button.hb.move(start + (CustomCardLibSortHeader.SPACE_X * index), isFixedPosition ? CENTER_Y : button.hb.cY);
     }
 
@@ -174,7 +174,7 @@ public class CustomCardLibSortHeader extends CardLibSortHeader {
             override = EUIUtils.arrayAppend(buttons, amountButton);
         }
 
-        final float start = buttons[0].hb.cX;
+        final float start = override[0].hb.cX;
         for (int i = 0; i < override.length; i++) {
             setupButton(override[i], start, i);
         }
