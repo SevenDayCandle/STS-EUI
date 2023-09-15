@@ -444,7 +444,10 @@ public class EUI {
     public static void registerBasegameKeywords() {
 
         // Energy tooltips are not present in GameDictionary
-        EUIKeywordTooltip energyTooltip = tryRegisterTooltip(ENERGY_ID, null, TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS).setIconFunc(EUI::getEnergyIcon);
+        EUIKeywordTooltip energyTooltip = tryRegisterTooltip(ENERGY_ID, null, TipHelper.TEXT[0], GameDictionary.TEXT[0], ENERGY_STRINGS)
+                .setIconFunc(EUI::getEnergyIcon)
+                .setCanAdd(false)
+                .forceIcon(true);
         EUIKeywordTooltip.registerName(StringUtils.lowerCase(TipHelper.TEXT[0]), energyTooltip);
 
         // Read directly from fields to obtain the actual IDs to use, which are language-invariant
@@ -461,9 +464,6 @@ public class EUI {
             }
         }
     }
-
-    /* Register a tooltip with the given parameters. If grammar exists, its contents will be merged with this tooltip
-     * */
 
     /* Add grammar rules to existing tooltips */
     public static void registerGrammar(Map<String, EUIKeyword> keywords) {
@@ -524,8 +524,6 @@ public class EUI {
         for (EUIBase s : subscribers) {
             s.tryRender(sb);
         }
-
-        // Battle subscribers are rendered in the energy panel patch
     }
 
     public static void renderBattleSubscribers(SpriteBatch sb) {
