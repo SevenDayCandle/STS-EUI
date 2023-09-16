@@ -24,7 +24,8 @@
 			"启用debug功能",
 			"Enable expanded Tooltips",
 			"Always use EUI tooltip rendering",
-			"重新启用提示描述"
+			"重新启用提示描述",
+			"Remove Menu Fade Transitions"
 		]
 	},
 	"extendedui:config_desc": {
@@ -44,7 +45,8 @@
 			"If checked, keywords mentioned in tooltips on cards, relics, and potions will also have their tooltips shown.",
 			"If checked, all tooltip rendering will be managed by EUI. This may cause incompatibility issues with mods that modify base game tooltip rendering.",
 			"重新启用所有被本mod关闭的提示描述。",
-			"{#b:No tooltips are currently disabled.}"
+			"{#b:No tooltips are currently disabled.}",
+			"Removes the black screen fade that occurs when you enter or exit a run, such that performing these actions will be nearly instantaneous."
 		]
 	},
 	"extendedui:grammar": {

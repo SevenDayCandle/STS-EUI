@@ -124,11 +124,6 @@ public class RelicPoolScreen extends EUIPoolScreen {
         AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
 
         relicGrid.clear();
-        if (relics.isEmpty()) {
-            AbstractDungeon.closeCurrentScreen();
-            return;
-        }
-
         relicGrid.setItems(relics, RelicInfo::new);
 
         EUI.relicFilters.initializeForCustomHeader(relicGrid.group, __ -> {

@@ -114,11 +114,6 @@ public class PotionPoolScreen extends EUIPoolScreen {
         AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
 
         potionGrid.clear();
-        if (potions.isEmpty()) {
-            AbstractDungeon.closeCurrentScreen();
-            return;
-        }
-
         potionGrid.setItems(potions, PotionInfo::new);
 
         EUI.potionFilters.initializeForCustomHeader(potionGrid.group, __ -> {

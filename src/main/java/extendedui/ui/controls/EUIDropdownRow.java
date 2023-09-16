@@ -47,14 +47,14 @@ public class EUIDropdownRow<T> {
         if (dr.tooltipFunction != null) {
             EUITooltip.queueTooltips(dr.tooltipFunction.invoke(item));
         }
-        else if (item instanceof TooltipProvider) {
-            EUITooltip.queueTooltips(((TooltipProvider) item).getTips());
-        }
         else if (item instanceof CardObject) {
             renderCard(((CardObject) item).getCard());
         }
         else if (item instanceof AbstractCard) {
             renderCard((AbstractCard) item);
+        }
+        else if (item instanceof TooltipProvider) {
+            EUITooltip.queueTooltips(((TooltipProvider) item).getTips());
         }
     }
 

@@ -46,6 +46,7 @@ public class EUIConfiguration {
     public static STSConfigItem<Boolean> enableExpandTooltips = new STSConfigItem<>(getFullKey("EnableExpandTooltips"), false);
     public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(getFullKey("FlushOnGameStart"), false);
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(getFullKey("FlushOnRoomStart"), false);
+    public static STSConfigItem<Boolean> instantFade = new STSConfigItem<>(getFullKey("InstantFade"), false);
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(getFullKey("OverrideGameFont"), false);
     public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(getFullKey("ShowCountingPanel"), false);
     public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(getFullKey("ShowModSettings"), false);
@@ -94,6 +95,10 @@ public class EUIConfiguration {
         settingsBlock.addUIElement(page, new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.cardDescriptionFontNormal, option.get(), panel, (__) -> {
         }, (c) -> option.set(c.enabled)));
         return ypos - BASE_OPTION_OPTION_HEIGHT;
+    }
+
+    public static boolean canSkipFade() {
+        return instantFade.get();
     }
 
     public static void clearHiddenTips(boolean flush) {
@@ -155,6 +160,7 @@ public class EUIConfiguration {
             enableExpandTooltips.addConfig(config);
             flushOnGameStart.addConfig(config);
             flushOnRoomStart.addConfig(config);
+            instantFade.addConfig(config);
             showModSettings.addConfig(config);
             useEUITooltips.addConfig(config);
             useSnapScrolling.addConfig(config);
@@ -216,6 +222,7 @@ public class EUIConfiguration {
         makeModToggle(effekseerCategory, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, EUIRM.strings.configdesc_enableDescriptionIcons);
         makeModToggle(effekseerCategory, enableExpandTooltips, EUIRM.strings.config_enableExpandTooltips, EUIRM.strings.configdesc_enableExpandTooltips);
         makeModToggle(effekseerCategory, useEUITooltips, EUIRM.strings.config_useEUITooltips, EUIRM.strings.configdesc_useEUITooltips);
+        makeModToggle(effekseerCategory, instantFade, EUIRM.strings.config_instantFade, EUIRM.strings.configdesc_instantFade);
         makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
@@ -243,7 +250,8 @@ public class EUIConfiguration {
         yPos = addToggle(0, disableEffekseer, EUIRM.strings.config_disableEffekseer, yPos, EUIRM.strings.configdesc_disableEffekseer);
         yPos = addToggle(0, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, yPos, EUIRM.strings.configdesc_enableDescriptionIcons);
         yPos = addToggle(0, enableExpandTooltips, EUIRM.strings.config_enableExpandTooltips, yPos, EUIRM.strings.configdesc_enableExpandTooltips);
-        yPos = addToggle(0, enableExpandTooltips, EUIRM.strings.config_useEUITooltips, yPos, EUIRM.strings.configdesc_useEUITooltips);
+        yPos = addToggle(0, useEUITooltips, EUIRM.strings.config_useEUITooltips, yPos, EUIRM.strings.configdesc_useEUITooltips);
+        yPos = addToggle(0, instantFade, EUIRM.strings.config_instantFade, yPos, EUIRM.strings.configdesc_instantFade);
         yPos = addToggle(0, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(0, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);

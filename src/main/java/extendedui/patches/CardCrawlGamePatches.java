@@ -7,14 +7,17 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.DrawMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.STSEffekseerManager;
 import extendedui.ui.tooltips.EUITourTooltip;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
+import javassist.expr.ExprEditor;
 import org.apache.logging.log4j.LogManager;
 
 public class CardCrawlGamePatches {
+
     @SpirePatch(clz = CardCrawlGame.class, method = "render")
     public static class CardCrawlGame_PreRender {
         @SpirePrefixPatch
@@ -86,10 +89,36 @@ public class CardCrawlGamePatches {
     }
 
     @SpirePatch(clz = CardCrawlGame.class, method = "startOver")
+    @SpirePatch(clz = CardCrawlGame.class, method = "startOverButShowCredits")
     public static class CardCrawlGame_StartOver {
         @SpirePrefixPatch
         public static void prefix() {
             EUITourTooltip.clearTutorialQueue();
+        }
+
+        @SpireInstrumentPatch
+        public static ExprEditor instrument() {
+            return new ExprEditor() {
+                public void edit(javassist.expr.MethodCall m) throws CannotCompileException {
+                    if (m.getMethodName().equals("fadeToBlack")) {
+                        m.replace("{ $_ = $proceed(extendedui.configuration.EUIConfiguration.canSkipFade() ? -1f : $1); }");
+                    }
+                }
+            };
+        }
+    }
+
+    @SpirePatch(clz = CardCrawlGame.class, method = "updateFade")
+    public static class MainMenuScreenPatches_SetMainMenuButtons {
+        @SpireInstrumentPatch
+        public static ExprEditor instrument() {
+            return new ExprEditor() {
+                public void edit(javassist.expr.MethodCall m) throws CannotCompileException {
+                    if (m.getMethodName().equals("fadeIn")) {
+                        m.replace("{ $_ = $proceed(extendedui.configuration.EUIConfiguration.canSkipFade() ? -1f : $1); }");
+                    }
+                }
+            };
         }
     }
 }

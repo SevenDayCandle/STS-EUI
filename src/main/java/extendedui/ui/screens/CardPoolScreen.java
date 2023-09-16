@@ -149,11 +149,6 @@ public class CardPoolScreen extends EUIPoolScreen {
 
         cardGrid.clear();
         colorlessToggle.setToggle(false).setActive(!canSeeAllColors);
-        if (cards.isEmpty()) {
-            AbstractDungeon.closeCurrentScreen();
-            return;
-        }
-
         cardGrid.setCardGroup(cards);
 
         EUI.cardFilters.initializeForCustomHeader(cards, __ -> {

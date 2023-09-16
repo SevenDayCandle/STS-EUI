@@ -16,10 +16,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.daily.mods.Diverse;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
-import com.megacrit.cardcrawl.helpers.BlightHelper;
-import com.megacrit.cardcrawl.helpers.CardLibrary;
-import com.megacrit.cardcrawl.helpers.ModHelper;
-import com.megacrit.cardcrawl.helpers.TipHelper;
+import com.megacrit.cardcrawl.helpers.*;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.potions.*;
@@ -134,6 +131,10 @@ public class EUIGameUtils {
             BlightHelper.initialize();
         }
         return EUIUtils.map(BlightHelper.blights, EUIGameUtils::getSeenBlight);
+    }
+
+    public static ArrayList<AbstractRelic> getAllRelics() {
+        return EUIUtils.mapAsNonnull(RELIC_COLORS.keySet(), RelicLibrary::getRelic);
     }
 
     public static OrthographicCamera getCamera() {
