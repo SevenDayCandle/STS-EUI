@@ -31,7 +31,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
 
-public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends EUICanvasGrid {
+public abstract class GenericFilters<T, U extends GenericFiltersObject, V extends CustomFilterModule<T>> extends EUICanvasGrid {
     protected static final HashMap<String, EUIKeywordTooltip> TEMPORARY_TIPS = new HashMap<>(); // Because AbstractPotion HAS NO STANDARDIZED WAY OF ADDING TIPS, there's no way for us to infer where the tip came from
     protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
@@ -54,8 +54,6 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     public final EUITextBoxInput nameInput;
     public final EUIToggle sortDirectionToggle;
     public final EUIToggle sortTypeToggle;
-    public final HashSet<EUIKeywordTooltip> currentFilters = new HashSet<>();
-    public final HashSet<EUIKeywordTooltip> currentNegateFilters = new HashSet<>();
     private FilterKeywordButton selectedButton;
     private boolean shouldSortByCount;
     private boolean sortDesc;
@@ -65,12 +63,12 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     protected boolean isAccessedFromCardPool;
     protected float drawX;
     protected int currentTotal;
-    public U customModule;
-    public String currentDescription;
-    public String currentName;
+    public final U filters;
+    public V customModule;
 
     public GenericFilters() {
         super(ROW_SIZE, PAD_Y);
+        filters = getFilterObject();
         isActive = false;
         hb = new EUIHitbox(DRAW_START_X, DRAW_START_Y, scale(180), scale(70)).setIsPopupCompatible(true);
         closeButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
@@ -88,7 +86,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         nameInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
                 new EUIHitbox(0, 0, scale(320), scale(40)).setIsPopupCompatible(true))
                 .setOnComplete(s -> {
-                    currentName = s;
+                    filters.currentName = s;
                     if (onClick != null) {
                         onClick.invoke(null);
                     }
@@ -102,7 +100,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         descriptionInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
                 new EUIHitbox(0, 0, scale(360), scale(40)).setIsPopupCompatible(true))
                 .setOnComplete(s -> {
-                    currentDescription = s;
+                    filters.currentDescription = s;
                     if (onClick != null) {
                         onClick.invoke(null);
                     }
@@ -174,8 +172,9 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         hideKeyword(!EUIConfiguration.getIsTipDescriptionHidden(button.keywordTooltip.ID));
     }
 
-    public final void clear(boolean shouldInvoke, boolean shouldClearColors) {
-        clearFilters(shouldInvoke, shouldClearColors);
+    public void clear(boolean shouldInvoke, boolean shouldClearColors) {
+        filters.clear(shouldClearColors);
+        doForFilters(CustomFilterModule::reset);
         if (shouldInvoke && onClick != null) {
             onClick.invoke(null);
         }
@@ -195,8 +194,8 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         return filterButtons.size();
     }
 
-    public void doForFilters(ActionT1<U> filterAction) {
-        for (U module : getGlobalFilters()) {
+    public void doForFilters(ActionT1<V> filterAction) {
+        for (V module : getGlobalFilters()) {
             filterAction.invoke(module);
         }
         if (customModule != null) {
@@ -263,7 +262,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         }
     }
 
-    public final GenericFilters<T, U> initialize(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
+    public final GenericFilters<T, U, V> initialize(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
         clear(false, true);
         TEMPORARY_TIPS.clear();
         currentFilterCounts.clear();
@@ -298,8 +297,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
 
     // Shorthand function to be fed to all dropdown filters
     protected <K> void onFilterChanged(Collection<K> set, List<K> items) {
-        set.clear();
-        set.addAll(items);
+        EUIUtils.replaceContents(set, items);
         if (onClick != null) {
             onClick.invoke(null);
         }
@@ -466,13 +464,15 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
         }
     }
 
-    abstract public void clearFilters(boolean shouldInvoke, boolean shouldClearColors);
-
-    abstract public boolean areFiltersEmpty();
+    public boolean areFiltersEmpty() {
+        return filters.isEmpty()
+                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty)
+                && (customModule != null && customModule.isEmpty());
+    }
 
     abstract public boolean evaluate(T item);
 
-    abstract public ArrayList<U> getGlobalFilters();
+    abstract public ArrayList<V> getGlobalFilters();
 
     abstract protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
 
@@ -483,4 +483,7 @@ public abstract class GenericFilters<T, U extends CustomFilterModule<T>> extends
     abstract public boolean isHoveredImpl();
 
     abstract public void renderFilters(SpriteBatch sb);
+
+    abstract protected U getFilterObject();
+
 }

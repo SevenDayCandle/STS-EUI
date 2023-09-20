@@ -21,6 +21,7 @@ import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomCardPoolModule;
+import extendedui.ui.cardFilter.filters.CardKeywordFilters;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
@@ -36,7 +37,6 @@ public class CardPoolScreen extends EUIPoolScreen {
     public static AbstractDungeon.CurrentScreen CARD_POOL_SCREEN;
 
     public static CustomCardPoolModule customModule;
-
     protected final EUIToggle upgradeToggle;
     protected final EUIToggle colorlessToggle;
     protected final EUIButton swapRelicScreen;

@@ -20,6 +20,7 @@ import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.cardFilter.FilterKeywordButton;
 import extendedui.ui.cardFilter.GenericFilters;
+import extendedui.ui.cardFilter.GenericFiltersObject;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
@@ -31,19 +32,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomFilterModule<AbstractBlight>> {
+public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightKeywordFilters.BlightFilters, CustomFilterModule<AbstractBlight>> {
     protected final static String[] TEXT = CardCrawlGame.languagePack.getUIString("ConfirmPopup").TEXT;
-    public final ArrayList<UniqueValue> currentSeen = new ArrayList<>();
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<UniqueValue> seenDropdown;
-    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
 
     public BlightKeywordFilters() {
         super();
 
         originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.ui_basegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_origins)
                 .setIsMultiSelect(true)
@@ -53,7 +52,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
         seenDropdown = new EUIDropdown<UniqueValue>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , item -> item.name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentSeen, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentSeen, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_unique)
                 .setItems(UniqueValue.values())
@@ -76,62 +75,48 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
     }
 
     @Override
-    public boolean areFiltersEmpty() {
-        return (currentName == null || currentName.isEmpty())
-                && (currentDescription == null || currentDescription.isEmpty())
-                && currentOrigins.isEmpty() && currentSeen.isEmpty()
-                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
-                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty);
-    }
-
-    @Override
-    public void clearFilters(boolean shouldInvoke, boolean shouldClearColors) {
-        currentOrigins.clear();
-        currentFilters.clear();
-        currentNegateFilters.clear();
-        currentName = null;
-        currentDescription = null;
+    public void clear(boolean shouldInvoke, boolean shouldClearColors) {
+        super.clear(shouldInvoke, shouldClearColors);
         originsDropdown.setSelectionIndices((int[]) null, false);
         seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
-        doForFilters(CustomFilterModule::reset);
     }
 
     public boolean evaluate(AbstractBlight c) {
         //Name check
-        if (currentName != null && !currentName.isEmpty()) {
+        if (filters.currentName != null && !filters.currentName.isEmpty()) {
             String name = getNameForSort(c);
-            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
+            if (name == null || !name.toLowerCase().contains(filters.currentName.toLowerCase())) {
                 return false;
             }
         }
 
         //Description check
-        if (currentDescription != null && !currentDescription.isEmpty()) {
+        if (filters.currentDescription != null && !filters.currentDescription.isEmpty()) {
             String desc = getDescriptionForSort(c);
-            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
+            if (desc == null || !desc.toLowerCase().contains(filters.currentDescription.toLowerCase())) {
                 return false;
             }
         }
 
         //Origin check
-        if (!evaluateItem(currentOrigins, EUIGameUtils.getModInfo(c))) {
+        if (!evaluateItem(filters.currentOrigins, EUIGameUtils.getModInfo(c))) {
             return false;
         }
 
         //Seen check
-        if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c))) {
+        if (!evaluateItem(filters.currentSeen, (opt) -> opt.evaluate(c))) {
             return false;
         }
 
         //Tooltips check
-        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
+        if (!filters.currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(filters.currentFilters))) {
             return false;
         }
 
         //Negate Tooltips check
-        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
+        if (!filters.currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), filters.currentNegateFilters::contains))) {
             return false;
         }
 
@@ -219,6 +204,11 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
     }
 
     @Override
+    protected BlightFilters getFilterObject() {
+        return new BlightFilters();
+    }
+
+    @Override
     public void updateFilters() {
         float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
         xPos = updateDropdown(seenDropdown, xPos);
@@ -241,6 +231,24 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, CustomF
 
         public boolean evaluate(AbstractBlight blight) {
             return evalFunc.invoke(blight);
+        }
+    }
+
+    public static class BlightFilters extends GenericFiltersObject {
+        public final ArrayList<UniqueValue> currentSeen = new ArrayList<>();
+
+        public void clear(boolean shouldClearColors) {
+            super.clear(shouldClearColors);
+            currentSeen.clear();
+        }
+
+        public void cloneFrom(BlightFilters other) {
+            super.cloneFrom(other);
+            EUIUtils.replaceContents(currentSeen, other.currentSeen);
+        }
+
+        public boolean isEmpty() {
+            return super.isEmpty() && currentSeen.isEmpty();
         }
     }
 }

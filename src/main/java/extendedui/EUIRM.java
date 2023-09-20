@@ -244,6 +244,7 @@ public class EUIRM {
         public final String config_useEUITooltips = stringsConfig.TEXT[22];
         public final String config_reenableTooltips = stringsConfig.TEXT[23];
         public final String config_instantFade = stringsConfig.TEXT[24];
+        public final String config_saveFilterChoices = stringsConfig.TEXT[25];
 
         public final String configdesc_restartRequired = stringsConfigDesc.TEXT[0];
         public final String configdesc_showCountingPanel = stringsConfigDesc.TEXT[1];
@@ -262,6 +263,7 @@ public class EUIRM {
         public final String configdesc_reenableTooltips = stringsConfigDesc.TEXT[14];
         public final String configdesc_reenableTooltipsNone = stringsConfigDesc.TEXT[15];
         public final String configdesc_instantFade = stringsConfigDesc.TEXT[16];
+        public final String configdesc_saveFilterChoices = stringsConfig.TEXT[17];
 
         public final String hotkey_cycle = stringsHotkeys.TEXT[0];
         public final String hotkey_openCardPool = stringsHotkeys.TEXT[1];

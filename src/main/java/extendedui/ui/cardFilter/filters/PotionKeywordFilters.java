@@ -19,6 +19,7 @@ import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.cardFilter.FilterKeywordButton;
 import extendedui.ui.cardFilter.GenericFilters;
+import extendedui.ui.cardFilter.GenericFiltersObject;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
@@ -32,26 +33,20 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilterModule<PotionInfo>> {
+public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywordFilters.PotionFilters, CustomFilterModule<PotionInfo>> {
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
     public final EUIDropdown<AbstractPotion.PotionEffect> vfxDropdown;
     public final EUIDropdown<AbstractPotion.PotionRarity> raritiesDropdown;
     public final EUIDropdown<AbstractPotion.PotionSize> sizesDropdown;
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<TargetFilter> targetsDropdown;
-    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
-    public final HashSet<AbstractPotion.PotionEffect> currentVfx = new HashSet<>();
-    public final HashSet<AbstractPotion.PotionRarity> currentRarities = new HashSet<>();
-    public final HashSet<AbstractPotion.PotionSize> currentSizes = new HashSet<>();
-    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
-    public final HashSet<TargetFilter> currentTargets = new HashSet<>();
 
     public PotionKeywordFilters() {
         super();
 
         originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.ui_basegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_origins)
                 .setIsMultiSelect(true)
@@ -61,7 +56,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         raritiesDropdown = new EUIDropdown<AbstractPotion.PotionRarity>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForPotionRarity)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentRarities, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentRarities, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
                 .setIsMultiSelect(true)
@@ -71,7 +66,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         sizesDropdown = new EUIDropdown<AbstractPotion.PotionSize>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForPotionSize)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentSizes, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentSizes, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.potion_size)
                 .setIsMultiSelect(true)
@@ -81,7 +76,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         vfxDropdown = new EUIDropdown<AbstractPotion.PotionEffect>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForPotionEffect)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentVfx, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentVfx, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.potion_size)
                 .setIsMultiSelect(true)
@@ -91,7 +86,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         targetsDropdown = new EUIDropdown<TargetFilter>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , t -> t.name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentTargets, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentTargets, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_target)
                 .setIsMultiSelect(true)
@@ -101,7 +96,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::getColorName)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentColors, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_colors)
                 .setIsMultiSelect(true)
@@ -127,29 +122,8 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
     }
 
     @Override
-    public boolean areFiltersEmpty() {
-        return (currentName == null || currentName.isEmpty())
-                && (currentDescription == null || currentDescription.isEmpty())
-                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty() && currentSizes.isEmpty() && currentTargets.isEmpty()
-                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
-                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty)
-                && (customModule != null && customModule.isEmpty());
-    }
-
-    @Override
-    public void clearFilters(boolean shouldInvoke, boolean shouldClearColors) {
-        if (shouldClearColors) {
-            currentColors.clear();
-        }
-        currentOrigins.clear();
-        currentFilters.clear();
-        currentNegateFilters.clear();
-        currentRarities.clear();
-        currentSizes.clear();
-        currentTargets.clear();
-        currentVfx.clear();
-        currentName = null;
-        currentDescription = null;
+    public void clear(boolean shouldInvoke, boolean shouldClearColors) {
+        super.clear(shouldInvoke, shouldClearColors);
         originsDropdown.setSelectionIndices((int[]) null, false);
         raritiesDropdown.setSelectionIndices((int[]) null, false);
         sizesDropdown.setSelectionIndices((int[]) null, false);
@@ -158,58 +132,57 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         colorsDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
-        doForFilters(CustomFilterModule::reset);
     }
 
     public boolean evaluate(PotionInfo c) {
         //Name check
-        if (currentName != null && !currentName.isEmpty()) {
+        if (filters.currentName != null && !filters.currentName.isEmpty()) {
             String name = getNameForSort(c.potion);
-            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
+            if (name == null || !name.toLowerCase().contains(filters.currentName.toLowerCase())) {
                 return false;
             }
         }
 
         //Description check
-        if (currentDescription != null && !currentDescription.isEmpty()) {
+        if (filters.currentDescription != null && !filters.currentDescription.isEmpty()) {
             String desc = getDescriptionForSort(c.potion);
-            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
+            if (desc == null || !desc.toLowerCase().contains(filters.currentDescription.toLowerCase())) {
                 return false;
             }
         }
 
         //Colors check
-        if (!evaluateItem(currentColors, c.potionColor)) {
+        if (!evaluateItem(filters.currentColors, c.potionColor)) {
             return false;
         }
 
         //Origin check
-        if (!evaluateItem(currentOrigins, EUIGameUtils.getModInfo(c.potion))) {
+        if (!evaluateItem(filters.currentOrigins, EUIGameUtils.getModInfo(c.potion))) {
             return false;
         }
 
         //Tooltips check
-        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
+        if (!filters.currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(filters.currentFilters))) {
             return false;
         }
 
         //Negate Tooltips check
-        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
+        if (!filters.currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), filters.currentNegateFilters::contains))) {
             return false;
         }
 
         //Rarities check
-        if (!evaluateItem(currentRarities, c.potion.rarity)) {
+        if (!evaluateItem(filters.currentRarities, c.potion.rarity)) {
             return false;
         }
 
         //Size check
-        if (!evaluateItem(currentSizes, c.potion.size)) {
+        if (!evaluateItem(filters.currentSizes, c.potion.size)) {
             return false;
         }
 
         //Vfx check
-        if (!evaluateItem(currentVfx, c.potion.p_effect)) {
+        if (!evaluateItem(filters.currentVfx, c.potion.p_effect)) {
             return false;
         }
 
@@ -346,6 +319,11 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
     }
 
     @Override
+    protected PotionFilters getFilterObject() {
+        return new PotionFilters();
+    }
+
+    @Override
     public void updateFilters() {
         float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
         xPos = updateDropdown(colorsDropdown, xPos);
@@ -356,5 +334,37 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, CustomFilte
         nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         doForFilters(CustomFilterModule<PotionInfo>::update);
+    }
+
+    public static class PotionFilters extends GenericFiltersObject {
+        public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
+        public final HashSet<AbstractPotion.PotionEffect> currentVfx = new HashSet<>();
+        public final HashSet<AbstractPotion.PotionRarity> currentRarities = new HashSet<>();
+        public final HashSet<AbstractPotion.PotionSize> currentSizes = new HashSet<>();
+        public final HashSet<TargetFilter> currentTargets = new HashSet<>();
+
+        public void clear(boolean shouldClearColors) {
+            super.clear(shouldClearColors);
+            currentRarities.clear();
+            currentVfx.clear();
+            currentSizes.clear();
+            currentTargets.clear();
+            if (shouldClearColors) {
+                currentColors.clear();
+            }
+        }
+
+        public void cloneFrom(PotionFilters other) {
+            super.cloneFrom(other);
+            EUIUtils.replaceContents(currentColors, other.currentColors);
+            EUIUtils.replaceContents(currentRarities, other.currentRarities);
+            EUIUtils.replaceContents(currentSizes, other.currentSizes);
+            EUIUtils.replaceContents(currentTargets, other.currentTargets);
+        }
+
+        public boolean isEmpty() {
+            return super.isEmpty() && currentColors.isEmpty()
+                    && currentVfx.isEmpty() && currentRarities.isEmpty() && currentSizes.isEmpty() && currentTargets.isEmpty();
+        }
     }
 }

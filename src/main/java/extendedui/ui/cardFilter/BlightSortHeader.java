@@ -24,7 +24,7 @@ public class BlightSortHeader extends GenericSortHeader<AbstractBlight> {
     }
 
     @Override
-    public GenericFilters<AbstractBlight, ?> getFilters() {
+    public GenericFilters<AbstractBlight, ?, ?> getFilters() {
         return EUI.blightFilters;
     }
 

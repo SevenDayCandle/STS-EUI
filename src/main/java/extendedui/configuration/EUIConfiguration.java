@@ -48,6 +48,7 @@ public class EUIConfiguration {
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(getFullKey("FlushOnRoomStart"), false);
     public static STSConfigItem<Boolean> instantFade = new STSConfigItem<>(getFullKey("InstantFade"), false);
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(getFullKey("OverrideGameFont"), false);
+    public static STSConfigItem<Boolean> saveFilterChoices = new STSConfigItem<Boolean>(getFullKey("SaveFilterChoices"), false);
     public static STSConfigItem<Boolean> showCountingPanel = new STSConfigItem<Boolean>(getFullKey("ShowCountingPanel"), false);
     public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(getFullKey("ShowModSettings"), false);
     public static STSConfigItem<Boolean> useEUITooltips = new STSConfigItem<>(getFullKey("UseEUITooltips"), false);
@@ -161,6 +162,7 @@ public class EUIConfiguration {
             flushOnGameStart.addConfig(config);
             flushOnRoomStart.addConfig(config);
             instantFade.addConfig(config);
+            saveFilterChoices.addConfig(config);
             showModSettings.addConfig(config);
             useEUITooltips.addConfig(config);
             useSnapScrolling.addConfig(config);
@@ -222,6 +224,7 @@ public class EUIConfiguration {
         makeModToggle(effekseerCategory, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, EUIRM.strings.configdesc_enableDescriptionIcons);
         makeModToggle(effekseerCategory, enableExpandTooltips, EUIRM.strings.config_enableExpandTooltips, EUIRM.strings.configdesc_enableExpandTooltips);
         makeModToggle(effekseerCategory, useEUITooltips, EUIRM.strings.config_useEUITooltips, EUIRM.strings.configdesc_useEUITooltips);
+        makeModToggle(effekseerCategory, saveFilterChoices, EUIRM.strings.config_saveFilterChoices, EUIRM.strings.configdesc_saveFilterChoices);
         makeModToggle(effekseerCategory, instantFade, EUIRM.strings.config_instantFade, EUIRM.strings.configdesc_instantFade);
         makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.configdesc_flushEffekseer);
@@ -251,6 +254,7 @@ public class EUIConfiguration {
         yPos = addToggle(0, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, yPos, EUIRM.strings.configdesc_enableDescriptionIcons);
         yPos = addToggle(0, enableExpandTooltips, EUIRM.strings.config_enableExpandTooltips, yPos, EUIRM.strings.configdesc_enableExpandTooltips);
         yPos = addToggle(0, useEUITooltips, EUIRM.strings.config_useEUITooltips, yPos, EUIRM.strings.configdesc_useEUITooltips);
+        yPos = addToggle(0, saveFilterChoices, EUIRM.strings.config_saveFilterChoices, yPos, EUIRM.strings.configdesc_saveFilterChoices);
         yPos = addToggle(0, instantFade, EUIRM.strings.config_instantFade, yPos, EUIRM.strings.configdesc_instantFade);
         yPos = addToggle(0, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(0, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);

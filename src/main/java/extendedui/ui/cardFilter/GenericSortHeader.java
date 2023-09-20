@@ -5,6 +5,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButtonListener;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.ui.EUIBase;
 import extendedui.utilities.ItemGroup;
 
@@ -47,7 +48,6 @@ public abstract class GenericSortHeader<T> extends EUIBase implements SortHeader
     }
 
     public GenericSortHeader<T> setGroup(ItemGroup<T> group) {
-        getFilters().clear(false, true);
         this.group = group;
         this.originalGroup = new ArrayList<>(group.group);
 
@@ -92,5 +92,5 @@ public abstract class GenericSortHeader<T> extends EUIBase implements SortHeader
 
     abstract protected void sort(SortHeaderButton button, boolean isAscending);
 
-    abstract public GenericFilters<T, ?> getFilters();
+    abstract public GenericFilters<T, ?, ?> getFilters();
 }

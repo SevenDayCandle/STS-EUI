@@ -30,7 +30,7 @@ public class RelicSortHeader extends GenericSortHeader<RelicInfo> {
     }
 
     @Override
-    public GenericFilters<RelicInfo, ?> getFilters() {
+    public GenericFilters<RelicInfo, ?, ?> getFilters() {
         return EUI.relicFilters;
     }
 

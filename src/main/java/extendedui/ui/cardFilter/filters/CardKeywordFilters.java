@@ -26,6 +26,7 @@ import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.cardFilter.FilterKeywordButton;
 import extendedui.ui.cardFilter.GenericFilters;
+import extendedui.ui.cardFilter.GenericFiltersObject;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
@@ -39,8 +40,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardFilterModule> {
-    public final ArrayList<SeenValue> currentSeen = new ArrayList<>();
+public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeywordFilters.CardFilters, CustomCardFilterModule> {
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
     public final EUIDropdown<AbstractCard.CardRarity> raritiesDropdown;
     public final EUIDropdown<AbstractCard.CardType> typesDropdown;
@@ -48,19 +48,13 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<SeenValue> seenDropdown;
     public final EUIDropdown<TargetFilter> targetsDropdown;
-    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
-    public final HashSet<AbstractCard.CardRarity> currentRarities = new HashSet<>();
-    public final HashSet<AbstractCard.CardType> currentTypes = new HashSet<>();
-    public final HashSet<CostFilter> currentCosts = new HashSet<>();
-    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
-    public final HashSet<TargetFilter> currentTargets = new HashSet<>();
 
     public CardKeywordFilters() {
         super();
 
         originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.ui_basegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_origins)
                 .setIsMultiSelect(true)
@@ -69,7 +63,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
 
         costDropdown = new EUIDropdown<CostFilter>(new EUIHitbox(0, 0, scale(160), scale(48)), c -> c.name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentCosts, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentCosts, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[3])
                 .setIsMultiSelect(true)
@@ -79,7 +73,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         raritiesDropdown = new EUIDropdown<AbstractCard.CardRarity>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForRarity)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentRarities, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentRarities, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
                 .setIsMultiSelect(true)
@@ -89,7 +83,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         typesDropdown = new EUIDropdown<AbstractCard.CardType>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForType)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentTypes, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentTypes, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[1])
                 .setIsMultiSelect(true)
@@ -99,7 +93,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         targetsDropdown = new EUIDropdown<TargetFilter>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , t -> t.name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentTargets, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentTargets, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_target)
                 .setIsMultiSelect(true)
@@ -109,7 +103,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::getColorName)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentColors, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_colors)
                 .setIsMultiSelect(true)
@@ -118,7 +112,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         seenDropdown = new EUIDropdown<SeenValue>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , item -> item.name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentSeen, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentSeen, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_seen)
                 .setItems(SeenValue.values())
@@ -141,32 +135,8 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
     }
 
     @Override
-    public boolean areFiltersEmpty() {
-        return (currentName == null || currentName.isEmpty())
-                && (currentDescription == null || currentDescription.isEmpty())
-                && currentColors.isEmpty() && currentOrigins.isEmpty()
-                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
-                && currentCosts.isEmpty() && currentRarities.isEmpty()
-                && currentTypes.isEmpty() && currentTargets.isEmpty() && currentSeen.isEmpty()
-                && EUIUtils.all(getGlobalFilters(), CustomCardFilterModule::isEmpty)
-                && (customModule != null && customModule.isEmpty());
-    }
-
-    @Override
-    public void clearFilters(boolean shouldInvoke, boolean shouldClearColors) {
-        if (shouldClearColors) {
-            currentColors.clear();
-        }
-        currentOrigins.clear();
-        currentFilters.clear();
-        currentNegateFilters.clear();
-        currentCosts.clear();
-        currentRarities.clear();
-        currentSeen.clear();
-        currentTargets.clear();
-        currentTypes.clear();
-        currentName = null;
-        currentDescription = null;
+    public void clear(boolean shouldInvoke, boolean shouldClearColors) {
+        super.clear(shouldInvoke, shouldClearColors);
         costDropdown.setSelectionIndices((int[]) null, false);
         originsDropdown.setSelectionIndices((int[]) null, false);
         typesDropdown.setSelectionIndices((int[]) null, false);
@@ -175,64 +145,63 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
-        doForFilters(CustomCardFilterModule::reset);
     }
 
     @Override
     public boolean evaluate(AbstractCard c) {
         //Name check
-        if (currentName != null && !currentName.isEmpty()) {
+        if (filters.currentName != null && !filters.currentName.isEmpty()) {
             String name = getNameForSort(c);
-            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
+            if (name == null || !name.toLowerCase().contains(filters.currentName.toLowerCase())) {
                 return false;
             }
         }
 
         //Description check
-        if (currentDescription != null && !currentDescription.isEmpty()) {
+        if (filters.currentDescription != null && !filters.currentDescription.isEmpty()) {
             String desc = getDescriptionForSort(c);
-            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
+            if (desc == null || !desc.toLowerCase().contains(filters.currentDescription.toLowerCase())) {
                 return false;
             }
         }
 
         //Colors check
-        if (!evaluateItem(currentColors, c.color)) {
+        if (!evaluateItem(filters.currentColors, c.color)) {
             return false;
         }
 
         //Origin check
-        if (!evaluateItem(currentOrigins, EUIGameUtils.getModInfo(c))) {
+        if (!evaluateItem(filters.currentOrigins, EUIGameUtils.getModInfo(c))) {
             return false;
         }
 
         //Tooltips check
-        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
+        if (!filters.currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(filters.currentFilters))) {
             return false;
         }
 
         //Negate Tooltips check
-        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
+        if (!filters.currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), filters.currentNegateFilters::contains))) {
             return false;
         }
 
         //Rarities check
-        if (!evaluateItem(currentRarities, c.rarity)) {
+        if (!evaluateItem(filters.currentRarities, c.rarity)) {
             return false;
         }
 
         //Types check
-        if (!evaluateItem(currentTypes, c.type)) {
+        if (!evaluateItem(filters.currentTypes, c.type)) {
             return false;
         }
 
         //Target check
-        if (!evaluateItem(currentTargets, TargetFilter.forCard(c))) {
+        if (!evaluateItem(filters.currentTargets, TargetFilter.forCard(c))) {
             return false;
         }
 
         //Seen check
-        if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c.cardID))) {
+        if (!evaluateItem(filters.currentSeen, (opt) -> opt.evaluate(c.cardID))) {
             return false;
         }
 
@@ -249,9 +218,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
         }
 
         //Cost check
-        if (!currentCosts.isEmpty()) {
+        if (!filters.currentCosts.isEmpty()) {
             boolean passes = false;
-            for (CostFilter cf : currentCosts) {
+            for (CostFilter cf : filters.currentCosts) {
                 if (cf.check(c)) {
                     passes = true;
                     break;
@@ -441,6 +410,23 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
     }
 
     @Override
+    protected CardFilters getFilterObject() {
+        return new CardFilters();
+    }
+
+    public void setFrom(CardFilters filters) {
+        //nameInput.setText(filters.currentName);
+        //descriptionInput.setText(filters.currentDescription);
+        originsDropdown.setSelection(filters.currentOrigins, true);
+        colorsDropdown.setSelection(filters.currentColors, true);
+        costDropdown.setSelection(filters.currentCosts, true);
+        raritiesDropdown.setSelection(filters.currentRarities, true);
+        seenDropdown.setSelection(filters.currentSeen, true);
+        targetsDropdown.setSelection(filters.currentTargets, true);
+        typesDropdown.setSelection(filters.currentTypes, true);
+    }
+
+    @Override
     public void updateFilters() {
         float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
         if (colorsDropdown.isActive) {
@@ -474,6 +460,43 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CustomCardF
 
         public boolean evaluate(String relicID) {
             return evalFunc.invoke(relicID);
+        }
+    }
+
+    public static class CardFilters extends GenericFiltersObject {
+        public final ArrayList<SeenValue> currentSeen = new ArrayList<>();
+        public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
+        public final HashSet<AbstractCard.CardRarity> currentRarities = new HashSet<>();
+        public final HashSet<AbstractCard.CardType> currentTypes = new HashSet<>();
+        public final HashSet<CostFilter> currentCosts = new HashSet<>();
+        public final HashSet<TargetFilter> currentTargets = new HashSet<>();
+
+        public void clear(boolean shouldClearColors) {
+            super.clear(shouldClearColors);
+            currentCosts.clear();
+            currentRarities.clear();
+            currentSeen.clear();
+            currentTargets.clear();
+            currentTypes.clear();
+            if (shouldClearColors) {
+                currentColors.clear();
+            }
+        }
+
+        public void cloneFrom(CardFilters other) {
+            super.cloneFrom(other);
+            EUIUtils.replaceContents(currentColors, other.currentColors);
+            EUIUtils.replaceContents(currentCosts, other.currentCosts);
+            EUIUtils.replaceContents(currentRarities, other.currentRarities);
+            EUIUtils.replaceContents(currentSeen, other.currentSeen);
+            EUIUtils.replaceContents(currentTargets, other.currentTargets);
+            EUIUtils.replaceContents(currentTypes, other.currentTypes);
+        }
+
+        public boolean isEmpty() {
+            return super.isEmpty() && currentColors.isEmpty()
+                    && currentCosts.isEmpty() && currentRarities.isEmpty()
+                    && currentTypes.isEmpty() && currentTargets.isEmpty() && currentSeen.isEmpty();
         }
     }
 }

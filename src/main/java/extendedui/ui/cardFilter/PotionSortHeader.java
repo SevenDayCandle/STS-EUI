@@ -30,7 +30,7 @@ public class PotionSortHeader extends GenericSortHeader<PotionInfo> {
     }
 
     @Override
-    public GenericFilters<PotionInfo, ?> getFilters() {
+    public GenericFilters<PotionInfo, ?, ?> getFilters() {
         return EUI.potionFilters;
     }
 

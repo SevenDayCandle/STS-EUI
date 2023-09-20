@@ -1131,6 +1131,12 @@ public abstract class EUIUtils {
         return values;
     }
 
+    public static <T> Collection<T> replaceContents(Collection<T> subject, Collection<? extends T> source) {
+        subject.clear();
+        subject.addAll(source);
+        return subject;
+    }
+
     public static <T> T safeCast(Object o, Class<T> type) {
         return type.isInstance(o) ? (T) o : null;
     }

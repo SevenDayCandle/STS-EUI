@@ -25,7 +25,8 @@
 			"Enable expanded Tooltips",
 			"Always use EUI tooltip rendering",
 			"重新启用提示描述",
-			"Remove Menu Fade Transitions"
+			"Remove Menu Fade Transitions",
+			"Preserve Filters on Compendium Tab Switch"
 		]
 	},
 	"extendedui:config_desc": {
@@ -46,7 +47,8 @@
 			"If checked, all tooltip rendering will be managed by EUI. This may cause incompatibility issues with mods that modify base game tooltip rendering.",
 			"重新启用所有被本mod关闭的提示描述。",
 			"{#b:No tooltips are currently disabled.}",
-			"Removes the black screen fade that occurs when you enter or exit a run, such that performing these actions will be nearly instantaneous."
+			"Removes the black screen fade that occurs when you enter or exit a run, such that performing these actions will be nearly instantaneous.",
+			"If checked, filters in the card compendium will be preserved when switching card colors."
 		]
 	},
 	"extendedui:grammar": {

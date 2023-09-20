@@ -23,36 +23,31 @@ import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.patches.game.TooltipPatches;
 import extendedui.ui.cardFilter.FilterKeywordButton;
 import extendedui.ui.cardFilter.GenericFilters;
+import extendedui.ui.cardFilter.GenericFiltersObject;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
-import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.ItemGroup;
-import extendedui.utilities.RelicInfo;
+import extendedui.utilities.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterModule<RelicInfo>> {
+public class RelicKeywordFilters extends GenericFilters<RelicInfo, RelicKeywordFilters.RelicFilters, CustomFilterModule<RelicInfo>> {
     public final ArrayList<SeenValue> currentSeen = new ArrayList<>();
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
     public final EUIDropdown<AbstractRelic.LandingSound> sfxDropdown;
     public final EUIDropdown<AbstractRelic.RelicTier> raritiesDropdown;
     public final EUIDropdown<ModInfo> originsDropdown;
     public final EUIDropdown<SeenValue> seenDropdown;
-    public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
-    public final HashSet<AbstractRelic.LandingSound> currentSfx = new HashSet<>();
-    public final HashSet<AbstractRelic.RelicTier> currentRarities = new HashSet<>();
-    public final HashSet<ModInfo> currentOrigins = new HashSet<>();
 
     public RelicKeywordFilters() {
         super();
 
         originsDropdown = new EUIDropdown<ModInfo>(new EUIHitbox(0, 0, scale(240), scale(48)), c -> c == null ? EUIRM.strings.ui_basegame : c.Name)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentOrigins, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentOrigins, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_origins)
                 .setIsMultiSelect(true)
@@ -62,7 +57,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         raritiesDropdown = new EUIDropdown<AbstractRelic.RelicTier>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForRelicTier)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentRarities, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentRarities, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
                 .setIsMultiSelect(true)
@@ -72,7 +67,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         sfxDropdown = new EUIDropdown<AbstractRelic.LandingSound>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::textForRelicLandingSound)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentSfx, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentSfx, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
                 .setIsMultiSelect(true)
@@ -82,7 +77,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         colorsDropdown = new EUIDropdown<AbstractCard.CardColor>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , EUIGameUtils::getColorName)
                 .setOnOpenOrClose(this::updateActive)
-                .setOnChange(costs -> this.onFilterChanged(currentColors, costs))
+                .setOnChange(costs -> this.onFilterChanged(filters.currentColors, costs))
                 .setLabelFunctionForButton(this::filterNameFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_colors)
                 .setIsMultiSelect(true)
@@ -118,27 +113,8 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
     }
 
     @Override
-    public boolean areFiltersEmpty() {
-        return (currentName == null || currentName.isEmpty())
-                && (currentDescription == null || currentDescription.isEmpty())
-                && currentColors.isEmpty() && currentOrigins.isEmpty() && currentRarities.isEmpty()
-                && currentSfx.isEmpty() && currentSeen.isEmpty()
-                && currentFilters.isEmpty() && currentNegateFilters.isEmpty()
-                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty)
-                && (customModule != null && customModule.isEmpty());
-    }
-
-    @Override
-    public void clearFilters(boolean shouldInvoke, boolean shouldClearColors) {
-        if (shouldClearColors) {
-            currentColors.clear();
-        }
-        currentOrigins.clear();
-        currentFilters.clear();
-        currentNegateFilters.clear();
-        currentRarities.clear();
-        currentName = null;
-        currentDescription = null;
+    public void clear(boolean shouldInvoke, boolean shouldClearColors) {
+        super.clear(shouldInvoke, shouldClearColors);
         originsDropdown.setSelectionIndices((int[]) null, false);
         raritiesDropdown.setSelectionIndices((int[]) null, false);
         sfxDropdown.setSelectionIndices((int[]) null, false);
@@ -146,33 +122,32 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
-        doForFilters(CustomFilterModule::reset);
     }
 
     public boolean evaluate(RelicInfo c) {
         //Name check
-        if (currentName != null && !currentName.isEmpty()) {
+        if (filters.currentName != null && !filters.currentName.isEmpty()) {
             String name = getNameForSort(c.relic);
-            if (name == null || !name.toLowerCase().contains(currentName.toLowerCase())) {
+            if (name == null || !name.toLowerCase().contains(filters.currentName.toLowerCase())) {
                 return false;
             }
         }
 
         //Description check
-        if (currentDescription != null && !currentDescription.isEmpty()) {
+        if (filters.currentDescription != null && !filters.currentDescription.isEmpty()) {
             String desc = getDescriptionForSort(c.relic);
-            if (desc == null || !desc.toLowerCase().contains(currentDescription.toLowerCase())) {
+            if (desc == null || !desc.toLowerCase().contains(filters.currentDescription.toLowerCase())) {
                 return false;
             }
         }
 
         //Colors check
-        if (!evaluateItem(currentColors, c.relicColor)) {
+        if (!evaluateItem(filters.currentColors, c.relicColor)) {
             return false;
         }
 
         //Origin check
-        if (!evaluateItem(currentOrigins, EUIGameUtils.getModInfo(c.relic))) {
+        if (!evaluateItem(filters.currentOrigins, EUIGameUtils.getModInfo(c.relic))) {
             return false;
         }
 
@@ -182,22 +157,22 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
         }
 
         //Tooltips check
-        if (!currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(currentFilters))) {
+        if (!filters.currentFilters.isEmpty() && (!getAllTooltips(c).containsAll(filters.currentFilters))) {
             return false;
         }
 
         //Negate Tooltips check
-        if (!currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), currentNegateFilters::contains))) {
+        if (!filters.currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), filters.currentNegateFilters::contains))) {
             return false;
         }
 
         //Rarities check
-        if (!evaluateItem(currentRarities, c.relic.tier)) {
+        if (!evaluateItem(filters.currentRarities, c.relic.tier)) {
             return false;
         }
 
         //Sfx check
-        if (!evaluateItem(currentSfx, EUIGameUtils.getLandingSound(c.relic))) {
+        if (!evaluateItem(filters.currentSfx, EUIGameUtils.getLandingSound(c.relic))) {
             return false;
         }
 
@@ -317,6 +292,11 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
     }
 
     @Override
+    protected RelicFilters getFilterObject() {
+        return new RelicFilters();
+    }
+
+    @Override
     public void updateFilters() {
         float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
         xPos = updateDropdown(colorsDropdown, xPos);
@@ -343,6 +323,35 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, CustomFilterM
 
         public boolean evaluate(String relicID) {
             return evalFunc.invoke(relicID);
+        }
+    }
+
+    public static class RelicFilters extends GenericFiltersObject {
+        public final ArrayList<CardKeywordFilters.SeenValue> currentSeen = new ArrayList<>();
+        public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
+        public final HashSet<AbstractRelic.LandingSound> currentSfx = new HashSet<>();
+        public final HashSet<AbstractRelic.RelicTier> currentRarities = new HashSet<>();
+
+        public void clear(boolean shouldClearColors) {
+            super.clear(shouldClearColors);
+            currentRarities.clear();
+            currentSeen.clear();
+            currentSfx.clear();
+            if (shouldClearColors) {
+                currentColors.clear();
+            }
+        }
+
+        public void cloneFrom(RelicFilters other) {
+            super.cloneFrom(other);
+            EUIUtils.replaceContents(currentColors, other.currentColors);
+            EUIUtils.replaceContents(currentRarities, other.currentRarities);
+            EUIUtils.replaceContents(currentSeen, other.currentSeen);
+        }
+
+        public boolean isEmpty() {
+            return super.isEmpty() && currentColors.isEmpty()
+                    && currentSfx.isEmpty() && currentRarities.isEmpty() && currentSeen.isEmpty();
         }
     }
 }

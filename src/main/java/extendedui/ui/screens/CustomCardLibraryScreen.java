@@ -22,6 +22,7 @@ import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.AbstractMenuScreen;
+import extendedui.ui.cardFilter.filters.CardKeywordFilters;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIClassUtils;
@@ -42,8 +43,8 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     public final EUITextBoxInput quickSearch;
     public final EUIToggle upgradeToggle;
     public final MenuCancelButton cancelButton;
-    protected int topButtonIndex;
     private final Rectangle scissors;
+    public final CardKeywordFilters.CardFilters savedFilters = new CardKeywordFilters.CardFilters();
     public EUICardGrid cardGrid;
 
     public CustomCardLibraryScreen() {
@@ -125,6 +126,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         refreshGroups();
         EUI.toggleViewUpgrades(false);
         upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
+        savedFilters.clear(true);
         setActiveColor(currentColor);
         this.cancelButton.show(CardLibraryScreen.TEXT[0]);
     }
@@ -180,12 +182,16 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     }
 
     public void setActiveColor(AbstractCard.CardColor color, CardGroup cards, Object payload) {
+        if (EUIConfiguration.saveFilterChoices.get()) {
+            savedFilters.cloneFrom(EUI.cardFilters.filters);
+        }
+
         EUI.actingColor = currentColor = color;
         cardGrid.clear();
         cardGrid.setCardGroup(cards);
 
         EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
-            quickSearch.setLabel(EUI.cardFilters.currentName != null ? EUI.cardFilters.currentName : "");
+            quickSearch.setLabel(EUI.cardFilters.filters.currentName != null ? EUI.cardFilters.filters.currentName : "");
             for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
                 module.open(EUI.customHeader.group.group, color, payload);
             }
@@ -195,6 +201,10 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
             cardGrid.moveToTop();
             cardGrid.forceUpdateCardPositions();
         }, color, false, true);
+
+        if (EUIConfiguration.saveFilterChoices.get()) {
+            EUI.cardFilters.setFrom(savedFilters);
+        }
 
         for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
             module.open(cardGrid.cards.group, color, payload);
