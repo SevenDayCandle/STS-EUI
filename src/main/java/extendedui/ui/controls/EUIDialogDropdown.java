@@ -30,7 +30,7 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
 
     public EUIDialogDropdown(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText) {
         super(hb, backgroundTexture, headerText, descriptionText);
-        this.dropdown = new EUIDropdown<T>(new RelativeHitbox(hb, hb.width / 2, scale(48), hb.width / 4, hb.height / 4))
+        this.dropdown = new EUIDropdown<T>(new RelativeHitbox(hb, hb.width / 2, scale(48), hb.width / 2, hb.height / 2))
                 .setCanAutosize(false, true);
     }
 
@@ -52,6 +52,15 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
         return dropdown.getCurrentItems();
     }
 
+    private void refreshHitbox() {
+        if (this.dropdown.canAutosizeButton) {
+            this.dropdown.autosize();
+            this.hb.width = this.dropdown.hb.width * 2;
+            this.hb.x = (Settings.WIDTH - this.hb.width) / 2;
+            this.dropdown.setOffset(hb.width / 2, hb.height / 2);
+        }
+    }
+
     @Override
     public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
@@ -60,12 +69,14 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
 
     public EUIDialogDropdown<T> setItems(List<T> items) {
         this.dropdown.setItems(items);
+        refreshHitbox();
         return this;
     }
 
     @SafeVarargs
     public final EUIDialogDropdown<T> setItems(T... items) {
         this.dropdown.setItems(items);
+        refreshHitbox();
         return this;
     }
 
@@ -82,12 +93,7 @@ public class EUIDialogDropdown<T> extends EUIDialog<ArrayList<T>> {
     public EUIDialogDropdown<T> setOptions(boolean isMultiSelect, boolean canAutosize) {
         this.dropdown.isMultiSelect = isMultiSelect;
         this.dropdown.canAutosizeButton = canAutosize;
-        if (this.dropdown.canAutosizeButton) {
-            this.dropdown.autosize();
-            this.hb.width = this.dropdown.hb.width * 2;
-            this.hb.x = (Settings.WIDTH - this.hb.width) / 2;
-            this.dropdown.setOffset(hb.width / 4, hb.height / 4);
-        }
+        refreshHitbox();
         return this;
     }
 
