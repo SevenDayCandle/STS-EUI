@@ -11,6 +11,7 @@ import extendedui.utilities.ItemGroup;
 
 import java.util.ArrayList;
 
+// TODO Migrate CustomCardLibSortHeader to this, and make this a universal header component for any filter type
 public abstract class GenericSortHeader<T> extends EUIBase implements SortHeaderButtonListener {
     public static final float START_X = screenW(0.5f) - CardLibSortHeader.SPACE_X * 1.45f;
     private SortHeaderButton lastUsedButton;
@@ -90,6 +91,7 @@ public abstract class GenericSortHeader<T> extends EUIBase implements SortHeader
 
     abstract protected float getFirstY();
 
+    // TODO move sorting logic to filters
     abstract protected void sort(SortHeaderButton button, boolean isAscending);
 
     abstract public GenericFilters<T, ?, ?> getFilters();

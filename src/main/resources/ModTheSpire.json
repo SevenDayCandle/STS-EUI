@@ -4,7 +4,7 @@
   "author_list": ["PinaColada"],
   "description": "Adds a screen check on the current card pool during a run and a filtering menu for this screen and the card library filters. Also serves as a utility library for rendering objects and creating GUI elements.",
   "credits" : "Code: EatYourBeetS, SrJohnathan. \n DLL libraries: EffekseerForMultiLanguages \n Shaders: Landon Manning, colorful-gdx \n Translation: 旅渚Lastcel",
-  "version": "4.3.8",
+  "version": "4.4.0",
   "sts_version": "10-04-2022",
   "mts_version": "3.3.0",
   "dependencies": ["basemod"],
