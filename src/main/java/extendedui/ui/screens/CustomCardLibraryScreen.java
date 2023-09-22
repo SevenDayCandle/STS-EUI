@@ -173,7 +173,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
         cardGrid.showScrollbar(true)
                 .canRenderUpgrades(true)
-                .setVerticalStart(Settings.HEIGHT * 0.65f)
+                .setVerticalStart(Settings.HEIGHT * 0.7f)
                 .setCardScale(0.6f, 0.75f)
                 .setOnCardRightClick(c -> {
                     c.unhover();
