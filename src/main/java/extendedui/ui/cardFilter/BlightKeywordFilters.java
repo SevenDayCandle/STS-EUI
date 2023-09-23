@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter.filters;
+package extendedui.ui.cardFilter;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.PowerTip;
+import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
@@ -18,14 +19,10 @@ import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomFilterModule;
 import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.KeywordProvider;
-import extendedui.ui.cardFilter.FilterKeywordButton;
-import extendedui.ui.cardFilter.GenericFilters;
-import extendedui.ui.cardFilter.GenericFiltersObject;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.ItemGroup;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -74,6 +71,16 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
         return c.name;
     }
 
+    public static int rankByName(AbstractBlight a, AbstractBlight b) {
+        return (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.name, b.name));
+    }
+
+    public static int rankByUnique(AbstractBlight a, AbstractBlight b) {
+        int aValue = a == null || a.unique ? 1 : 0;
+        int bValue = b == null || b.unique ? 1 : 0;
+        return aValue - bValue;
+    }
+
     @Override
     public void clear(boolean shouldInvoke, boolean shouldClearColors) {
         super.clear(shouldInvoke, shouldClearColors);
@@ -81,6 +88,12 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
         seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
+    }
+
+    @Override
+    public void defaultSort() {
+        this.group.sort(BlightKeywordFilters::rankByName);
+        this.group.sort(BlightKeywordFilters::rankByUnique);
     }
 
     public boolean evaluate(AbstractBlight c) {
@@ -146,28 +159,31 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
     }
 
     @Override
-    public ArrayList<CustomFilterModule<AbstractBlight>> getGlobalFilters() {
-        return EUI.globalCustomBlightFilters;
+    public EUIExporter.Exportable<AbstractBlight> getExportable() {
+        return EUIExporter.blightExportable;
     }
 
-    public BlightKeywordFilters initializeForCustomHeader(ItemGroup<AbstractBlight> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
-        EUI.blightHeader.setGroup(group).snapToGroup(snapToGroup);
-        initialize(button -> {
-            EUI.blightHeader.updateForFilters();
-            onClick.invoke(button);
-        }, EUI.blightHeader.originalGroup, color, isAccessedFromCardPool);
-        EUI.blightHeader.updateForFilters();
-        EUI.openFiltersButton.setOnClick(() -> EUI.blightFilters.toggleFilters());
-        EUIExporter.exportButton.setOnClick(() -> EUIExporter.blightExportable.openAndPosition(EUI.blightHeader.group.group));
-        return this;
+    @Override
+    protected BlightFilters getFilterObject() {
+        return new BlightFilters();
+    }
+
+    @Override
+    public float getFirstY() {
+        return group.group.get(0).hb.y;
+    }
+
+    @Override
+    public ArrayList<CustomFilterModule<AbstractBlight>> getGlobalFilters() {
+        return EUI.globalCustomBlightFilters;
     }
 
     @Override
     protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<AbstractBlight> cards, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
         HashSet<ModInfo> availableMods = new HashSet<>();
-        if (referenceItems != null) {
-            currentTotal = getReferenceCount();
-            for (AbstractBlight relic : referenceItems) {
+        if (originalGroup != null) {
+            currentTotal = originalGroup.size();
+            for (AbstractBlight relic : originalGroup) {
                 for (EUIKeywordTooltip tooltip : getAllTooltips(relic)) {
                     if (tooltip.canFilter) {
                         currentFilterCounts.merge(tooltip, 1, Integer::sum);
@@ -176,7 +192,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
 
                 availableMods.add(EUIGameUtils.getModInfo(relic));
             }
-            doForFilters(m -> m.initializeSelection(referenceItems));
+            doForFilters(m -> m.initializeSelection(originalGroup));
         }
 
         ArrayList<ModInfo> modInfos = new ArrayList<>(availableMods);
@@ -204,8 +220,9 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
     }
 
     @Override
-    protected BlightFilters getFilterObject() {
-        return new BlightFilters();
+    protected void setupSortHeader(FilterSortHeader header, float startX) {
+        startX = makeToggle(header, BlightKeywordFilters::rankByName, CardLibSortHeader.TEXT[2], startX);
+        startX = makeToggle(header, BlightKeywordFilters::rankByUnique, EUIRM.strings.ui_unique, startX);
     }
 
     @Override

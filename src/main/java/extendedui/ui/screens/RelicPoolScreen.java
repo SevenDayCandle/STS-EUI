@@ -18,6 +18,7 @@ import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomPoolModule;
+import extendedui.ui.cardFilter.GenericFilters;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.controls.EUIRelicGrid;
@@ -126,15 +127,15 @@ public class RelicPoolScreen extends EUIPoolScreen {
         relicGrid.clear();
         relicGrid.setItems(relics, RelicInfo::new);
 
-        EUI.relicFilters.initializeForCustomHeader(relicGrid.group, __ -> {
+        EUI.relicFilters.initializeForSort(relicGrid.group, __ -> {
             for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
-                module.open(EUI.relicHeader.group.group, color, null);
+                module.open(EUI.relicFilters.group.group, color, null);
             }
             if (customModule != null) {
-                customModule.open(EUI.relicHeader.group.group, color, null);
+                customModule.open(EUI.relicFilters.group.group, color, null);
             }
             relicGrid.forceUpdatePositions();
-        }, color, true, false);
+        }, color, GenericFilters.FILTERS_START_X, true, false);
 
         for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
             module.open(relicGrid.group.group, color, null);
@@ -158,7 +159,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
         relicGrid.tryRender(sb);
         swapCardScreen.renderImpl(sb);
         swapPotionScreen.renderImpl(sb);
-        EUI.relicHeader.renderImpl(sb);
+        EUI.sortHeader.renderImpl(sb);
         if (!EUI.relicFilters.isActive) {
             EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
@@ -178,7 +179,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             relicGrid.tryUpdate();
             swapCardScreen.updateImpl();
             swapPotionScreen.updateImpl();
-            EUI.relicHeader.updateImpl();
+            EUI.sortHeader.updateImpl();
             EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
             for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {

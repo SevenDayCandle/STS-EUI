@@ -84,9 +84,7 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-
+    protected void renderTip(SpriteBatch sb)  {
         if (hovered != null) {
             hovered.relic.renderTip(sb);
         }
@@ -123,7 +121,9 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
         if (relic.relic.hb.hovered) {
             hovered = relic;
             hoveredIndex = i;
-            relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(hoveredScale));
+            if (shouldEnlargeHovered) {
+                relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(hoveredScale));
+            }
         }
         else {
             relic.relic.scale = MathHelper.scaleLerpSnap(relic.relic.scale, scale(targetScale));

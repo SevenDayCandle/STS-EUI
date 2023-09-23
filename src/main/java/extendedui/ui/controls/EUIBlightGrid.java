@@ -54,9 +54,7 @@ public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-
+    protected void renderTip(SpriteBatch sb) {
         if (hovered != null) {
             hovered.renderTip(sb);
         }
@@ -76,7 +74,9 @@ public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
 
             hovered = blight;
             hoveredIndex = i;
-            blight.scale = MathHelper.scaleLerpSnap(blight.scale, scale(hoveredScale));
+            if (shouldEnlargeHovered) {
+                blight.scale = MathHelper.scaleLerpSnap(blight.scale, scale(hoveredScale));
+            }
         }
         else {
             blight.scale = MathHelper.scaleLerpSnap(blight.scale, scale(targetScale));

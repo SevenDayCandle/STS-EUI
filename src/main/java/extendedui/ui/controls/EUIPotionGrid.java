@@ -8,8 +8,6 @@ import extendedui.EUIRenderHelpers;
 import extendedui.utilities.PotionInfo;
 
 public class EUIPotionGrid extends EUIItemGrid<PotionInfo> {
-    public boolean shouldEnlargeHovered = true;
-
     public EUIPotionGrid() {
         this(0.5f, true);
     }
@@ -60,9 +58,7 @@ public class EUIPotionGrid extends EUIItemGrid<PotionInfo> {
     }
 
     @Override
-    public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-
+    protected void renderTip(SpriteBatch sb) {
         if (hovered != null) {
             EUIGameUtils.renderPotionTip(hovered.potion);
         }

@@ -21,7 +21,7 @@ import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomCardPoolModule;
-import extendedui.ui.cardFilter.filters.CardKeywordFilters;
+import extendedui.ui.cardFilter.GenericFilters;
 import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.panelitems.CardPoolPanelItem;
@@ -139,7 +139,7 @@ public class CardPoolScreen extends EUIPoolScreen {
 
     protected void openPopup(AbstractCard c) {
         c.unhover();
-        CardCrawlGame.cardPopup.open(c, cardGrid.cards);
+        CardCrawlGame.cardPopup.open(c, cardGrid.makeCardGroup());
     }
 
     public void openScreen(AbstractPlayer player, CardGroup cards) {
@@ -151,25 +151,25 @@ public class CardPoolScreen extends EUIPoolScreen {
         colorlessToggle.setToggle(false).setActive(!canSeeAllColors);
         cardGrid.setCardGroup(cards);
 
-        EUI.cardFilters.initializeForCustomHeader(cards, __ -> {
+        EUI.cardFilters.initializeForSort(cardGrid.group, __ -> {
             for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
-                module.open(EUI.customHeader.group.group, color, null);
+                module.open(EUI.cardFilters.group.group, color, null);
             }
             if (customModule != null) {
-                customModule.open(EUI.customHeader.group.group, color, null);
+                customModule.open(EUI.cardFilters.group.group, color, null);
             }
-            cardGrid.forceUpdateCardPositions();
-        }, color, !canSeeAllColors, true);
+            cardGrid.forceUpdatePositions();
+        }, color, GenericFilters.FILTERS_START_X, !canSeeAllColors, false);
 
-        EUI.countingPanel.open(cardGrid.cards.group, color, null);
+        EUI.countingPanel.open(cardGrid.group.group, color, null);
 
         for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
-            module.open(cardGrid.cards.group, color, null);
+            module.open(cardGrid.group.group, color, null);
         }
 
         customModule = EUI.getCustomCardPoolModule(player);
         if (customModule != null) {
-            customModule.open(cardGrid.cards.group, color, null);
+            customModule.open(cardGrid.group.group, color, null);
         }
 
     }
@@ -181,14 +181,14 @@ public class CardPoolScreen extends EUIPoolScreen {
         for (CardGroup group : EUIGameUtils.getSourceCardPools()) {
             group.removeCard(c.cardID);
         }
-        cardGrid.removeCard(c);
-        EUI.countingPanel.open(cardGrid.cards.group, EUI.actingColor, null);
+        cardGrid.remove(c);
+        EUI.countingPanel.open(cardGrid.group.group, EUI.actingColor, null);
     }
 
     @Override
     public void render(SpriteBatch sb) {
         cardGrid.tryRender(sb);
-        EUI.customHeader.render(sb);
+        EUI.sortHeader.render(sb);
         upgradeToggle.renderImpl(sb);
         colorlessToggle.render(sb);
         swapRelicScreen.renderImpl(sb);
@@ -208,11 +208,12 @@ public class CardPoolScreen extends EUIPoolScreen {
     }
 
     public void resetGrid() {
-        cardGrid = EUIConfiguration.useSnapScrolling.get() ? new EUIStaticCardGrid() : new EUICardGrid();
-        cardGrid.showScrollbar(true)
-                .canRenderUpgrades(true)
-                .setOnCardRightClick(this::onRightClick)
-                .setVerticalStart(Settings.HEIGHT * 0.66f);
+        cardGrid = new EUICardGrid();
+        cardGrid
+                .setCanRenderUpgrades(true)
+                .setOnRightClick(this::onRightClick)
+                .setVerticalStart(Settings.HEIGHT * 0.66f)
+                .showScrollbar(true);
     }
 
     @Override
@@ -223,7 +224,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             colorlessToggle.update();
             swapRelicScreen.updateImpl();
             swapPotionScreen.updateImpl();
-            EUI.customHeader.update();
+            EUI.sortHeader.update();
             EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
             EUI.countingPanel.tryUpdate();
@@ -232,11 +233,6 @@ public class CardPoolScreen extends EUIPoolScreen {
             }
             if (customModule != null) {
                 customModule.update();
-            }
-            // TODO tie this to the custom header to ensure that the source grid is always updated instantly
-            if (EUI.customHeader.justSorted) {
-                cardGrid.forceUpdateCardPositions();
-                EUI.customHeader.justSorted = false;
             }
         }
         contextMenu.tryUpdate();

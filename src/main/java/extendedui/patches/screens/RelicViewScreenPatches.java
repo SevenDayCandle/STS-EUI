@@ -77,7 +77,7 @@ public class RelicViewScreenPatches {
             shopList = EUI.relicFilters.applyFiltersToRelics(RelicLibrary.shopList);
             resetAllList();
         }
-        EUI.relicFilters.refresh(allList);
+        EUI.relicFilters.manualInvalidate(allList);
     }
 
     @SpirePatch(clz = RelicViewScreen.class, method = "open")

@@ -40,6 +40,7 @@ import javassist.CtClass;
 import java.net.URL;
 import java.security.CodeSource;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 
 import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.*;
@@ -345,6 +346,12 @@ public class EUIGameUtils {
 
     public static boolean isPlayerClass(AbstractPlayer.PlayerClass playerClass) {
         return AbstractDungeon.player != null && AbstractDungeon.player.chosenClass == playerClass;
+    }
+
+    public static CardGroup makeCardGroup(Collection<AbstractCard> cards) {
+        CardGroup group = new CardGroup(CardGroup.CardGroupType.UNSPECIFIED);
+        group.group.addAll(cards);
+        return group;
     }
 
     public static void registerColorPlayer(AbstractCard.CardColor co, AbstractPlayer.PlayerClass pc) {

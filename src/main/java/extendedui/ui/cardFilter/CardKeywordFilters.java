@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter.filters;
+package extendedui.ui.cardFilter;
 
 import basemod.abstracts.CustomCard;
 import basemod.helpers.CardModifierManager;
@@ -8,9 +8,10 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardGroup;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
+import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
@@ -20,27 +21,25 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomCardFilterModule;
 import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.KeywordProvider;
-import extendedui.ui.cardFilter.FilterKeywordButton;
-import extendedui.ui.cardFilter.GenericFilters;
-import extendedui.ui.cardFilter.GenericFiltersObject;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
-import extendedui.utilities.CostFilter;
-import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.FakeLibraryCard;
-import extendedui.utilities.TargetFilter;
+import extendedui.utilities.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
 public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeywordFilters.CardFilters, CustomCardFilterModule> {
+    private static AbstractCard.CardColor packmasterColor;
+    private static FuncT1<String, Object> getPackmasterPack;
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
     public final EUIDropdown<AbstractCard.CardRarity> raritiesDropdown;
     public final EUIDropdown<AbstractCard.CardType> typesDropdown;
@@ -134,6 +133,52 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         return c.name != null ? CardModifierManager.onRenderTitle(c, c.name) : null;
     }
 
+    public static int rankByAmount(AbstractCard a, AbstractCard b) {
+        int aV = Math.max(a.baseDamage, a.baseBlock);
+        int bV = Math.max(b.baseDamage, b.baseBlock);
+        return aV - bV;
+    }
+
+    public static int rankByColor(AbstractCard a, AbstractCard b) {
+        return (a == null ? -1 : b == null ? 1 : a.color.ordinal() - b.color.ordinal());
+    }
+
+    public static int rankByCost(AbstractCard a, AbstractCard b) {
+        return a.cost - b.cost;
+    }
+
+    public static int rankByName(AbstractCard a, AbstractCard b) {
+        return (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.name, b.name));
+    }
+
+    public static int rankByRarity(AbstractCard a, AbstractCard b) {
+        return (a == null ? -1 : b == null ? 1 : a.rarity.ordinal() - b.rarity.ordinal());
+    }
+
+    public static int rankByStatus(AbstractCard a, AbstractCard b) {
+        int c1Rank = 0;
+        if (UnlockTracker.isCardLocked(a.cardID)) {
+            c1Rank = 2;
+        }
+        else if (!UnlockTracker.isCardSeen(a.cardID)) {
+            c1Rank = 1;
+        }
+
+        int c2Rank = 0;
+        if (UnlockTracker.isCardLocked(b.cardID)) {
+            c2Rank = 2;
+        }
+        else if (!UnlockTracker.isCardSeen(b.cardID)) {
+            c2Rank = 1;
+        }
+
+        return c1Rank - c2Rank;
+    }
+
+    public static int rankByType(AbstractCard a, AbstractCard b) {
+        return (a == null ? -1 : b == null ? 1 : a.type.ordinal() - b.type.ordinal());
+    }
+
     @Override
     public void clear(boolean shouldInvoke, boolean shouldClearColors) {
         super.clear(shouldInvoke, shouldClearColors);
@@ -145,6 +190,15 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
+    }
+
+    @Override
+    public void defaultSort() {
+        this.group.sort(CardKeywordFilters::rankByName,
+                CardKeywordFilters::rankByRarity,
+                CardKeywordFilters::rankByType,
+                CardKeywordFilters::rankByStatus,
+                CardKeywordFilters::rankByColor);
     }
 
     @Override
@@ -285,27 +339,23 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
     }
 
     @Override
-    public ArrayList<CustomCardFilterModule> getGlobalFilters() {
-        return EUI.globalCustomCardFilters;
+    public EUIExporter.Exportable<AbstractCard> getExportable() {
+        return EUIExporter.cardExportable;
     }
 
     @Override
-    public int getReferenceCount() {
-        return (referenceItems.size() == 1 && referenceItems.get(0) instanceof FakeLibraryCard) ? 0 : referenceItems.size();
+    protected CardFilters getFilterObject() {
+        return new CardFilters();
     }
 
-    public CardKeywordFilters initializeForCustomHeader(CardGroup group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean isFixedPosition) {
-        EUI.customHeader.setGroup(group);
-        EUI.customHeader.setupButtons(isFixedPosition);
-        initialize((button) ->
-        {
-            EUI.customHeader.updateForFilters();
-            onClick.invoke(button);
-        }, EUI.customHeader.group.group, color, isAccessedFromCardPool);
-        EUI.customHeader.updateForFilters();
-        EUI.openFiltersButton.setOnClick(() -> EUI.cardFilters.toggleFilters());
-        EUIExporter.exportButton.setOnClick(() -> EUIExporter.cardExportable.openAndPosition(EUI.customHeader.group.group));
-        return this;
+    @Override
+    public float getFirstY() {
+        return group.group.get(0).current_y;
+    }
+
+    @Override
+    public ArrayList<CustomCardFilterModule> getGlobalFilters() {
+        return EUI.globalCustomCardFilters;
     }
 
     @Override
@@ -318,9 +368,9 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         HashSet<AbstractCard.CardRarity> availableRarities = new HashSet<>();
         HashSet<AbstractCard.CardType> availableTypes = new HashSet<>();
         HashSet<TargetFilter> availableTargets = new HashSet<>();
-        if (referenceItems != null) {
-            currentTotal = getReferenceCount();
-            for (AbstractCard card : referenceItems) {
+        if (originalGroup != null) {
+            currentTotal = originalGroup.size();
+            for (AbstractCard card : originalGroup) {
                 for (EUIKeywordTooltip tooltip : getAllTooltips(card)) {
                     if (tooltip.canFilter) {
                         currentFilterCounts.merge(tooltip, 1, Integer::sum);
@@ -334,7 +384,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
                 availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost4Plus.lowerBound));
                 availableColors.add(card.color);
             }
-            doForFilters(m -> m.initializeSelection(referenceItems));
+            doForFilters(m -> m.initializeSelection(originalGroup));
         }
 
         ArrayList<ModInfo> modInfos = new ArrayList<>(availableMods);
@@ -409,11 +459,6 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         doForFilters(m -> m.render(sb));
     }
 
-    @Override
-    protected CardFilters getFilterObject() {
-        return new CardFilters();
-    }
-
     public void setFrom(CardFilters filters) {
         //nameInput.setText(filters.currentName);
         //descriptionInput.setText(filters.currentDescription);
@@ -424,6 +469,45 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         seenDropdown.setSelection(filters.currentSeen, true);
         targetsDropdown.setSelection(filters.currentTargets, true);
         typesDropdown.setSelection(filters.currentTypes, true);
+    }
+
+    @Override
+    protected void setupSortHeader(FilterSortHeader header, float startX) {
+        startX = makeToggle(header, CardKeywordFilters::rankByRarity, CardLibSortHeader.TEXT[0], startX);
+        startX = makeToggle(header, CardKeywordFilters::rankByType, CardLibSortHeader.TEXT[1], startX);
+        startX = makeToggle(header, CardKeywordFilters::rankByCost, CardLibSortHeader.TEXT[3], startX);
+        startX = makeToggle(header, CardKeywordFilters::rankByName, CardLibSortHeader.TEXT[2], startX);
+        startX = makeToggle(header, CardKeywordFilters::rankByAmount, EUIRM.strings.ui_amount, startX);
+        startX = tryMakePackasterSort(header, startX);
+    }
+
+    protected float tryMakePackasterSort(FilterSortHeader header, float startX) {
+        if (Loader.isModLoaded("anniv5")) {
+            if (packmasterColor == null) {
+                try {
+                    packmasterColor = EUIClassUtils.getRFieldStatic("thePackmaster.ThePackmaster.Enums", "PACKMASTER_RAINBOW");
+                }
+                catch (Exception e) {
+                    EUIUtils.logError(this, "Failed to get PACKMASTA color");
+                    packmasterColor = AbstractCard.CardColor.COLORLESS;
+                }
+            }
+            if (EUI.actingColor == packmasterColor) {
+                if (getPackmasterPack == null) {
+                    try {
+                        Class<?> targetClass = Class.forName("thePackmaster.patches.CompendiumPatches.CustomOrdering");
+                        getPackmasterPack = FuncT1.get(String.class, targetClass, "getParnetNameFromObject", Object.class);
+                    }
+                    catch (Throwable e) {
+                        EUIUtils.logError(this, "Failed to get PACKMASTA");
+                        getPackmasterPack = String::valueOf;
+                    }
+                }
+                UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("anniv5:Compendium");
+                return makeToggle(header, (a, b) -> GenericFilters.rankByString(a, b, getPackmasterPack), uiStrings.TEXT[0], startX);
+            }
+        }
+        return startX;
     }
 
     @Override

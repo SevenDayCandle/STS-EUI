@@ -41,13 +41,13 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
         grid.clear();
         grid.add(EUIGameUtils.getAllBlights());
 
-        EUI.blightFilters.initializeForCustomHeader(grid.group, __ -> {
+        EUI.blightFilters.initializeForSort(grid.group, __ -> {
             for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
-                module.open(EUI.blightHeader.group.group, AbstractCard.CardColor.COLORLESS, null);
+                module.open(EUI.blightFilters.group.group, AbstractCard.CardColor.COLORLESS, null);
             }
             grid.moveToTop();
             grid.forceUpdatePositions();
-        }, AbstractCard.CardColor.COLORLESS, false, true);
+        }, AbstractCard.CardColor.COLORLESS);
 
         for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
             module.open(grid.group.group, AbstractCard.CardColor.COLORLESS, null);
@@ -58,7 +58,7 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
     public void renderImpl(SpriteBatch sb) {
         grid.tryRender(sb);
         cancelButton.render(sb);
-        EUI.blightHeader.renderImpl(sb);
+        EUI.sortHeader.renderImpl(sb);
         if (!EUI.blightFilters.isActive) {
             EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
@@ -80,7 +80,7 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
                 this.cancelButton.hide();
                 close();
             }
-            EUI.blightHeader.updateImpl();
+            EUI.sortHeader.updateImpl();
             EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
             for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {

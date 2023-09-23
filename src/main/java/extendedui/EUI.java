@@ -8,10 +8,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
-import com.evacipated.cardcrawl.mod.stslib.StSLib;
-import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
-import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
-import com.evacipated.cardcrawl.modthespire.Loader;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -39,10 +35,10 @@ import extendedui.text.EUISmartText;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
-import extendedui.ui.cardFilter.filters.BlightKeywordFilters;
-import extendedui.ui.cardFilter.filters.CardKeywordFilters;
-import extendedui.ui.cardFilter.filters.PotionKeywordFilters;
-import extendedui.ui.cardFilter.filters.RelicKeywordFilters;
+import extendedui.ui.cardFilter.BlightKeywordFilters;
+import extendedui.ui.cardFilter.CardKeywordFilters;
+import extendedui.ui.cardFilter.PotionKeywordFilters;
+import extendedui.ui.cardFilter.RelicKeywordFilters;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -103,23 +99,20 @@ public class EUI {
     public static AbstractCard.CardColor actingColor;
     public static BlightKeywordFilters blightFilters;
     public static BlightLibraryScreen blightLibraryScreen;
-    public static BlightSortHeader blightHeader;
     public static AbstractMenuScreen currentScreen;
     public static CardKeywordFilters cardFilters;
     public static CardPoolScreen cardsScreen;
     public static CountingPanel countingPanel;
-    public static CustomCardLibSortHeader customHeader;
     public static CustomCardLibraryScreen customLibraryScreen;
     public static EUIButton openFiltersButton;
     public static EUITutorialScreen tutorialScreen;
+    public static FilterSortHeader sortHeader;
     public static FakeFtueScreen ftueScreen;
     public static ExtraModSettingsPanel modSettingsScreen;
     public static PotionKeywordFilters potionFilters;
     public static PotionPoolScreen potionScreen;
-    public static PotionSortHeader potionHeader;
     public static RelicKeywordFilters relicFilters;
     public static RelicPoolScreen relicScreen;
-    public static RelicSortHeader relicHeader;
     public static CardPoolPanelItem compendiumButton;
     public static boolean disableInteract;
 
@@ -323,23 +316,20 @@ public class EUI {
             EUIGameUtils.registerColorPlayer(p.getCardColor(), p.chosenClass);
         }
 
+        sortHeader = new FilterSortHeader();
         blightFilters = new BlightKeywordFilters();
         blightLibraryScreen = new BlightLibraryScreen();
-        blightHeader = new BlightSortHeader(null);
         cardsScreen = new CardPoolScreen();
         cardFilters = new CardKeywordFilters();
         countingPanel = new CountingPanel();
-        customHeader = new CustomCardLibSortHeader(null);
         customLibraryScreen = new CustomCardLibraryScreen();
         tutorialScreen = new EUITutorialScreen();
         ftueScreen = new FakeFtueScreen();
         modSettingsScreen = new ExtraModSettingsPanel();
         modSettingsScreen.setActive(false);
         potionFilters = new PotionKeywordFilters();
-        potionHeader = new PotionSortHeader(null);
         potionScreen = new PotionPoolScreen();
         relicFilters = new RelicKeywordFilters();
-        relicHeader = new RelicSortHeader(null);
         relicScreen = new RelicPoolScreen();
         compendiumButton = new CardPoolPanelItem();
 
@@ -357,12 +347,6 @@ public class EUI {
 
         EUIExporter.initialize();
         MenuPanelScreenPatches.initialize();
-
-        // Toggling smooth scrolling requires updating the library and card pool screens
-        EUIConfiguration.useSnapScrolling.addListener(newValue -> {
-            EUI.customLibraryScreen.resetGrid();
-            EUI.cardsScreen.resetGrid();
-        });
 
         // Toggling keyword icons requires us to update keyword tooltip heights
         EUIConfiguration.enableDescriptionIcons.addListener(newValue -> {

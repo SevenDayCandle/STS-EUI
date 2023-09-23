@@ -639,6 +639,20 @@ public abstract class EUIUtils {
         return new FileNameExtensionFilter(EUIUtils.joinStringsMap(", ", f -> "*." + f, filters), filters);
     }
 
+    @SafeVarargs
+    public static <T> Comparator<? super T> getMultiComparator(Comparator<? super T>... comparators) {
+        Comparator<? super T> finalComparator = comparators[0];
+        for (int i = 1; i < comparators.length; i++) {
+            Comparator<? super T> comp = comparators[i];
+            Comparator<? super T> last = finalComparator;
+            finalComparator = (a, b) -> {
+                int res = comp.compare(a, b);
+                return res != 0 ? res : last.compare(a, b);
+            };
+        }
+        return finalComparator;
+    }
+
     public static Logger getLogger(Object source) {
         if (source == null) {
             return LogManager.getLogger();

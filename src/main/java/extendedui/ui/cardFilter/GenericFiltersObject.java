@@ -7,11 +7,11 @@ import extendedui.ui.tooltips.EUIKeywordTooltip;
 import java.util.HashSet;
 
 public class GenericFiltersObject {
-    public String currentDescription;
-    public String currentName;
     public final HashSet<EUIKeywordTooltip> currentFilters = new HashSet<>();
     public final HashSet<EUIKeywordTooltip> currentNegateFilters = new HashSet<>();
     public final HashSet<ModInfo> currentOrigins = new HashSet<>();
+    public String currentDescription;
+    public String currentName;
 
     public void clear(boolean shouldClearColors) {
         currentName = null;

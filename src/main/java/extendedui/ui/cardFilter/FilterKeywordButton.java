@@ -11,7 +11,6 @@ import extendedui.EUIRenderHelpers;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.cardFilter.filters.CardKeywordFilters;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.RelativeHitbox;

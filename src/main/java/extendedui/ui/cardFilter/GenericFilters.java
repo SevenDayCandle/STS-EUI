@@ -18,6 +18,7 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
+import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomFilterModule;
@@ -27,15 +28,19 @@ import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.ItemGroup;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
+import java.util.function.Predicate;
+import java.util.function.UnaryOperator;
 
 public abstract class GenericFilters<T, U extends GenericFiltersObject, V extends CustomFilterModule<T>> extends EUICanvasGrid {
     protected static final HashMap<String, EUIKeywordTooltip> TEMPORARY_TIPS = new HashMap<>(); // Because AbstractPotion HAS NO STANDARDIZED WAY OF ADDING TIPS, there's no way for us to infer where the tip came from
     protected static final Color FADE_COLOR = new Color(0f, 0f, 0f, 0.84f);
     public static final float DRAW_START_X = (float) Settings.WIDTH * 0.15f;
     public static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.87f;
+    public static final float FILTERS_START_X = (float) Settings.WIDTH * 0.28f;
     public static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
     public static final float PAD_Y = scale(45);
     public static final float SPACING = Settings.scale * 18f;
@@ -54,17 +59,20 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
     public final EUITextBoxInput nameInput;
     public final EUIToggle sortDirectionToggle;
     public final EUIToggle sortTypeToggle;
+    public final U filters;
     private FilterKeywordButton selectedButton;
     private boolean shouldSortByCount;
     private boolean sortDesc;
     protected ActionT1<FilterKeywordButton> onClick;
-    protected ArrayList<T> referenceItems;
+    protected ArrayList<T> originalGroup;
+    protected Comparator<T> comparator;
     protected boolean invalidated;
     protected boolean isAccessedFromCardPool;
     protected float drawX;
     protected int currentTotal;
-    public final U filters;
+    public ItemGroup<T> group;
     public V customModule;
+    public boolean isReverseOrder;
 
     public GenericFilters() {
         super(ROW_SIZE, PAD_Y);
@@ -158,13 +166,28 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         return tip;
     }
 
+    public static <T> int rankByString(T a, T b, FuncT1<String, T> stringFunc) {
+        return (a == null ? -1 : b == null ? 1 : StringUtils.compare(stringFunc.invoke(a), stringFunc.invoke(b)));
+    }
+
     public void addManualKeyword(EUIKeywordTooltip tooltip, int count) {
         filterButtons.add(new FilterKeywordButton(this, tooltip).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(count));
         currentFilterCounts.merge(tooltip, count, Integer::sum);
     }
 
+    public void addToOriginal(T item, boolean isAccessedFromCardPool) {
+        originalGroup.add(item);
+        initializeCounters(onClick, originalGroup, EUI.actingColor, isAccessedFromCardPool);
+    }
+
     public ArrayList<T> applyFilters(ArrayList<T> input) {
         return EUIUtils.filter(input, this::evaluate);
+    }
+
+    public boolean areFiltersEmpty() {
+        return filters.isEmpty()
+                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty)
+                && (customModule != null && customModule.isEmpty());
     }
 
     public void buttonRightClick(FilterKeywordButton button) {
@@ -251,8 +274,8 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         return StringUtils.join(EUIUtils.map(items, originalFunction), ", ");
     }
 
-    public int getReferenceCount() {
-        return referenceItems.size();
+    public ArrayList<T> getOriginalGroup() {
+        return originalGroup;
     }
 
     private void hideKeyword(boolean value) {
@@ -263,6 +286,14 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
     }
 
     public final GenericFilters<T, U, V> initialize(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
+        return initialize(onClick, new ItemGroup<>(items), items, color, isAccessedFromCardPool);
+    }
+
+    public final GenericFilters<T, U, V> initialize(ActionT1<FilterKeywordButton> onClick, ItemGroup<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
+        return initialize(onClick, items, new ArrayList<>(items.group), color, isAccessedFromCardPool);
+    }
+
+    protected final GenericFilters<T, U, V> initialize(ActionT1<FilterKeywordButton> onClick, ItemGroup<T> items, ArrayList<T> original, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
         clear(false, true);
         TEMPORARY_TIPS.clear();
         currentFilterCounts.clear();
@@ -271,17 +302,12 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         currentTotal = 0;
         EUI.actingColor = color;
         EUIKeywordTooltip.updateTooltipIcons();
+
         this.onClick = onClick;
-        referenceItems = items;
+        this.group = items;
+        this.originalGroup = original;
 
-        initializeImpl(onClick, items, color, isAccessedFromCardPool);
-
-        // InitializeImpl should set up the CurrentFilterCounts set
-        for (Map.Entry<EUIKeywordTooltip, Integer> filter : currentFilterCounts.entrySet()) {
-            int cardCount = filter.getValue();
-            filterButtons.add(new FilterKeywordButton(this, filter.getKey()).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(cardCount));
-        }
-        currentTotalLabel.setLabel(currentTotal);
+        initializeCounters(onClick, original, color, isAccessedFromCardPool);
 
         // Update instructions according to current settings
         keywordsInstructionLabel.setLabel(EUIUtils.format(EUIRM.strings.misc_keywordInstructions, InputActionSet.peek.getKeyString()));
@@ -289,9 +315,68 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         return this;
     }
 
+    protected final void initializeCounters(ActionT1<FilterKeywordButton> onClick, ArrayList<T> original, AbstractCard.CardColor color, boolean isAccessedFromCardPool) {
+        clear(false, true);
+        TEMPORARY_TIPS.clear();
+        currentFilterCounts.clear();
+        filterButtons.clear();
+        currentTotal = 0;
+        initializeImpl(onClick, original, color, isAccessedFromCardPool);
+
+        if (customModule != null) {
+            customModule.processGroup(group);
+        }
+
+        // InitializeImpl should set up the CurrentFilterCounts set
+        for (Map.Entry<EUIKeywordTooltip, Integer> filter : currentFilterCounts.entrySet()) {
+            int cardCount = filter.getValue();
+            filterButtons.add(new FilterKeywordButton(this, filter.getKey()).setOnToggle(onClick).setOnRightClick(this::buttonRightClick).setCardCount(cardCount));
+        }
+        currentTotalLabel.setLabel(currentTotal);
+    }
+
+    public GenericFilters<T, U, V> initializeForSort(ItemGroup<T> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color) {
+        return initializeForSort(group, onClick, color, FILTERS_START_X, false, false);
+    }
+
+    public GenericFilters<T, U, V> initializeForSort(ItemGroup<T> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, float startX) {
+        return initializeForSort(group, onClick, color, startX, false, false);
+    }
+
+    public GenericFilters<T, U, V> initializeForSort(ItemGroup<T> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, float startX, boolean isAccessedFromCardPool, boolean snapToGroup) {
+        initialize(button -> {
+            refreshGroup();
+            onClick.invoke(button);
+        }, group, color, isAccessedFromCardPool);
+        refreshGroup();
+        EUI.sortHeader.setFilters(this, startX).snapToGroup(snapToGroup);
+        EUI.openFiltersButton.setOnClick(this::toggleFilters);
+        EUIExporter.exportButton.setOnClick(() -> getExportable().openAndPosition(this.group.group));
+        return this;
+    }
+
     public void invoke(FilterKeywordButton button) {
         if (onClick != null) {
             onClick.invoke(button);
+        }
+    }
+
+    protected float makeToggle(FilterSortHeader header, Comparator<T> comparator, String title, float x) {
+        FilterSortToggle toggle = new FilterSortToggle(x, title, header, (val) -> setSort(comparator,val));
+        header.buttons.add(toggle);
+        return x + toggle.getSize();
+    }
+
+    protected float makeToggle(FilterSortHeader header, ActionT1<Boolean> sort, String title, float x) {
+        FilterSortToggle toggle = new FilterSortToggle(x, title, header, sort);
+        header.buttons.add(toggle);
+        return x + toggle.getSize();
+    }
+
+    public final void manualInvalidate(ArrayList<T> items) {
+        if (this.group != null) {
+            this.group.group = items;
+            invalidated = true;
         }
     }
 
@@ -306,11 +391,6 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
     public final void open() {
         CardCrawlGame.isPopupOpen = true;
         setActive(true);
-    }
-
-    public final void refresh(ArrayList<T> items) {
-        referenceItems = items;
-        invalidated = true;
     }
 
     public final void refreshButtonOrder() {
@@ -330,9 +410,9 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         currentFilterCounts.clear();
         currentTotal = 0;
 
-        if (referenceItems != null) {
-            currentTotal = getReferenceCount();
-            for (T card : referenceItems) {
+        if (group != null) {
+            currentTotal = group.group.size();
+            for (T card : originalGroup) {
                 for (EUIKeywordTooltip tooltip : getAllTooltips(card)) {
                     currentFilterCounts.merge(tooltip, 1, Integer::sum);
                 }
@@ -347,6 +427,19 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         refreshButtonOrder();
     }
 
+    public void refreshGroup() {
+        if (this.group != null) {
+            if (areFiltersEmpty()) {
+                this.group.group = originalGroup;
+            }
+            else {
+                this.group.group = applyFilters(originalGroup);
+            }
+            sort();
+            invalidated = true;
+        }
+    }
+
     @Override
     public void refreshOffset() {
         sizeCache = currentSize();
@@ -358,6 +451,21 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
             upperScrollBound += padY * (offset + 2);
             //lowerScrollBound -= padY * (offset - 1);
         }
+    }
+
+    public void removeFromOriginal(Predicate<? super T> predicate, boolean isAccessedFromCardPool) {
+        originalGroup.removeIf(predicate);
+        initializeCounters(onClick, originalGroup, EUI.actingColor, isAccessedFromCardPool);
+    }
+
+    public void removeFromOriginal(T item, boolean isAccessedFromCardPool) {
+        originalGroup.remove(item);
+        initializeCounters(onClick, originalGroup, EUI.actingColor, isAccessedFromCardPool);
+    }
+
+    public void replaceFromOriginal(UnaryOperator<T> predicate, boolean isAccessedFromCardPool) {
+        originalGroup.replaceAll(predicate);
+        initializeCounters(onClick, originalGroup, EUI.actingColor, isAccessedFromCardPool);
     }
 
     @Override
@@ -381,6 +489,30 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         }
 
         renderFilters(sb);
+    }
+
+    public final void setSort(Comparator<T> comparator) {
+        setSort(comparator, false);
+    }
+
+    public final void setSort(Comparator<T> comparator, boolean order) {
+        this.comparator = comparator;
+        isReverseOrder = order;
+        sort();
+    }
+
+    public final void setSortDirection(boolean order) {
+        isReverseOrder = order;
+        sort();
+    }
+
+    protected final void sort() {
+        if (comparator != null) {
+            this.group.sort(isReverseOrder ? comparator.reversed() : comparator);
+        }
+        else {
+            defaultSort();
+        }
     }
 
     public void toggleFilters() {
@@ -464,15 +596,13 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         }
     }
 
-    public boolean areFiltersEmpty() {
-        return filters.isEmpty()
-                && EUIUtils.all(getGlobalFilters(), CustomFilterModule::isEmpty)
-                && (customModule != null && customModule.isEmpty());
-    }
+    abstract public void defaultSort();
 
     abstract public boolean evaluate(T item);
 
     abstract public ArrayList<V> getGlobalFilters();
+
+    abstract public float getFirstY();
 
     abstract protected void initializeImpl(ActionT1<FilterKeywordButton> onClick, ArrayList<T> items, AbstractCard.CardColor color, boolean isAccessedFromCardPool);
 
@@ -483,6 +613,10 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
     abstract public boolean isHoveredImpl();
 
     abstract public void renderFilters(SpriteBatch sb);
+
+    abstract protected void setupSortHeader(FilterSortHeader header, float startX);
+
+    abstract public EUIExporter.Exportable<T> getExportable();
 
     abstract protected U getFilterObject();
 

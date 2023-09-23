@@ -9,20 +9,58 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.ColorTabBar;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
+import com.megacrit.cardcrawl.screens.mainMenu.SortHeaderButton;
 import extendedui.EUI;
+import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
 import extendedui.utilities.EUIClassUtils;
+import extendedui.utilities.FakeLibraryCard;
 
 import java.util.ArrayList;
 
 public class CardLibraryScreenPatches {
+    private static CardLibSortHeader header;
+    private static FakeLibraryCard fakeLibraryCard;
+    private static ArrayList<AbstractCard> fakeGroup;
+
+    // The fake group tells players that nothing can be found. It also prevents crashing from empty cardGroups without the need for patching
+    public static ArrayList<AbstractCard> getFakeGroup() {
+        if (fakeLibraryCard == null) {
+            fakeLibraryCard = new FakeLibraryCard();
+        }
+        if (fakeGroup == null) {
+            fakeGroup = new ArrayList<>();
+            fakeGroup.add(fakeLibraryCard);
+        }
+        return fakeGroup;
+    }
+
+    private static void updateForFilters() {
+        if (header != null && header.group != null) {
+            if (EUI.cardFilters.areFiltersEmpty()) {
+                header.group.group = EUI.cardFilters.getOriginalGroup();
+            }
+            else {
+                ArrayList<AbstractCard> tempGroup = EUI.cardFilters.applyFilters(EUI.cardFilters.getOriginalGroup());
+                if (tempGroup.size() > 0) {
+                    header.group.group = tempGroup;
+                }
+                else {
+                    header.group.group = getFakeGroup();
+                }
+            }
+            SortHeaderButton button = EUIUtils.find(header.buttons, b -> EUIClassUtils.getField(b, "isActive"));
+            boolean ascending = button != null ? EUIClassUtils.getField(button, "isAscending") : false;
+            header.didChangeOrder(button, ascending);
+            EUI.cardFilters.manualInvalidate(header.group.group);
+        }
+    }
+
     @SpirePatch(
             clz = CardLibraryScreen.class,
             method = "initialize"
@@ -61,23 +99,18 @@ public class CardLibraryScreenPatches {
     public static class CardLibraryScreen_DidChangeTab {
         private static CardLibSortHeader defaultHeader;
 
-        @SpirePrefixPatch
+        // TODO re-add custom buttons here
+/*        @SpirePrefixPatch
         public static void insert(CardLibraryScreen screen, ColorTabBar tabBar, ColorTabBar.CurrentTab newSelection) {
-            Hitbox upgradeHitbox = tabBar.viewUpgradeHb;
-            upgradeHitbox.width = 260 * Settings.scale;
 
-            if (EUIClassUtils.getField(screen, "sortHeader") != EUI.customHeader) {
-                EUIClassUtils.setField(screen, "sortHeader", EUI.customHeader);
-            }
-
-            EUI.customHeader.setupButtons(false);
-        }
+        }*/
 
         @SpirePostfixPatch
         public static void postfix(CardLibraryScreen screen, ColorTabBar tabBar, ColorTabBar.CurrentTab newSelection) {
-            EUI.cardFilters.initialize(__ -> EUI.customHeader.updateForFilters(), EUI.customHeader.originalGroup, newSelection == ColorTabBarFix.Enums.MOD ? ColorTabBarFix.Fields.getModTab().color : AbstractCard.CardColor.COLORLESS, false);
+            header = EUIClassUtils.getField(screen, "sortHeader");
+            EUI.cardFilters.initialize(__ -> updateForFilters(), header.group.group, newSelection == ColorTabBarFix.Enums.MOD ? ColorTabBarFix.Fields.getModTab().color : AbstractCard.CardColor.COLORLESS, false);
             EUI.openFiltersButton.setOnClick(() -> EUI.cardFilters.toggleFilters());
-            EUI.customHeader.updateForFilters();
+            updateForFilters();
         }
     }
 

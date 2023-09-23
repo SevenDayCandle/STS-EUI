@@ -17,6 +17,7 @@ import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.markers.CustomPoolModule;
+import extendedui.ui.cardFilter.GenericFilters;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.controls.EUIPotionGrid;
@@ -116,15 +117,15 @@ public class PotionPoolScreen extends EUIPoolScreen {
         potionGrid.clear();
         potionGrid.setItems(potions, PotionInfo::new);
 
-        EUI.potionFilters.initializeForCustomHeader(potionGrid.group, __ -> {
+        EUI.potionFilters.initializeForSort(potionGrid.group, __ -> {
             for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
-                module.open(EUI.potionHeader.group.group, color, null);
+                module.open(EUI.potionFilters.group.group, color, null);
             }
             if (customModule != null) {
-                customModule.open(EUI.potionHeader.group.group, color, null);
+                customModule.open(EUI.potionFilters.group.group, color, null);
             }
             potionGrid.forceUpdatePositions();
-        }, color, true, false);
+        }, color, GenericFilters.FILTERS_START_X, true, false);
 
 
         for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
@@ -141,7 +142,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
         potionGrid.tryRender(sb);
         swapCardScreen.renderImpl(sb);
         swapRelicScreen.renderImpl(sb);
-        EUI.potionHeader.renderImpl(sb);
+        EUI.sortHeader.renderImpl(sb);
         if (!EUI.potionFilters.isActive) {
             EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
@@ -161,7 +162,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
             potionGrid.tryUpdate();
             swapCardScreen.updateImpl();
             swapRelicScreen.updateImpl();
-            EUI.potionHeader.updateImpl();
+            EUI.sortHeader.updateImpl();
             EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
             for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {

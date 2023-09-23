@@ -16,7 +16,7 @@ import javassist.expr.ExprEditor;
 
 import java.util.ArrayList;
 
-import static extendedui.ui.cardFilter.CustomCardLibSortHeader.getFakeGroup;
+import static extendedui.patches.screens.CardLibraryScreenPatches.getFakeGroup;
 
 public class MasterDeckViewScreenPatches {
     public static final CardGroup fakeMasterDeck = new CardGroup(CardGroup.CardGroupType.MASTER_DECK);
@@ -50,7 +50,7 @@ public class MasterDeckViewScreenPatches {
                 fakeMasterDeck.group = getFakeGroup();
             }
         }
-        EUI.cardFilters.refresh(fakeMasterDeck.group);
+        EUI.cardFilters.manualInvalidate(fakeMasterDeck.group);
     }
 
     @SpirePatch(clz = MasterDeckViewScreen.class, method = "open")

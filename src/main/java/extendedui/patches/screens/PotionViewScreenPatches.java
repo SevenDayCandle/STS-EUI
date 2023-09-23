@@ -60,7 +60,7 @@ public class PotionViewScreenPatches {
             rarePotions = EUI.potionFilters.applyFiltersToPotions(ReflectionHacks.getPrivate(screen, PotionViewScreen.class, "rarePotions"));
             resetAllList();
         }
-        EUI.potionFilters.refresh(allList);
+        EUI.potionFilters.manualInvalidate(allList);
     }
 
     @SpirePatch(clz = PotionViewScreen.class, method = "open")

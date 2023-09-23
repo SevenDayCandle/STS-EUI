@@ -1,5 +1,7 @@
 package extendedui.utilities;
 
+import extendedui.EUIUtils;
+
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Comparator;
@@ -39,5 +41,10 @@ public class ItemGroup<T> implements Iterable<T> {
 
     public void sort(Comparator<? super T> comparator) {
         group.sort(comparator);
+    }
+
+    @SafeVarargs
+    public final void sort(Comparator<? super T>... comparator) {
+        group.sort(EUIUtils.getMultiComparator(comparator));
     }
 }

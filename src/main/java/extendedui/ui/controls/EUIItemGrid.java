@@ -3,6 +3,8 @@ package extendedui.ui.controls;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
@@ -28,10 +30,11 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
     protected ActionT1<T> onHover;
     protected ActionT1<T> onRightClick;
     protected ActionT2<SpriteBatch, T> onRender;
-    protected float drawX = DRAW_START_X;
+    protected float drawX = 0.5f * DRAW_START_X;
     protected float drawTopY = DRAW_START_Y;
     protected int hoveredIndex;
-    public float padX = PAD;
+    public boolean shouldEnlargeHovered = true;
+    public float padX;
     public ItemGroup<T> group;
     public T hovered = null;
     public String message = null;
@@ -43,16 +46,21 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         this(0.5f, true);
     }
 
+    public EUIItemGrid(float horizontalAlignment) {
+        this(horizontalAlignment, true);
+    }
+
     public EUIItemGrid(float horizontalAlignment, boolean autoShowScrollbar) {
-        super(ROW_SIZE, PAD);
+        this(ROW_SIZE, PAD, PAD, horizontalAlignment, autoShowScrollbar);
+    }
+
+    public EUIItemGrid(int rowSize, float padX, float padY, float horizontalAlignment, boolean autoShowScrollbar) {
+        super(rowSize, padY);
+        this.padX = padX;
         this.autoShowScrollbar = autoShowScrollbar;
         this.group = new ItemGroup<>();
 
         setHorizontalAlignment(horizontalAlignment);
-    }
-
-    public EUIItemGrid(float horizontalAlignment) {
-        this(horizontalAlignment, true);
     }
 
     public EUIItemGrid<T> add(T item) {
@@ -117,7 +125,7 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         int row = 0;
         int column = 0;
         for (T item : group.group) {
-            forceUpdateItemPosition(item, (DRAW_START_X * drawX) + (column * PAD), drawTopY + scrollDelta - (row * padY));
+            forceUpdateItemPosition(item, (drawX) + (column * padX), drawTopY + scrollDelta - (row * padY));
 
             column += 1;
             if (column >= rowSize) {
@@ -158,6 +166,20 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         super.renderImpl(sb);
 
         renderItems(sb);
+        renderTip(sb);
+
+        if (message != null) {
+            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
+        }
+    }
+
+    public void renderWithScissors(SpriteBatch sb, Rectangle scissors) {
+        super.renderImpl(sb);
+        if (ScissorStack.pushScissors(scissors)) {
+            renderItems(sb);
+            ScissorStack.popScissors();
+        }
+        renderTip(sb);
 
         if (message != null) {
             FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
@@ -165,17 +187,27 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
     }
 
     protected void renderItems(SpriteBatch sb) {
-        for (T itemInfo : group.group) {
-            renderItem(sb, itemInfo);
+        for (T item : group.group) {
+            renderItem(sb, item);
             if (onRender != null) {
-                onRender.invoke(sb, itemInfo);
+                onRender.invoke(sb, item);
             }
         }
     }
 
+    protected void renderTip(SpriteBatch sb) {
+
+    }
+
+    public EUIItemGrid<T> setEnlargeOnHover(boolean shouldEnlargeHovered) {
+        this.shouldEnlargeHovered = shouldEnlargeHovered;
+
+        return this;
+    }
+
     public EUIItemGrid<T> setHorizontalAlignment(float percentage) {
-        this.drawX = MathUtils.clamp(percentage, 0.35f, 0.55f);
-        this.scrollBar.setPosition(screenW((percentage < 0.5f) ? 0.05f : 0.9f), screenH(0.5f));
+        this.drawX = MathUtils.clamp(percentage, 0.35f, 0.55f) * DRAW_START_X;
+        this.scrollBar.setPosition(screenW((percentage > 0.5f) ? 0.05f : 0.9f), screenH(0.5f));
 
         return this;
     }
@@ -230,6 +262,18 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         return this;
     }
 
+    public EUIItemGrid<T> setPadX(float padX) {
+        this.padX = padX;
+
+        return this;
+    }
+
+    public EUIItemGrid<T> setPadY(float padY) {
+        this.padY = padY;
+
+        return this;
+    }
+
     public EUIItemGrid<T> setVerticalStart(float posY) {
         this.drawTopY = posY;
 
@@ -262,7 +306,7 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
     public void updateImpl() {
         super.updateImpl();
 
-        updateRelics();
+        updateItems();
         updateNonMouseInput();
         updateClickLogic();
     }
@@ -298,14 +342,14 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         }
     }
 
-    protected void updateRelics() {
+    protected void updateItems() {
         hovered = null;
 
         int row = 0;
         int column = 0;
         for (int i = 0; i < group.size(); i++) {
             T item = group.group.get(i);
-            updateItemPosition(item, (DRAW_START_X * drawX) + (column * PAD), drawTopY + scrollDelta - (row * padY));
+            updateItemPosition(item, (drawX) + (column * padX), drawTopY + scrollDelta - (row * padY));
             updateHoverLogic(item, i);
 
             column += 1;

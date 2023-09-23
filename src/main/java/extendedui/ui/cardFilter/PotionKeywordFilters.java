@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter.filters;
+package extendedui.ui.cardFilter;
 
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
@@ -17,14 +17,10 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.CustomFilterModule;
 import extendedui.interfaces.markers.CustomFilterable;
 import extendedui.interfaces.markers.KeywordProvider;
-import extendedui.ui.cardFilter.FilterKeywordButton;
-import extendedui.ui.cardFilter.GenericFilters;
-import extendedui.ui.cardFilter.GenericFiltersObject;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.ItemGroup;
 import extendedui.utilities.PotionInfo;
 import extendedui.utilities.TargetFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -117,6 +113,22 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywo
         return c.name;
     }
 
+    public static int rankByAmount(PotionInfo a, PotionInfo b) {
+        return (a == null ? -1 : b == null ? 1 : a.potion.getPotency() - b.potion.getPotency());
+    }
+
+    public static int rankByColor(PotionInfo a, PotionInfo b) {
+        return (a == null ? -1 : b == null ? 1 : a.potionColor.ordinal() - b.potionColor.ordinal());
+    }
+
+    public static int rankByName(PotionInfo a, PotionInfo b) {
+        return (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.potion.name, b.potion.name));
+    }
+
+    public static int rankByRarity(PotionInfo a, PotionInfo b) {
+        return (a == null ? -1 : b == null ? 1 : a.potion.rarity.ordinal() - b.potion.rarity.ordinal());
+    }
+
     public ArrayList<AbstractPotion> applyFiltersToPotions(ArrayList<AbstractPotion> input) {
         return EUIUtils.filter(input, this::evaluate);
     }
@@ -132,6 +144,13 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywo
         colorsDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
+    }
+
+    @Override
+    public void defaultSort() {
+        this.group.sort(PotionKeywordFilters::rankByName);
+        this.group.sort(PotionKeywordFilters::rankByRarity);
+        this.group.sort(PotionKeywordFilters::rankByColor);
     }
 
     public boolean evaluate(PotionInfo c) {
@@ -222,20 +241,23 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywo
     }
 
     @Override
-    public ArrayList<CustomFilterModule<PotionInfo>> getGlobalFilters() {
-        return EUI.globalCustomPotionFilters;
+    public EUIExporter.Exportable<PotionInfo> getExportable() {
+        return EUIExporter.potionExportable;
     }
 
-    public PotionKeywordFilters initializeForCustomHeader(ItemGroup<PotionInfo> group, ActionT1<FilterKeywordButton> onClick, AbstractCard.CardColor color, boolean isAccessedFromCardPool, boolean snapToGroup) {
-        EUI.potionHeader.setGroup(group).snapToGroup(snapToGroup);
-        initialize(button -> {
-            EUI.potionHeader.updateForFilters();
-            onClick.invoke(button);
-        }, EUI.potionHeader.originalGroup, color, isAccessedFromCardPool);
-        EUI.potionHeader.updateForFilters();
-        EUI.openFiltersButton.setOnClick(() -> EUI.potionFilters.toggleFilters());
-        EUIExporter.exportButton.setOnClick(() -> EUIExporter.potionExportable.openAndPosition(EUI.potionHeader.group.group));
-        return this;
+    @Override
+    protected PotionFilters getFilterObject() {
+        return new PotionFilters();
+    }
+
+    @Override
+    public float getFirstY() {
+        return this.group.group.get(0).potion.posY;
+    }
+
+    @Override
+    public ArrayList<CustomFilterModule<PotionInfo>> getGlobalFilters() {
+        return EUI.globalCustomPotionFilters;
     }
 
     @Override
@@ -248,9 +270,9 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywo
         HashSet<AbstractPotion.PotionSize> availableSizes = new HashSet<>();
         HashSet<AbstractPotion.PotionEffect> availableVfx = new HashSet<>();
         HashSet<TargetFilter> availableTargets = new HashSet<>();
-        if (referenceItems != null) {
-            currentTotal = getReferenceCount();
-            for (PotionInfo info : referenceItems) {
+        if (originalGroup != null) {
+            currentTotal = originalGroup.size();
+            for (PotionInfo info : originalGroup) {
                 AbstractPotion potion = info.potion;
                 for (EUIKeywordTooltip tooltip : getAllTooltips(info)) {
                     if (tooltip.canFilter) {
@@ -265,7 +287,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywo
                 availableVfx.add(potion.p_effect);
                 availableTargets.add(TargetFilter.forPotion(potion));
             }
-            doForFilters(m -> m.initializeSelection(referenceItems));
+            doForFilters(m -> m.initializeSelection(originalGroup));
         }
 
         ArrayList<ModInfo> modInfos = new ArrayList<>(availableMods);
@@ -319,8 +341,12 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywo
     }
 
     @Override
-    protected PotionFilters getFilterObject() {
-        return new PotionFilters();
+    protected void setupSortHeader(FilterSortHeader header, float startX) {
+        
+        startX = makeToggle(header, PotionKeywordFilters::rankByRarity, CardLibSortHeader.TEXT[0], startX);
+        startX = makeToggle(header, PotionKeywordFilters::rankByName, CardLibSortHeader.TEXT[2], startX);
+        startX = makeToggle(header, PotionKeywordFilters::rankByColor, EUIRM.strings.ui_colors, startX);
+        startX = makeToggle(header, PotionKeywordFilters::rankByAmount, EUIRM.strings.ui_amount, startX);
     }
 
     @Override

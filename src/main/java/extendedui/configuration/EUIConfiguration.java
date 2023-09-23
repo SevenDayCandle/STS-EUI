@@ -53,7 +53,6 @@ public class EUIConfiguration {
     public static STSConfigItem<Boolean> showModSettings = new STSConfigItem<>(getFullKey("ShowModSettings"), false);
     public static STSConfigItem<Boolean> useEUITooltips = new STSConfigItem<>(getFullKey("UseEUITooltips"), false);
     public static STSConfigItem<Boolean> useSeparateFonts = new STSConfigItem<>(getFullKey("UseSeparateFonts"), false);
-    public static STSConfigItem<Boolean> useSnapScrolling = new STSConfigItem<>(getFullKey("UseSnapScrolling"), false);
     public static STSConfigItem<Boolean> useVanillaCompendium = new STSConfigItem<>(getFullKey("UseVanillaCompendium"), false);
     public static STSStringConfigItem bannerFont = new STSStringConfigItem(getFullKey("BannerFont"), "");
     public static STSStringConfigItem buttonFont = new STSStringConfigItem(getFullKey("ButtonFont"), "");
@@ -165,7 +164,6 @@ public class EUIConfiguration {
             saveFilterChoices.addConfig(config);
             showModSettings.addConfig(config);
             useEUITooltips.addConfig(config);
-            useSnapScrolling.addConfig(config);
             useSeparateFonts.addConfig(config);
             overrideGameFont.addConfig(config);
             cardDescFont.addConfig(config);
@@ -218,7 +216,6 @@ public class EUIConfiguration {
         ExtraModSettingsPanel.addCategory(effekseerCategory);
         ExtraModSettingsPanel.addCategory(fontCategory);
         makeModToggle(effekseerCategory, showCountingPanel, EUIRM.strings.config_showCountingPanel, EUIRM.strings.configdesc_showCountingPanel);
-        makeModToggle(effekseerCategory, useSnapScrolling, EUIRM.strings.config_useSnapScrolling, EUIRM.strings.configdesc_useSnapScrolling);
         makeModToggle(effekseerCategory, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, EUIRM.strings.configdesc_disableCompendiumButton);
         makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.config_disableEffekseer, EUIRM.strings.configdesc_disableEffekseer);
         makeModToggle(effekseerCategory, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, EUIRM.strings.configdesc_enableDescriptionIcons);
@@ -248,7 +245,6 @@ public class EUIConfiguration {
 
         yPos = addToggle(0, showCountingPanel, EUIRM.strings.config_showCountingPanel, yPos, EUIRM.strings.configdesc_showCountingPanel);
         yPos = addToggle(0, useVanillaCompendium, EUIRM.strings.config_useVanillaCompendium, yPos, EUIRM.strings.configdesc_useVanillaCompendium);
-        yPos = addToggle(0, useSnapScrolling, EUIRM.strings.config_useSnapScrolling, yPos, EUIRM.strings.configdesc_useSnapScrolling);
         yPos = addToggle(0, disableCompendiumButton, EUIRM.strings.config_disableCompendiumButton, yPos, EUIRM.strings.configdesc_disableCompendiumButton);
         yPos = addToggle(0, disableEffekseer, EUIRM.strings.config_disableEffekseer, yPos, EUIRM.strings.configdesc_disableEffekseer);
         yPos = addToggle(0, enableDescriptionIcons, EUIRM.strings.config_enableDescriptionIcons, yPos, EUIRM.strings.configdesc_enableDescriptionIcons);
