@@ -91,6 +91,12 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
     }
 
     @Override
+    public void cloneFrom(BlightFilters filters) {
+        originsDropdown.setSelection(filters.currentOrigins, true);
+        seenDropdown.setSelection(filters.currentSeen, true);
+    }
+
+    @Override
     public void defaultSort() {
         this.group.sort(BlightKeywordFilters::rankByName);
         this.group.sort(BlightKeywordFilters::rankByUnique);

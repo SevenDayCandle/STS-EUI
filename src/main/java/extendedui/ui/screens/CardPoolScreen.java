@@ -172,6 +172,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             customModule.open(cardGrid.group.group, color, null);
         }
 
+        cardGrid.scrollBar.scroll(cardGrid.scrollBar.currentScrollPercent, true);
     }
 
     protected void removeCardFromPool(AbstractCard c) {

@@ -145,6 +145,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             customModule.open(relicGrid.group.group, color, null);
         }
 
+        relicGrid.scrollBar.scroll(relicGrid.scrollBar.currentScrollPercent, true);
     }
 
     protected void removeRelicFromPool(AbstractRelic c) {

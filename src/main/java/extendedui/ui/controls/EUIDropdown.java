@@ -431,8 +431,8 @@ public class EUIDropdown<T> extends EUIHoverable {
         else {
             this.renderBorder(sb, hb.x, bottomY, hb.width, topY - bottomY);
         }
-        for (int i = 0; i < this.visibleRowCount(); ++i) {
-            this.rows.get(i + this.topVisibleRowIndex).renderRow(sb);
+        for (int i = this.topVisibleRowIndex; i < Math.min(this.rows.size(), this.visibleRowCount() + this.topVisibleRowIndex); i++) {
+            this.rows.get(i).renderRow(sb);
         }
         if (this.shouldShowSlider()) {
             this.scrollBar.tryRender(sb);

@@ -202,7 +202,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         }, color, FILTERS_START_X);
 
         if (EUIConfiguration.saveFilterChoices.get()) {
-            EUI.cardFilters.setFrom(savedFilters);
+            EUI.cardFilters.cloneFrom(savedFilters);
         }
 
         for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {

@@ -175,11 +175,6 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         currentFilterCounts.merge(tooltip, count, Integer::sum);
     }
 
-    public void addToOriginal(T item, boolean isAccessedFromCardPool) {
-        originalGroup.add(item);
-        initializeCounters(onClick, originalGroup, EUI.actingColor, isAccessedFromCardPool);
-    }
-
     public ArrayList<T> applyFilters(ArrayList<T> input) {
         return EUIUtils.filter(input, this::evaluate);
     }
@@ -453,21 +448,6 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         }
     }
 
-    public void removeFromOriginal(Predicate<? super T> predicate, boolean isAccessedFromCardPool) {
-        originalGroup.removeIf(predicate);
-        initializeCounters(onClick, originalGroup, EUI.actingColor, isAccessedFromCardPool);
-    }
-
-    public void removeFromOriginal(T item, boolean isAccessedFromCardPool) {
-        originalGroup.remove(item);
-        initializeCounters(onClick, originalGroup, EUI.actingColor, isAccessedFromCardPool);
-    }
-
-    public void replaceFromOriginal(UnaryOperator<T> predicate, boolean isAccessedFromCardPool) {
-        originalGroup.replaceAll(predicate);
-        initializeCounters(onClick, originalGroup, EUI.actingColor, isAccessedFromCardPool);
-    }
-
     @Override
     public final void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
@@ -595,6 +575,8 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
             close();
         }
     }
+
+    abstract public void cloneFrom(U filters);
 
     abstract public void defaultSort();
 

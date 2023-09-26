@@ -141,6 +141,15 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, RelicKeywordF
     }
 
     @Override
+    public void cloneFrom(RelicFilters filters) {
+        originsDropdown.setSelection(filters.currentOrigins, true);
+        colorsDropdown.setSelection(filters.currentColors, true);
+        raritiesDropdown.setSelection(filters.currentRarities, true);
+        seenDropdown.setSelection(filters.currentSeen, true);
+        sfxDropdown.setSelection(filters.currentSfx, true);
+    }
+
+    @Override
     public void defaultSort() {
         this.group.sort(RelicKeywordFilters::rankByName);
         this.group.sort(RelicKeywordFilters::rankByRarity);
@@ -358,7 +367,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, RelicKeywordF
     }
 
     public static class RelicFilters extends GenericFiltersObject {
-        public final ArrayList<CardKeywordFilters.SeenValue> currentSeen = new ArrayList<>();
+        public final ArrayList<SeenValue> currentSeen = new ArrayList<>();
         public final HashSet<AbstractCard.CardColor> currentColors = new HashSet<>();
         public final HashSet<AbstractRelic.LandingSound> currentSfx = new HashSet<>();
         public final HashSet<AbstractRelic.RelicTier> currentRarities = new HashSet<>();

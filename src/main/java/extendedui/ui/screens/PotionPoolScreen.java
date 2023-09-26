@@ -135,6 +135,8 @@ public class PotionPoolScreen extends EUIPoolScreen {
         if (customModule != null) {
             customModule.open(potionGrid.group.group, color, null);
         }
+
+        potionGrid.scrollBar.scroll(potionGrid.scrollBar.currentScrollPercent, true);
     }
 
     @Override

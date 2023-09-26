@@ -193,6 +193,17 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
     }
 
     @Override
+    public void cloneFrom(CardFilters filters) {
+        originsDropdown.setSelection(filters.currentOrigins, true);
+        colorsDropdown.setSelection(filters.currentColors, true);
+        costDropdown.setSelection(filters.currentCosts, true);
+        raritiesDropdown.setSelection(filters.currentRarities, true);
+        seenDropdown.setSelection(filters.currentSeen, true);
+        targetsDropdown.setSelection(filters.currentTargets, true);
+        typesDropdown.setSelection(filters.currentTypes, true);
+    }
+
+    @Override
     public void defaultSort() {
         this.group.sort(CardKeywordFilters::rankByName,
                 CardKeywordFilters::rankByRarity,
@@ -457,18 +468,6 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
             customModule.render(sb);
         }
         doForFilters(m -> m.render(sb));
-    }
-
-    public void setFrom(CardFilters filters) {
-        //nameInput.setText(filters.currentName);
-        //descriptionInput.setText(filters.currentDescription);
-        originsDropdown.setSelection(filters.currentOrigins, true);
-        colorsDropdown.setSelection(filters.currentColors, true);
-        costDropdown.setSelection(filters.currentCosts, true);
-        raritiesDropdown.setSelection(filters.currentRarities, true);
-        seenDropdown.setSelection(filters.currentSeen, true);
-        targetsDropdown.setSelection(filters.currentTargets, true);
-        typesDropdown.setSelection(filters.currentTypes, true);
     }
 
     @Override

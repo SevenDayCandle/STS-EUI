@@ -147,6 +147,16 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywo
     }
 
     @Override
+    public void cloneFrom(PotionFilters filters) {
+        originsDropdown.setSelection(filters.currentOrigins, true);
+        colorsDropdown.setSelection(filters.currentColors, true);
+        raritiesDropdown.setSelection(filters.currentRarities, true);
+        sizesDropdown.setSelection(filters.currentSizes, true);
+        vfxDropdown.setSelection(filters.currentVfx, true);
+        targetsDropdown.setSelection(filters.currentTargets, true);
+    }
+
+    @Override
     public void defaultSort() {
         this.group.sort(PotionKeywordFilters::rankByName);
         this.group.sort(PotionKeywordFilters::rankByRarity);
