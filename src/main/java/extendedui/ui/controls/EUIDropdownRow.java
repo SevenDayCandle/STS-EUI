@@ -66,6 +66,10 @@ public class EUIDropdownRow<T> {
         return this.label.text;
     }
 
+    protected boolean isComponentHovered() {
+        return this.hb.hovered;
+    }
+
     public void move(float x, float y) {
         this.hb.translate(x, y);
         this.checkbox.hb.translate(x, y - TOGGLE_OFFSET);
@@ -109,7 +113,7 @@ public class EUIDropdownRow<T> {
     }
 
     protected boolean tryHover(boolean isSelected) {
-        if (this.hb.hovered) {
+        if (isComponentHovered()) {
             this.label.setColor(Settings.GREEN_TEXT_COLOR);
             if (InputHelper.justClickedLeft) {
                 this.hb.clickStarted = true;
