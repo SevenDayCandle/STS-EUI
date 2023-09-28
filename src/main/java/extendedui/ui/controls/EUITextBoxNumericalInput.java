@@ -10,11 +10,12 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import org.apache.commons.lang3.math.NumberUtils;
 
 public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
-    protected int cachedValue;
+    private int cachedValue;
+    private int tempValue;
+    private boolean hasEntered;
     protected int min = Integer.MIN_VALUE;
     protected int max = Integer.MAX_VALUE;
     public boolean showNegativeAsInfinity;
-    public boolean clearOnInitialEntry = true;
 
     public EUITextBoxNumericalInput(Texture backgroundTexture, EUIHitbox hb) {
         super(backgroundTexture, hb);
@@ -28,12 +29,12 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     @Override
     public void complete() {
         super.complete();
-        cachedValue = getValue(label.text);
+        cachedValue = tempValue = getValue(label.text);
         forceUpdateText();
     }
 
     public void forceSetValue(int value, boolean invoke) {
-        cachedValue = MathUtils.clamp(value, min, max);
+        cachedValue = tempValue = MathUtils.clamp(value, min, max);
         forceUpdateText();
         if (invoke && onComplete != null) {
             onComplete.invoke(cachedValue);
@@ -84,13 +85,24 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     }
 
     @Override
-    public void onUpdate(int pos) {
-        cachedValue = getValue(buffer.toString());
+    public void onUpdate(int pos, char keycode) {
+        if (!hasEntered && keycode != EUIInputManager.DUMMY_PASTE) {
+            getBuffer().setLength(0);
+            if (keycode >= 32) {
+                buffer.append(keycode);
+            }
+            EUIInputManager.resetPos();
+        }
+        else {
+            tempValue = getValue(buffer.toString());
+        }
+        hasEntered = true;
     }
 
-    protected void setValue(int value) {
-        cachedValue = MathUtils.clamp(value, min, max);
-        setBufferText(String.valueOf(cachedValue));
+    protected void setTempValue(int value) {
+        tempValue = MathUtils.clamp(value, min, max);
+        hasEntered = true;
+        setBufferText(String.valueOf(tempValue));
     }
 
     public EUITextBoxNumericalInput showNegativeAsInfinity(boolean val) {
@@ -99,18 +111,21 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     }
 
     public boolean start() {
-        boolean val = EUIInputManager.tryStartType(this);
-        if (val) {
-            EUI.pushActiveElement(this);
-            if (clearOnInitialEntry || !NumberUtils.isCreatable(label.text)) {
-                clearBuffer();
-                cachedValue = 0;
+        if (isActive) {
+            boolean val = EUIInputManager.tryStartType(this);
+            if (val) {
+                EUI.pushActiveElement(this);
+                hasEntered = false;
+                if (!NumberUtils.isCreatable(label.text)) {
+                    clearBuffer();
+                }
+                else {
+                    setBufferText(label.text);
+                }
             }
-            else {
-                setBufferText(label.text);
-            }
+            return val;
         }
-        return val;
+        return false;
     }
 
     @Override
@@ -118,10 +133,10 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         super.updateImpl();
         if (isEditing()) {
             if (InputHelper.scrolledDown) {
-                setValue(cachedValue - 1);
+                setTempValue(tempValue - 1);
             }
             else if (InputHelper.scrolledUp) {
-                setValue(cachedValue + 1);
+                setTempValue(tempValue + 1);
             }
         }
     }

@@ -67,13 +67,17 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
                 .setAlignment(0.5f, 0.0f, false);
         this.sampleColor = new EUIImage(EUIRM.images.squaredButton2.texture(), new EUIHitbox(hb.x + hb.width * 0.6f, sampleColorHeader.hb.y - scale(40), scale(50), scale(50)));
         this.inputHue
-                .setOnComplete(i -> picker.setHue((float) i / HUE_CONSTANT));
+                .setOnComplete(i -> picker.setHue((float) i / HUE_CONSTANT))
+                .setOnTab(() -> this.inputSaturation.start());
         this.inputSaturation
-                .setOnComplete(i -> picker.setSat((float) i / HUE_CONSTANT));
+                .setOnComplete(i -> picker.setSat((float) i / HUE_CONSTANT))
+                .setOnTab(() -> this.inputValue.start());
         this.inputValue
-                .setOnComplete(i -> picker.setVal((float) i / HUE_CONSTANT));
+                .setOnComplete(i -> picker.setVal((float) i / HUE_CONSTANT))
+                .setOnTab(() -> this.inputAlpha.start());
         this.inputAlpha
-                .setOnComplete(i -> picker.setAlpha((float) i / HUE_CONSTANT));
+                .setOnComplete(i -> picker.setAlpha((float) i / HUE_CONSTANT))
+                .setOnTab(() -> this.inputHue.start());
         this.picker.setOnChange((__) -> updateInputs());
     }
 

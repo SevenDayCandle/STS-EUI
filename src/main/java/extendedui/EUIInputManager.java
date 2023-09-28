@@ -1,12 +1,9 @@
 package extendedui;
 
-import basemod.interfaces.TextReceiver;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
-import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
 import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
-import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
@@ -18,15 +15,16 @@ import java.awt.*;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.StringSelection;
 import java.awt.datatransfer.Transferable;
-import java.awt.image.BufferedImage;
 
 /* This class allows one to check if the user clicked in the mouse in render calls, which is not possible with InputManager because clicks are cleared after the update phase */
 public class EUIInputManager {
-    private static final char BACKSPACE = 8;
-    private static final char DEL = 127;
-    private static final char ENTER_DESKTOP = '\r';
-    private static final char ENTER_ANDROID = '\n';
-    private static final char TAB = '\t';
+    public static final char BACKSPACE = 8;
+    public static final char DEL = 127;
+    public static final char DUMMY_CUT = 6; // Using control characters to stand in for cut/paste since we can't enter them anyhow
+    public static final char DUMMY_PASTE = 7;
+    public static final char ENTER_DESKTOP = '\r';
+    public static final char ENTER_ANDROID = '\n';
+    public static final char TAB = '\t';
     private static TextInputProvider textProvider;
     private static int curLimit;
     private static int pos;
@@ -167,6 +165,7 @@ public class EUIInputManager {
             case ENTER_DESKTOP:
                 if (textProvider.onPushEnter())
                     return true;
+                break;
             case BACKSPACE:
                 if (textProvider.onPushBackspace()) {
                     return true;
@@ -174,7 +173,7 @@ public class EUIInputManager {
                 if (pos > 0) {
                     sb.deleteCharAt(pos - 1);
                     pos -= 1;
-                    textProvider.onUpdate(pos);
+                    textProvider.onUpdate(pos, character);
                 }
                 return true;
             case DEL:
@@ -183,9 +182,13 @@ public class EUIInputManager {
                 }
                 if (pos >= 0 && pos < sb.length()) {
                     sb.deleteCharAt(pos);
-                    textProvider.onUpdate(pos);
+                    textProvider.onUpdate(pos, character);
                 }
                 return true;
+            case TAB:
+                if (textProvider.onPushTab()) {
+                    return true;
+                }
             // Ignore other control characters
             default:
                 if (character < 32) return false;
@@ -195,7 +198,7 @@ public class EUIInputManager {
         if (add && curLimit < 0 || sb.length() < curLimit) {
             sb.insert(pos, character);
             pos += 1;
-            textProvider.onUpdate(pos);
+            textProvider.onUpdate(pos, character);
             return true;
         }
 
@@ -203,6 +206,10 @@ public class EUIInputManager {
     }
 
     public static boolean tryUseControlAction(int keycode) {
+        // Escape
+        if (keycode == Input.Keys.ESCAPE && textProvider.onPushEscape()) {
+            return true;
+        }
         // Control operations
         if (InputHelper.isShortcutModifierKeyPressed()) {
             StringBuilder sb = textProvider.getBuffer();
@@ -213,7 +220,7 @@ public class EUIInputManager {
                         Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
                         sb.setLength(0);
                         pos = 0;
-                        textProvider.onUpdate(pos);
+                        textProvider.onUpdate(pos, DUMMY_CUT);
                     }
                     return true;
                 case Input.Keys.C:
@@ -235,7 +242,7 @@ public class EUIInputManager {
                                 e.printStackTrace();
                             }
                         }
-                        textProvider.onUpdate(pos);
+                        textProvider.onUpdate(pos, DUMMY_PASTE);
                     }
                     return true;
             }

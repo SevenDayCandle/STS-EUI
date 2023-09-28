@@ -40,7 +40,7 @@ public class EUISearchableDropdownLabel extends EUILabel implements TextInputPro
     }
 
     @Override
-    public void onUpdate(int pos) {
+    public void onUpdate(int pos, char keycode) {
         if (onUpdate != null) {
             onUpdate.invoke(buffer);
         }

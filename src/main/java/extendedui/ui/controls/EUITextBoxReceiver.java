@@ -13,6 +13,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TextInputProvider;
 import extendedui.text.EUITextHelper;
@@ -24,6 +25,7 @@ import extendedui.utilities.EUIFontHelper;
 
 public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextInputProvider {
     protected ActionT1<T> onComplete;
+    protected ActionT0 onTab;
     protected Color editTextColor;
     protected final StringBuilder buffer = new StringBuilder();
     protected float headerSpacing = 0.6f;
@@ -64,6 +66,15 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
     }
 
     @Override
+    public boolean onPushTab() {
+        complete();
+        if (onTab != null) {
+            onTab.invoke();
+        }
+        return true;
+    }
+
+    @Override
     public void renderImpl(SpriteBatch sb) {
         if (isEditing()) {
             image.render(sb);
@@ -81,7 +92,6 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
 
     protected void renderUnderscore(SpriteBatch sb) {
         if (isEditing()) {
-            // TODO multiline support
             GlyphLayout.GlyphRun run = EUITextHelper.getLayoutRun(0);
             int pos = EUIInputManager.getPos() + 1;
             if (run != null && pos >= 0 && pos < run.xAdvances.size) {
@@ -139,6 +149,11 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
 
     public EUITextBoxReceiver<T> setOnComplete(ActionT1<T> onComplete) {
         this.onComplete = onComplete;
+        return this;
+    }
+
+    public EUITextBoxReceiver<T> setOnTab(ActionT0 onComplete) {
+        this.onTab = onComplete;
         return this;
     }
 

@@ -22,6 +22,7 @@ public interface TextInputProvider {
 
     default void clearBuffer() {
         getBuffer().setLength(0);
+        EUIInputManager.resetPos();
     }
 
     default void complete() {
@@ -79,10 +80,11 @@ public interface TextInputProvider {
     }
 
     default boolean onPushTab() {
-        return false;
+        complete();
+        return true;
     }
 
-    default void onUpdate(int pos) {
+    default void onUpdate(int pos, char keycode) {
     }
 
     default void setBufferText(CharSequence text) {
