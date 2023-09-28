@@ -18,6 +18,7 @@ import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TooltipProvider;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
@@ -836,14 +837,6 @@ public class EUIRenderHelpers {
     protected static ShaderProgram setSilhouetteShader(ShaderProgram rs, Color color) {
         rs.setUniform3fv("u_borderColor", new float[]{color.r, color.g, color.b}, 0, 3);
         return rs;
-    }
-
-    public static void writeCentered(SpriteBatch sb, BitmapFont font, String text, Hitbox hb, Color color) {
-        FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.cY, color);
-    }
-
-    public static void writeCentered(SpriteBatch sb, BitmapFont font, String text, Hitbox hb, Color color, float scale) {
-        FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.cY, color, scale);
     }
 
     public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color) {

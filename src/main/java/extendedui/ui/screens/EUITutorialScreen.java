@@ -31,8 +31,6 @@ public class EUITutorialScreen extends AbstractMenuScreen {
         if (onClose != null) {
             onClose.invoke();
         }
-        EUI.setActiveElement(null);
-        CardCrawlGame.isPopupOpen = false;
     }
 
     public void exitScreen() {

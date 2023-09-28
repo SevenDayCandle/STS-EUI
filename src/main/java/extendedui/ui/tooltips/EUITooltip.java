@@ -28,7 +28,7 @@ import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.markers.IntentProvider;
 import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
@@ -748,8 +748,8 @@ public class EUITooltip {
     public float height() {
         if (lastHeight == null) {
             BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
-            lastTextHeight = EUISmartText.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-            lastSubHeaderHeight = (subHeader != null) ? EUISmartText.getSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
+            lastTextHeight = EUITextHelper.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+            lastSubHeaderHeight = (subHeader != null) ? EUITextHelper.getSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
             lastHeight = (StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastSubHeaderHeight) - 7f * Settings.scale);
         }
         return lastHeight;
@@ -808,7 +808,7 @@ public class EUITooltip {
 
     public void renderDescription(SpriteBatch sb, float x, float y) {
         if (!StringUtils.isEmpty(description)) {
-            EUISmartText.write(sb, descriptionFont, description, x + TEXT_OFFSET_X, y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+            EUITextHelper.renderSmart(sb, descriptionFont, description, x + TEXT_OFFSET_X, y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
         }
     }
 
@@ -831,7 +831,7 @@ public class EUITooltip {
     }
 
     public EUITooltip setAutoWidth() {
-        this.width = Math.max(BOX_W, EUISmartText.getSmartWidth(headerFont, title) + BOX_EDGE_H);
+        this.width = Math.max(BOX_W, EUITextHelper.getSmartWidth(headerFont, title) + BOX_EDGE_H);
         invalidateHeight();
 
         return this;

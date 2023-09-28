@@ -1,15 +1,35 @@
 package extendedui;
 
+import basemod.interfaces.TextReceiver;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.scenes.scene2d.utils.UIUtils;
+import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import extendedui.interfaces.markers.TextInputProvider;
+
+import java.awt.*;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
+import java.awt.image.BufferedImage;
 
 /* This class allows one to check if the user clicked in the mouse in render calls, which is not possible with InputManager because clicks are cleared after the update phase */
 public class EUIInputManager {
+    private static final char BACKSPACE = 8;
+    private static final char DEL = 127;
+    private static final char ENTER_DESKTOP = '\r';
+    private static final char ENTER_ANDROID = '\n';
+    private static final char TAB = '\t';
+    private static TextInputProvider textProvider;
+    private static int curLimit;
+    private static int pos;
     public static KeyState rightClick = KeyState.Released;
     public static KeyState leftClick = KeyState.Released;
 
@@ -29,9 +49,20 @@ public class EUIInputManager {
         return CInputActionSet.up.isJustPressed() || CInputActionSet.altUp.isJustPressed() || InputActionSet.up.isJustPressed();
     }
 
-    // TODO utility mapping for mapping InputActionSet to CInputActionSet
+    public static int getPos() {
+        return pos;
+    }
+
     public static boolean isHoldingPeek() {
         return CInputActionSet.peek.isPressed() || InputActionSet.peek.isPressed();
+    }
+
+    public static boolean isInputTyping() {
+        return textProvider != null;
+    }
+
+    public static boolean isInputTyping(TextInputProvider provider) {
+        return textProvider == provider;
     }
 
     public static boolean isUsingNonMouseControl() {
@@ -50,9 +81,45 @@ public class EUIInputManager {
         }
     }
 
+    // Bounded by isInputTyping
+    public static boolean onKeyboardDown(int keyCode) {
+        switch (keyCode) {
+            case Input.Keys.DOWN:
+                pos = MathUtils.clamp(textProvider.onPushArrowDown(pos), 0, textProvider.getBuffer().length());
+                break;
+            case Input.Keys.LEFT:
+                pos = MathUtils.clamp(textProvider.onPushArrowLeft(pos), 0, textProvider.getBuffer().length());
+                break;
+            case Input.Keys.RIGHT:
+                pos = MathUtils.clamp(textProvider.onPushArrowRight(pos), 0, textProvider.getBuffer().length());
+                break;
+            case Input.Keys.UP:
+                pos = MathUtils.clamp(textProvider.onPushArrowUp(pos), 0, textProvider.getBuffer().length());
+                break;
+        }
+        return textProvider.onKeyDown(keyCode);
+    }
+
+    // Bounded by isInputTyping
+    public static boolean onKeyboardUp(int keyCode) {
+        return textProvider.onKeyUp(keyCode);
+    }
+
     public static void postUpdate() {
         updateLeftClick();
         updateRightClick();
+    }
+
+    public static boolean releaseType(TextInputProvider provider) {
+        if (textProvider == provider) {
+            textProvider = null;
+            return true;
+        }
+        return false;
+    }
+
+    public static void resetPos() {
+        pos = textProvider.getBuffer().length();
     }
 
     public static void setCursor(float x, float y) {
@@ -67,6 +134,111 @@ public class EUIInputManager {
         if (InputHelper.pressedEscape && !CardCrawlGame.isPopupOpen && !EUI.cardFilters.isActive && !EUI.relicFilters.isActive && !EUI.potionFilters.isActive) {
             InputHelper.pressedEscape = false;
             return true;
+        }
+        return false;
+    }
+
+    public static boolean tryStartType(TextInputProvider provider) {
+        if (textProvider != null) {
+            return textProvider == provider;
+        }
+        textProvider = provider;
+        curLimit = textProvider.getMaxPosition();
+        return true;
+    }
+
+    public static boolean tryType(char character) {
+        if (!isInputTyping()) {
+            return false;
+        }
+
+        StringBuilder sb = textProvider.getBuffer();
+        if (pos > sb.length()) {
+            pos = sb.length();
+        }
+
+        // Copying from TextReceiver in case LibGDX's input doesn't block off sym
+        if (UIUtils.isMac && Gdx.input.isKeyPressed(Input.Keys.SYM)) {
+            return false;
+        }
+
+        switch (character) {
+            case ENTER_ANDROID:
+            case ENTER_DESKTOP:
+                if (textProvider.onPushEnter())
+                    return true;
+            case BACKSPACE:
+                if (textProvider.onPushBackspace()) {
+                    return true;
+                }
+                if (pos > 0) {
+                    sb.deleteCharAt(pos - 1);
+                    pos -= 1;
+                    textProvider.onUpdate(pos);
+                }
+                return true;
+            case DEL:
+                if (textProvider.onPushDelete()) {
+                    return true;
+                }
+                if (pos >= 0 && pos < sb.length()) {
+                    sb.deleteCharAt(pos);
+                    textProvider.onUpdate(pos);
+                }
+                return true;
+            // Ignore other control characters
+            default:
+                if (character < 32) return false;
+        }
+
+        boolean add = textProvider.acceptCharacter(character);
+        if (add && curLimit < 0 || sb.length() < curLimit) {
+            sb.insert(pos, character);
+            pos += 1;
+            textProvider.onUpdate(pos);
+            return true;
+        }
+
+        return false;
+    }
+
+    public static boolean tryUseControlAction(int keycode) {
+        // Control operations
+        if (InputHelper.isShortcutModifierKeyPressed()) {
+            StringBuilder sb = textProvider.getBuffer();
+            switch (keycode) {
+                case Input.Keys.X:
+                    if (textProvider.allowCopy()) {
+                        StringSelection selection = new StringSelection(sb.toString());
+                        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
+                        sb.setLength(0);
+                        pos = 0;
+                        textProvider.onUpdate(pos);
+                    }
+                    return true;
+                case Input.Keys.C:
+                    if (textProvider.allowCopy()) {
+                        StringSelection selection = new StringSelection(sb.toString());
+                        Toolkit.getDefaultToolkit().getSystemClipboard().setContents(selection, selection);
+                    }
+                    return true;
+                case Input.Keys.V:
+                    if (textProvider.allowPaste()) {
+                        Transferable transferable = Toolkit.getDefaultToolkit().getSystemClipboard().getContents(null);
+                        if (transferable != null && transferable.isDataFlavorSupported(DataFlavor.stringFlavor)) {
+                            try {
+                                String text = (String) transferable.getTransferData(DataFlavor.stringFlavor);
+                                sb.insert(pos, text);
+                                pos += text.length();
+                            }
+                            catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                        textProvider.onUpdate(pos);
+                    }
+                    return true;
+            }
         }
         return false;
     }

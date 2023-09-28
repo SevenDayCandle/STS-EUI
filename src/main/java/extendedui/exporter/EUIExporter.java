@@ -4,6 +4,7 @@ import basemod.BaseMod;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.net.HttpParametersUtils;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
@@ -129,9 +130,9 @@ public class EUIExporter {
             items.sort(EUIExporterRow::compareTo);
             try {
                 FileHandle handle = getExportFile(path);
-                handle.writeString(items.get(0).getCsvHeaderRow(), true);
+                handle.writeString(items.get(0).getCsvHeaderRow(), true, HttpParametersUtils.defaultEncoding);
                 for (EUIExporterRow row : items) {
-                    handle.writeString(row.toString(), true);
+                    handle.writeString(row.toString(), true, HttpParametersUtils.defaultEncoding);
                 }
                 EUIUtils.logInfo(EUIExporter.class, "Export items as CSV to " + path);
             }
@@ -147,7 +148,7 @@ public class EUIExporter {
             items.sort(EUIExporterRow::compareTo);
             try {
                 FileHandle handle = getExportFile(path);
-                handle.writeString(EUIUtils.serialize(items), true);
+                handle.writeString(EUIUtils.serialize(items), true, HttpParametersUtils.defaultEncoding);
                 EUIUtils.logInfo(EUIExporter.class, "Export items as JSON to " + path);
             }
             catch (Exception e) {

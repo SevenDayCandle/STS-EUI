@@ -12,4 +12,8 @@ public class EUITextBoxInput extends EUITextBoxReceiver<String> {
     String getValue(String text) {
         return text;
     }
+
+    public void setText(String s) {
+        label.text = s;
+    }
 }

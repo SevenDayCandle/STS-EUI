@@ -19,7 +19,7 @@ import extendedui.EUIInputManager;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.*;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.OriginRelativeHitbox;
@@ -192,7 +192,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     public float calculateRowWidth() {
         float w = 0;
         for (EUIDropdownRow<T> row : rows) {
-            w = Math.max(w, EUISmartText.getSmartWidth(this.font, row.getTextForWidth(), ROW_WIDTH_MULT, ROW_WIDTH_MULT));
+            w = Math.max(w, EUITextHelper.getSmartWidth(this.font, row.getTextForWidth(), ROW_WIDTH_MULT, ROW_WIDTH_MULT));
         }
         return w + BOX_BODY_H;
     }
@@ -205,7 +205,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     public void forceClose() {
-        EUI.setActiveElement(null);
+        EUI.popActiveElement(this);
         CardCrawlGame.isPopupOpen = false;
         this.isOpen = false;
         if (this.onOpenOrClose != null) {
@@ -291,7 +291,7 @@ public class EUIDropdown<T> extends EUIHoverable {
 
     public String makeMultiSelectString(FuncT1<String, T> optionFunc) {
         String prospective = StringUtils.join(EUIUtils.map(getCurrentItems(), optionFunc), ", ");
-        float width = button.label.smartText ? EUISmartText.getSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
+        float width = button.label.smartText ? EUITextHelper.getSmartWidth(font, prospective) : FontHelper.getSmartWidth(font, prospective, Integer.MAX_VALUE, font.getLineHeight());
         return width > hb.width * 0.85f ? currentIndices.size() + " " + EUIRM.strings.ui_itemsSelected : prospective;
     }
 
@@ -333,12 +333,12 @@ public class EUIDropdown<T> extends EUIHoverable {
         }
 
         if (this.isOpen) {
-            EUI.setActiveElement(null);
+            EUI.popActiveElement(this);
             CardCrawlGame.isPopupOpen = false;
             this.isOpen = false;
         }
         else {
-            EUI.setActiveElement(this);
+            EUI.pushActiveElement(this);
             CardCrawlGame.isPopupOpen = true;
             this.isOpen = true;
             this.justOpened = true;

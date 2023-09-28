@@ -8,13 +8,10 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
-
-import java.util.Comparator;
 
 public class FilterSortToggle extends EUIHoverable {
     private final String text;
@@ -32,7 +29,7 @@ public class FilterSortToggle extends EUIHoverable {
         this.text = text;
         this.header = header;
         this.onClick = onClick;
-        this.textWidth = EUISmartText.getSmartWidth(FontHelper.topPanelInfoFont, text, 3.4028235E38F, 0.0F);
+        this.textWidth = EUITextHelper.getSmartWidth(FontHelper.topPanelInfoFont, text, 3.4028235E38F, 0.0F);
     }
 
     public float getSize() {
@@ -42,7 +39,7 @@ public class FilterSortToggle extends EUIHoverable {
     @Override
     public void renderImpl(SpriteBatch sb) {
         Color color = !this.hb.hovered && isAscending == null ? Settings.CREAM_COLOR : Settings.GOLD_COLOR;
-        FontHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, this.text, this.hb.cX, this.hb.cY, color);
+        EUITextHelper.renderFontCentered(sb, FontHelper.topPanelInfoFont, this.text, this.hb.cX, this.hb.cY, color);
         sb.setColor(color);
         if (isAscending != null) {
             sb.draw(ImageMaster.FILTER_ARROW, this.hb.cX - 16.0F + this.textWidth / 2.0F + 16.0F * Settings.xScale, this.hb.cY - 16.0F, 16.0F, 16.0F, 32.0F, 32.0F, Settings.scale, Settings.scale, 0.0F, 0, 0, 32, 32, false, !this.isAscending);

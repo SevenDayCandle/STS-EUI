@@ -1217,8 +1217,9 @@ public abstract class EUIUtils {
         return GsonReader.toJson(o, token);
     }
 
-    public static boolean showDebugInfo() {
-        return Settings.isDebug || Settings.isInfo;
+    @SafeVarargs
+    public static <T> HashSet<T> set(T... items) {
+        return new HashSet<>(Arrays.asList(items));
     }
 
     public static String[] splitString(String separator, String text) {

@@ -4,6 +4,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
+import extendedui.EUI;
+import extendedui.EUIInputManager;
 import extendedui.ui.hitboxes.EUIHitbox;
 import org.apache.commons.lang3.math.NumberUtils;
 
@@ -11,7 +13,6 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     protected int cachedValue;
     protected int min = Integer.MIN_VALUE;
     protected int max = Integer.MAX_VALUE;
-    public boolean hasEntered;
     public boolean showNegativeAsInfinity;
     public boolean clearOnInitialEntry = true;
 
@@ -25,16 +26,10 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     }
 
     @Override
-    protected void commit(boolean commit) {
-        if (commit) {
-            if (onComplete != null) {
-                onComplete.invoke(cachedValue);
-            }
-            forceUpdateText();
-        }
-        else {
-            label.text = originalValue;
-        }
+    public void complete() {
+        super.complete();
+        cachedValue = getValue(label.text);
+        forceUpdateText();
     }
 
     public void forceSetValue(int value, boolean invoke) {
@@ -59,11 +54,6 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         return cachedValue;
     }
 
-    @Override
-    public String getCurrentText() {
-        return !hasEntered && clearOnInitialEntry ? "" : label.text;
-    }
-
     public int getMax() {
         return max;
     }
@@ -83,7 +73,7 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     }
 
     @Override
-    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
+    protected void renderUnderscore(SpriteBatch sb) {
         // Do not render
     }
 
@@ -94,17 +84,13 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     }
 
     @Override
-    public void setText(String s) {
-        hasEntered = true;
-        label.text = s;
-        cachedValue = getValue(label.text);
-        if (onUpdate != null) {
-            onUpdate.invoke(cachedValue);
-        }
+    public void onUpdate(int pos) {
+        cachedValue = getValue(buffer.toString());
     }
 
     protected void setValue(int value) {
-        setText(String.valueOf(MathUtils.clamp(value, min, max)));
+        cachedValue = MathUtils.clamp(value, min, max);
+        setBufferText(String.valueOf(cachedValue));
     }
 
     public EUITextBoxNumericalInput showNegativeAsInfinity(boolean val) {
@@ -112,23 +98,25 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         return this;
     }
 
-    @Override
-    public void start() {
-        super.start();
-        if (!NumberUtils.isCreatable(label.text)) {
-            label.text = "";
-            cachedValue = 0;
+    public boolean start() {
+        boolean val = EUIInputManager.tryStartType(this);
+        if (val) {
+            EUI.pushActiveElement(this);
+            if (clearOnInitialEntry || !NumberUtils.isCreatable(label.text)) {
+                clearBuffer();
+                cachedValue = 0;
+            }
+            else {
+                setBufferText(label.text);
+            }
         }
-        else {
-            cachedValue = getValue(label.text);
-        }
-        hasEntered = false;
+        return val;
     }
 
     @Override
     public void updateImpl() {
         super.updateImpl();
-        if (isEditing) {
+        if (isEditing()) {
             if (InputHelper.scrolledDown) {
                 setValue(cachedValue - 1);
             }

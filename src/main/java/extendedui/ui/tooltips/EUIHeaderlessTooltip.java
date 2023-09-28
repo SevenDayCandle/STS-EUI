@@ -5,7 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import extendedui.EUIUtils;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.utilities.EUIFontHelper;
 
 public class EUIHeaderlessTooltip extends EUITooltip {
@@ -25,7 +25,7 @@ public class EUIHeaderlessTooltip extends EUITooltip {
     public float height() {
         if (lastHeight == null) {
             BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
-            lastTextHeight = EUISmartText.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+            lastTextHeight = EUITextHelper.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastHeight = (-(lastTextHeight) - HEADER_OFFSET_Y);
         }
         return lastHeight;

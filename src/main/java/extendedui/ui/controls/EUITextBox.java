@@ -52,7 +52,6 @@ public class EUITextBox extends EUIHoverable {
     public void renderImpl(SpriteBatch sb) {
         image.render(sb);
         label.render(sb);
-
         hb.render(sb);
     }
 

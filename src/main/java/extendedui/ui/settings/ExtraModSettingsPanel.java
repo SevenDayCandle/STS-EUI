@@ -17,7 +17,7 @@ import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.delegates.ActionT0;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.EUIBase;
 import extendedui.ui.TextureCache;
 import extendedui.ui.controls.EUIButton;
@@ -34,7 +34,6 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class ExtraModSettingsPanel extends EUIBase {
-    protected static final float OPTION_SIZE = scale(40);
     protected static final float OFFSET_SIZE = scale(640);
     protected static final float COLOR_BUTTON_SIZE = scale(51);
     protected static final TextureCache modPanel = new TextureCache("img/ModPanelBg.png");
@@ -42,6 +41,7 @@ public class ExtraModSettingsPanel extends EUIBase {
     protected static final HashMap<Category, ArrayList<IUIElement>> configCategories = new HashMap<>();
     protected static final HashMap<Category, Float> offsets = new HashMap<>();
     protected static final EUIHitbox hb = new EUIHitbox(screenW(0.5f) - scale(700), Settings.OPTION_Y - scale(400), scale(1400), scale(800));
+    public static final float OPTION_SIZE = scale(40);
     protected final MenuCancelButton button;
     protected final EUIButtonList buttons = new EUIButtonList(7, screenW(0.077f), hb.y + scale(750), EUIButtonList.BUTTON_W, EUIButtonList.BUTTON_H).setFontScale(0.6f);
     protected final EUIImage background;
@@ -55,10 +55,14 @@ public class ExtraModSettingsPanel extends EUIBase {
     }
 
     public static ModSettingsToggle addBoolean(Category cat, STSConfigItem<Boolean> option, String label) {
+        return addBoolean(cat, option, label, 0);
+    }
+
+    public static ModSettingsToggle addBoolean(Category cat, STSConfigItem<Boolean> option, String label, float extraOff) {
         ArrayList<IUIElement> list = configCategories.get(cat);
-        float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
+        float offY = offsets.getOrDefault(cat, OFFSET_SIZE) - extraOff;
         if (list != null) {
-            float baseWidth = EUISmartText.getSmartWidth(EUIFontHelper.cardDescriptionFontNormal, label);
+            float baseWidth = EUITextHelper.getSmartWidth(EUIFontHelper.cardDescriptionFontNormal, label);
             ModSettingsToggle toggle = new ModSettingsToggle(new RelativeHitbox(hb, OPTION_SIZE * 2 + baseWidth, OPTION_SIZE, OPTION_SIZE * 3.3f + baseWidth / 2f, offY), option, label);
             list.add(toggle);
             offsets.put(cat, offY -= toggle.hb.height * 1.1f);
@@ -68,8 +72,12 @@ public class ExtraModSettingsPanel extends EUIBase {
     }
 
     public static EUIButton addButton(Category cat, String text, ActionT0 onClick) {
+        return addButton(cat, text, onClick, 0);
+    }
+
+    public static EUIButton addButton(Category cat, String text, ActionT0 onClick, float extraOff) {
         ArrayList<IUIElement> list = configCategories.get(cat);
-        float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
+        float offY = offsets.getOrDefault(cat, OFFSET_SIZE) - extraOff;
         if (list != null) {
             EUIButton button = new EUIButton(EUIRM.images.rectangularButton.texture(), new RelativeHitbox(hb, OPTION_SIZE * 7, OPTION_SIZE, OPTION_SIZE * 7f, offY))
                     .setLabel(text)
@@ -94,8 +102,12 @@ public class ExtraModSettingsPanel extends EUIBase {
     }
 
     public static EUILabel addLabel(Category cat, String text, BitmapFont font) {
+        return addLabel(cat, text, font, 0);
+    }
+
+    public static EUILabel addLabel(Category cat, String text, BitmapFont font, float extraOff) {
         ArrayList<IUIElement> list = configCategories.get(cat);
-        float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
+        float offY = offsets.getOrDefault(cat, OFFSET_SIZE) - extraOff;
         if (list != null) {
             EUILabel label = new EUILabel(font, new RelativeHitbox(hb, OPTION_SIZE * 16, OPTION_SIZE, OPTION_SIZE * 6f, offY)).setLabel(text);
             list.add(label);
@@ -112,8 +124,12 @@ public class ExtraModSettingsPanel extends EUIBase {
     }
 
     public static ModSettingsPathSelector addPathSelection(Category cat, STSConfigItem<String> option, String label, String... extensions) {
+        return addPathSelection(cat, option, label, 0, extensions);
+    }
+
+    public static ModSettingsPathSelector addPathSelection(Category cat, STSConfigItem<String> option, String label, float extraOff, String... extensions) {
         ArrayList<IUIElement> list = configCategories.get(cat);
-        float offY = offsets.getOrDefault(cat, OFFSET_SIZE);
+        float offY = offsets.getOrDefault(cat, OFFSET_SIZE) - extraOff;
         if (list != null) {
             ModSettingsPathSelector selector = new ModSettingsPathSelector(new RelativeHitbox(hb, OPTION_SIZE * 8, OPTION_SIZE, OPTION_SIZE * 7f, offY), option, label);
             if (extensions.length > 0) {

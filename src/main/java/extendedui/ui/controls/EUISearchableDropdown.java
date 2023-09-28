@@ -4,10 +4,10 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import extendedui.EUIRM;
-import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 
@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class EUISearchableDropdown<T> extends EUIDropdown<T> {
-    protected EUITextInput searchInput;
+    protected EUISearchableDropdownLabel searchInput;
     public ArrayList<EUIDropdownRow<T>> originalRows;
 
     public EUISearchableDropdown(EUIHitbox hb) {
@@ -50,17 +50,21 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
 
     protected void initialize() {
         this.originalRows = this.rows;
-        searchInput = (EUITextInput) new EUITextInput(button.label.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f))
+        searchInput = (EUISearchableDropdownLabel) new EUISearchableDropdownLabel(button.label.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f))
                 .setOnUpdate(this::onUpdate)
                 .setLabel("");
     }
 
-    protected void onUpdate(String searchInput) {
-        if (searchInput == null || searchInput.isEmpty()) {
+    protected void onUpdate(CharSequence searchInput) {
+        if (searchInput == null) {
             this.rows = this.originalRows;
         }
         else {
-            this.rows = EUIUtils.filter(this.originalRows, row -> row.getText() != null && row.getText().toLowerCase().contains(searchInput.toLowerCase()));
+            String lcInput = searchInput.toString().toLowerCase();
+            if (lcInput.isEmpty()) {
+                this.rows = this.originalRows;
+            }
+            this.rows = EUIUtils.filter(this.originalRows, row -> row.getText() != null && row.getText().toLowerCase().contains(lcInput));
             this.topVisibleRowIndex = 0;
         }
     }
@@ -74,7 +78,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
             searchInput.start();
         }
         else {
-            searchInput.end();
+            searchInput.complete();
         }
     }
 
@@ -83,7 +87,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
         super.renderImpl(sb);
         this.searchInput.tryRender(sb);
         if (isOpen && searchInput.text.isEmpty()) {
-            EUIRenderHelpers.writeCentered(sb, font, EUIRM.strings.misc_TypeToSearch, hb, Color.GRAY);
+            EUITextHelper.renderFontCentered(sb, font, EUIRM.strings.misc_TypeToSearch, hb, Color.GRAY);
         }
     }
 

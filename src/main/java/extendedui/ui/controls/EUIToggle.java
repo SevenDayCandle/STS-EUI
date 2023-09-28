@@ -13,7 +13,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
@@ -68,11 +68,11 @@ public class EUIToggle extends EUIHoverable {
     }
 
     public float getAutoHeight() {
-        return EUISmartText.getSmartHeight(font, text, Settings.WIDTH);
+        return EUITextHelper.getSmartHeight(font, text, Settings.WIDTH);
     }
 
     public float getAutoWidth() {
-        return tickSize + EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
+        return tickSize + EUITextHelper.getSmartWidth(font, text, Settings.WIDTH, 0f);
     }
 
     public boolean isToggled() {
@@ -113,11 +113,11 @@ public class EUIToggle extends EUIHoverable {
 
         if (fontSize != 1) {
             font.getData().setScale(fontSize);
-            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f), hb.cY, fontColor);
+            EUITextHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f), hb.cY, fontColor);
             EUIRenderHelpers.resetFont(font);
         }
         else {
-            FontHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f), hb.cY, fontColor);
+            EUITextHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f), hb.cY, fontColor);
         }
 
         EUIImage image = toggled ? tickedImage : untickedImage;

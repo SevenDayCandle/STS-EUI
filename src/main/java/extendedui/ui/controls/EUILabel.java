@@ -8,7 +8,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
@@ -65,11 +65,11 @@ public class EUILabel extends EUIHoverable {
     }
 
     public float getAutoHeight() {
-        return EUISmartText.getSmartHeight(font, text, Settings.WIDTH);
+        return EUITextHelper.getSmartHeight(font, text, Settings.WIDTH);
     }
 
     public float getAutoWidth() {
-        return EUISmartText.getSmartWidth(font, text, Settings.WIDTH, 0f);
+        return EUITextHelper.getSmartWidth(font, text, Settings.WIDTH, 0f);
     }
 
     public float getOriginalFontScale() {
@@ -97,7 +97,6 @@ public class EUILabel extends EUIHoverable {
     @Override
     public void renderImpl(SpriteBatch sb) {
         renderImpl(sb, hb);
-
         hb.render(sb);
     }
 
@@ -106,23 +105,27 @@ public class EUILabel extends EUIHoverable {
     }
 
     public void renderImpl(SpriteBatch sb, Hitbox hb, Color textColor) {
+        renderImpl(sb, hb, textColor, text);
+    }
+
+    public void renderImpl(SpriteBatch sb, Hitbox hb, Color textColor, CharSequence text) {
         font.getData().setScale(fontScale);
 
         if (smartText) {
             final float step = hb.width * horizontalRatio;
-            EUISmartText.write(sb, font, text, hb.x + step, hb.y + (hb.height * verticalRatio),
+            EUITextHelper.renderSmart(sb, font, text, hb.x + step, hb.y + (hb.height * verticalRatio),
                     smartPadEnd ? hb.width - (step * 2) : hb.width, font.getLineHeight(), textColor, smartTextResize);
         }
         else if (horizontalRatio < 0.5f) {
             final float step = hb.width * horizontalRatio;
-            FontHelper.renderFontLeft(sb, font, text, hb.x + step, hb.y + hb.height * verticalRatio, textColor);
+            EUITextHelper.renderFontLeft(sb, font, text, hb.x + step, hb.y + hb.height * verticalRatio, textColor);
         }
         else if (horizontalRatio > 0.5f) {
             final float step = hb.width * (1 - horizontalRatio) * 2;
-            FontHelper.renderFontRightAligned(sb, font, text, hb.x + hb.width - step, hb.y + hb.height * verticalRatio, textColor);
+            EUITextHelper.renderFontRightAligned(sb, font, text, hb.x + hb.width - step, hb.y + hb.height * verticalRatio, textColor);
         }
         else {
-            FontHelper.renderFontCentered(sb, font, text, hb.cX, hb.y + hb.height * verticalRatio, textColor);
+            EUITextHelper.renderFontCentered(sb, font, text, hb.cX, hb.y + hb.height * verticalRatio, textColor);
         }
 
         EUIRenderHelpers.resetFont(font);

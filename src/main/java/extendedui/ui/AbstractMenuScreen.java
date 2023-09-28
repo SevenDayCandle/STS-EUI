@@ -19,7 +19,7 @@ public abstract class AbstractMenuScreen extends EUIBase {
 
     public void close() {
         CardCrawlGame.mainMenuScreen.panelScreen.refresh();
-        EUITourTooltip.clearTutorialQueue();
+        EUI.dispose();
         if (EUI.currentScreen == this) {
             dispose();
         }
@@ -27,7 +27,6 @@ public abstract class AbstractMenuScreen extends EUIBase {
 
     public void dispose() {
         EUI.currentScreen = null;
-        EUITourTooltip.clearTutorialQueue();
 
         if (!EUIGameUtils.inGame() && CardCrawlGame.mainMenuScreen != null) {
             CardCrawlGame.mainMenuScreen.screen = previousMainScreen;

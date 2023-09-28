@@ -31,7 +31,7 @@ import extendedui.interfaces.markers.CustomPoolModule;
 import extendedui.patches.EUIKeyword;
 import extendedui.patches.game.TooltipPatches;
 import extendedui.patches.screens.MenuPanelScreenPatches;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
@@ -56,10 +56,7 @@ import org.apache.commons.lang3.StringUtils;
 import javax.swing.*;
 import java.lang.reflect.Field;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.regex.Pattern;
 
@@ -80,6 +77,7 @@ public class EUI {
     public static final ArrayList<CustomFilterModule<RelicInfo>> globalCustomRelicFilters = new ArrayList<>();
     public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicLibraryModules = new ArrayList<>(); // TODO use this
     public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicPoolModules = new ArrayList<>();
+    private static final Stack<EUIBase> activeElements = new Stack<>();
     public static final String ENERGY_ID = "E";
     public static final String ENERGY_TIP = "[E]";
     public static final String[] ENERGY_STRINGS = {ENERGY_TIP, "[R]", "[G]", "[B]", "[W]"};
@@ -95,7 +93,6 @@ public class EUI {
     private static int imguiIndex = 0;
     private static boolean isDragging;
     private static Hitbox lastClicked;
-    private static EUIBase activeElement;
     public static AbstractCard.CardColor actingColor;
     public static BlightKeywordFilters blightFilters;
     public static BlightLibraryScreen blightLibraryScreen;
@@ -180,6 +177,10 @@ public class EUI {
         subscribers.add(element);
     }
 
+    public static void clearActiveElements() {
+        activeElements.clear();
+    }
+
     public static float delta() {
         return delta;
     }
@@ -189,19 +190,15 @@ public class EUI {
     }
 
     public static void dispose() {
-        if (currentScreen != null) {
-            currentScreen.dispose();
-        }
-
-        activeElement = null;
-        currentScreen = null;
+        activeElements.clear();
         lastClicked = null;
         TooltipPatches.clearTips();
         EUITourTooltip.clearTutorialQueue();
+        CardCrawlGame.isPopupOpen = false;
     }
 
     public static boolean doesActiveElementExist() {
-        return activeElement != null;
+        return !activeElements.isEmpty();
     }
 
     public static boolean elapsed(float value) {
@@ -364,7 +361,7 @@ public class EUI {
     }
 
     public static boolean isActiveElement(EUIBase element) {
-        return activeElement == element;
+        return !activeElements.isEmpty() && activeElements.firstElement() == element;
     }
 
     public static boolean isDragging() {
@@ -372,7 +369,7 @@ public class EUI {
     }
 
     public static boolean isInActiveElement(EUIHitbox hb) {
-        return activeElement == null || activeElement == hb.parentElement;
+        return activeElements.isEmpty() || activeElements.peek() == hb.parentElement;
     }
 
     public static boolean isLoaded() {
@@ -387,8 +384,14 @@ public class EUI {
         return new HashMap<>();
     }
 
+    public static void popActiveElement(EUIBase element) {
+        if (isActiveElement(element)) {
+            activeElements.pop();
+        }
+    }
+
     public static void postDispose() {
-        activeElement = null;
+        activeElements.clear();
         currentScreen = null;
     }
 
@@ -419,6 +422,10 @@ public class EUI {
     public static void priorityPostRender(SpriteBatch sb) {
         renderImpl(sb, priorityPostRenderList.iterator());
         EUITourTooltip.render(sb);
+    }
+
+    public static void pushActiveElement(EUIBase element) {
+        activeElements.push(element);
     }
 
     /* Create EUITooltips for all basegame keywords
@@ -484,7 +491,7 @@ public class EUI {
             if (keyword.PLURAL != null) {
                 // Emulate a plural parsing
                 // TODO account for languages that have multiple plural forms
-                EUIKeywordTooltip.registerName(EUISmartText.parseKeywordLogicWithAmount(keyword.PLURAL, 2).toLowerCase(), tooltip);
+                EUIKeywordTooltip.registerName(EUITextHelper.parseKeywordLogicWithAmount(keyword.PLURAL, 2).toLowerCase(), tooltip);
             }
             if (keyword.PAST != null) {
                 EUIKeywordTooltip.registerName(keyword.PAST.toLowerCase(), tooltip);
@@ -522,10 +529,6 @@ public class EUI {
             toRender.invoke(sb);
             i.remove();
         }
-    }
-
-    public static void setActiveElement(EUIBase element) {
-        activeElement = element;
     }
 
     public static void setCustomCardFilter(AbstractCard.CardColor cardColor, CustomCardFilterModule element) {

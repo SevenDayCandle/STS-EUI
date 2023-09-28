@@ -1,30 +1,31 @@
 package extendedui.ui.controls;
 
-import basemod.interfaces.TextReceiver;
 import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
+import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.markers.TextInputProvider;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
 
-public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextReceiver {
+public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextInputProvider {
     protected ActionT1<T> onComplete;
-    protected ActionT1<T> onUpdate;
     protected Color editTextColor;
-    protected Color originalTextColor;
-    protected String originalValue;
-    protected boolean isEditing;
+    protected final StringBuilder buffer = new StringBuilder();
     protected float headerSpacing = 0.6f;
     public EUILabel header;
 
@@ -34,7 +35,6 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
                 new EUIHitbox(hb.x, hb.y + hb.height * headerSpacing, hb.width, hb.height)).setAlignment(0.5f, 0.0f, false);
         this.header.setActive(false);
         editTextColor = EUIColors.green(1).cpy();
-        originalTextColor = this.label.textColor.cpy();
     }
 
     @Override
@@ -42,67 +42,75 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         return label.font.getData().hasGlyph(c);
     }
 
-    protected void commit(boolean commit) {
-        if (commit) {
-            if (onComplete != null) {
-                onComplete.invoke(getValue(label.text));
-            }
+    @Override
+    public StringBuilder getBuffer() {
+        return buffer;
+    }
+
+    @Override
+    public void cancel() {
+        EUIInputManager.releaseType(this);
+        EUI.popActiveElement(this);
+    }
+
+    @Override
+    public void complete() {
+        EUIInputManager.releaseType(this);
+        EUI.popActiveElement(this);
+        label.text = buffer.toString();
+        if (onComplete != null) {
+            onComplete.invoke(getValue(label.text));
         }
-        else {
-            label.text = originalValue;
-        }
-    }
-
-    public void end(boolean commit) {
-        isEditing = false;
-        EUI.setActiveElement(null);
-        TextInput.stopTextReceiver(this);
-        label.setColor(originalTextColor);
-        commit(commit);
-    }
-
-    @Override
-    public String getCurrentText() {
-        return label.text;
-    }
-
-    @Override
-    public boolean isDone() {
-        return !isEditing;
-    }
-
-    @Override
-    public boolean onPushEnter() {
-        end(true);
-        return true;
     }
 
     @Override
     public void renderImpl(SpriteBatch sb) {
-        super.renderImpl(sb);
-        float cur_x = FontHelper.layout.width;
+        if (isEditing()) {
+            image.render(sb);
+            label.renderImpl(sb, label.hb, editTextColor, buffer);
+            hb.render(sb);
+            renderUnderscore(sb);
+        }
+        else {
+            image.render(sb);
+            label.render(sb);
+            hb.render(sb);
+        }
         header.tryRender(sb);
-        renderUnderscore(sb, cur_x);
     }
 
-    protected void renderUnderscore(SpriteBatch sb, float cur_x) {
-        if (isEditing) {
+    protected void renderUnderscore(SpriteBatch sb) {
+        if (isEditing()) {
+            // TODO multiline support
+            GlyphLayout.GlyphRun run = EUITextHelper.getLayoutRun(0);
+            int pos = EUIInputManager.getPos() + 1;
+            if (run != null && pos >= 0 && pos < run.xAdvances.size) {
+                float extra = 0;
+                for (int i = 0; i < pos; i++) {
+                    extra += run.xAdvances.get(i);
+                }
+                float xOff = hb.x + extra + hb.width * label.horizontalRatio;
+                float yOff = hb.y + run.y + hb.height / 2;
+                EUI.addPriorityPostRender(s ->
+                        EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
+                return;
+            }
+            float xOff = hb.x + EUITextHelper.getLayoutWidth() + hb.width * label.horizontalRatio;
+            float yOff = hb.y + hb.height / 2;
             EUI.addPriorityPostRender(s ->
-                    FontHelper.renderFontLeft(sb, label.font, "_", hb.x + cur_x + hb.width * label.horizontalRatio, hb.y + hb.height / 2, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
+                    EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
         }
     }
 
     public EUITextBoxReceiver<T> setColors(Color backgroundColor, Color textColor) {
         this.image.setColor(backgroundColor);
         this.label.setColor(textColor);
-        originalTextColor = textColor;
 
         return this;
     }
 
     public EUITextBoxReceiver<T> setFontColor(Color textColor) {
         this.label.setColor(textColor);
-        originalTextColor = textColor.cpy();
 
         return this;
     }
@@ -134,25 +142,12 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         return this;
     }
 
-    public EUITextBoxReceiver<T> setOnUpdate(ActionT1<T> onUpdate) {
-        this.onUpdate = onUpdate;
-        return this;
-    }
-
     @Override
     public EUITextBoxReceiver<T> setPosition(float x, float y) {
         this.hb.move(x, y);
         this.header.hb.move(x, y + hb.height * headerSpacing);
 
         return this;
-    }
-
-    @Override
-    public void setText(String s) {
-        label.text = s;
-        if (onUpdate != null) {
-            onUpdate.invoke(getValue(label.text));
-        }
     }
 
     public void setTextAndCommit(String text) {
@@ -174,27 +169,25 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextRe
         return this;
     }
 
-    public void start() {
-        isEditing = true;
-        EUI.setActiveElement(this);
-        TextInput.startTextReceiver(this);
-        label.setColor(editTextColor);
-        originalValue = label.text;
+    public boolean start() {
+        boolean val = EUIInputManager.tryStartType(this);
+        if (val) {
+            EUI.pushActiveElement(this);
+            setBufferText(label.text);
+        }
+        return val;
     }
 
     @Override
     public void updateImpl() {
         super.updateImpl();
         if (EUIInputManager.leftClick.isJustReleased()) {
-            if (!isEditing && (hb.hovered || hb.clicked) && EUI.tryClick(this.hb) && !EUITourTooltip.shouldBlockInteract(this.hb)) {
+            if (!isEditing() && (hb.hovered || hb.clicked) && EUI.tryClick(this.hb) && !EUITourTooltip.shouldBlockInteract(this.hb)) {
                 start();
             }
-            else if (isEditing && !hb.hovered && !hb.clicked) {
-                end(true);
+            else if (isEditing() && !hb.hovered && !hb.clicked) {
+                complete();
             }
-        }
-        else if (isEditing && Gdx.input.isKeyPressed(Input.Keys.ESCAPE)) {
-            end(false);
         }
 
         header.tryUpdate();

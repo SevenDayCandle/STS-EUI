@@ -13,7 +13,7 @@ import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
@@ -384,7 +384,7 @@ public class EUIButton extends EUIHoverable {
     public EUIButton setTextAndAlign(String text, float baseW, float rateW) {
         this.label.setLabel(text);
         label.font.getData().setScale(label.fontScale);
-        float smartWidth = EUISmartText.getSmartWidth(label.font, text, hb.width, 0f);
+        float smartWidth = EUITextHelper.getSmartWidth(label.font, text, hb.width, 0f);
         this.label.horizontalRatio = Math.max(0, baseW - (smartWidth / hb.width) * rateW);
         EUIRenderHelpers.resetFont(label.font);
         return this;
@@ -401,7 +401,7 @@ public class EUIButton extends EUIHoverable {
     public EUIButton setTextAndAlign2D(String text, float baseH, float baseW, float rateH, float rateW) {
         this.label.setLabel(text);
         label.font.getData().setScale(label.fontScale);
-        TupleT2<Float, Float> smartSize = EUISmartText.getSmartSize(label.font, text, hb.width, 0f);
+        TupleT2<Float, Float> smartSize = EUITextHelper.getSmartSize(label.font, text, hb.width, 0f);
         this.label.horizontalRatio = Math.max(0, baseW - (smartSize.v1 / hb.width) * rateW);
         this.label.verticalRatio = Math.max(0, baseH - (smartSize.v2 / hb.height) * rateH);
         EUIRenderHelpers.resetFont(label.font);
@@ -418,7 +418,7 @@ public class EUIButton extends EUIHoverable {
 
     public EUIButton setTextAndResize(String text, float targetShrink, float threshold) {
         this.label.setLabel(text);
-        if (EUISmartText.getSmartWidth(label.font, text, Integer.MAX_VALUE, 0f) * label.fontScale > hb.width * threshold) {
+        if (EUITextHelper.getSmartWidth(label.font, text, Integer.MAX_VALUE, 0f) * label.fontScale > hb.width * threshold) {
             this.label.setFontScaleRelative(targetShrink);
         }
         else {

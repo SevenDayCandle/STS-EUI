@@ -8,7 +8,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import extendedui.text.EUISmartText;
+import extendedui.text.EUITextHelper;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
@@ -30,7 +30,7 @@ public class EUIRelicPreview extends EUIPreview {
     protected static float getHeight(AbstractRelic relic) {
         if (last != relic) {
             last = relic;
-            float lastTextHeight = EUISmartText.getSmartHeight(EUIFontHelper.cardTooltipFont, relic.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+            float lastTextHeight = EUITextHelper.getSmartHeight(EUIFontHelper.cardTooltipFont, relic.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastHeight = (StringUtils.isEmpty(relic.description)) ? (-40f * Settings.scale) : (-(lastTextHeight) - 7f * Settings.scale);
             lastHeight += AbstractRelic.PAD_X;
         }
@@ -85,7 +85,7 @@ public class EUIRelicPreview extends EUIPreview {
 
         FontHelper.renderFontCentered(sb, EUIFontHelper.cardTooltipTitleFontNormal, preview.name, c, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         if (!StringUtils.isEmpty(preview.description)) {
-            EUISmartText.write(sb, EUIFontHelper.cardTooltipFont, preview.description, x + TEXT_OFFSET_X, y + BODY_OFFSET_Y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+            EUITextHelper.renderSmart(sb, EUIFontHelper.cardTooltipFont, preview.description, x + TEXT_OFFSET_X, y + BODY_OFFSET_Y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
         }
     }
 }
