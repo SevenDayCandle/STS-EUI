@@ -45,9 +45,11 @@ public class EUIButtonList extends EUIBase {
         this.buttonHeight = buttonHeight;
         upButton = new EUIButton(ImageMaster.CF_LEFT_ARROW, new EUIHitbox(xPos - ICON_SIZE, y + (ICON_SIZE / 2), ICON_SIZE, ICON_SIZE))
                 .setOnClick(__ -> setTopButtonIndex(topButtonIndex - 1));
+        upButton.setActive(false);
         upButton.background.setRotation(-90);
         downButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new EUIHitbox(upButton.hb.cX + ICON_SIZE, upButton.getY(), ICON_SIZE, ICON_SIZE))
                 .setOnClick(__ -> setTopButtonIndex(topButtonIndex + 1));
+        downButton.setActive(false);
         downButton.background.setRotation(-90);
     }
 

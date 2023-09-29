@@ -206,8 +206,8 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
     @Override
     public void defaultSort() {
         this.group.sort(CardKeywordFilters::rankByName,
-                CardKeywordFilters::rankByRarity,
                 CardKeywordFilters::rankByType,
+                CardKeywordFilters::rankByRarity,
                 CardKeywordFilters::rankByStatus,
                 CardKeywordFilters::rankByColor);
     }

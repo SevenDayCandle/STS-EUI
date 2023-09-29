@@ -8,7 +8,6 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
-import extendedui.EUIRenderHelpers;
 import extendedui.HitboxDebugger;
 import extendedui.ui.EUIBase;
 
@@ -166,7 +165,7 @@ public class EUIHitbox extends Hitbox {
 
             float actualMX;
             float actualMY;
-            if (!EUI.isInActiveElement(this)) {
+            if (!EUI.isInTopActiveElement(this)) {
                 this.hovered = false;
                 return;
             }

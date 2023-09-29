@@ -26,6 +26,11 @@ public class EUISearchableDropdownLabel extends EUILabel implements TextInputPro
     }
 
     @Override
+    public boolean allowReleaseOnRequest() {
+        return true;
+    }
+
+    @Override
     public void complete() {
         EUIInputManager.releaseType(this);
         text = buffer.toString();

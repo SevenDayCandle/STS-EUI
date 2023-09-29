@@ -138,7 +138,15 @@ public class EUIInputManager {
 
     public static boolean tryStartType(TextInputProvider provider) {
         if (textProvider != null) {
-            return textProvider == provider;
+            if (textProvider == provider) {
+                return true;
+            }
+            if (textProvider.allowReleaseOnRequest()) {
+                textProvider.complete();
+            }
+            else {
+                return false;
+            }
         }
         textProvider = provider;
         curLimit = textProvider.getMaxPosition();

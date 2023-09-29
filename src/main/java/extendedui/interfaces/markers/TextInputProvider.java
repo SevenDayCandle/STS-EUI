@@ -12,6 +12,10 @@ public interface TextInputProvider {
         return true;
     }
 
+    default boolean allowReleaseOnRequest() {
+        return false;
+    }
+
     default void appendText(CharSequence text) {
         getBuffer().append(text);
     }

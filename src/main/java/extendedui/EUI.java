@@ -361,19 +361,23 @@ public class EUI {
     }
 
     public static boolean isActiveElement(EUIBase element) {
-        return !activeElements.isEmpty() && activeElements.firstElement() == element;
+        return EUIUtils.any(activeElements, e -> e == element);
     }
 
     public static boolean isDragging() {
         return isDragging;
     }
 
-    public static boolean isInActiveElement(EUIHitbox hb) {
+    public static boolean isInTopActiveElement(EUIHitbox hb) {
         return activeElements.isEmpty() || activeElements.peek() == hb.parentElement;
     }
 
     public static boolean isLoaded() {
         return cardsScreen != null; // This will be null before the UI has loaded
+    }
+
+    public static boolean isTopActiveElement(EUIBase element) {
+        return !activeElements.isEmpty() && activeElements.peek() == element;
     }
 
     public static Map<String, EUIKeyword> loadKeywords(FileHandle handle) {
@@ -385,8 +389,11 @@ public class EUI {
     }
 
     public static void popActiveElement(EUIBase element) {
-        if (isActiveElement(element)) {
-            activeElements.pop();
+        while (!activeElements.isEmpty()) {
+            EUIBase top = activeElements.pop();
+            if (element == top) {
+                return;
+            }
         }
     }
 

@@ -50,7 +50,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
 
     protected void initialize() {
         this.originalRows = this.rows;
-        searchInput = (EUISearchableDropdownLabel) new EUISearchableDropdownLabel(button.label.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 4f))
+        searchInput = (EUISearchableDropdownLabel) new EUISearchableDropdownLabel(button.label.font, new RelativeHitbox(button.hb, button.hb.width, button.hb.height, button.hb.width / 2f, button.hb.height / 8f))
                 .setOnUpdate(this::onUpdate)
                 .setLabel("");
     }
@@ -74,6 +74,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
         button.showText = !this.isOpen;
         this.rows = this.originalRows;
         searchInput.text = "";
+        searchInput.getBuffer().setLength(0);
         if (this.isOpen) {
             searchInput.start();
         }
@@ -86,7 +87,7 @@ public class EUISearchableDropdown<T> extends EUIDropdown<T> {
     public void renderImpl(SpriteBatch sb) {
         super.renderImpl(sb);
         this.searchInput.tryRender(sb);
-        if (isOpen && searchInput.text.isEmpty()) {
+        if (isOpen && searchInput.text.isEmpty() && searchInput.getBuffer().length() == 0) {
             EUITextHelper.renderFontCentered(sb, font, EUIRM.strings.misc_TypeToSearch, hb, Color.GRAY);
         }
     }

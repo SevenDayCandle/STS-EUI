@@ -930,13 +930,16 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     protected void updateRows() {
-        if (this.rows.size() != 0 && this.isOpen) {
-            updateRowPositions();
+        if (this.isOpen) {
+            if (this.rows.size() != 0) {
+                updateRowPositions();
+            }
             if (EUI.isActiveElement(this)) {
                 boolean isHoveringOver = this.hb.hovered;
                 this.updateNonMouseInput();
 
-                if (shouldShowClear() && this.clearButton.hb.hovered) {
+                // If this is among the active elements but not the top, this means that a child row is active
+                if ((shouldShowClear() && this.clearButton.hb.hovered) || !EUI.isTopActiveElement(this)) {
                     isHoveringOver = true;
                 }
 

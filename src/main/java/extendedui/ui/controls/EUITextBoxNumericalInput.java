@@ -110,6 +110,7 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
         return this;
     }
 
+    @Override
     public boolean start() {
         if (isActive) {
             boolean val = EUIInputManager.tryStartType(this);
