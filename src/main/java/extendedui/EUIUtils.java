@@ -1,7 +1,5 @@
 package extendedui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.math.MathUtils;
 import com.google.gson.Gson;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.TipHelper;
@@ -21,7 +19,6 @@ import java.awt.dnd.DnDConstants;
 import java.awt.dnd.DropTarget;
 import java.awt.dnd.DropTargetDropEvent;
 import java.io.File;
-import java.io.FilenameFilter;
 import java.lang.reflect.Array;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
@@ -263,34 +260,15 @@ public abstract class EUIUtils {
         }
     }
 
-    public static File chooseFile() {
-        return chooseFile(null, null, null);
-    }
-
-    public static File chooseFile(String... exts) {
-        return chooseFile(getFileFilter(exts), null, null);
-    }
-
-    public static File chooseFile(FileNameExtensionFilter extensionFilter) {
-        return chooseFile(extensionFilter, null, null);
-    }
-
-    public static File chooseFile(FileNameExtensionFilter extensionFilter, File currentFile) {
-        return chooseFile(extensionFilter, currentFile, null);
-    }
-
-    public static File chooseFile(FileNameExtensionFilter extensionFilter, STSStringConfigItem pathConfig) {
-        return chooseFile(extensionFilter, new File(pathConfig.get()), pathConfig);
-    }
-
-    public static File chooseFile(FileNameExtensionFilter extensionFilter, File currentFile, STSStringConfigItem pathConfig) {
+    private static File chooseFile(FileNameExtensionFilter extensionFilter, File currentFile, STSStringConfigItem pathConfig, int type) {
         try {
-            JFileChooser fc = createFileChooser(extensionFilter, currentFile);
-            JFrame f = createFrame(fc);
-
-            int result = fc.showOpenDialog(f);
-            f.setVisible(false);
-            f.dispose();
+            JFileChooser fc = createFileChooser(extensionFilter, currentFile, type);
+            JFrame frame = createFrame();
+            frame.setVisible(true);
+            fc.setVisible(true);
+            frame.requestFocus();
+            int result = fc.showDialog(frame, null);
+            frame.dispose();
 
             if (pathConfig != null) {
                 File cd = fc.getCurrentDirectory();
@@ -322,7 +300,7 @@ public abstract class EUIUtils {
         return count;
     }
 
-    private static JFileChooser createFileChooser(FileNameExtensionFilter extensionFilter, File currentFile) {
+    private static JFileChooser createFileChooser(FileNameExtensionFilter extensionFilter, File currentFile, int type) {
         JFileChooser fc = new JFileChooser() {
             @Override
             public void approveSelection() {
@@ -346,6 +324,13 @@ public abstract class EUIUtils {
                     }
                 }
                 super.approveSelection();
+            }
+
+            @Override
+            protected JDialog createDialog(Component parent) throws HeadlessException {
+                JDialog dialog = super.createDialog(parent);
+                dialog.setAlwaysOnTop(true);
+                return dialog;
             }
         };
         if (extensionFilter != null) {
@@ -386,17 +371,19 @@ public abstract class EUIUtils {
             }
         }
 
+        fc.setDialogType(type);
+        fc.setPreferredSize(new Dimension(Settings.WIDTH / 2, Settings.HEIGHT / 2));
+
         return fc;
     }
 
-    private static JFrame createFrame(JFileChooser fc) {
+    private static JFrame createFrame() {
         JFrame f = new JFrame();
+        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         f.toFront();
         f.setAlwaysOnTop(true);
         f.setLocationRelativeTo(null);
         f.setPreferredSize(new Dimension(Settings.WIDTH / 2, Settings.HEIGHT / 2));
-        fc.setPreferredSize(f.getPreferredSize());
-        f.setVisible(true);
         return f;
     }
 
@@ -639,6 +626,14 @@ public abstract class EUIUtils {
         return new FileNameExtensionFilter(EUIUtils.joinStringsMap(", ", f -> "*." + f, filters), filters);
     }
 
+    public static Logger getLogger(Object source) {
+        if (source == null) {
+            return LogManager.getLogger();
+        }
+
+        return LogManager.getLogger((source instanceof Class) ? ((Class<?>) source).getName() : source.getClass().getName());
+    }
+
     @SafeVarargs
     public static <T> Comparator<? super T> getMultiComparator(Comparator<? super T>... comparators) {
         Comparator<? super T> finalComparator = comparators[0];
@@ -651,14 +646,6 @@ public abstract class EUIUtils {
             };
         }
         return finalComparator;
-    }
-
-    public static Logger getLogger(Object source) {
-        if (source == null) {
-            return LogManager.getLogger();
-        }
-
-        return LogManager.getLogger((source instanceof Class) ? ((Class<?>) source).getName() : source.getClass().getName());
     }
 
     public static <K, V> HashMap<K, List<V>> group(Iterable<V> list, FuncT1<K, V> getKey) {
@@ -814,6 +801,30 @@ public abstract class EUIUtils {
         }
 
         return sj.toString();
+    }
+
+    public static File loadFile() {
+        return loadFile(null, null, null);
+    }
+
+    public static File loadFile(String... exts) {
+        return loadFile(getFileFilter(exts), null, null);
+    }
+
+    public static File loadFile(FileNameExtensionFilter extensionFilter) {
+        return loadFile(extensionFilter, null, null);
+    }
+
+    public static File loadFile(FileNameExtensionFilter extensionFilter, File currentFile) {
+        return loadFile(extensionFilter, currentFile, null);
+    }
+
+    public static File loadFile(FileNameExtensionFilter extensionFilter, STSStringConfigItem pathConfig) {
+        return loadFile(extensionFilter, new File(pathConfig.get()), pathConfig);
+    }
+
+    public static File loadFile(FileNameExtensionFilter extensionFilter, File currentFile, STSStringConfigItem pathConfig) {
+        return chooseFile(extensionFilter, currentFile, pathConfig, JFileChooser.OPEN_DIALOG);
     }
 
     public static void logError(Object source, String format, Object... values) {
@@ -1183,30 +1194,7 @@ public abstract class EUIUtils {
     }
 
     public static File saveFile(FileNameExtensionFilter extensionFilter, File currentFile, STSStringConfigItem pathConfig) {
-        try {
-            JFileChooser fc = createFileChooser(extensionFilter, currentFile);
-            JFrame f = createFrame(fc);
-
-            int result = fc.showSaveDialog(f);
-            f.setVisible(false);
-            f.dispose();
-
-            if (pathConfig != null) {
-                File cd = fc.getCurrentDirectory();
-                if (cd != null && cd.isDirectory()) {
-                    pathConfig.set(cd.getAbsolutePath());
-                }
-            }
-
-            if (result == JFileChooser.APPROVE_OPTION) {
-                return fc.getSelectedFile();
-            }
-        }
-        catch (Exception e) {
-            e.printStackTrace();
-            EUIUtils.logError(EUIUtils.class, "Failed to select file");
-        }
-        return null;
+        return chooseFile(extensionFilter, currentFile, pathConfig, JFileChooser.SAVE_DIALOG);
     }
 
     public static String serialize(Object o) {

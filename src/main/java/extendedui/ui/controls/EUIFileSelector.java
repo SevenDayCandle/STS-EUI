@@ -10,7 +10,6 @@ import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
-import extendedui.ui.settings.ModSettingsPathSelector;
 import extendedui.ui.tooltips.EUIHeaderlessTooltip;
 import extendedui.utilities.EUIFontHelper;
 
@@ -50,7 +49,7 @@ public class EUIFileSelector extends EUIHoverable {
     }
 
     protected void chooseFile() {
-        File file = EUIUtils.chooseFile(extensionFilter, currentFile);
+        File file = EUIUtils.loadFile(extensionFilter, currentFile);
         if (file != null) {
             selectFile(file, true);
         }

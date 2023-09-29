@@ -487,7 +487,8 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
                     packmasterColor = EUIClassUtils.getRFieldStatic("thePackmaster.ThePackmaster.Enums", "PACKMASTER_RAINBOW");
                 }
                 catch (Exception e) {
-                    EUIUtils.logError(this, "Failed to get PACKMASTA color");
+                    e.printStackTrace();
+                    EUIUtils.logError(this, "Failed to get Packmaster color:" + e.getLocalizedMessage());
                     packmasterColor = AbstractCard.CardColor.COLORLESS;
                 }
             }
@@ -498,7 +499,8 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
                         getPackmasterPack = FuncT1.get(String.class, targetClass, "getParnetNameFromObject", Object.class);
                     }
                     catch (Throwable e) {
-                        EUIUtils.logError(this, "Failed to get PACKMASTA");
+                        e.printStackTrace();
+                        EUIUtils.logError(this, "Failed to get Packmaster color:" + e.getLocalizedMessage());
                         getPackmasterPack = String::valueOf;
                     }
                 }
