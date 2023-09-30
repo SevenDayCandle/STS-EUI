@@ -21,7 +21,6 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.delegates.ActionT2;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomCardFilterModule;
 import extendedui.interfaces.markers.CustomFilterable;
@@ -33,7 +32,6 @@ import extendedui.utilities.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
-import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
 
@@ -63,7 +61,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         costDropdown = new EUIDropdown<CostFilter>(new EUIHitbox(0, 0, scale(160), scale(48)), c -> c.name)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(filters.currentCosts, costs))
-                .setLabelFunctionForButton(this::filterNameFunction, false)
+                .setLabelFunctionForButton(this::filterCostFunction, false)
                 .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[3])
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
@@ -297,6 +295,17 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         return true;
     }
 
+    // Variant of name function for costs only
+    protected String filterCostFunction(List<CostFilter> items, FuncT1<String, CostFilter> originalFunction) {
+        if (items.size() == 0) {
+            return EUIRM.strings.ui_any;
+        }
+        if (items.size() > 1) {
+            return items.size() + " " + EUIRM.strings.ui_itemsSelected;
+        }
+        return StringUtils.join(CostFilter.getCostRangeStrings(items), ", ");
+    }
+
     public List<EUIKeywordTooltip> getAllTooltips(AbstractCard c) {
         KeywordProvider eC = EUIUtils.safeCast(c, KeywordProvider.class);
         if (eC != null) {
@@ -392,7 +401,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
                 availableRarities.add(card.rarity);
                 availableTypes.add(card.type);
                 availableTargets.add(TargetFilter.forCard(card));
-                availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, CostFilter.Cost4Plus.lowerBound));
+                availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, EUIUtils.max(CostFilter.values(), c -> c.lowerBound)));
                 availableColors.add(card.color);
             }
             doForFilters(m -> m.initializeSelection(originalGroup));
