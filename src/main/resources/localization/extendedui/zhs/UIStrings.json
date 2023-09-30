@@ -3,7 +3,7 @@
 		"TEXT": [
 			"显示计数面板",
 			"使用原版卡牌总览界面",
-			"Snap scrolling in card grids",
+			"卡牌在网格中闪现滚动",
 			"禁用游戏内百科大全",
 			"禁用提示描述中的图标",
 			"禁用Effekseer特效",
@@ -13,7 +13,7 @@
 			"使用非统一字体",
 			"覆盖原版字体",
 			"主字体",
-			"Bold Font",
+			"加粗字体",
 			"卡牌描述字体",
 			"卡牌标题字体",
 			"提示描述字体",
@@ -22,11 +22,11 @@
 			"能量字体",
 			"横幅字体",
 			"启用debug功能",
-			"Enable expanded Tooltips",
-			"Always use EUI tooltip rendering",
-			"重新启用提示描述",
-			"Remove Menu Fade Transitions",
-			"Preserve Filters on Compendium Tab Switch"
+			"启用扩展的工具提示",
+			"总是使用EUI的工具提示渲染",
+			"重新启用工具提示",
+			"移除主菜单渐变过渡",
+			"冻结卡牌筛选条件"
 		]
 	},
 	"extendedui:config_desc": {
@@ -34,7 +34,7 @@
 			"需要重启",
 			"在某些卡牌界面中启用一个控件，可以根据特性（如类型和稀有度）统计和展示卡牌。",
 			"让卡牌总览界面保持原版风格，但不影响筛选器的使用。",
-			"Check this option to have cards in the compendium and card pool screens snap to their target positions instantly upon scrolling.",
+			"使百科大全和卡牌池界面的卡牌在滚动时立即移动到目标位置。",
 			"禁用游戏内的百科大全并清除屏幕顶部的入口图标。",
 			"将提示描述中的图标替换为它们所代表的关键字（能量图标除外）。",
 			"禁用基于Effekseer的视觉特效。",
@@ -43,12 +43,12 @@
 			"为不同的文本类型分别指定字体，未指定的类型将使用默认字体。如果不勾选，所有的文本类型都将使用唯一指定字体。",
 			"本mod的字体与基础游戏分开管理，字体设置默认不会影响基础游戏。勾选此选项，以使字体设置对基础游戏生效。",
 			"启用游戏内百科大全中的多种debug功能（右击项目访问）。",
-			"If checked, keywords mentioned in tooltips on cards, relics, and potions will also have their tooltips shown.",
-			"If checked, all tooltip rendering will be managed by EUI. This may cause incompatibility issues with mods that modify base game tooltip rendering.",
-			"重新启用所有被本mod关闭的提示描述。",
-			"{#b:No tooltips are currently disabled.}",
-			"Removes the black screen fade that occurs when you enter or exit a run, such that performing these actions will be nearly instantaneous.",
-			"If checked, filters in the card compendium will be preserved when switching card colors."
+			"卡牌、遗物、药水的工具提示中提及的关键字会继续展开其工具提示。",
+			"所有工具提示渲染交由EUI管理。如遇其他mod也修改基础游戏的工具提示渲染，可能会引发兼容性问题。",
+			"重新启用所有被本mod关闭的工具提示。",
+			"{#b:当前没有被禁用的工具提示。}",
+			"移除你进入或退出一局游戏时的黑屏渐变，以使这些动作几乎瞬间完成。",
+			"在卡牌总览中切换颜色时，筛选条件将会维持。"
 		]
 	},
 	"extendedui:grammar": {
@@ -92,21 +92,21 @@
 			"重置",
 			"其他设置",
 			"EUI",
-			"EUI Effekseer",
+			"EUI Effekseer特效",
 			"EUI字体",
-			"#o{Left-Click} 关键字以添加/取消准入必要条件。在按住 #o{{0}} 的情况下 #o{Left-Click} 关键字以添加/取消排除充分条件。 #o{Right-Click} 关键字以访问更多选项。",
-			"Save Table",
-			"Save as CSV",
-			"Save as JSON",
-			"Save a CSV or JSON sheet with information on the items on this group.",
-			"Confirm Overwrite",
-			"{0} already exists. Do you want to replace it?",
+			"#o{Left-Click} 关键字以添加/取消准入必要条件。在按住 #o{{0}} 的情况下 #o{Left-Click} 关键字以添加/取消排除充分条件。 #o{Right-Click} 关键字以开启/关闭其工具提示。",
+			"存为表格",
+			"存为CSV",
+			"存为JSON",
+			"保存到载有当前入选项目信息的工作表， NL CSV或JSON格式。",
+			"确认重写",
+			"{0} 已经存在。你想替换它吗？",
 			"Current",
 			"Hue",
 			"Saturation",
 			"Value",
 			"Opacity",
-			"{#r:This tooltip is disabled}"
+			"{#r:该工具提示禁用中}"
 		]
 	},
 	"extendedui:ui_pool": {
@@ -123,54 +123,54 @@
 			"从池中移除",
 			"获得该遗物",
 			"获得该药水",
-			"Blight Crypt",
-			"Learn about various Blights that the Spire may inflict upon you.",
-			"Blight Pool"
+			"荒疫地下室",
+			"了解高塔发难于你的各种荒疫。",
+			"荒疫池"
 		]
 	},
 	"extendedui:potions": {
 		"TEXT": [
-			"Size",
-			"Visual Effect",
-			"Anvil",
-			"Bolt",
-			"Bottle",
-			"Card",
-			"Eye",
-			"Fairy",
-			"Ghost",
-			"H",
-			"Heart",
-			"Jar",
-			"M",
-			"Moon",
-			"S",
-			"Snecko",
-			"Sphere",
-			"Spiky",
-			"T",
-			"Rainbow",
-			"Oscillate"
+			"规格",
+			"视觉效果",
+			"铁砧",
+			"螺栓",
+			"瓶子",
+			"卡牌",
+			"眼睛",
+			"精灵",
+			"幽灵",
+			"一半",
+			"心形",
+			"罐子",
+			"中型",
+			"月亮",
+			"小型",
+			"异蛇",
+			"圆球",
+			"尖刺",
+			"迷你",
+			"彩虹",
+			"振荡"
 		]
 	},
 	"extendedui:relics": {
 		"TEXT": [
-			"Landing Sound",
-			"Clink",
-			"Flat",
-			"Heavy",
-			"Magical",
-			"Solid"
+			"点击音效",
+			"清脆",
+			"沉闷",
+			"沉重",
+			"魔幻",
+			"坚固"
 		]
 	},
 	"extendedui:target": {
 		"TEXT": [
-			"Player",
-			"All",
-			"All Enemies",
-			"Any Target",
-			"Self",
-			"Single Target"
+			"玩家",
+			"所有角色",
+			"所有敌人",
+			"任意目标",
+			"自身",
+			"单目标"
 		]
 	},
 	"extendedui:ui_filters": {
@@ -180,7 +180,7 @@
 			"数量",
 			"来源",
 			"颜色",
-			"Target",
+			"目标",
 			"结果",
 			"筛选器",
 			"任何",
@@ -192,8 +192,8 @@
 			"已见过",
 			"未见过",
 			"N/A",
-			"Filter out items from this group",
-			"Unique"
+			"按给定条件筛选项目",
+			"唯一"
 		]
 	}
 }
