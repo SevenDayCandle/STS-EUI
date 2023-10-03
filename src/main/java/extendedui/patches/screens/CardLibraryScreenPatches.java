@@ -55,8 +55,10 @@ public class CardLibraryScreenPatches {
                 }
             }
             SortHeaderButton button = EUIUtils.find(header.buttons, b -> EUIClassUtils.getField(b, "isActive"));
-            boolean ascending = button != null ? EUIClassUtils.getField(button, "isAscending") : false;
-            header.didChangeOrder(button, ascending);
+            if (button != null) {
+                boolean ascending = EUIClassUtils.getField(button, "isAscending");
+                header.didChangeOrder(button, ascending);
+            }
             EUI.cardFilters.manualInvalidate(header.group.group);
         }
     }
