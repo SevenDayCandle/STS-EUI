@@ -28,22 +28,24 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 
 public class CustomCardLibraryScreen extends AbstractMenuScreen {
     private static final float FILTERS_START_X = (float) Settings.WIDTH * 0.177f;
     private static final int VISIBLE_BUTTONS = 14;
-    public static final HashMap<AbstractCard.CardColor, CardGroup> CardLists = new HashMap<>();
-    public static final float CENTER_Y = Settings.HEIGHT * 0.88f;
+    private static final HashMap<AbstractCard.CardColor, ArrayList<AbstractCard>> CARD_LISTS = new HashMap<>();
+    private static final float CENTER_Y = Settings.HEIGHT * 0.88f;
     public static AbstractCard.CardColor currentColor = AbstractCard.CardColor.COLORLESS;
     public static CustomCardPoolModule customModule;
-    protected final EUIButtonList colorButtons = new EUIButtonList();
+    private final EUIButtonList colorButtons = new EUIButtonList();
     public final EUITextBoxInput quickSearch;
     public final EUIToggle upgradeToggle;
     public final MenuCancelButton cancelButton;
     private final Rectangle scissors;
-    public final CardKeywordFilters.CardFilters savedFilters = new CardKeywordFilters.CardFilters();
+    private final CardKeywordFilters.CardFilters savedFilters = new CardKeywordFilters.CardFilters();
     public EUICardGrid cardGrid;
 
     public CustomCardLibraryScreen() {
@@ -73,6 +75,18 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         ScissorStack.calculateScissors(EUIGameUtils.getCamera(), EUIGameUtils.getSpriteBatch().getTransformMatrix(), clipBounds, scissors);
     }
 
+    public static Collection<ArrayList<AbstractCard>> getAllCards() {
+        return CARD_LISTS.values();
+    }
+
+    public static Collection<AbstractCard.CardColor> getAllKeys() {
+        return CARD_LISTS.keySet();
+    }
+
+    public static ArrayList<AbstractCard> getCards(AbstractCard.CardColor color) {
+        return CARD_LISTS.get(color);
+    }
+
     @Override
     public void close() {
         super.close();
@@ -86,17 +100,19 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
 
     public void initialize(CardLibraryScreen screen) {
         // CardLibraryScreen needs to be re-initialized whenever the save slot changes
-        CardLists.clear();
+        CARD_LISTS.clear();
         colorButtons.clear();
 
         // Let's just re-use the hard sorting work that basemod and the base game has done for us :)
-        CardLists.put(AbstractCard.CardColor.RED, EUIClassUtils.getField(screen, "redCards"));
-        CardLists.put(AbstractCard.CardColor.GREEN, EUIClassUtils.getField(screen, "greenCards"));
-        CardLists.put(AbstractCard.CardColor.BLUE, EUIClassUtils.getField(screen, "blueCards"));
-        CardLists.put(AbstractCard.CardColor.PURPLE, EUIClassUtils.getField(screen, "purpleCards"));
-        CardLists.put(AbstractCard.CardColor.CURSE, EUIClassUtils.getField(screen, "curseCards"));
-        CardLists.put(AbstractCard.CardColor.COLORLESS, EUIClassUtils.getField(screen, "colorlessCards"));
-        CardLists.putAll(EverythingFix.Fields.cardGroupMap);
+        CARD_LISTS.put(AbstractCard.CardColor.RED, EUIClassUtils.getField(screen, "redCards"));
+        CARD_LISTS.put(AbstractCard.CardColor.GREEN, EUIClassUtils.getField(screen, "greenCards"));
+        CARD_LISTS.put(AbstractCard.CardColor.BLUE, EUIClassUtils.getField(screen, "blueCards"));
+        CARD_LISTS.put(AbstractCard.CardColor.PURPLE, EUIClassUtils.getField(screen, "purpleCards"));
+        CARD_LISTS.put(AbstractCard.CardColor.CURSE, EUIClassUtils.getField(screen, "curseCards"));
+        CARD_LISTS.put(AbstractCard.CardColor.COLORLESS, EUIClassUtils.getField(screen, "colorlessCards"));
+        for (AbstractCard.CardColor co : EverythingFix.Fields.cardGroupMap.keySet()) {
+            CARD_LISTS.put(co, EverythingFix.Fields.cardGroupMap.get(co).group);
+        }
 
         // Add custom buttons. Base game colors come first.
         makeColorButton(AbstractCard.CardColor.COLORLESS);
@@ -131,8 +147,8 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     }
 
     protected void refreshGroups() {
-        for (CardGroup group : CardLists.values()) {
-            for (AbstractCard c : group.group) {
+        for (ArrayList<AbstractCard> group : CARD_LISTS.values()) {
+            for (AbstractCard c : group) {
                 if (UnlockTracker.isCardLocked(c.cardID)) {
                     c.setLocked();
                 }
@@ -180,14 +196,14 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
                 .showScrollbar(true);
     }
 
-    public void setActiveColor(AbstractCard.CardColor color, CardGroup cards, Object payload) {
+    public void setActiveColor(AbstractCard.CardColor color, ArrayList<AbstractCard> cards, Object payload) {
         if (EUIConfiguration.saveFilterChoices.get()) {
             savedFilters.cloneFrom(EUI.cardFilters.filters);
         }
 
         EUI.actingColor = currentColor = color;
         cardGrid.clear();
-        cardGrid.setCardGroup(cards);
+        cardGrid.setItems(cards);
 
         EUI.cardFilters.initializeForSort(cardGrid.group, __ -> {
             quickSearch.setLabel(EUI.cardFilters.filters.currentName != null ? EUI.cardFilters.filters.currentName : "");
@@ -217,7 +233,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     }
 
     public void setActiveColor(AbstractCard.CardColor color) {
-        setActiveColor(color, CardLists.getOrDefault(color, new CardGroup(CardGroup.CardGroupType.UNSPECIFIED)), null);
+        setActiveColor(color, CARD_LISTS.getOrDefault(color, new ArrayList<>()), null);
     }
 
     protected void toggleUpgrades(boolean value) {

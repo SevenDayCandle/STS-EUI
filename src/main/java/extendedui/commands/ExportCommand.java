@@ -97,7 +97,7 @@ public class ExportCommand extends ConsoleCommand {
     }
 
     public ArrayList<String> extraOptions(String[] tokens, int depth) {
-        ArrayList<String> options = EUIUtils.map(CustomCardLibraryScreen.CardLists.keySet(), Enum::toString);
+        ArrayList<String> options = EUIUtils.map(CustomCardLibraryScreen.getAllKeys(), Enum::toString);
         if (options.contains(tokens[depth])) {
             if (tokens.length > depth + 1 && tokens[depth + 1].matches("\\d*")) {
                 return ConsoleCommand.smallNumbers();

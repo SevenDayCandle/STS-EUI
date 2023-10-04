@@ -84,9 +84,9 @@ public class EUIExporter {
     }
 
     public static void exportCardCsv(AbstractCard.CardColor c) {
-        CardGroup group = CustomCardLibraryScreen.CardLists.get(c);
+        ArrayList<AbstractCard> group = CustomCardLibraryScreen.getCards(c);
         if (group != null) {
-            exportCardCsv(group.group);
+            exportCardCsv(group);
         }
     }
 
@@ -107,9 +107,9 @@ public class EUIExporter {
     }
 
     public static void exportCardJson(AbstractCard.CardColor c) {
-        CardGroup group = CustomCardLibraryScreen.CardLists.get(c);
+        ArrayList<AbstractCard> group = CustomCardLibraryScreen.getCards(c);
         if (group != null) {
-            exportCardJson(group.group);
+            exportCardJson(group);
         }
     }
 
