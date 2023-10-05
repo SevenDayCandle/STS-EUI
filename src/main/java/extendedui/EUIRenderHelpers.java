@@ -14,11 +14,9 @@ import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.localization.LocalizedStrings;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.text.EUITextHelper;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
@@ -134,6 +132,32 @@ public class EUIRenderHelpers {
         drawWithShader(sb, getBrightShader(), drawFunc);
     }
 
+    public static void drawCRT(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
+        drawCRT(sb, EUI.time(), 1.4f, 0.1f, 0.3f, drawFunc);
+    }
+
+    public static void drawCRT(SpriteBatch sb, float xOffset, float xFuzz, float rgbOffset, float vertJerk, ActionT1<SpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = sb.getShader();
+        ShaderProgram rs = getCRTShader();
+        sb.setShader(rs);
+        setCRTShader(rs, xOffset, xFuzz, rgbOffset, vertJerk);
+        drawFunc.invoke(sb);
+        sb.setShader(defaultShader);
+    }
+
+    public static void drawCRT(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch> drawFunc) {
+        drawCRT(pb, EUI.time(), 1.4f, 0.1f, 0.3f, drawFunc);
+    }
+
+    public static void drawCRT(PolygonSpriteBatch pb, float xOffset, float xFuzz, float rgbOffset, float vertJerk, ActionT1<PolygonSpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = pb.getShader();
+        ShaderProgram rs = getCRTShader();
+        pb.setShader(rs);
+        setCRTShader(rs, xOffset, xFuzz, rgbOffset, vertJerk);
+        drawFunc.invoke(pb);
+        pb.setShader(defaultShader);
+    }
+
     public static void drawCentered(SpriteBatch sb, Color color, Texture img, float drawX, float drawY, float width, float height, float imgScale, float imgRotation) {
         drawCentered(sb, color, img, drawX, drawY, width, height, imgScale, imgRotation, false, false);
     }
@@ -207,32 +231,6 @@ public class EUIRenderHelpers {
     public static void drawColorizedCRT(PolygonSpriteBatch pb, float xOffset, float xFuzz, float rgbOffset, float vertJerk, ActionT1<PolygonSpriteBatch> drawFunc) {
         ShaderProgram defaultShader = pb.getShader();
         ShaderProgram rs = getColorizeCRTShader();
-        pb.setShader(rs);
-        setCRTShader(rs, xOffset, xFuzz, rgbOffset, vertJerk);
-        drawFunc.invoke(pb);
-        pb.setShader(defaultShader);
-    }
-
-    public static void drawCRT(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
-        drawCRT(sb, EUI.time(), 1.4f, 0.1f, 0.3f, drawFunc);
-    }
-
-    public static void drawCRT(SpriteBatch sb, float xOffset, float xFuzz, float rgbOffset, float vertJerk, ActionT1<SpriteBatch> drawFunc) {
-        ShaderProgram defaultShader = sb.getShader();
-        ShaderProgram rs = getCRTShader();
-        sb.setShader(rs);
-        setCRTShader(rs, xOffset, xFuzz, rgbOffset, vertJerk);
-        drawFunc.invoke(sb);
-        sb.setShader(defaultShader);
-    }
-
-    public static void drawCRT(PolygonSpriteBatch pb, ActionT1<PolygonSpriteBatch> drawFunc) {
-        drawCRT(pb, EUI.time(), 1.4f, 0.1f, 0.3f, drawFunc);
-    }
-
-    public static void drawCRT(PolygonSpriteBatch pb, float xOffset, float xFuzz, float rgbOffset, float vertJerk, ActionT1<PolygonSpriteBatch> drawFunc) {
-        ShaderProgram defaultShader = pb.getShader();
-        ShaderProgram rs = getCRTShader();
         pb.setShader(rs);
         setCRTShader(rs, xOffset, xFuzz, rgbOffset, vertJerk);
         drawFunc.invoke(pb);
@@ -635,11 +633,11 @@ public class EUIRenderHelpers {
         return brighterShader;
     }
 
-    public static ShaderProgram getColorizeShader() {
-        if (colorizeShader == null) {
-            colorizeShader = initializeShader(SHADER_VERTEX, SHADER_COLORIZE_FRAGMENT);
+    protected static ShaderProgram getCRTShader() {
+        if (crtShader == null) {
+            crtShader = initializeShader(SHADER_VERTEX, SHADER_CRT_FRAGMENT);
         }
-        return colorizeShader;
+        return crtShader;
     }
 
     protected static ShaderProgram getColorizeCRTShader() {
@@ -649,11 +647,11 @@ public class EUIRenderHelpers {
         return crtShader;
     }
 
-    protected static ShaderProgram getCRTShader() {
-        if (crtShader == null) {
-            crtShader = initializeShader(SHADER_VERTEX, SHADER_CRT_FRAGMENT);
+    public static ShaderProgram getColorizeShader() {
+        if (colorizeShader == null) {
+            colorizeShader = initializeShader(SHADER_VERTEX, SHADER_COLORIZE_FRAGMENT);
         }
-        return crtShader;
+        return colorizeShader;
     }
 
     public static TextureRegion getCroppedRegion(Texture texture, int div) {

@@ -5,7 +5,6 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
-import extendedui.EUI;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.controls.EUITutorial;

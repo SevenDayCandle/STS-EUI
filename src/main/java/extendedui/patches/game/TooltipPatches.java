@@ -20,7 +20,6 @@ import extendedui.ui.tooltips.EUITooltip;
 import javassist.CannotCompileException;
 import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
-import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
 

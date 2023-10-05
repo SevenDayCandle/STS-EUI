@@ -17,7 +17,7 @@ public class EUIExporterRelicRow extends EUIExporterRow {
     }
 
     public EUIExporterRelicRow(RelicInfo relic) {
-        super(relic.relic.relicId, EUIGameUtils.getModID(relic.relic),String.valueOf(relic.relicColor), relic.relic.name);
+        super(relic.relic.relicId, EUIGameUtils.getModID(relic.relic), String.valueOf(relic.relicColor), relic.relic.name);
         tier = String.valueOf(relic.relic.tier);
         landingSFX = String.valueOf(EUIGameUtils.getLandingSound(relic.relic));
         description = sanitizeDescription(relic.relic.description);

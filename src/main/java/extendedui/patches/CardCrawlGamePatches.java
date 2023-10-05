@@ -7,7 +7,6 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.helpers.DrawMaster;
 import com.megacrit.cardcrawl.helpers.TipHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
-import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
 import extendedui.EUI;
 import extendedui.STSEffekseerManager;
 import extendedui.ui.tooltips.EUITourTooltip;
@@ -91,11 +90,6 @@ public class CardCrawlGamePatches {
     @SpirePatch(clz = CardCrawlGame.class, method = "startOver")
     @SpirePatch(clz = CardCrawlGame.class, method = "startOverButShowCredits")
     public static class CardCrawlGame_StartOver {
-        @SpirePrefixPatch
-        public static void prefix() {
-            EUITourTooltip.clearTutorialQueue();
-        }
-
         @SpireInstrumentPatch
         public static ExprEditor instrument() {
             return new ExprEditor() {
@@ -105,6 +99,11 @@ public class CardCrawlGamePatches {
                     }
                 }
             };
+        }
+
+        @SpirePrefixPatch
+        public static void prefix() {
+            EUITourTooltip.clearTutorialQueue();
         }
     }
 

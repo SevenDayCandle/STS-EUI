@@ -35,10 +35,6 @@ import extendedui.text.EUITextHelper;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
-import extendedui.ui.cardFilter.BlightKeywordFilters;
-import extendedui.ui.cardFilter.CardKeywordFilters;
-import extendedui.ui.cardFilter.PotionKeywordFilters;
-import extendedui.ui.cardFilter.RelicKeywordFilters;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -66,6 +62,14 @@ public class EUI {
     private static final ConcurrentLinkedQueue<ActionT1<SpriteBatch>> priorityPostRenderList = new ConcurrentLinkedQueue<>();
     private static final ArrayList<EUIBase> battleSubscribers = new ArrayList<>();
     private static final ArrayList<EUIBase> subscribers = new ArrayList<>();
+    private static final Stack<EUIBase> activeElements = new Stack<>();
+    private static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customCardFilters = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardLibraryModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardPoolModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomFilterModule<PotionInfo>> customPotionFilters = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomPoolModule<PotionInfo>> customPotionPoolModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomFilterModule<RelicInfo>> customRelicFilters = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, CustomPoolModule<RelicInfo>> customRelicPoolModules = new HashMap<>();
     public static final ArrayList<CustomFilterModule<AbstractBlight>> globalCustomBlightFilters = new ArrayList<>();
     public static final ArrayList<CustomPoolModule<AbstractBlight>> globalCustomBlightLibraryModules = new ArrayList<>(); // TODO use this
     public static final ArrayList<CustomCardFilterModule> globalCustomCardFilters = new ArrayList<>();
@@ -77,17 +81,9 @@ public class EUI {
     public static final ArrayList<CustomFilterModule<RelicInfo>> globalCustomRelicFilters = new ArrayList<>();
     public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicLibraryModules = new ArrayList<>(); // TODO use this
     public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicPoolModules = new ArrayList<>();
-    private static final Stack<EUIBase> activeElements = new Stack<>();
     public static final String ENERGY_ID = "E";
     public static final String ENERGY_TIP = "[E]";
     public static final String[] ENERGY_STRINGS = {ENERGY_TIP, "[R]", "[G]", "[B]", "[W]"};
-    private static final HashMap<AbstractCard.CardColor, CustomCardFilterModule> customCardFilters = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardLibraryModules = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomCardPoolModule> customCardPoolModules = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomFilterModule<PotionInfo>> customPotionFilters = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomPoolModule<PotionInfo>> customPotionPoolModules = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomFilterModule<RelicInfo>> customRelicFilters = new HashMap<>();
-    private static final HashMap<AbstractCard.CardColor, CustomPoolModule<RelicInfo>> customRelicPoolModules = new HashMap<>();
     private static float delta = 0;
     private static float timer = 0;
     private static int imguiIndex = 0;

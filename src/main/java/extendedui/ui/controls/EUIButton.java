@@ -22,6 +22,9 @@ import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.TupleT2;
 
 public class EUIButton extends EUIHoverable {
+    private ActionT1<EUIButton> onLeftClick;
+    private ActionT1<EUIButton> onLeftPreClick;
+    private ActionT1<EUIButton> onRightClick;
     protected float currentClickDelay = 0f;
     public EUIImage background;
     public EUIImage border;
@@ -29,9 +32,6 @@ public class EUIButton extends EUIHoverable {
     public float clickDelay = 0f;
     public boolean interactable = true;
     public boolean showText = true;
-    private ActionT1<EUIButton> onLeftClick;
-    private ActionT1<EUIButton> onLeftPreClick;
-    private ActionT1<EUIButton> onRightClick;
     public Color hoverBlendColor;
 
     public EUIButton(Texture buttonTexture, float x, float y) {

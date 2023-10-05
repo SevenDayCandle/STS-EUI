@@ -28,7 +28,10 @@ import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
-import extendedui.utilities.*;
+import extendedui.utilities.CostFilter;
+import extendedui.utilities.EUIClassUtils;
+import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.TargetFilter;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

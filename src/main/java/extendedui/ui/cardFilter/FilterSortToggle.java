@@ -16,8 +16,8 @@ import extendedui.ui.hitboxes.EUIHitbox;
 public class FilterSortToggle extends EUIHoverable {
     private final String text;
     private final ActionT1<Boolean> onClick;
-    public final FilterSortHeader header;
     private final float textWidth;
+    public final FilterSortHeader header;
     private Boolean isAscending;
 
     public FilterSortToggle(float x, String text, FilterSortHeader header, ActionT1<Boolean> onClick) {

@@ -27,14 +27,11 @@ import extendedui.ui.controls.*;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
-import extendedui.utilities.CostFilter;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.ItemGroup;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;
-import java.util.function.Predicate;
-import java.util.function.UnaryOperator;
 
 public abstract class GenericFilters<T, U extends GenericFiltersObject, V extends CustomFilterModule<T>> extends EUICanvasGrid {
     protected static final HashMap<String, EUIKeywordTooltip> TEMPORARY_TIPS = new HashMap<>(); // Because AbstractPotion HAS NO STANDARDIZED WAY OF ADDING TIPS, there's no way for us to infer where the tip came from
@@ -358,7 +355,7 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
     }
 
     protected float makeToggle(FilterSortHeader header, Comparator<T> comparator, String title, float x) {
-        FilterSortToggle toggle = new FilterSortToggle(x, title, header, (val) -> setSort(comparator,val));
+        FilterSortToggle toggle = new FilterSortToggle(x, title, header, (val) -> setSort(comparator, val));
         header.buttons.add(toggle);
         return x + toggle.getSize();
     }

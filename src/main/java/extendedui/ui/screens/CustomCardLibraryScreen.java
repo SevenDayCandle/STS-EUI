@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -23,7 +22,10 @@ import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.cardFilter.CardKeywordFilters;
-import extendedui.ui.controls.*;
+import extendedui.ui.controls.EUIButtonList;
+import extendedui.ui.controls.EUICardGrid;
+import extendedui.ui.controls.EUITextBoxInput;
+import extendedui.ui.controls.EUIToggle;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
@@ -41,11 +43,11 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     public static AbstractCard.CardColor currentColor = AbstractCard.CardColor.COLORLESS;
     public static CustomCardPoolModule customModule;
     private final EUIButtonList colorButtons = new EUIButtonList();
+    private final Rectangle scissors;
+    private final CardKeywordFilters.CardFilters savedFilters = new CardKeywordFilters.CardFilters();
     public final EUITextBoxInput quickSearch;
     public final EUIToggle upgradeToggle;
     public final MenuCancelButton cancelButton;
-    private final Rectangle scissors;
-    private final CardKeywordFilters.CardFilters savedFilters = new CardKeywordFilters.CardFilters();
     public EUICardGrid cardGrid;
 
     public CustomCardLibraryScreen() {

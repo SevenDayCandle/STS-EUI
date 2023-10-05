@@ -1,18 +1,12 @@
 package extendedui.ui.controls;
 
-import basemod.patches.com.megacrit.cardcrawl.helpers.input.ScrollInputProcessor.TextInput;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.tools.hiero.unicodefont.Glyph;
-import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
-import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TextInputProvider;
@@ -24,10 +18,10 @@ import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
 
 public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextInputProvider {
+    protected final StringBuilder buffer = new StringBuilder();
     protected ActionT1<T> onComplete;
     protected ActionT0 onTab;
     protected Color editTextColor;
-    protected final StringBuilder buffer = new StringBuilder();
     protected float headerSpacing = 0.6f;
     public EUILabel header;
 
@@ -45,11 +39,6 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
     }
 
     @Override
-    public StringBuilder getBuffer() {
-        return buffer;
-    }
-
-    @Override
     public void cancel() {
         EUIInputManager.releaseType(this);
         EUI.popActiveElement(this);
@@ -63,6 +52,11 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
         if (onComplete != null) {
             onComplete.invoke(getValue(label.text));
         }
+    }
+
+    @Override
+    public StringBuilder getBuffer() {
+        return buffer;
     }
 
     @Override

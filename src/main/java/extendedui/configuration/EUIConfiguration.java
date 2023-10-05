@@ -17,7 +17,6 @@ import extendedui.interfaces.delegates.ActionT0;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.EUIHitbox;
-import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.settings.BasemodSettingsPage;
 import extendedui.ui.settings.ExtraModSettingsPanel;
 import extendedui.ui.settings.ModSettingsPathSelector;
@@ -43,7 +42,13 @@ public class EUIConfiguration {
     private static final int BASE_OPTION_OFFSET_X2 = 580;
     private static final int BASE_OPTION_OFFSET_Y = 720;
     private static final int BASE_OPTION_OPTION_HEIGHT = 32;
-
+    // @Formatter: On
+    private static HashSet<String> tips = null;
+    private static SpireConfig config;
+    private static int counter;
+    private static BasemodSettingsPage settingsBlock;
+    private static EUITooltip reenableTip;
+    private static ModPanel panel;
     public static STSConfigItem<Boolean> disableCompendiumButton = new STSConfigItem<>(getFullKey("DisableCompendiumButton"), false);
     public static STSConfigItem<Boolean> disableEffekseer = new STSConfigItem<>(getFullKey("DisableEffekseer"), false);
     public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(getFullKey("EnableCardPoolDebug"), false);
@@ -67,13 +72,6 @@ public class EUIConfiguration {
     public static STSStringConfigItem lastExportPath = new STSStringConfigItem(getFullKey("LastExportPath"), "");
     public static STSStringConfigItem tipDescFont = new STSStringConfigItem(getFullKey("TipDescFont"), "");
     public static STSStringConfigItem tipTitleFont = new STSStringConfigItem(getFullKey("TipTitleFont"), "");
-    // @Formatter: On
-    private static HashSet<String> tips = null;
-    private static SpireConfig config;
-    private static int counter;
-    private static BasemodSettingsPage settingsBlock;
-    private static EUITooltip reenableTip;
-    private static ModPanel panel;
     public static ExtraModSettingsPanel.Category effekseerCategory;
     public static ExtraModSettingsPanel.Category euiCategory;
     public static ExtraModSettingsPanel.Category fontCategory;

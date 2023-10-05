@@ -2,12 +2,9 @@ package extendedui.utilities;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIRM;
-import extendedui.EUIUtils;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.List;
-import java.util.StringJoiner;
 
 public enum CostFilter {
     CostX("X", -1, -1),

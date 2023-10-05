@@ -58,15 +58,15 @@ public class EUIPotionGrid extends EUIItemGrid<PotionInfo> {
     }
 
     @Override
+    protected void renderItem(SpriteBatch sb, PotionInfo potion) {
+        potion.potion.render(sb);
+    }
+
+    @Override
     protected void renderTip(SpriteBatch sb) {
         if (hovered != null) {
             EUIGameUtils.renderPotionTip(hovered.potion);
         }
-    }
-
-    @Override
-    protected void renderItem(SpriteBatch sb, PotionInfo potion) {
-        potion.potion.render(sb);
     }
 
     @Override

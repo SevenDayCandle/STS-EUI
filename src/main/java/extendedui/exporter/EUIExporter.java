@@ -7,7 +7,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.net.HttpParametersUtils;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.PotionHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
@@ -41,11 +40,11 @@ public class EUIExporter {
     public static final String NEWLINE = System.getProperty("line.separator");
     public static final Exportable<AbstractBlight> blightExportable = new Exportable<>(EUIExporter::exportBlightCsv, EUIExporter::exportBlightJson);
     public static final Exportable<AbstractCard> cardExportable = new Exportable<>(EUIExporter::exportCardCsv, EUIExporter::exportCardJson);
+    private static Exportable<?> current = cardExportable;
     public static final Exportable<PotionInfo> potionExportable = new Exportable<>(EUIExporter::exportPotionCsv, EUIExporter::exportPotionJson);
     public static final Exportable<RelicInfo> relicExportable = new Exportable<>(EUIExporter::exportRelicCsv, EUIExporter::exportRelicJson);
     public static EUIButton exportButton;
     public static EUIContextMenu<EUIExporter.ContextOption> exportDropdown;
-    private static Exportable<?> current = cardExportable;
 
     public static void exportBlightCsv(AbstractBlight c) {
         exportBlightCsv(Collections.singleton(c));

@@ -305,14 +305,19 @@ public class EUITextHelper {
         renderFont(sb, font, msg, x, y + layout.height / 2.0F, c);
     }
 
+    public static void renderFontLeftDownAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
+        layout.setText(font, msg);
+        renderFont(sb, font, msg, x, y + layout.height, c);
+    }
+
     public static void renderFontLeftTopAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
         layout.setText(font, msg);
         renderFont(sb, font, msg, x, y, c);
     }
 
-    public static void renderFontLeftDownAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
+    public static void renderFontRightAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
         layout.setText(font, msg);
-        renderFont(sb, font, msg, x, y + layout.height, c);
+        renderFont(sb, font, msg, x - layout.width, y + layout.height / 2.0F, c);
     }
 
     public static void renderFontRightToLeft(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
@@ -324,11 +329,6 @@ public class EUITextHelper {
     public static void renderFontRightTopAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
         layout.setText(font, msg);
         renderFont(sb, font, msg, x - layout.width, y, c);
-    }
-
-    public static void renderFontRightAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
-        layout.setText(font, msg);
-        renderFont(sb, font, msg, x - layout.width, y + layout.height / 2.0F, c);
     }
 
     public static void renderFontRightTopAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, float scale, Color c) {

@@ -54,15 +54,15 @@ public class EUIBlightGrid extends EUIItemGrid<AbstractBlight> {
     }
 
     @Override
+    protected void renderItem(SpriteBatch sb, AbstractBlight blight) {
+        blight.render(sb, false, Color.BLACK);
+    }
+
+    @Override
     protected void renderTip(SpriteBatch sb) {
         if (hovered != null) {
             hovered.renderTip(sb);
         }
-    }
-
-    @Override
-    protected void renderItem(SpriteBatch sb, AbstractBlight blight) {
-        blight.render(sb, false, Color.BLACK);
     }
 
     @Override

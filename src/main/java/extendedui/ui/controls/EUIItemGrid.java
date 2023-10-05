@@ -173,19 +173,6 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         }
     }
 
-    public void renderWithScissors(SpriteBatch sb, Rectangle scissors) {
-        super.renderImpl(sb);
-        if (ScissorStack.pushScissors(scissors)) {
-            renderItems(sb);
-            ScissorStack.popScissors();
-        }
-        renderTip(sb);
-
-        if (message != null) {
-            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
-        }
-    }
-
     protected void renderItems(SpriteBatch sb) {
         for (T item : group.group) {
             renderItem(sb, item);
@@ -197,6 +184,19 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
 
     protected void renderTip(SpriteBatch sb) {
 
+    }
+
+    public void renderWithScissors(SpriteBatch sb, Rectangle scissors) {
+        super.renderImpl(sb);
+        if (ScissorStack.pushScissors(scissors)) {
+            renderItems(sb);
+            ScissorStack.popScissors();
+        }
+        renderTip(sb);
+
+        if (message != null) {
+            FontHelper.renderDeckViewTip(sb, message, scale(96f), Settings.CREAM_COLOR);
+        }
     }
 
     public EUIItemGrid<T> setEnlargeOnHover(boolean shouldEnlargeHovered) {
@@ -311,6 +311,24 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         updateClickLogic();
     }
 
+    protected void updateItems() {
+        hovered = null;
+
+        int row = 0;
+        int column = 0;
+        for (int i = 0; i < group.size(); i++) {
+            T item = group.group.get(i);
+            updateItemPosition(item, (drawX) + (column * padX), drawTopY + scrollDelta - (row * padY));
+            updateHoverLogic(item, i);
+
+            column += 1;
+            if (column >= rowSize) {
+                column = 0;
+                row += 1;
+            }
+        }
+    }
+
     protected void updateNonMouseInput() {
         if (EUIInputManager.isUsingNonMouseControl()) {
             int targetIndex = hoveredIndex;
@@ -338,24 +356,6 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
                     Hitbox hb = getHitbox(item);
                     EUIInputManager.setCursor(hb.cX, distance == 0 ? Settings.HEIGHT - hb.cY : Gdx.input.getY());
                 }
-            }
-        }
-    }
-
-    protected void updateItems() {
-        hovered = null;
-
-        int row = 0;
-        int column = 0;
-        for (int i = 0; i < group.size(); i++) {
-            T item = group.group.get(i);
-            updateItemPosition(item, (drawX) + (column * padX), drawTopY + scrollDelta - (row * padY));
-            updateHoverLogic(item, i);
-
-            column += 1;
-            if (column >= rowSize) {
-                column = 0;
-                row += 1;
             }
         }
     }

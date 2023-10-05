@@ -352,7 +352,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywo
 
     @Override
     protected void setupSortHeader(FilterSortHeader header, float startX) {
-        
+
         startX = makeToggle(header, PotionKeywordFilters::rankByRarity, CardLibSortHeader.TEXT[0], startX);
         startX = makeToggle(header, PotionKeywordFilters::rankByName, CardLibSortHeader.TEXT[2], startX);
         startX = makeToggle(header, PotionKeywordFilters::rankByColor, EUIRM.strings.ui_colors, startX);

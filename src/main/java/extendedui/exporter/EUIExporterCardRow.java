@@ -2,7 +2,6 @@ package extendedui.exporter;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIGameUtils;
-import extendedui.EUIUtils;
 
 public class EUIExporterCardRow extends EUIExporterRow {
     public String assetURL;

@@ -4,8 +4,6 @@ import com.badlogic.gdx.Input;
 import com.megacrit.cardcrawl.helpers.input.InputAction;
 import com.megacrit.cardcrawl.helpers.input.InputActionSet;
 
-import java.util.HashMap;
-
 public class EUIHotkeys {
 
     private static final String KEYMAP_CYCLE = EUIConfiguration.getFullKey("Cycle");

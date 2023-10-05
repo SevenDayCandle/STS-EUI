@@ -329,7 +329,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, RelicKeywordF
 
     @Override
     protected void setupSortHeader(FilterSortHeader header, float startX) {
-        
+
         startX = makeToggle(header, RelicKeywordFilters::rankByRarity, CardLibSortHeader.TEXT[0], startX);
         startX = makeToggle(header, RelicKeywordFilters::rankByName, CardLibSortHeader.TEXT[2], startX);
         startX = makeToggle(header, RelicKeywordFilters::rankByColor, EUIRM.strings.ui_colors, startX);

@@ -6,7 +6,6 @@ import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUIGameUtils;
-import extendedui.configuration.EUIConfiguration;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.EUIHitbox;
 

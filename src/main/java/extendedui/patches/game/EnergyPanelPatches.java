@@ -5,7 +5,6 @@ import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
 import com.megacrit.cardcrawl.ui.panels.EnergyPanel;
 import extendedui.EUI;
-import extendedui.ui.EUIBase;
 
 public class EnergyPanelPatches {
     @SpirePatch(clz = EnergyPanel.class, method = "render")

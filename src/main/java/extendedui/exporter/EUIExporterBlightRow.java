@@ -8,7 +8,7 @@ public class EUIExporterBlightRow extends EUIExporterRow {
     public String description;
 
     public EUIExporterBlightRow(AbstractBlight blight) {
-        super(blight.blightID, EUIGameUtils.getModID(blight),"", blight.name);
+        super(blight.blightID, EUIGameUtils.getModID(blight), "", blight.name);
         unique = blight.unique;
         description = sanitizeDescription(blight.description);
     }

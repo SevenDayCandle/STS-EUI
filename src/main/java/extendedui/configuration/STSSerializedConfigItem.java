@@ -1,6 +1,5 @@
 package extendedui.configuration;
 
-import com.google.gson.reflect.TypeToken;
 import extendedui.EUIUtils;
 
 /* Adapted from https://github.com/EatYourBeetS/STS-AnimatorMod */

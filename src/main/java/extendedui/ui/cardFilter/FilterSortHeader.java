@@ -7,13 +7,11 @@ import extendedui.ui.EUIBase;
 
 import java.util.ArrayList;
 
-import static extendedui.ui.cardFilter.GenericFilters.DRAW_START_X;
-
 public class FilterSortHeader extends EUIBase {
     protected final ArrayList<FilterSortToggle> buttons;
+    private boolean snapToGroup;
     protected GenericFilters<?, ?, ?> filters;
     protected float baseY = Settings.HEIGHT * 0.86f;
-    private boolean snapToGroup;
 
     public FilterSortHeader() {
         buttons = new ArrayList<>();

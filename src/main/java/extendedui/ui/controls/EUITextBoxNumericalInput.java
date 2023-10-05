@@ -74,17 +74,6 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
     }
 
     @Override
-    protected void renderUnderscore(SpriteBatch sb) {
-        // Do not render
-    }
-
-    public EUITextBoxNumericalInput setLimits(int min, int max) {
-        this.min = min;
-        this.max = Math.max(max, min);
-        return this;
-    }
-
-    @Override
     public void onUpdate(int pos, char keycode) {
         if (!hasEntered && keycode != EUIInputManager.DUMMY_PASTE) {
             getBuffer().setLength(0);
@@ -97,6 +86,17 @@ public class EUITextBoxNumericalInput extends EUITextBoxReceiver<Integer> {
             tempValue = getValue(buffer.toString());
         }
         hasEntered = true;
+    }
+
+    @Override
+    protected void renderUnderscore(SpriteBatch sb) {
+        // Do not render
+    }
+
+    public EUITextBoxNumericalInput setLimits(int min, int max) {
+        this.min = min;
+        this.max = Math.max(max, min);
+        return this;
     }
 
     protected void setTempValue(int value) {

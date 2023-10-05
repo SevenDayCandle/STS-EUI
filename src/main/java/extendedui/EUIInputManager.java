@@ -171,8 +171,9 @@ public class EUIInputManager {
         switch (character) {
             case ENTER_ANDROID:
             case ENTER_DESKTOP:
-                if (textProvider.onPushEnter())
+                if (textProvider.onPushEnter()) {
                     return true;
+                }
                 break;
             case BACKSPACE:
                 if (textProvider.onPushBackspace()) {
@@ -197,9 +198,11 @@ public class EUIInputManager {
                 if (textProvider.onPushTab()) {
                     return true;
                 }
-            // Ignore other control characters
+                // Ignore other control characters
             default:
-                if (character < 32) return false;
+                if (character < 32) {
+                    return false;
+                }
         }
 
         boolean add = textProvider.acceptCharacter(character);

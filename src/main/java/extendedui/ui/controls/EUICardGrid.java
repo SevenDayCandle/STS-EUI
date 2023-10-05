@@ -100,10 +100,6 @@ public class EUICardGrid extends EUIItemGrid<AbstractCard> {
         return item.hb;
     }
 
-    public AbstractCard getUpgrade(AbstractCard card) {
-        return upgradeCards.get(card);
-    }
-
     @Override
     protected float getScrollDistance(AbstractCard card, int index) {
         float scrollDistance = 1f / getRowCount();
@@ -116,15 +112,12 @@ public class EUICardGrid extends EUIItemGrid<AbstractCard> {
         return 0;
     }
 
-    public CardGroup makeCardGroup() {
-        return EUIGameUtils.makeCardGroup(group.group);
+    public AbstractCard getUpgrade(AbstractCard card) {
+        return upgradeCards.get(card);
     }
 
-    @Override
-    protected void renderTip(SpriteBatch sb) {
-        if (hovered != null) {
-            hovered.renderCardTip(sb);
-        }
+    public CardGroup makeCardGroup() {
+        return EUIGameUtils.makeCardGroup(group.group);
     }
 
     @Override
@@ -163,6 +156,13 @@ public class EUICardGrid extends EUIItemGrid<AbstractCard> {
             if (onRender != null) {
                 onRender.invoke(sb, hovered);
             }
+        }
+    }
+
+    @Override
+    protected void renderTip(SpriteBatch sb) {
+        if (hovered != null) {
+            hovered.renderCardTip(sb);
         }
     }
 

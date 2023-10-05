@@ -84,13 +84,6 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
     }
 
     @Override
-    protected void renderTip(SpriteBatch sb)  {
-        if (hovered != null) {
-            hovered.relic.renderTip(sb);
-        }
-    }
-
-    @Override
     protected void renderItem(SpriteBatch sb, RelicInfo relic) {
         if (relic.faded) {
             EUIRenderHelpers.drawWithShader(sb, EUIRenderHelpers.ShaderMode.Sepia, s -> renderRelicImpl(s, relic, Settings.TWO_THIRDS_TRANSPARENT_BLACK_COLOR));
@@ -110,6 +103,13 @@ public class EUIRelicGrid extends EUIItemGrid<RelicInfo> {
         }
         else {
             relic.relic.render(sb, false, renderColor);
+        }
+    }
+
+    @Override
+    protected void renderTip(SpriteBatch sb) {
+        if (hovered != null) {
+            hovered.relic.renderTip(sb);
         }
     }
 

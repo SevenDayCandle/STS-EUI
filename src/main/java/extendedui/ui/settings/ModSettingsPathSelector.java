@@ -2,12 +2,10 @@ package extendedui.ui.settings;
 
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.listeners.STSConfigListener;
-import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUIFileSelector;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.utilities.EUIFontHelper;
 
-import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
 
 public class ModSettingsPathSelector extends EUIFileSelector implements STSConfigListener<String> {
