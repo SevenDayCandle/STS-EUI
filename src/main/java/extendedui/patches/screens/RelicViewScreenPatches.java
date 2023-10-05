@@ -33,7 +33,7 @@ public class RelicViewScreenPatches {
         }
     }
 
-    public static ArrayList<AbstractRelic> getAllReics() {
+    public static ArrayList<AbstractRelic> getAllRelics() {
         reset();
         return EUIUtils.flatten(starterList, commonList, uncommonList, rareList, bossList, specialList, shopList);
     }
