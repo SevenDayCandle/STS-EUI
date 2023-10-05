@@ -22,6 +22,7 @@ import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
+import extendedui.utilities.BlightTier;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
@@ -32,6 +33,7 @@ import java.util.List;
 public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightKeywordFilters.BlightFilters, CustomFilterModule<AbstractBlight>> {
     protected final static String[] TEXT = CardCrawlGame.languagePack.getUIString("ConfirmPopup").TEXT;
     public final EUIDropdown<ModInfo> originsDropdown;
+    public final EUIDropdown<BlightTier> raritiesDropdown;
     public final EUIDropdown<UniqueValue> seenDropdown;
 
     public BlightKeywordFilters() {
@@ -45,6 +47,16 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
+
+        raritiesDropdown = new EUIDropdown<BlightTier>(new EUIHitbox(0, 0, scale(240), scale(48))
+                , BlightTier::getName)
+                .setOnOpenOrClose(this::updateActive)
+                .setOnChange(costs -> this.onFilterChanged(filters.currentRarities, costs))
+                .setLabelFunctionForButton(this::filterNameFunction, false)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, CardLibSortHeader.TEXT[0])
+                .setIsMultiSelect(true)
+                .setCanAutosizeButton(true)
+                .setItems(BlightTier.values());
 
         seenDropdown = new EUIDropdown<UniqueValue>(new EUIHitbox(0, 0, scale(240), scale(48))
                 , item -> item.name)
@@ -75,6 +87,10 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
         return (a == null ? -1 : b == null ? 1 : StringUtils.compare(a.name, b.name));
     }
 
+    public static int rankByRarity(AbstractBlight a, AbstractBlight b) {
+        return (a == null ? -1 : b == null ? 1 : BlightTier.getTier(a).ordinal() - BlightTier.getTier(b).ordinal());
+    }
+
     public static int rankByUnique(AbstractBlight a, AbstractBlight b) {
         int aValue = a == null || a.unique ? 1 : 0;
         int bValue = b == null || b.unique ? 1 : 0;
@@ -85,6 +101,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
     public void clear(boolean shouldInvoke, boolean shouldClearColors) {
         super.clear(shouldInvoke, shouldClearColors);
         originsDropdown.setSelectionIndices((int[]) null, false);
+        raritiesDropdown.setSelectionIndices((int[]) null, false);
         seenDropdown.setSelectionIndices((int[]) null, false);
         nameInput.setLabel("");
         descriptionInput.setLabel("");
@@ -93,12 +110,14 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
     @Override
     public void cloneFrom(BlightFilters filters) {
         originsDropdown.setSelection(filters.currentOrigins, true);
+        raritiesDropdown.setSelection(filters.currentRarities, true);
         seenDropdown.setSelection(filters.currentSeen, true);
     }
 
     @Override
     public void defaultSort() {
         this.group.sort(BlightKeywordFilters::rankByName);
+        this.group.sort(BlightKeywordFilters::rankByRarity);
         this.group.sort(BlightKeywordFilters::rankByUnique);
     }
 
@@ -136,6 +155,11 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
 
         //Negate Tooltips check
         if (!filters.currentNegateFilters.isEmpty() && (EUIUtils.any(getAllTooltips(c), filters.currentNegateFilters::contains))) {
+            return false;
+        }
+
+        //Rarities check
+        if (!evaluateItem(filters.currentRarities, BlightTier.getTier(c))) {
             return false;
         }
 
@@ -209,6 +233,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
     @Override
     public boolean isHoveredImpl() {
         return originsDropdown.areAnyItemsHovered()
+                || raritiesDropdown.areAnyItemsHovered()
                 || seenDropdown.areAnyItemsHovered()
                 || nameInput.hb.hovered
                 || descriptionInput.hb.hovered
@@ -219,6 +244,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
     @Override
     public void renderFilters(SpriteBatch sb) {
         originsDropdown.tryRender(sb);
+        raritiesDropdown.tryRender(sb);
         seenDropdown.tryRender(sb);
         nameInput.tryRender(sb);
         descriptionInput.tryRender(sb);
@@ -227,6 +253,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
 
     @Override
     protected void setupSortHeader(FilterSortHeader header, float startX) {
+        startX = makeToggle(header, BlightKeywordFilters::rankByRarity, CardLibSortHeader.TEXT[0], startX);
         startX = makeToggle(header, BlightKeywordFilters::rankByName, CardLibSortHeader.TEXT[2], startX);
         startX = makeToggle(header, BlightKeywordFilters::rankByUnique, EUIRM.strings.ui_unique, startX);
     }
@@ -234,6 +261,7 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
     @Override
     public void updateFilters() {
         float xPos = updateDropdown(originsDropdown, hb.x - SPACING * 3.65f);
+        xPos = updateDropdown(raritiesDropdown, xPos);
         xPos = updateDropdown(seenDropdown, xPos);
         nameInput.setPosition(hb.x + SPACING * 5.15f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
         descriptionInput.setPosition(nameInput.hb.cX + nameInput.hb.width + SPACING * 2.95f, DRAW_START_Y + scrollDelta - SPACING * 3.8f).tryUpdate();
@@ -259,19 +287,22 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
 
     public static class BlightFilters extends GenericFiltersObject {
         public final ArrayList<UniqueValue> currentSeen = new ArrayList<>();
+        public final HashSet<BlightTier> currentRarities = new HashSet<>();
 
         public void clear(boolean shouldClearColors) {
             super.clear(shouldClearColors);
+            currentRarities.clear();
             currentSeen.clear();
         }
 
         public void cloneFrom(BlightFilters other) {
             super.cloneFrom(other);
+            EUIUtils.replaceContents(currentRarities, other.currentRarities);
             EUIUtils.replaceContents(currentSeen, other.currentSeen);
         }
 
         public boolean isEmpty() {
-            return super.isEmpty() && currentSeen.isEmpty();
+            return super.isEmpty() && currentRarities.isEmpty() && currentSeen.isEmpty();
         }
     }
 }
