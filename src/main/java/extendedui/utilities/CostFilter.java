@@ -28,13 +28,18 @@ public enum CostFilter {
 
     public static ArrayList<String> getCostRangeStrings(List<CostFilter> costs) {
         ArrayList<String> ranges = new ArrayList<>();
+        if (costs == null) {
+            return ranges;
+        }
         boolean[] range = new boolean[6];
         for (CostFilter cost : costs) {
-            if (cost.upperBound < 0) {
-                ranges.add(cost.name);
-            }
-            else {
-                range[cost.lowerBound] = true;
+            if (cost != null) {
+                if (cost.upperBound < 0) {
+                    ranges.add(cost.name);
+                }
+                else {
+                    range[cost.lowerBound] = true;
+                }
             }
         }
         Integer lo = null;
