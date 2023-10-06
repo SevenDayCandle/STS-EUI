@@ -3,6 +3,7 @@ package extendedui.utilities;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.helpers.BlightHelper;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
+import com.megacrit.cardcrawl.screens.runHistory.RunHistoryScreen;
 import extendedui.EUIRM;
 
 public enum BlightTier {
@@ -31,7 +32,7 @@ public enum BlightTier {
             case BOSS:
                 return SingleRelicViewPopup.TEXT[0];
             case SPECIAL:
-                return SingleRelicViewPopup.TEXT[5];
+                return RunHistoryScreen.TEXT[15];
         }
         return SingleRelicViewPopup.TEXT[9];
     }

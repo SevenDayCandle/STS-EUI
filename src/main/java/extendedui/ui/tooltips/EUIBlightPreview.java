@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.text.EUITextHelper;
 import extendedui.utilities.EUIColors;
@@ -15,24 +16,24 @@ import org.apache.commons.lang3.StringUtils;
 
 import static extendedui.ui.tooltips.EUITooltip.*;
 
-public class EUIRelicPreview extends EUIPreview {
+public class EUIBlightPreview extends EUIPreview {
     private static final float BOX_W = AbstractCard.IMG_WIDTH * 0.8f;
     private static final float BODY_TEXT_WIDTH = BOX_W - Settings.scale * 40f;
     private static final float HEADER_OFFSET_Y = -33.0F * Settings.scale;
     private static final float BODY_OFFSET_Y = -60f * Settings.scale;
-    private static AbstractRelic last;
+    private static AbstractBlight last;
     private static float lastHeight;
-    public AbstractRelic preview;
+    public AbstractBlight preview;
 
-    public EUIRelicPreview(AbstractRelic relic) {
-        this.preview = relic;
+    public EUIBlightPreview(AbstractBlight blight) {
+        this.preview = blight;
     }
 
-    protected static float getHeight(AbstractRelic relic) {
-        if (last != relic) {
-            last = relic;
-            float lastTextHeight = EUITextHelper.getSmartHeight(EUIFontHelper.cardTooltipFont, relic.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-            lastHeight = (StringUtils.isEmpty(relic.description)) ? (-40f * Settings.scale) : (-(lastTextHeight) - 7f * Settings.scale);
+    protected static float getHeight(AbstractBlight blight) {
+        if (last != blight) {
+            last = blight;
+            float lastTextHeight = EUITextHelper.getSmartHeight(EUIFontHelper.cardTooltipFont, blight.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+            lastHeight = (StringUtils.isEmpty(blight.description)) ? (-40f * Settings.scale) : (-(lastTextHeight) - 7f * Settings.scale);
             lastHeight += AbstractRelic.PAD_X;
         }
         return lastHeight;
@@ -40,7 +41,7 @@ public class EUIRelicPreview extends EUIPreview {
 
     @Override
     public boolean matches(String preview) {
-        return this.preview.relicId.equals(preview);
+        return this.preview.blightID.equals(preview);
     }
 
     @Override

@@ -7,6 +7,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
@@ -106,12 +107,12 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         colorButtons.clear();
 
         // Let's just re-use the hard sorting work that basemod and the base game has done for us :)
-        CARD_LISTS.put(AbstractCard.CardColor.RED, EUIClassUtils.getField(screen, "redCards"));
-        CARD_LISTS.put(AbstractCard.CardColor.GREEN, EUIClassUtils.getField(screen, "greenCards"));
-        CARD_LISTS.put(AbstractCard.CardColor.BLUE, EUIClassUtils.getField(screen, "blueCards"));
-        CARD_LISTS.put(AbstractCard.CardColor.PURPLE, EUIClassUtils.getField(screen, "purpleCards"));
-        CARD_LISTS.put(AbstractCard.CardColor.CURSE, EUIClassUtils.getField(screen, "curseCards"));
-        CARD_LISTS.put(AbstractCard.CardColor.COLORLESS, EUIClassUtils.getField(screen, "colorlessCards"));
+        CARD_LISTS.put(AbstractCard.CardColor.RED, ((CardGroup)EUIClassUtils.getField(screen, "redCards")).group);
+        CARD_LISTS.put(AbstractCard.CardColor.GREEN, ((CardGroup)EUIClassUtils.getField(screen, "greenCards")).group);
+        CARD_LISTS.put(AbstractCard.CardColor.BLUE, ((CardGroup)EUIClassUtils.getField(screen, "blueCards")).group);
+        CARD_LISTS.put(AbstractCard.CardColor.PURPLE, ((CardGroup)EUIClassUtils.getField(screen, "purpleCards")).group);
+        CARD_LISTS.put(AbstractCard.CardColor.CURSE, ((CardGroup)EUIClassUtils.getField(screen, "curseCards")).group);
+        CARD_LISTS.put(AbstractCard.CardColor.COLORLESS, ((CardGroup)EUIClassUtils.getField(screen, "colorlessCards")).group);
         for (AbstractCard.CardColor co : EverythingFix.Fields.cardGroupMap.keySet()) {
             CARD_LISTS.put(co, EverythingFix.Fields.cardGroupMap.get(co).group);
         }

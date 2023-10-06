@@ -2,6 +2,7 @@ package extendedui.ui.tooltips;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
@@ -9,30 +10,29 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.text.EUITextHelper;
-import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import static extendedui.ui.tooltips.EUITooltip.*;
 
-public class EUIRelicPreview extends EUIPreview {
+public class EUIPotionPreview extends EUIPreview {
     private static final float BOX_W = AbstractCard.IMG_WIDTH * 0.8f;
     private static final float BODY_TEXT_WIDTH = BOX_W - Settings.scale * 40f;
     private static final float HEADER_OFFSET_Y = -33.0F * Settings.scale;
     private static final float BODY_OFFSET_Y = -60f * Settings.scale;
-    private static AbstractRelic last;
+    private static AbstractPotion last;
     private static float lastHeight;
-    public AbstractRelic preview;
+    public AbstractPotion preview;
 
-    public EUIRelicPreview(AbstractRelic relic) {
-        this.preview = relic;
+    public EUIPotionPreview(AbstractPotion potion) {
+        this.preview = potion;
     }
 
-    protected static float getHeight(AbstractRelic relic) {
-        if (last != relic) {
-            last = relic;
-            float lastTextHeight = EUITextHelper.getSmartHeight(EUIFontHelper.cardTooltipFont, relic.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
-            lastHeight = (StringUtils.isEmpty(relic.description)) ? (-40f * Settings.scale) : (-(lastTextHeight) - 7f * Settings.scale);
+    protected static float getHeight(AbstractPotion potion) {
+        if (last != potion) {
+            last = potion;
+            float lastTextHeight = EUITextHelper.getSmartHeight(EUIFontHelper.cardTooltipFont, potion.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+            lastHeight = (StringUtils.isEmpty(potion.description)) ? (-40f * Settings.scale) : (-(lastTextHeight) - 7f * Settings.scale);
             lastHeight += AbstractRelic.PAD_X;
         }
         return lastHeight;
@@ -40,7 +40,7 @@ public class EUIRelicPreview extends EUIPreview {
 
     @Override
     public boolean matches(String preview) {
-        return this.preview.relicId.equals(preview);
+        return this.preview.ID.equals(preview);
     }
 
     @Override
@@ -75,14 +75,14 @@ public class EUIRelicPreview extends EUIPreview {
         sb.draw(ImageMaster.KEYWORD_BOT, x, y - h - BOX_BODY_H, BOX_W, BOX_EDGE_H);
 
         float c = x + BOX_W / 2;
-        preview.currentX = c;
-        preview.currentY = y;
-        if (preview.currentY - h < 0) {
-            preview.currentY = h;
+        preview.posX = c;
+        preview.posY = y;
+        if (preview.posY - h < 0) {
+            preview.posY = h;
         }
 
         preview.scale = scale;
-        preview.render(sb, false, EUIColors.black(0.33f));
+        preview.render(sb);
 
         FontHelper.renderFontCentered(sb, EUIFontHelper.cardTooltipTitleFontNormal, preview.name, c, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         if (!StringUtils.isEmpty(preview.description)) {
