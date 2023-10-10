@@ -449,11 +449,13 @@ public class EUI {
             if (field.getType() == com.megacrit.cardcrawl.localization.Keyword.class) {
                 try {
                     final com.megacrit.cardcrawl.localization.Keyword k = (Keyword) field.get(null);
-                    String id = EUIUtils.capitalize(field.getName());
-                    tryRegisterTooltip(EUIUtils.capitalize(id), null, k.DESCRIPTION, k.NAMES);
+                    String fName = field.getName();
+                    String id = fName.charAt(0) + fName.substring(1).toLowerCase(Locale.ROOT); // Locale-insensitive casing
+                    tryRegisterTooltip(id, null, k.DESCRIPTION, k.NAMES);
                 }
                 catch (IllegalAccessException ex) {
                     ex.printStackTrace();
+                    EUIUtils.logError(EUI.class, "Failed to initialize tooltip for field " + String.valueOf(field) + ": " + ex.getLocalizedMessage());
                 }
             }
         }

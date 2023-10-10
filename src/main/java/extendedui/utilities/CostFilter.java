@@ -31,7 +31,7 @@ public enum CostFilter {
         if (costs == null) {
             return ranges;
         }
-        boolean[] range = new boolean[6];
+        boolean[] range = new boolean[7];
         for (CostFilter cost : costs) {
             if (cost != null) {
                 if (cost.upperBound < 0) {

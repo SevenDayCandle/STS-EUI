@@ -76,7 +76,7 @@ public class EUIButton extends EUIHoverable {
     }
 
     public EUITourTooltip makeTour(boolean canDismiss) {
-        if (tooltip != null) {
+        if (tooltip != null && isActive) {
             EUITourTooltip tip = new EUITourTooltip(hb, tooltip.title, tooltip.description);
             tip.setFlash(background);
             tip.setCanDismiss(canDismiss);

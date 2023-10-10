@@ -183,7 +183,7 @@ public abstract class EUIUtils {
     public static <T> T[] arrayConcat(T[] base, T[] secondary) {
         final T[] res = (T[]) Array.newInstance(base.getClass().getComponentType(), base.length + secondary.length);
         System.arraycopy(base, 0, res, 0, base.length);
-        System.arraycopy(secondary, 0, res, base.length, base.length + secondary.length);
+        System.arraycopy(secondary, 0, res, base.length, secondary.length);
         return res;
     }
 
@@ -250,8 +250,28 @@ public abstract class EUIUtils {
         return (N[]) Array.newInstance(listClass, 0);
     }
 
-    public static String capitalize(String text) {
-        return text.length() <= 1 ? text.toUpperCase() : TipHelper.capitalize(text);
+    public static String capitalize(String str) {
+        int strLen;
+        if (str != null && (strLen = str.length()) != 0) {
+            int firstCodepoint = str.codePointAt(0);
+            int newCodePoint = Character.toTitleCase(firstCodepoint);
+            if (firstCodepoint == newCodePoint && strLen == 1) {
+                return str;
+            } else {
+                int[] newCodePoints = new int[strLen];
+                newCodePoints[0] = newCodePoint;
+                int outOffset = 1;
+                int codepoint;
+                for(int inOffset = Character.charCount(firstCodepoint); inOffset < strLen; inOffset += Character.charCount(codepoint)) {
+                    codepoint = Character.toLowerCase(str.codePointAt(inOffset));
+                    newCodePoints[outOffset++] = codepoint;
+                }
+
+                return new String(newCodePoints, 0, outOffset);
+            }
+        } else {
+            return str;
+        }
     }
 
     public static <T> void changeIndex(T item, List<T> list, int index) {
