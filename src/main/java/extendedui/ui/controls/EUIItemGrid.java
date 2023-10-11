@@ -55,12 +55,17 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
     }
 
     public EUIItemGrid(int rowSize, float padX, float padY, float horizontalAlignment, boolean autoShowScrollbar) {
+        this(rowSize, padX, padY, horizontalAlignment, 0.93f, autoShowScrollbar);
+    }
+
+    public EUIItemGrid(int rowSize, float padX, float padY, float horizontalAlignment, float scrollAlignment, boolean autoShowScrollbar) {
         super(rowSize, padY);
         this.padX = padX;
         this.autoShowScrollbar = autoShowScrollbar;
         this.group = new ItemGroup<>();
 
         setHorizontalAlignment(horizontalAlignment);
+        setScrollbarAlignment(scrollAlignment);
     }
 
     public EUIItemGrid<T> add(T item) {
@@ -201,14 +206,11 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
 
     public EUIItemGrid<T> setEnlargeOnHover(boolean shouldEnlargeHovered) {
         this.shouldEnlargeHovered = shouldEnlargeHovered;
-
         return this;
     }
 
     public EUIItemGrid<T> setHorizontalAlignment(float percentage) {
-        this.drawX = MathUtils.clamp(percentage, 0.35f, 0.55f) * DRAW_START_X;
-        this.scrollBar.setPosition(screenW((percentage > 0.5f) ? 0.05f : 0.9f), screenH(0.5f));
-
+        this.drawX = percentage * DRAW_START_X;
         return this;
     }
 

@@ -123,7 +123,7 @@ public class EUIDropdown<T> extends EUIHoverable {
         this.clearButton = new EUIButton(EUIRM.images.xButton.texture(), new OriginRelativeHitbox(hb, hb.height * 0.75f, hb.height * 0.75f, hb.width, hb.height * 0.35f)
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
-                .setOnClick(this::clear);
+                .setOnClick(this::clearSelection);
         this.header = new EUILabel(EUIFontHelper.cardTitleFontSmall, new OriginRelativeHitbox(hb, hb.width, hb.height, 0, hb.height)).setAlignment(0.5f, 0.0f, false);
         this.header.setActive(false);
     }
@@ -198,6 +198,10 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     public void clear() {
+        setItems();
+    }
+
+    public void clearSelection() {
         setSelectionIndices((int[]) null, true);
         if (onClear != null) {
             onClear.invoke(getAllItems());
@@ -502,6 +506,11 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
+    public EUIDropdown<T> setHeaderText(String text) {
+        this.header.setLabel(text).setActive(true);
+        return this;
+    }
+
     public EUIDropdown<T> setIsMultiSelect(boolean value) {
         this.isMultiSelect = value;
         for (EUIDropdownRow<T> row : rows) {
@@ -511,16 +520,18 @@ public class EUIDropdown<T> extends EUIHoverable {
         return this;
     }
 
-    public EUIDropdown<T> setItems(T... options) {
+    @SafeVarargs
+    public final EUIDropdown<T> setItems(T... options) {
         return setItems(Arrays.asList(options));
     }
 
     public EUIDropdown<T> setItems(List<? extends T> options) {
         this.topVisibleRowIndex = 0;
         this.currentIndices.clear();
-        this.rows.clear();
+        ArrayList<EUIDropdownRow<T>> actualRows = getRowsForSelectionUpdate();
+        actualRows.clear();
         for (int i = 0; i < options.size(); i++) {
-            rows.add(makeRow(options, i));
+            actualRows.add(makeRow(options, i));
         }
         autosize();
 

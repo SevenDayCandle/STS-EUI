@@ -54,6 +54,12 @@ public abstract class EUICanvas extends EUIBase {
         }
     }
 
+    public EUICanvas setScrollbarAlignment(float percentage) {
+        this.scrollBar.setPosition(screenW(percentage), screenH(0.5f));
+
+        return this;
+    }
+
     public EUICanvas setScrollBounds(float lowerScrollBound, float upperScrollBound) {
         this.lowerScrollBound = lowerScrollBound;
         this.upperScrollBound = Math.max(lowerScrollBound, upperScrollBound);

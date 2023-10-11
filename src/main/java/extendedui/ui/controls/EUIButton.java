@@ -25,11 +25,9 @@ public class EUIButton extends EUIHoverable {
     private ActionT1<EUIButton> onLeftClick;
     private ActionT1<EUIButton> onLeftPreClick;
     private ActionT1<EUIButton> onRightClick;
-    protected float currentClickDelay = 0f;
     public EUIImage background;
     public EUIImage border;
     public EUILabel label;
-    public float clickDelay = 0f;
     public boolean interactable = true;
     public boolean showText = true;
     public Color hoverBlendColor;
@@ -48,7 +46,6 @@ public class EUIButton extends EUIHoverable {
         final Texture buttonBorderTexture = EUIRM.images.hexagonalButtonBorder.texture();
         return new EUIButton(buttonTexture, x, y)
                 .setBorder(buttonBorderTexture, Color.WHITE)
-                .setClickDelay(0.25f)
                 .setDimensions(width, height);
     }
 
@@ -100,7 +97,6 @@ public class EUIButton extends EUIHoverable {
 
     protected void onLeftClick() {
         this.hb.clicked = false;
-        this.currentClickDelay = clickDelay;
 
         if (onLeftClick != null) {
             this.onLeftClick.invoke(this);
@@ -109,7 +105,6 @@ public class EUIButton extends EUIHoverable {
 
     protected void onRightClick() {
         this.hb.clicked = false;
-        this.currentClickDelay = clickDelay;
 
         if (onRightClick != null) {
             this.onRightClick.invoke(this);
@@ -226,12 +221,6 @@ public class EUIButton extends EUIHoverable {
 
     public EUIButton setButtonScale(float scaleX, float scaleY) {
         this.background.setScale(scaleX, scaleY);
-
-        return this;
-    }
-
-    public EUIButton setClickDelay(float delay) {
-        this.clickDelay = delay;
 
         return this;
     }
@@ -448,10 +437,6 @@ public class EUIButton extends EUIHoverable {
 
     @Override
     public void updateImpl() {
-        if (currentClickDelay > 0) {
-            this.currentClickDelay -= EUI.delta();
-        }
-
         super.updateImpl();
         background.updateColor();
 
@@ -461,13 +446,11 @@ public class EUIButton extends EUIHoverable {
             }
 
             if (this.hb.hovered) {
-                if (currentClickDelay <= 0) {
-                    if (EUIInputManager.rightClick.isJustPressed() && EUI.tryClick(this.hb)) {
-                        onRightClick();
-                    }
-                    else if (InputHelper.justClickedLeft) {
-                        onClickStart();
-                    }
+                if (EUIInputManager.rightClick.isJustPressed() && EUI.tryClick(this.hb)) {
+                    onRightClick();
+                }
+                else if (InputHelper.justClickedLeft) {
+                    onClickStart();
                 }
             }
 

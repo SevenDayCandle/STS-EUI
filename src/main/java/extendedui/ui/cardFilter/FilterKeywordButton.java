@@ -53,7 +53,6 @@ public class FilterKeywordButton extends EUIHoverable {
         this.keywordTooltip = tooltip;
 
         backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), RelativeHitbox.fromPercentages(filters.hb, 1, 1, 0.5f, BASE_OFFSET_Y).setIsPopupCompatible(true))
-                .setClickDelay(0.01f)
                 .setColor(this.filters.filters.currentFilters.contains(this.keywordTooltip) ? ACTIVE_COLOR
                         : this.filters.filters.currentNegateFilters.contains(this.keywordTooltip) ? NEGATE_COLOR : PANEL_COLOR)
                 .setOnClick(button -> {

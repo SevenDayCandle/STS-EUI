@@ -15,8 +15,6 @@ import java.util.HashMap;
 
 public class EUICardGrid extends EUIItemGrid<AbstractCard> {
     protected static final float CARD_SCALE = 0.75f;
-    protected static final float DRAW_START_X = Settings.WIDTH - (3f * AbstractCard.IMG_WIDTH) - (4f * Settings.CARD_VIEW_PAD_X);
-    protected static final float DRAW_START_Y = (float) Settings.HEIGHT * 0.7f;
     protected static final float PAD_X = AbstractCard.IMG_WIDTH * 0.75f + Settings.CARD_VIEW_PAD_X;
     protected static final float PAD_Y = AbstractCard.IMG_HEIGHT * 0.75f + Settings.CARD_VIEW_PAD_Y;
     protected static final int ROW_SIZE = 5;
@@ -33,7 +31,7 @@ public class EUICardGrid extends EUIItemGrid<AbstractCard> {
 
     public EUICardGrid(float horizontalAlignment, boolean autoShowScrollbar) {
         super(ROW_SIZE, PAD_X, PAD_Y, horizontalAlignment, autoShowScrollbar);
-        setItemScale(0.75f, 0.75f, 1f);
+        setItemScale(CARD_SCALE, CARD_SCALE, 1f);
         this.upgradeCards = new HashMap<>();
     }
 

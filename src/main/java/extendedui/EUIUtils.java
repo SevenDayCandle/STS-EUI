@@ -180,13 +180,6 @@ public abstract class EUIUtils {
         return res;
     }
 
-    public static <T> T[] arrayConcat(T[] base, T[] secondary) {
-        final T[] res = (T[]) Array.newInstance(base.getClass().getComponentType(), base.length + secondary.length);
-        System.arraycopy(base, 0, res, 0, base.length);
-        System.arraycopy(secondary, 0, res, base.length, secondary.length);
-        return res;
-    }
-
     @SafeVarargs
     public static <T> ArrayList<T> arrayList(T... items) {
         return new ArrayList<>(Arrays.asList(items));
@@ -194,60 +187,44 @@ public abstract class EUIUtils {
 
     @SuppressWarnings("unchecked")
     public static <T, N> N[] arrayMap(T[] list, Class<N> listClass, FuncT1<N, T> predicate) {
-        if (list != null) {
-            final N[] res = (N[]) Array.newInstance(listClass, list.length);
-            for (int i = 0; i < list.length; i++) {
-                res[i] = predicate.invoke(list[i]);
-            }
-            return res;
+        final N[] res = (N[]) Array.newInstance(listClass, list.length);
+        for (int i = 0; i < list.length; i++) {
+            res[i] = predicate.invoke(list[i]);
         }
-
-        return (N[]) Array.newInstance(listClass, 0);
+        return res;
     }
 
     @SuppressWarnings("unchecked")
     public static <T, N> N[] arrayMap(List<? extends T> list, Class<N> listClass, FuncT1<N, T> predicate) {
-        if (list != null) {
-            final N[] res = (N[]) Array.newInstance(listClass, list.size());
-            for (int i = 0; i < list.size(); i++) {
-                res[i] = predicate.invoke(list.get(i));
-            }
-            return res;
+        final N[] res = (N[]) Array.newInstance(listClass, list.size());
+        for (int i = 0; i < list.size(); i++) {
+            res[i] = predicate.invoke(list.get(i));
         }
-
-        return (N[]) Array.newInstance(listClass, 0);
+        return res;
     }
 
     @SuppressWarnings("unchecked")
     public static <T, N> N[] arrayMapAsNonnull(T[] list, Class<N> listClass, FuncT1<N, T> predicate) {
-        if (list != null) {
-            final N[] res = (N[]) Array.newInstance(listClass, list.length);
-            for (int i = 0; i < list.length; i++) {
-                N item = predicate.invoke(list[i]);
-                if (item != null) {
-                    res[i] = (item);
-                }
+        final N[] res = (N[]) Array.newInstance(listClass, list.length);
+        for (int i = 0; i < list.length; i++) {
+            N item = predicate.invoke(list[i]);
+            if (item != null) {
+                res[i] = (item);
             }
-            return res;
         }
-
-        return (N[]) Array.newInstance(listClass, 0);
+        return res;
     }
 
     @SuppressWarnings("unchecked")
     public static <T, N> N[] arrayMapAsNonnull(List<? extends T> list, Class<N> listClass, FuncT1<N, T> predicate) {
-        if (list != null) {
-            final N[] res = (N[]) Array.newInstance(listClass, list.size());
-            for (int i = 0; i < list.size(); i++) {
-                N item = predicate.invoke(list.get(i));
-                if (item != null) {
-                    res[i] = (item);
-                }
+        final N[] res = (N[]) Array.newInstance(listClass, list.size());
+        for (int i = 0; i < list.size(); i++) {
+            N item = predicate.invoke(list.get(i));
+            if (item != null) {
+                res[i] = (item);
             }
-            return res;
         }
-
-        return (N[]) Array.newInstance(listClass, 0);
+        return res;
     }
 
     public static String capitalize(String str) {
