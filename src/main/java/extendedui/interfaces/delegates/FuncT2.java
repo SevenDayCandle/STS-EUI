@@ -7,9 +7,7 @@ import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
-import static extendedui.utilities.EUIClassUtils.IMPL_LOOKUP;
-
-public interface FuncT2<Result, T1, T2> {
+public interface FuncT2<Result, T1, T2> extends IDelegate {
     static <Result, P, T1> FuncT2<Result, P, T1> get(Class<Result> retType, Class<P> invokeClass, String funcName, Class<T1> param1) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         CallSite site = LambdaMetafactory.metafactory(lookup,

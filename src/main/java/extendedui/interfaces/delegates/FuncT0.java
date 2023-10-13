@@ -7,9 +7,7 @@ import java.lang.invoke.LambdaMetafactory;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
 
-import static extendedui.utilities.EUIClassUtils.IMPL_LOOKUP;
-
-public interface FuncT0<Result> {
+public interface FuncT0<Result> extends IDelegate {
     static <Result> FuncT0<Result> get(Class<Result> retType, Class<?> invokeClass, String funcName) throws Throwable {
         MethodHandles.Lookup lookup = IMPL_LOOKUP.in(invokeClass);
         MethodType mType = MethodType.methodType(retType);

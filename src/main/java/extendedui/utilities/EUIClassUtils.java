@@ -11,7 +11,6 @@ import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 
 public class EUIClassUtils {
-    public static final MethodHandles.Lookup IMPL_LOOKUP = ReflectionHacks.getPrivateStatic(MethodHandles.Lookup.class, "IMPL_LOOKUP");
 
     public static <T> void getAndSetField(Object o, String fieldName, FuncT1<T, T> valueFunc) {
         Class<?> c = o.getClass();

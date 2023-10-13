@@ -157,7 +157,12 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         EUI.toggleViewUpgrades(false);
         upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
         savedFilters.clear(true);
-        setActiveColor(currentColor);
+        if (isAll) {
+            setToAll();
+        }
+        else {
+            setActiveColor(currentColor);
+        }
         this.cancelButton.show(CardLibraryScreen.TEXT[0]);
     }
 
@@ -264,6 +269,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         }
         else {
             allButton.label.setColor(Color.WHITE);
+            colorButtons.selectButton(EUIUtils.find(colorButtons.buttons, b -> b.label.text.equals(EUIGameUtils.getColorName(currentColor))));
         }
     }
 
