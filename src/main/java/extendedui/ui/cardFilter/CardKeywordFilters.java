@@ -8,10 +8,8 @@ import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.Loader;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
-import com.megacrit.cardcrawl.localization.UIStrings;
 import com.megacrit.cardcrawl.screens.SingleRelicViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.unlock.UnlockTracker;
@@ -29,7 +27,6 @@ import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.utilities.CostFilter;
-import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.TargetFilter;
 import org.apache.commons.lang3.StringUtils;
@@ -39,8 +36,6 @@ import java.util.HashSet;
 import java.util.List;
 
 public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeywordFilters.CardFilters, CustomCardFilterModule> {
-    private static AbstractCard.CardColor packmasterColor;
-    private static FuncT1<String, Object> getPackmasterPack;
     public final EUIDropdown<AbstractCard.CardColor> colorsDropdown;
     public final EUIDropdown<AbstractCard.CardRarity> raritiesDropdown;
     public final EUIDropdown<AbstractCard.CardType> typesDropdown;
@@ -489,38 +484,11 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         startX = makeToggle(header, CardKeywordFilters::rankByCost, CardLibSortHeader.TEXT[3], startX);
         startX = makeToggle(header, CardKeywordFilters::rankByName, CardLibSortHeader.TEXT[2], startX);
         startX = makeToggle(header, CardKeywordFilters::rankByAmount, EUIRM.strings.ui_amount, startX);
-        startX = tryMakePackasterSort(header, startX);
-    }
 
-    protected float tryMakePackasterSort(FilterSortHeader header, float startX) {
-        if (Loader.isModLoaded("anniv5")) {
-            if (packmasterColor == null) {
-                try {
-                    packmasterColor = EUIClassUtils.getRFieldStatic("thePackmaster.ThePackmaster.Enums", "PACKMASTER_RAINBOW");
-                }
-                catch (Exception e) {
-                    e.printStackTrace();
-                    EUIUtils.logError(this, "Failed to get Packmaster color:" + e.getLocalizedMessage());
-                    packmasterColor = AbstractCard.CardColor.COLORLESS;
-                }
-            }
-            if (EUI.actingColor == packmasterColor) {
-                if (getPackmasterPack == null) {
-                    try {
-                        Class<?> targetClass = Class.forName("thePackmaster.patches.CompendiumPatches.CustomOrdering");
-                        getPackmasterPack = FuncT1.get(String.class, targetClass, "getParnetNameFromObject", Object.class);
-                    }
-                    catch (Throwable e) {
-                        e.printStackTrace();
-                        EUIUtils.logError(this, "Failed to get Packmaster color:" + e.getLocalizedMessage());
-                        getPackmasterPack = String::valueOf;
-                    }
-                }
-                UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("anniv5:Compendium");
-                return makeToggle(header, (a, b) -> GenericFilters.rankByString(a, b, getPackmasterPack), uiStrings.TEXT[0], startX);
-            }
+        FuncT1<String, AbstractCard> stringFunc = EUI.getSetFunction(EUI.actingColor);
+        if (stringFunc != null) {
+            makeToggle(header, (a, b) -> GenericFilters.rankByString(a, b, stringFunc), EUIRM.strings.ui_set, startX);
         }
-        return startX;
     }
 
     @Override

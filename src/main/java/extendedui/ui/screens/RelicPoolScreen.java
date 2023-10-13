@@ -122,27 +122,29 @@ public class RelicPoolScreen extends EUIPoolScreen {
 
     public void openScreen(AbstractPlayer player, ArrayList<AbstractRelic> relics) {
         super.reopen();
+        boolean canSeeAllColors = EUIGameUtils.canReceiveAnyColorCard();
         AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
+        boolean isAll = player == null || canSeeAllColors;
 
         relicGrid.clear();
         relicGrid.setItems(relics, RelicInfo::new);
 
         EUI.relicFilters.initializeForSort(relicGrid.group, __ -> {
             for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
-                module.open(EUI.relicFilters.group.group, color, null);
+                module.open(EUI.relicFilters.group.group, color, isAll, null);
             }
             if (customModule != null) {
-                customModule.open(EUI.relicFilters.group.group, color, null);
+                customModule.open(EUI.relicFilters.group.group, color, isAll, null);
             }
             relicGrid.forceUpdatePositions();
         }, color, GenericFilters.FILTERS_START_X, true, false);
 
         for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
-            module.open(relicGrid.group.group, color, null);
+            module.open(relicGrid.group.group, color, isAll, null);
         }
         customModule = EUI.getCustomRelicPoolModule(player);
         if (customModule != null) {
-            customModule.open(relicGrid.group.group, color, null);
+            customModule.open(relicGrid.group.group, color, isAll, null);
         }
 
         relicGrid.scrollBar.scroll(relicGrid.scrollBar.currentScrollPercent, true);

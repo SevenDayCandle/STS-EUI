@@ -5,12 +5,8 @@ import com.badlogic.gdx.graphics.Color;
 import com.evacipated.cardcrawl.modthespire.lib.*;
 import com.evacipated.cardcrawl.modthespire.patcher.PatchingException;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.CardCrawlGame;
-import com.megacrit.cardcrawl.localization.UIStrings;
-import extendedui.EUI;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
-import extendedui.ui.cardFilter.SimpleCardFilterModule;
 import extendedui.ui.screens.CustomCardLibraryScreen;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIClassUtils;
@@ -47,45 +43,13 @@ public class CompatibilityPatches {
 
     // Packmaster stuff
 
-    @SpirePatch(cls = "thePackmaster.SpireAnniversary5Mod", method = "receivePostInitialize", requiredModId = "anniv5", optional = true)
-    public static class PackmasterPatches_PostInitialize {
-
-        @SpirePostfixPatch
-        public static void postfix() {
-            try {
-                AbstractCard.CardColor packMasterColor = AbstractCard.CardColor.valueOf("PACKMASTER_RAINBOW");
-                UIStrings uiStrings = CardCrawlGame.languagePack.getUIString("anniv5:PackPreviewCard");
-                EUI.setCustomCardFilter(packMasterColor,
-                        new SimpleCardFilterModule<Object>(uiStrings.TEXT[1], t -> {
-                            try {
-                                return EUIClassUtils.getRField("thePackmaster.packs.AbstractCardPack", "name", t);
-                            }
-                            catch (Exception ignored) {
-                                return "";
-                            }
-                        }, card -> {
-                            try {
-                                return EUIClassUtils.invokeR("thePackmaster.cards.AbstractPackmasterCard", "getParent", card);
-                            }
-                            catch (Exception ignored) {
-                                return null;
-                            }
-                        }));
-            }
-            catch (Exception e) {
-                EUIUtils.logWarning(PackmasterPatches_PostInitialize.class, "OH NOES");
-                e.printStackTrace();
-            }
-        }
-    }
-
     @SpirePatch(cls = "thePackmaster.patches.RenderBaseGameCardPackTopTextPatches", method = "isInPackmasterCardLibraryScreen", requiredModId = "anniv5", optional = true)
     public static class PackmasterPatches_IsInPackmasterCardLibraryScreen {
         @SpireInsertPatch(locator = Locator.class)
         public static SpireReturn<Boolean> prefix() {
             try {
                 AbstractCard.CardColor packMasterColor = AbstractCard.CardColor.valueOf("PACKMASTER_RAINBOW");
-                if (CustomCardLibraryScreen.currentColor == packMasterColor && !EUIConfiguration.useVanillaCompendium.get()) {
+                if (CustomCardLibraryScreen.getCurrentColor() == packMasterColor && !EUIConfiguration.useVanillaCompendium.get()) {
                     return SpireReturn.Return(true);
                 }
             }

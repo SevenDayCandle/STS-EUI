@@ -362,6 +362,7 @@ public class EUIRM {
         public final String ui_na = stringsUIFilter.TEXT[16];
         public final String ui_filterExplanation = stringsUIFilter.TEXT[17];
         public final String ui_unique = stringsUIFilter.TEXT[18];
+        public final String ui_set = stringsUIFilter.TEXT[19];
 
         // e.g. English: Red Card -> 0 1, Spanish: Carta roja -> 1 0
         public final String adjNoun(Object adj, Object noun) {

@@ -9,5 +9,5 @@ public interface CustomPoolModule<T> extends IUIElement {
     default void onClose() {
     }
 
-    void open(ArrayList<? extends T> cards, AbstractCard.CardColor color, Object payload);
+    void open(ArrayList<? extends T> cards, AbstractCard.CardColor color, boolean isAll, Object payload);
 }

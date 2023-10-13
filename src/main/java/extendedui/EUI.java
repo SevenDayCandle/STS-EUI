@@ -8,6 +8,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.MathUtils;
+import com.evacipated.cardcrawl.modthespire.Loader;
 import com.google.gson.reflect.TypeToken;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -24,6 +25,7 @@ import extendedui.commands.ExportCommand;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
 import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomCardFilterModule;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.interfaces.markers.CustomFilterModule;
@@ -70,6 +72,7 @@ public class EUI {
     private static final HashMap<AbstractCard.CardColor, CustomPoolModule<PotionInfo>> customPotionPoolModules = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomFilterModule<RelicInfo>> customRelicFilters = new HashMap<>();
     private static final HashMap<AbstractCard.CardColor, CustomPoolModule<RelicInfo>> customRelicPoolModules = new HashMap<>();
+    private static final HashMap<AbstractCard.CardColor, FuncT1<String, AbstractCard>> SET_FUNCS = new HashMap<>();
     public static final ArrayList<CustomFilterModule<AbstractBlight>> globalCustomBlightFilters = new ArrayList<>();
     public static final ArrayList<CustomPoolModule<AbstractBlight>> globalCustomBlightLibraryModules = new ArrayList<>(); // TODO use this
     public static final ArrayList<CustomCardFilterModule> globalCustomCardFilters = new ArrayList<>();
@@ -83,6 +86,7 @@ public class EUI {
     public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicPoolModules = new ArrayList<>();
     public static final String ENERGY_ID = "E";
     public static final String ENERGY_TIP = "[E]";
+    private static final String SLEEPY_TIME = "ZZZZZZZ"; // This is used in the packmaster for denoting cards with no packs
     public static final String[] ENERGY_STRINGS = {ENERGY_TIP, "[R]", "[G]", "[B]", "[W]"};
     private static float delta = 0;
     private static float timer = 0;
@@ -111,6 +115,28 @@ public class EUI {
 
     public static void addBattleSubscriber(EUIBase element) {
         battleSubscribers.add(element);
+    }
+
+    public static void addCardSetFilter(AbstractCard.CardColor co, FuncT1<String, AbstractCard> stringFunc) {
+        FuncT1<String, AbstractCard> origFunc = SET_FUNCS.get(co);
+        FuncT1<String, AbstractCard> resFunc;
+        if (origFunc != null) {
+            resFunc = c -> {
+                String res = stringFunc.invoke(c);
+                return !StringUtils.isEmpty(res) ? res : origFunc.invoke(c);
+            };
+        }
+        else {
+            resFunc = stringFunc;
+        }
+        SET_FUNCS.put(co, resFunc);
+        CustomCardFilterModule module = getCustomCardFilter(co);
+        if (module instanceof SetCardFilterModule) {
+            ((SetCardFilterModule) module).setNameFunc(resFunc);
+        }
+        else if (module == null) {
+            setCustomCardFilter(co, new SetCardFilterModule(resFunc));
+        }
     }
 
     public static void addGlobalCustomBlightFilter(CustomFilterModule<AbstractBlight> element) {
@@ -294,7 +320,53 @@ public class EUI {
         return imguiIndex++;
     }
 
-    public static void initialize() {
+    public static FuncT1<String, AbstractCard> getSetFunction(AbstractCard.CardColor c) {
+        return SET_FUNCS.get(c);
+    }
+
+    public static boolean isActiveElement(EUIBase element) {
+        return EUIUtils.any(activeElements, e -> e == element);
+    }
+
+    public static boolean isDragging() {
+        return isDragging;
+    }
+
+    public static boolean isInTopActiveElement(EUIHitbox hb) {
+        return activeElements.isEmpty() || activeElements.peek() == hb.parentElement;
+    }
+
+    public static boolean isLoaded() {
+        return cardsScreen != null; // This will be null before the UI has loaded
+    }
+
+    public static boolean isTopActiveElement(EUIBase element) {
+        return !activeElements.isEmpty() && activeElements.peek() == element;
+    }
+
+    public static Map<String, EUIKeyword> loadKeywords(FileHandle handle) {
+        if (handle.exists()) {
+            return EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>() {
+            }.getType());
+        }
+        return new HashMap<>();
+    }
+
+    public static void popActiveElement(EUIBase element) {
+        while (!activeElements.isEmpty()) {
+            EUIBase top = activeElements.pop();
+            if (element == top) {
+                return;
+            }
+        }
+    }
+
+    public static void postDispose() {
+        activeElements.clear();
+        currentScreen = null;
+    }
+
+    public static void postInitialize() {
         // Set UI theming for file selector
         try {
             UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
@@ -354,48 +426,9 @@ public class EUI {
 
         // Commands
         ConsoleCommand.addCommand("export", ExportCommand.class);
-    }
 
-    public static boolean isActiveElement(EUIBase element) {
-        return EUIUtils.any(activeElements, e -> e == element);
-    }
-
-    public static boolean isDragging() {
-        return isDragging;
-    }
-
-    public static boolean isInTopActiveElement(EUIHitbox hb) {
-        return activeElements.isEmpty() || activeElements.peek() == hb.parentElement;
-    }
-
-    public static boolean isLoaded() {
-        return cardsScreen != null; // This will be null before the UI has loaded
-    }
-
-    public static boolean isTopActiveElement(EUIBase element) {
-        return !activeElements.isEmpty() && activeElements.peek() == element;
-    }
-
-    public static Map<String, EUIKeyword> loadKeywords(FileHandle handle) {
-        if (handle.exists()) {
-            return EUIUtils.deserialize(handle.readString(String.valueOf(StandardCharsets.UTF_8)), new TypeToken<Map<String, EUIKeyword>>() {
-            }.getType());
-        }
-        return new HashMap<>();
-    }
-
-    public static void popActiveElement(EUIBase element) {
-        while (!activeElements.isEmpty()) {
-            EUIBase top = activeElements.pop();
-            if (element == top) {
-                return;
-            }
-        }
-    }
-
-    public static void postDispose() {
-        activeElements.clear();
-        currentScreen = null;
+        // Compatibility
+        tryGetPackmaster();
     }
 
     public static void postRender(SpriteBatch sb) {
@@ -612,6 +645,26 @@ public class EUI {
         }
 
         return drag;
+    }
+
+    private static void tryGetPackmaster() {
+        if (Loader.isModLoaded("anniv5")) {
+            try {
+                AbstractCard.CardColor packmasterColor = AbstractCard.CardColor.valueOf("PACKMASTER_RAINBOW");
+                Class<?> targetClass = Class.forName("thePackmaster.patches.CompendiumPatches$CustomOrdering");
+                FuncT1<String, Object> getPackmasterPack = FuncT1.get(String.class, targetClass, "getParnetNameFromObject", Object.class); // PAR NET
+                FuncT1<String, AbstractCard> packmasterStringFunc = c -> {
+                    String res = getPackmasterPack.invoke(c);
+                    return !SLEEPY_TIME.equals(res) && !StringUtils.isEmpty(res) ? res : EUIUtils.EMPTY_STRING;
+                };
+                addCardSetFilter(packmasterColor, packmasterStringFunc);
+                addCardSetFilter(AbstractCard.CardColor.COLORLESS, packmasterStringFunc);
+            }
+            catch (Throwable e) {
+                e.printStackTrace();
+                EUIUtils.logError(EUI.class, "Failed to get Packmaster color:" + e.getLocalizedMessage() + " " + e.getCause());
+            }
+        }
     }
 
     public static EUIKeywordTooltip tryRegisterTooltip(String id, String modID, String title, String description, String[] names) {

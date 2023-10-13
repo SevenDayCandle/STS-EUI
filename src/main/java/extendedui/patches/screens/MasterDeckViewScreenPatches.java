@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import extendedui.EUI;
+import extendedui.EUIGameUtils;
 import extendedui.ui.screens.CardPoolScreen;
 import javassist.CannotCompileException;
 import javassist.expr.ExprEditor;
@@ -60,15 +61,16 @@ public class MasterDeckViewScreenPatches {
             screen = __instance;
             getFakeMasterDeck();
             AbstractCard.CardColor color = AbstractDungeon.player != null ? AbstractDungeon.player.getCardColor() : AbstractCard.CardColor.COLORLESS;
+            boolean isAll = EUIGameUtils.canReceiveAnyColorCard() || AbstractDungeon.player == null;
             EUI.cardFilters.initialize(__ -> {
                 updateForFilters();
                 if (CardPoolScreen.customModule != null) {
-                    CardPoolScreen.customModule.open(fakeMasterDeck.group, color, null);
+                    CardPoolScreen.customModule.open(fakeMasterDeck.group, color, isAll, null);
                 }
             }, fakeMasterDeck.group, color, false);
             EUI.openFiltersButton.setOnClick(() -> EUI.cardFilters.toggleFilters());
             updateForFilters();
-            EUI.countingPanel.open(AbstractDungeon.player.masterDeck.group, color, null);
+            EUI.countingPanel.open(AbstractDungeon.player.masterDeck.group, color, isAll, null);
         }
     }
 

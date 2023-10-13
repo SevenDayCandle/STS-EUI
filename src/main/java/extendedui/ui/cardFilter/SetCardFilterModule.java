@@ -5,6 +5,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import extendedui.EUI;
+import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.FuncT1;
 import extendedui.interfaces.markers.CustomCardFilterModule;
@@ -22,16 +23,14 @@ import java.util.Objects;
 import static extendedui.ui.cardFilter.GenericFilters.DRAW_START_Y;
 import static extendedui.ui.cardFilter.GenericFilters.SPACING;
 
-public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilterModule {
-    public final EUISearchableDropdown<T> seriesDropdown;
-    protected FuncT1<String, T> nameFunc;
-    protected FuncT1<T, AbstractCard> objectFunc;
-    public HashSet<T> currentSeries = new HashSet<>();
+public class SetCardFilterModule extends EUIBase implements CustomCardFilterModule {
+    private final EUISearchableDropdown<String> seriesDropdown;
+    private FuncT1<String, AbstractCard> nameFunc;
+    public HashSet<String> currentSeries = new HashSet<>();
 
-    public SimpleCardFilterModule(String title, FuncT1<String, T> nameFunc, FuncT1<T, AbstractCard> objectFunc) {
+    public SetCardFilterModule(FuncT1<String, AbstractCard> nameFunc) {
         this.nameFunc = nameFunc;
-        this.objectFunc = objectFunc;
-        seriesDropdown = (EUISearchableDropdown<T>) new EUISearchableDropdown<T>(new EUIHitbox(0, 0, scale(240), scale(48)), nameFunc)
+        seriesDropdown = (EUISearchableDropdown<String>) new EUISearchableDropdown<String>(new EUIHitbox(0, 0, scale(240), scale(48)), item -> StringUtils.isEmpty(item) ? EUIRM.strings.ui_na : item)
                 .setOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = this.isActive;
                 })
@@ -40,20 +39,20 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
                     currentSeries.addAll(selectedSeries);
                     EUI.cardFilters.invoke(null);
                 })
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, title)
+                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_set)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
     }
 
     @Override
     public void initializeSelection(Collection<? extends AbstractCard> cards) {
-        HashSet<T> availableSeries = new HashSet<>();
+        HashSet<String> availableSeries = new HashSet<>();
         for (AbstractCard card : cards) {
-            availableSeries.add(objectFunc.invoke(card));
+            availableSeries.add(nameFunc.invoke(card));
         }
-        ArrayList<T> seriesItems = EUIUtils.filter(availableSeries, Objects::nonNull);
-        seriesItems.sort((a, b) -> StringUtils.compare(nameFunc.invoke(a), nameFunc.invoke(b)));
-        seriesDropdown.setItems(seriesItems).setActive(seriesItems.size() > 0);
+        ArrayList<String> seriesItems = EUIUtils.filter(availableSeries, Objects::nonNull);
+        seriesItems.sort(StringUtils::compare);
+        seriesDropdown.setItems(seriesItems).setActive(seriesItems.size() > 1);
     }
 
     @Override
@@ -68,7 +67,7 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
 
     @Override
     public boolean isItemValid(AbstractCard c) {
-        return currentSeries.isEmpty() || currentSeries.contains(objectFunc.invoke(c));
+        return currentSeries.isEmpty() || currentSeries.contains(nameFunc.invoke(c));
     }
 
     @Override
@@ -80,6 +79,11 @@ public class SimpleCardFilterModule<T> extends EUIBase implements CustomCardFilt
     public void reset() {
         currentSeries.clear();
         seriesDropdown.setSelectionIndices((int[]) null, false);
+    }
+
+    public SetCardFilterModule setNameFunc(FuncT1<String, AbstractCard> nameFunc) {
+        this.nameFunc = nameFunc;
+        return this;
     }
 
     @Override

@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import extendedui.EUI;
+import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
@@ -112,28 +113,30 @@ public class PotionPoolScreen extends EUIPoolScreen {
 
     public void openScreen(AbstractPlayer player, ArrayList<AbstractPotion> potions) {
         super.reopen();
+        boolean canSeeAllColors = EUIGameUtils.canReceiveAnyColorCard();
         AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
+        boolean isAll = player == null || canSeeAllColors;
 
         potionGrid.clear();
         potionGrid.setItems(potions, PotionInfo::new);
 
         EUI.potionFilters.initializeForSort(potionGrid.group, __ -> {
             for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
-                module.open(EUI.potionFilters.group.group, color, null);
+                module.open(EUI.potionFilters.group.group, color, isAll, null);
             }
             if (customModule != null) {
-                customModule.open(EUI.potionFilters.group.group, color, null);
+                customModule.open(EUI.potionFilters.group.group, color, isAll, null);
             }
             potionGrid.forceUpdatePositions();
         }, color, GenericFilters.FILTERS_START_X, true, false);
 
 
         for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
-            module.open(potionGrid.group.group, color, null);
+            module.open(potionGrid.group.group, color, isAll, null);
         }
         customModule = EUI.getCustomPotionPoolModule(player);
         if (customModule != null) {
-            customModule.open(potionGrid.group.group, color, null);
+            customModule.open(potionGrid.group.group, color, isAll, null);
         }
 
         potionGrid.scrollBar.scroll(potionGrid.scrollBar.currentScrollPercent, true);

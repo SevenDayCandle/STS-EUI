@@ -96,7 +96,7 @@ public class Initializer
     @Override
     public void receivePostInitialize() {
         EUIConfiguration.postInitialize();
-        EUI.initialize();
+        EUI.postInitialize();
         EUIRenderHelpers.initializeBuffers();
         STSEffekseerManager.initialize();
         ShaderDebugger.initialize();

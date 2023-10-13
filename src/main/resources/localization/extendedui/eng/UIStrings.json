@@ -193,7 +193,8 @@
 			"Unseen",
 			"N/A",
 			"Filter out items from this group",
-			"Unique"
+			"Unique",
+			"Set"
 		]
 	}
 }

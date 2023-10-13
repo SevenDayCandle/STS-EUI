@@ -21,16 +21,16 @@ public class EUIButtonList extends EUIBase {
     public static final int DEFAULT_VISIBLE = 14;
 
     public final ArrayList<EUIButton> buttons = new ArrayList<>();
+    private int highlightedIndex;
+    private int topButtonIndex;
+    private int visibleButtons;
     protected float xPos;
     protected float yPos;
-    protected float buttonWidth;
-    protected float buttonHeight;
     protected float fontScale = 0.8f;
-    protected int highlightedIndex;
-    protected int topButtonIndex;
-    protected int visibleButtons;
     protected EUIButton downButton;
     protected EUIButton upButton;
+    public float buttonWidth;
+    public float buttonHeight;
 
     public EUIButtonList() {
         this(DEFAULT_VISIBLE, STARTING_X, STARTING_Y, BUTTON_W, BUTTON_H);

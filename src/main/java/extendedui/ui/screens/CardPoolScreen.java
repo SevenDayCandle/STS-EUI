@@ -149,6 +149,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         super.reopen();
         boolean canSeeAllColors = EUIGameUtils.canReceiveAnyColorCard();
         AbstractCard.CardColor color = player != null ? player.getCardColor() : AbstractCard.CardColor.COLORLESS;
+        boolean isAll = player == null || canSeeAllColors;
 
         cardGrid.clear();
         colorlessToggle.setToggle(false).setActive(!canSeeAllColors);
@@ -156,23 +157,23 @@ public class CardPoolScreen extends EUIPoolScreen {
 
         EUI.cardFilters.initializeForSort(cardGrid.group, __ -> {
             for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
-                module.open(EUI.cardFilters.group.group, color, null);
+                module.open(EUI.cardFilters.group.group, color, isAll, null);
             }
             if (customModule != null) {
-                customModule.open(EUI.cardFilters.group.group, color, null);
+                customModule.open(EUI.cardFilters.group.group, color, isAll, null);
             }
             cardGrid.forceUpdatePositions();
         }, color, GenericFilters.FILTERS_START_X, !canSeeAllColors, false);
 
-        EUI.countingPanel.open(cardGrid.group.group, color, null);
+        EUI.countingPanel.open(cardGrid.group.group, color, isAll, null);
 
         for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
-            module.open(cardGrid.group.group, color, null);
+            module.open(cardGrid.group.group, color, isAll, null);
         }
 
         customModule = EUI.getCustomCardPoolModule(player);
         if (customModule != null) {
-            customModule.open(cardGrid.group.group, color, null);
+            customModule.open(cardGrid.group.group, color, isAll, null);
         }
 
         cardGrid.scrollBar.scroll(cardGrid.scrollBar.currentScrollPercent, true);
@@ -186,7 +187,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             group.removeCard(c.cardID);
         }
         cardGrid.remove(c);
-        EUI.countingPanel.open(cardGrid.group.group, EUI.actingColor, null);
+        EUI.countingPanel.open(cardGrid.group.group, EUI.actingColor, EUI.actingColor == AbstractCard.CardColor.COLORLESS || EUIGameUtils.canReceiveAnyColorCard() , null);
     }
 
     @Override

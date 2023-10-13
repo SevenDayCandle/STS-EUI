@@ -43,14 +43,14 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
 
         EUI.blightFilters.initializeForSort(grid.group, __ -> {
             for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
-                module.open(EUI.blightFilters.group.group, AbstractCard.CardColor.COLORLESS, null);
+                module.open(EUI.blightFilters.group.group, AbstractCard.CardColor.COLORLESS, true, null);
             }
             grid.moveToTop();
             grid.forceUpdatePositions();
         }, AbstractCard.CardColor.COLORLESS);
 
         for (CustomPoolModule<AbstractBlight> module : EUI.globalCustomBlightLibraryModules) {
-            module.open(grid.group.group, AbstractCard.CardColor.COLORLESS, null);
+            module.open(grid.group.group, AbstractCard.CardColor.COLORLESS, true, null);
         }
     }
 
