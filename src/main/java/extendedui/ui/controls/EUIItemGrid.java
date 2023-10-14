@@ -55,7 +55,7 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
     }
 
     public EUIItemGrid(int rowSize, float padX, float padY, float horizontalAlignment, boolean autoShowScrollbar) {
-        this(rowSize, padX, padY, horizontalAlignment, 0.93f, autoShowScrollbar);
+        this(rowSize, padX, padY, horizontalAlignment, 0.9f, autoShowScrollbar);
     }
 
     public EUIItemGrid(int rowSize, float padX, float padY, float horizontalAlignment, float scrollAlignment, boolean autoShowScrollbar) {

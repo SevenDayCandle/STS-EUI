@@ -262,7 +262,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         }
 
         //Seen check
-        if (!evaluateItem(filters.currentSeen, (opt) -> opt.evaluate(c.cardID))) {
+        if (!evaluateItem(filters.currentSeen, (opt) -> opt.evaluate(c))) {
             return false;
         }
 
@@ -511,19 +511,19 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
     }
 
     public enum SeenValue {
-        Seen(EUIRM.strings.ui_seen, UnlockTracker::isCardSeen),
-        Unseen(EUIRM.strings.ui_unseen, c -> !UnlockTracker.isCardSeen(c) && !UnlockTracker.isCardLocked(c)),
-        Locked(SingleRelicViewPopup.TEXT[8], UnlockTracker::isCardLocked);
+        Seen(EUIRM.strings.ui_seen, c -> c.isSeen),
+        Unseen(EUIRM.strings.ui_unseen, c -> !c.isSeen && !c.isLocked),
+        Locked(SingleRelicViewPopup.TEXT[8], c -> c.isLocked);
 
-        public final FuncT1<Boolean, String> evalFunc;
+        public final FuncT1<Boolean, AbstractCard> evalFunc;
         public final String name;
 
-        SeenValue(String name, FuncT1<Boolean, String> evalFunc) {
+        SeenValue(String name, FuncT1<Boolean, AbstractCard> evalFunc) {
             this.evalFunc = evalFunc;
             this.name = name;
         }
 
-        public boolean evaluate(String relicID) {
+        public boolean evaluate(AbstractCard relicID) {
             return evalFunc.invoke(relicID);
         }
     }

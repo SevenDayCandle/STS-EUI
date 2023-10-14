@@ -89,7 +89,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
 
             AbstractRelic newRelic = original.makeCopy();
             newRelic.hb = new Hitbox(80.0F * Settings.scale, 80.0F * Settings.scale);
-            newRelic.isSeen = UnlockTracker.isRelicSeen(original.relicId);
+            newRelic.isSeen = UnlockTracker.isRelicSeen(original.relicId) || original.isSeen;
             newRelics.add(newRelic);
         }
         return newRelics;

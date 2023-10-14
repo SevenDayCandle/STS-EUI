@@ -1,5 +1,7 @@
 package extendedui;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Graphics;
 import com.google.gson.Gson;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.TipHelper;
@@ -263,6 +265,7 @@ public abstract class EUIUtils {
             JFrame frame = createFrame();
             frame.setVisible(true);
             fc.setVisible(true);
+            frame.toFront();
             frame.requestFocus();
             int result = fc.showDialog(frame, null);
             frame.dispose();
@@ -327,6 +330,7 @@ public abstract class EUIUtils {
             protected JDialog createDialog(Component parent) throws HeadlessException {
                 JDialog dialog = super.createDialog(parent);
                 dialog.setAlwaysOnTop(true);
+                dialog.setAutoRequestFocus(true);
                 return dialog;
             }
         };
@@ -377,7 +381,6 @@ public abstract class EUIUtils {
     private static JFrame createFrame() {
         JFrame f = new JFrame();
         f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        f.toFront();
         f.setAlwaysOnTop(true);
         f.setLocationRelativeTo(null);
         f.setPreferredSize(new Dimension(Settings.WIDTH / 2, Settings.HEIGHT / 2));

@@ -185,7 +185,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, RelicKeywordF
         }
 
         //Seen check
-        if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c.relic.relicId))) {
+        if (!evaluateItem(currentSeen, (opt) -> opt.evaluate(c))) {
             return false;
         }
 
@@ -349,19 +349,19 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, RelicKeywordF
     }
 
     public enum SeenValue {
-        Seen(EUIRM.strings.ui_seen, UnlockTracker::isRelicSeen),
-        Unseen(EUIRM.strings.ui_unseen, c -> !UnlockTracker.isRelicSeen(c) && !UnlockTracker.isRelicLocked(c)),
-        Locked(SingleRelicViewPopup.TEXT[8], UnlockTracker::isRelicLocked);
+        Seen(EUIRM.strings.ui_seen, r -> r.relic.isSeen),
+        Unseen(EUIRM.strings.ui_unseen, r -> !r.relic.isSeen && !r.locked),
+        Locked(SingleRelicViewPopup.TEXT[8], r -> r.locked);
 
-        public final FuncT1<Boolean, String> evalFunc;
+        public final FuncT1<Boolean, RelicInfo> evalFunc;
         public final String name;
 
-        SeenValue(String name, FuncT1<Boolean, String> evalFunc) {
+        SeenValue(String name, FuncT1<Boolean, RelicInfo> evalFunc) {
             this.evalFunc = evalFunc;
             this.name = name;
         }
 
-        public boolean evaluate(String relicID) {
+        public boolean evaluate(RelicInfo relicID) {
             return evalFunc.invoke(relicID);
         }
     }

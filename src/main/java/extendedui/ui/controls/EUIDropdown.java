@@ -258,6 +258,10 @@ public class EUIDropdown<T> extends EUIHoverable {
         return rows;
     }
 
+    public boolean isOpen() {
+        return isOpen;
+    }
+
     protected boolean isUsingNonMouseControl() {
         return Settings.isControllerMode || InputActionSet.up.isJustPressed() || InputActionSet.down.isJustPressed();
     }
