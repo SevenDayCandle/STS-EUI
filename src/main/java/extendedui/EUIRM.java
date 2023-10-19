@@ -281,15 +281,16 @@ public class EUIRM {
         public final String misc_export = stringsMisc.TEXT[9];
         public final String misc_exportCSV = stringsMisc.TEXT[10];
         public final String misc_exportJSON = stringsMisc.TEXT[11];
-        public final String misc_exportDesc = stringsMisc.TEXT[12];
-        public final String misc_overwrite = stringsMisc.TEXT[13];
-        public final String misc_overwriteDesc = stringsMisc.TEXT[14];
-        public final String misc_current = stringsMisc.TEXT[15];
-        public final String misc_hue = stringsMisc.TEXT[16];
-        public final String misc_saturation = stringsMisc.TEXT[17];
-        public final String misc_value = stringsMisc.TEXT[18];
-        public final String misc_opacity = stringsMisc.TEXT[19];
-        public final String misc_tooltipDisabled = stringsMisc.TEXT[20];
+        public final String misc_exportXLSX = stringsMisc.TEXT[12];
+        public final String misc_exportDesc = stringsMisc.TEXT[13];
+        public final String misc_overwrite = stringsMisc.TEXT[14];
+        public final String misc_overwriteDesc = stringsMisc.TEXT[15];
+        public final String misc_current = stringsMisc.TEXT[16];
+        public final String misc_hue = stringsMisc.TEXT[17];
+        public final String misc_saturation = stringsMisc.TEXT[18];
+        public final String misc_value = stringsMisc.TEXT[19];
+        public final String misc_opacity = stringsMisc.TEXT[20];
+        public final String misc_tooltipDisabled = stringsMisc.TEXT[21];
 
         public final String potion_size = stringsPotion.TEXT[0];
         public final String potion_visualEffect = stringsPotion.TEXT[1];

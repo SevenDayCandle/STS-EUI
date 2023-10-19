@@ -5,6 +5,7 @@ import extendedui.EUIUtils;
 import java.lang.reflect.Field;
 
 public class EUIExporterRow implements Comparable<EUIExporterRow> {
+    private static final Field[] BASE_FIELDS = EUIExporterRow.class.getDeclaredFields();
     public String ID;
     public String modID;
     public String color;
@@ -29,7 +30,15 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
     }
 
     public String getCsvHeaderRow() {
-        return EUIUtils.joinStringsMapLists(",", Field::getName, EUIExporterRow.class.getDeclaredFields(), this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
+        return EUIUtils.joinStringsMapLists(",", Field::getName, BASE_FIELDS, this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
+    }
+
+    public String[] getCsvHeaderRowAsCells() {
+        return EUIUtils.arrayMapAll(String.class, Field::getName, BASE_FIELDS, this.getClass().getDeclaredFields());
+    }
+
+    public Integer[] getStatIndices() {
+        return new Integer[] {};
     }
 
     @Override
@@ -40,8 +49,19 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
                 return String.valueOf(field.get(this));
             }
             catch (IllegalAccessException e) {
-                return "";
+                return EUIUtils.EMPTY_STRING;
             }
-        }, EUIExporterRow.class.getDeclaredFields(), this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
+        }, BASE_FIELDS, this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
+    }
+
+    public String[] toStringList() {
+        return EUIUtils.arrayMapAll(String.class, field -> {
+                try {
+                    return String.valueOf(field.get(this));
+                }
+                catch (IllegalAccessException e) {
+                    return EUIUtils.EMPTY_STRING;
+                }
+            }, BASE_FIELDS, this.getClass().getDeclaredFields());
     }
 }

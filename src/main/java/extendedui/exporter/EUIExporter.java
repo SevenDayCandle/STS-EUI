@@ -18,7 +18,7 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
-import extendedui.interfaces.delegates.ActionT1;
+import extendedui.interfaces.delegates.ActionT2;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIContextMenu;
 import extendedui.ui.hitboxes.DraggableHitbox;
@@ -28,213 +28,89 @@ import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.PotionInfo;
 import extendedui.utilities.RelicInfo;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import java.util.*;
 
 public class EUIExporter {
     public static final String EXT_CSV = "csv";
     public static final String EXT_JSON = "json";
+    public static final String EXT_XLSX = "xlsx";
     public static final String NEWLINE = System.getProperty("line.separator");
-    public static final Exportable<AbstractBlight> blightExportable = new Exportable<>(EUIExporter::exportBlightCsv, EUIExporter::exportBlightJson);
-    public static final Exportable<AbstractCard> cardExportable = new Exportable<>(EUIExporter::exportCardCsv, EUIExporter::exportCardJson);
+    public static final String STATS_NAME = "Stats";
+    public static final Exportable<AbstractBlight> blightExportable = new Exportable<>(EUIExporter::exportBlight);
+    public static final Exportable<AbstractCard> cardExportable = new Exportable<>(EUIExporter::exportCard);
     private static Exportable<?> current = cardExportable;
-    public static final Exportable<PotionInfo> potionExportable = new Exportable<>(EUIExporter::exportPotionCsv, EUIExporter::exportPotionJson);
-    public static final Exportable<RelicInfo> relicExportable = new Exportable<>(EUIExporter::exportRelicCsv, EUIExporter::exportRelicJson);
+    public static final Exportable<PotionInfo> potionExportable = new Exportable<>(EUIExporter::exportPotion);
+    public static final Exportable<RelicInfo> relicExportable = new Exportable<>(EUIExporter::exportRelic);
     public static EUIButton exportButton;
-    public static EUIContextMenu<EUIExporter.ContextOption> exportDropdown;
+    public static EUIContextMenu<ExportType> exportDropdown;
 
-    public static void exportBlightCsv(AbstractBlight c) {
-        exportBlightCsv(Collections.singleton(c));
-    }
-
-    public static void exportBlightCsv(Iterable<? extends AbstractBlight> cards) {
+    public static void exportBlight(Iterable<? extends AbstractBlight> cards, ExportType type) {
         File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_CSV), EUIConfiguration.lastExportPath);
         if (file != null) {
-            exportBlightCsv(cards, file.getAbsolutePath());
+            exportBlight(cards, type, file.getAbsolutePath());
         }
     }
 
-    private static void exportBlightCsv(Iterable<? extends AbstractBlight> cards, String path) {
-        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(cards, EUIExporter::getRowForBlight);
-        exportImplCsv(rows, path);
+    private static void exportBlight(Iterable<? extends AbstractBlight> cards, ExportType type, String path) {
+        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(cards, c -> getRowForBlight(c, type));
+        type.exportRows(rows, path);
     }
 
-    public static void exportBlightJson(AbstractBlight c) {
-        exportBlightJson(Collections.singleton(c));
-    }
-
-    public static void exportBlightJson(Iterable<? extends AbstractBlight> cards) {
-        File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_JSON), EUIConfiguration.lastExportPath);
-        if (file != null) {
-            exportBlightJson(cards, file.getAbsolutePath());
-        }
-    }
-
-    public static void exportBlightJson(Iterable<? extends AbstractBlight> cards, String path) {
-        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(cards, EUIExporter::getRowForBlight);
-        exportImplJson(rows, path);
-    }
-
-    public static void exportCardCsv(AbstractCard c) {
-        exportCardCsv(Collections.singleton(c));
-    }
-
-    public static void exportCardCsv(AbstractCard.CardColor c) {
+    public static void exportCard(AbstractCard.CardColor c, ExportType type) {
         ArrayList<AbstractCard> group = CustomCardLibraryScreen.getCards(c);
         if (group != null) {
-            exportCardCsv(group);
+            exportCard(group, type);
         }
     }
 
-    public static void exportCardCsv(Iterable<? extends AbstractCard> cards) {
+    public static void exportCard(Iterable<? extends AbstractCard> cards, ExportType type) {
         File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_CSV), EUIConfiguration.lastExportPath);
         if (file != null) {
-            exportCardCsv(cards, file.getAbsolutePath());
+            exportCard(cards, type, file.getAbsolutePath());
         }
     }
 
-    private static void exportCardCsv(Iterable<? extends AbstractCard> cards, String path) {
-        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(cards, EUIExporter::getRowForCard);
-        exportImplCsv(rows, path);
+    private static void exportCard(Iterable<? extends AbstractCard> cards, ExportType type, String path) {
+        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(cards, c -> getRowForCard(c, type));
+        type.exportRows(rows, path);
     }
 
-    public static void exportCardJson(AbstractCard c) {
-        exportCardJson(Collections.singleton(c));
+    public static void exportPotion(AbstractCard.CardColor c, ExportType type) {
+        exportPotion(getPotionInfos(c), type);
     }
 
-    public static void exportCardJson(AbstractCard.CardColor c) {
-        ArrayList<AbstractCard> group = CustomCardLibraryScreen.getCards(c);
-        if (group != null) {
-            exportCardJson(group);
-        }
-    }
-
-    public static void exportCardJson(Iterable<? extends AbstractCard> cards) {
-        File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_JSON), EUIConfiguration.lastExportPath);
-        if (file != null) {
-            exportCardJson(cards, file.getAbsolutePath());
-        }
-    }
-
-    public static void exportCardJson(Iterable<? extends AbstractCard> cards, String path) {
-        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(cards, EUIExporter::getRowForCard);
-        exportImplJson(rows, path);
-    }
-
-    public static void exportImplCsv(List<? extends EUIExporterRow> items, String path) {
-        if (!items.isEmpty()) {
-            items.sort(EUIExporterRow::compareTo);
-            try {
-                FileHandle handle = getExportFile(path);
-                handle.writeString(items.get(0).getCsvHeaderRow(), true, HttpParametersUtils.defaultEncoding);
-                for (EUIExporterRow row : items) {
-                    handle.writeString(row.toString(), true, HttpParametersUtils.defaultEncoding);
-                }
-                EUIUtils.logInfo(EUIExporter.class, "Export items as CSV to " + path);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                EUIUtils.logError(EUIExporter.class, "Failed to export items as CSV.");
-            }
-        }
-    }
-
-    public static void exportImplJson(List<? extends EUIExporterRow> items, String path) {
-        if (!items.isEmpty()) {
-            items.sort(EUIExporterRow::compareTo);
-            try {
-                FileHandle handle = getExportFile(path);
-                handle.writeString(EUIUtils.serialize(items), true, HttpParametersUtils.defaultEncoding);
-                EUIUtils.logInfo(EUIExporter.class, "Export items as JSON to " + path);
-            }
-            catch (Exception e) {
-                e.printStackTrace();
-                EUIUtils.logError(EUIExporter.class, "Failed to export items as JSON.");
-            }
-        }
-    }
-
-    public static void exportPotionCsv(PotionInfo c) {
-        exportPotionCsv(Collections.singleton(c));
-    }
-
-    public static void exportPotionCsv(AbstractCard.CardColor c) {
-        exportPotionCsv(getPotionInfos(c));
-    }
-
-    public static void exportPotionCsv(Iterable<? extends PotionInfo> potions) {
+    public static void exportPotion(Iterable<? extends PotionInfo> potions, ExportType type) {
         File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_CSV), EUIConfiguration.lastExportPath);
         if (file != null) {
-            exportPotionCsv(potions, file.getAbsolutePath());
+            exportPotion(potions, type, file.getAbsolutePath());
         }
     }
 
-    public static void exportPotionCsv(Iterable<? extends PotionInfo> potions, String path) {
-        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(potions, EUIExporter::getRowForPotion);
-        exportImplCsv(rows, path);
+    public static void exportPotion(Iterable<? extends PotionInfo> potions, ExportType type, String path) {
+        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(potions, c -> getRowForPotion(c, type));
+        type.exportRows(rows, path);
     }
 
-    public static void exportPotionJson(PotionInfo c) {
-        exportPotionJson(Collections.singleton(c));
+    public static void exportRelic(AbstractCard.CardColor c, ExportType type) {
+        exportRelic(getRelicInfos(c), type);
     }
 
-    public static void exportPotionJson(AbstractCard.CardColor c) {
-        exportPotionJson(getPotionInfos(c));
-    }
-
-    public static void exportPotionJson(Iterable<? extends PotionInfo> potions) {
-        File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_JSON), EUIConfiguration.lastExportPath);
-        if (file != null) {
-            exportPotionJson(potions, file.getAbsolutePath());
-        }
-    }
-
-    public static void exportPotionJson(Iterable<? extends PotionInfo> potions, String path) {
-        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(potions, EUIExporter::getRowForPotion);
-        exportImplJson(rows, path);
-    }
-
-    public static void exportRelicCsv(RelicInfo c) {
-        exportRelicCsv(Collections.singleton(c));
-    }
-
-    public static void exportRelicCsv(AbstractCard.CardColor c) {
-        exportRelicCsv(getRelicInfos(c));
-    }
-
-    public static void exportRelicCsv(Iterable<? extends RelicInfo> relics) {
+    public static void exportRelic(Iterable<? extends RelicInfo> relics, ExportType type) {
         File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_CSV), EUIConfiguration.lastExportPath);
         if (file != null) {
-            exportRelicCsv(relics, file.getAbsolutePath());
+            exportRelic(relics, type, file.getAbsolutePath());
         }
     }
 
-    public static void exportRelicCsv(Iterable<? extends RelicInfo> relics, String path) {
-        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(relics, EUIExporter::getRowForRelic);
-        exportImplCsv(rows, path);
-    }
-
-    public static void exportRelicJson(RelicInfo c) {
-        exportRelicJson(Collections.singleton(c));
-    }
-
-    public static void exportRelicJson(AbstractCard.CardColor c) {
-        exportRelicJson(getRelicInfos(c));
-    }
-
-    public static void exportRelicJson(Iterable<? extends RelicInfo> relics) {
-        File file = EUIUtils.saveFile(EUIUtils.getFileFilter(EXT_JSON), EUIConfiguration.lastExportPath);
-        if (file != null) {
-            exportRelicJson(relics, file.getAbsolutePath());
-        }
-    }
-
-    public static void exportRelicJson(Iterable<? extends RelicInfo> relics, String path) {
-        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(relics, EUIExporter::getRowForRelic);
-        exportImplJson(rows, path);
+    public static void exportRelic(Iterable<? extends RelicInfo> relics, ExportType type, String path) {
+        ArrayList<? extends EUIExporterRow> rows = EUIUtils.map(relics, c -> getRowForRelic(c, type));
+        type.exportRows(rows, path);
     }
 
     private static FileHandle getExportFile(String path) {
@@ -295,19 +171,19 @@ public class EUIExporter {
         return newRelics;
     }
 
-    public static EUIExporterRow getRowForBlight(AbstractBlight c) {
+    public static EUIExporterRow getRowForBlight(AbstractBlight c, ExportType format) {
         return new EUIExporterBlightRow(c);
     }
 
-    public static EUIExporterRow getRowForCard(AbstractCard c) {
+    public static EUIExporterRow getRowForCard(AbstractCard c, ExportType format) {
         return new EUIExporterCardRow(c);
     }
 
-    public static EUIExporterRow getRowForPotion(PotionInfo c) {
+    public static EUIExporterRow getRowForPotion(PotionInfo c, ExportType format) {
         return new EUIExporterPotionRow(c);
     }
 
-    public static EUIExporterRow getRowForRelic(RelicInfo c) {
+    public static EUIExporterRow getRowForRelic(RelicInfo c, ExportType format) {
         return new EUIExporterRelicRow(c);
     }
 
@@ -319,14 +195,14 @@ public class EUIExporter {
                 .setLabel(EUIFontHelper.buttonFont, 0.7f, EUIRM.strings.misc_export)
                 .setTooltip(tip)
                 .setColor(Color.GRAY);
-        exportDropdown = (EUIContextMenu<EUIExporter.ContextOption>) new EUIContextMenu<EUIExporter.ContextOption>(new EUIHitbox(0, 0, 0, 0), c -> c.baseName)
+        exportDropdown = (EUIContextMenu<ExportType>) new EUIContextMenu<ExportType>(new EUIHitbox(0, 0, 0, 0), c -> c.baseName)
                 .setOnChange(options -> {
-                    for (ContextOption o : options) {
+                    for (ExportType o : options) {
                         o.onSelect();
                     }
                 })
                 .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
-                .setItems(ContextOption.values())
+                .setItems(ExportType.values())
                 .setCanAutosizeButton(true);
     }
 
@@ -342,48 +218,149 @@ public class EUIExporter {
         }
     }
 
-    public enum ContextOption {
-        CSV(EUIRM.strings.misc_exportCSV),
-        JSON(EUIRM.strings.misc_exportJSON);
+    public enum ExportType {
+        CSV(EUIRM.strings.misc_exportCSV, EXT_CSV),
+        JSON(EUIRM.strings.misc_exportJSON, EXT_JSON),
+        XLSX(EUIRM.strings.misc_exportXLSX, EXT_XLSX);
 
         public final String baseName;
+        public final String type;
 
-        ContextOption(String name) {
+        ExportType(String name, String type) {
             this.baseName = name;
+            this.type = type;
+        }
+
+        private static void exportImplCsv(List<? extends EUIExporterRow> items, String path) {
+            if (!items.isEmpty()) {
+                items.sort(EUIExporterRow::compareTo);
+                try {
+                    FileHandle handle = getExportFile(path);
+                    handle.writeString(items.get(0).getCsvHeaderRow(), true, HttpParametersUtils.defaultEncoding);
+                    for (EUIExporterRow row : items) {
+                        handle.writeString(row.toString(), true, HttpParametersUtils.defaultEncoding);
+                    }
+                    EUIUtils.logInfo(EUIExporter.class, "Export items as CSV to " + path);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    EUIUtils.logError(EUIExporter.class, "Failed to export items as CSV.");
+                }
+            }
+        }
+
+        private static void exportImplJson(List<? extends EUIExporterRow> items, String path) {
+            if (!items.isEmpty()) {
+                items.sort(EUIExporterRow::compareTo);
+                try {
+                    FileHandle handle = getExportFile(path);
+                    handle.writeString(EUIUtils.serialize(items), true, HttpParametersUtils.defaultEncoding);
+                    EUIUtils.logInfo(EUIExporter.class, "Export items as JSON to " + path);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    EUIUtils.logError(EUIExporter.class, "Failed to export items as JSON.");
+                }
+            }
+        }
+
+        private static void exportImplXlsx(List<? extends EUIExporterRow> items, String path) {
+            if (!items.isEmpty()) {
+                items.sort(EUIExporterRow::compareTo);
+                try {
+                    FileHandle handle = getExportFile(path);
+                    XSSFWorkbook workbook = new XSSFWorkbook(handle.file());
+
+                    // Main sheet
+                    final String mainSheetName = items.getClass().getComponentType().getName();
+                    XSSFSheet sheet1 = workbook.createSheet(mainSheetName);
+                    XSSFRow headerRow = sheet1.createRow(0);
+                    String[] headers = items.get(0).getCsvHeaderRowAsCells();
+                    for (int i = 0; i < headers.length; i++) {
+                        XSSFCell cell = headerRow.createCell(i);
+                        cell.setCellValue(headers[i]);
+                    }
+                    String[][] results = new String[items.size()][];
+                    for (int i = 0; i < items.size(); i++) {
+                        XSSFRow row = sheet1.createRow(i + 1);
+                        String[] values = items.get(0).toStringList();
+                        for (int j = 0; j < values.length; j++) {
+                            XSSFCell cell = row.createCell(j);
+                            cell.setCellValue(values[j]);
+                        }
+                        results[i] = values;
+                    }
+
+                    // Stats sheet
+                    XSSFSheet sheet2 = workbook.createSheet(STATS_NAME);
+                    Integer[] sortIndices = items.get(0).getStatIndices();
+                    int rowInd = 0;
+                    for (Integer stat : sortIndices) {
+                        XSSFRow categoryRow = sheet2.createRow(rowInd);
+                        String catName = headers[stat];
+                        XSSFCell cell = categoryRow.createCell(rowInd);
+                        cell.setCellValue(catName);
+                        rowInd++;
+
+                        HashSet<String> uniques = new HashSet<>();
+                        for (String[] resRow : results) {
+                            uniques.add(resRow[stat]);
+                        }
+                        for (String u : uniques) {
+                            XSSFRow row = sheet2.createRow(rowInd);
+                            XSSFCell uCell = row.createCell(0);
+                            uCell.setCellValue(u);
+
+                            char cellChar = (char) ('A' + stat);
+                            XSSFCell uCell2 = row.createCell(1);
+                            uCell2.setCellFormula("SUMIF(" + cellChar + ":" + cellChar + "," + u + ")");
+                            rowInd++;
+                        }
+
+                        rowInd++;
+                    }
+
+                    EUIUtils.logInfo(EUIExporter.class, "Export items as XLSX to " + path);
+                }
+                catch (Exception e) {
+                    e.printStackTrace();
+                    EUIUtils.logError(EUIExporter.class, "Failed to export items as XLSX.");
+                }
+            }
+        }
+
+        public void exportRows(List<? extends EUIExporterRow> items, String path) {
+            switch (this) {
+                case CSV:
+                    exportImplCsv(items, path);
+                    return;
+                case JSON:
+                    exportImplJson(items, path);
+                    return;
+                case XLSX:
+                    exportImplXlsx(items, path);
+            }
         }
 
         public void onSelect() {
-            switch (this) {
-                case CSV:
-                    current.exportCsv();
-                    break;
-                case JSON:
-                    current.exportJson();
-                    break;
-            }
+            current.export(this);
         }
     }
 
     public static class Exportable<T> {
-        public final ActionT1<Iterable<? extends T>> exportCsv;
-        public final ActionT1<Iterable<? extends T>> exportJson;
+        public final ActionT2<Iterable<? extends T>, ExportType> exportFunc;
         public Iterable<? extends T> items;
 
-        public Exportable(ActionT1<Iterable<? extends T>> exportCsv, ActionT1<Iterable<? extends T>> exportJson) {
-            this.exportCsv = exportCsv;
-            this.exportJson = exportJson;
+        public Exportable(ActionT2<Iterable<? extends T>, ExportType> exportFunc) {
+            this.exportFunc = exportFunc;
         }
 
         public void clear() {
             items = null;
         }
 
-        public void exportCsv() {
-            exportCsv.invoke(items);
-        }
-
-        public void exportJson() {
-            exportJson.invoke(items);
+        public void export(ExportType type) {
+            exportFunc.invoke(items, type);
         }
 
         public void open(Iterable<? extends T> items) {

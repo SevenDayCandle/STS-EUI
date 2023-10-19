@@ -11,6 +11,7 @@ import extendedui.interfaces.delegates.FuncT1;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.poi.ss.formula.functions.T;
 
 import javax.swing.*;
 import javax.swing.filechooser.FileNameExtensionFilter;
@@ -182,6 +183,13 @@ public abstract class EUIUtils {
         return res;
     }
 
+    public static <T> T[] arrayConcat(T[] base, T[] secondary) {
+        final T[] res = (T[]) Array.newInstance(base.getClass().getComponentType(), base.length + secondary.length);
+        System.arraycopy(base, 0, res, 0, base.length);
+        System.arraycopy(secondary, 0, res, base.length, secondary.length);
+        return res;
+    }
+
     @SafeVarargs
     public static <T> ArrayList<T> arrayList(T... items) {
         return new ArrayList<>(Arrays.asList(items));
@@ -201,6 +209,32 @@ public abstract class EUIUtils {
         final N[] res = (N[]) Array.newInstance(listClass, list.size());
         for (int i = 0; i < list.size(); i++) {
             res[i] = predicate.invoke(list.get(i));
+        }
+        return res;
+    }
+
+    @SafeVarargs
+    public static <T, N> N[] arrayMapAll(Class<N> listClass, FuncT1<N, T> predicate, T[]... lists) {
+        final N[] res = (N[]) Array.newInstance(listClass, EUIUtils.sumInt(lists, l -> l.length));
+        int i = 0;
+        for (T[] list : lists) {
+            for (T t : list) {
+                res[i] = predicate.invoke(t);
+                i++;
+            }
+        }
+        return res;
+    }
+
+    @SafeVarargs
+    public static <T, N> N[] arrayMapAll(Class<N> listClass, FuncT1<N, T> predicate, List<? extends T>... lists) {
+        final N[] res = (N[]) Array.newInstance(listClass, EUIUtils.sumInt(lists, l -> l.size()));
+        int i = 0;
+        for (List<? extends T> list : lists) {
+            for (T t : list) {
+                res[i] = predicate.invoke(t);
+                i++;
+            }
         }
         return res;
     }

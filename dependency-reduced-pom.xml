@@ -29,11 +29,7 @@
               <goal>shade</goal>
             </goals>
             <configuration>
-              <artifactSet>
-                <excludes>
-                  <exclude>com.badlogic*</exclude>
-                </excludes>
-              </artifactSet>
+              <minimizeJar>true</minimizeJar>
             </configuration>
           </execution>
         </executions>

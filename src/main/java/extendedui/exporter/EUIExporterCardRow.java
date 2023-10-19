@@ -2,6 +2,7 @@ package extendedui.exporter;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIGameUtils;
+import extendedui.EUIUtils;
 
 public class EUIExporterCardRow extends EUIExporterRow {
     public String assetURL;
@@ -57,5 +58,13 @@ public class EUIExporterCardRow extends EUIExporterRow {
                 .replace("!B!", String.valueOf(card.baseBlock))
                 .replace("!M!", String.valueOf(card.baseMagicNumber))
                 .replace(" NL ", " ");
+    }
+
+    @Override
+    public Integer[] getStatIndices() {
+        return EUIUtils.array(
+                5, //type
+                6 //rarity
+        );
     }
 }

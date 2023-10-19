@@ -26,64 +26,34 @@ public class ExportCommand extends ConsoleCommand {
     protected void execute(String[] tokens, int depth) {
         try {
             String type = tokens[1];
-            String format = tokens[2];
+            EUIExporter.ExportType format = EUIExporter.ExportType.valueOf(tokens[2]);
 
             switch (type) {
                 case TYPE_CARD:
                     if (tokens.length > 3) {
                         AbstractCard.CardColor color = AbstractCard.CardColor.valueOf(tokens[3]);
-                        if (EUIExporter.EXT_CSV.equals(format)) {
-                            EUIExporter.exportCardCsv(color);
-                        }
-                        else {
-                            EUIExporter.exportCardJson(color);
-                        }
+                        EUIExporter.exportCard(color, format);
                     }
                     else {
-                        if (EUIExporter.EXT_CSV.equals(format)) {
-                            EUIExporter.exportCardCsv(CardLibrary.getAllCards());
-                        }
-                        else {
-                            EUIExporter.exportCardJson(CardLibrary.getAllCards());
-                        }
+                        EUIExporter.exportCard(CardLibrary.getAllCards(), format);
                     }
                     break;
                 case TYPE_POTION:
                     if (tokens.length > 3) {
                         AbstractCard.CardColor color = AbstractCard.CardColor.valueOf(tokens[3]);
-                        if (EUIExporter.EXT_CSV.equals(format)) {
-                            EUIExporter.exportPotionCsv(color);
-                        }
-                        else {
-                            EUIExporter.exportPotionJson(color);
-                        }
+                        EUIExporter.exportPotion(color, format);
                     }
                     else {
-                        if (EUIExporter.EXT_CSV.equals(format)) {
-                            EUIExporter.exportPotionCsv(EUIExporter.getPotionInfos());
-                        }
-                        else {
-                            EUIExporter.exportPotionJson(EUIExporter.getPotionInfos());
-                        }
+                        EUIExporter.exportPotion(EUIExporter.getPotionInfos(), format);
                     }
                     break;
                 case TYPE_RELIC:
                     if (tokens.length > 3) {
                         AbstractCard.CardColor color = AbstractCard.CardColor.valueOf(tokens[3]);
-                        if (EUIExporter.EXT_CSV.equals(format)) {
-                            EUIExporter.exportRelicCsv(color);
-                        }
-                        else {
-                            EUIExporter.exportRelicJson(color);
-                        }
+                        EUIExporter.exportRelic(color, format);
                     }
                     else {
-                        if (EUIExporter.EXT_CSV.equals(format)) {
-                            EUIExporter.exportRelicCsv(EUIExporter.getRelicInfos());
-                        }
-                        else {
-                            EUIExporter.exportRelicJson(EUIExporter.getRelicInfos());
-                        }
+                        EUIExporter.exportRelic(EUIExporter.getRelicInfos(), format);
                     }
                     break;
             }
