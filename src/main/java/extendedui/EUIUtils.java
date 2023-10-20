@@ -337,22 +337,33 @@ public abstract class EUIUtils {
             @Override
             public void approveSelection() {
                 File f = getSelectedFile();
-                if (f.exists() && getDialogType() == SAVE_DIALOG) {
-                    int result = JOptionPane.showConfirmDialog(this,
-                            EUIUtils.format(EUIRM.strings.misc_overwriteDesc, f.getName()),
-                            EUIRM.strings.misc_overwrite,
-                            JOptionPane.YES_NO_CANCEL_OPTION);
-                    switch (result) {
-                        case JOptionPane.YES_OPTION:
-                            super.approveSelection();
-                            return;
-                        case JOptionPane.NO_OPTION:
-                            return;
-                        case JOptionPane.CLOSED_OPTION:
-                            return;
-                        case JOptionPane.CANCEL_OPTION:
-                            cancelSelection();
-                            return;
+                if (getDialogType() == SAVE_DIALOG) {
+                    // If the user typed a file with no extension, and we require an extension, automatically tack on an extension
+                    if (!f.exists()) {
+                        String[] extensions = extensionFilter.getExtensions();
+                        String name = f.getName();
+                        if (extensions.length > 0 && name.lastIndexOf('.') == -1) {
+                            String absPath = f.getAbsolutePath();
+                            f = new File(absPath + '.' + extensions[0]);
+                        }
+                    }
+                    if (f.exists()) {
+                        int result = JOptionPane.showConfirmDialog(this,
+                                EUIUtils.format(EUIRM.strings.misc_overwriteDesc, f.getName()),
+                                EUIRM.strings.misc_overwrite,
+                                JOptionPane.YES_NO_CANCEL_OPTION);
+                        switch (result) {
+                            case JOptionPane.YES_OPTION:
+                                super.approveSelection();
+                                return;
+                            case JOptionPane.NO_OPTION:
+                                return;
+                            case JOptionPane.CLOSED_OPTION:
+                                return;
+                            case JOptionPane.CANCEL_OPTION:
+                                cancelSelection();
+                                return;
+                        }
                     }
                 }
                 super.approveSelection();

@@ -1,5 +1,7 @@
 package extendedui.exporter;
 
+import com.megacrit.cardcrawl.cards.AbstractCard;
+import extendedui.EUIGameUtils;
 import extendedui.EUIUtils;
 
 import java.lang.reflect.Field;
@@ -9,6 +11,10 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
     public String modID;
     public String color;
     public String name;
+
+    public EUIExporterRow(String id, Object modID, AbstractCard.CardColor color, String name) {
+        this(id, EUIGameUtils.getModID(modID), EUIGameUtils.getColorName(color), name);
+    }
 
     public EUIExporterRow(String id, String modID, String color, String name) {
         ID = id;

@@ -9,17 +9,10 @@ public class EUIExporterRelicRow extends EUIExporterRow {
     public String landingSFX;
     public String description;
 
-    public EUIExporterRelicRow(AbstractRelic relic) {
-        super(relic.relicId, EUIGameUtils.getModID(relic), String.valueOf(EUIGameUtils.getRelicColor(relic.relicId)), relic.name);
-        tier = String.valueOf(relic.tier);
-        landingSFX = String.valueOf(EUIGameUtils.getLandingSound(relic));
-        description = sanitizeDescription(relic.description);
-    }
-
     public EUIExporterRelicRow(RelicInfo relic) {
-        super(relic.relic.relicId, EUIGameUtils.getModID(relic.relic), String.valueOf(relic.relicColor), relic.relic.name);
-        tier = String.valueOf(relic.relic.tier);
-        landingSFX = String.valueOf(EUIGameUtils.getLandingSound(relic.relic));
+        super(relic.relic.relicId, relic.relic, relic.relicColor, relic.relic.name);
+        tier = EUIGameUtils.textForRelicTier(relic.relic.tier);
+        landingSFX = EUIGameUtils.textForRelicLandingSound(EUIGameUtils.getLandingSound(relic.relic));
         description = sanitizeDescription(relic.relic.description);
     }
 }

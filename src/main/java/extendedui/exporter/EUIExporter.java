@@ -331,6 +331,10 @@ public class EUIExporter {
         public void exportRows(List<? extends EUIExporterRow> items, String path) {
             if (!items.isEmpty()) {
                 items.sort(EUIExporterRow::compareTo);
+                // Ensure that the path ends with the proper extension
+                if (!path.endsWith("." + this.type)) {
+                    path = path + "." + this.type;
+                }
                 switch (this) {
                     case CSV:
                         exportImplCsv(items, path);

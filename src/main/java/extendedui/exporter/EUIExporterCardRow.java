@@ -1,7 +1,12 @@
 package extendedui.exporter;
 
+import basemod.BaseMod;
+import basemod.abstracts.DynamicVariable;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIGameUtils;
+import extendedui.EUIRenderHelpers;
+import extendedui.EUIUtils;
+import extendedui.utilities.TargetFilter;
 
 public class EUIExporterCardRow extends EUIExporterRow {
     public String assetURL;
@@ -21,11 +26,11 @@ public class EUIExporterCardRow extends EUIExporterRow {
     public String effects;
 
     public EUIExporterCardRow(AbstractCard card) {
-        super(card.cardID, EUIGameUtils.getModID(card), String.valueOf(card.color), card.name);
+        super(card.cardID, card, card.color, card.name);
         assetURL = card.assetUrl;
-        type = String.valueOf(card.type);
-        rarity = String.valueOf(card.rarity);
-        cardTarget = String.valueOf(card.target);
+        type = EUIGameUtils.textForType(card.type);
+        rarity = EUIGameUtils.textForRarity(card.rarity);
+        cardTarget = TargetFilter.forCard(card).name;
         damage = card.baseDamage;
         block = card.baseBlock;
         magicNumber = card.magicNumber;
@@ -40,6 +45,7 @@ public class EUIExporterCardRow extends EUIExporterRow {
             magicNumberUpgrade = upgrade.baseMagicNumber - magicNumber;
             healUpgrade = upgrade.baseHeal - heal;
             costUpgrade = upgrade.cost - cost;
+            effects = parseCardString(card, upgrade);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -48,19 +54,58 @@ public class EUIExporterCardRow extends EUIExporterRow {
             magicNumberUpgrade = 0;
             healUpgrade = 0;
             costUpgrade = 0;
+            effects = parseCardString(card, null);
         }
-
-        effects = parseCardString(card);
     }
 
-    // TODO read from dynamic variable maps instead of doing manual checks
-    public String parseCardString(AbstractCard card) {
-        return card.rawDescription
-                .replace("!D!", damageUpgrade != 0 ? card.baseDamage + " (" + (card.baseDamage + damageUpgrade) + ")" : String.valueOf(card.baseDamage))
-                .replace("!B!", blockUpgrade != 0 ? card.baseBlock + " (" + (card.baseBlock + blockUpgrade) + ")" : String.valueOf(card.baseBlock))
-                .replace("!M!", magicNumberUpgrade != 0 ? card.baseMagicNumber + " (" + (card.baseMagicNumber + magicNumberUpgrade) + ")" : String.valueOf(card.baseMagicNumber))
-                .replace(" NL ", " ")
-                .replaceAll("[*\\[\\]]", "");
+    private static String getDynavarString(String key, AbstractCard card, AbstractCard upgrade) {
+        DynamicVariable var = BaseMod.cardDynamicVariableMap.get(key);
+        if (var != null) {
+            int base = var.baseValue(card);
+            int upVal = upgrade != null ? var.baseValue(upgrade) : base;
+            return base != upVal ? base + " (" + upVal + ")" : String.valueOf(base);
+        }
+        return EUIUtils.EMPTY_STRING;
+    }
+
+    private static String parseCardString(AbstractCard card, AbstractCard upgrade) {
+        StringBuilder sb = new StringBuilder();
+        StringBuilder sbd = new StringBuilder();
+        boolean isDynavar = false;
+        for (int i = 0; i < card.rawDescription.length(); i++) {
+            char c = card.rawDescription.charAt(i);
+            switch (c) {
+                case '!':
+                    sbd.setLength(0);
+                    while (i + 1 < card.rawDescription.length()) {
+                        i++;
+                        c = card.rawDescription.charAt(i);
+                        if (c == '!') {
+                            sb.append(getDynavarString(sbd.toString(), card, upgrade));
+                            break;
+                        }
+                        else {
+                            sbd.append(c);
+                        }
+                    }
+                    break;
+                case '*':
+                case '[':
+                case ']':
+                    continue;
+                default:
+                    // I hate NL
+                    if (Character.isWhitespace(c) && i + 3 < card.rawDescription.length() &&
+                    card.rawDescription.charAt(i + 1) == 'N' && card.rawDescription.charAt(i + 2) == 'L' && Character.isWhitespace(card.rawDescription.charAt(i + 3))) {
+                        i += 3;
+                        sb.append(" ");
+                    }
+                    else {
+                        sb.append(c);
+                    }
+            }
+        }
+        return sb.toString();
     }
 
 }
