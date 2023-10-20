@@ -2,7 +2,6 @@ package extendedui.exporter;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIGameUtils;
-import extendedui.EUIUtils;
 
 public class EUIExporterCardRow extends EUIExporterRow {
     public String assetURL;
@@ -32,39 +31,36 @@ public class EUIExporterCardRow extends EUIExporterRow {
         magicNumber = card.magicNumber;
         heal = card.baseHeal;
         cost = card.cost;
-        effects = parseCardString(card);
 
         try {
             AbstractCard upgrade = card.makeSameInstanceOf();
             upgrade.upgrade();
-            damageUpgrade = card.baseDamage - damage;
-            blockUpgrade = card.baseBlock - block;
-            magicNumberUpgrade = card.baseMagicNumber - magicNumber;
-            healUpgrade = card.baseHeal - heal;
-            costUpgrade = card.cost - cost;
+            damageUpgrade = upgrade.baseDamage - damage;
+            blockUpgrade = upgrade.baseBlock - block;
+            magicNumberUpgrade = upgrade.baseMagicNumber - magicNumber;
+            healUpgrade = upgrade.baseHeal - heal;
+            costUpgrade = upgrade.cost - cost;
         }
         catch (Exception e) {
+            e.printStackTrace();
             damageUpgrade = 0;
             blockUpgrade = 0;
             magicNumberUpgrade = 0;
             healUpgrade = 0;
             costUpgrade = 0;
         }
+
+        effects = parseCardString(card);
     }
 
-    public static String parseCardString(AbstractCard card) {
+    // TODO read from dynamic variable maps instead of doing manual checks
+    public String parseCardString(AbstractCard card) {
         return card.rawDescription
-                .replace("!D!", String.valueOf(card.baseDamage))
-                .replace("!B!", String.valueOf(card.baseBlock))
-                .replace("!M!", String.valueOf(card.baseMagicNumber))
-                .replace(" NL ", " ");
+                .replace("!D!", damageUpgrade != 0 ? card.baseDamage + " (" + (card.baseDamage + damageUpgrade) + ")" : String.valueOf(card.baseDamage))
+                .replace("!B!", blockUpgrade != 0 ? card.baseBlock + " (" + (card.baseBlock + blockUpgrade) + ")" : String.valueOf(card.baseBlock))
+                .replace("!M!", magicNumberUpgrade != 0 ? card.baseMagicNumber + " (" + (card.baseMagicNumber + magicNumberUpgrade) + ")" : String.valueOf(card.baseMagicNumber))
+                .replace(" NL ", " ")
+                .replaceAll("[*\\[\\]]", "");
     }
 
-    @Override
-    public Integer[] getStatIndices() {
-        return EUIUtils.array(
-                5, //type
-                6 //rarity
-        );
-    }
 }

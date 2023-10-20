@@ -5,7 +5,6 @@ import extendedui.EUIUtils;
 import java.lang.reflect.Field;
 
 public class EUIExporterRow implements Comparable<EUIExporterRow> {
-    private static final Field[] BASE_FIELDS = EUIExporterRow.class.getDeclaredFields();
     public String ID;
     public String modID;
     public String color;
@@ -30,15 +29,22 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
     }
 
     public String getCsvHeaderRow() {
-        return EUIUtils.joinStringsMapLists(",", Field::getName, BASE_FIELDS, this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
+        return EUIUtils.joinStringsMapLists(",", Field::getName, EUIExporter.BASE_FIELDS, this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
     }
 
     public String[] getCsvHeaderRowAsCells() {
-        return EUIUtils.arrayMapAll(String.class, Field::getName, BASE_FIELDS, this.getClass().getDeclaredFields());
+        return EUIUtils.arrayMapAll(String.class, Field::getName, EUIExporter.BASE_FIELDS, this.getClass().getDeclaredFields());
     }
 
-    public Integer[] getStatIndices() {
-        return new Integer[] {};
+    public Object[] toArray() {
+        return EUIUtils.arrayMapAll(Object.class, field -> {
+            try {
+                return field.get(this);
+            }
+            catch (IllegalAccessException e) {
+                return EUIUtils.EMPTY_STRING;
+            }
+        }, EUIExporter.BASE_FIELDS, this.getClass().getDeclaredFields());
     }
 
     @Override
@@ -51,17 +57,6 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
             catch (IllegalAccessException e) {
                 return EUIUtils.EMPTY_STRING;
             }
-        }, BASE_FIELDS, this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
-    }
-
-    public String[] toStringList() {
-        return EUIUtils.arrayMapAll(String.class, field -> {
-                try {
-                    return String.valueOf(field.get(this));
-                }
-                catch (IllegalAccessException e) {
-                    return EUIUtils.EMPTY_STRING;
-                }
-            }, BASE_FIELDS, this.getClass().getDeclaredFields());
+        }, EUIExporter.BASE_FIELDS, this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
     }
 }
