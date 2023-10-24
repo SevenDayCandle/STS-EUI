@@ -90,7 +90,6 @@ public class EUI {
     public static final String[] ENERGY_STRINGS = {ENERGY_TIP, "[R]", "[G]", "[B]", "[W]"};
     private static float delta = 0;
     private static float timer = 0;
-    private static int imguiIndex = 0;
     private static boolean isDragging;
     private static Hitbox lastClicked;
     public static AbstractCard.CardColor actingColor;
@@ -314,10 +313,6 @@ public class EUI {
             default:
                 return BaseMod.getCardEnergyOrbAtlasRegion(color);
         }
-    }
-
-    public static int getImguiIndex() {
-        return imguiIndex++;
     }
 
     public static FuncT1<String, AbstractCard> getSetFunction(AbstractCard.CardColor c) {
