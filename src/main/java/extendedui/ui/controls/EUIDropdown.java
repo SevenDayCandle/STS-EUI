@@ -320,7 +320,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     }
 
     public EUITourTooltip makeTour(boolean canDismiss) {
-        if (tooltip != null) {
+        if (tooltip != null && isActive) {
             EUITourTooltip tip = new EUITourTooltip(hb, tooltip.title, tooltip.description);
             tip.setFlash(button.background);
             tip.setCanDismiss(canDismiss);

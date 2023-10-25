@@ -178,6 +178,7 @@ public class EUIRM {
         public final TextureCache panelRounded = new TextureCache("images/extendedui/ui/Panel_Rounded.png");
         public final TextureCache panelRoundedHalfH = new TextureCache("images/extendedui/ui/Panel_Rounded_Half_H.png");
         public final TextureCache plus = new TextureCache("images/extendedui/ui/Plus.png");
+        public final TextureCache previous = new TextureCache("images/extendedui/ui/Previous.png");
         public final TextureCache proceed = new TextureCache("images/extendedui/ui/Proceed.png");
         public final TextureCache rectangularButton = new TextureCache("images/extendedui/ui/RectangularButton.png");
         public final TextureCache smallPanelBorderB = new TextureCache("images/extendedui/ui/SmallPanel_Border_B.png");

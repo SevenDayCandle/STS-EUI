@@ -15,15 +15,20 @@ import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.markers.TourProvider;
+import extendedui.ui.EUIBase;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUIImage;
 import extendedui.ui.controls.EUIToggle;
+import extendedui.ui.hitboxes.EUIHitbox;
 
-import java.util.LinkedList;
+import java.util.ArrayList;
 
 public class EUITourTooltip extends EUITooltip {
-    private static final LinkedList<EUITourTooltip> tutorialQueue = new LinkedList<>();
+    private static final ArrayList<EUITourTooltip> tutorialQueue = new ArrayList<>();
     private static final Color TOOLTIP_COLOR = new Color(0.2f, 0.3f, 0.4f, 1f);
+    private static EUIImage prevImage;
+    private static EUIImage xImage;
+    private static int queuePos;
 
     public final Type type;
     private float linkedProgress;
@@ -34,6 +39,7 @@ public class EUITourTooltip extends EUITooltip {
     protected AbstractDungeon.CurrentScreen dungeonScreen;
     protected MainMenuScreen.CurScreen mainMenuScreen;
     public boolean canDismiss = true;
+    public boolean canTerminate = true;
     public boolean canUpdatePos;
     public boolean disableInteract;
     public float x;
@@ -44,6 +50,7 @@ public class EUITourTooltip extends EUITooltip {
         this.waitOnAction = waitOnAction;
         this.dungeonScreen = AbstractDungeon.CurrentScreen.NONE;
         this.canDismiss = false;
+        this.canTerminate = false;
     }
 
     public EUITourTooltip(EUIButton image, String title, String description) {
@@ -88,10 +95,26 @@ public class EUITourTooltip extends EUITooltip {
 
     public static void clearTutorialQueue() {
         tutorialQueue.clear();
+        queuePos = 0;
     }
 
-    public static EUITourTooltip getNext() {
-        return tutorialQueue.peek();
+    public static EUITourTooltip getCur() {
+        return queuePos < tutorialQueue.size() ? tutorialQueue.get(queuePos) : null;
+    }
+
+    protected static EUIImage getPrevImage() {
+        if (prevImage == null) {
+            Texture tex = EUIRM.images.previous.texture();
+            prevImage = new EUIImage(tex, new EUIHitbox(0, 0, tex.getWidth(), tex.getHeight()));
+        }
+        return prevImage;
+    }
+
+    protected static EUIImage getXImage() {
+        if (xImage == null) {
+            xImage = new EUIImage(EUIRM.images.xButton.texture(), new EUIHitbox(0, 0, EUIBase.scale(32), EUIBase.scale(32)));
+        }
+        return xImage;
     }
 
     public static boolean hasTutorial(EUITourTooltip tip) {
@@ -100,6 +123,20 @@ public class EUITourTooltip extends EUITooltip {
 
     public static boolean isQueueEmpty() {
         return tutorialQueue.isEmpty();
+    }
+
+    public static void moveQueueBackward() {
+        if (queuePos > 0) {
+            queuePos--;
+        }
+    }
+
+    public static void moveQueueForward(EUITourTooltip tip) {
+        queuePos++;
+        tip.onComplete();
+        if (getCur() == null) {
+            clearTutorialQueue();
+        }
     }
 
     public static void queueFirstView(STSConfigItem<Boolean> config, Iterable<? extends EUITourTooltip> tips) {
@@ -181,43 +218,48 @@ public class EUITourTooltip extends EUITooltip {
         }
     }
 
-    public static void render(SpriteBatch sb) {
-        EUITourTooltip tip = getNext();
+    public static boolean shouldBlockInteract(Hitbox hb) {
+        EUITourTooltip tip = getCur();
+        return tip != null && tip.disableInteract && tip.waitOnHitbox != hb;
+    }
+
+    public static void updateAndRender(SpriteBatch sb) {
+        EUITourTooltip tip = getCur();
         if (tip != null && tip.canShowForScreen()) {
-            tip.update();
             tip.render(sb, tip.x, tip.y, 0);
             if (EUIInputManager.leftClick.isJustPressed() && tip.canDismiss) {
-                tutorialQueue.pop();
-                tip.onComplete();
+                if (getPrevImage().hb.hovered) {
+                    prevImage.hb.unhover();
+                    moveQueueBackward();
+                }
+                else if (getXImage().hb.hovered) {
+                    xImage.hb.unhover();
+                    clearTutorialQueue();
+                }
+                else {
+                    moveQueueForward(tip);
+                }
             }
             else {
                 switch (tip.type) {
                     case Action:
                         if (!EUIGameUtils.inBattle() || tip.waitOnAction == null || tip.waitOnAction.isInstance(AbstractDungeon.actionManager.currentAction)) {
-                            tutorialQueue.pop();
-                            tip.onComplete();
+                            moveQueueForward(tip);
                         }
                         break;
                     case Hitbox:
                         if (tip.waitOnHitbox == null || (tip.waitOnHitbox.hovered && EUIInputManager.leftClick.isJustPressed())) {
-                            tutorialQueue.pop();
-                            tip.onComplete();
+                            moveQueueForward(tip);
                         }
                         break;
                     case Provider:
                         if (tip.waitOnProvider == null || tip.waitOnProvider.isComplete()) {
-                            tutorialQueue.pop();
-                            tip.onComplete();
+                            moveQueueForward(tip);
                         }
                         break;
                 }
             }
         }
-    }
-
-    public static boolean shouldBlockInteract(Hitbox hb) {
-        EUITourTooltip tip = getNext();
-        return tip != null && tip.disableInteract && tip.waitOnHitbox != hb;
     }
 
     public boolean canShowForScreen() {
@@ -231,10 +273,15 @@ public class EUITourTooltip extends EUITooltip {
         }
     }
 
+    // Also handles updating
     @Override
     public float render(SpriteBatch sb, float x, float y, int index) {
         verifyFonts();
         final float h = height();
+
+        if (waitOnHitbox != null && canUpdatePos) {
+            setPosition(waitOnHitbox.x, waitOnHitbox.y);
+        }
 
         if (linkedImage != null) {
             if (linkedProgress > 1) {
@@ -256,7 +303,20 @@ public class EUITourTooltip extends EUITooltip {
         if (canDismiss) {
             Texture t = EUIRM.images.proceed.texture();
             sb.setColor(Color.WHITE);
-            sb.draw(t, x + width - t.getWidth(), y - h - BOX_BODY_H - t.getHeight(), t.getWidth(), t.getHeight());
+            float yLoc = y - h - BOX_BODY_H - t.getHeight();
+            sb.draw(t, x + width - t.getWidth(), yLoc, t.getWidth(), t.getHeight());
+            if (queuePos > 0) {
+                EUIImage prevButton = getPrevImage();
+                prevButton.hb.translate(x, yLoc);
+                prevButton.updateImpl();
+                prevButton.render(sb);
+            }
+        }
+        if (canTerminate) {
+            EUIImage xButton = getXImage();
+            xButton.hb.translate(x + width, y);
+            xButton.updateImpl();
+            xButton.render(sb);
         }
 
         float yOff = y + BODY_OFFSET_Y;
@@ -273,6 +333,11 @@ public class EUITourTooltip extends EUITooltip {
 
     public EUITourTooltip setCanDismiss(boolean canDismiss) {
         this.canDismiss = canDismiss;
+        return this;
+    }
+
+    public EUITourTooltip setCanTerminate(boolean canDismiss) {
+        this.canTerminate = canDismiss;
         return this;
     }
 
@@ -323,12 +388,6 @@ public class EUITourTooltip extends EUITooltip {
     public EUITourTooltip setWaitOnProvider(TourProvider provider) {
         this.waitOnProvider = provider;
         return this;
-    }
-
-    public void update() {
-        if (waitOnHitbox != null && canUpdatePos) {
-            setPosition(waitOnHitbox.x, waitOnHitbox.y);
-        }
     }
 
     public enum Type {

@@ -485,15 +485,6 @@ public class EUITooltip {
                 preview.render(sb, 360 * Settings.scale, 0.25f * Settings.HEIGHT, 0.83f, false, false);
             }
         }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD && !hasPotion) {
-            x = 350 * Settings.scale;
-            y = InputHelper.mY + (50 * Settings.scale);
-            renderTipsImpl(sb, x, y);
-            EUIPreview preview = getProviderPreview();
-            if (preview != null) {
-                preview.render(sb, x, y, 0.83f, false, false);
-            }
-        }
         else {
             if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
                 x = InputHelper.mX - (350 * Settings.scale);
