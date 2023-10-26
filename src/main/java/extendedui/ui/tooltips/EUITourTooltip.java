@@ -306,10 +306,14 @@ public class EUITourTooltip extends EUITooltip {
             float yLoc = y - h - BOX_BODY_H - t.getHeight();
             sb.draw(t, x + width - t.getWidth(), yLoc, t.getWidth(), t.getHeight());
             if (queuePos > 0) {
-                EUIImage prevButton = getPrevImage();
-                prevButton.hb.translate(x, yLoc);
-                prevButton.updateImpl();
-                prevButton.render(sb);
+                EUITourTooltip prev = tutorialQueue.get(queuePos - 1);
+                // Do not allow going back to an undismissable tutorial
+                if (prev != null && prev.canDismiss) {
+                    EUIImage prevButton = getPrevImage();
+                    prevButton.hb.translate(x, yLoc);
+                    prevButton.updateImpl();
+                    prevButton.render(sb);
+                }
             }
         }
         if (canTerminate) {
