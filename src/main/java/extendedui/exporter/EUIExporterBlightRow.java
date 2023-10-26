@@ -2,15 +2,14 @@ package extendedui.exporter;
 
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import extendedui.EUIGameUtils;
 
 public class EUIExporterBlightRow extends EUIExporterRow {
-    public boolean unique;
-    public String description;
+    public boolean Unique;
+    public String Description;
 
     public EUIExporterBlightRow(AbstractBlight blight) {
         super(blight.blightID, blight, AbstractCard.CardColor.COLORLESS, blight.name);
-        unique = blight.unique;
-        description = sanitizeDescription(blight.description);
+        Unique = blight.unique;
+        Description = sanitizeDescription(blight.description);
     }
 }

@@ -7,10 +7,12 @@ import extendedui.EUIUtils;
 import java.lang.reflect.Field;
 
 public class EUIExporterRow implements Comparable<EUIExporterRow> {
+    // Unconventional casing is intentional because these names are directly obtained through reflection to be displayed in exported files
+    // Underscores will get replaced with spaces in CSV headers
     public String ID;
-    public String modID;
-    public String color;
-    public String name;
+    public String Mod_ID;
+    public String Color;
+    public String Name;
 
     public EUIExporterRow(String id, Object modID, AbstractCard.CardColor color, String name) {
         this(id, EUIGameUtils.getModID(modID), EUIGameUtils.getColorName(color), name);
@@ -18,9 +20,9 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
 
     public EUIExporterRow(String id, String modID, String color, String name) {
         ID = id;
-        this.modID = modID;
-        this.color = color;
-        this.name = name;
+        this.Mod_ID = modID;
+        this.Color = color;
+        this.Name = name;
     }
 
     public static String sanitizeDescription(String description) {
@@ -35,10 +37,10 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
     }
 
     public String getCsvHeaderRow() {
-        return EUIUtils.joinStringsMapLists(",", Field::getName, EUIExporter.BASE_FIELDS, this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
+        return EUIUtils.joinStringsMapLists(";", f -> (f.getName().replace("_", " ")), EUIExporter.BASE_FIELDS, this.getClass().getDeclaredFields()) + EUIExporter.NEWLINE;
     }
 
-    public String[] getCsvHeaderRowAsCells() {
+    public String[] getXmlHeaderRowCells() {
         return EUIUtils.arrayMapAll(String.class, Field::getName, EUIExporter.BASE_FIELDS, this.getClass().getDeclaredFields());
     }
 
@@ -56,7 +58,7 @@ public class EUIExporterRow implements Comparable<EUIExporterRow> {
     @Override
     public String toString() {
         // Ensure that the base fields come first
-        return EUIUtils.joinStringsMapLists(",", field -> {
+        return EUIUtils.joinStringsMapLists(";", field -> {
             try {
                 return String.valueOf(field.get(this));
             }

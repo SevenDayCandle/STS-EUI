@@ -187,7 +187,7 @@ public class EUIExporter {
     }
 
     public static ArrayList<EUIExporterRow> getRowsForCard(Iterable<? extends AbstractCard> items, ExportType format) {
-        return EUIUtils.map(items, EUIExporterCardRow::new);
+        return EUIUtils.map(items, i -> new EUIExporterCardRow(i, format));
     }
 
     public static ArrayList<EUIExporterRow> getRowsForPotion(Iterable<? extends PotionInfo> items, ExportType format) {
@@ -309,7 +309,7 @@ public class EUIExporter {
                 Element rootElement = doc.createElement(ROOT_NAME);
                 doc.appendChild(rootElement);
 
-                String[] cellNames = items.get(0).getCsvHeaderRowAsCells();
+                String[] cellNames = items.get(0).getXmlHeaderRowCells();
                 for (EUIExporterRow row : items) {
                     rootElement.appendChild(createDomNode(doc, cellNames, row));
                 }

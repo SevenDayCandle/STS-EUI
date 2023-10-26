@@ -4,57 +4,64 @@ import basemod.BaseMod;
 import basemod.abstracts.DynamicVariable;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIGameUtils;
-import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
 import extendedui.utilities.TargetFilter;
 
 public class EUIExporterCardRow extends EUIExporterRow {
-    public String assetURL;
-    public String type;
-    public String rarity;
-    public String cardTarget;
-    public int damage;
-    public int damageUpgrade;
-    public int block;
-    public int blockUpgrade;
-    public int magicNumber;
-    public int magicNumberUpgrade;
-    public int heal;
-    public int healUpgrade;
-    public int cost;
-    public int costUpgrade;
-    public String effects;
+    public String Asset_URL;
+    public String Type;
+    public String Rarity;
+    public String Card_Target;
+    public int Cost;
+    public int Cost_Upgrade;
+    public int Damage;
+    public int Damage_Upgrade;
+    public int Block;
+    public int Block_Upgrade;
+    public int Magic_Number;
+    public int Magic_Number_Upgrade;
+    public int Heal;
+    public int Heal_Upgrade;
+    public Object Card_Tags;
+    public String Effects;
 
-    public EUIExporterCardRow(AbstractCard card) {
+    public EUIExporterCardRow(AbstractCard card, EUIExporter.ExportType type) {
         super(card.cardID, card, card.color, card.name);
-        assetURL = card.assetUrl;
-        type = EUIGameUtils.textForType(card.type);
-        rarity = EUIGameUtils.textForRarity(card.rarity);
-        cardTarget = TargetFilter.forCard(card).name;
-        damage = card.baseDamage;
-        block = card.baseBlock;
-        magicNumber = card.magicNumber;
-        heal = card.baseHeal;
-        cost = card.cost;
+        Asset_URL = card.assetUrl;
+        Type = EUIGameUtils.textForType(card.type);
+        Rarity = EUIGameUtils.textForRarity(card.rarity);
+        Card_Target = TargetFilter.forCard(card).name;
+        Damage = card.baseDamage;
+        Block = card.baseBlock;
+        Magic_Number = card.magicNumber;
+        Heal = card.baseHeal;
+        Cost = card.cost;
 
         try {
             AbstractCard upgrade = card.makeSameInstanceOf();
             upgrade.upgrade();
-            damageUpgrade = upgrade.baseDamage - damage;
-            blockUpgrade = upgrade.baseBlock - block;
-            magicNumberUpgrade = upgrade.baseMagicNumber - magicNumber;
-            healUpgrade = upgrade.baseHeal - heal;
-            costUpgrade = upgrade.cost - cost;
-            effects = parseCardString(card, upgrade);
+            Damage_Upgrade = upgrade.baseDamage - Damage;
+            Block_Upgrade = upgrade.baseBlock - Block;
+            Magic_Number_Upgrade = upgrade.baseMagicNumber - Magic_Number;
+            Heal_Upgrade = upgrade.baseHeal - Heal;
+            Cost_Upgrade = upgrade.cost - Cost;
+            Effects = parseCardString(card, upgrade);
         }
         catch (Exception e) {
             e.printStackTrace();
-            damageUpgrade = 0;
-            blockUpgrade = 0;
-            magicNumberUpgrade = 0;
-            healUpgrade = 0;
-            costUpgrade = 0;
-            effects = parseCardString(card, null);
+            Damage_Upgrade = 0;
+            Block_Upgrade = 0;
+            Magic_Number_Upgrade = 0;
+            Heal_Upgrade = 0;
+            Cost_Upgrade = 0;
+            Effects = parseCardString(card, null);
+        }
+
+        if (type == EUIExporter.ExportType.CSV) {
+            Card_Tags = EUIUtils.joinStringsMap("/", AbstractCard.CardTags::name, card.tags);
+        }
+        else {
+            Card_Tags = card.tags;
         }
     }
 
