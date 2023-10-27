@@ -31,6 +31,7 @@ import java.util.ArrayList;
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
 
 public class EUIRenderHelpers {
+    private static final String SHADER_BICOLOR_FRAGMENT = "shaders/bicolorFragment.glsl";
     private static final String SHADER_BLUR_FRAGMENT = "shaders/blurFragment.glsl";
     private static final String SHADER_BRIGHTER_FRAGMENT = "shaders/brighterFragment.glsl";
     private static final String SHADER_COLORIZE_FRAGMENT = "shaders/colorizeFragment.glsl";
@@ -43,9 +44,11 @@ public class EUIRenderHelpers {
     private static final String SHADER_RAINBOW_VERTICAL_FRAGMENT = "shaders/rainbowVerticalFragment.glsl";
     private static final String SHADER_SEPIA_FRAGMENT = "shaders/sepiaFragment.glsl";
     private static final String SHADER_SILHOUETTE_FRAGMENT = "shaders/silhouetteFragment.glsl";
-    static final String SHADER_VERTEX = "shaders/coloringVertex.glsl";
+    private static final String SHADER_COLORING_VERTEX = "shaders/coloringVertex.glsl";
     public static final Color DARKENED_SCREEN = new Color(0.0F, 0.0F, 0.0F, 0.4F);
+    private static String coloringVertexCode;
     private static FrameBuffer maskBuffer;
+    private static ShaderProgram bicolorShader;
     private static ShaderProgram blurShader;
     private static ShaderProgram brighterShader;
     private static ShaderProgram colorizeShader;
@@ -88,6 +91,15 @@ public class EUIRenderHelpers {
         draw(sb, img, Color.WHITE, x, y, width, height);
     }
 
+    public static void drawBicolor(SpriteBatch sb, Color anchor1, Color anchor2, Color target1, Color target2, ActionT1<SpriteBatch> drawFunc) {
+        ShaderProgram defaultShader = sb.getShader();
+        ShaderProgram bs = getBicolorShader();
+        sb.setShader(bs);
+        setBicolorShader(bs, anchor1, anchor2, target1, target2);
+        drawFunc.invoke(sb);
+        sb.setShader(defaultShader);
+    }
+
     public static void drawBlended(SpriteBatch sb, BlendingMode mode, ActionT1<SpriteBatch> drawFunc) {
         sb.setBlendFunction(mode.srcFunc, mode.dstFunc);
         drawFunc.invoke(sb);
@@ -114,8 +126,9 @@ public class EUIRenderHelpers {
 
     public static void drawBlur(SpriteBatch sb, float radius, float xDir, float yDir, ActionT1<SpriteBatch> drawFunc) {
         ShaderProgram defaultShader = sb.getShader();
-        ShaderProgram bs = setBlurShader(radius, xDir, yDir);
+        ShaderProgram bs = getBlurShader();
         sb.setShader(bs);
+        setBlurShader(bs, radius, xDir, yDir);
         drawFunc.invoke(sb);
         sb.setShader(defaultShader);
     }
@@ -195,7 +208,17 @@ public class EUIRenderHelpers {
         sb.setColor(Color.WHITE);
     }
 
+    public static void drawColored(PolygonSpriteBatch sb, Color color, ActionT1<PolygonSpriteBatch> drawFunc) {
+        sb.setColor(color);
+        drawFunc.invoke(sb);
+        sb.setColor(Color.WHITE);
+    }
+
     public static void drawColoredWithShader(SpriteBatch sb, ShaderProgram shader, Color color, ActionT1<SpriteBatch> drawFunc) {
+        drawWithShader(sb, shader, (s) -> drawColored(s, color, drawFunc));
+    }
+
+    public static void drawColoredWithShader(PolygonSpriteBatch sb, ShaderProgram shader, Color color, ActionT1<PolygonSpriteBatch> drawFunc) {
         drawWithShader(sb, shader, (s) -> drawColored(s, color, drawFunc));
     }
 
@@ -205,6 +228,10 @@ public class EUIRenderHelpers {
 
     public static void drawColorized(SpriteBatch sb, ActionT1<SpriteBatch> drawFunc) {
         drawWithShader(sb, getColorizeShader(), drawFunc);
+    }
+
+    public static void drawColorized(PolygonSpriteBatch sb, Color color, ActionT1<PolygonSpriteBatch> drawFunc) {
+        drawColoredWithShader(sb, getColorizeShader(), color, drawFunc);
     }
 
     public static void drawColorized(PolygonSpriteBatch sb, ActionT1<PolygonSpriteBatch> drawFunc) {
@@ -618,38 +645,53 @@ public class EUIRenderHelpers {
         return (float) Math.atan2(bY - aY, bX - aX);
     }
 
+    protected static ShaderProgram getBicolorShader() {
+        if (bicolorShader == null) {
+            bicolorShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_BICOLOR_FRAGMENT);
+        }
+        return bicolorShader;
+    }
+
     // Not public because blur needs parameters to use properly
     protected static ShaderProgram getBlurShader() {
         if (blurShader == null) {
-            blurShader = initializeShader(SHADER_VERTEX, SHADER_BLUR_FRAGMENT);
+            blurShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_BLUR_FRAGMENT);
         }
         return blurShader;
     }
 
     public static ShaderProgram getBrightShader() {
         if (brighterShader == null) {
-            brighterShader = initializeShader(SHADER_VERTEX, SHADER_BRIGHTER_FRAGMENT);
+            brighterShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_BRIGHTER_FRAGMENT);
         }
         return brighterShader;
     }
 
     protected static ShaderProgram getCRTShader() {
         if (crtShader == null) {
-            crtShader = initializeShader(SHADER_VERTEX, SHADER_CRT_FRAGMENT);
+            crtShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_CRT_FRAGMENT);
         }
         return crtShader;
     }
 
+    protected static String getColoringVertex() {
+        if (coloringVertexCode == null) {
+            FileHandle coloringVertex = Gdx.files.internal(SHADER_COLORING_VERTEX);
+            coloringVertexCode = coloringVertex.readString();
+        }
+        return coloringVertexCode;
+    }
+
     protected static ShaderProgram getColorizeCRTShader() {
         if (crtShader == null) {
-            crtShader = initializeShader(SHADER_VERTEX, SHADER_COLORIZE_CRT_FRAGMENT);
+            crtShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_COLORIZE_CRT_FRAGMENT);
         }
         return crtShader;
     }
 
     public static ShaderProgram getColorizeShader() {
         if (colorizeShader == null) {
-            colorizeShader = initializeShader(SHADER_VERTEX, SHADER_COLORIZE_FRAGMENT);
+            colorizeShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_COLORIZE_FRAGMENT);
         }
         return colorizeShader;
     }
@@ -677,21 +719,21 @@ public class EUIRenderHelpers {
 
     protected static ShaderProgram getGlitchShader() {
         if (glitchShader == null) {
-            glitchShader = initializeShader(SHADER_VERTEX, SHADER_GLITCH_FRAGMENT);
+            glitchShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_GLITCH_FRAGMENT);
         }
         return glitchShader;
     }
 
     public static ShaderProgram getGrayscaleShader() {
         if (grayscaleShader == null) {
-            grayscaleShader = initializeShader(SHADER_VERTEX, SHADER_GRAYSCALE_FRAGMENT);
+            grayscaleShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_GRAYSCALE_FRAGMENT);
         }
         return grayscaleShader;
     }
 
     public static ShaderProgram getInvertShader() {
         if (invertShader == null) {
-            invertShader = initializeShader(SHADER_VERTEX, SHADER_INVERT_FRAGMENT);
+            invertShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_INVERT_FRAGMENT);
         }
         return invertShader;
     }
@@ -711,28 +753,28 @@ public class EUIRenderHelpers {
 
     protected static ShaderProgram getRainbowShader() {
         if (rainbowShader == null) {
-            rainbowShader = initializeShader(SHADER_VERTEX, SHADER_RAINBOW_FRAGMENT);
+            rainbowShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_RAINBOW_FRAGMENT);
         }
         return rainbowShader;
     }
 
     protected static ShaderProgram getRainbowVerticalShader() {
         if (rainbowVerticalShader == null) {
-            rainbowVerticalShader = initializeShader(SHADER_VERTEX, SHADER_RAINBOW_VERTICAL_FRAGMENT);
+            rainbowVerticalShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_RAINBOW_VERTICAL_FRAGMENT);
         }
         return rainbowVerticalShader;
     }
 
     public static ShaderProgram getSepiaShader() {
         if (sepiaShader == null) {
-            sepiaShader = initializeShader(SHADER_VERTEX, SHADER_SEPIA_FRAGMENT);
+            sepiaShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_SEPIA_FRAGMENT);
         }
         return sepiaShader;
     }
 
     public static ShaderProgram getSilhouetteShader() {
         if (silhouetteShader == null) {
-            silhouetteShader = initializeShader(SHADER_VERTEX, SHADER_SILHOUETTE_FRAGMENT);
+            silhouetteShader = initializeShaderWithExistingVertex(getColoringVertex(), SHADER_SILHOUETTE_FRAGMENT);
         }
         return silhouetteShader;
     }
@@ -756,11 +798,19 @@ public class EUIRenderHelpers {
         maskBuffer = new FrameBuffer(Pixmap.Format.RGBA8888, Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false, false);
     }
 
-    public static ShaderProgram initializeShader(String vShaderPath, String fShaderPath) {
-        FileHandle fShader = Gdx.files.internal(fShaderPath);
-        FileHandle vShader = Gdx.files.internal(vShaderPath);
-        String fShaderString = fShader.readString();
+    public static ShaderProgram initializeShader(FileHandle vShader, FileHandle fShader) {
         String vShaderString = vShader.readString();
+        String fShaderString = fShader.readString();
+        return new ShaderProgram(vShaderString, fShaderString);
+    }
+
+    public static ShaderProgram initializeShaderFromPath(String vShaderPath, String fShaderPath) {
+        return initializeShader(Gdx.files.internal(vShaderPath), Gdx.files.internal(fShaderPath));
+    }
+
+    private static ShaderProgram initializeShaderWithExistingVertex(String vShaderString, String fShaderPath) {
+        FileHandle fShader = Gdx.files.internal(fShaderPath);
+        String fShaderString = fShader.readString();
         return new ShaderProgram(vShaderString, fShaderString);
     }
 
@@ -796,45 +846,53 @@ public class EUIRenderHelpers {
         font.getData().setScale(1);
     }
 
-    protected static ShaderProgram setBlurShader(float radius, float xDir, float yDir) {
-        ShaderProgram rs = getBlurShader();
-        rs.setUniformf("u_radius", radius);
-        rs.setUniform2fv("u_dir", new float[]{xDir, yDir}, 0, 2);
-        return rs;
+    private static void setBicolorShader(ShaderProgram rs, Color anchor1, Color anchor2, Color target1, Color target2) {
+        rs.setUniformf("lRed", target1.r);
+        rs.setUniformf("lGreen", target1.g);
+        rs.setUniformf("lBlue", target1.b);
+        rs.setUniformf("rRed", target2.r);
+        rs.setUniformf("rGreen", target2.g);
+        rs.setUniformf("rBlue", target2.b);
+        rs.setUniformf("anchorAR", anchor1.r);
+        rs.setUniformf("anchorAG", anchor1.g);
+        rs.setUniformf("anchorAB", anchor1.b);
+        rs.setUniformf("anchorBR", anchor2.r);
+        rs.setUniformf("anchorBG", anchor2.g);
+        rs.setUniformf("anchorBB", anchor2.b);
     }
 
-    protected static ShaderProgram setCRTShader(ShaderProgram rs, float xOffset, float xFuzz, float rgbOffset, float jerk) {
+    private static void setBlurShader(ShaderProgram rs, float radius, float xDir, float yDir) {
+        rs.setUniformf("u_radius", radius);
+        rs.setUniform2fv("u_dir", new float[]{xDir, yDir}, 0, 2);
+    }
+
+    private static void setCRTShader(ShaderProgram rs, float xOffset, float xFuzz, float rgbOffset, float jerk) {
         rs.setUniformf("u_time", xOffset);
         rs.setUniformf("u_horzFuzz", xFuzz);
         rs.setUniformf("u_rgbOffset", rgbOffset);
         rs.setUniformf("u_vertJerk", jerk);
-        return rs;
     }
 
-    protected static ShaderProgram setGlitchShader(ShaderProgram rs, float xOffset) {
+    private static void setGlitchShader(ShaderProgram rs, float xOffset) {
         rs.setUniformf("u_time", xOffset);
-        return rs;
     }
 
-    protected static ShaderProgram setRainbowShader(ShaderProgram rs, float xOffset, float saturation, float brightness, float opacity) {
+    private static void setRainbowShader(ShaderProgram rs, float xOffset, float saturation, float brightness, float opacity) {
         rs.setUniformf("u_time", xOffset);
         rs.setUniformf("u_saturation", saturation);
         rs.setUniformf("u_brightness", brightness);
         rs.setUniformf("u_opacity", opacity);
-        return rs;
     }
 
-    protected static ShaderProgram setRainbowVerticalShader(ShaderProgram rs, float yOffset, float saturation, float brightness, float opacity) {
+    private static void setRainbowVerticalShader(ShaderProgram rs, float yOffset, float saturation, float brightness, float opacity) {
         rs.setUniformf("u_time", yOffset);
         rs.setUniformf("u_saturation", saturation);
         rs.setUniformf("u_brightness", brightness);
         rs.setUniformf("u_opacity", opacity);
-        return rs;
     }
 
-    protected static ShaderProgram setSilhouetteShader(ShaderProgram rs, Color color) {
+    private static void setSilhouetteShader(ShaderProgram rs, Color color) {
         rs.setUniform3fv("u_borderColor", new float[]{color.r, color.g, color.b}, 0, 3);
-        return rs;
     }
 
     public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color) {

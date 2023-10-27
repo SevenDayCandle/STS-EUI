@@ -42,10 +42,7 @@ public class ColoredTexture {
 
     public ColoredTexture setColor(Color color) {
         if (color != null) {
-            this.color.r = color.r;
-            this.color.g = color.g;
-            this.color.b = color.b;
-            this.color.a = color.a;
+            EUIColors.copyFrom(this.color, color);
         }
         else {
             this.color = null;

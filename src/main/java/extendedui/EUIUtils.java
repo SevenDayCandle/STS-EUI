@@ -1,10 +1,7 @@
 package extendedui;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Graphics;
 import com.google.gson.Gson;
 import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.TipHelper;
 import extendedui.configuration.STSStringConfigItem;
 import extendedui.interfaces.delegates.ActionT3;
 import extendedui.interfaces.delegates.FuncT1;
@@ -40,6 +37,7 @@ public abstract class EUIUtils {
     public static final String DOUBLE_SPLIT_LINE = " || ";
     public static final String LEGACY_DOUBLE_SPLIT_LINE = " NL  NL ";
     public static final String SPLIT_LINE = " | ";
+    private static JFrame frame;
 
     public static <T> List<T> addIf(List<T> res, T[] list, FuncT1<Boolean, T> predicate) {
         if (list != null) {
@@ -294,7 +292,7 @@ public abstract class EUIUtils {
     private static File chooseFile(FileNameExtensionFilter extensionFilter, File currentFile, STSStringConfigItem pathConfig, int type) {
         try {
             JFileChooser fc = createFileChooser(extensionFilter, currentFile, type);
-            JFrame frame = createFrame();
+            JFrame frame = getFrame();
             frame.setVisible(true);
             fc.setVisible(true);
             frame.toFront();
@@ -419,15 +417,6 @@ public abstract class EUIUtils {
         fc.setPreferredSize(new Dimension(Settings.WIDTH / 2, Settings.HEIGHT / 2));
 
         return fc;
-    }
-
-    private static JFrame createFrame() {
-        JFrame f = new JFrame();
-        f.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
-        f.setAlwaysOnTop(true);
-        f.setLocationRelativeTo(null);
-        f.setPreferredSize(new Dimension(Settings.WIDTH / 2, Settings.HEIGHT / 2));
-        return f;
     }
 
     public static <T> T deserialize(String s, Class<T> tokenClass) {
@@ -667,6 +656,18 @@ public abstract class EUIUtils {
 
     public static FileNameExtensionFilter getFileFilter(String... filters) {
         return new FileNameExtensionFilter(EUIUtils.joinStringsMap(", ", f -> "*." + f, filters), filters);
+    }
+
+    private static JFrame getFrame() {
+        if (frame == null) {
+            frame = new JFrame();
+            frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            frame.setAlwaysOnTop(true);
+            frame.setLocationRelativeTo(null);
+            frame.setPreferredSize(new Dimension(Settings.WIDTH / 2, Settings.HEIGHT / 2));
+        }
+
+        return frame;
     }
 
     public static Logger getLogger(Object source) {

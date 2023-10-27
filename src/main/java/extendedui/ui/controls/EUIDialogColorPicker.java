@@ -6,12 +6,15 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUIRM;
+import extendedui.EUIUtils;
+import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.utilities.EUIFontHelper;
 
-public class EUIDialogColorPicker extends EUIDialog<Color> {
+public class EUIDialogColorPicker extends EUIDialog<EUIColorPicker> {
     protected static final int HUE_CONSTANT = 255;
+    protected ActionT1<EUIColorPicker> onChange;
     protected EUIColorPicker picker;
     protected EUITextBoxNumericalInput inputHue;
     protected EUITextBoxNumericalInput inputSaturation;
@@ -21,7 +24,7 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
     protected EUIImage sampleColor;
 
     public EUIDialogColorPicker(String headerText) {
-        this(headerText, "");
+        this(headerText, EUIUtils.EMPTY_STRING);
     }
 
     public EUIDialogColorPicker(String headerText, String descriptionText) {
@@ -30,6 +33,10 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
 
     public EUIDialogColorPicker(String headerText, String descriptionText, float w, float h) {
         this(new EUIHitbox(Settings.WIDTH / 2.0F - w / 2f, Settings.HEIGHT / 2.0F - h / 2f, w, h), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
+    }
+
+    public EUIDialogColorPicker(EUIHitbox hb, String headerText, String descriptionText) {
+        this(hb, ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
     }
 
     public EUIDialogColorPicker(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText) {
@@ -86,7 +93,7 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
     }
 
     @Override
-    public Color getCancelValue() {
+    public EUIColorPicker getCancelValue() {
         return null;
     }
 
@@ -95,8 +102,8 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
     }
 
     @Override
-    public Color getConfirmValue() {
-        return picker.getReturnColor();
+    public EUIColorPicker getConfirmValue() {
+        return picker;
     }
 
     protected EUILabel getHeader(String headerText) {
@@ -109,6 +116,11 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
     public void open(Color initial) {
         picker.setColor(initial);
         updateInputs();
+    }
+
+    public EUIDialogColorPicker setOnChange(ActionT1<EUIColorPicker> onChange) {
+        this.onChange = onChange;
+        return this;
     }
 
     @Override
@@ -144,5 +156,8 @@ public class EUIDialogColorPicker extends EUIDialog<Color> {
         this.inputAlpha
                 .forceSetValue((int) (picker.getAlpha() * HUE_CONSTANT), false);
         this.sampleColor.setColor(picker.getReturnColor());
+        if (this.onChange != null) {
+            onChange.invoke(picker);
+        }
     }
 }

@@ -166,7 +166,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         this.cancelButton.show(CardLibraryScreen.TEXT[0]);
     }
 
-    protected void refreshGroups() {
+    public void refreshGroups() {
         for (ArrayList<AbstractCard> group : CARD_LISTS.values()) {
             for (AbstractCard c : group) {
                 if (UnlockTracker.isCardLocked(c.cardID)) {
@@ -175,6 +175,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
                 else if (c.isLocked) {
                     c.unlock();
                 }
+                c.isSeen = UnlockTracker.isCardSeen(c.cardID);
             }
         }
     }

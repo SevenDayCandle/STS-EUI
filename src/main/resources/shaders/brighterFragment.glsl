@@ -5,7 +5,7 @@
 #define LOWP lowpprecision mediump float;
 #else
 #define LOWP
-#endifvarying
+#endif
 
 varying vec2 v_texCoords;
 varying LOWP vec4 v_color;

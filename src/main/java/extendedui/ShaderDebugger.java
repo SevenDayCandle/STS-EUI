@@ -46,8 +46,7 @@ public class ShaderDebugger implements ImGuiSubscriber {
     }
 
     private void compile() {
-        FileHandle vShader = Gdx.files.internal(EUIRenderHelpers.SHADER_VERTEX);
-        String vShaderString = vShader.readString();
+        String vShaderString = EUIRenderHelpers.getColoringVertex();
         ShaderProgram program = new ShaderProgram(vShaderString, fragmentShader.get());
         if (program.isCompiled()) {
             shader = program;

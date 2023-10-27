@@ -31,6 +31,13 @@ public class EUIColors {
         return new Color(color.r, color.g, color.b, a);
     }
 
+    public static void copyFrom(Color to, Color from) {
+        to.r = from.r;
+        to.g = from.g;
+        to.b = from.b;
+        to.a = from.a;
+    }
+
     public static Color cream(float a) {
         CREAM.a = a;
         return CREAM;

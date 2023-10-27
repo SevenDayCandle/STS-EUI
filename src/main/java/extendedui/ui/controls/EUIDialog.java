@@ -19,6 +19,7 @@ import static extendedui.EUIRenderHelpers.DARKENED_SCREEN;
 public abstract class EUIDialog<T> extends EUIHoverable {
     protected final static String[] TEXT = CardCrawlGame.languagePack.getUIString("ConfirmPopup").TEXT;
     protected final static String[] CHOICE_TEXT = CardCrawlGame.languagePack.getUIString("SeedPanel").TEXT;
+    protected boolean setShowDark = true;
     protected EUIButton confirm;
     protected EUIButton cancel;
     protected EUILabel header;
@@ -35,7 +36,7 @@ public abstract class EUIDialog<T> extends EUIHoverable {
     }
 
     public EUIDialog(String headerText, String descriptionText, float w, float h) {
-        this(new EUIHitbox(Settings.WIDTH / 2.0F - w / 2f, Settings.HEIGHT / 2.0F - h / 2f, w, h), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
+        this(new EUIHitbox((Settings.WIDTH - w) / 2f, (Settings.HEIGHT - h ) / 2f, w, h), ImageMaster.OPTION_CONFIRM, headerText, descriptionText);
     }
 
     public EUIDialog(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText) {
@@ -94,8 +95,10 @@ public abstract class EUIDialog<T> extends EUIHoverable {
 
     @Override
     public void renderImpl(SpriteBatch sb) {
-        sb.setColor(DARKENED_SCREEN);
-        sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float) Settings.WIDTH, (float) Settings.HEIGHT);
+        if (setShowDark) {
+            sb.setColor(DARKENED_SCREEN);
+            sb.draw(ImageMaster.WHITE_SQUARE_IMG, 0.0F, 0.0F, (float) Settings.WIDTH, (float) Settings.HEIGHT);
+        }
         sb.setColor(Color.WHITE);
         this.backgroundImage.tryRender(sb);
 
@@ -134,6 +137,16 @@ public abstract class EUIDialog<T> extends EUIHoverable {
         return this;
     }
 
+    public EUIDialog<T> setEnableCancel(boolean val) {
+        this.cancel.setActive(val);
+        return this;
+    }
+
+    public EUIDialog<T> setEnableConfirm(boolean val) {
+        this.confirm.setActive(val);
+        return this;
+    }
+
     public EUIDialog<T> setHeaderProperties(BitmapFont font, float fontScale, Color textColor) {
         return this.setHeaderProperties(font, fontScale, textColor, false);
     }
@@ -150,6 +163,11 @@ public abstract class EUIDialog<T> extends EUIHoverable {
 
     public EUIDialog<T> setOnComplete(ActionT1<T> onComplete) {
         this.onComplete = onComplete;
+        return this;
+    }
+
+    public EUIDialog<T> setShowDark(boolean val) {
+        this.setShowDark = val;
         return this;
     }
 
