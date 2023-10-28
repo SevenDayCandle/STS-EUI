@@ -1112,15 +1112,13 @@ public abstract class EUIUtils {
     }
 
     public static String modifyString(String text, FuncT1<String, String> modifyWord) {
-        return EUIUtils.modifyString(text, " ", " ", modifyWord);
+        return EUIUtils.modifyString(text, " ", " ", 0, modifyWord);
     }
 
-    public static String modifyString(String text, String separator, String delimiter, FuncT1<String, String> modifyWord) {
+    public static String modifyString(String text, String separator, String delimiter, int offset, FuncT1<String, String> modifyWord) {
         final String[] words = splitString(separator, text);
-        if (modifyWord != null) {
-            for (int i = 0; i < words.length; i++) {
-                words[i] = modifyWord.invoke(words[i]);
-            }
+        for (int i = offset; i < words.length; i++) {
+            words[i] = modifyWord.invoke(words[i]);
         }
 
         return joinStrings(delimiter, words);

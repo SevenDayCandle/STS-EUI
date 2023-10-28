@@ -10,7 +10,7 @@
 		"PROGRESSIVE": "Channeling"
 	},
 	"Curse": {
-		"PLURAL": "${0}@>1:Curses@:Curse$"
+		"PLURAL": "${0}@!1:Curses@:Curse$"
 	},
 	"Exhaust": {
 		"PAST": "Exhausted",
@@ -45,7 +45,7 @@
 		"PROGRESSIVE": "Scrying"
 	},
 	"Status": {
-		"PLURAL": "${0}@>1:Statuses@:Status$"
+		"PLURAL": "${0}@!1:Statuses@:Status$"
 	},
 	"Transform": {
 		"PAST": "Transformed",

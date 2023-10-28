@@ -26,6 +26,7 @@ import extendedui.interfaces.markers.KeywordProvider;
 import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
+import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.CostFilter;
 import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.TargetFilter;
@@ -311,27 +312,30 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
         }
 
         ArrayList<EUIKeywordTooltip> dynamicTooltips = new ArrayList<>();
+        if (c.rawDescription != null) {
+            EUITooltip.scanForTips(c.rawDescription, dynamicTooltips);
+        }
         if (c.isInnate) {
             EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
-            if (tip != null) {
+            if (tip != null && !dynamicTooltips.contains(tip)) {
                 dynamicTooltips.add(tip);
             }
         }
         if (c.isEthereal) {
             EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.ETHEREAL.NAMES[0]);
-            if (tip != null) {
+            if (tip != null && !dynamicTooltips.contains(tip)) {
                 dynamicTooltips.add(tip);
             }
         }
         if (c.selfRetain) {
             EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.RETAIN.NAMES[0]);
-            if (tip != null) {
+            if (tip != null && !dynamicTooltips.contains(tip)) {
                 dynamicTooltips.add(tip);
             }
         }
         if (c.exhaust) {
             EUIKeywordTooltip tip = EUIKeywordTooltip.findByID(GameDictionary.EXHAUST.NAMES[0]);
-            if (tip != null) {
+            if (tip != null && !dynamicTooltips.contains(tip)) {
                 dynamicTooltips.add(tip);
             }
         }

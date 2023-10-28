@@ -6,7 +6,7 @@
 		"PAST": "attacked",
 		"PRESENT": "attacks",
 		"PROGRESSIVE": "attacking",
-		"PLURAL": "${0}@>1:Attacks@:Attack$"
+		"PLURAL": "${0}@!1:Attacks@:Attack$"
 	},
 	"Discard":
 	{
@@ -28,18 +28,18 @@
 	{
 		"DESCRIPTION": "An #yOrb's passive effect is triggered every turn.",
 		"NAME": "Orb",
-		"PLURAL": "${0}@>1:Orbs@:Orb$"
+		"PLURAL": "${0}@!1:Orbs@:Orb$"
 	},
 	"Power":
 	{
 		"DESCRIPTION": "Powers continually affect you until removed.",
 		"NAME": "Power",
-		"PLURAL": "${0}@>1:Powers@:Power$"
+		"PLURAL": "${0}@!1:Powers@:Power$"
 	},
 	"Skill":
 	{
 		"DESCRIPTION": "Skills do not do direct damage to opponents.",
 		"NAME": "Skill",
-		"PLURAL": "${0}@>1:Skills@:Skill$"
+		"PLURAL": "${0}@!1:Skills@:Skill$"
 	}
 }

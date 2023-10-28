@@ -850,9 +850,11 @@ public class EUIRenderHelpers {
         rs.setUniformf("lRed", target1.r);
         rs.setUniformf("lGreen", target1.g);
         rs.setUniformf("lBlue", target1.b);
+        rs.setUniformf("lAlpha", target1.a);
         rs.setUniformf("rRed", target2.r);
         rs.setUniformf("rGreen", target2.g);
         rs.setUniformf("rBlue", target2.b);
+        rs.setUniformf("rAlpha", target2.a);
         rs.setUniformf("anchorAR", anchor1.r);
         rs.setUniformf("anchorAG", anchor1.g);
         rs.setUniformf("anchorAB", anchor1.b);
