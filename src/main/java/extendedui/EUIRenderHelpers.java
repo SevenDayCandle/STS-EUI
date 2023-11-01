@@ -597,40 +597,6 @@ public class EUIRenderHelpers {
         pb.setShader(defaultShader);
     }
 
-    private static BitmapFont generateFont(BitmapFont source, float size, float borderWidth, float shadowOffset) {
-        return generateFont(source, size, borderWidth, new Color(0f, 0f, 0f, 1f), shadowOffset, new Color(0f, 0f, 0f, 0.5f));
-    }
-
-    private static BitmapFont generateFont(BitmapFont source, float size, float borderWidth, Color borderColor, float shadowOffset, Color shadowColor) {
-        FreeTypeFontGenerator.FreeTypeFontParameter param = new FreeTypeFontGenerator.FreeTypeFontParameter();
-        param.minFilter = Texture.TextureFilter.Linear;
-        param.magFilter = Texture.TextureFilter.Linear;
-        param.hinting = FreeTypeFontGenerator.Hinting.Slight;
-        param.spaceX = 0;
-        param.kerning = true;
-        param.borderColor = borderColor;
-        param.borderWidth = borderWidth * Settings.scale;
-        param.gamma = 0.9f;
-        param.borderGamma = 0.9f;
-        param.shadowColor = shadowColor;
-        param.shadowOffsetX = Math.round(shadowOffset * Settings.scale);
-        param.shadowOffsetY = Math.round(shadowOffset * Settings.scale);
-        param.borderStraight = false;
-        param.characters = "";
-        param.incremental = true;
-        param.size = Math.round(size * Settings.scale);
-        FreeTypeFontGenerator g = new FreeTypeFontGenerator(source.getData().fontFile); // TitleFontSize.fontFile
-        g.scaleForPixelHeight(param.size);
-        BitmapFont font = g.generateFont(param);
-        font.setUseIntegerPositions(false);
-        font.getData().markupEnabled = false;
-        if (LocalizedStrings.break_chars != null) {
-            font.getData().breakChars = LocalizedStrings.break_chars.toCharArray();
-        }
-
-        return font;
-    }
-
     public static TextureAtlas.AtlasRegion generateIcon(Texture texture) {
         final int h = texture.getHeight();
         final int w = texture.getWidth();

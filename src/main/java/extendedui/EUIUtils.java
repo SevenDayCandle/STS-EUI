@@ -1361,4 +1361,8 @@ public abstract class EUIUtils {
             return null;
         }
     }
+
+    public static String withSlash(String a, String b) {
+        return a + '/' + b;
+    }
 }
