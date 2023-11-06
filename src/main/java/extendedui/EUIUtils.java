@@ -582,6 +582,14 @@ public abstract class EUIUtils {
         return result;
     }
 
+    public static <T, N> ArrayList<N> flatMap(List<? extends T> list, FuncT1<Collection<N>, T> predicate) {
+        ArrayList<N> res = new ArrayList<>();
+        for (T t : list) {
+            res.addAll(predicate.invoke(t));
+        }
+        return res;
+    }
+
     @SafeVarargs
     public static <T> ArrayList<T> flatten(Collection<? extends T>... lists) {
         return Stream.of(lists)
@@ -970,6 +978,38 @@ public abstract class EUIUtils {
         for (List<? extends T> list : lists) {
             for (T t : list) {
                 res.add(predicate.invoke(t));
+            }
+        }
+        return res;
+    }
+
+    @SafeVarargs
+    public static <T, N> ArrayList<N> mapAllAsNonnull(FuncT1<N, T> predicate, T[]... lists) {
+        final ArrayList<N> res = new ArrayList<>(EUIUtils.sumInt(lists, Array::getLength));
+        for (T[] list : lists) {
+            if (list != null) {
+                for (T t : list) {
+                    N n = predicate.invoke(t);
+                    if (n != null) {
+                        res.add(n);
+                    }
+                }
+            }
+        }
+        return res;
+    }
+
+    @SafeVarargs
+    public static <T, N> ArrayList<N> mapAllAsNonnull(FuncT1<N, T> predicate, Iterable<? extends T>... lists) {
+        final ArrayList<N> res = new ArrayList<>();
+        for (Iterable<? extends T> list : lists) {
+            if (list != null) {
+                for (T t : list) {
+                    N n = predicate.invoke(t);
+                    if (n != null) {
+                        res.add(n);
+                    }
+                }
             }
         }
         return res;
