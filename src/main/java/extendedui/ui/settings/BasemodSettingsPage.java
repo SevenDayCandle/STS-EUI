@@ -7,26 +7,33 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUIGameUtils;
 import extendedui.ui.controls.EUIButton;
+import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
 public class BasemodSettingsPage implements IUIElement {
-    private static final float BUTTON_OFFSET_X = 400 * Settings.scale;
+    private static final float BUTTON_OFFSET_X = 450 * Settings.scale;
     private static final float BUTTON_OFFSET_Y = 800 * Settings.scale;
     private static final float ICON_SIZE = EUIGameUtils.scale(40);
-    protected ArrayList<IUIElement> currentItems;
-    protected EUIButton leftButton;
-    protected EUIButton rightButton;
-    public ArrayList<ArrayList<IUIElement>> pages = new ArrayList<>();
+    private ArrayList<IUIElement> currentItems;
+    private final EUIButton leftButton;
+    private final EUIButton rightButton;
+    private final EUILabel pageNumber;
+    private final ArrayList<ArrayList<IUIElement>> pages = new ArrayList<>();
     public int current = 0;
 
     public BasemodSettingsPage() {
         pages.add(new ArrayList<>());
         leftButton = new EUIButton(ImageMaster.CF_LEFT_ARROW, new EUIHitbox(BUTTON_OFFSET_X, BUTTON_OFFSET_Y, ICON_SIZE, ICON_SIZE))
                 .setOnClick(__ -> setPage(current - 1));
-        rightButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new EUIHitbox(leftButton.hb.cX + ICON_SIZE, leftButton.getY(), ICON_SIZE, ICON_SIZE))
+        rightButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new EUIHitbox(leftButton.hb.cX + ICON_SIZE / 2f, leftButton.getY(), ICON_SIZE, ICON_SIZE))
                 .setOnClick(__ -> setPage(current + 1));
+        pageNumber = new EUILabel(EUIFontHelper.cardTitleFontSmall,
+                new EUIHitbox(leftButton.hb.x - ICON_SIZE * 2f, 780 * Settings.scale, ICON_SIZE, ICON_SIZE))
+                .setColor(Settings.GOLD_COLOR);
         setPage(current);
     }
 
@@ -42,6 +49,7 @@ public class BasemodSettingsPage implements IUIElement {
     public void render(SpriteBatch sb) {
         leftButton.render(sb);
         rightButton.render(sb);
+        pageNumber.render(sb);
         for (IUIElement element : currentItems) {
             element.render(sb);
         }
@@ -60,12 +68,14 @@ public class BasemodSettingsPage implements IUIElement {
         }
         leftButton.setInteractable(current > 0);
         rightButton.setInteractable(current <= pages.size() - 2);
+        pageNumber.setLabel((current + 1) + "/" + pages.size());
     }
 
     @Override
     public void update() {
         leftButton.update();
         rightButton.update();
+        pageNumber.update();
         for (IUIElement element : currentItems) {
             element.update();
         }

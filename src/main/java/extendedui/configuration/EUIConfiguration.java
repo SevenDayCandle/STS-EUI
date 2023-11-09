@@ -14,6 +14,7 @@ import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT0;
+import extendedui.text.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.hitboxes.EUIHitbox;
@@ -39,9 +40,7 @@ public class EUIConfiguration {
     private static final String PREFIX = "EUI";
     private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "ttc", "fnt");
     private static final int BASE_OPTION_OFFSET_X = 400;
-    private static final int BASE_OPTION_OFFSET_X2 = 580;
     private static final int BASE_OPTION_OFFSET_Y = 720;
-    private static final int BASE_OPTION_OPTION_HEIGHT = 32;
     // @Formatter: On
     private static HashSet<String> tips = null;
     private static SpireConfig config;
@@ -88,7 +87,7 @@ public class EUIConfiguration {
         settingsBlock.addUIElement(page, new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.get(), "%d", panel, (c) -> {
             option.set(MathUtils.round(c.getValue()));
         }));
-        return ypos - BASE_OPTION_OPTION_HEIGHT;
+        return ypos - ExtraModSettingsPanel.OPTION_SIZE;
     }
 
     protected static float addToggle(int page, STSConfigItem<Boolean> option, float ypos, String label) {
@@ -96,9 +95,8 @@ public class EUIConfiguration {
     }
 
     protected static float addToggle(int page, STSConfigItem<Boolean> option, String label, float ypos, String tip) {
-        settingsBlock.addUIElement(page, new ModLabeledToggleButton(label, tip, BASE_OPTION_OFFSET_X, ypos, Settings.CREAM_COLOR.cpy(), EUIFontHelper.cardDescriptionFontNormal, option.get(), panel, (__) -> {
-        }, (c) -> option.set(c.enabled)));
-        return ypos - BASE_OPTION_OPTION_HEIGHT;
+        settingsBlock.addUIElement(page, createToggle(option, label, ypos, tip));
+        return ypos - ExtraModSettingsPanel.OPTION_SIZE;
     }
 
     public static boolean canSkipFade() {
@@ -115,6 +113,14 @@ public class EUIConfiguration {
 
         EUIKeywordTooltip.clearHidden();
         updateReenableTooltip();
+    }
+
+    public static ModSettingsToggle createToggle(STSConfigItem<Boolean> option, String label, float ypos, String tip) {
+        float baseWidth = EUITextHelper.getSmartWidth(EUIFontHelper.cardDescriptionFontNormal, label);
+        ModSettingsToggle toggle = new ModSettingsToggle(new EUIHitbox(BASE_OPTION_OFFSET_X * Settings.scale, ypos, ExtraModSettingsPanel.OPTION_SIZE * 2f + baseWidth, ExtraModSettingsPanel.OPTION_SIZE), option, label);
+        toggle.setTooltip(new EUITooltip(label, tip));
+        toggle.tooltip.setAutoWidth();
+        return toggle;
     }
 
     public static String getFullKey(String base) {
@@ -251,7 +257,7 @@ public class EUIConfiguration {
         updateReenableTooltip();
 
         // Add basemod options
-        float yPos = BASE_OPTION_OFFSET_Y;
+        float yPos = BASE_OPTION_OFFSET_Y * Settings.scale;
 
         yPos = addToggle(0, showCountingPanel, EUIRM.strings.config_showCountingPanel, yPos, EUIRM.strings.configdesc_showCountingPanel);
         yPos = addToggle(0, useVanillaCompendium, EUIRM.strings.config_useVanillaCompendium, yPos, EUIRM.strings.configdesc_useVanillaCompendium);
@@ -264,33 +270,34 @@ public class EUIConfiguration {
         yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);
         yPos = addToggle(0, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
 
+        float xPos = BASE_OPTION_OFFSET_X * Settings.scale;
         EUIButton clearButton2 = new EUIButton(EUIRM.images.rectangularButton.texture(), new EUIHitbox(clearButton.hb))
                 .setLabel(clearButton.label.text)
                 .setOnClick(() -> clearHiddenTips(true));
-        clearButton2.translate(BASE_OPTION_OFFSET_X2, yPos - BASE_OPTION_OPTION_HEIGHT * 2f);
+        clearButton2.translate(xPos, yPos - ExtraModSettingsPanel.OPTION_SIZE * 2f);
         yPos = addGenericElement(0, clearButton2, clearButton2.hb.y);
 
-        yPos = BASE_OPTION_OFFSET_Y;
+        yPos = BASE_OPTION_OFFSET_Y * Settings.scale;
         yPos = addToggle(1, disableEffekseer, EUIRM.strings.config_disableEffekseer, yPos, EUIRM.strings.configdesc_disableEffekseer);
         yPos = addToggle(1, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(1, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
 
-        yPos = BASE_OPTION_OFFSET_Y;
+        yPos = BASE_OPTION_OFFSET_Y * Settings.scale;
         yPos = addToggle(2, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         yPos = addToggle(2, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
-        ModSettingsPathSelector cardDescFontSelector2 = new ModSettingsPathSelector(cardDescFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector cardDescFontSelector2 = new ModSettingsPathSelector(cardDescFontSelector).translate(xPos, yPos);
         yPos = addGenericElement(2, cardDescFontSelector2, yPos) + 2;
-        ModSettingsPathSelector cardTitleFontSelector2 = new ModSettingsPathSelector(cardTitleFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector cardTitleFontSelector2 = new ModSettingsPathSelector(cardTitleFontSelector).translate(xPos, yPos);
         yPos = addGenericElement(2, cardTitleFontSelector2, yPos) + 2;
-        ModSettingsPathSelector tipDescFontSelector2 = new ModSettingsPathSelector(tipDescFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector tipDescFontSelector2 = new ModSettingsPathSelector(tipDescFontSelector).translate(xPos, yPos);
         yPos = addGenericElement(2, tipDescFontSelector2, yPos) + 2;
-        ModSettingsPathSelector tipTitleFontSelector2 = new ModSettingsPathSelector(tipTitleFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector tipTitleFontSelector2 = new ModSettingsPathSelector(tipTitleFontSelector).translate(xPos, yPos);
         yPos = addGenericElement(2, tipTitleFontSelector2, yPos) + 2;
-        ModSettingsPathSelector buttonFontSelector2 = new ModSettingsPathSelector(buttonFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector buttonFontSelector2 = new ModSettingsPathSelector(buttonFontSelector).translate(xPos, yPos);
         yPos = addGenericElement(2, buttonFontSelector2, yPos) + 2;
-        ModSettingsPathSelector bannerFontSelector2 = new ModSettingsPathSelector(bannerFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector bannerFontSelector2 = new ModSettingsPathSelector(bannerFontSelector).translate(xPos, yPos);
         yPos = addGenericElement(2, buttonFontSelector2, yPos) + 2;
-        ModSettingsPathSelector energyFontSelector2 = new ModSettingsPathSelector(energyFontSelector).translate(BASE_OPTION_OFFSET_X2, yPos);
+        ModSettingsPathSelector energyFontSelector2 = new ModSettingsPathSelector(energyFontSelector).translate(xPos, yPos);
         yPos = addGenericElement(2, buttonFontSelector2, yPos) + 2;
 
         ModInfo euiInfo = EUIGameUtils.getModInfo(EUI.class);
