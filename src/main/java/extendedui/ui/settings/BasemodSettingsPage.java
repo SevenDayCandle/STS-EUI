@@ -15,7 +15,7 @@ import extendedui.utilities.EUIFontHelper;
 import java.util.ArrayList;
 
 public class BasemodSettingsPage implements IUIElement {
-    private static final float BUTTON_OFFSET_X = 450 * Settings.scale;
+    private static final float BUTTON_OFFSET_X = 445 * Settings.scale;
     private static final float BUTTON_OFFSET_Y = 800 * Settings.scale;
     private static final float ICON_SIZE = EUIGameUtils.scale(40);
     private ArrayList<IUIElement> currentItems;
@@ -32,7 +32,7 @@ public class BasemodSettingsPage implements IUIElement {
         rightButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new EUIHitbox(leftButton.hb.cX + ICON_SIZE / 2f, leftButton.getY(), ICON_SIZE, ICON_SIZE))
                 .setOnClick(__ -> setPage(current + 1));
         pageNumber = new EUILabel(EUIFontHelper.cardTitleFontSmall,
-                new EUIHitbox(leftButton.hb.x - ICON_SIZE * 2f, 780 * Settings.scale, ICON_SIZE, ICON_SIZE))
+                new EUIHitbox(leftButton.hb.x - ICON_SIZE * 2f, 786 * Settings.scale, ICON_SIZE, ICON_SIZE))
                 .setColor(Settings.GOLD_COLOR);
         setPage(current);
     }

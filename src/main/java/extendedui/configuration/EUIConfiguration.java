@@ -39,7 +39,7 @@ public class EUIConfiguration {
     private static final ArrayList<STSConfigItem<?>> CONFIG_ITEMS = new ArrayList<>();
     private static final String PREFIX = "EUI";
     private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "ttc", "fnt");
-    private static final int BASE_OPTION_OFFSET_X = 400;
+    private static final int BASE_OPTION_OFFSET_X = 380;
     private static final int BASE_OPTION_OFFSET_Y = 720;
     // @Formatter: On
     private static HashSet<String> tips = null;
@@ -270,7 +270,7 @@ public class EUIConfiguration {
         yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);
         yPos = addToggle(0, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
 
-        float xPos = BASE_OPTION_OFFSET_X * Settings.scale;
+        float xPos = (BASE_OPTION_OFFSET_X + 180) * Settings.scale;
         EUIButton clearButton2 = new EUIButton(EUIRM.images.rectangularButton.texture(), new EUIHitbox(clearButton.hb))
                 .setLabel(clearButton.label.text)
                 .setOnClick(() -> clearHiddenTips(true));
