@@ -4,7 +4,7 @@
   "author_list": ["PinaColada"],
   "description": "Adds various QOL improvements to Slay the Spire, such as a mid-run compendium screen and filters in the compendium screens. Also serves as a utility library for rendering objects and creating GUI elements.",
   "credits" : "Code: EatYourBeetS, SrJohnathan. \n DLL libraries: EffekseerForMultiLanguages \n Shaders: Landon Manning, colorful-gdx \n Translation: 旅渚Lastcel",
-  "version": "4.4.9",
+  "version": "4.4.9-preview01",
   "sts_version": "12-18-2022",
   "mts_version": "3.3.0",
   "dependencies": ["basemod"],
