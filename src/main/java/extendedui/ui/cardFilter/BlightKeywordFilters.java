@@ -116,9 +116,9 @@ public class BlightKeywordFilters extends GenericFilters<AbstractBlight, BlightK
 
     @Override
     public void defaultSort() {
-        this.group.sort(BlightKeywordFilters::rankByName);
-        this.group.sort(BlightKeywordFilters::rankByRarity);
-        this.group.sort(BlightKeywordFilters::rankByUnique);
+        this.group.sort(BlightKeywordFilters::rankByName,
+                BlightKeywordFilters::rankByRarity,
+                BlightKeywordFilters::rankByUnique);
     }
 
     public boolean evaluate(AbstractBlight c) {

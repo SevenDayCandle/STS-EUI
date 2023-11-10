@@ -484,7 +484,7 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         sort();
     }
 
-    protected final void sort() {
+    public final void sort() {
         if (comparator != null) {
             this.group.sort(isReverseOrder ? comparator.reversed() : comparator);
         }

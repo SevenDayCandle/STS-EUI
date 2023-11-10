@@ -158,9 +158,7 @@ public class PotionKeywordFilters extends GenericFilters<PotionInfo, PotionKeywo
 
     @Override
     public void defaultSort() {
-        this.group.sort(PotionKeywordFilters::rankByName);
-        this.group.sort(PotionKeywordFilters::rankByRarity);
-        this.group.sort(PotionKeywordFilters::rankByColor);
+        this.group.sort(PotionKeywordFilters::rankByName, PotionKeywordFilters::rankByRarity, PotionKeywordFilters::rankByColor);
     }
 
     public boolean evaluate(PotionInfo c) {

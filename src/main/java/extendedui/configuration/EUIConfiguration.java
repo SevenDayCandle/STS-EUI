@@ -78,23 +78,23 @@ public class EUIConfiguration {
 
     //public static STSConfigurationOption<Integer> MaxParticles = new STSConfigurationOption<Integer>(GetFullKey("MaxParticles"), BASE_SPRITES_DEFAULT);
 
-    protected static float addGenericElement(int page, EUIHoverable renderable, float ypos) {
+    private static float addGenericElement(int page, EUIHoverable renderable, float ypos) {
         settingsBlock.addUIElement(page, renderable);
         return (ypos - renderable.hb.height);
     }
 
-    protected static float addSlider(int page, STSConfigItem<Integer> option, String label, float ypos, int min, int max) {
+    private static float addSlider(int page, STSConfigItem<Integer> option, String label, float ypos, int min, int max) {
         settingsBlock.addUIElement(page, new ModMinMaxSlider(label, BASE_OPTION_OFFSET_X, ypos, min, max, option.get(), "%d", panel, (c) -> {
             option.set(MathUtils.round(c.getValue()));
         }));
         return ypos - ExtraModSettingsPanel.OPTION_SIZE;
     }
 
-    protected static float addToggle(int page, STSConfigItem<Boolean> option, float ypos, String label) {
+    private static float addToggle(int page, STSConfigItem<Boolean> option, float ypos, String label) {
         return addToggle(page, option, label, ypos, null);
     }
 
-    protected static float addToggle(int page, STSConfigItem<Boolean> option, String label, float ypos, String tip) {
+    private static float addToggle(int page, STSConfigItem<Boolean> option, String label, float ypos, String tip) {
         settingsBlock.addUIElement(page, createToggle(option, label, ypos, tip));
         return ypos - ExtraModSettingsPanel.OPTION_SIZE;
     }
@@ -270,7 +270,7 @@ public class EUIConfiguration {
         yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);
         yPos = addToggle(0, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
 
-        float xPos = (BASE_OPTION_OFFSET_X + 180) * Settings.scale;
+        float xPos = (BASE_OPTION_OFFSET_X + 40) * Settings.scale;
         EUIButton clearButton2 = new EUIButton(EUIRM.images.rectangularButton.texture(), new EUIHitbox(clearButton.hb))
                 .setLabel(clearButton.label.text)
                 .setOnClick(() -> clearHiddenTips(true));
@@ -282,6 +282,7 @@ public class EUIConfiguration {
         yPos = addToggle(1, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
         yPos = addToggle(1, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, yPos, EUIRM.strings.configdesc_flushEffekseer);
 
+        xPos = (BASE_OPTION_OFFSET_X + 290) * Settings.scale;
         yPos = BASE_OPTION_OFFSET_Y * Settings.scale;
         yPos = addToggle(2, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         yPos = addToggle(2, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);

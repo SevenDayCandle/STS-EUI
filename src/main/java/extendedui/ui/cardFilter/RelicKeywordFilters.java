@@ -151,10 +151,7 @@ public class RelicKeywordFilters extends GenericFilters<RelicInfo, RelicKeywordF
 
     @Override
     public void defaultSort() {
-        this.group.sort(RelicKeywordFilters::rankByName);
-        this.group.sort(RelicKeywordFilters::rankByRarity);
-        this.group.sort(RelicKeywordFilters::rankByColor);
-        this.group.sort(RelicKeywordFilters::rankBySeen);
+        this.group.sort(RelicKeywordFilters::rankByName, RelicKeywordFilters::rankByRarity, RelicKeywordFilters::rankByColor, RelicKeywordFilters::rankBySeen);
     }
 
     public boolean evaluate(RelicInfo c) {
