@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 
 // Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
-
 public class ColoredTexture {
     public Color color;
     public Texture texture;
