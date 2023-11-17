@@ -81,7 +81,9 @@
 		"TEXT": [
 			"Cycle Previews",
 			"Open Card Pool",
-			"Toggle Filters"
+			"Toggle Filters",
+			"Open Relic Pool",
+			"Open Potion Pool"
 		]
 	},
 	"extendedui:misc": {

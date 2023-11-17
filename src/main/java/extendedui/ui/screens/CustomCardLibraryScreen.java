@@ -21,6 +21,7 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.exporter.EUIExporter;
+import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.cardFilter.CardKeywordFilters;
@@ -64,7 +65,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         allButton = new EUIButton(ImageMaster.COLOR_TAB_BAR, new EUIHitbox(colorButtons.buttonWidth * 0.8f, colorButtons.buttonHeight))
                 .setPosition(EUIButtonList.STARTING_X, Settings.HEIGHT * 0.95f)
                 .setLabel(EUIFontHelper.buttonFont, 0.7f, EUIRM.strings.target_allCharacter)
-                .setOnClick(() -> this.setToAll());
+                .setOnClick((ActionT0) this::setToAll);
 
         quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
                 new EUIHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, scale(280), scale(48)))
@@ -211,6 +212,10 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         cardGrid
                 .setCanRenderUpgrades(true)
                 .setVerticalStart(Settings.HEIGHT * 0.7f)
+                .setOnClick(c -> {
+                    c.unhover();
+                    CardCrawlGame.cardPopup.open(c, cardGrid.makeCardGroup());
+                })
                 .setOnRightClick(c -> {
                     c.unhover();
                     CardCrawlGame.cardPopup.open(c, cardGrid.makeCardGroup());

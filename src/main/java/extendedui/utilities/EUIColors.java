@@ -10,6 +10,7 @@ import extendedui.EUIRenderHelpers;
 public class EUIColors {
     private static final Color BLACK = Color.BLACK.cpy();
     private static final Color WHITE = Color.WHITE.cpy();
+    private static final Color ORANGE = Color.ORANGE.cpy();
     private static final Color CREAM = Settings.CREAM_COLOR.cpy();
     private static final Color PURPLE = Settings.PURPLE_COLOR.cpy();
     private static final Color GREEN = Settings.GREEN_TEXT_COLOR.cpy();
@@ -71,6 +72,11 @@ public class EUIColors {
         current.b = EUIRenderHelpers.lerp(current.b, target.b, amount);
         current.a = EUIRenderHelpers.lerp(current.a, target.a, amount);
         return current;
+    }
+
+    public static Color orange(float a) {
+        ORANGE.a = a;
+        return ORANGE;
     }
 
     public static Color purple(float a) {

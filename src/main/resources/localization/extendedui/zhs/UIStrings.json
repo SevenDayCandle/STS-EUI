@@ -81,7 +81,9 @@
 		"TEXT": [
 			"循环预览",
 			"运行百科大全",
-			"打开/关闭筛选器"
+			"打开/关闭筛选器",
+			"Open Relic Pool",
+			"Open Potion Pool"
 		]
 	},
 	"extendedui:misc": {

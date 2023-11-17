@@ -269,6 +269,8 @@ public class EUIRM {
         public final String hotkey_cycle = stringsHotkeys.TEXT[0];
         public final String hotkey_openCardPool = stringsHotkeys.TEXT[1];
         public final String hotkey_toggle = stringsHotkeys.TEXT[2];
+        public final String hotkey_openRelicPool = stringsHotkeys.TEXT[3];
+        public final String hotkey_openPotionPool = stringsHotkeys.TEXT[4];
 
         public final String misc_KeyToCycle = stringsMisc.TEXT[0];
         public final String misc_TypeToSearch = stringsMisc.TEXT[1];

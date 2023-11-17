@@ -36,7 +36,6 @@ import java.util.HashSet;
 public class EUIConfiguration {
 
     // @Formatter: Off
-    private static final ArrayList<STSConfigItem<?>> CONFIG_ITEMS = new ArrayList<>();
     private static final String PREFIX = "EUI";
     private static final String[] FONT_EXTS = EUIUtils.array("otf", "ttf", "ttc", "fnt");
     private static final int BASE_OPTION_OFFSET_X = 380;
