@@ -258,6 +258,15 @@ public class EUIDropdown<T> extends EUIHoverable {
         return rows;
     }
 
+    public int indexOf(T page) {
+        for (EUIDropdownRow<T> row : getRowsForSelectionUpdate()) {
+            if (row.item.equals(page)) {
+                return row.index;
+            }
+        }
+        return -1;
+    }
+
     public boolean isOpen() {
         return isOpen;
     }

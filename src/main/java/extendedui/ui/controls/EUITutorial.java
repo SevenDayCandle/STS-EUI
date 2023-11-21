@@ -117,6 +117,7 @@ public class EUITutorial extends EUIHoverable {
 
     protected void setPage(EUITutorialPage page) {
         this.current = page;
+        this.page = this.tutorials.indexOf(page);
         this.description.setLabel(current != null ? current.description : "");
     }
 
