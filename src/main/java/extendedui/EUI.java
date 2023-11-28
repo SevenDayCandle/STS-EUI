@@ -451,8 +451,8 @@ public class EUI {
     }
 
     public static void priorityPostRender(SpriteBatch sb) {
-        renderImpl(sb, priorityPostRenderList.iterator());
         EUITourTooltip.updateAndRender(sb);
+        renderImpl(sb, priorityPostRenderList.iterator());
     }
 
     public static void pushActiveElement(EUIBase element) {
