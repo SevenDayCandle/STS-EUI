@@ -378,11 +378,11 @@ public class EUITextHelper {
                 switch (currentChar) {
                     // Symbol
                     case '[':
-                        writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize, EUIConfiguration.enableDescriptionIcons.get());
+                        writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize, spaceWidth, EUIConfiguration.enableDescriptionIcons.get());
                         break;
                     // Force symbol, ignoring user config settings
                     case '†':
-                        writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize, true);
+                        writeToken(sb, x, y, lineWidth, lineSpacing, sizeMultiplier, imgSize, spaceWidth, true);
                         break;
                     // End of symbol, needs to be manually ignored when icons are disabled
                     case ']':
@@ -403,7 +403,7 @@ public class EUITextHelper {
                     case '}':
                         String o = EUIUtils.popBuilder(builder);
                         if (!o.isEmpty()) {
-                            writeWord(sb, o, x, y, lineWidth, lineSpacing);
+                            writeWord(sb, o, x, y, lineWidth, lineSpacing, spaceWidth);
                         }
                         blockColor = null;
                         break;
@@ -415,6 +415,11 @@ public class EUITextHelper {
                     case '^':
                         writeTab(lineSpacing);
                         break;
+                    case '。':
+                        builder.append(currentChar);
+                        String op = EUIUtils.popBuilder(builder); // This will never be empty/newline
+                        writeWord(sb, op, x, y, lineWidth, lineSpacing, spaceWidth);
+                        break;
                     default:
                         if (Character.isWhitespace(currentChar)) {
                             String output = EUIUtils.popBuilder(builder);
@@ -424,9 +429,15 @@ public class EUITextHelper {
                                     writeNewline(lineSpacing);
                                 }
                                 else {
-                                    writeWord(sb, output, x, y, lineWidth, lineSpacing);
+                                    writeWord(sb, output, x, y, lineWidth, lineSpacing, spaceWidth);
                                 }
                             }
+                        }
+                        // Ideographs in Chinese might not be separated by spaces
+                        else if (Character.isIdeographic(currentChar)) {
+                            builder.append(currentChar);
+                            String output = EUIUtils.popBuilder(builder); // This will never be empty/newline
+                            writeWord(sb, output, x, y, lineWidth, lineSpacing, 0); // Do not add space
                         }
                         else {
                             builder.append(currentChar);
@@ -435,7 +446,7 @@ public class EUITextHelper {
             }
             String output = EUIUtils.popBuilder(builder);
             if (!output.isEmpty()) {
-                writeWord(sb, output, x, y, lineWidth, lineSpacing);
+                writeWord(sb, output, x, y, lineWidth, lineSpacing, spaceWidth);
             }
 
             size.v1 = curWidth;
@@ -477,7 +488,7 @@ public class EUITextHelper {
         }
         String output = parseLogicString(EUIUtils.popBuilder(subBuilder));
         if (output != null && !output.isEmpty()) {
-            writeWord(sb, output, x, y, lineWidth, lineSpacing);
+            writeWord(sb, output, x, y, lineWidth, lineSpacing, spaceWidth);
         }
     }
 
@@ -490,7 +501,7 @@ public class EUITextHelper {
         curWidth += spaceWidth * 5.0f;
     }
 
-    private static void writeToken(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing, float iconScaling, float imageSize, boolean force) {
+    private static void writeToken(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing, float iconScaling, float imageSize, float spaceWidth, boolean force) {
         StringBuilder subBuilder = new StringBuilder();
         while (getAndMove() && currentChar != ']') {
             subBuilder.append(currentChar);
@@ -557,11 +568,11 @@ public class EUITextHelper {
         }
         else {
             wordColor = Settings.GOLD_COLOR;
-            writeWord(sb, tooltip != null ? tooltip.title : iconID, x, y, lineWidth, lineSpacing);
+            writeWord(sb, tooltip != null ? tooltip.title : iconID, x, y, lineWidth, lineSpacing, spaceWidth);
         }
     }
 
-    private static void writeWord(SpriteBatch sb, String word, float x, float y, float lineWidth, float lineSpacing) {
+    private static void writeWord(SpriteBatch sb, String word, float x, float y, float lineWidth, float lineSpacing, float spaceWidth) {
         if (wordColor != null) {
             currentFont.setColor(wordColor);
             wordColor = null;
