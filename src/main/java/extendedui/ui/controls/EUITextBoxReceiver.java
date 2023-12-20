@@ -94,13 +94,13 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
                     extra += run.xAdvances.get(i);
                 }
                 float xOff = hb.x + extra + hb.width * label.horizontalRatio;
-                float yOff = hb.y + run.y + hb.height / 2;
+                float yOff = hb.y + run.y + hb.height * label.verticalRatio - scale(15);
                 EUI.addPriorityPostRender(s ->
                         EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
                 return;
             }
             float xOff = hb.x + EUITextHelper.getLayoutWidth() + hb.width * label.horizontalRatio;
-            float yOff = hb.y + hb.height / 2;
+            float yOff = hb.y + hb.height * label.verticalRatio- scale(15);
             EUI.addPriorityPostRender(s ->
                     EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
         }

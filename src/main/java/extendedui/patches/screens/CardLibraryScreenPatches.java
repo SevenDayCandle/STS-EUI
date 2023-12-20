@@ -47,7 +47,7 @@ public class CardLibraryScreenPatches {
             }
             else {
                 ArrayList<AbstractCard> tempGroup = EUI.cardFilters.applyFilters(EUI.cardFilters.getOriginalGroup());
-                if (tempGroup.size() > 0) {
+                if (!tempGroup.isEmpty()) {
                     header.group.group = tempGroup;
                 }
                 else {
@@ -90,7 +90,7 @@ public class CardLibraryScreenPatches {
             ColorTabBar tabBar = EUIClassUtils.getField(screen, "colorBar");
             ArrayList<ColorTabBarFix.ModColorTab> tabs = ReflectionHacks.getPrivateStatic(ColorTabBarFix.Fields.class, "modTabs");
             if (tabBar.curTab != ColorTabBarFix.Enums.MOD) {
-                screen.didChangeTab(tabBar, tabBar.curTab = (tabs.size() > 0 ? ColorTabBarFix.Enums.MOD : ColorTabBar.CurrentTab.COLORLESS));
+                screen.didChangeTab(tabBar, tabBar.curTab = (!tabs.isEmpty() ? ColorTabBarFix.Enums.MOD : ColorTabBar.CurrentTab.COLORLESS));
             }
 
             return SpireReturn.Continue();

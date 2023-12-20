@@ -235,6 +235,11 @@ public class EUITextHelper {
         font.draw(sb, msg, x, y);
     }
 
+    public static void renderFont(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, float targetWidth, int halign, boolean wrap, Color c) {
+        font.setColor(c);
+        font.draw(sb, msg, x, y, targetWidth, halign, wrap);
+    }
+
     public static void renderFontCentered(SpriteBatch sb, BitmapFont font, CharSequence text, Hitbox hb, Color color) {
         renderFontCentered(sb, font, text, hb.cX, hb.cY, color);
     }
@@ -305,6 +310,11 @@ public class EUITextHelper {
         renderFont(sb, font, msg, x, y + layout.height / 2.0F, c);
     }
 
+    public static void renderFontLeft(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, float targetWidth, int halign, boolean wrap, Color c) {
+        layout.setText(font, msg, c, targetWidth, halign, wrap);
+        renderFont(sb, font, msg, x, y, targetWidth, halign, wrap, c);
+    }
+
     public static void renderFontLeftDownAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
         layout.setText(font, msg);
         renderFont(sb, font, msg, x, y + layout.height, c);
@@ -318,6 +328,11 @@ public class EUITextHelper {
     public static void renderFontRightAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
         layout.setText(font, msg);
         renderFont(sb, font, msg, x - layout.width, y + layout.height / 2.0F, c);
+    }
+
+    public static void renderFontRightAligned(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, float targetWidth, int halign, boolean wrap, Color c) {
+        layout.setText(font, msg, c, targetWidth, halign, wrap);
+        renderFont(sb, font, msg, x - layout.width, y, targetWidth, halign, wrap, c);
     }
 
     public static void renderFontRightToLeft(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, Color c) {
@@ -460,22 +475,6 @@ public class EUITextHelper {
 
     public static TupleT2<Float, Float> renderSmart(SpriteBatch sb, BitmapFont font, CharSequence text, float x, float y, float lineWidth, Color baseColor) {
         return renderSmart(sb, font, text, x, y, lineWidth, font.getLineHeight() * Settings.scale, baseColor);
-    }
-
-    public static void renderWrappedText(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, float width) {
-        renderWrappedText(sb, font, msg, x, y, width, Color.WHITE, 1.0F);
-    }
-
-    public static void renderWrappedText(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, float width, float scale) {
-        renderWrappedText(sb, font, msg, x, y, width, Color.WHITE, scale);
-    }
-
-    public static void renderWrappedText(SpriteBatch sb, BitmapFont font, CharSequence msg, float x, float y, float width, Color c, float scale) {
-        font.getData().setScale(scale);
-        font.setColor(c);
-        layout.setText(font, msg, Color.WHITE, width, 1, true);
-        font.draw(sb, msg, x - width / 2.0F, y + layout.height / 2.0F * scale, width, 1, true);
-        font.getData().setScale(1.0F);
     }
 
     private static void writeLogic(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing) {

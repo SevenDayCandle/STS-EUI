@@ -20,6 +20,7 @@ public class EUILabel extends EUIHoverable {
     public String text;
     public boolean smartText;
     public boolean smartTextResize;
+    public boolean wrap;
     public Color textColor;
     public float verticalRatio;
     public float horizontalRatio;
@@ -117,11 +118,21 @@ public class EUILabel extends EUIHoverable {
         }
         else if (horizontalRatio < 0.5f) {
             final float step = hb.width * horizontalRatio;
-            EUITextHelper.renderFontLeft(sb, font, text, hb.x + step, hb.y + hb.height * verticalRatio, textColor);
+            if (wrap) {
+                EUITextHelper.renderFontLeft(sb, font, text, hb.x + step, hb.y + hb.height * verticalRatio, smartPadEnd ? hb.width - (step * 2) : hb.width, 8, true, textColor);
+            }
+            else {
+                EUITextHelper.renderFontLeft(sb, font, text, hb.x + step, hb.y + hb.height * verticalRatio, textColor);
+            }
         }
         else if (horizontalRatio > 0.5f) {
             final float step = hb.width * (1 - horizontalRatio) * 2;
-            EUITextHelper.renderFontRightAligned(sb, font, text, hb.x + hb.width - step, hb.y + hb.height * verticalRatio, textColor);
+            if (wrap) {
+                EUITextHelper.renderFontRightAligned(sb, font, text, hb.x + hb.width - step, hb.y + hb.height * verticalRatio, smartPadEnd ? hb.width - (step * 2) : hb.width, 8, true, textColor);
+            }
+            else {
+                EUITextHelper.renderFontRightAligned(sb, font, text, hb.x + hb.width - step, hb.y + hb.height * verticalRatio, textColor);
+            }
         }
         else {
             EUITextHelper.renderFontCentered(sb, font, text, hb.cX, hb.y + hb.height * verticalRatio, textColor);
@@ -226,6 +237,11 @@ public class EUILabel extends EUIHoverable {
     public EUILabel setTooltip(EUITooltip tooltip) {
         super.setTooltip(tooltip);
 
+        return this;
+    }
+
+    public EUILabel setWrap(boolean val) {
+        this.wrap = val;
         return this;
     }
 }
