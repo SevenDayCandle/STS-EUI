@@ -222,11 +222,14 @@ public class EUIToggle extends EUIHoverable {
 
     public void toggle(boolean value) {
         if (toggled != value) {
-            toggled = value;
+            toggleForce(value);
+        }
+    }
 
-            if (onToggle != null) {
-                onToggle.invoke(value);
-            }
+    public void toggleForce(boolean value) {
+        toggled = value;
+        if (onToggle != null) {
+            onToggle.invoke(value);
         }
     }
 

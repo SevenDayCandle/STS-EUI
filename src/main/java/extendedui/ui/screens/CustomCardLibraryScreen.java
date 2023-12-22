@@ -37,6 +37,8 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     private static final int VISIBLE_BUTTONS = 14;
     private static final HashMap<AbstractCard.CardColor, ArrayList<AbstractCard>> CARD_LISTS = new HashMap<>();
     private static final float CENTER_Y = Settings.HEIGHT * 0.88f;
+    private static final float BAR_X = (float) Settings.WIDTH / 2.0F - 667.0F;
+    private static final float BAR_Y = CENTER_Y - 51;
     private static AbstractCard.CardColor currentColor = AbstractCard.CardColor.COLORLESS;
     private static CustomCardPoolModule customModule;
     private static boolean isAll;
@@ -46,18 +48,28 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     private final CardKeywordFilters.CardFilters savedFilters = new CardKeywordFilters.CardFilters();
     public final EUITextBoxInput quickSearch;
     public final EUIToggle upgradeToggle;
+    public final EUIToggle betaToggle;
     public final MenuCancelButton cancelButton;
     public EUICardGrid cardGrid;
+    private boolean betaToggleCache;
 
     public CustomCardLibraryScreen() {
         final float y = Settings.HEIGHT * 0.92f - (VISIBLE_BUTTONS + 1) * scale(48);
 
         resetGrid();
-        upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
-                .setPosition(1450.0F * Settings.xScale, Settings.HEIGHT * 0.8f)
-                .setFont(EUIFontHelper.cardTooltipTitleFontLarge, 1f)
+        upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 180f, Settings.scale * 48f))
+                .setPosition(1400.0F * Settings.xScale, Settings.HEIGHT * 0.88f)
+                .setFont(EUIFontHelper.cardTooltipFont, 1f)
                 .setText(CardLibraryScreen.TEXT[7])
-                .setOnToggle(this::toggleUpgrades);
+                .setOnToggle(EUI::toggleViewUpgrades);
+        betaToggle = new EUIToggle(new EUIHitbox(Settings.scale * 180f, Settings.scale * 48f))
+                .setPosition(1600.0F * Settings.xScale, Settings.HEIGHT * 0.88f)
+                .setFont(EUIFontHelper.cardTooltipFont, 1f)
+                .setText(SingleCardViewPopup.TEXT[14])
+                .setOnToggle(val -> {
+                    EUI.toggleBetaArt(val);
+                    betaToggleCache = val;
+                });
 
         cancelButton = new MenuCancelButton();
         colorButtons = new EUIButtonList(EUIButtonList.DEFAULT_VISIBLE - 1, EUIButtonList.STARTING_X, Settings.HEIGHT * 0.9f, EUIButtonList.BUTTON_W, EUIButtonList.BUTTON_H);
@@ -106,6 +118,8 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     @Override
     public void close() {
         super.close();
+        betaToggleCache = betaToggle.toggled;
+        EUI.toggleBetaArtReset();
         for (CustomCardPoolModule module : EUI.globalCustomCardLibraryModules) {
             module.onClose();
         }
@@ -155,8 +169,6 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     // Also called by the card filter component
     public void openImpl() {
         refreshGroups();
-        EUI.toggleViewUpgrades(false);
-        upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade);
         savedFilters.clear(true);
         if (isAll) {
             setToAll();
@@ -165,6 +177,8 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
             setActiveColor(currentColor);
         }
         this.cancelButton.show(CardLibraryScreen.TEXT[0]);
+        betaToggle.toggleForce(betaToggleCache);
+        upgradeToggle.toggleForce(SingleCardViewPopup.isViewingUpgrade);
     }
 
     public void refreshGroups() {
@@ -187,9 +201,10 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         colorButtons.tryRender(sb);
         cardGrid.renderWithScissors(sb, scissors);
         sb.setColor(EUIGameUtils.getColorColor(currentColor));
-        sb.draw(ImageMaster.COLOR_TAB_BAR, (float) Settings.WIDTH / 2.0F - 667.0F, CENTER_Y - 51.0F, 667.0F, 51.0F, 1334.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
+        sb.draw(ImageMaster.COLOR_TAB_BAR, BAR_X, BAR_Y, 667.0F, 51.0F, 1400.0F, 102.0F, Settings.xScale, Settings.scale, 0.0F, 0, 0, 1334, 102, false, false);
         sb.setColor(Color.WHITE);
         upgradeToggle.renderImpl(sb);
+        betaToggle.renderImpl(sb);
         cancelButton.render(sb);
 
         EUI.sortHeader.render(sb);
@@ -208,7 +223,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     }
 
     public void resetGrid() {
-        cardGrid = new EUICardGrid();
+        cardGrid = new EUICardGrid(0.38f);
         cardGrid
                 .setCanRenderUpgrades(true)
                 .setVerticalStart(Settings.HEIGHT * 0.7f)
@@ -283,11 +298,6 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         setActiveColor(color, CARD_LISTS.getOrDefault(color, new ArrayList<>()), false, null);
     }
 
-    protected void toggleUpgrades(boolean value) {
-        EUI.toggleViewUpgrades(value);
-        upgradeToggle.setToggle(value);
-    }
-
     @Override
     public void updateImpl() {
         super.updateImpl();
@@ -298,7 +308,8 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
             allButton.tryUpdate();
             colorButtons.tryUpdate();
             EUI.sortHeader.update();
-            upgradeToggle.setPosition(upgradeToggle.hb.cX, CENTER_Y).updateImpl();
+            upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
+            betaToggle.setToggle(Settings.PLAYTESTER_ART_MODE).updateImpl();
             quickSearch.tryUpdate();
             cardGrid.tryUpdate();
             cancelButton.update();

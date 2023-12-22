@@ -29,7 +29,7 @@ public class FilterSortHeader extends EUIBase {
     }
 
     public float getLastX() {
-        if (buttons.size() > 0) {
+        if (!buttons.isEmpty()) {
             FilterSortToggle last = buttons.get(buttons.size() - 1);
             return last.hb.x + last.hb.width;
         }
