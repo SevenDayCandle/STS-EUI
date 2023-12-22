@@ -296,7 +296,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
 
     // Variant of name function for costs only
     protected String filterCostFunction(List<CostFilter> items, FuncT1<String, CostFilter> originalFunction) {
-        if (items.size() == 0) {
+        if (items.isEmpty()) {
             return EUIRM.strings.ui_any;
         }
         if (items.size() > 1) {

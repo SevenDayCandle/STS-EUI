@@ -25,9 +25,12 @@ public class EUIInputManager {
     public static final char ENTER_DESKTOP = '\r';
     public static final char ENTER_ANDROID = '\n';
     public static final char TAB = '\t';
+    private static final float HOLD_TIME = 0.4f;
     private static TextInputProvider textProvider;
+    private static float hold;
     private static int curLimit;
     private static int pos;
+    private static int lastKey;
     public static KeyState rightClick = KeyState.Released;
     public static KeyState leftClick = KeyState.Released;
 
@@ -84,15 +87,19 @@ public class EUIInputManager {
         switch (keyCode) {
             case Input.Keys.DOWN:
                 pos = MathUtils.clamp(textProvider.onPushArrowDown(pos), 0, textProvider.getBuffer().length());
+                lastKey = keyCode;
                 break;
             case Input.Keys.LEFT:
                 pos = MathUtils.clamp(textProvider.onPushArrowLeft(pos), 0, textProvider.getBuffer().length());
+                lastKey = keyCode;
                 break;
             case Input.Keys.RIGHT:
                 pos = MathUtils.clamp(textProvider.onPushArrowRight(pos), 0, textProvider.getBuffer().length());
+                lastKey = keyCode;
                 break;
             case Input.Keys.UP:
                 pos = MathUtils.clamp(textProvider.onPushArrowUp(pos), 0, textProvider.getBuffer().length());
+                lastKey = keyCode;
                 break;
         }
         return textProvider.onKeyDown(keyCode);
@@ -100,12 +107,36 @@ public class EUIInputManager {
 
     // Bounded by isInputTyping
     public static boolean onKeyboardUp(int keyCode) {
+        hold = 0;
+        lastKey = 0;
         return textProvider.onKeyUp(keyCode);
     }
 
     public static void postUpdate() {
         updateLeftClick();
         updateRightClick();
+        if (lastKey > 0 && textProvider != null) {
+            if (hold > HOLD_TIME) {
+                hold -= EUI.delta() * 4;
+                switch (lastKey) {
+                    case Input.Keys.DOWN:
+                        pos = MathUtils.clamp(textProvider.onPushArrowDown(pos), 0, textProvider.getBuffer().length());
+                        break;
+                    case Input.Keys.LEFT:
+                        pos = MathUtils.clamp(textProvider.onPushArrowLeft(pos), 0, textProvider.getBuffer().length());
+                        break;
+                    case Input.Keys.RIGHT:
+                        pos = MathUtils.clamp(textProvider.onPushArrowRight(pos), 0, textProvider.getBuffer().length());
+                        break;
+                    case Input.Keys.UP:
+                        pos = MathUtils.clamp(textProvider.onPushArrowUp(pos), 0, textProvider.getBuffer().length());
+                        break;
+                }
+            }
+            else {
+                hold += EUI.delta();
+            }
+        }
     }
 
     public static boolean releaseType(TextInputProvider provider) {

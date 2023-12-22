@@ -86,6 +86,7 @@ public class EUI {
     public static final ArrayList<CustomPoolModule<RelicInfo>> globalCustomRelicPoolModules = new ArrayList<>();
     public static final String ENERGY_ID = "E";
     public static final String ENERGY_TIP = "[E]";
+    private static final String PLAYTESTER_ART = "Playtester Art";
     private static final String SLEEPY_TIME = "ZZZZZZZ"; // This is used in the packmaster for denoting cards with no packs
     public static final String[] ENERGY_STRINGS = {ENERGY_TIP, "[R]", "[G]", "[B]", "[W]"};
     private static float delta = 0;
@@ -333,6 +334,10 @@ public class EUI {
 
     public static boolean isLoaded() {
         return cardsScreen != null; // This will be null before the UI has loaded
+    }
+
+    public static boolean isPlaytesterArt() {
+        return Settings.gamePref.getBoolean(PLAYTESTER_ART, false);
     }
 
     public static boolean isTopActiveElement(EUIBase element) {
@@ -619,6 +624,14 @@ public class EUI {
         else {
             BaseMod.addTopPanelItem(compendiumButton);
         }
+    }
+
+    public static void toggleBetaArt(boolean value) {
+        Settings.PLAYTESTER_ART_MODE = value;
+    }
+
+    public static void toggleBetaArtReset() {
+        toggleBetaArt(isPlaytesterArt());
     }
 
     public static void toggleViewUpgrades(boolean value) {

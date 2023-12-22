@@ -77,16 +77,16 @@
     <dependency>
       <groupId>basemod</groupId>
       <artifactId>basemod</artifactId>
-      <version>5.33.0</version>
+      <version>5.52.3</version>
       <scope>system</scope>
-      <systemPath>${Steam.path}/workshop/content/646570/1605060445/ModTheSpire.jar</systemPath>
+      <systemPath>${Steam.path}/workshop/content/646570/1605833019/BaseMod.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>com.evacipated.cardcrawl</groupId>
       <artifactId>ModTheSpire</artifactId>
-      <version>3.22.0</version>
+      <version>3.30.1</version>
       <scope>system</scope>
-      <systemPath>${Steam.path}/workshop/content/646570/1605833019/BaseMod.jar</systemPath>
+      <systemPath>${Steam.path}/workshop/content/646570/1605060445/ModTheSpire.jar</systemPath>
     </dependency>
     <dependency>
       <groupId>com.evacipated.cardcrawl</groupId>

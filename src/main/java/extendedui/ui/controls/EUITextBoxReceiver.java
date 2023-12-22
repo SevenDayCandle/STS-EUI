@@ -86,9 +86,15 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
 
     protected void renderUnderscore(SpriteBatch sb) {
         if (isEditing()) {
-            GlyphLayout.GlyphRun run = EUITextHelper.getLayoutRun(0);
+            int rInd = 0;
+            GlyphLayout.GlyphRun run = EUITextHelper.getLayoutRun(rInd);
             int pos = EUIInputManager.getPos() + 1;
-            if (run != null && pos >= 0 && pos < run.xAdvances.size) {
+            while (run != null && pos >= run.xAdvances.size) {
+                pos -= run.xAdvances.size;
+                rInd += 1;
+                run = EUITextHelper.getLayoutRun(rInd);
+            }
+            if (run != null && pos >= 0) {
                 float extra = 0;
                 for (int i = 0; i < pos; i++) {
                     extra += run.xAdvances.get(i);
@@ -96,13 +102,13 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
                 float xOff = hb.x + extra + hb.width * label.horizontalRatio;
                 float yOff = hb.y + run.y + hb.height * label.verticalRatio - scale(15);
                 EUI.addPriorityPostRender(s ->
-                        EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
+                        EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.67f + EUI.timeCos(0.33f, 6f))));
                 return;
             }
             float xOff = hb.x + EUITextHelper.getLayoutWidth() + hb.width * label.horizontalRatio;
             float yOff = hb.y + hb.height * label.verticalRatio- scale(15);
             EUI.addPriorityPostRender(s ->
-                    EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.5f + EUI.timeCos(0.5f, 4f))));
+                    EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.67f + EUI.timeCos(0.33f, 6f))));
         }
     }
 

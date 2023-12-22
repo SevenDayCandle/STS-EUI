@@ -26,7 +26,8 @@
 			"Always use EUI tooltip rendering",
 			"Re-enable Tooltips",
 			"Remove Menu Fade Transitions",
-			"Preserve Filters on Compendium Tab Switch"
+			"Preserve Filters on Compendium Tab Switch",
+			"Hide Version Info"
 		]
 	},
 	"extendedui:config_desc": {
@@ -48,7 +49,8 @@
 			"Re-enable all tooltips that were turned off by this mod.",
 			"{#b:No tooltips are currently disabled.}",
 			"Removes the black screen fade that occurs when you enter or exit a run, such that performing these actions will be nearly instantaneous.",
-			"If checked, filters in the card compendium will be preserved when switching card colors."
+			"If checked, filters in the card compendium will be preserved when switching card colors.",
+			"Hides the version text blurb shown on the bottom-left corner of main menu screens as well as on the right-hand side during runs."
 		]
 	},
 	"extendedui:grammar": {

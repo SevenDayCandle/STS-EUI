@@ -7,6 +7,7 @@ import basemod.ModPanel;
 import com.badlogic.gdx.math.MathUtils;
 import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUI;
@@ -54,6 +55,7 @@ public class EUIConfiguration {
     public static STSConfigItem<Boolean> enableExpandTooltips = new STSConfigItem<>(getFullKey("EnableExpandTooltips"), false);
     public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(getFullKey("FlushOnGameStart"), false);
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(getFullKey("FlushOnRoomStart"), false);
+    public static STSConfigItem<Boolean> hideInfo = new STSConfigItem<>(getFullKey("HideInfo"), false);
     public static STSConfigItem<Boolean> instantFade = new STSConfigItem<>(getFullKey("InstantFade"), false);
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(getFullKey("OverrideGameFont"), false);
     public static STSConfigItem<Boolean> saveFilterChoices = new STSConfigItem<Boolean>(getFullKey("SaveFilterChoices"), false);
@@ -169,6 +171,7 @@ public class EUIConfiguration {
             enableExpandTooltips.addConfig(config);
             flushOnGameStart.addConfig(config);
             flushOnRoomStart.addConfig(config);
+            hideInfo.addConfig(config);
             instantFade.addConfig(config);
             saveFilterChoices.addConfig(config);
             showModSettings.addConfig(config);
@@ -237,6 +240,7 @@ public class EUIConfiguration {
         makeModToggle(euiCategory, useEUITooltips, EUIRM.strings.config_useEUITooltips, EUIRM.strings.configdesc_useEUITooltips);
         makeModToggle(euiCategory, saveFilterChoices, EUIRM.strings.config_saveFilterChoices, EUIRM.strings.configdesc_saveFilterChoices);
         makeModToggle(euiCategory, instantFade, EUIRM.strings.config_instantFade, EUIRM.strings.configdesc_instantFade);
+        makeModToggle(euiCategory, hideInfo, EUIRM.strings.config_hideInfo, EUIRM.strings.configdesc_hideInfo);
         makeModToggle(effekseerCategory, disableEffekseer, EUIRM.strings.config_disableEffekseer, EUIRM.strings.configdesc_disableEffekseer);
         makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.configdesc_flushEffekseer);
@@ -266,6 +270,7 @@ public class EUIConfiguration {
         yPos = addToggle(0, useEUITooltips, EUIRM.strings.config_useEUITooltips, yPos, EUIRM.strings.configdesc_useEUITooltips);
         yPos = addToggle(0, saveFilterChoices, EUIRM.strings.config_saveFilterChoices, yPos, EUIRM.strings.configdesc_saveFilterChoices);
         yPos = addToggle(0, instantFade, EUIRM.strings.config_instantFade, yPos, EUIRM.strings.configdesc_instantFade);
+        yPos = addToggle(0, hideInfo, EUIRM.strings.config_hideInfo, yPos, EUIRM.strings.configdesc_hideInfo);
         yPos = addToggle(0, showModSettings, EUIRM.strings.config_showModSettings, yPos, EUIRM.strings.configdesc_showModSettings);
         yPos = addToggle(0, enableCardPoolDebug, EUIRM.strings.config_enableDebug, yPos, EUIRM.strings.configdesc_enableDebug);
 
@@ -325,6 +330,10 @@ public class EUIConfiguration {
             cardDescFontSelector2.setHeaderText(cardDescFontSelector2.tooltip.title);
             cardTitleFontSelector.setHeaderText(cardTitleFontSelector.tooltip.title);
             cardTitleFontSelector2.setHeaderText(cardTitleFontSelector2.tooltip.title);
+        });
+
+        hideInfo.addListener(newValue -> {
+            CardCrawlGame.displayVersion = !newValue;
         });
 
         // NOTE: DISABLE_COMPENDIUM_BUTTON, HIDE_TIP_DESCRIPTION, and USE_SMOOTH_SCROLLING listeners are added in EUI.initialize to avoid errors from initializing too early

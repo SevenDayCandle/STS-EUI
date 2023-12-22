@@ -26,7 +26,8 @@
 			"总是使用EUI的工具提示渲染",
 			"重新启用工具提示",
 			"移除主菜单渐变过渡",
-			"冻结卡牌筛选条件"
+			"冻结卡牌筛选条件",
+			"Hide Version Info"
 		]
 	},
 	"extendedui:config_desc": {
@@ -48,7 +49,8 @@
 			"重新启用所有被本mod关闭的工具提示。",
 			"{#b:当前没有被禁用的工具提示。}",
 			"移除你进入或退出一局游戏时的黑屏渐变，以使这些动作几乎瞬间完成。",
-			"在卡牌总览中切换颜色时，筛选条件将会维持。"
+			"在卡牌总览中切换颜色时，筛选条件将会维持。",
+			"Hides the version text blurb shown on the bottom-left corner of main menu screens as well as on the right-hand side during runs."
 		]
 	},
 	"extendedui:grammar": {

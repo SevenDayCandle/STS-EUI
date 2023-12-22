@@ -6,11 +6,16 @@ import basemod.helpers.RelicType;
 import com.badlogic.gdx.graphics.Texture;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePostfixPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpirePrefixPatch;
+import com.evacipated.cardcrawl.modthespire.lib.SpireReturn;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
+import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIUtils;
+import extendedui.configuration.EUIConfiguration;
 import extendedui.ui.settings.ExtraModSettingsPanel;
 import org.apache.commons.lang3.StringUtils;
 
@@ -83,6 +88,16 @@ public class BasemodPatches {
         @SpirePostfixPatch
         public static void postfix(Texture t, String name, String author, String desc, ModPanel settingsPanel) {
             ExtraModSettingsPanel.addModList(new ExtraModSettingsPanel.Category(name), settingsPanel);
+        }
+    }
+
+    // Disable hitbox according to CardCrawlGame.displayVersion
+    @SpirePatch(cls = "com.evacipated.cardcrawl.modthespire.patches.TopPanelModList",
+            method = "Postfix")
+    public static class ModTheSpire_TopPanelModList {
+        @SpirePrefixPatch
+        public static SpireReturn<Void> prefix(TopPanel __instance) {
+            return CardCrawlGame.displayVersion ? SpireReturn.Continue() : SpireReturn.Return();
         }
     }
 }

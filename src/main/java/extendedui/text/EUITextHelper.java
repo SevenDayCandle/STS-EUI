@@ -101,6 +101,10 @@ public class EUITextHelper {
         return index < layout.runs.size ? layout.runs.get(index) : null;
     }
 
+    public static int getLayoutRunLength() {
+        return layout.runs.size;
+    }
+
     public static float getLayoutWidth() {
         return layout.width;
     }

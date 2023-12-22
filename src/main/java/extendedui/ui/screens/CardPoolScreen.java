@@ -41,11 +41,14 @@ public class CardPoolScreen extends EUIPoolScreen {
 
     public static CustomCardPoolModule customModule;
     protected final EUIToggle upgradeToggle;
+    protected final EUIToggle betaToggle;
     protected final EUIToggle colorlessToggle;
     protected final EUIButton swapRelicScreen;
     protected final EUIButton swapPotionScreen;
     protected final EUIContextMenu<DebugOption> contextMenu;
     private AbstractCard selected;
+    private boolean betaToggleCache;
+    private boolean colorlessToggleCache;
     public EUICardGrid cardGrid;
 
     public CardPoolScreen() {
@@ -58,14 +61,25 @@ public class CardPoolScreen extends EUIPoolScreen {
                 .setText(SingleCardViewPopup.TEXT[6])
                 .setOnToggle(EUI::toggleViewUpgrades);
 
-        colorlessToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
+        betaToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setBackground(EUIRM.images.greySquare.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
+                .setFont(EUIFontHelper.cardDescriptionFontLarge, 0.5f)
+                .setText(SingleCardViewPopup.TEXT[14])
+                .setOnToggle(val -> {
+                    EUI.toggleBetaArt(val);
+                    betaToggleCache = val;
+                });
+
+        colorlessToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
+                .setBackground(EUIRM.images.greySquare.texture(), Color.DARK_GRAY)
+                .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.7f)
                 .setFont(EUIFontHelper.cardDescriptionFontLarge, 0.5f)
                 .setText(EUIRM.strings.uipool_showColorless)
                 .setOnToggle(val -> {
                     EUI.cardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
                     EUI.cardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.CURSE, val, true);
+                    colorlessToggleCache = val;
                 });
 
         swapRelicScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
@@ -94,6 +108,9 @@ public class CardPoolScreen extends EUIPoolScreen {
                 })
                 .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
                 .setCanAutosizeButton(true);
+
+        betaToggleCache = EUI.isPlaytesterArt();
+        colorlessToggleCache = false;
     }
 
     // This method can be patched to add additional debug options
@@ -114,6 +131,8 @@ public class CardPoolScreen extends EUIPoolScreen {
     @Override
     public void close() {
         super.close();
+        betaToggleCache = betaToggle.toggled;
+        EUI.toggleBetaArtReset();
         for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
             module.onClose();
         }
@@ -152,7 +171,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         boolean isAll = player == null || canSeeAllColors;
 
         cardGrid.clear();
-        colorlessToggle.setToggle(false).setActive(!canSeeAllColors);
+        colorlessToggle.setActive(!canSeeAllColors);
         cardGrid.setCardGroup(cards);
 
         EUI.cardFilters.initializeForSort(cardGrid.group, __ -> {
@@ -177,6 +196,9 @@ public class CardPoolScreen extends EUIPoolScreen {
         }
 
         cardGrid.scrollBar.scroll(cardGrid.scrollBar.currentScrollPercent, true);
+
+        betaToggle.toggleForce(betaToggleCache);
+        colorlessToggle.toggleForce(colorlessToggle.isActive && colorlessToggleCache);
     }
 
     protected void removeCardFromPool(AbstractCard c) {
@@ -195,6 +217,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         cardGrid.tryRender(sb);
         EUI.sortHeader.render(sb);
         upgradeToggle.renderImpl(sb);
+        betaToggle.renderImpl(sb);
         colorlessToggle.render(sb);
         swapRelicScreen.renderImpl(sb);
         swapPotionScreen.renderImpl(sb);
@@ -226,6 +249,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         if (!EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen) {
             cardGrid.tryUpdate();
             upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
+            betaToggle.setToggle(Settings.PLAYTESTER_ART_MODE).updateImpl();
             colorlessToggle.update();
             swapRelicScreen.updateImpl();
             swapPotionScreen.updateImpl();
