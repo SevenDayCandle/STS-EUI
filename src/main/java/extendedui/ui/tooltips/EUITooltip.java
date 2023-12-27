@@ -613,8 +613,12 @@ public class EUITooltip {
     }
 
     public static ArrayList<EUITooltip> scanForTips(String rawDesc) {
+        return scanForTips(rawDesc, true);
+    }
+
+    public static ArrayList<EUITooltip> scanForTips(String rawDesc, boolean allowNonRenderable) {
         ArrayList<EUITooltip> tips = new ArrayList<>();
-        scanForTips(rawDesc, tips, tips, true);
+        scanForTips(rawDesc, tips, tips, allowNonRenderable);
         return tips;
     }
 
@@ -842,6 +846,11 @@ public class EUITooltip {
 
     public EUITooltip setChildrenFromDescription() {
         this.children = scanForTips(this.description);
+        return this;
+    }
+
+    public EUITooltip setChildrenFromDescription(boolean allowUnrenderable) {
+        this.children = scanForTips(this.description, allowUnrenderable);
         return this;
     }
 
