@@ -1174,12 +1174,7 @@ public abstract class EUIUtils {
     }
 
     public static int parseInt(String value, int defaultValue) {
-        try {
-            return Integer.parseInt(value);
-        }
-        catch (NumberFormatException ex) {
-            return defaultValue;
-        }
+        return StringUtils.isNumeric(value) ? Integer.parseInt(value) : defaultValue;
     }
 
     public static String popBuilder(StringBuilder stringBuilder) {

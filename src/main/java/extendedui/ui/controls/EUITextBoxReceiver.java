@@ -87,10 +87,14 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
     protected void renderUnderscore(SpriteBatch sb) {
         if (isEditing()) {
             int rInd = 0;
+            float rX = 0;
+            float rY = 0;
             GlyphLayout.GlyphRun run = EUITextHelper.getLayoutRun(rInd);
             int pos = EUIInputManager.getPos() + 1;
             while (run != null && pos >= run.xAdvances.size) {
-                pos -= run.xAdvances.size;
+                rX = run.width;
+                rY = run.y;
+                pos -= run.xAdvances.size - 1; // Because newline is a run too
                 rInd += 1;
                 run = EUITextHelper.getLayoutRun(rInd);
             }
@@ -99,14 +103,14 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
                 for (int i = 0; i < pos; i++) {
                     extra += run.xAdvances.get(i);
                 }
-                float xOff = hb.x + extra + hb.width * label.horizontalRatio;
-                float yOff = hb.y + run.y + hb.height * label.verticalRatio - scale(15);
+                float xOff = hb.x + run.x + extra + hb.width * label.horizontalRatio;
+                float yOff = hb.y + run.y + hb.height * label.verticalRatio - scale(14);
                 EUI.addPriorityPostRender(s ->
                         EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.67f + EUI.timeCos(0.33f, 6f))));
                 return;
             }
-            float xOff = hb.x + EUITextHelper.getLayoutWidth() + hb.width * label.horizontalRatio;
-            float yOff = hb.y + hb.height * label.verticalRatio- scale(15);
+            float xOff = hb.x + rX + hb.width * label.horizontalRatio;
+            float yOff = hb.y + rY + hb.height * label.verticalRatio - scale(14);
             EUI.addPriorityPostRender(s ->
                     EUITextHelper.renderFontLeft(sb, label.font, "_", xOff, yOff, EUIColors.white(0.67f + EUI.timeCos(0.33f, 6f))));
         }

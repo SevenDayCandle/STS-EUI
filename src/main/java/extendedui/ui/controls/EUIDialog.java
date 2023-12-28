@@ -40,8 +40,12 @@ public abstract class EUIDialog<T> extends EUIHoverable {
     }
 
     public EUIDialog(EUIHitbox hb, Texture backgroundTexture, String headerText, String descriptionText) {
+        this(hb, new EUIImage(backgroundTexture, hb), headerText, descriptionText);
+    }
+
+    public EUIDialog(EUIHitbox hb, EUIImage backgroundImage, String headerText, String descriptionText) {
         super(hb);
-        this.backgroundImage = new EUIImage(backgroundTexture, hb);
+        this.backgroundImage = backgroundImage;
         this.header = getHeader(headerText);
         this.description = getDescription(descriptionText);
         this.confirm = getConfirmButton();
