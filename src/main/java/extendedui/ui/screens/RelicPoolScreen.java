@@ -6,6 +6,7 @@ import com.evacipated.cardcrawl.modthespire.lib.SpireEnum;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -45,6 +46,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
 
     public RelicPoolScreen() {
         relicGrid = (EUIRelicGrid) new EUIRelicGrid()
+                .setOnClick(r -> this.openPopup(r.relic))
                 .setOnRightClick(this::onRightClick)
                 .setVerticalStart(Settings.HEIGHT * 0.74f)
                 .showScrollbar(true);
@@ -190,6 +192,9 @@ public class RelicPoolScreen extends EUIPoolScreen {
             }
             if (customModule != null) {
                 customModule.update();
+            }
+            if (relicGrid.hovered != null) {
+                CardCrawlGame.cursor.changeType(GameCursor.CursorType.INSPECT);
             }
         }
         contextMenu.tryUpdate();

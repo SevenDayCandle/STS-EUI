@@ -7,6 +7,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -239,6 +240,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         cardGrid = new EUICardGrid();
         cardGrid
                 .setCanRenderUpgrades(true)
+                .setOnClick(this::openPopup)
                 .setOnRightClick(this::onRightClick)
                 .setVerticalStart(Settings.HEIGHT * 0.66f)
                 .showScrollbar(true);
@@ -262,6 +264,9 @@ public class CardPoolScreen extends EUIPoolScreen {
             }
             if (customModule != null) {
                 customModule.update();
+            }
+            if (cardGrid.hovered != null) {
+                CardCrawlGame.cursor.changeType(GameCursor.CursorType.INSPECT);
             }
         }
         contextMenu.tryUpdate();

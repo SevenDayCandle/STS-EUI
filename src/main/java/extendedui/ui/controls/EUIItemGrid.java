@@ -313,6 +313,18 @@ public abstract class EUIItemGrid<T> extends EUICanvasGrid {
         updateClickLogic();
     }
 
+    public void updateImpl(boolean allowClick) {
+        super.updateImpl();
+        updateItems();
+        updateNonMouseInput();
+        if (allowClick) {
+            updateClickLogic();
+        }
+        else {
+            hovered = null;
+        }
+    }
+
     protected void updateItems() {
         hovered = null;
 

@@ -9,8 +9,10 @@ import com.badlogic.gdx.scenes.scene2d.utils.ScissorStack;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
+import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.screens.compendium.CardLibraryScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
@@ -36,9 +38,9 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     private static final float FILTERS_START_X = (float) Settings.WIDTH * 0.177f;
     private static final int VISIBLE_BUTTONS = 14;
     private static final HashMap<AbstractCard.CardColor, ArrayList<AbstractCard>> CARD_LISTS = new HashMap<>();
-    private static final float CENTER_Y = Settings.HEIGHT * 0.88f;
+    private static final float TOP_Y = Settings.HEIGHT * 0.88f;
     private static final float BAR_X = (float) Settings.WIDTH / 2.0F - 667.0F;
-    private static final float BAR_Y = CENTER_Y - 51;
+    private static final float BAR_Y = TOP_Y - 51;
     private static AbstractCard.CardColor currentColor = AbstractCard.CardColor.COLORLESS;
     private static CustomCardPoolModule customModule;
     private static boolean isAll;
@@ -91,7 +93,7 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         quickSearch.header.setAlignment(0f, -0.51f);
 
         scissors = new Rectangle();
-        Rectangle clipBounds = new Rectangle(0, 0, Settings.WIDTH, CENTER_Y);
+        Rectangle clipBounds = new Rectangle(0, 0, Settings.WIDTH, TOP_Y);
         ScissorStack.calculateScissors(EUIGameUtils.getCamera(), EUIGameUtils.getSpriteBatch().getTransformMatrix(), clipBounds, scissors);
     }
 
@@ -310,8 +312,11 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
             EUI.sortHeader.update();
             upgradeToggle.setToggle(SingleCardViewPopup.isViewingUpgrade).updateImpl();
             betaToggle.setToggle(Settings.PLAYTESTER_ART_MODE).updateImpl();
-            quickSearch.tryUpdate();
-            cardGrid.tryUpdate();
+            quickSearch.updateImpl();
+            cardGrid.updateImpl(InputHelper.mY < BAR_Y);
+            if (cardGrid.hovered != null) {
+                CardCrawlGame.cursor.changeType(GameCursor.CursorType.INSPECT);
+            }
             cancelButton.update();
             if (this.cancelButton.hb.clicked) {
                 this.cancelButton.hb.clicked = false;
