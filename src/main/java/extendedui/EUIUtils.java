@@ -582,7 +582,7 @@ public abstract class EUIUtils {
         return result;
     }
 
-    public static <T, N> ArrayList<N> flatMap(List<? extends T> list, FuncT1<Collection<N>, T> predicate) {
+    public static <T, N> ArrayList<N> flatMap(Iterable<? extends T> list, FuncT1<Collection<N>, T> predicate) {
         ArrayList<N> res = new ArrayList<>();
         for (T t : list) {
             res.addAll(predicate.invoke(t));
@@ -597,7 +597,7 @@ public abstract class EUIUtils {
                 .collect(Collectors.toCollection(ArrayList::new));
     }
 
-    public static <T> ArrayList<T> flattenList(Collection<? extends Collection<? extends T>> lists) {
+    public static <T> ArrayList<T> flattenList(Iterable<? extends Collection<? extends T>> lists) {
         ArrayList<T> t = new ArrayList<>();
         for (Collection<? extends T> list : lists) {
             t.addAll(list);
@@ -715,6 +715,15 @@ public abstract class EUIUtils {
         for (V v : list) {
             K k = getKey.invoke(v);
             add.invoke(k, v, map.get(k));
+        }
+
+        return map;
+    }
+
+    public static <K, V, T> HashMap<K, V> hashMap(HashMap<K, T> list, FuncT1<V, T> getVal) {
+        final HashMap<K, V> map = new HashMap<>();
+        for (Map.Entry<K, T> entry : list.entrySet()) {
+            map.put(entry.getKey(), getVal.invoke(entry.getValue()));
         }
 
         return map;
