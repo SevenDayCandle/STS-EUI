@@ -681,7 +681,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     public EUIDropdown<T> setSelection(T selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
-            for (EUIDropdownRow<T> row : rows) {
+            for (EUIDropdownRow<T> row : getRowsForSelectionUpdate()) {
                 if (selection.equals(row.item)) {
                     currentIndices.add(row.index);
                     break;
@@ -695,7 +695,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     public EUIDropdown<T> setSelection(FuncT1<Boolean, T> selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
-            for (EUIDropdownRow<T> row : rows) {
+            for (EUIDropdownRow<T> row : getRowsForSelectionUpdate()) {
                 if (selection.invoke(row.item)) {
                     currentIndices.add(row.index);
                 }
@@ -708,7 +708,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     public <K> EUIDropdown<T> setSelection(Collection<K> selection, FuncT1<K, T> convertFunc, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
-            for (EUIDropdownRow<T> row : rows) {
+            for (EUIDropdownRow<T> row : getRowsForSelectionUpdate()) {
                 if (selection.contains(convertFunc.invoke(row.item))) {
                     currentIndices.add(row.index);
                 }
@@ -721,7 +721,7 @@ public class EUIDropdown<T> extends EUIHoverable {
     public EUIDropdown<T> setSelection(Collection<T> selection, boolean shouldInvoke) {
         this.currentIndices.clear();
         if (selection != null) {
-            for (EUIDropdownRow<T> row : rows) {
+            for (EUIDropdownRow<T> row : getRowsForSelectionUpdate()) {
                 if (selection.contains(row.item)) {
                     currentIndices.add(row.index);
                 }
