@@ -11,6 +11,7 @@ public class EUIColors {
     private static final Color BLACK = Color.BLACK.cpy();
     private static final Color WHITE = Color.WHITE.cpy();
     private static final Color ORANGE = Color.ORANGE.cpy();
+    private static final Color GRAY = Color.GRAY.cpy();
     private static final Color CREAM = Settings.CREAM_COLOR.cpy();
     private static final Color PURPLE = Settings.PURPLE_COLOR.cpy();
     private static final Color GREEN = Settings.GREEN_TEXT_COLOR.cpy();
@@ -47,6 +48,11 @@ public class EUIColors {
     public static Color gold(float a) {
         GOLD.a = a;
         return GOLD;
+    }
+
+    public static Color gray(float a) {
+        GRAY.a = a;
+        return GRAY;
     }
 
     public static Color green(float a) {

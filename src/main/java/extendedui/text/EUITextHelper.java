@@ -133,6 +133,11 @@ public class EUITextHelper {
         return getSmartWidth(font, text, Integer.MAX_VALUE, lineSpacing);
     }
 
+    public static float getTextWidth(BitmapFont font, String text) {
+        layout.setText(font, text);
+        return layout.width;
+    }
+
     private static void obtainBlockColor() {
         if (getAndMove() && currentChar == '#') {
             StringBuilder subBuilder = new StringBuilder();
@@ -431,7 +436,7 @@ public class EUITextHelper {
                         writeNewline(lineSpacing);
                         break;
                     // Tab
-                    case '^':
+                    case '`':
                         writeTab(lineSpacing);
                         break;
                     case '。':

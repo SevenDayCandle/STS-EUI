@@ -17,22 +17,12 @@ public class ColoredString {
     }
 
     public ColoredString(Object text, Color color) {
-        this(text, color, 1);
-    }
-
-    public ColoredString(Object text, Color color, float alpha) {
-        if (text != null) {
-            this.text = String.valueOf(text);
-        }
-
-        if (color != null) {
-            this.color = color.cpy();
-            this.color.a = alpha;
-        }
+        this.text = String.valueOf(text);
+        this.color = color;
     }
 
     public ColoredString setColor(Color color) {
-        this.color = color.cpy();
+        this.color = color;
 
         return this;
     }
