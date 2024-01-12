@@ -2,8 +2,6 @@ package extendedui;
 
 import basemod.BaseMod;
 import basemod.interfaces.ImGuiSubscriber;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.files.FileHandle;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.megacrit.cardcrawl.core.Settings;
 import extendedui.debug.DEUIButton;

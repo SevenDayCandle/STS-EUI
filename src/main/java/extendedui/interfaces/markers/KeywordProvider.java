@@ -1,7 +1,6 @@
 package extendedui.interfaces.markers;
 
 import extendedui.ui.tooltips.EUIKeywordTooltip;
-import extendedui.ui.tooltips.EUITooltip;
 
 import java.util.List;
 

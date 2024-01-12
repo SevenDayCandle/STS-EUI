@@ -42,7 +42,8 @@ import javax.xml.transform.stream.StreamResult;
 import java.io.File;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class EUIExporter {
     private static DocumentBuilderFactory DBFACTORY;

@@ -27,7 +27,8 @@
 			"Re-enable Tooltips",
 			"Remove Menu Fade Transitions",
 			"Preserve Filters on Compendium Tab Switch",
-			"Hide Version Info"
+			"Hide Version Info",
+			"Force Font Linear Filtering"
 		]
 	},
 	"extendedui:config_desc": {
@@ -50,7 +51,8 @@
 			"{#b:No tooltips are currently disabled.}",
 			"Removes the black screen fade that occurs when you enter or exit a run, such that performing these actions will be nearly instantaneous.",
 			"If checked, filters in the card compendium will be preserved when switching card colors.",
-			"Hides the version text blurb shown on the bottom-left corner of main menu screens as well as on the right-hand side during runs."
+			"Hides the version text blurb shown on the bottom-left corner of main menu screens as well as on the right-hand side during runs.",
+			"Improves the appearance of text that is zoomed in or out, but may impact performance"
 		]
 	},
 	"extendedui:grammar": {

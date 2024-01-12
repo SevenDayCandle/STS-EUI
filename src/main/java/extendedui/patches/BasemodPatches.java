@@ -15,7 +15,6 @@ import com.megacrit.cardcrawl.ui.panels.TopPanel;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
 import extendedui.EUIUtils;
-import extendedui.configuration.EUIConfiguration;
 import extendedui.ui.settings.ExtraModSettingsPanel;
 import org.apache.commons.lang3.StringUtils;
 

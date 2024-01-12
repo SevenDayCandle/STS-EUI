@@ -1,7 +1,6 @@
 package extendedui.configuration;
 
 import basemod.BaseMod;
-import basemod.ModLabeledToggleButton;
 import basemod.ModMinMaxSlider;
 import basemod.ModPanel;
 import com.badlogic.gdx.math.MathUtils;
@@ -28,7 +27,6 @@ import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.EUIFontHelper;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 
@@ -55,6 +53,7 @@ public class EUIConfiguration {
     public static STSConfigItem<Boolean> enableExpandTooltips = new STSConfigItem<>(getFullKey("EnableExpandTooltips"), false);
     public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(getFullKey("FlushOnGameStart"), false);
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(getFullKey("FlushOnRoomStart"), false);
+    public static STSConfigItem<Boolean> forceLinearFiltering = new STSConfigItem<>(getFullKey("ForceLinearFiltering"), false);
     public static STSConfigItem<Boolean> hideInfo = new STSConfigItem<>(getFullKey("HideInfo"), false);
     public static STSConfigItem<Boolean> instantFade = new STSConfigItem<>(getFullKey("InstantFade"), false);
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(getFullKey("OverrideGameFont"), false);
@@ -171,6 +170,7 @@ public class EUIConfiguration {
             enableExpandTooltips.addConfig(config);
             flushOnGameStart.addConfig(config);
             flushOnRoomStart.addConfig(config);
+            forceLinearFiltering.addConfig(config);
             hideInfo.addConfig(config);
             instantFade.addConfig(config);
             saveFilterChoices.addConfig(config);
@@ -246,6 +246,7 @@ public class EUIConfiguration {
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.config_overrideGameFont, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
+        makeModToggle(fontCategory, forceLinearFiltering, EUIRM.strings.config_forceLinearFiltering, EUIRM.strings.configdesc_forceLinearFiltering + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         EUIButton clearButton = makeModButton(euiCategory, EUIRM.strings.config_reenableTooltips, () -> clearHiddenTips(true), ExtraModSettingsPanel.OPTION_SIZE);
         clearButton.setTooltip(reenableTip);
         ModSettingsPathSelector cardDescFontSelector = (ModSettingsPathSelector) makeModPathSelection(fontCategory, cardDescFont, EUIRM.strings.config_cardDescFont, FONT_EXTS).setTooltip(EUIRM.strings.config_cardDescFont, EUIRM.strings.configdesc_restartRequired);
@@ -290,6 +291,7 @@ public class EUIConfiguration {
         yPos = BASE_OPTION_OFFSET_Y * Settings.scale;
         yPos = addToggle(2, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         yPos = addToggle(2, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
+        yPos = addToggle(2, forceLinearFiltering, EUIRM.strings.config_forceLinearFiltering, yPos, EUIRM.strings.configdesc_forceLinearFiltering + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector cardDescFontSelector2 = new ModSettingsPathSelector(cardDescFontSelector).translate(xPos, yPos);
         yPos = addGenericElement(2, cardDescFontSelector2, yPos) + 2;
         ModSettingsPathSelector cardTitleFontSelector2 = new ModSettingsPathSelector(cardTitleFontSelector).translate(xPos, yPos);
