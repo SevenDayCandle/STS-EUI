@@ -24,7 +24,7 @@ public class EUIHeaderlessTooltip extends EUITooltip {
 
     public float height() {
         if (lastHeight == null) {
-            BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
+            BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.tooltipFont;
             lastTextHeight = EUITextHelper.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastHeight = (-(lastTextHeight) - HEADER_OFFSET_Y);
         }

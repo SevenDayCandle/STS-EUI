@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
@@ -12,7 +13,6 @@ import extendedui.interfaces.markers.CustomCardFilterModule;
 import extendedui.ui.EUIBase;
 import extendedui.ui.controls.EUISearchableDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
-import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -39,7 +39,7 @@ public class SetCardFilterModule extends EUIBase implements CustomCardFilterModu
                     currentSeries.addAll(selectedSeries);
                     EUI.cardFilters.invoke(null);
                 })
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_set)
+                .setHeader(FontHelper.topPanelAmountFont, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_set)
                 .setIsMultiSelect(true)
                 .setCanAutosizeButton(true);
     }

@@ -2,6 +2,7 @@ package extendedui.ui.cardFilter;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import extendedui.EUIRM;
 import extendedui.interfaces.delegates.ActionT1;
@@ -35,12 +36,12 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase {
         counterImage = new EUIImage(type.getIcon(), type.getColor())
                 .setHitbox(new RelativeHitbox(hb, CountingPanel.ICON_SIZE, CountingPanel.ICON_SIZE, -0.5f * (CountingPanel.ICON_SIZE / hb.width), 0));
 
-        counterText = new EUILabel(EUIFontHelper.cardTooltipFont,
+        counterText = new EUILabel(EUIFontHelper.tooltipFont,
                 RelativeHitbox.fromPercentages(hb, 0.28f, 1, 0.3f, 0f))
                 .setAlignment(0.5f, 0.5f) // 0.1f
                 .setLabel(panel.getAmount(type));
 
-        counterpercentageText = new EUILabel(EUIFontHelper.cardDescriptionFontNormal,
+        counterpercentageText = new EUILabel(FontHelper.cardDescFont_N,
                 RelativeHitbox.fromPercentages(hb, 0.38f, 1, 0.8f, 0f))
                 .setAlignment(0.5f, 0.5f) // 0.1f
                 .setLabel(panel.getPercentageString(type));

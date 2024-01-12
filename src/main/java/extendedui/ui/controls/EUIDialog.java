@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import extendedui.interfaces.delegates.ActionT1;
@@ -55,7 +56,7 @@ public abstract class EUIDialog<T> extends EUIHoverable {
     protected EUIButton getCancelButton() {
         return new EUIButton(ImageMaster.OPTION_NO,
                 new RelativeHitbox(hb, scale(152), scale(80), hb.width * 0.85f, hb.height * 0.15f))
-                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, getCancelText())
+                .setLabel(FontHelper.cardTitleFont, 1f, getCancelText())
                 .setOnClick(() -> {
                     if (onComplete != null) {
                         onComplete.invoke(getCancelValue());
@@ -70,7 +71,7 @@ public abstract class EUIDialog<T> extends EUIHoverable {
     protected EUIButton getConfirmButton() {
         return new EUIButton(ImageMaster.OPTION_YES,
                 new RelativeHitbox(hb, scale(152), scale(80), hb.width * 0.15f, hb.height * 0.15f))
-                .setLabel(EUIFontHelper.cardTitleFontNormal, 1f, getConfirmText())
+                .setLabel(FontHelper.cardTitleFont, 1f, getConfirmText())
                 .setOnClick(() -> {
                     if (onComplete != null) {
                         onComplete.invoke(getConfirmValue());
@@ -83,7 +84,7 @@ public abstract class EUIDialog<T> extends EUIHoverable {
     }
 
     protected EUILabel getDescription(String descriptionText) {
-        return new EUILabel(EUIFontHelper.cardTooltipFont,
+        return new EUILabel(EUIFontHelper.tooltipFont,
                 new RelativeHitbox(hb, hb.width * 0.75f, hb.height, hb.width * 0.15f, hb.height * 0.7f))
                 .setAlignment(0.5f, 0.5f, true)
                 .setSmartText(true, false)
@@ -91,7 +92,7 @@ public abstract class EUIDialog<T> extends EUIHoverable {
     }
 
     protected EUILabel getHeader(String headerText) {
-        return new EUILabel(EUIFontHelper.buttonFont,
+        return new EUILabel(FontHelper.topPanelAmountFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.8f))
                 .setAlignment(0.5f, 0.5f, false)
                 .setLabel(headerText);

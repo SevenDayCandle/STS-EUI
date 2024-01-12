@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.PowerTip;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
@@ -97,11 +98,11 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
                         onClick.invoke(null);
                     }
                 })
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
+                .setHeader(FontHelper.topPanelAmountFont, 0.8f, Settings.GOLD_COLOR, LeaderboardScreen.TEXT[7])
                 .setHeaderSpacing(1f)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
-                .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.8f)
+                .setFont(FontHelper.cardDescFont_N, 0.8f)
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
         descriptionInput = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
                 new EUIHitbox(0, 0, scale(360), scale(40)).setIsPopupCompatible(true))
@@ -111,28 +112,28 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
                         onClick.invoke(null);
                     }
                 })
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_descriptionSearch)
+                .setHeader(FontHelper.topPanelAmountFont, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.ui_descriptionSearch)
                 .setHeaderSpacing(1f)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
-                .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.8f)
+                .setFont(FontHelper.cardDescFont_N, 0.8f)
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture());
 
-        keywordsSectionLabel = new EUILabel(EUIFontHelper.cardTitleFontSmall,
+        keywordsSectionLabel = new EUILabel(FontHelper.topPanelAmountFont,
                 new EUIHitbox(0, 0, scale(48), scale(48)), 0.8f)
                 .setLabel(EUIRM.strings.ui_keywords)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
-        keywordsInstructionLabel = new EUITextBox(EUIRM.images.greySquare.texture(), new EUIHitbox(0, 0, Settings.WIDTH * 0.4f, scale(64)), EUIFontHelper.cardTooltipFont, 0.85f)
+        keywordsInstructionLabel = new EUITextBox(EUIRM.images.greySquare.texture(), new EUIHitbox(0, 0, Settings.WIDTH * 0.4f, scale(64)), EUIFontHelper.tooltipFont, 0.85f)
                 .setColors(Color.BLACK, Settings.CREAM_COLOR)
                 .setLabel(EUIRM.strings.misc_keywordInstructions)
                 .setAlignment(0.75f, 0.02f, true);
-        currentTotalHeaderLabel = new EUILabel(EUIFontHelper.cardTitleFontNormal,
+        currentTotalHeaderLabel = new EUILabel(FontHelper.cardTitleFont,
                 new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.94f, scale(48), scale(48)), 1f)
                 .setLabel(EUIRM.strings.ui_total)
                 .setColor(Settings.GOLD_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
-        currentTotalLabel = new EUILabel(EUIFontHelper.cardTitleFontNormal,
+        currentTotalLabel = new EUILabel(FontHelper.cardTitleFont,
                 new EUIHitbox(Settings.WIDTH * 0.01f, Settings.HEIGHT * 0.906f, scale(48), scale(48)), 1f)
                 .setColor(Settings.BLUE_TEXT_COLOR)
                 .setAlignment(0.5f, 0.0f, false);
@@ -140,7 +141,7 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         sortTypeToggle = new EUIToggle(new EUIHitbox(0, 0, scale(135), scale(32)).setIsPopupCompatible(true))
                 .setBackground(EUIRM.images.rectangularButton.texture(), Color.DARK_GRAY)
                 .setTickImage(null, null, 10)
-                .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.7f)
+                .setFont(FontHelper.cardDescFont_N, 0.7f)
                 .setText(EUIRM.strings.misc_sortByCount)
                 .setOnToggle(val -> {
                     shouldSortByCount = val;

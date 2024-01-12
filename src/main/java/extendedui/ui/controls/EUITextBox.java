@@ -4,17 +4,17 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITourTooltip;
-import extendedui.utilities.EUIFontHelper;
 
 public class EUITextBox extends EUIHoverable {
     public final EUIImage image;
     public final EUILabel label;
 
     public EUITextBox(Texture backgroundTexture, EUIHitbox hb) {
-        this(backgroundTexture, hb, EUIFontHelper.buttonFont, 1f);
+        this(backgroundTexture, hb, FontHelper.buttonLabelFont, 1f);
     }
 
     public EUITextBox(Texture backgroundTexture, EUIHitbox hb, BitmapFont font, float fontscale) {

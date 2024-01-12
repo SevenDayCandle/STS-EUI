@@ -11,6 +11,7 @@ import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
@@ -61,12 +62,12 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         resetGrid();
         upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 180f, Settings.scale * 48f))
                 .setPosition(1400.0F * Settings.xScale, Settings.HEIGHT * 0.88f)
-                .setFont(EUIFontHelper.cardTooltipFont, 1f)
+                .setFont(EUIFontHelper.tooltipFont, 1f)
                 .setText(CardLibraryScreen.TEXT[7])
                 .setOnToggle(EUI::toggleViewUpgrades);
         betaToggle = new EUIToggle(new EUIHitbox(Settings.scale * 180f, Settings.scale * 48f))
                 .setPosition(1600.0F * Settings.xScale, Settings.HEIGHT * 0.88f)
-                .setFont(EUIFontHelper.cardTooltipFont, 1f)
+                .setFont(EUIFontHelper.tooltipFont, 1f)
                 .setText(SingleCardViewPopup.TEXT[14])
                 .setOnToggle(val -> {
                     EUI.toggleBetaArt(val);
@@ -78,16 +79,16 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
 
         allButton = new EUIButton(ImageMaster.COLOR_TAB_BAR, new EUIHitbox(colorButtons.buttonWidth * 0.8f, colorButtons.buttonHeight))
                 .setPosition(EUIButtonList.STARTING_X, Settings.HEIGHT * 0.95f)
-                .setLabel(EUIFontHelper.buttonFont, 0.7f, EUIRM.strings.target_allCharacter)
+                .setLabel(FontHelper.buttonLabelFont, 0.7f, EUIRM.strings.target_allCharacter)
                 .setOnClick((ActionT0) this::setToAll);
 
         quickSearch = (EUITextBoxInput) new EUITextBoxInput(EUIRM.images.rectangularButton.texture(),
                 new EUIHitbox(Settings.WIDTH * 0.42f, Settings.HEIGHT * 0.92f, scale(280), scale(48)))
                 .setOnComplete((v) -> EUI.cardFilters.nameInput.setTextAndCommit(v))
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.7f, Settings.GOLD_COLOR, EUIRM.strings.ui_nameSearch)
+                .setHeader(FontHelper.topPanelAmountFont, 0.7f, Settings.GOLD_COLOR, EUIRM.strings.ui_nameSearch)
                 .setColors(Color.GRAY, Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.1f)
-                .setFont(EUIFontHelper.cardTitleFontSmall, 0.7f)
+                .setFont(FontHelper.topPanelAmountFont, 0.7f)
                 .setBackgroundTexture(EUIRM.images.rectangularButton.texture())
                 .setLabel("");
         quickSearch.header.setAlignment(0f, -0.51f);

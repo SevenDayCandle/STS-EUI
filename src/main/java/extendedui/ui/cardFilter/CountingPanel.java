@@ -3,6 +3,7 @@ package extendedui.ui.cardFilter;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT1;
@@ -17,7 +18,6 @@ import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
-import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.RotatingList;
 
 import java.util.ArrayList;
@@ -38,7 +38,7 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
         super(new DraggableHitbox(screenW(0.025f), screenH(0.6f), scale(140), scale(50), false));
         swapButton = new EUIButton(EUIRM.images.swap.texture(), new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, 0, 0))
                 .setOnClick(this::swap);
-        swapButton.setLabel(new EUILabel(EUIFontHelper.buttonFont, hb, 0.8f, 0.5f, 2.41f, false));
+        swapButton.setLabel(new EUILabel(FontHelper.buttonLabelFont, hb, 0.8f, 0.5f, 2.41f, false));
     }
 
     public static void register(CountingPanelCardFilter filter) {

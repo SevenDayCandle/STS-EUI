@@ -8,6 +8,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.potions.AbstractPotion;
 import extendedui.EUI;
@@ -52,7 +53,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
         swapCardScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.9f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uipool_viewCardPool)
+                .setLabel(FontHelper.buttonLabelFont, 0.8f, EUIRM.strings.uipool_viewCardPool)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
                 .setOnClick(() -> EUI.cardsScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllCards()));
@@ -60,7 +61,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
         swapRelicScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.85f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uipool_viewRelicPool)
+                .setLabel(FontHelper.buttonLabelFont, 0.8f, EUIRM.strings.uipool_viewRelicPool)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
                 .setOnClick(() -> EUI.relicScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()));
@@ -71,7 +72,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
                         o.onSelect.invoke(this, selected);
                     }
                 })
-                .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
+                .setFontForRows(EUIFontHelper.tooltipFont, 1f)
                 .setCanAutosizeButton(true);
     }
 

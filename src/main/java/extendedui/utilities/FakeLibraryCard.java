@@ -44,7 +44,7 @@ public class FakeLibraryCard extends AbstractCard {
     }
 
     private void renderImpl(SpriteBatch sb) {
-        FontHelper.renderFontLeft(sb, EUIFontHelper.cardTitleFontNormal, EUIRM.strings.ui_noMatch, hb.cX, hb.cY + hb.height / 4, Color.WHITE);
+        FontHelper.renderFontLeft(sb, FontHelper.cardTitleFont, EUIRM.strings.ui_noMatch, hb.cX, hb.cY + hb.height / 4, Color.WHITE);
     }
 
     @Override

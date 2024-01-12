@@ -31,7 +31,7 @@ public class EUIRelicPreview extends EUIPreview {
     protected static float getHeight(AbstractRelic relic) {
         if (last != relic) {
             last = relic;
-            float lastTextHeight = EUITextHelper.getSmartHeight(EUIFontHelper.cardTooltipFont, relic.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+            float lastTextHeight = EUITextHelper.getSmartHeight(EUIFontHelper.tooltipFont, relic.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastHeight = (StringUtils.isEmpty(relic.description)) ? (-40f * Settings.scale) : (-(lastTextHeight) - 7f * Settings.scale);
             lastHeight += AbstractRelic.PAD_X;
         }
@@ -84,9 +84,9 @@ public class EUIRelicPreview extends EUIPreview {
         preview.scale = scale;
         preview.render(sb, false, EUIColors.black(0.33f));
 
-        FontHelper.renderFontCentered(sb, EUIFontHelper.cardTooltipTitleFontNormal, preview.name, c, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+        FontHelper.renderFontCentered(sb, FontHelper.tipHeaderFont, preview.name, c, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         if (!StringUtils.isEmpty(preview.description)) {
-            EUITextHelper.renderSmart(sb, EUIFontHelper.cardTooltipFont, preview.description, x + TEXT_OFFSET_X, y + BODY_OFFSET_Y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+            EUITextHelper.renderSmart(sb, EUIFontHelper.tooltipFont, preview.description, x + TEXT_OFFSET_X, y + BODY_OFFSET_Y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
         }
     }
 }

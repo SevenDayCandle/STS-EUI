@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUIInputManager;
 import extendedui.EUIRM;
@@ -64,16 +65,16 @@ public class FilterKeywordButton extends EUIHoverable {
                     }
                 });
 
-        titleText = new EUILabel(EUIFontHelper.cardTooltipFont,
+        titleText = new EUILabel(EUIFontHelper.tooltipFont,
                 RelativeHitbox.fromPercentages(hb, 0.5f, 1, BASE_TITLE_OFFSET_X, BASE_OFFSET_Y))
-                .setFont(EUIFontHelper.cardTooltipFont, 0.8f)
+                .setFont(EUIFontHelper.tooltipFont, 0.8f)
                 .setColor(this.filters.filters.currentFilters.contains(this.keywordTooltip) ? Color.DARK_GRAY : Color.WHITE)
                 .setAlignment(0.5f, 0.49f) // 0.1f
                 .setLabel(this.keywordTooltip.title);
 
-        countText = new EUILabel(EUIFontHelper.cardDescriptionFontNormal,
+        countText = new EUILabel(FontHelper.cardDescFont_N,
                 RelativeHitbox.fromPercentages(hb, 0.28f, 1, BASE_COUNT_OFFSET_X, 0f))
-                .setFont(EUIFontHelper.cardDescriptionFontNormal, 0.8f)
+                .setFont(FontHelper.cardDescFont_N, 0.8f)
                 .setAlignment(0.5f, 0.51f) // 0.1f
                 .setColor(Settings.GOLD_COLOR)
                 .setLabel(this.filters.filters.currentNegateFilters.contains(this.keywordTooltip) ? "X" : cardCount);

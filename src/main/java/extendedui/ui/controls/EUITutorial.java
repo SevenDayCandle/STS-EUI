@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUIRM;
 import extendedui.ui.EUIHoverable;
@@ -40,7 +41,7 @@ public class EUITutorial extends EUIHoverable {
         this.backgroundImage = new EUIBorderedImage(backgroundTexture, hb);
 
         this.tutorials = (EUISearchableDropdown<EUITutorialPage>) new EUISearchableDropdown<EUITutorialPage>(new RelativeHitbox(hb, hb.width, scale(53), hb.width * 0.5f, hb.height - scale(120)), p -> p.title)
-                .setFontForButton(EUIFontHelper.cardTooltipTitleFontNormal, 1f)
+                .setFontForButton(FontHelper.tipHeaderFont, 1f)
                 .setOnOpenOrClose(isOpen -> {
                     CardCrawlGame.isPopupOpen = isOpen;
                 })
@@ -52,7 +53,7 @@ public class EUITutorial extends EUIHoverable {
                     }
                 }
         );
-        this.description = new EUILabel(EUIFontHelper.cardTooltipFont,
+        this.description = new EUILabel(EUIFontHelper.tooltipFont,
                 new RelativeHitbox(hb, hb.width * 0.8f, hb.height, hb.width * 0.1f, hb.height - scale(200)))
                 .setAlignment(0.5f, 0.5f, true)
                 .setSmartText(true, false);

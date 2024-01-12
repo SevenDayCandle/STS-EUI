@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
@@ -18,7 +19,6 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
-import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.TupleT2;
 
 public class EUIButton extends EUIHoverable {
@@ -254,7 +254,7 @@ public class EUIButton extends EUIHoverable {
     }
 
     public EUIButton setLabel(String text) {
-        return setLabel(EUIFontHelper.buttonFont, 1, text);
+        return setLabel(FontHelper.buttonLabelFont, 1, text);
     }
 
     public EUIButton setLabel(BitmapFont font, float fontScale, String text) {
@@ -462,7 +462,7 @@ public class EUIButton extends EUIHoverable {
 
     protected void verifyLabel() {
         if (label == null) {
-            label = new EUILabel(EUIFontHelper.buttonFont, hb, 1, 0.5f, 0.5f, false);
+            label = new EUILabel(FontHelper.buttonLabelFont, hb, 1, 0.5f, 0.5f, false);
         }
     }
 }

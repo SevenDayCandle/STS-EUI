@@ -8,6 +8,7 @@ import com.badlogic.gdx.net.HttpParametersUtils;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.PotionHelper;
 import com.megacrit.cardcrawl.helpers.RelicLibrary;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
@@ -204,7 +205,7 @@ public class EUIExporter {
         exportButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.12f)
-                .setLabel(EUIFontHelper.buttonFont, 0.7f, EUIRM.strings.misc_export)
+                .setLabel(FontHelper.buttonLabelFont, 0.7f, EUIRM.strings.misc_export)
                 .setTooltip(tip)
                 .setColor(Color.GRAY);
         exportDropdown = (EUIContextMenu<ExportType>) new EUIContextMenu<ExportType>(new EUIHitbox(0, 0, 0, 0), c -> c.baseName)
@@ -213,7 +214,7 @@ public class EUIExporter {
                         o.onSelect();
                     }
                 })
-                .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
+                .setFontForRows(EUIFontHelper.tooltipFont, 1f)
                 .setItems(ExportType.values())
                 .setCanAutosizeButton(true);
     }

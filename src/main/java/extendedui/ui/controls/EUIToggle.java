@@ -6,6 +6,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.helpers.controller.CInputAction;
 import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
@@ -17,7 +18,6 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
-import extendedui.utilities.EUIFontHelper;
 
 public class EUIToggle extends EUIHoverable {
     public static final float DEFAULT_TICK = scale(48);
@@ -31,7 +31,7 @@ public class EUIToggle extends EUIHoverable {
     public EUIImage untickedImage;
     public EUIImage tickedImage;
     public EUIImage backgroundImage = null;
-    public BitmapFont font = EUIFontHelper.cardTooltipTitleFontLarge;
+    public BitmapFont font = FontHelper.topPanelInfoFont;
     public float fontSize = 1;
     public float tickSize = DEFAULT_TICK;
     public ActionT1<Boolean> onToggle = null;

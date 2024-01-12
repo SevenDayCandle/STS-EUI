@@ -81,19 +81,19 @@ public class EUIDropdown<T> extends EUIHoverable {
     public ArrayList<EUIDropdownRow<T>> rows = new ArrayList<>();
 
     public EUIDropdown(EUIHitbox hb) {
-        this(hb, Object::toString, new ArrayList<>(), EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
+        this(hb, Object::toString, new ArrayList<>(), EUIFontHelper.tooltipFont, DEFAULT_MAX_ROWS, false);
     }
 
     public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, List<? extends T> options, BitmapFont font, int maxRows, boolean canAutosizeButton) {
-        this(hb, labelFunction, options, EUIFontHelper.cardTooltipFont, 1, DEFAULT_MAX_ROWS, false);
+        this(hb, labelFunction, options, EUIFontHelper.tooltipFont, 1, DEFAULT_MAX_ROWS, false);
     }
 
     public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction) {
-        this(hb, labelFunction, new ArrayList<>(), EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
+        this(hb, labelFunction, new ArrayList<>(), EUIFontHelper.tooltipFont, DEFAULT_MAX_ROWS, false);
     }
 
     public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, List<? extends T> options) {
-        this(hb, labelFunction, options, EUIFontHelper.cardTooltipFont, DEFAULT_MAX_ROWS, false);
+        this(hb, labelFunction, options, EUIFontHelper.tooltipFont, DEFAULT_MAX_ROWS, false);
     }
 
     public EUIDropdown(EUIHitbox hb, FuncT1<String, T> labelFunction, List<? extends T> options, BitmapFont font, float fontScale, int maxRows, boolean canAutosizeButton) {
@@ -124,7 +124,7 @@ public class EUIDropdown<T> extends EUIHoverable {
                 .setIsPopupCompatible(true)
                 .setParentElement(this))
                 .setOnClick(this::clearSelection);
-        this.header = new EUILabel(EUIFontHelper.cardTitleFontSmall, new OriginRelativeHitbox(hb, hb.width, hb.height, 0, hb.height)).setAlignment(0.5f, 0.0f, false);
+        this.header = new EUILabel(FontHelper.topPanelAmountFont, new OriginRelativeHitbox(hb, hb.width, hb.height, 0, hb.height)).setAlignment(0.5f, 0.0f, false);
         this.header.setActive(false);
     }
 

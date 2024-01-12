@@ -4,13 +4,13 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
-import extendedui.utilities.EUIFontHelper;
 
 public class EUIDialogColorPicker extends EUIDialog<EUIColorPicker> {
     protected static final int HUE_CONSTANT = 255;
@@ -43,30 +43,30 @@ public class EUIDialogColorPicker extends EUIDialog<EUIColorPicker> {
         super(hb, backgroundTexture, headerText, descriptionText);
         this.picker = new EUIColorPicker(new RelativeHitbox(hb, hb.width / 2.5f, hb.width / 2.5f, hb.width / 2.3f, hb.height / 1.4f));
         this.inputHue = (EUITextBoxNumericalInput) new EUITextBoxNumericalInput(EUIRM.images.panelRoundedHalfH.texture(), new EUIHitbox(hb.x + hb.width * 0.3f, hb.y + hb.height / 2.3f, hb.width * 0.125f, scale(54)))
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_hue)
+                .setHeader(FontHelper.topPanelAmountFont, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_hue)
                 .setBackgroundTexture(EUIRM.images.panelRoundedHalfH.texture(), new Color(0.5f, 0.5f, 0.5f, 1f), 1.1f)
                 .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.5f)
-                .setFont(EUIFontHelper.cardTitleFontSmall, 1f);
+                .setFont(FontHelper.topPanelAmountFont, 1f);
         this.inputSaturation = (EUITextBoxNumericalInput) new EUITextBoxNumericalInput(EUIRM.images.panelRoundedHalfH.texture(), new EUIHitbox(hb.x + hb.width * 0.3f, inputHue.hb.y - inputHue.hb.height * 1.2f, hb.width * 0.125f, scale(54)))
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_saturation)
+                .setHeader(FontHelper.topPanelAmountFont, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_saturation)
                 .setBackgroundTexture(EUIRM.images.panelRoundedHalfH.texture(), new Color(0.5f, 0.5f, 0.5f, 1f), 1.1f)
                 .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.5f)
-                .setFont(EUIFontHelper.cardTitleFontSmall, 1f);
+                .setFont(FontHelper.topPanelAmountFont, 1f);
         this.inputValue = (EUITextBoxNumericalInput) new EUITextBoxNumericalInput(EUIRM.images.panelRoundedHalfH.texture(), new EUIHitbox(hb.x + hb.width * 0.3f, inputSaturation.hb.y - inputSaturation.hb.height * 1.2f, hb.width * 0.125f, scale(54)))
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_value)
+                .setHeader(FontHelper.topPanelAmountFont, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_value)
                 .setBackgroundTexture(EUIRM.images.panelRoundedHalfH.texture(), new Color(0.5f, 0.5f, 0.5f, 1f), 1.1f)
                 .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.5f)
-                .setFont(EUIFontHelper.cardTitleFontSmall, 1f);
+                .setFont(FontHelper.topPanelAmountFont, 1f);
         this.inputAlpha = (EUITextBoxNumericalInput) new EUITextBoxNumericalInput(EUIRM.images.panelRoundedHalfH.texture(), new EUIHitbox(hb.x + hb.width * 0.3f, inputValue.hb.y - inputValue.hb.height * 1.2f, hb.width * 0.125f, scale(54)))
-                .setHeader(EUIFontHelper.cardTitleFontSmall, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_opacity)
+                .setHeader(FontHelper.topPanelAmountFont, 0.8f, Settings.GOLD_COLOR, EUIRM.strings.misc_opacity)
                 .setBackgroundTexture(EUIRM.images.panelRoundedHalfH.texture(), new Color(0.5f, 0.5f, 0.5f, 1f), 1.1f)
                 .setColors(new Color(0, 0, 0, 0.85f), Settings.CREAM_COLOR)
                 .setAlignment(0.5f, 0.5f)
-                .setFont(EUIFontHelper.cardTitleFontSmall, 1f);
-        this.sampleColorHeader = new EUILabel(EUIFontHelper.cardTitleFontSmall,
+                .setFont(FontHelper.topPanelAmountFont, 1f);
+        this.sampleColorHeader = new EUILabel(FontHelper.topPanelAmountFont,
                 new EUIHitbox(hb.x + hb.width * 0.6f, inputSaturation.header.hb.y, scale(50), scale(50)))
                 .setFontScale(0.8f)
                 .setColor(Settings.BLUE_TEXT_COLOR)
@@ -107,7 +107,7 @@ public class EUIDialogColorPicker extends EUIDialog<EUIColorPicker> {
     }
 
     protected EUILabel getHeader(String headerText) {
-        return new EUILabel(EUIFontHelper.buttonFont,
+        return new EUILabel(FontHelper.topPanelAmountFont,
                 new RelativeHitbox(hb, hb.width, hb.height, hb.width * 0.5f, hb.height * 0.88f))
                 .setAlignment(0.5f, 0.5f, false)
                 .setLabel(headerText);

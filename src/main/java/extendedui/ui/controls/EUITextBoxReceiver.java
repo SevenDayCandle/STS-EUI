@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.EUI;
 import extendedui.EUIInputManager;
 import extendedui.interfaces.delegates.ActionT0;
@@ -15,7 +16,6 @@ import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIColors;
-import extendedui.utilities.EUIFontHelper;
 
 public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextInputProvider {
     protected final StringBuilder buffer = new StringBuilder();
@@ -27,7 +27,7 @@ public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextIn
 
     public EUITextBoxReceiver(Texture backgroundTexture, EUIHitbox hb) {
         super(backgroundTexture, hb);
-        this.header = new EUILabel(EUIFontHelper.cardTitleFontSmall,
+        this.header = new EUILabel(FontHelper.topPanelAmountFont,
                 new EUIHitbox(hb.x, hb.y + hb.height * headerSpacing, hb.width, hb.height)).setAlignment(0.5f, 0.0f, false);
         this.header.setActive(false);
         editTextColor = EUIColors.green(1).cpy();

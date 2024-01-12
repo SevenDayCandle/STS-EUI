@@ -9,6 +9,7 @@ import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.screens.MasterDeckViewScreen;
 import com.megacrit.cardcrawl.screens.mainMenu.MenuCancelButton;
 import extendedui.EUIGameUtils;
@@ -26,7 +27,6 @@ import extendedui.ui.controls.EUIImage;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
-import extendedui.utilities.EUIFontHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -62,7 +62,7 @@ public class ExtraModSettingsPanel extends EUIBase {
         ArrayList<IUIElement> list = configCategories.get(cat);
         float offY = offsets.getOrDefault(cat, OFFSET_SIZE) - extraOff;
         if (list != null) {
-            float baseWidth = EUITextHelper.getSmartWidth(EUIFontHelper.cardDescriptionFontNormal, label);
+            float baseWidth = EUITextHelper.getSmartWidth(FontHelper.cardDescFont_N, label);
             ModSettingsToggle toggle = new ModSettingsToggle(new RelativeHitbox(hb, OPTION_SIZE * 2 + baseWidth, OPTION_SIZE, OPTION_SIZE * 3.3f + baseWidth / 2f, offY), option, label);
             list.add(toggle);
             offsets.put(cat, offY -= toggle.hb.height * 1.1f);

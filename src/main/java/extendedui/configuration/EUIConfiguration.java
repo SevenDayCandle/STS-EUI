@@ -8,6 +8,7 @@ import com.evacipated.cardcrawl.modthespire.ModInfo;
 import com.evacipated.cardcrawl.modthespire.lib.SpireConfig;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUI;
 import extendedui.EUIGameUtils;
@@ -24,7 +25,6 @@ import extendedui.ui.settings.ModSettingsPathSelector;
 import extendedui.ui.settings.ModSettingsToggle;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
-import extendedui.utilities.EUIFontHelper;
 
 import java.io.IOException;
 import java.util.Collections;
@@ -51,7 +51,7 @@ public class EUIConfiguration {
     public static STSConfigItem<Boolean> enableCardPoolDebug = new STSConfigItem<>(getFullKey("EnableCardPoolDebug"), false);
     public static STSConfigItem<Boolean> enableDescriptionIcons = new STSConfigItem<>(getFullKey("EnableDescriptionIcons"), false);
     public static STSConfigItem<Boolean> enableExpandTooltips = new STSConfigItem<>(getFullKey("EnableExpandTooltips"), false);
-    public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(getFullKey("FlushOnGameStart"), false);
+    public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(getFullKey("FlushOnGameStart"), true);
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(getFullKey("FlushOnRoomStart"), false);
     public static STSConfigItem<Boolean> forceLinearFiltering = new STSConfigItem<>(getFullKey("ForceLinearFiltering"), false);
     public static STSConfigItem<Boolean> hideInfo = new STSConfigItem<>(getFullKey("HideInfo"), false);
@@ -116,7 +116,7 @@ public class EUIConfiguration {
     }
 
     public static ModSettingsToggle createToggle(STSConfigItem<Boolean> option, String label, float ypos, String tip) {
-        float baseWidth = EUITextHelper.getSmartWidth(EUIFontHelper.cardDescriptionFontNormal, label);
+        float baseWidth = EUITextHelper.getSmartWidth(FontHelper.cardDescFont_N, label);
         ModSettingsToggle toggle = new ModSettingsToggle(new EUIHitbox(BASE_OPTION_OFFSET_X * Settings.scale, ypos, ExtraModSettingsPanel.OPTION_SIZE * 2f + baseWidth, ExtraModSettingsPanel.OPTION_SIZE), option, label);
         toggle.setTooltip(new EUITooltip(label, tip));
         toggle.tooltip.setAutoWidth();
@@ -245,7 +245,6 @@ public class EUIConfiguration {
         makeModToggle(effekseerCategory, flushOnGameStart, EUIRM.strings.config_flushOnGameStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(effekseerCategory, flushOnRoomStart, EUIRM.strings.config_flushOnRoomStart, EUIRM.strings.configdesc_flushEffekseer);
         makeModToggle(fontCategory, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
-        makeModToggle(fontCategory, overrideGameFont, EUIRM.strings.config_overrideGameFont, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         makeModToggle(fontCategory, forceLinearFiltering, EUIRM.strings.config_forceLinearFiltering, EUIRM.strings.configdesc_forceLinearFiltering + EUIUtils.SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         EUIButton clearButton = makeModButton(euiCategory, EUIRM.strings.config_reenableTooltips, () -> clearHiddenTips(true), ExtraModSettingsPanel.OPTION_SIZE);
         clearButton.setTooltip(reenableTip);
@@ -290,7 +289,6 @@ public class EUIConfiguration {
         xPos = (BASE_OPTION_OFFSET_X + 290) * Settings.scale;
         yPos = BASE_OPTION_OFFSET_Y * Settings.scale;
         yPos = addToggle(2, useSeparateFonts, EUIRM.strings.config_useSeparateFonts, yPos, EUIRM.strings.configdesc_useSeparateFonts + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
-        yPos = addToggle(2, overrideGameFont, EUIRM.strings.config_overrideGameFont, yPos, EUIRM.strings.configdesc_overrideGameFont + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         yPos = addToggle(2, forceLinearFiltering, EUIRM.strings.config_forceLinearFiltering, yPos, EUIRM.strings.configdesc_forceLinearFiltering + EUIUtils.LEGACY_DOUBLE_SPLIT_LINE + EUIRM.strings.configdesc_restartRequired);
         ModSettingsPathSelector cardDescFontSelector2 = new ModSettingsPathSelector(cardDescFontSelector).translate(xPos, yPos);
         yPos = addGenericElement(2, cardDescFontSelector2, yPos) + 2;

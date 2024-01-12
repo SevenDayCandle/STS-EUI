@@ -4,12 +4,12 @@ import basemod.IUIElement;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.math.MathUtils;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import extendedui.EUIGameUtils;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.EUIHitbox;
-import extendedui.utilities.EUIFontHelper;
 
 import java.util.ArrayList;
 
@@ -30,7 +30,7 @@ public class BasemodSettingsPage implements IUIElement {
                 .setOnClick(__ -> setPage(current - 1));
         rightButton = new EUIButton(ImageMaster.CF_RIGHT_ARROW, new EUIHitbox(leftButton.hb.cX + ICON_SIZE / 2f, leftButton.getY(), ICON_SIZE, ICON_SIZE))
                 .setOnClick(__ -> setPage(current + 1));
-        pageNumber = new EUILabel(EUIFontHelper.cardTitleFontSmall,
+        pageNumber = new EUILabel(FontHelper.topPanelAmountFont,
                 new EUIHitbox(leftButton.hb.x - ICON_SIZE * 2f, 786 * Settings.scale, ICON_SIZE, ICON_SIZE))
                 .setColor(Settings.GOLD_COLOR);
         setPage(current);

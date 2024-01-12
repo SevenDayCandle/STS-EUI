@@ -10,6 +10,7 @@ import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.GameCursor;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import com.megacrit.cardcrawl.screens.SingleCardViewPopup;
 import com.megacrit.cardcrawl.vfx.cardManip.ShowCardAndAddToHandEffect;
@@ -58,14 +59,14 @@ public class CardPoolScreen extends EUIPoolScreen {
         upgradeToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setBackground(EUIRM.images.greySquare.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.8f)
-                .setFont(EUIFontHelper.cardDescriptionFontLarge, 0.5f)
+                .setFont(FontHelper.cardDescFont_L, 1f)
                 .setText(SingleCardViewPopup.TEXT[6])
                 .setOnToggle(EUI::toggleViewUpgrades);
 
         betaToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setBackground(EUIRM.images.greySquare.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.75f)
-                .setFont(EUIFontHelper.cardDescriptionFontLarge, 0.5f)
+                .setFont(FontHelper.cardDescFont_L, 1f)
                 .setText(SingleCardViewPopup.TEXT[14])
                 .setOnToggle(val -> {
                     EUI.toggleBetaArt(val);
@@ -75,7 +76,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         colorlessToggle = new EUIToggle(new EUIHitbox(Settings.scale * 256f, Settings.scale * 48f))
                 .setBackground(EUIRM.images.greySquare.texture(), Color.DARK_GRAY)
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.7f)
-                .setFont(EUIFontHelper.cardDescriptionFontLarge, 0.5f)
+                .setFont(FontHelper.cardDescFont_L, 1f)
                 .setText(EUIRM.strings.uipool_showColorless)
                 .setOnToggle(val -> {
                     EUI.cardFilters.colorsDropdown.toggleSelection(AbstractCard.CardColor.COLORLESS, val, true);
@@ -86,7 +87,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         swapRelicScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.9f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uipool_viewRelicPool)
+                .setLabel(FontHelper.buttonLabelFont, 0.8f, EUIRM.strings.uipool_viewRelicPool)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
                 .setOnClick(() -> EUI.relicScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllRelics()));
@@ -94,7 +95,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         swapPotionScreen = new EUIButton(EUIRM.images.hexagonalButton.texture(),
                 new EUIHitbox(scale(210), scale(43)))
                 .setPosition(Settings.WIDTH * 0.075f, Settings.HEIGHT * 0.85f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.uipool_viewPotionPool)
+                .setLabel(FontHelper.buttonLabelFont, 0.8f, EUIRM.strings.uipool_viewPotionPool)
                 .setColor(Color.GRAY)
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.GRAY)
                 .setOnClick(() -> EUI.potionScreen.openScreen(AbstractDungeon.player, CardPoolPanelItem.getAllPotions()));
@@ -107,7 +108,7 @@ public class CardPoolScreen extends EUIPoolScreen {
                         }
                     }
                 })
-                .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
+                .setFontForRows(EUIFontHelper.tooltipFont, 1f)
                 .setCanAutosizeButton(true);
 
         betaToggleCache = EUI.isPlaytesterArt();

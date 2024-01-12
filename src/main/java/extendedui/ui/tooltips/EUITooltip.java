@@ -70,8 +70,8 @@ public class EUITooltip {
     protected Float lastSubHeaderHeight;
     protected Float lastTextHeight;
     protected Float lastHeight;
-    public BitmapFont headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
-    public BitmapFont descriptionFont = EUIFontHelper.cardTooltipFont;
+    public BitmapFont headerFont = FontHelper.tipHeaderFont;
+    public BitmapFont descriptionFont = EUIFontHelper.tooltipFont;
     public ColoredString subHeader;
     public ColoredString subText;
     public List<EUITooltip> children;
@@ -742,7 +742,7 @@ public class EUITooltip {
 
     public float height() {
         if (lastHeight == null) {
-            BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
+            BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.tooltipFont;
             lastTextHeight = EUITextHelper.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastSubHeaderHeight = (subHeader != null) ? EUITextHelper.getSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;
             lastHeight = (StringUtils.isEmpty(description)) ? (-40f * Settings.scale) : (-(lastTextHeight + lastSubHeaderHeight) - 7f * Settings.scale);
@@ -916,10 +916,10 @@ public class EUITooltip {
     // Because keyword tooltips can be instantiated before EUIFontHelper fonts are set up, we need to verify keyword tooltips when they render
     public void verifyFonts() {
         if (headerFont == null) {
-            headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
+            headerFont = FontHelper.tipHeaderFont;
         }
         if (descriptionFont == null) {
-            descriptionFont = EUIFontHelper.cardTooltipFont;
+            descriptionFont = EUIFontHelper.tooltipFont;
         }
     }
 }

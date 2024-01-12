@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
@@ -11,7 +12,6 @@ import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUIHeaderlessTooltip;
-import extendedui.utilities.EUIFontHelper;
 
 import javax.swing.filechooser.FileNameExtensionFilter;
 import java.io.File;
@@ -34,7 +34,7 @@ public class EUIFileSelector extends EUIHoverable {
     public EUIFileSelector(EUIHitbox hb, Texture texture, float headerSpacing) {
         super(hb);
         this.headerSpacing = headerSpacing;
-        this.header = new EUILabel(EUIFontHelper.cardTitleFontSmall, hb).setAlignment(0.5f, 0.0f, false);
+        this.header = new EUILabel(FontHelper.topPanelAmountFont, hb).setAlignment(0.5f, 0.0f, false);
         this.filePath = new EUITextBox(texture, new RelativeHitbox(hb, hb.width, hb.height, hb.width * (1.4f + headerSpacing), hb.height * 0.5f));
         this.filePath.setAlignment(0.5f, 0.1f);
         this.selectButton = new EUIButton(EUIRM.images.fileSelectButton.texture(), new RelativeHitbox(hb, hb.height, hb.height, hb.width * (2f + headerSpacing), hb.height * 0.5f)).setOnClick(this::chooseFile);

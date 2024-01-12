@@ -18,7 +18,6 @@ import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.ColoredTexture;
 import extendedui.utilities.EUIColors;
-import extendedui.utilities.EUIFontHelper;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
@@ -670,11 +669,11 @@ public class EUIRenderHelpers {
     public static BitmapFont getDescriptionFont(AbstractCard card, float scaleModifier) {
         BitmapFont result;
         if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup()) {
-            result = EUIFontHelper.cardDescriptionFontLarge;
+            result = FontHelper.SCP_cardDescFont;
             result.getData().setScale(card.drawScale * scaleModifier * 0.5f);
         }
         else {
-            result = EUIFontHelper.cardDescriptionFontNormal;
+            result = FontHelper.cardDescFont_N;
             result.getData().setScale(card.drawScale * scaleModifier);
         }
 
@@ -747,11 +746,11 @@ public class EUIRenderHelpers {
         BitmapFont result;
         final float scale = 1 / (Math.max(14f, card.name.length()) / 14f);
         if (card instanceof TooltipProvider && ((TooltipProvider) card).isPopup()) {
-            result = EUIFontHelper.cardTitleFontLarge;
-            result.getData().setScale(card.drawScale * 0.5f * scale);
+            result = FontHelper.SCP_cardTitleFont_small;
+            result.getData().setScale(card.drawScale * scale);
         }
         else {
-            result = EUIFontHelper.cardTitleFontNormal;
+            result = FontHelper.cardTitleFont;
             result.getData().setScale(card.drawScale * scale);
         }
 

@@ -154,8 +154,8 @@ public class EUIKeywordTooltip extends EUITooltip {
         for (Map.Entry<String, EUIKeywordTooltip> entry : getEntries()) {
             EUIKeywordTooltip tip = entry.getValue();
             tip.canAdd = !EUIConfiguration.getIsTipDescriptionHidden(entry.getKey());
-            tip.headerFont = EUIFontHelper.cardTooltipTitleFontNormal;
-            tip.descriptionFont = EUIFontHelper.cardTooltipFont;
+            tip.headerFont = FontHelper.tipHeaderFont;
+            tip.descriptionFont = EUIFontHelper.tooltipFont;
         }
     }
 
@@ -266,7 +266,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     @Override
     public float height() {
         if (lastHeight == null) {
-            BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.cardTooltipFont;
+            BitmapFont descFont = descriptionFont != null ? descriptionFont : EUIFontHelper.tooltipFont;
             lastTextHeight = EUITextHelper.getSmartHeight(descFont, description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastModNameHeight = (modName != null) ? EUITextHelper.getSmartHeight(descFont, modName.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING : 0;
             lastSubHeaderHeight = (subHeader != null) ? EUITextHelper.getSmartHeight(descFont, subHeader.text, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING) - TIP_DESC_LINE_SPACING * 1.5f : 0;

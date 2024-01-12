@@ -14,28 +14,49 @@ import javassist.CtBehavior;
 import javassist.expr.ExprEditor;
 
 public class FontHelperPatches {
+    // Do not apply linear filtering to the power font
+    public static boolean forceFiltering(FileHandle file, boolean initValue) {
+        return initValue || (EUIConfiguration.forceLinearFiltering.get() && !file.path().equals(EUIFontHelper.TINY_NUMBERS_FONT));
+    }
+
     @SpirePatch(
             clz = FontHelper.class,
             method = "initialize"
     )
     public static class FontHelperPatches_Initialize {
 
-        // Do not apply linear filtering to the power font
-        public static boolean forceFiltering(FileHandle file, boolean initValue) {
-            return initValue || (EUIConfiguration.forceLinearFiltering.get() && !file.path().equals(EUIFontHelper.TINY_NUMBERS_FONT));
+        // Skip if separate fonts is not used
+        @SpireInsertPatch(locator = BannerFontLocator.class)
+        public static void insertBanner() {
+            if (EUIConfiguration.overrideGameFont.get() && EUIConfiguration.useSeparateFonts.get()) {
+                FileHandle fontFileBold = EUIFontHelper.getCustomBoldFontFile(Settings.language);
+                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomFont(EUIConfiguration.bannerFont, fontFileBold));
+            }
         }
 
-        @SpireInsertPatch(locator = BoldLocator1.class)
-        public static void insertBold() {
+        // Skip if separate fonts is not used
+        @SpireInsertPatch(locator = ButtonFontLocator.class)
+        public static void insertButton() {
+            if (EUIConfiguration.overrideGameFont.get() && EUIConfiguration.useSeparateFonts.get()) {
+                FileHandle fontFile = EUIFontHelper.getCustomDefaultFontFile(Settings.language);
+                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomFont(EUIConfiguration.buttonFont, fontFile));
+            }
+        }
+
+        // Default to bold
+        @SpireInsertPatch(locator = CardTypeLocator.class)
+        public static void insertCardType() {
             if (EUIConfiguration.overrideGameFont.get()) {
                 ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomBoldFontFile(Settings.language));
             }
         }
 
-        @SpireInsertPatch(locator = BoldLocator2.class)
-        public static void insertBold2() {
+        // Default to bold
+        @SpireInsertPatch(locator = EnergyFontLocator.class)
+        public static void insertEnergy() {
             if (EUIConfiguration.overrideGameFont.get()) {
-                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomBoldFontFile(Settings.language));
+                FileHandle fontFileBold = EUIFontHelper.getCustomBoldFontFile(Settings.language);
+                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIConfiguration.useSeparateFonts.get() ? EUIFontHelper.getCustomFont(EUIConfiguration.energyFont, fontFileBold) : fontFileBold);
             }
         }
 
@@ -46,12 +67,27 @@ public class FontHelperPatches {
             }
         }
 
+        // Skip if separate fonts is not used
+        @SpireInsertPatch(locator = TipBodyLocator.class)
+        public static void insertTipBody() {
+            if (EUIConfiguration.overrideGameFont.get() && EUIConfiguration.useSeparateFonts.get()) {
+                FileHandle fontFile = EUIFontHelper.getCustomDefaultFontFile(Settings.language);
+                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomFont(EUIConfiguration.tipDescFont, fontFile));
+            }
+        }
+
+        // Skip if separate fonts is not used
+        @SpireInsertPatch(locator = BannerFontLocator.class)
+        public static void insertTipTitle() {
+            if (EUIConfiguration.overrideGameFont.get() && EUIConfiguration.useSeparateFonts.get()) {
+                FileHandle fontFileBold = EUIFontHelper.getCustomBoldFontFile(Settings.language);
+                ReflectionHacks.setPrivateStatic(FontHelper.class, "fontFile", EUIFontHelper.getCustomFont(EUIConfiguration.tipTitleFont, fontFileBold));
+            }
+        }
+
         @SpirePostfixPatch
         public static void postfix() {
             EUIFontHelper.initialize();
-            if (EUIConfiguration.overrideGameFont.get() && EUIConfiguration.useSeparateFonts.get()) {
-                EUIFontHelper.overwriteBaseFonts();
-            }
         }
 
         @SpireInstrumentPatch
@@ -65,6 +101,34 @@ public class FontHelperPatches {
             };
         }
 
+        private static class BannerFontLocator extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "dungeonTitleFont");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
+        private static class ButtonFontLocator extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "buttonLabelFont");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
+        private static class CardTypeLocator extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "cardTypeFont");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
+        private static class EnergyFontLocator extends SpireInsertLocator {
+            public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "energyNumFontRed");
+                return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
+            }
+        }
+
         private static class MainLocator extends SpireInsertLocator {
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
                 Matcher finalMatcher = new Matcher.FieldAccessMatcher(FreeTypeFontGenerator.FreeTypeBitmapFontData.class, "xChars");
@@ -72,16 +136,16 @@ public class FontHelperPatches {
             }
         }
 
-        private static class BoldLocator1 extends SpireInsertLocator {
+        private static class TipBodyLocator extends SpireInsertLocator {
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
-                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "energyNumFontRed");
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "tipBodyFont");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }
 
-        private static class BoldLocator2 extends SpireInsertLocator {
+        private static class TipTitleLocator extends SpireInsertLocator {
             public int[] Locate(CtBehavior ctMethodToPatch) throws CannotCompileException, PatchingException {
-                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "cardTypeFont");
+                Matcher finalMatcher = new Matcher.FieldAccessMatcher(FontHelper.class, "tipHeaderFont");
                 return LineFinder.findInOrder(ctMethodToPatch, finalMatcher);
             }
         }

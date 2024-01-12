@@ -1,10 +1,10 @@
 package extendedui.ui.settings;
 
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.listeners.STSConfigListener;
 import extendedui.ui.controls.EUIToggle;
 import extendedui.ui.hitboxes.EUIHitbox;
-import extendedui.utilities.EUIFontHelper;
 
 public class ModSettingsToggle extends EUIToggle implements STSConfigListener<Boolean> {
     public final STSConfigItem<Boolean> config;
@@ -13,7 +13,7 @@ public class ModSettingsToggle extends EUIToggle implements STSConfigListener<Bo
         super(hb);
         this.config = config;
         setText(title);
-        setFont(EUIFontHelper.cardDescriptionFontNormal, 1f);
+        setFont(FontHelper.cardDescFont_N, 1f);
         setOnToggle(this.config::set);
         this.config.addListener(this);
     }

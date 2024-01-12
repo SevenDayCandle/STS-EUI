@@ -47,7 +47,7 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
                         o.onSelect();
                     }
                 })
-                .setFontForRows(EUIFontHelper.cardTooltipFont, 1f)
+                .setFontForRows(EUIFontHelper.tooltipFont, 1f)
                 .setItems(ContextOption.values())
                 .setCanAutosizeButton(true);
     }

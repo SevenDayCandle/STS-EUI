@@ -16,6 +16,7 @@ import com.megacrit.cardcrawl.characters.AbstractPlayer;
 import com.megacrit.cardcrawl.core.CardCrawlGame;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.dungeons.AbstractDungeon;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.helpers.TipHelper;
@@ -46,7 +47,6 @@ import extendedui.ui.settings.ExtraModSettingsPanel;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
-import extendedui.utilities.EUIFontHelper;
 import extendedui.utilities.PotionInfo;
 import extendedui.utilities.RelicInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -406,7 +406,7 @@ public class EUI {
         openFiltersButton = new EUIButton(EUIRM.images.hexagonalButton.texture(), new DraggableHitbox(0, 0, Settings.WIDTH * 0.07f, Settings.HEIGHT * 0.07f, false).setIsPopupCompatible(true))
                 .setBorder(EUIRM.images.hexagonalButtonBorder.texture(), Color.WHITE)
                 .setPosition(Settings.WIDTH * 0.96f, Settings.HEIGHT * 0.05f)
-                .setLabel(EUIFontHelper.buttonFont, 0.8f, EUIRM.strings.ui_filters)
+                .setLabel(FontHelper.buttonLabelFont, 0.8f, EUIRM.strings.ui_filters)
                 .setTooltip(tip)
                 .setColor(Color.MAROON);
 

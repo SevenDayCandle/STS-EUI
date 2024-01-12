@@ -32,7 +32,7 @@ public class EUIBlightPreview extends EUIPreview {
     protected static float getHeight(AbstractBlight blight) {
         if (last != blight) {
             last = blight;
-            float lastTextHeight = EUITextHelper.getSmartHeight(EUIFontHelper.cardTooltipFont, blight.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
+            float lastTextHeight = EUITextHelper.getSmartHeight(EUIFontHelper.tooltipFont, blight.description, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING);
             lastHeight = (StringUtils.isEmpty(blight.description)) ? (-40f * Settings.scale) : (-(lastTextHeight) - 7f * Settings.scale);
             lastHeight += AbstractRelic.PAD_X;
         }
@@ -85,9 +85,9 @@ public class EUIBlightPreview extends EUIPreview {
         preview.scale = scale;
         preview.render(sb, false, EUIColors.black(0.33f));
 
-        FontHelper.renderFontCentered(sb, EUIFontHelper.cardTooltipTitleFontNormal, preview.name, c, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
+        FontHelper.renderFontCentered(sb, FontHelper.tipHeaderFont, preview.name, c, y + HEADER_OFFSET_Y, Settings.GOLD_COLOR);
         if (!StringUtils.isEmpty(preview.description)) {
-            EUITextHelper.renderSmart(sb, EUIFontHelper.cardTooltipFont, preview.description, x + TEXT_OFFSET_X, y + BODY_OFFSET_Y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
+            EUITextHelper.renderSmart(sb, EUIFontHelper.tooltipFont, preview.description, x + TEXT_OFFSET_X, y + BODY_OFFSET_Y, BODY_TEXT_WIDTH, TIP_DESC_LINE_SPACING, BASE_COLOR);
         }
     }
 }
