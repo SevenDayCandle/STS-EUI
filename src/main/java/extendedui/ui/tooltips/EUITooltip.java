@@ -1,11 +1,14 @@
 package extendedui.ui.tooltips;
 
 import basemod.ReflectionHacks;
+import basemod.abstracts.CustomMonster;
+import basemod.helpers.CardPowerTip;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.math.Vector2;
+import com.evacipated.cardcrawl.mod.stslib.powers.interfaces.InvisiblePower;
 import com.megacrit.cardcrawl.blights.AbstractBlight;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.AbstractCreature;
@@ -41,6 +44,7 @@ import java.util.List;
 
 public class EUITooltip {
     private static final ArrayList<String> EMPTY_LIST = new ArrayList<>();
+    private static final ArrayList<EUIPreview> previews = new ArrayList<>();
     private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
     private static final Vector2 genericTipPos = new Vector2(0, 0);
     protected static final float BORDER_SIZE = Settings.scale * 32.0F;
@@ -121,6 +125,7 @@ public class EUITooltip {
     public static void blockTooltips() {
         clearVanillaTips();
         tooltips.clear();
+        previews.clear();
         provider = null;
         lastProvider = null;
     }
@@ -129,21 +134,31 @@ public class EUITooltip {
         return tips.isEmpty() ? 0f : (1f - hb_cY / (float) Settings.HEIGHT) * getTallestOffset(tips) - (tips.get(0).getTotalHeight()) * 0.5f;
     }
 
+    // Do not render powers with no name or invisible powers (stslib feature)
     public static boolean canRenderPower(AbstractPower po) {
-        return po.name != null;
+        return po.name != null && (!EUI.isStsLib() || !(po instanceof InvisiblePower));
     }
 
     public static boolean canRenderTooltips() {
         return !EUIClassUtils.getFieldStatic(TipHelper.class, "renderedTipThisFrame", Boolean.class);
     }
 
-    public static void clearVanillaTips() {
+    private static void clearVanillaTips() {
         ReflectionHacks.setPrivateStatic(TipHelper.class, "renderedTipThisFrame", true);
         ReflectionHacks.setPrivateStatic(TipHelper.class, "BODY", null);
         ReflectionHacks.setPrivateStatic(TipHelper.class, "HEADER", null);
         ReflectionHacks.setPrivateStatic(TipHelper.class, "card", null);
         ReflectionHacks.setPrivateStatic(TipHelper.class, "KEYWORDS", EMPTY_LIST);
         ReflectionHacks.setPrivateStatic(TipHelper.class, "POWER_TIPS", EMPTY_LIST);
+    }
+
+    private static void fillProviderPreview() {
+        if (provider instanceof TooltipProvider) {
+            EUIPreview preview = ((TooltipProvider) provider).getPreview();
+            if (preview != null) {
+                previews.add(preview);
+            }
+        }
     }
 
     public static EUIKeywordTooltip fromMonsterIntent(AbstractMonster monster) {
@@ -163,13 +178,6 @@ public class EUITooltip {
             newTip.icon = new TextureRegion(tip.img);
         }
         return newTip;
-    }
-
-    protected static EUIPreview getProviderPreview() {
-        if (provider instanceof TooltipProvider) {
-            return ((TooltipProvider) provider).getPreview();
-        }
-        return null;
     }
 
     public static float getTallestOffset(ArrayList<EUITooltip> tips) {
@@ -205,6 +213,7 @@ public class EUITooltip {
                 lastProvider = tooltip;
                 provider = null;
                 tooltips.clear();
+                previews.clear();
                 tooltips.add(tooltip);
                 if (tooltip.children != null) {
                     tooltips.addAll(tooltip.children);
@@ -222,7 +231,7 @@ public class EUITooltip {
     }
 
     public static void queueTooltips(Collection<? extends EUITooltip> tips) {
-        float maxWidth = tips.size() > 0 ? EUIUtils.max(tips, tip -> tip.width) : BOX_W;
+        float maxWidth = !tips.isEmpty() ? EUIUtils.max(tips, tip -> tip.width) : BOX_W;
         float estHeight = EUIUtils.sum(tips, EUITooltip::height);
         float x = InputHelper.mX;
         float y = InputHelper.mY;
@@ -241,6 +250,7 @@ public class EUITooltip {
                 lastProvider = tips;
                 provider = null;
                 tooltips.clear();
+                previews.clear();
                 tooltips.addAll(tips);
             }
             genericTipPos.x = x;
@@ -293,6 +303,7 @@ public class EUITooltip {
         if (lastProvider != provider) {
             lastProvider = provider;
             tooltips.clear();
+            previews.clear();
             addGenericTips(blight.tips);
             scanListForAdditionalTips(tooltips);
         }
@@ -336,6 +347,7 @@ public class EUITooltip {
         if (lastProvider != provider) {
             lastProvider = provider;
             tooltips.clear();
+            previews.clear();
             if (provider instanceof TooltipProvider) {
                 for (EUITooltip tip : ((TooltipProvider) provider).getTipsForRender()) {
                     if (tip.isRenderable()) {
@@ -352,6 +364,7 @@ public class EUITooltip {
                 }
             }
             scanListForAdditionalTips(tooltips);
+            fillProviderPreview();
         }
 
         float x = card.current_x;
@@ -363,15 +376,11 @@ public class EUITooltip {
             x -= AbstractCard.IMG_WIDTH / 2f + CARD_TIP_PAD + BOX_W;
         }
 
-        renderTipsImpl(sb, x, y);
-
-        if (provider instanceof TooltipProvider) {
-            boolean popUp = ((TooltipProvider) provider).isPopup();
-            EUIPreview preview = ((TooltipProvider) provider).getPreview();
-            if (preview != null) {
-                preview.render(sb, card.current_x, card.current_y, 0.83f, card.upgraded || EUIGameUtils.canShowUpgrades(false), popUp);
-            }
+        boolean popUp = provider instanceof TooltipProvider && ((TooltipProvider) provider).isPopup();
+        for (EUIPreview preview : previews) {
+            preview.render(sb, card.current_x, card.current_y, 0.83f, card.upgraded || EUIGameUtils.canShowUpgrades(false), popUp);
         }
+        renderTipsImpl(sb, x, y);
     }
 
     private static void renderFromCreature(SpriteBatch sb) {
@@ -379,6 +388,7 @@ public class EUITooltip {
         if (creature == null) {
             return;
         }
+        ArrayList<PowerTip> ogTips = ReflectionHacks.getPrivate(creature, AbstractCreature.class, "tips");
 
         float x;
         if ((creature.hb.cX + creature.hb.width * 0.5f) < TIP_X_THRESHOLD) {
@@ -392,16 +402,15 @@ public class EUITooltip {
             lastProvider = creature;
 
             tooltips.clear();
+            previews.clear();
 
             if (creature instanceof IntentProvider) {
-                lastProvider = provider = creature;
                 EUITooltip intentTip = ((IntentProvider) creature).getIntentTip();
                 if (intentTip != null) {
                     tooltips.add(intentTip);
                 }
             }
             else {
-                lastProvider = provider = null;
                 if (creature instanceof AbstractMonster) {
                     AbstractMonster monster = (AbstractMonster) creature;
                     if (EUIGameUtils.canViewEnemyIntents(monster)) {
@@ -446,17 +455,30 @@ public class EUITooltip {
             }
 
             scanListForAdditionalTips(tooltips);
-        }
+            fillProviderPreview();
 
-        float y = creature.hb.cY + calculateAdditionalOffset(tooltips, creature.hb.cY);
-        if (provider instanceof TooltipProvider) {
-            EUIPreview preview = ((TooltipProvider) provider).getPreview();
-            if (preview != null) {
-                float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
-                preview.render(sb, previewOffset, y, 0.8f, false);
+            // If renderFromCreature is called instead of renderTip, creature tips will not be filled with power tips but will still have additional tips added by modders
+            if (creature instanceof AbstractMonster) {
+                for (PowerTip tip : ogTips) {
+                    if (tip instanceof CardPowerTip) {
+                        previews.add(new EUICardPreview(((CardPowerTip) tip).card));
+                    }
+                    else {
+                        final EUIKeywordTooltip t = new EUIKeywordTooltip(tip.header, tip.body);
+                        if (tip.img != null) {
+                            t.setIcon(tip.img);
+                        }
+                        tooltips.add(t);
+                    }
+                }
             }
         }
 
+        // Need to clear out these tips because apparently anything that adds to them will add to them unto infinity
+        ogTips.clear();
+
+        float y = creature.hb.cY + calculateAdditionalOffset(tooltips, creature.hb.cY);
+        renderPreviews(sb, x, y);
         renderTipsImpl(sb, x, y);
     }
 
@@ -469,8 +491,10 @@ public class EUITooltip {
         if (lastProvider != provider) {
             lastProvider = provider;
             tooltips.clear();
+            previews.clear();
             addGenericTips(potion.tips);
             scanListForAdditionalTips(tooltips);
+            fillProviderPreview();
         }
 
         boolean hasPotion = AbstractDungeon.player != null && AbstractDungeon.player.hasPotion(potion.ID);
@@ -480,10 +504,7 @@ public class EUITooltip {
             x = 150 * Settings.scale;
             y = 800.0F * Settings.scale;
             renderTipsImpl(sb, x, y);
-            EUIPreview preview = getProviderPreview();
-            if (preview != null) {
-                preview.render(sb, 360 * Settings.scale, 0.25f * Settings.HEIGHT, 0.83f, false, false);
-            }
+            renderPreviews(sb, 360 * Settings.scale, 0.25f * Settings.HEIGHT);
         }
         else {
             if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
@@ -503,14 +524,8 @@ public class EUITooltip {
                 y = InputHelper.mY + (50 * Settings.scale);
             }
 
+            renderPreviews(sb, potion.posX + potion.hb.width, potion.posY);
             renderTipsImpl(sb, x, y);
-
-            if (provider instanceof TooltipProvider) {
-                EUIPreview preview = ((TooltipProvider) provider).getPreview();
-                if (preview != null) {
-                    preview.render(sb, potion.posX + potion.hb.width, potion.posY, 0.83f, false, false);
-                }
-            }
         }
     }
 
@@ -523,8 +538,10 @@ public class EUITooltip {
         if (lastProvider != provider) {
             lastProvider = provider;
             tooltips.clear();
+            previews.clear();
             addGenericTips(relic.tips);
             scanListForAdditionalTips(tooltips);
+            fillProviderPreview();
         }
 
         boolean hasRelic = AbstractDungeon.player != null && AbstractDungeon.player.hasRelic(relic.relicId);
@@ -533,20 +550,14 @@ public class EUITooltip {
         if (CardCrawlGame.mainMenuScreen.screen == MainMenuScreen.CurScreen.RELIC_VIEW) {
             x = 180 * Settings.scale;
             y = 0.7f * Settings.HEIGHT;
+            renderPreviews(sb, 655 * Settings.scale, 0.1f * Settings.HEIGHT);
             renderTipsImpl(sb, x, y);
-            EUIPreview preview = getProviderPreview();
-            if (preview != null) {
-                preview.render(sb, 655 * Settings.scale, 0.1f * Settings.HEIGHT, 0.83f, false, false);
-            }
         }
         else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.COMBAT_REWARD && !hasRelic) {
             x = 350 * Settings.scale;
             y = InputHelper.mY + (50 * Settings.scale);
+            renderPreviews(sb, 410 * Settings.scale, y);
             renderTipsImpl(sb, x, y);
-            EUIPreview preview = getProviderPreview();
-            if (preview != null) {
-                preview.render(sb, 410 * Settings.scale, y, 0.83f, false, false);
-            }
         }
         else {
             if ((float) InputHelper.mX >= 1400.0F * Settings.scale) {
@@ -566,22 +577,24 @@ public class EUITooltip {
                 y = InputHelper.mY + (50 * Settings.scale);
             }
 
+            renderPreviews(sb, x, y);
             renderTipsImpl(sb, x, y);
-            EUIPreview preview = getProviderPreview();
-            if (preview != null) {
-                if (x > Settings.WIDTH * 0.2) {
-                    x -= relic.hb.width;
-                }
-                else {
-                    x += BOX_W * 2;
-                }
-                preview.render(sb, x, y, 0.83f, false, false);
-            }
         }
     }
 
     private static void renderGeneric(SpriteBatch sb) {
         renderTipsImpl(sb, genericTipPos.x, genericTipPos.y);
+    }
+
+    private static void renderPreviews(SpriteBatch sb, float x, float y) {
+        if (!previews.isEmpty()) {
+            float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
+            float startY = y;
+            for (EUIPreview preview : previews) {
+                preview.render(sb, previewOffset, startY, 0.8f, false);
+                startY -= AbstractCard.IMG_HEIGHT;
+            }
+        }
     }
 
     private static void renderTipsImpl(SpriteBatch sb, float x, float y) {

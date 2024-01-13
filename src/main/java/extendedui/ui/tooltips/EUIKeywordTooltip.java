@@ -19,10 +19,7 @@ import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.GameDictionary;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import extendedui.EUIGameUtils;
-import extendedui.EUIRM;
-import extendedui.EUIRenderHelpers;
-import extendedui.EUIUtils;
+import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.FuncT0;
 import extendedui.patches.EUIKeyword;
@@ -182,7 +179,7 @@ public class EUIKeywordTooltip extends EUITooltip {
 
     public static void registerKeywordIcons() {
         // Add CommonKeywordIcon and CustomIconHelper pictures to keywords. This REQUIRES stslib to run
-        if (Loader.isModLoaded("stslib")) {
+        if (EUI.isStsLib()) {
             for (EUIKeywordTooltip tooltip : EUIUtils.map(getEntries(), Map.Entry::getValue)) {
                 String title = tooltip.title;
                 // CommonKeywordIcon

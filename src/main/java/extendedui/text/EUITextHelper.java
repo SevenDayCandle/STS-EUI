@@ -486,6 +486,33 @@ public class EUITextHelper {
         return renderSmart(sb, font, text, x, y, lineWidth, font.getLineHeight() * Settings.scale, baseColor);
     }
 
+    public static String replaceLogic(String baseString) {
+        if (baseString == null) {
+            return EUIUtils.EMPTY_STRING;
+        }
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < baseString.length(); i++) {
+            char c = baseString.charAt(i);
+            if (c == '$') {
+                StringBuilder sub = new StringBuilder();
+                while (i + 1 < baseString.length()) {
+                    i += 1;
+                    c = baseString.charAt(i);
+                    sub.append(c);
+                    if (c == '$') {
+                        break;
+                    }
+                }
+                sb.append(EUITextHelper.parseLogicString(sub.toString()));
+                break;
+            }
+            else {
+                sb.append(c);
+            }
+        }
+        return sb.toString();
+    }
+
     private static void writeLogic(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing) {
         StringBuilder subBuilder = new StringBuilder();
         while (getAndMove()) {

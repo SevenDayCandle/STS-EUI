@@ -92,6 +92,7 @@ public class EUI {
     private static float delta = 0;
     private static float timer = 0;
     private static boolean isDragging;
+    private static boolean stslibActive;
     private static Hitbox lastClicked;
     public static AbstractCard.CardColor actingColor;
     public static BlightKeywordFilters blightFilters;
@@ -340,6 +341,10 @@ public class EUI {
         return Settings.gamePref.getBoolean(PLAYTESTER_ART, false);
     }
 
+    public static boolean isStsLib() {
+        return stslibActive;
+    }
+
     public static boolean isTopActiveElement(EUIBase element) {
         return !activeElements.isEmpty() && activeElements.peek() == element;
     }
@@ -428,6 +433,7 @@ public class EUI {
         ConsoleCommand.addCommand("export", ExportCommand.class);
 
         // Compatibility
+        stslibActive = Loader.isModLoaded("stslib");
         tryGetPackmaster();
     }
 

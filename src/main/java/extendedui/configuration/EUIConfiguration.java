@@ -53,7 +53,7 @@ public class EUIConfiguration {
     public static STSConfigItem<Boolean> enableExpandTooltips = new STSConfigItem<>(getFullKey("EnableExpandTooltips"), false);
     public static STSConfigItem<Boolean> flushOnGameStart = new STSConfigItem<>(getFullKey("FlushOnGameStart"), true);
     public static STSConfigItem<Boolean> flushOnRoomStart = new STSConfigItem<>(getFullKey("FlushOnRoomStart"), false);
-    public static STSConfigItem<Boolean> forceLinearFiltering = new STSConfigItem<>(getFullKey("ForceLinearFiltering"), false);
+    public static STSConfigItem<Boolean> forceLinearFiltering = new STSConfigItem<>(getFullKey("ForceLinearFiltering"), true);
     public static STSConfigItem<Boolean> hideInfo = new STSConfigItem<>(getFullKey("HideInfo"), false);
     public static STSConfigItem<Boolean> instantFade = new STSConfigItem<>(getFullKey("InstantFade"), false);
     public static STSConfigItem<Boolean> overrideGameFont = new STSConfigItem<>(getFullKey("OverrideGameFont"), false);
