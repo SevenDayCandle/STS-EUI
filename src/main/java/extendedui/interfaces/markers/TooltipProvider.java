@@ -11,17 +11,13 @@ public interface TooltipProvider {
     default void fillPreviews(RotatingList<EUIPreview> list) {
     }
 
-    default EUIPreview getPreview() {
-        return EUIPreview.getPreview(this);
-    }
-
     default List<? extends EUITooltip> getTipsForRender() {
         return getTips();
     }
 
     default EUITooltip getTooltip() {
         List<? extends EUITooltip> tooltips = getTips();
-        return tooltips != null && tooltips.size() > 0 ? getTips().get(0) : null;
+        return tooltips != null && !tooltips.isEmpty() ? getTips().get(0) : null;
     }
 
     default boolean isPopup() {

@@ -1,7 +1,6 @@
 package extendedui.ui.tooltips;
 
 import basemod.ReflectionHacks;
-import basemod.abstracts.CustomMonster;
 import basemod.helpers.CardPowerTip;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -24,17 +23,16 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import com.megacrit.cardcrawl.powers.AbstractPower;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.mainMenu.MainMenuScreen;
-import extendedui.EUI;
-import extendedui.EUIGameUtils;
-import extendedui.EUIRM;
-import extendedui.EUIUtils;
+import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
+import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.IntentProvider;
 import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.text.EUITextHelper;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.RotatingList;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -44,8 +42,8 @@ import java.util.List;
 
 public class EUITooltip {
     private static final ArrayList<String> EMPTY_LIST = new ArrayList<>();
-    private static final ArrayList<EUIPreview> previews = new ArrayList<>();
-    private static final ArrayList<EUITooltip> tooltips = new ArrayList<>();
+    private static final ArrayList<EUITooltip> TOOLTIPS = new ArrayList<>();
+    private static final RotatingList<EUIPreview> PREVIEWS = new RotatingList<>();
     private static final Vector2 genericTipPos = new Vector2(0, 0);
     protected static final float BORDER_SIZE = Settings.scale * 32.0F;
     protected static final float TIP_OFFSET_L_X = -380.0F * Settings.scale;
@@ -103,7 +101,7 @@ public class EUITooltip {
         if (provider instanceof TooltipProvider) {
             for (EUITooltip tip : ((TooltipProvider) provider).getTipsForRender()) {
                 if (tip.isRenderable()) {
-                    tooltips.add(tip);
+                    TOOLTIPS.add(tip);
                 }
             }
         }
@@ -112,11 +110,11 @@ public class EUITooltip {
                 EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(StringUtils.lowerCase(sk.header));
                 if (tip != null) {
                     if (tip.isRenderable()) {
-                        tooltips.add(tip);
+                        TOOLTIPS.add(tip);
                     }
                 }
                 else {
-                    tooltips.add(new EUITooltip(sk.header, sk.body));
+                    TOOLTIPS.add(new EUITooltip(sk.header, sk.body));
                 }
             }
         }
@@ -124,8 +122,8 @@ public class EUITooltip {
 
     public static void blockTooltips() {
         clearVanillaTips();
-        tooltips.clear();
-        previews.clear();
+        TOOLTIPS.clear();
+        PREVIEWS.clear();
         provider = null;
         lastProvider = null;
     }
@@ -152,12 +150,14 @@ public class EUITooltip {
         ReflectionHacks.setPrivateStatic(TipHelper.class, "POWER_TIPS", EMPTY_LIST);
     }
 
-    private static void fillProviderPreview() {
+    public static void fillProviderPreview() {
+        fillProviderPreview(provider);
+    }
+
+    public static void fillProviderPreview(Object provider) {
+        PREVIEWS.clear();
         if (provider instanceof TooltipProvider) {
-            EUIPreview preview = ((TooltipProvider) provider).getPreview();
-            if (preview != null) {
-                previews.add(preview);
-            }
+            ((TooltipProvider) provider).fillPreviews(PREVIEWS);
         }
     }
 
@@ -212,11 +212,11 @@ public class EUITooltip {
             if (lastProvider != tooltip) {
                 lastProvider = tooltip;
                 provider = null;
-                tooltips.clear();
-                previews.clear();
-                tooltips.add(tooltip);
+                TOOLTIPS.clear();
+                PREVIEWS.clear();
+                TOOLTIPS.add(tooltip);
                 if (tooltip.children != null) {
-                    tooltips.addAll(tooltip.children);
+                    TOOLTIPS.addAll(tooltip.children);
                 }
             }
 
@@ -249,9 +249,9 @@ public class EUITooltip {
             if (lastProvider != tips) {
                 lastProvider = tips;
                 provider = null;
-                tooltips.clear();
-                previews.clear();
-                tooltips.addAll(tips);
+                TOOLTIPS.clear();
+                PREVIEWS.clear();
+                TOOLTIPS.addAll(tips);
             }
             genericTipPos.x = x;
             genericTipPos.y = y;
@@ -302,10 +302,10 @@ public class EUITooltip {
 
         if (lastProvider != provider) {
             lastProvider = provider;
-            tooltips.clear();
-            previews.clear();
+            TOOLTIPS.clear();
+            PREVIEWS.clear();
             addGenericTips(blight.tips);
-            scanListForAdditionalTips(tooltips);
+            scanListForAdditionalTips(TOOLTIPS);
         }
 
         float x;
@@ -318,7 +318,7 @@ public class EUITooltip {
             x = 180 * Settings.scale;
             y = 0.7f * Settings.HEIGHT;
         }
-        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !AbstractDungeon.player.hasBlight(blight.blightID)) {
+        else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && TOOLTIPS.size() > 2 && !AbstractDungeon.player.hasBlight(blight.blightID)) {
             x = InputHelper.mX + (60 * Settings.scale);
             y = InputHelper.mY + (180 * Settings.scale);
         }
@@ -346,12 +346,11 @@ public class EUITooltip {
 
         if (lastProvider != provider) {
             lastProvider = provider;
-            tooltips.clear();
-            previews.clear();
+            TOOLTIPS.clear();
             if (provider instanceof TooltipProvider) {
                 for (EUITooltip tip : ((TooltipProvider) provider).getTipsForRender()) {
                     if (tip.isRenderable()) {
-                        tooltips.add(tip);
+                        TOOLTIPS.add(tip);
                     }
                 }
             }
@@ -359,11 +358,11 @@ public class EUITooltip {
                 for (String k : card.keywords) {
                     EUIKeywordTooltip tip = EUIKeywordTooltip.findByName(k);
                     if (tip != null && tip.isRenderable()) {
-                        tooltips.add(tip);
+                        TOOLTIPS.add(tip);
                     }
                 }
             }
-            scanListForAdditionalTips(tooltips);
+            scanListForAdditionalTips(TOOLTIPS);
             fillProviderPreview();
         }
 
@@ -377,7 +376,7 @@ public class EUITooltip {
         }
 
         boolean popUp = provider instanceof TooltipProvider && ((TooltipProvider) provider).isPopup();
-        for (EUIPreview preview : previews) {
+        for (EUIPreview preview : PREVIEWS) {
             preview.render(sb, card.current_x, card.current_y, 0.83f, card.upgraded || EUIGameUtils.canShowUpgrades(false), popUp);
         }
         renderTipsImpl(sb, x, y);
@@ -401,13 +400,12 @@ public class EUITooltip {
         if (lastProvider != creature) {
             lastProvider = creature;
 
-            tooltips.clear();
-            previews.clear();
+            TOOLTIPS.clear();
 
             if (creature instanceof IntentProvider) {
                 EUITooltip intentTip = ((IntentProvider) creature).getIntentTip();
                 if (intentTip != null) {
-                    tooltips.add(intentTip);
+                    TOOLTIPS.add(intentTip);
                 }
             }
             else {
@@ -416,7 +414,7 @@ public class EUITooltip {
                     if (EUIGameUtils.canViewEnemyIntents(monster)) {
                         EUITooltip tip = fromMonsterIntent(monster);
                         if (tip != null) {
-                            tooltips.add(tip);
+                            TOOLTIPS.add(tip);
                         }
                     }
                 }
@@ -426,7 +424,7 @@ public class EUITooltip {
                 if (canRenderPower(p)) {
                     // Background colors should be handled by the provider
                     if (p instanceof TooltipProvider) {
-                        tooltips.add(((TooltipProvider) p).getTooltip());
+                        TOOLTIPS.add(((TooltipProvider) p).getTooltip());
                         continue;
                     }
 
@@ -450,25 +448,25 @@ public class EUITooltip {
                             tip.setBackgroundColor(TIP_DEBUFF);
                     }
 
-                    tooltips.add(tip);
+                    TOOLTIPS.add(tip);
                 }
             }
 
-            scanListForAdditionalTips(tooltips);
+            scanListForAdditionalTips(TOOLTIPS);
             fillProviderPreview();
 
             // If renderFromCreature is called instead of renderTip, creature tips will not be filled with power tips but will still have additional tips added by modders
             if (creature instanceof AbstractMonster) {
                 for (PowerTip tip : ogTips) {
                     if (tip instanceof CardPowerTip) {
-                        previews.add(new EUICardPreview(((CardPowerTip) tip).card));
+                        PREVIEWS.add(new EUICardPreview(((CardPowerTip) tip).card));
                     }
                     else {
                         final EUIKeywordTooltip t = new EUIKeywordTooltip(tip.header, tip.body);
                         if (tip.img != null) {
                             t.setIcon(tip.img);
                         }
-                        tooltips.add(t);
+                        TOOLTIPS.add(t);
                     }
                 }
             }
@@ -477,7 +475,7 @@ public class EUITooltip {
         // Need to clear out these tips because apparently anything that adds to them will add to them unto infinity
         ogTips.clear();
 
-        float y = creature.hb.cY + calculateAdditionalOffset(tooltips, creature.hb.cY);
+        float y = creature.hb.cY + calculateAdditionalOffset(TOOLTIPS, creature.hb.cY);
         renderPreviews(sb, x, y);
         renderTipsImpl(sb, x, y);
     }
@@ -490,10 +488,9 @@ public class EUITooltip {
 
         if (lastProvider != provider) {
             lastProvider = provider;
-            tooltips.clear();
-            previews.clear();
+            TOOLTIPS.clear();
             addGenericTips(potion.tips);
-            scanListForAdditionalTips(tooltips);
+            scanListForAdditionalTips(TOOLTIPS);
             fillProviderPreview();
         }
 
@@ -537,10 +534,9 @@ public class EUITooltip {
 
         if (lastProvider != provider) {
             lastProvider = provider;
-            tooltips.clear();
-            previews.clear();
+            TOOLTIPS.clear();
             addGenericTips(relic.tips);
-            scanListForAdditionalTips(tooltips);
+            scanListForAdditionalTips(TOOLTIPS);
             fillProviderPreview();
         }
 
@@ -564,7 +560,7 @@ public class EUITooltip {
                 x = InputHelper.mX - (350 * Settings.scale);
                 y = InputHelper.mY - (50 * Settings.scale);
             }
-            else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && tooltips.size() > 2 && !hasRelic) {
+            else if (AbstractDungeon.screen == AbstractDungeon.CurrentScreen.SHOP && TOOLTIPS.size() > 2 && !hasRelic) {
                 x = InputHelper.mX + (60 * Settings.scale);
                 y = InputHelper.mY + (180 * Settings.scale);
             }
@@ -586,13 +582,28 @@ public class EUITooltip {
         renderTipsImpl(sb, genericTipPos.x, genericTipPos.y);
     }
 
-    private static void renderPreviews(SpriteBatch sb, float x, float y) {
-        if (!previews.isEmpty()) {
+    public static void renderPreviews(SpriteBatch sb, float x, float y) {
+        renderPreviews(sb, x, y, false, false);
+    }
+
+    public static void renderPreviews(SpriteBatch sb, float x, float y, boolean upgraded, boolean popup) {
+        if (!PREVIEWS.isEmpty()) {
             float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
-            float startY = y;
-            for (EUIPreview preview : previews) {
-                preview.render(sb, previewOffset, startY, 0.8f, false);
-                startY -= AbstractCard.IMG_HEIGHT;
+            EUIPreview preview;
+            if (EUIHotkeys.cycle.isJustPressed()) {
+                preview = PREVIEWS.next(true);
+            }
+            else {
+                preview = PREVIEWS.current();
+            }
+            preview.render(sb, previewOffset, y, 0.8f, upgraded, popup);
+            if (PREVIEWS.size() > 1) {
+                String cyclePreviewText = EUIRM.strings.keyToCycle(EUIHotkeys.cycle.getKeyString());
+                BitmapFont font = FontHelper.cardDescFont_N;
+                final float dY = y - AbstractCard.RAW_H * 0.55f;
+                EUIRenderHelpers.draw(sb, EUIRM.images.panelRoundedHalfH.texture(), Color.DARK_GRAY, x, dY, AbstractCard.IMG_WIDTH * 0.6f, font.getLineHeight() * 1.8f);
+                FontHelper.renderFont(sb, font, cyclePreviewText, x, dY, Settings.PURPLE_COLOR);
+                EUIRenderHelpers.resetFont(font);
             }
         }
     }
@@ -600,7 +611,7 @@ public class EUITooltip {
     private static void renderTipsImpl(SpriteBatch sb, float x, float y) {
         // Attempt to push up the tooltip rendering start as far up as possible if the tooltips would go off the screen
         float projected_end = y + SHADOW_DIST_Y - 1;
-        for (EUITooltip tip : tooltips) {
+        for (EUITooltip tip : TOOLTIPS) {
             projected_end -= tip.getTotalHeight();
         }
         if (projected_end < 0) {
@@ -613,8 +624,8 @@ public class EUITooltip {
 
         float original_y = y;
         final float offset_x = (x > TIP_X_THRESHOLD) ? BOX_W : -BOX_W;
-        for (int i = 0; i < tooltips.size(); i++) {
-            EUITooltip tip = tooltips.get(i);
+        for (int i = 0; i < TOOLTIPS.size(); i++) {
+            EUITooltip tip = TOOLTIPS.get(i);
             float projected = y - tip.getTotalHeight();
             if (projected < -SHADOW_DIST_Y) {
                 y = original_y;

@@ -9,43 +9,6 @@ import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.utilities.RotatingList;
 
 public abstract class EUIPreview {
-    private static final RotatingList<EUIPreview> PREVIEWS = new RotatingList<>();
-    private static TooltipProvider lastProvider = null;
-    public boolean isMultiPreview;
-
-    public static EUIPreview getPreview(TooltipProvider card) {
-        setPreviews(card);
-
-        EUIPreview preview;
-        if (PREVIEWS.size() > 1) {
-            if (EUIHotkeys.cycle.isJustPressed()) {
-                preview = PREVIEWS.next(true);
-            }
-            else {
-                preview = PREVIEWS.current();
-            }
-            preview.isMultiPreview = true;
-        }
-        else {
-            preview = PREVIEWS.current();
-        }
-
-        return preview;
-    }
-
-    public static void invalidate() {
-        PREVIEWS.clear();
-        lastProvider = null;
-    }
-
-    public static void setPreviews(TooltipProvider card) {
-        if (card != null && lastProvider != card) {
-            lastProvider = card;
-            PREVIEWS.clear();
-            lastProvider.fillPreviews(PREVIEWS);
-        }
-    }
-
     public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean fromPopup) {
         if (fromPopup) {
             render(sb, curX, curY, 1f, upgraded);
