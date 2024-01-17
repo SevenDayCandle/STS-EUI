@@ -5,6 +5,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.configuration.EUIHotkeys;
@@ -54,17 +55,20 @@ public class EUICardPreview extends EUIPreview implements CardObject {
     public void render(SpriteBatch sb, float x, float y, float scale, boolean upgraded) {
         AbstractCard preview = getPreview(upgraded);
 
-        preview.current_x = x;
+        preview.current_x = x - AbstractCard.IMG_WIDTH * 0.05f; // Cards appear slightly to the right compared to other previews
         preview.current_y = y;
         preview.drawScale = scale;
 
         // Ensure that entire preview is shown on screen
-        float half = preview.hb.height / 2f;
-        if (preview.current_y < half) {
-            preview.current_y = half;
+        float lim = preview.hb.height / 2f + EUITooltip.minPreviewY();
+        if (preview.current_y < lim) {
+            preview.current_y = lim;
         }
-        else if (preview.current_y + half > TIP_Y_LIMIT) {
-            preview.current_y = TIP_Y_LIMIT - half;
+        else {
+            lim = preview.hb.height / 2f;
+            if (preview.current_y + lim > TIP_Y_LIMIT) {
+                preview.current_y = TIP_Y_LIMIT - lim;
+            }
         }
 
         preview.render(sb);

@@ -199,6 +199,10 @@ public class EUITooltip {
         return maxOffset;
     }
 
+    public static float minPreviewY() {
+        return FontHelper.buttonLabelFont.getLineHeight() * 1.4f;
+    }
+
     public static void queueTooltip(EUITooltip tooltip) {
         float x = InputHelper.mX;
         float y = InputHelper.mY;
@@ -376,9 +380,7 @@ public class EUITooltip {
         }
 
         boolean popUp = provider instanceof TooltipProvider && ((TooltipProvider) provider).isPopup();
-        for (EUIPreview preview : PREVIEWS) {
-            preview.render(sb, card.current_x, card.current_y, 0.83f, card.upgraded || EUIGameUtils.canShowUpgrades(false), popUp);
-        }
+        renderPreviews(sb, card.current_x, card.current_y + BOX_EDGE_H, 0.7f, card.upgraded || EUIGameUtils.canShowUpgrades(false), popUp);
         renderTipsImpl(sb, x, y);
     }
 
@@ -583,12 +585,13 @@ public class EUITooltip {
     }
 
     public static void renderPreviews(SpriteBatch sb, float x, float y) {
-        renderPreviews(sb, x, y, false, false);
+        renderPreviews(sb, x, y, 0.7f, false, false);
     }
 
-    public static void renderPreviews(SpriteBatch sb, float x, float y, boolean upgraded, boolean popup) {
+    public static void renderPreviews(SpriteBatch sb, float x, float y, float scale, boolean upgraded, boolean popup) {
         if (!PREVIEWS.isEmpty()) {
-            float previewOffset = (x < Settings.WIDTH * 0.1f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH;
+            float previewOffset = popup ? x :
+                    (x < Settings.WIDTH * 0.1f || x > Settings.WIDTH * 0.7f) ? x + BOX_W : x - AbstractCard.IMG_WIDTH * 0.9f;
             EUIPreview preview;
             if (EUIHotkeys.cycle.isJustPressed()) {
                 preview = PREVIEWS.next(true);
@@ -596,13 +599,16 @@ public class EUITooltip {
             else {
                 preview = PREVIEWS.current();
             }
-            preview.render(sb, previewOffset, y, 0.8f, upgraded, popup);
+            preview.render(sb, previewOffset, y, scale, upgraded);
+            previewOffset = previewOffset - AbstractCard.IMG_WIDTH * 0.35f;
             if (PREVIEWS.size() > 1) {
                 String cyclePreviewText = EUIRM.strings.keyToCycle(EUIHotkeys.cycle.getKeyString());
-                BitmapFont font = FontHelper.cardDescFont_N;
-                final float dY = y - AbstractCard.RAW_H * 0.55f;
-                EUIRenderHelpers.draw(sb, EUIRM.images.panelRoundedHalfH.texture(), Color.DARK_GRAY, x, dY, AbstractCard.IMG_WIDTH * 0.6f, font.getLineHeight() * 1.8f);
-                FontHelper.renderFont(sb, font, cyclePreviewText, x, dY, Settings.PURPLE_COLOR);
+                BitmapFont font = FontHelper.buttonLabelFont;
+                final float dY = Math.max(Settings.HEIGHT * 0.05f, y - AbstractCard.IMG_HEIGHT * scale * 0.6f);
+                final float lH = minPreviewY();
+                font.getData().setScale(0.7f);
+                EUIRenderHelpers.draw(sb, EUIRM.images.panelRoundedHalfH.texture(), Color.DARK_GRAY, previewOffset, dY - lH * 0.79f, AbstractCard.IMG_WIDTH * 0.47f, lH);
+                FontHelper.renderFont(sb, font, cyclePreviewText, previewOffset + AbstractCard.IMG_WIDTH * 0.04f, dY, EUITextHelper.ORANGE_TEXT_COLOR);
                 EUIRenderHelpers.resetFont(font);
             }
         }

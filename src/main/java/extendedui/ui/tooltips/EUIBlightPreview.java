@@ -45,22 +45,6 @@ public class EUIBlightPreview extends EUIPreview {
     }
 
     @Override
-    public void render(SpriteBatch sb, float curX, float curY, float drawScale, boolean upgraded, boolean fromPopup) {
-        if (fromPopup) {
-            float x = (float) Settings.WIDTH * 0.2f - 10f * Settings.scale;
-            float y = (float) Settings.HEIGHT * 0.25f;
-            float scale = 1f;
-            render(sb, x, y, scale, upgraded);
-        }
-        else if (AbstractDungeon.player == null || !AbstractDungeon.player.isDraggingCard) {
-            float x = curX + (AbstractCard.IMG_WIDTH * 0.9f + 16f) * ((curX > Settings.WIDTH * 0.7f) ? drawScale : -drawScale);
-            float y = curY + (AbstractCard.IMG_HEIGHT * 0.2f) * drawScale;
-            float scale = drawScale * 0.8f;
-            render(sb, x, y, scale, upgraded);
-        }
-    }
-
-    @Override
     public void render(SpriteBatch sb, float x, float y, float scale, boolean upgraded) {
         final float h = getHeight(preview);
 
@@ -78,7 +62,7 @@ public class EUIBlightPreview extends EUIPreview {
         float c = x + BOX_W / 2;
         preview.currentX = c;
         preview.currentY = y;
-        if (preview.currentY - h < 0) {
+        if (preview.currentY - h < EUITooltip.minPreviewY()) {
             preview.currentY = h;
         }
 
