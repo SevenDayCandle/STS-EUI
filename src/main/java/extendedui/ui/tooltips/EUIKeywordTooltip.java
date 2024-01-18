@@ -28,10 +28,7 @@ import extendedui.ui.TextureCache;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIFontHelper;
 
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public class EUIKeywordTooltip extends EUITooltip {
     private static final HashMap<String, EUIKeywordTooltip> REGISTERED_NAMES = new HashMap<>();
@@ -145,6 +142,10 @@ public class EUIKeywordTooltip extends EUITooltip {
 
     public static Set<Map.Entry<String, EUIKeywordTooltip>> getEntries() {
         return REGISTERED_IDS.entrySet();
+    }
+
+    public static Collection<EUIKeywordTooltip> getTips() {
+        return REGISTERED_IDS.values();
     }
 
     public static void initializeVisibilityStatus() {
