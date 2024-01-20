@@ -28,7 +28,7 @@ import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.IntentProvider;
 import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.text.EUITextHelper;
+import extendedui.utilities.EUITextHelper;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIClassUtils;
 import extendedui.utilities.EUIFontHelper;
@@ -609,7 +609,7 @@ public class EUITooltip {
                 font.getData().setScale(0.7f);
                 EUIRenderHelpers.draw(sb, EUIRM.images.panelRoundedHalfH.texture(), Color.DARK_GRAY, previewOffset, dY - lH * 0.79f, AbstractCard.IMG_WIDTH * 0.47f, lH);
                 FontHelper.renderFont(sb, font, cyclePreviewText, previewOffset + AbstractCard.IMG_WIDTH * 0.04f, dY, EUITextHelper.ORANGE_TEXT_COLOR);
-                EUIRenderHelpers.resetFont(font);
+                EUITextHelper.resetFont(font);
             }
         }
     }

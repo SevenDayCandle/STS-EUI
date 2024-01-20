@@ -5,9 +5,8 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
-import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
-import extendedui.text.EUITextHelper;
+import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
@@ -138,7 +137,7 @@ public class EUILabel extends EUIHoverable {
             EUITextHelper.renderFontCentered(sb, font, text, hb.cX, hb.y + hb.height * verticalRatio, textColor);
         }
 
-        EUIRenderHelpers.resetFont(font);
+        EUITextHelper.resetFont(font);
     }
 
     public EUILabel setAlignment(float verticalRatio, float horizontalRatio) {

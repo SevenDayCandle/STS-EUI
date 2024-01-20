@@ -1,20 +1,25 @@
-package extendedui.text;
+package extendedui.utilities;
 
+import basemod.ReflectionHacks;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.GlyphLayout;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import com.badlogic.gdx.math.MathUtils;
+import com.badlogic.gdx.math.Matrix4;
+import com.badlogic.gdx.math.Vector2;
 import com.evacipated.cardcrawl.mod.stslib.icons.AbstractCustomIcon;
 import com.evacipated.cardcrawl.mod.stslib.icons.CustomIconHelper;
+import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
-import extendedui.utilities.TupleT2;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;
@@ -23,6 +28,9 @@ public class EUITextHelper {
     private static final StringBuilder builder = new StringBuilder();
     private static final GlyphLayout layout = new GlyphLayout();
     private static final TupleT2<Float, Float> size = new TupleT2<>();
+    private static final Matrix4 mx4 = ReflectionHacks.getPrivateStatic(FontHelper.class, "mx4");
+    private static final Matrix4 rotatedTextMatrix = ReflectionHacks.getPrivateStatic(FontHelper.class, "rotatedTextMatrix");
+    private static final Vector2 rotatedTextTmp = ReflectionHacks.getPrivateStatic(FontHelper.class, "rotatedTextTmp");
     public static final String NEWLINE = "NL";
     public static final Color ORANGE_TEXT_COLOR = new Color(1.0F, 0.5F, 0.25F, 1F);
     public static final Color INDIGO_TEXT_COLOR = new Color(0.65F, 0.47F, 1.F, 1F);
@@ -365,6 +373,30 @@ public class EUITextHelper {
         renderFont(sb, font, msg, x - layout.width / 2.0F - offsetX, y + layout.height / 2.0F + offsetY, c);
     }
 
+    public static void renderRotatedWrappedText(SpriteBatch sb, BitmapFont font, String msg, float x, float y, float width, float offsetX, float offsetY, float angle, Color c) {
+        if (font.getData().scaleX == 1.0F) {
+            x = MathUtils.round(x);
+            y = MathUtils.round(y);
+            offsetX = MathUtils.round(offsetX);
+            offsetY = MathUtils.round(offsetY);
+        }
+
+        mx4.setToRotation(0.0F, 0.0F, 1.0F, angle);
+        rotatedTextTmp.x = offsetX;
+        rotatedTextTmp.y = offsetY;
+        rotatedTextTmp.rotate(angle);
+        mx4.trn(x + rotatedTextTmp.x, y + rotatedTextTmp.y, 0.0F);
+        sb.end();
+        sb.setTransformMatrix(mx4);
+        sb.begin();
+        font.setColor(c);
+        layout.setText(font, msg, Color.WHITE, width, 8, true);
+        font.draw(sb, msg, -layout.width / 2.0F, layout.height / 2.0F, width, 8, true);
+        sb.end();
+        sb.setTransformMatrix(rotatedTextMatrix);
+        sb.begin();
+    }
+
     public static TupleT2<Float, Float> renderSmart(SpriteBatch sb, BitmapFont font, CharSequence text, float x, float y, float lineWidth, float lineSpacing, Color baseColor) {
         return renderSmart(sb, font, text, x, y, lineWidth, lineSpacing, baseColor, false);
     }
@@ -513,6 +545,10 @@ public class EUITextHelper {
         return sb.toString();
     }
 
+    public static void resetFont(BitmapFont font) {
+        font.getData().setScale(1);
+    }
+
     private static void writeLogic(SpriteBatch sb, float x, float y, float lineWidth, float lineSpacing) {
         StringBuilder subBuilder = new StringBuilder();
         while (getAndMove()) {
@@ -530,6 +566,36 @@ public class EUITextHelper {
     private static void writeNewline(float lineSpacing) {
         curWidth = 0f;
         curHeight -= lineSpacing;
+    }
+
+    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color) {
+        writeOnCard(sb, card, font, text, x, y, color, false);
+    }
+
+    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color, boolean roundY) {
+        writeOnCard(sb, card, font, text, x, y, card.drawScale * Settings.scale, color, false);
+    }
+
+    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, float scale, Color color, boolean roundY) {
+        writeOnCard(sb, card, font, text, x, y, scale, card.angle, color, false);
+    }
+
+    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, float scale, float angle, Color color, boolean roundY) {
+        color = EUIColors.copy(color, color.a * card.transparency);
+        FontHelper.renderRotatedText(sb, font, text, card.current_x, card.current_y, x * scale, y * scale, angle, roundY, color);
+    }
+
+    public static void writeOnCardWrapped(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, float width, Color color) {
+        writeOnCardWrapped(sb, card, font, text, x, y, width, card.drawScale * Settings.scale, color);
+    }
+
+    public static void writeOnCardWrapped(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, float width, float scale, Color color) {
+        writeOnCardWrapped(sb, card, font, text, x, y, width, scale, card.angle, color);
+    }
+
+    public static void writeOnCardWrapped(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, float width, float scale, float angle, Color color) {
+        color = EUIColors.copy(color, color.a * card.transparency);
+        renderRotatedWrappedText(sb, font, text, card.current_x, card.current_y, card.drawScale * width, x * scale, y * scale, angle, color);
     }
 
     private static void writeTab(float spaceWidth) {

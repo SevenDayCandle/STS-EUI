@@ -14,7 +14,7 @@ import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
-import extendedui.text.EUITextHelper;
+import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
@@ -375,7 +375,7 @@ public class EUIButton extends EUIHoverable {
         label.font.getData().setScale(label.fontScale);
         float smartWidth = EUITextHelper.getSmartWidth(label.font, text, hb.width, 0f);
         this.label.horizontalRatio = Math.max(0, baseW - (smartWidth / hb.width) * rateW);
-        EUIRenderHelpers.resetFont(label.font);
+        EUITextHelper.resetFont(label.font);
         return this;
     }
 
@@ -393,7 +393,7 @@ public class EUIButton extends EUIHoverable {
         TupleT2<Float, Float> smartSize = EUITextHelper.getSmartSize(label.font, text, hb.width, 0f);
         this.label.horizontalRatio = Math.max(0, baseW - (smartSize.v1 / hb.width) * rateW);
         this.label.verticalRatio = Math.max(0, baseH - (smartSize.v2 / hb.height) * rateH);
-        EUIRenderHelpers.resetFont(label.font);
+        EUITextHelper.resetFont(label.font);
         return this;
     }
 

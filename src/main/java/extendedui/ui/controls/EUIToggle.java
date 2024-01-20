@@ -13,7 +13,7 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.text.EUITextHelper;
+import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
@@ -113,7 +113,7 @@ public class EUIToggle extends EUIHoverable {
         if (fontSize != 1) {
             font.getData().setScale(fontSize);
             EUITextHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f), hb.cY, fontColor);
-            EUIRenderHelpers.resetFont(font);
+            EUITextHelper.resetFont(font);
         }
         else {
             EUITextHelper.renderFontLeft(sb, font, text, hb.x + (tickSize * 1.1f), hb.cY, fontColor);

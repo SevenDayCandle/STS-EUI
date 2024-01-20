@@ -18,7 +18,7 @@ import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.delegates.ActionT0;
-import extendedui.text.EUITextHelper;
+import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIBase;
 import extendedui.ui.TextureCache;
 import extendedui.ui.controls.EUIButton;

@@ -34,7 +34,7 @@ import extendedui.interfaces.markers.CustomPoolModule;
 import extendedui.patches.EUIKeyword;
 import extendedui.patches.game.TooltipPatches;
 import extendedui.patches.screens.MenuPanelScreenPatches;
-import extendedui.text.EUITextHelper;
+import extendedui.utilities.EUITextHelper;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;

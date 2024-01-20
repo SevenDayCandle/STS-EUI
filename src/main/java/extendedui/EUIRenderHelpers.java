@@ -805,10 +805,6 @@ public class EUIRenderHelpers {
         return startX;
     }
 
-    public static void resetFont(BitmapFont font) {
-        font.getData().setScale(1);
-    }
-
     private static void setBicolorShader(ShaderProgram rs, Color anchor1, Color anchor2, Color target1, Color target2) {
         rs.setUniformf("lRed", target1.r);
         rs.setUniformf("lGreen", target1.g);
@@ -858,23 +854,6 @@ public class EUIRenderHelpers {
 
     private static void setSilhouetteShader(ShaderProgram rs, Color color) {
         rs.setUniform3fv("u_borderColor", new float[]{color.r, color.g, color.b}, 0, 3);
-    }
-
-    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color) {
-        writeOnCard(sb, card, font, text, x, y, color, false);
-    }
-
-    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, Color color, boolean roundY) {
-        writeOnCard(sb, card, font, text, x, y, card.drawScale * Settings.scale, color, false);
-    }
-
-    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, float scale, Color color, boolean roundY) {
-        writeOnCard(sb, card, font, text, x, y, scale, card.angle, color, false);
-    }
-
-    public static void writeOnCard(SpriteBatch sb, AbstractCard card, BitmapFont font, String text, float x, float y, float scale, float angle, Color color, boolean roundY) {
-        color = EUIColors.copy(color, color.a * card.transparency);
-        FontHelper.renderRotatedText(sb, font, text, card.current_x, card.current_y, x * scale, y * scale, angle, roundY, color);
     }
 
     public enum BlendingMode {
