@@ -112,7 +112,9 @@ public class STSEffekseerManager implements ImGuiSubscriber {
     }
 
     private static void clear() {
-        managerCore.delete();
+        if (managerCore != null) {
+            managerCore.delete();
+        }
         for (EffekseerEffectCore effect : ParticleEffects.values()) {
             effect.delete();
         }
@@ -241,9 +243,11 @@ public class STSEffekseerManager implements ImGuiSubscriber {
     }
 
     public static void reset() {
-        clear();
-        managerCore = new EffekseerManagerCore();
-        managerCore.Initialize(BASE_SPRITES_DEFAULT);
+        if (enabled) {
+            clear();
+            managerCore = new EffekseerManagerCore();
+            managerCore.Initialize(BASE_SPRITES_DEFAULT);
+        }
     }
 
     /**

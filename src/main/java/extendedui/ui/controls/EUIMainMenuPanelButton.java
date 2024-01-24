@@ -13,9 +13,9 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT0;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
+import extendedui.utilities.EUITextHelper;
 
 public class EUIMainMenuPanelButton extends EUIHoverable {
     public static final float START_Y = -100.0F * Settings.scale;

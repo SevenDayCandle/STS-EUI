@@ -7,9 +7,9 @@ import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.FuncT1;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.utilities.EUITextHelper;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -28,11 +28,7 @@ import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.IntentProvider;
 import extendedui.interfaces.markers.TooltipProvider;
-import extendedui.utilities.EUITextHelper;
-import extendedui.utilities.ColoredString;
-import extendedui.utilities.EUIClassUtils;
-import extendedui.utilities.EUIFontHelper;
-import extendedui.utilities.RotatingList;
+import extendedui.utilities.*;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

@@ -7,9 +7,9 @@ import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.ImageMaster;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
-import extendedui.utilities.EUITextHelper;
 import extendedui.utilities.EUIColors;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.EUITextHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import static extendedui.ui.tooltips.EUITooltip.*;

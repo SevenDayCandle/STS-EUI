@@ -14,11 +14,11 @@ import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.delegates.ActionT2;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
+import extendedui.utilities.EUITextHelper;
 import extendedui.utilities.TupleT2;
 
 public class EUIButton extends EUIHoverable {

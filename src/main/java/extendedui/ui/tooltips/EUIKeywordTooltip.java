@@ -22,10 +22,10 @@ import extendedui.*;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.FuncT0;
 import extendedui.patches.EUIKeyword;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.TextureCache;
 import extendedui.utilities.ColoredString;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.EUITextHelper;
 
 import java.util.*;
 

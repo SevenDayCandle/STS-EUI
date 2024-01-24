@@ -13,11 +13,11 @@ import com.megacrit.cardcrawl.helpers.controller.CInputActionSet;
 import com.megacrit.cardcrawl.helpers.input.InputHelper;
 import extendedui.EUIRenderHelpers;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
+import extendedui.utilities.EUITextHelper;
 
 public class EUIToggle extends EUIHoverable {
     public static final float DEFAULT_TICK = scale(48);

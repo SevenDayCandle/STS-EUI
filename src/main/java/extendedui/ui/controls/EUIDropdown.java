@@ -19,7 +19,6 @@ import extendedui.EUIInputManager;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.delegates.*;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.OriginRelativeHitbox;
@@ -27,6 +26,7 @@ import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIFontHelper;
+import extendedui.utilities.EUITextHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.*;

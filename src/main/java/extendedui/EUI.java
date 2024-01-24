@@ -34,7 +34,6 @@ import extendedui.interfaces.markers.CustomPoolModule;
 import extendedui.patches.EUIKeyword;
 import extendedui.patches.game.TooltipPatches;
 import extendedui.patches.screens.MenuPanelScreenPatches;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.AbstractMenuScreen;
 import extendedui.ui.EUIBase;
 import extendedui.ui.cardFilter.*;
@@ -47,6 +46,7 @@ import extendedui.ui.settings.ExtraModSettingsPanel;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
+import extendedui.utilities.EUITextHelper;
 import extendedui.utilities.PotionInfo;
 import extendedui.utilities.RelicInfo;
 import org.apache.commons.lang3.StringUtils;
@@ -382,8 +382,19 @@ public class EUI {
 
         // Save custom mod color names and class mappings for playerclasses
         for (AbstractPlayer p : CardCrawlGame.characterManager.getAllCharacters()) {
-            EUIGameUtils.registerCustomColorName(p.getCardColor(), p.getLocalizedCharacterName());
-            EUIGameUtils.registerColorPlayer(p.getCardColor(), p.chosenClass);
+            if (p != null) {
+                AbstractCard.CardColor color = p.getCardColor();
+                if (color != null) {
+                    EUIGameUtils.registerCustomColorName(color, p.getLocalizedCharacterName());
+                    EUIGameUtils.registerColorPlayer(color, p.chosenClass);
+                }
+                else {
+                    EUIUtils.logWarning(EUI.class, "Tried to register a null player color, WTF: " + p);
+                }
+            }
+            else {
+                EUIUtils.logWarning(EUI.class, "Tried to register a null player, WTF");
+            }
         }
 
         sortHeader = new FilterSortHeader();

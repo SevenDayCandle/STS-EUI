@@ -18,7 +18,6 @@ import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.configuration.STSConfigItem;
 import extendedui.interfaces.delegates.ActionT0;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIBase;
 import extendedui.ui.TextureCache;
 import extendedui.ui.controls.EUIButton;
@@ -27,6 +26,7 @@ import extendedui.ui.controls.EUIImage;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.utilities.EUITextHelper;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.ArrayList;

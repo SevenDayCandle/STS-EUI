@@ -1,14 +1,7 @@
 package extendedui.ui.tooltips;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
-import com.megacrit.cardcrawl.core.Settings;
-import com.megacrit.cardcrawl.helpers.FontHelper;
-import extendedui.EUIRM;
-import extendedui.EUIRenderHelpers;
-import extendedui.configuration.EUIHotkeys;
 import extendedui.interfaces.markers.CardObject;
 import extendedui.interfaces.markers.KeywordProvider;
 

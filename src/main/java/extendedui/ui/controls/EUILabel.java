@@ -6,11 +6,11 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import extendedui.EUIUtils;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.EUIHoverable;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
+import extendedui.utilities.EUITextHelper;
 
 public class EUILabel extends EUIHoverable {
     private boolean smartPadEnd;
@@ -160,7 +160,7 @@ public class EUILabel extends EUIHoverable {
     }
 
     public EUILabel setColor(Color textColor) {
-        this.textColor = textColor.cpy();
+        this.textColor = textColor;
 
         return this;
     }

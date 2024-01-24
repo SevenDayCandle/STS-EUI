@@ -11,11 +11,11 @@ import extendedui.EUIInputManager;
 import extendedui.interfaces.delegates.ActionT0;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.TextInputProvider;
-import extendedui.utilities.EUITextHelper;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.ui.tooltips.EUITourTooltip;
 import extendedui.utilities.EUIColors;
+import extendedui.utilities.EUITextHelper;
 
 public abstract class EUITextBoxReceiver<T> extends EUITextBox implements TextInputProvider {
     protected final StringBuilder buffer = new StringBuilder();

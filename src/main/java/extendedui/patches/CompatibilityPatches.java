@@ -40,7 +40,6 @@ public class CompatibilityPatches {
         }
     }
 
-
     // Packmaster stuff
 
     @SpirePatch(cls = "thePackmaster.patches.RenderBaseGameCardPackTopTextPatches", method = "isInPackmasterCardLibraryScreen", requiredModId = "anniv5", optional = true)
