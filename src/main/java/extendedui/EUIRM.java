@@ -333,7 +333,7 @@ public class EUIRM {
         public final String target_allEnemy = stringsTarget.TEXT[2];
         public final String target_any = stringsTarget.TEXT[3];
         public final String target_self = stringsTarget.TEXT[4];
-        public final String target_singleTarget = stringsTarget.TEXT[5];
+        public final String target_singleEnemy = stringsTarget.TEXT[5];
 
         public final String uipool_viewPool = stringsUIPool.TEXT[0];
         public final String uipool_viewPoolDescription = stringsUIPool.TEXT[1];

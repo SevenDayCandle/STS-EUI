@@ -12,7 +12,7 @@ public class TargetFilter {
     public static final TargetFilter AllEnemy = new TargetFilter(EUIRM.strings.target_allEnemy);
     public static final TargetFilter Any = new TargetFilter(EUIRM.strings.target_any);
     public static final TargetFilter Self = new TargetFilter(EUIRM.strings.target_self);
-    public static final TargetFilter Single = new TargetFilter(EUIRM.strings.target_singleTarget);
+    public static final TargetFilter SingleEnemy = new TargetFilter(EUIRM.strings.target_singleEnemy);
 
     public final String name;
 
@@ -37,12 +37,12 @@ public class TargetFilter {
             case SELF:
                 return Self;
             case ENEMY:
-                return Single;
+                return SingleEnemy;
         }
         return None;
     }
 
     public static TargetFilter forPotion(AbstractPotion potion) {
-        return potion.targetRequired ? Single : potion.isThrown ? Any : Self;
+        return potion.targetRequired ? SingleEnemy : potion.isThrown ? Any : Self;
     }
 }

@@ -177,7 +177,7 @@
 			"All Enemies",
 			"Any Target",
 			"Self",
-			"Single Target"
+			"Single Enemy"
 		]
 	},
 	"extendedui:ui_filters": {
