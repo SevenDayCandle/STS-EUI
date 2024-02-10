@@ -159,9 +159,13 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
         BaseMod.getCardColors().stream().sorted(Comparator.comparing(EUIGameUtils::getColorName)).forEach(this::makeColorButton);
     }
 
+    // Only add the card button if this card color actually has cards
     protected void makeColorButton(AbstractCard.CardColor co) {
-        colorButtons.addButton(button -> setActiveColor(co), EUIGameUtils.getColorName(co))
-                .setColor(EUIGameUtils.getColorColor(co));
+        ArrayList<AbstractCard> g = CARD_LISTS.get(co);
+        if (g != null && !g.isEmpty()) {
+            colorButtons.addButton(button -> setActiveColor(co), EUIGameUtils.getColorName(co))
+                    .setColor(EUIGameUtils.getColorColor(co));
+        }
     }
 
     public void open() {
