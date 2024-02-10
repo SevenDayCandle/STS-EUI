@@ -3,7 +3,9 @@ package extendedui.commands;
 import basemod.DevConsole;
 import basemod.devcommands.ConsoleCommand;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import com.megacrit.cardcrawl.helpers.BlightHelper;
 import com.megacrit.cardcrawl.helpers.CardLibrary;
+import extendedui.EUIGameUtils;
 import extendedui.EUIUtils;
 import extendedui.exporter.EUIExporter;
 import extendedui.ui.screens.CustomCardLibraryScreen;
@@ -11,6 +13,7 @@ import extendedui.ui.screens.CustomCardLibraryScreen;
 import java.util.ArrayList;
 
 public class ExportCommand extends ConsoleCommand {
+    private static final String TYPE_BLIGHT = "blight";
     private static final String TYPE_CARD = "card";
     private static final String TYPE_POTION = "potion";
     private static final String TYPE_RELIC = "relic";
@@ -29,6 +32,9 @@ public class ExportCommand extends ConsoleCommand {
             EUIExporter.ExportType format = EUIExporter.ExportType.valueOf(tokens[2]);
 
             switch (type) {
+                case TYPE_BLIGHT:
+                    EUIExporter.exportBlight(EUIGameUtils.getAllBlights(), format);
+                    break;
                 case TYPE_CARD:
                     if (tokens.length > 3) {
                         AbstractCard.CardColor color = AbstractCard.CardColor.valueOf(tokens[3]);
