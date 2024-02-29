@@ -114,8 +114,8 @@
 			"Value",
 			"Opacity",
 			"{#r:该工具提示禁用中}",
-			"Click this button to switch the metrics used to count items.",
-			"Click this button to order items by this property."
+			"{#o:Click this button to switch the metrics used to count items.}",
+			"{#o:Click this button to order items by this property.}"
 		]
 	},
 	"extendedui:ui_pool": {
