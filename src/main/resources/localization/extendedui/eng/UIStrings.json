@@ -34,7 +34,7 @@
 	"extendedui:config_desc": {
 		"TEXT": [
 			"Requires restart",
-			"Enables a widget in certain card grids that displays card metrics over various properties such as card type and rarity.",
+			"Enables a widget in certain item grids that displays metrics over various properties such as type and rarity.",
 			"Check this option to use the base game's method of rendering the various compendium screens. Filters will still be available.",
 			"Check this option to have cards in the compendium and card pool screens snap to their target positions instantly upon scrolling.",
 			"Check this option to remove the compendium button on the top of the screen during runs.",
@@ -113,7 +113,9 @@
 			"Saturation",
 			"Value",
 			"Opacity",
-			"{#r:This tooltip is disabled}"
+			"{#r:This tooltip is disabled}",
+			"{#o:Click this button to switch the metrics used to count items.}",
+			"{#o:Click this button to order items by this property.}"
 		]
 	},
 	"extendedui:ui_pool": {

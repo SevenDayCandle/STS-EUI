@@ -298,6 +298,8 @@ public class EUIRM {
         public final String misc_value = stringsMisc.TEXT[19];
         public final String misc_opacity = stringsMisc.TEXT[20];
         public final String misc_tooltipDisabled = stringsMisc.TEXT[21];
+        public final String misc_countPanelSwitch = stringsMisc.TEXT[22];
+        public final String misc_countPanelItem = stringsMisc.TEXT[23];
 
         public final String potion_size = stringsPotion.TEXT[0];
         public final String potion_visualEffect = stringsPotion.TEXT[1];

@@ -1,8 +1,9 @@
-package extendedui.ui.cardFilter.panels;
+package extendedui.ui.cardFilter.panels.card;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIGameUtils;
+import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.interfaces.markers.TooltipProvider;
@@ -12,7 +13,7 @@ import extendedui.ui.tooltips.EUITooltip;
 import java.util.Collections;
 import java.util.List;
 
-public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvider {
+public class CardTypePanelFilterItem implements CountingPanelItem<AbstractCard> {
     private static final CardTypePanelFilterItem ATTACK = new CardTypePanelFilterItem(AbstractCard.CardType.ATTACK);
     private static final CardTypePanelFilterItem CURSE = new CardTypePanelFilterItem(AbstractCard.CardType.CURSE);
     private static final CardTypePanelFilterItem POWER = new CardTypePanelFilterItem(AbstractCard.CardType.POWER);
@@ -46,14 +47,14 @@ public class CardTypePanelFilterItem implements CountingPanelItem, TooltipProvid
     }
 
     @Override
-    public int getRank(AbstractCard c) {
-        int ordinal = c.type.ordinal();
-        return c.type == type ? ordinal + 1000 : ordinal;
+    public EUITooltip getTipForButton() {
+        EUITooltip tip = EUIKeywordTooltip.findByID(EUIUtils.capitalize(type.name()));
+        return new EUITooltip(EUIGameUtils.textForType(type), tip != null ? tip.description + EUIUtils.SPLIT_LINE + EUIRM.strings.misc_countPanelItem : EUIRM.strings.misc_countPanelItem);
     }
 
     @Override
-    public List<EUITooltip> getTips() {
-        EUITooltip tip = EUIKeywordTooltip.findByID(EUIUtils.capitalize(type.name()));
-        return Collections.singletonList(tip != null ? tip : new EUITooltip(EUIGameUtils.textForType(type)));
+    public int getRank(AbstractCard c) {
+        int ordinal = c.type.ordinal();
+        return c.type == type ? ordinal + 1000 : ordinal;
     }
 }

@@ -142,6 +142,8 @@ public class RelicPoolScreen extends EUIPoolScreen {
             relicGrid.forceUpdatePositions();
         }, color, GenericFilters.FILTERS_START_X, true, false);
 
+        EUI.relicCounters.open(relicGrid.group.group, f -> EUI.relicFilters.setSort(f.type));
+
         for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
             module.open(relicGrid.group.group, color, isAll, null);
         }
@@ -158,6 +160,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             relics.remove(c.relicId);
         }
         relicGrid.remove(c);
+        EUI.relicCounters.open(relicGrid.group.group, f -> EUI.relicFilters.setSort(f.type));
     }
 
     @Override
@@ -166,6 +169,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
         swapCardScreen.renderImpl(sb);
         swapPotionScreen.renderImpl(sb);
         EUI.sortHeader.renderImpl(sb);
+        EUI.relicCounters.tryRender(sb);
         if (!EUI.relicFilters.isActive) {
             EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
@@ -188,6 +192,7 @@ public class RelicPoolScreen extends EUIPoolScreen {
             EUI.sortHeader.updateImpl();
             EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
+            EUI.relicCounters.tryUpdate();
             for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
                 module.update();
             }

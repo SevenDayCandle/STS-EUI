@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter.panels;
+package extendedui.ui.cardFilter.panels.card;
 
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.cards.AbstractCard;
@@ -11,7 +11,7 @@ import extendedui.ui.tooltips.EUITooltip;
 import java.util.Collections;
 import java.util.List;
 
-public class CardUpgradePanelFilterItem implements CountingPanelItem, TooltipProvider {
+public class CardUpgradePanelFilterItem implements CountingPanelItem<AbstractCard> {
     protected static final CardUpgradePanelFilterItem UPGRADE = new CardUpgradePanelFilterItem(1);
     protected static final CardUpgradePanelFilterItem DOWNGRADE = new CardUpgradePanelFilterItem(0);
     protected static EUIKeywordTooltip UPGRADE_TIP;
@@ -38,13 +38,13 @@ public class CardUpgradePanelFilterItem implements CountingPanelItem, TooltipPro
     }
 
     @Override
-    public int getRank(AbstractCard c) {
-        return c.timesUpgraded >= upgradeLevel ? c.timesUpgraded + 1000 : c.timesUpgraded;
+    public EUITooltip getTipForButton() {
+        return new EUITooltip(getUpgradeName(), EUIRM.strings.misc_countPanelItem);
     }
 
     @Override
-    public List<EUITooltip> getTips() {
-        return Collections.singletonList(new EUITooltip(getUpgradeName()));
+    public int getRank(AbstractCard c) {
+        return c.timesUpgraded >= upgradeLevel ? c.timesUpgraded + 1000 : c.timesUpgraded;
     }
 
     protected String getUpgradeName() {

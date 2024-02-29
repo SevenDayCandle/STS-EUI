@@ -4,68 +4,104 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.FontHelper;
+import com.megacrit.cardcrawl.potions.AbstractPotion;
+import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT1;
-import extendedui.interfaces.markers.CountingPanelCardFilter;
+import extendedui.interfaces.markers.CountingPanelFilter;
 import extendedui.interfaces.markers.CountingPanelItem;
-import extendedui.interfaces.markers.CustomCardPoolModule;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.cardFilter.panels.CardRarityPanelFilter;
-import extendedui.ui.cardFilter.panels.CardTypePanelFilter;
-import extendedui.ui.cardFilter.panels.CardUpgradePanelFilter;
+import extendedui.ui.cardFilter.panels.card.CardRarityPanelFilter;
+import extendedui.ui.cardFilter.panels.card.CardTypePanelFilter;
+import extendedui.ui.cardFilter.panels.card.CardUpgradePanelFilter;
+import extendedui.ui.cardFilter.panels.potion.PotionRarityPanelFilter;
+import extendedui.ui.cardFilter.panels.relic.RelicRarityPanelFilter;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.DraggableHitbox;
 import extendedui.ui.hitboxes.RelativeHitbox;
+import extendedui.ui.tooltips.EUIHeaderlessTooltip;
+import extendedui.utilities.PotionInfo;
+import extendedui.utilities.RelicInfo;
 import extendedui.utilities.RotatingList;
 
 import java.util.ArrayList;
 
-public class CountingPanel extends EUIHoverable implements CustomCardPoolModule {
-    protected static final RotatingList<CountingPanelCardFilter> FILTERS = new RotatingList<>(
+public class CountingPanel<T> extends EUIHoverable {
+    private static final RotatingList<CountingPanelFilter<AbstractCard>> CARD_FILTERS = new RotatingList<CountingPanelFilter<AbstractCard>>(
             new CardTypePanelFilter(),
             new CardRarityPanelFilter(),
             new CardUpgradePanelFilter()
     );
+    private static final RotatingList<CountingPanelFilter<PotionInfo>> POTION_FILTERS = new RotatingList<CountingPanelFilter<PotionInfo>>(
+            new PotionRarityPanelFilter()
+    );
+    private static final RotatingList<CountingPanelFilter<RelicInfo>> RELIC_FILTERS = new RotatingList<CountingPanelFilter<RelicInfo>>(
+            new RelicRarityPanelFilter()
+    );
     public static final float ICON_SIZE = scale(40);
     private long lastFrame;
-    protected ArrayList<? extends CountingPanelCounter<?>> counters;
-    protected ArrayList<? extends AbstractCard> cards;
-    protected EUIButton swapButton;
+    private ArrayList<? extends CountingPanelCounter<?, T>> counters;
+    private ArrayList<? extends T> cards;
+    private ActionT1<CountingPanelCounter<? extends CountingPanelItem<T>, T>> onClick;
+    private final EUIButton swapButton;
+    private final RotatingList<CountingPanelFilter<T>> filters;
 
-    public CountingPanel() {
+    public CountingPanel(RotatingList<CountingPanelFilter<T>> filters) {
         super(new DraggableHitbox(screenW(0.025f), screenH(0.6f), scale(140), scale(50), false));
+        this.filters = filters;
         swapButton = new EUIButton(EUIRM.images.swap.texture(), new RelativeHitbox(hb, ICON_SIZE, ICON_SIZE, 0, 0))
                 .setOnClick(this::swap);
-        swapButton.setLabel(new EUILabel(FontHelper.buttonLabelFont, hb, 0.8f, 0.5f, 2.41f, false));
+        swapButton.setLabel(new EUILabel(FontHelper.buttonLabelFont, hb, 0.8f, 0.5f, 2.41f, false))
+                .setTooltip(new EUIHeaderlessTooltip(EUIRM.strings.misc_countPanelSwitch));
     }
 
-    public static void register(CountingPanelCardFilter filter) {
-        FILTERS.add(filter);
+    public static CountingPanel<AbstractCard> counterCards() {
+        return new CountingPanel<AbstractCard>(CARD_FILTERS);
+    }
+
+    public static CountingPanel<PotionInfo> counterPotions() {
+        return new CountingPanel<PotionInfo>(POTION_FILTERS);
+    }
+
+    public static CountingPanel<RelicInfo> counterRelics() {
+        return new CountingPanel<RelicInfo>(RELIC_FILTERS);
+    }
+
+    public static void registerForCard(CountingPanelFilter<AbstractCard> filter) {
+        CARD_FILTERS.add(filter);
+    }
+
+    public static void registerForPotion(CountingPanelFilter<PotionInfo> filter) {
+        POTION_FILTERS.add(filter);
+    }
+
+    public static void registerForRelic(CountingPanelFilter<RelicInfo> filter) {
+        RELIC_FILTERS.add(filter);
     }
 
     public void close() {
         setActive(false);
     }
 
-    public void open(ArrayList<? extends AbstractCard> cards, AbstractCard.CardColor color, boolean isAll, Object payload) {
-        isActive = EUIConfiguration.showCountingPanel.get() && cards != null;
+    public <I extends CountingPanelItem<T>, J> void open(ArrayList<? extends T> cards, ActionT1<CountingPanelCounter<? extends CountingPanelItem<T>, T>> onClick) {
         this.cards = cards;
-        swapButton.setActive(true);
-
-        if (isActive) {
-            reset();
-        }
+        this.onClick = onClick;
+        openImpl(setFor(), onClick);
     }
 
-    public <T extends CountingPanelItem, J, K> void openManual(CountingPanelStats<T, J, K> stats, ActionT1<CountingPanelCounter<T>> onClick, boolean force) {
-        isActive = EUIConfiguration.showCountingPanel.get() && stats.size() > 0;
+    public <I extends CountingPanelItem<T>, J> void open(CountingPanelStats<I, J, T> stats, ActionT1<CountingPanelCounter<? extends CountingPanelItem<T>, T>> onClick) {
         this.cards = null;
-        swapButton.setActive(false);
+        this.onClick = onClick;
+        openImpl(stats.generateCounters(hb, onClick), onClick);
+    }
+
+    private <I extends CountingPanelItem<T>, J> void openImpl(ArrayList<? extends CountingPanelCounter<?, T>> counters, ActionT1<CountingPanelCounter<? extends CountingPanelItem<T>, T>> onClick) {
+        this.isActive = EUIConfiguration.showCountingPanel.get() && !counters.isEmpty();
 
         if (isActive) {
-            counters = stats.generateCounters(hb, onClick);
+            this.counters = counters;
         }
     }
 
@@ -80,25 +116,24 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
 
         lastFrame = frame;
         if (counters != null) {
-            for (CountingPanelCounter<?> c : counters) {
+            for (CountingPanelCounter<?,?> c : counters) {
                 c.tryRender(sb);
             }
         }
     }
 
-    protected void reset() {
-        if (cards != null) {
-            CountingPanelCardFilter filter = FILTERS.current();
-            if (filter != null) {
-                swapButton.setText(filter.getTitle());
-                counters = filter.generateCounters(cards, hb);
-            }
+    protected ArrayList<? extends CountingPanelCounter<?, T>> setFor() {
+        CountingPanelFilter<T> filter = filters.current();
+        if (filter != null) {
+            swapButton.setText(filter.getTitle());
+            return filter.generateCounters(cards, hb, onClick);
         }
+        return null;
     }
 
     public void swap() {
-        FILTERS.next(true);
-        reset();
+        filters.next(true);
+        counters = setFor();
     }
 
     @Override
@@ -106,7 +141,7 @@ public class CountingPanel extends EUIHoverable implements CustomCardPoolModule 
         super.updateImpl();
         swapButton.tryUpdate();
         if (counters != null) {
-            for (CountingPanelCounter<?> c : counters) {
+            for (CountingPanelCounter<?,?> c : counters) {
                 c.tryUpdate();
             }
         }

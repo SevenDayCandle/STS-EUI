@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter.panels;
+package extendedui.ui.cardFilter.panels.card;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -12,7 +12,7 @@ import extendedui.ui.tooltips.EUITooltip;
 import java.util.Collections;
 import java.util.List;
 
-public class CardRarityPanelFilterItem implements CountingPanelItem, TooltipProvider {
+public class CardRarityPanelFilterItem implements CountingPanelItem<AbstractCard> {
     protected static final CardRarityPanelFilterItem BASIC = new CardRarityPanelFilterItem(AbstractCard.CardRarity.BASIC);
     protected static final CardRarityPanelFilterItem COMMON = new CardRarityPanelFilterItem(AbstractCard.CardRarity.COMMON);
     protected static final CardRarityPanelFilterItem UNCOMMON = new CardRarityPanelFilterItem(AbstractCard.CardRarity.UNCOMMON);
@@ -53,13 +53,13 @@ public class CardRarityPanelFilterItem implements CountingPanelItem, TooltipProv
     }
 
     @Override
-    public int getRank(AbstractCard c) {
-        int ordinal = c.rarity.ordinal();
-        return c.rarity == rarity ? ordinal + 1000 : ordinal;
+    public EUITooltip getTipForButton() {
+        return new EUITooltip(EUIGameUtils.textForRarity(rarity), EUIRM.strings.misc_countPanelItem);
     }
 
     @Override
-    public List<EUITooltip> getTips() {
-        return Collections.singletonList(new EUITooltip(EUIGameUtils.textForRarity(rarity)));
+    public int getRank(AbstractCard c) {
+        int ordinal = c.rarity.ordinal();
+        return c.rarity == rarity ? ordinal + 1000 : ordinal;
     }
 }

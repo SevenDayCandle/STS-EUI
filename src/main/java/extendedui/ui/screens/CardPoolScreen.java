@@ -186,7 +186,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             cardGrid.forceUpdatePositions();
         }, color, GenericFilters.FILTERS_START_X, !canSeeAllColors, false);
 
-        EUI.countingPanel.open(cardGrid.group.group, color, isAll, null);
+        EUI.cardCounters.open(cardGrid.group.group, f -> EUI.cardFilters.setSort(f.type));
 
         for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
             module.open(cardGrid.group.group, color, isAll, null);
@@ -211,7 +211,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             group.removeCard(c.cardID);
         }
         cardGrid.remove(c);
-        EUI.countingPanel.open(cardGrid.group.group, EUI.actingColor, EUI.actingColor == AbstractCard.CardColor.COLORLESS || EUIGameUtils.canReceiveAnyColorCard() , null);
+        EUI.cardCounters.open(cardGrid.group.group, f -> EUI.cardFilters.setSort(f.type));
     }
 
     @Override
@@ -223,7 +223,7 @@ public class CardPoolScreen extends EUIPoolScreen {
         colorlessToggle.render(sb);
         swapRelicScreen.renderImpl(sb);
         swapPotionScreen.renderImpl(sb);
-        EUI.countingPanel.tryRender(sb);
+        EUI.cardCounters.tryRender(sb);
         if (!EUI.cardFilters.isActive) {
             EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
@@ -259,7 +259,7 @@ public class CardPoolScreen extends EUIPoolScreen {
             EUI.sortHeader.update();
             EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
-            EUI.countingPanel.tryUpdate();
+            EUI.cardCounters.tryUpdate();
             for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {
                 module.update();
             }

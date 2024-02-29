@@ -13,7 +13,9 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class CountingPanelStats<T extends CountingPanelItem, J, K> implements Iterable<Map.Entry<T, Integer>> {
+// K is a game object to be counted (e.g. AbstractCard)
+// J is an intermediate group that holds things of type K (e.g. CardGroup)
+public class CountingPanelStats<T extends CountingPanelItem<K>, J, K> implements Iterable<Map.Entry<T, Integer>> {
     private final HashMap<T, Integer> groups = new HashMap<>();
     private final FuncT1<Iterable<? extends J>, K> vendorFunc;
     private final FuncT1<T, J> keyFunc;
@@ -33,7 +35,7 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
         this.amountFunc = amountFunc;
     }
 
-    public static <T extends CountingPanelItem, K> CountingPanelStats<T, T, K> basic(FuncT1<Iterable<? extends T>, K> vendorFunc) {
+    public static <T extends CountingPanelItem<K>, K> CountingPanelStats<T, T, K> basic(FuncT1<Iterable<? extends T>, K> vendorFunc) {
         return new CountingPanelStats<>(vendorFunc,
                 (a) -> {
                     return a;
@@ -47,7 +49,7 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
         );
     }
 
-    public static <T extends CountingPanelItem, K> CountingPanelStats<T, T, K> basic(FuncT1<Iterable<? extends T>, K> vendorFunc, Iterable<? extends K> items) {
+    public static <T extends CountingPanelItem<K>, K> CountingPanelStats<T, T, K> basic(FuncT1<Iterable<? extends T>, K> vendorFunc, Iterable<? extends K> items) {
         return new CountingPanelStats<>(vendorFunc,
                 (a) -> {
                     return a;
@@ -76,8 +78,8 @@ public class CountingPanelStats<T extends CountingPanelItem, J, K> implements It
         }
     }
 
-    public ArrayList<CountingPanelCounter<T>> generateCounters(Hitbox baseHb, ActionT1<CountingPanelCounter<T>> onClick) {
-        ArrayList<CountingPanelCounter<T>> base = sortedStream().map(entry -> new CountingPanelCounter<>(this, baseHb, entry.getKey(), onClick)).collect(Collectors.toCollection(ArrayList::new));
+    public ArrayList<CountingPanelCounter<T, K>> generateCounters(Hitbox baseHb, ActionT1<CountingPanelCounter<? extends CountingPanelItem<K>, K>> onClick) {
+        ArrayList<CountingPanelCounter<T, K>> base = sortedStream().map(entry -> new CountingPanelCounter<T, K>(this, baseHb, entry.getKey(), onClick)).collect(Collectors.toCollection(ArrayList::new));
         for (int i = 0; i < base.size(); i++) {
             base.get(i).setIndex(i);
         }

@@ -70,7 +70,7 @@ public class MasterDeckViewScreenPatches {
             }, fakeMasterDeck.group, color, false);
             EUI.openFiltersButton.setOnClick(() -> EUI.cardFilters.toggleFilters());
             updateForFilters();
-            EUI.countingPanel.open(AbstractDungeon.player.masterDeck.group, color, isAll, null);
+            EUI.cardCounters.open(AbstractDungeon.player.masterDeck.group, f -> __instance.setSortOrder(f.type));
         }
     }
 
@@ -80,7 +80,7 @@ public class MasterDeckViewScreenPatches {
         public static void prefix(MasterDeckViewScreen __instance) {
             if (!EUI.cardFilters.tryUpdate() && EUI.openFiltersButton != null) {
                 EUI.openFiltersButton.tryUpdate();
-                EUI.countingPanel.tryUpdate();
+                EUI.cardCounters.tryUpdate();
             }
         }
     }
@@ -102,7 +102,7 @@ public class MasterDeckViewScreenPatches {
         public static void prefix(MasterDeckViewScreen __instance, SpriteBatch sb) {
             if (!EUI.cardFilters.isActive) {
                 EUI.openFiltersButton.tryRender(sb);
-                EUI.countingPanel.tryRender(sb);
+                EUI.cardCounters.tryRender(sb);
             }
         }
     }

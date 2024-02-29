@@ -96,6 +96,19 @@ public class EUIGameUtils {
         return intent != AbstractMonster.Intent.NONE && intent != AbstractMonster.Intent.DEBUG && canViewAnyEnemyIntent();
     }
 
+    public static Color colorForPotionRarity(AbstractPotion.PotionRarity rarity) {
+        switch (rarity) {
+            case UNCOMMON:
+                return COLOR_UNCOMMON;
+            case RARE:
+                return COLOR_RARE;
+            case COMMON:
+                return COLOR_COMMON;
+            default:
+                return COLOR_SPECIAL;
+        }
+    }
+
     public static Color colorForRarity(AbstractCard.CardRarity rarity) {
         switch (rarity) {
             case SPECIAL:
@@ -111,6 +124,26 @@ public class EUIGameUtils {
             case COMMON:
             default:
                 return COLOR_COMMON;
+        }
+    }
+
+    public static Color colorForRelicTier(AbstractRelic.RelicTier rarity) {
+        switch (rarity) {
+            case UNCOMMON:
+                return COLOR_UNCOMMON;
+            case RARE:
+                return COLOR_RARE;
+            case SHOP:
+                return Settings.BLUE_TEXT_COLOR;
+            case BOSS:
+                return Settings.RED_TEXT_COLOR;
+            case STARTER:
+                return COLOR_BASIC;
+            case COMMON:
+                return COLOR_COMMON;
+            case SPECIAL:
+            default:
+                return COLOR_SPECIAL;
         }
     }
 

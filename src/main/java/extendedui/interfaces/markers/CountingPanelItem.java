@@ -3,11 +3,13 @@ package extendedui.interfaces.markers;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
 import com.megacrit.cardcrawl.cards.AbstractCard;
+import extendedui.ui.tooltips.EUITooltip;
 
 import java.util.Comparator;
 
-public interface CountingPanelItem extends Comparator<AbstractCard> {
-    default int compare(AbstractCard c1, AbstractCard c2) {
+// T is a game object to be counted (e.g. AbstractCard)
+public interface CountingPanelItem<T> extends Comparator<T> {
+    default int compare(T c1, T c2) {
         return getRank(c2) - getRank(c1);
     }
 
@@ -15,7 +17,9 @@ public interface CountingPanelItem extends Comparator<AbstractCard> {
         return Color.WHITE;
     }
 
-    int getRank(AbstractCard c);
+    int getRank(T c);
 
     Texture getIcon();
+
+    EUITooltip getTipForButton();
 }

@@ -15,7 +15,8 @@ import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.RelativeHitbox;
 import extendedui.utilities.EUIFontHelper;
 
-public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase {
+// U is a game object to be counted (e.g. AbstractCard)
+public class CountingPanelCounter<T extends CountingPanelItem<U>, U> extends EUIBase {
     private static final Color PANEL_COLOR = new Color(0.05f, 0.05f, 0.05f, 1f);
     public final T type;
     public EUIButton backgroundButton;
@@ -23,15 +24,13 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase {
     public EUILabel counterText;
     public EUILabel counterpercentageText;
 
-    public CountingPanelCounter(CountingPanelStats<T, ?, ?> panel, Hitbox hb, T type, ActionT1<CountingPanelCounter<T>> onClick) {
+    public CountingPanelCounter(CountingPanelStats<T, ?, ?> panel, Hitbox hb, T type, ActionT1<CountingPanelCounter<? extends CountingPanelItem<U>, U>> onClick) {
         this.type = type;
 
         backgroundButton = new EUIButton(EUIRM.images.panelRoundedHalfH.texture(), RelativeHitbox.fromPercentages(hb, 1, 1, 0.5f, 0))
                 .setColor(PANEL_COLOR)
-                .setOnClick(onClick == null ? null : () -> onClick.invoke(this));
-        if (type instanceof TooltipProvider) {
-            backgroundButton.setTooltip(((TooltipProvider) type).getTooltip());
-        }
+                .setOnClick(onClick == null ? null : () -> onClick.invoke(this))
+                .setTooltip(type.getTipForButton());
 
         counterImage = new EUIImage(type.getIcon(), type.getColor())
                 .setHitbox(new RelativeHitbox(hb, CountingPanel.ICON_SIZE, CountingPanel.ICON_SIZE, -0.5f * (CountingPanel.ICON_SIZE / hb.width), 0));
@@ -55,7 +54,7 @@ public class CountingPanelCounter<T extends CountingPanelItem> extends EUIBase {
         counterImage.renderImpl(sb);
     }
 
-    public CountingPanelCounter<T> setIndex(int index) {
+    public CountingPanelCounter<T, U> setIndex(int index) {
         float y = -(index + 1) * backgroundButton.hb.height * 1.05f;
         backgroundButton.hb.setOffsetY(y);
         counterText.hb.setOffsetY(y);

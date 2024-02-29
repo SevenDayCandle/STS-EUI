@@ -131,6 +131,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
             potionGrid.forceUpdatePositions();
         }, color, GenericFilters.FILTERS_START_X, true, false);
 
+        EUI.potionCounters.open(potionGrid.group.group, f -> EUI.potionFilters.setSort(f.type));
 
         for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
             module.open(potionGrid.group.group, color, isAll, null);
@@ -149,6 +150,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
         swapCardScreen.renderImpl(sb);
         swapRelicScreen.renderImpl(sb);
         EUI.sortHeader.renderImpl(sb);
+        EUI.potionCounters.tryRender(sb);
         if (!EUI.potionFilters.isActive) {
             EUI.openFiltersButton.tryRender(sb);
             EUIExporter.exportButton.tryRender(sb);
@@ -171,6 +173,7 @@ public class PotionPoolScreen extends EUIPoolScreen {
             EUI.sortHeader.updateImpl();
             EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();
+            EUI.potionCounters.tryUpdate();
             for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
                 module.update();
             }
