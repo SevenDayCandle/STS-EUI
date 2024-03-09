@@ -134,7 +134,7 @@ public class EUIGameUtils {
             case RARE:
                 return COLOR_RARE;
             case SHOP:
-                return Settings.BLUE_TEXT_COLOR;
+                return Settings.CREAM_COLOR;
             case BOSS:
                 return Settings.RED_TEXT_COLOR;
             case STARTER:
