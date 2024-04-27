@@ -848,7 +848,7 @@ public class EUIDropdown<T> extends EUIHoverable {
         if (isMultiSelect) {
             this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : makeMultiSelectString());
         }
-        else if (currentIndices.size() > 0) {
+        else if (!currentIndices.isEmpty()) {
             int temp = currentIndices.first();
             this.topVisibleRowIndex = Math.min(temp, getRowsForSelectionUpdate().size() - this.visibleRowCount());
             this.button.setText(labelFunctionButton != null ? labelFunctionButton.invoke(getCurrentItems(), labelFunction) : getRowsForSelectionUpdate().get(temp).label.text);
@@ -955,7 +955,7 @@ public class EUIDropdown<T> extends EUIHoverable {
 
     protected void updateRows() {
         if (this.isOpen) {
-            if (this.rows.size() != 0) {
+            if (!this.rows.isEmpty()) {
                 updateRowPositions();
             }
             if (EUI.isActiveElement(this)) {
