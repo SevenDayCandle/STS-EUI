@@ -295,7 +295,7 @@ public class EUIGameUtils {
 
     public static ModInfo getModInfoFromID(String id) {
         for (ModInfo loadedInfo : Loader.MODINFOS) {
-            if (loadedInfo.ID.equals(id)) {
+            if (loadedInfo.ID.equalsIgnoreCase(id)) {
                 return loadedInfo;
             }
         }

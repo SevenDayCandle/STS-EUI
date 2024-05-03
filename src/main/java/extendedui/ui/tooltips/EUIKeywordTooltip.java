@@ -195,9 +195,9 @@ public class EUIKeywordTooltip extends EUITooltip {
                 else if (title.equals(GameDictionary.EXHAUST.NAMES[0])) {
                     tooltip.setIcon(StSLib.BADGE_EXHAUST);
                 }
-                // CustomIconHelper IDs start with "[" and end with "Icon]"
-                else {
-                    String iconName = '[' + title + AbstractCustomIcon.CODE_ENDING;
+                // CustomIconHelper IDs start with "[" and end with "Icon]". Also the base game/Fabricate tooltips won't use this so we can skip them
+                else if (tooltip.modName != null) {
+                    String iconName = '[' + tooltip.ID + AbstractCustomIcon.CODE_ENDING;
                     AbstractCustomIcon icon = CustomIconHelper.getIcon(iconName);
                     if (icon != null) {
                         tooltip.setIcon(icon.region);
@@ -483,7 +483,7 @@ public class EUIKeywordTooltip extends EUITooltip {
     }
 
     public EUIKeywordTooltip setModID(String modID) {
-        if (WhatMod.enabled && modID != null) {
+        if (modID != null) {
             ModInfo found = EUIGameUtils.getModInfoFromID(modID);
             if (found != null) {
                 modName = new ColoredString(found.Name, Settings.PURPLE_COLOR);
