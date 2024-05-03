@@ -1,18 +1,13 @@
-package extendedui.ui.cardFilter.panels.relic;
+package extendedui.utilities.panels.relic;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
-import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.interfaces.markers.CountingPanelItem;
-import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.RelicInfo;
-
-import java.util.Collections;
-import java.util.List;
 
 public class RelicRarityPanelFilterItem implements CountingPanelItem<RelicInfo> {
     protected static final RelicRarityPanelFilterItem STARTER = new RelicRarityPanelFilterItem(AbstractRelic.RelicTier.STARTER);

@@ -28,7 +28,7 @@ import extendedui.ui.controls.EUIDropdown;
 import extendedui.ui.hitboxes.EUIHitbox;
 import extendedui.ui.tooltips.EUIKeywordTooltip;
 import extendedui.ui.tooltips.EUITooltip;
-import extendedui.utilities.CostFilter;
+import extendedui.utilities.panels.card.CostFilter;
 import extendedui.utilities.TargetFilter;
 import org.apache.commons.lang3.StringUtils;
 
@@ -57,7 +57,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
                 .setCanAutosizeButton(true)
                 .setItems(Loader.MODINFOS);
 
-        costDropdown = new EUIDropdown<CostFilter>(new EUIHitbox(0, 0, scale(160), scale(48)), c -> c.name)
+        costDropdown = new EUIDropdown<CostFilter>(new EUIHitbox(0, 0, scale(160), scale(48)), CostFilter::toString)
                 .setOnOpenOrClose(this::updateActive)
                 .setOnChange(costs -> this.onFilterChanged(filters.currentCosts, costs))
                 .setLabelFunctionForButton(this::filterCostFunction, false)
@@ -403,7 +403,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
                 availableRarities.add(card.rarity);
                 availableTypes.add(card.type);
                 availableTargets.add(TargetFilter.forCard(card));
-                availableCosts.add(MathUtils.clamp(card.cost, CostFilter.Unplayable.upperBound, EUIUtils.max(CostFilter.values(), c -> c.lowerBound)));
+                availableCosts.add(MathUtils.clamp(card.cost, EUIUtils.min(CostFilter.values(), CostFilter::getValue), EUIUtils.max(CostFilter.values(), CostFilter::getValue)));
                 availableColors.add(card.color);
             }
             doForFilters(m -> m.initializeSelection(originalGroup));
@@ -427,7 +427,7 @@ public class CardKeywordFilters extends GenericFilters<AbstractCard, CardKeyword
 
         ArrayList<CostFilter> costItems = new ArrayList<>();
         for (CostFilter c : CostFilter.values()) {
-            if (availableCosts.contains(c.lowerBound) || availableCosts.contains(c.upperBound)) {
+            if (availableCosts.contains(c.getValue())) {
                 costItems.add(c);
             }
         }

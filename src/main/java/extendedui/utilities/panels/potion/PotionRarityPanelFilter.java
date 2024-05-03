@@ -1,6 +1,5 @@
-package extendedui.ui.cardFilter.panels.card;
+package extendedui.utilities.panels.potion;
 
-import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.Hitbox;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import extendedui.interfaces.delegates.ActionT1;
@@ -8,15 +7,16 @@ import extendedui.interfaces.markers.CountingPanelFilter;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.ui.cardFilter.CountingPanelCounter;
 import extendedui.ui.cardFilter.CountingPanelStats;
+import extendedui.utilities.PotionInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class CardRarityPanelFilter implements CountingPanelFilter<AbstractCard>  {
+public class PotionRarityPanelFilter implements CountingPanelFilter<PotionInfo>  {
     @Override
-    public ArrayList<? extends CountingPanelCounter<?, AbstractCard>> generateCounters(ArrayList<? extends AbstractCard> cards, Hitbox hb, ActionT1<CountingPanelCounter<? extends CountingPanelItem<AbstractCard>, AbstractCard>> onClick) {
+    public ArrayList<? extends CountingPanelCounter<?, PotionInfo>> generateCounters(ArrayList<? extends PotionInfo> cards, Hitbox hb, ActionT1<CountingPanelCounter<? extends CountingPanelItem<PotionInfo>, PotionInfo>> onClick) {
         return CountingPanelStats.basic(c ->
-                        Collections.singleton(CardRarityPanelFilterItem.get(c.rarity)),
+                        Collections.singleton(PotionRarityPanelFilterItem.get(c.potion.rarity)),
                 cards).generateCounters(hb, onClick);
     }
 

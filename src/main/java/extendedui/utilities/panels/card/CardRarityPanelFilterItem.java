@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter.panels.card;
+package extendedui.utilities.panels.card;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,11 +6,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.interfaces.markers.CountingPanelItem;
-import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
-
-import java.util.Collections;
-import java.util.List;
 
 public class CardRarityPanelFilterItem implements CountingPanelItem<AbstractCard> {
     protected static final CardRarityPanelFilterItem BASIC = new CardRarityPanelFilterItem(AbstractCard.CardRarity.BASIC);

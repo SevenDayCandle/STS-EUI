@@ -1,25 +1,22 @@
-package extendedui.ui.cardFilter.panels.relic;
+package extendedui.utilities.panels.card;
 
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.Hitbox;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.CountingPanelFilter;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.ui.cardFilter.CountingPanelCounter;
 import extendedui.ui.cardFilter.CountingPanelStats;
-import extendedui.ui.cardFilter.panels.card.CardRarityPanelFilterItem;
-import extendedui.utilities.RelicInfo;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class RelicRarityPanelFilter implements CountingPanelFilter<RelicInfo>  {
+public class CardRarityPanelFilter implements CountingPanelFilter<AbstractCard>  {
     @Override
-    public ArrayList<? extends CountingPanelCounter<?, RelicInfo>> generateCounters(ArrayList<? extends RelicInfo> cards, Hitbox hb, ActionT1<CountingPanelCounter<? extends CountingPanelItem<RelicInfo>, RelicInfo>> onClick) {
+    public ArrayList<? extends CountingPanelCounter<?, AbstractCard>> generateCounters(ArrayList<? extends AbstractCard> cards, Hitbox hb, ActionT1<CountingPanelCounter<? extends CountingPanelItem<AbstractCard>, AbstractCard>> onClick) {
         return CountingPanelStats.basic(c ->
-                        Collections.singleton(RelicRarityPanelFilterItem.get(c.relic.tier)),
+                        Collections.singleton(CardRarityPanelFilterItem.get(c.rarity)),
                 cards).generateCounters(hb, onClick);
     }
 

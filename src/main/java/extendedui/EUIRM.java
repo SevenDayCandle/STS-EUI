@@ -139,6 +139,14 @@ public class EUIRM {
         public final TextureCache baseBadge = new TextureCache("images/extendedui/tooltip/Base_Badge.png");
         public final TextureCache baseBorder = new TextureCache("images/extendedui/tooltip/Base_Border.png");
 
+        public final TextureCache cost0 = new TextureCache("images/extendedui/types/Cost0.png");
+        public final TextureCache cost1 = new TextureCache("images/extendedui/types/Cost1.png");
+        public final TextureCache cost2 = new TextureCache("images/extendedui/types/Cost2.png");
+        public final TextureCache cost3 = new TextureCache("images/extendedui/types/Cost3.png");
+        public final TextureCache cost4 = new TextureCache("images/extendedui/types/Cost4.png");
+        public final TextureCache cost5 = new TextureCache("images/extendedui/types/Cost5.png");
+        public final TextureCache costU = new TextureCache("images/extendedui/types/CostU.png");
+        public final TextureCache costX = new TextureCache("images/extendedui/types/CostX.png");
         public final TextureCache typeAttack = new TextureCache("images/extendedui/types/Attack.png");
         public final TextureCache typeCurse = new TextureCache("images/extendedui/types/Curse.png");
         public final TextureCache typeDowngrade = new TextureCache("images/extendedui/types/Downgrade.png");

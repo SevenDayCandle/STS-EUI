@@ -1,4 +1,4 @@
-package extendedui.ui.cardFilter.panels.potion;
+package extendedui.utilities.panels.potion;
 
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.Texture;
@@ -6,12 +6,8 @@ import com.megacrit.cardcrawl.potions.AbstractPotion;
 import extendedui.EUIGameUtils;
 import extendedui.EUIRM;
 import extendedui.interfaces.markers.CountingPanelItem;
-import extendedui.interfaces.markers.TooltipProvider;
 import extendedui.ui.tooltips.EUITooltip;
 import extendedui.utilities.PotionInfo;
-
-import java.util.Collections;
-import java.util.List;
 
 public class PotionRarityPanelFilterItem implements CountingPanelItem<PotionInfo> {
     protected static final PotionRarityPanelFilterItem COMMON = new PotionRarityPanelFilterItem(AbstractPotion.PotionRarity.COMMON);

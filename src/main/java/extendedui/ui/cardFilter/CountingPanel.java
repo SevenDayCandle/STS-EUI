@@ -4,19 +4,18 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.helpers.FontHelper;
-import com.megacrit.cardcrawl.potions.AbstractPotion;
-import com.megacrit.cardcrawl.relics.AbstractRelic;
 import extendedui.EUIRM;
 import extendedui.configuration.EUIConfiguration;
 import extendedui.interfaces.delegates.ActionT1;
 import extendedui.interfaces.markers.CountingPanelFilter;
 import extendedui.interfaces.markers.CountingPanelItem;
 import extendedui.ui.EUIHoverable;
-import extendedui.ui.cardFilter.panels.card.CardRarityPanelFilter;
-import extendedui.ui.cardFilter.panels.card.CardTypePanelFilter;
-import extendedui.ui.cardFilter.panels.card.CardUpgradePanelFilter;
-import extendedui.ui.cardFilter.panels.potion.PotionRarityPanelFilter;
-import extendedui.ui.cardFilter.panels.relic.RelicRarityPanelFilter;
+import extendedui.utilities.panels.card.CardCostPanelFilter;
+import extendedui.utilities.panels.card.CardRarityPanelFilter;
+import extendedui.utilities.panels.card.CardTypePanelFilter;
+import extendedui.utilities.panels.card.CardUpgradePanelFilter;
+import extendedui.utilities.panels.potion.PotionRarityPanelFilter;
+import extendedui.utilities.panels.relic.RelicRarityPanelFilter;
 import extendedui.ui.controls.EUIButton;
 import extendedui.ui.controls.EUILabel;
 import extendedui.ui.hitboxes.DraggableHitbox;
@@ -32,7 +31,8 @@ public class CountingPanel<T> extends EUIHoverable {
     private static final RotatingList<CountingPanelFilter<AbstractCard>> CARD_FILTERS = new RotatingList<CountingPanelFilter<AbstractCard>>(
             new CardTypePanelFilter(),
             new CardRarityPanelFilter(),
-            new CardUpgradePanelFilter()
+            new CardUpgradePanelFilter(),
+            new CardCostPanelFilter()
     );
     private static final RotatingList<CountingPanelFilter<PotionInfo>> POTION_FILTERS = new RotatingList<CountingPanelFilter<PotionInfo>>(
             new PotionRarityPanelFilter()
