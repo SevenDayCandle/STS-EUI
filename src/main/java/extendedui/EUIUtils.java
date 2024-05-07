@@ -26,7 +26,7 @@ import java.util.*;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-// Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
+// Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 
 public abstract class EUIUtils {
     private static final Gson GsonReader = new Gson();

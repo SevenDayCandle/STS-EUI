@@ -45,7 +45,7 @@ import java.util.HashMap;
 
 import static com.megacrit.cardcrawl.dungeons.AbstractDungeon.*;
 
-// Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
+// Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 
 public class EUIGameUtils {
     private static final HashMap<AbstractCard.CardColor, String> CUSTOM_COLOR_NAMES = new HashMap<>();

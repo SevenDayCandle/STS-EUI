@@ -25,7 +25,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 
-// Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod and https://github.com/SevenDayCandle/STS-FoolMod
+// Copied and modified from https://github.com/EatYourBeetS/STS-AnimatorMod
 
 public class EUIRenderHelpers {
     private static final String SHADER_BICOLOR_FRAGMENT = "shaders/bicolorFragment.glsl";
