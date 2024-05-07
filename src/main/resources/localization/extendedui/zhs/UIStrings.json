@@ -27,8 +27,8 @@
 			"重新启用工具提示",
 			"移除主菜单渐变过渡",
 			"冻结卡牌筛选条件",
-			"Hide Version Info",
-			"Force Font Linear Filtering"
+			"隐藏版本信息",
+			"强制字体线性滤波"
 		]
 	},
 	"extendedui:config_desc": {
@@ -51,8 +51,8 @@
 			"{#b:当前没有被禁用的工具提示。}",
 			"移除你进入或退出一局游戏时的黑屏渐变，以使这些动作几乎瞬间完成。",
 			"在卡牌总览中切换颜色时，筛选条件将会维持。",
-			"Hides the version text blurb shown on the bottom-left corner of main menu screens as well as on the right-hand side during runs.",
-			"Improves the appearance of text that is zoomed in or out, but may impact performance"
+			"隐藏游戏内右侧及主菜单界面左下角的版本信息显示。",
+			"改善文本缩放外观，但可能影响性能。"
 		]
 	},
 	"extendedui:grammar": {
@@ -86,8 +86,8 @@
 			"循环预览",
 			"运行百科大全",
 			"打开/关闭筛选器",
-			"Open Relic Pool",
-			"Open Potion Pool"
+			"打开遗物池",
+			"打开药水池"
 		]
 	},
 	"extendedui:misc": {
@@ -108,14 +108,14 @@
 			"保存到载有当前入选项目信息的工作表， NL CSV或JSON格式。",
 			"确认重写",
 			"{0} 已经存在。你想替换它吗？",
-			"Current",
-			"Hue",
-			"Saturation",
-			"Value",
-			"Opacity",
+			"当前",
+			"色调",
+			"饱和度",
+			"值",
+			"明度",
 			"{#r:该工具提示禁用中}",
-			"{#o:Click this button to switch the metrics used to count items.}",
-			"{#o:Click this button to order items by this property.}"
+			"{#o:点击该按键以切换统计标准。}",
+			"{#o:点击该按键以按此属性排列项目。}"
 		]
 	},
 	"extendedui:ui_pool": {
@@ -203,7 +203,7 @@
 			"N/A",
 			"按给定条件筛选项目",
 			"唯一",
-			"Set"
+			"集合"
 		]
 	}
 }
