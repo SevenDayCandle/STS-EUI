@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.screens.CombatRewardScreen;
 import com.megacrit.cardcrawl.screens.compendium.CardLibSortHeader;
 import com.megacrit.cardcrawl.screens.leaderboards.LeaderboardScreen;
 import extendedui.EUI;
+import extendedui.EUIInputManager;
 import extendedui.EUIRM;
 import extendedui.EUIUtils;
 import extendedui.configuration.EUIConfiguration;
@@ -201,7 +202,6 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
         closeButton.hb.hovered = false;
         closeButton.hb.clicked = false;
         closeButton.hb.justHovered = false;
-        InputHelper.justReleasedClickLeft = false;
         CardCrawlGame.isPopupOpen = false;
         setActive(false);
     }
@@ -552,7 +552,7 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
     }
 
     private void updateInput() {
-        if (InputHelper.justClickedLeft) {
+        if (EUIInputManager.leftClick.isJustPressed()) {
             if (closeButton.hb.hovered
                     || clearButton.hb.hovered
                     || sortTypeToggle.hb.hovered
@@ -566,7 +566,6 @@ public abstract class GenericFilters<T, U extends GenericFiltersObject, V extend
                 }
             }
             close();
-            InputHelper.justClickedLeft = false;
         }
         else if (InputHelper.pressedEscape || CInputActionSet.cancel.isJustPressed()) {
             CInputActionSet.cancel.unpress();

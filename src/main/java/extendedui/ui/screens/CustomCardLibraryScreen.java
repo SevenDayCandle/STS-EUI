@@ -308,7 +308,9 @@ public class CustomCardLibraryScreen extends AbstractMenuScreen {
     @Override
     public void updateImpl() {
         super.updateImpl();
-        boolean shouldDoStandardUpdate = !EUI.cardFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
+        boolean wasFiltersOpen = EUI.cardFilters.isActive;
+        EUI.cardFilters.tryUpdate();
+        boolean shouldDoStandardUpdate = !wasFiltersOpen && !CardCrawlGame.isPopupOpen;
         if (shouldDoStandardUpdate) {
             EUI.openFiltersButton.tryUpdate();
             EUIExporter.exportButton.tryUpdate();

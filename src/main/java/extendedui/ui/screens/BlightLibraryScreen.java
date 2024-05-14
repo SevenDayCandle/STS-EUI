@@ -71,7 +71,9 @@ public class BlightLibraryScreen extends AbstractMenuScreen {
     @Override
     public void updateImpl() {
         super.updateImpl();
-        boolean shouldDoStandardUpdate = !EUI.blightFilters.tryUpdate() && !CardCrawlGame.isPopupOpen;
+        boolean wasFiltersOpen = EUI.blightFilters.isActive;
+        EUI.blightFilters.tryUpdate();
+        boolean shouldDoStandardUpdate = !wasFiltersOpen && !CardCrawlGame.isPopupOpen;
         if (shouldDoStandardUpdate) {
             grid.tryUpdate();
             cancelButton.update();
