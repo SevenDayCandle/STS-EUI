@@ -438,12 +438,14 @@ public class EUITooltip {
                         tip.setIcon(p.img, 6);
                     }
 
-                    switch (p.type) {
-                        case BUFF:
-                            tip.setBackgroundColor(TIP_BUFF);
-                            break;
-                        case DEBUFF:
-                            tip.setBackgroundColor(TIP_DEBUFF);
+                    if (p.type != null) {
+                        switch (p.type) {
+                            case BUFF:
+                                tip.setBackgroundColor(TIP_BUFF);
+                                break;
+                            case DEBUFF:
+                                tip.setBackgroundColor(TIP_DEBUFF);
+                        }
                     }
 
                     TOOLTIPS.add(tip);
