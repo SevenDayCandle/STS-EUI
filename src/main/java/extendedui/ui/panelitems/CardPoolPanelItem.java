@@ -3,6 +3,7 @@ package extendedui.ui.panelitems;
 import basemod.BaseMod;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.evacipated.cardcrawl.modthespire.Loader;
+import com.megacrit.cardcrawl.actions.common.TransformCardInHandAction;
 import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.cards.CardGroup;
 import com.megacrit.cardcrawl.core.Settings;
@@ -88,9 +89,15 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
             }
 
             AbstractRelic newRelic = original.makeCopy();
-            newRelic.hb = new Hitbox(80.0F * Settings.scale, 80.0F * Settings.scale);
-            newRelic.isSeen = UnlockTracker.isRelicSeen(original.relicId) || original.isSeen;
-            newRelics.add(newRelic);
+            if (newRelic != null) {
+                newRelic.hb = new Hitbox(80.0F * Settings.scale, 80.0F * Settings.scale);
+                newRelic.isSeen = UnlockTracker.isRelicSeen(original.relicId) || original.isSeen;
+                newRelics.add(newRelic);
+            }
+            else {
+                EUIUtils.logError(CardPoolPanelItem.class, "WTF relic did not copy " + relicID);
+            }
+
         }
         return newRelics;
     }
