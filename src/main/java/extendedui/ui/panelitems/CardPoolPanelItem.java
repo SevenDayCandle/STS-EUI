@@ -144,14 +144,29 @@ public class CardPoolPanelItem extends PCLTopPanelItem {
             EUITooltip.queueTooltip(tooltip);
         }
 
-        if (EUIHotkeys.openCardPool.isJustPressed() && AbstractDungeon.screen != CardPoolScreen.CARD_POOL_SCREEN) {
-            EUI.cardsScreen.openScreen(AbstractDungeon.player, getAllCards());
+        if (EUIHotkeys.openCardPool.isJustPressed()) {
+            if (AbstractDungeon.screen == CardPoolScreen.CARD_POOL_SCREEN) {
+                AbstractDungeon.closeCurrentScreen();
+            }
+            else {
+                EUI.cardsScreen.openScreen(AbstractDungeon.player, getAllCards());
+            }
         }
-        else if (EUIHotkeys.openRelicPool.isJustPressed() && AbstractDungeon.screen != RelicPoolScreen.RELIC_POOL_SCREEN) {
-            EUI.relicScreen.openScreen(AbstractDungeon.player, getAllRelics());
+        else if (EUIHotkeys.openRelicPool.isJustPressed()) {
+            if (AbstractDungeon.screen == RelicPoolScreen.RELIC_POOL_SCREEN) {
+                AbstractDungeon.closeCurrentScreen();
+            }
+            else {
+                EUI.relicScreen.openScreen(AbstractDungeon.player, getAllRelics());
+            }
         }
-        else if (EUIHotkeys.openPotionPool.isJustPressed() && AbstractDungeon.screen != PotionPoolScreen.POTION_POOL_SCREEN) {
-            EUI.potionScreen.openScreen(AbstractDungeon.player, getAllPotions());
+        else if (EUIHotkeys.openPotionPool.isJustPressed()) {
+            if (AbstractDungeon.screen == PotionPoolScreen.POTION_POOL_SCREEN) {
+                AbstractDungeon.closeCurrentScreen();
+            }
+            else {
+                EUI.potionScreen.openScreen(AbstractDungeon.player, getAllPotions());
+            }
         }
 
         contextMenu.tryUpdate();

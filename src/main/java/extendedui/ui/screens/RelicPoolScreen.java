@@ -83,8 +83,8 @@ public class RelicPoolScreen extends EUIPoolScreen {
     }
 
     @Override
-    public void close() {
-        super.close();
+    public void switchScreen() {
+        super.switchScreen();
         for (CustomPoolModule<RelicInfo> module : EUI.globalCustomRelicPoolModules) {
             module.onClose();
         }

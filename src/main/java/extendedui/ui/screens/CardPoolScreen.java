@@ -131,8 +131,8 @@ public class CardPoolScreen extends EUIPoolScreen {
     }
 
     @Override
-    public void close() {
-        super.close();
+    public void switchScreen() {
+        super.switchScreen();
         betaToggleCache = betaToggle.toggled;
         EUI.toggleBetaArtReset();
         for (CustomCardPoolModule module : EUI.globalCustomCardPoolModules) {

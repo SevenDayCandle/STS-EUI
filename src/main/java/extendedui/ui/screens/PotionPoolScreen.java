@@ -81,8 +81,8 @@ public class PotionPoolScreen extends EUIPoolScreen {
     }
 
     @Override
-    public void close() {
-        super.close();
+    public void switchScreen() {
+        super.switchScreen();
         for (CustomPoolModule<PotionInfo> module : EUI.globalCustomPotionPoolModules) {
             module.onClose();
         }
