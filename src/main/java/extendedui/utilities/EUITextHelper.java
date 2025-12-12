@@ -15,6 +15,7 @@ import com.megacrit.cardcrawl.cards.AbstractCard;
 import com.megacrit.cardcrawl.core.Settings;
 import com.megacrit.cardcrawl.helpers.FontHelper;
 import com.megacrit.cardcrawl.helpers.Hitbox;
+import extendedui.EUI;
 import extendedui.EUIRM;
 import extendedui.EUIRenderHelpers;
 import extendedui.EUIUtils;
@@ -616,8 +617,8 @@ public class EUITextHelper {
             backgroundColor = tooltip.badgeColor;
             icon = (force || tooltip.forceIcon) ? tooltip.icon : null;
         }
-        else {
-            // Check for custom keyword icons
+        // Check for custom keyword icons if STSLib is loaded
+        else if (EUI.isStsLib()) {
             String iconName = '[' + iconID + ']';
             AbstractCustomIcon customIcon = CustomIconHelper.getIcon(iconName);
             if (customIcon != null) {
