@@ -23,6 +23,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Type;
 import java.util.List;
 import java.util.*;
+import java.util.concurrent.Callable;
+import java.util.concurrent.FutureTask;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -291,26 +293,42 @@ public abstract class EUIUtils {
     }
 
     private static File chooseFile(FileNameExtensionFilter extensionFilter, File currentFile, STSStringConfigItem pathConfig, int type) {
-        try {
-            JFileChooser fc = createFileChooser(extensionFilter, currentFile, type);
+        Callable<File> task = () -> {
             JFrame frame = getFrame();
-            frame.setVisible(true);
-            fc.setVisible(true);
-            frame.toFront();
-            frame.requestFocus();
-            int result = fc.showDialog(frame, null);
-            frame.dispose();
+            try {
+                JFileChooser fc = createFileChooser(extensionFilter, currentFile, type);
+                frame.setAlwaysOnTop(true);
+                frame.setVisible(true);
+                frame.toFront();
+                frame.requestFocus();
+                int result = fc.showDialog(frame, null);
+                frame.dispose();
 
-            if (pathConfig != null) {
-                File cd = fc.getCurrentDirectory();
-                if (cd != null && cd.isDirectory()) {
-                    pathConfig.set(cd.getAbsolutePath());
+                if (pathConfig != null) {
+                    File cd = fc.getCurrentDirectory();
+                    if (cd != null && cd.isDirectory()) {
+                        pathConfig.set(cd.getAbsolutePath());
+                    }
+                }
+
+                if (result == JFileChooser.APPROVE_OPTION) {
+                    return fc.getSelectedFile();
                 }
             }
-
-            if (result == JFileChooser.APPROVE_OPTION) {
-                return fc.getSelectedFile();
+            finally {
+                frame.dispose();
             }
+            return null;
+        };
+
+        try {
+            if (SwingUtilities.isEventDispatchThread()) {
+                return task.call();
+            }
+
+            FutureTask<File> future = new FutureTask<>(task);
+            SwingUtilities.invokeAndWait(future);
+            return future.get();
         }
         catch (Exception e) {
             e.printStackTrace();
